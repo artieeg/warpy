@@ -1,4 +1,11 @@
 services:
+  mongo:
+    image: mongo:4.2
+    ports:
+    - 27017:27017
+    volumes:
+    - ./dev_env/database:/data/db
+
   user:
     image: rust-dev:1.51.0
     env_file:
