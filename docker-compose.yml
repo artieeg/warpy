@@ -1,0 +1,10 @@
+services:
+  user:
+    image: rust-dev:1.51.0
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./user:/user
+      - ./user/target/docker:/target
+    working_dir: /user
+    command: cargo watch -x run
