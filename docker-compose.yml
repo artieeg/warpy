@@ -1,8 +1,10 @@
 services:
   user:
     image: rust-dev:1.51.0
+    env_file:
+      dev_env/user.env
     ports:
-      - "9000:9000"
+      - "10000:10000"
     volumes:
       - ./user:/user
       - ./user/target/docker:/target

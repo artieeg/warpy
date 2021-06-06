@@ -4,3 +4,5 @@ FROM rust:1.51.0
 
 ENV CARGO_TARGET_DIR=/target
 RUN cargo install cargo-watch
+
+EXPOSE 10000
