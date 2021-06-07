@@ -7,4 +7,5 @@ pub struct CreateWithPassword {
     pub username: String,
     pub password: String,
     pub avatar: String,
+    pub email: String
 }

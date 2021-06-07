@@ -10,7 +10,7 @@ use models::User;
 use user_dao::UserDAO;
 
 use actix_web::{get, web, App, HttpServer, Responder};
-use std::sync::{Mutex, Arc};
+use std::sync::{Mutex};
 
 #[get("/")]
 async fn index() -> impl Responder {
