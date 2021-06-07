@@ -1,15 +1,15 @@
 use std::fmt;
 use actix_web::HttpResponse;
 use serde_json::json;
-pub struct AddUserError;
+pub struct DAOInsertError;
 
-impl fmt::Display for AddUserError {
+impl fmt::Display for DAOInsertError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Failed to save a user to the DB")
+        write!(f, "DB write failure")
     }
 }
 
-impl Into<HttpResponse> for AddUserError {
+impl Into<HttpResponse> for DAOInsertError {
     fn into(self) -> HttpResponse {
         HttpResponse::InternalServerError().json(json!({
             "error": {

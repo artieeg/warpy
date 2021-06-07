@@ -1,13 +1,12 @@
-use std::task::{Context, Poll};
 use actix_service::{Service, Transform};
 use actix_web::{
     dev::ServiceRequest,
     dev::ServiceResponse,
     http::{HeaderName, HeaderValue},
-    HttpResponse,
-    Error,
+    Error, HttpResponse,
 };
-use futures::future::{ok, Ready, Either};
+use futures::future::{ok, Either, Ready};
+use std::task::{Context, Poll};
 
 use crate::jwt::Claims;
 
@@ -70,9 +69,10 @@ where
                 return Either::Left(self.service.call(req));
             }
             Err(_) => {
-                return Either::Right(ok(req.into_response(HttpResponse::Forbidden().finish().into_body())));
+                return Either::Right(ok(
+                    req.into_response(HttpResponse::Forbidden().finish().into_body())
+                ));
             }
         };
-
     }
 }
