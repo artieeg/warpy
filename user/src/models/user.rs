@@ -17,13 +17,13 @@ enum SignUpMethod {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct User {
     pub id: String,
-    first_name: String,
-    last_name: String,
-    username: String,
-    avatar: String,
+    pub first_name: String,
+    pub last_name: String,
+    pub username: String,
+    pub avatar: String,
     sign_up_method: SignUpMethod, 
-    email: String,
-    credential: String,
+    pub email: String,
+    pub credential: String,
 }
 
 impl TryFrom<web::Json<user::CreateWithPassword>> for User {

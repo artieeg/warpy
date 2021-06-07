@@ -18,16 +18,29 @@ pub async fn create(
         Err(e) => return e.into(),
     };
 
-    let user_id = user.id.clone();
+    let id = user.id.clone();
+    let username = user.username.clone();
+    let email = user.email.clone();
+
     let refresh = Claims::new(&user, TokenType::Refresh).unwrap();
     let access = Claims::new(&user, TokenType::Access).unwrap();
 
     let data = data.lock().unwrap();
 
+    let user_already_exists = data
+        .user_dao
+        .find_user(username.as_str(), email.as_str())
+        .await
+        .is_some();
+
+    if user_already_exists {
+        unimplemented!();
+    }
+
     //Save refresh token to the DB
     if let Err(e) = data
         .refresh_token_dao
-        .add_token(RefreshToken::new(&user_id, &refresh))
+        .add_token(RefreshToken::new(&id, &refresh))
         .await
     {
         //Return an error if any
@@ -36,7 +49,7 @@ pub async fn create(
 
     match data.user_dao.add_user(user).await {
         Ok(_) => HttpResponse::Ok().json(json! ({
-            "user_id": user_id,
+            "user_id": id,
             "access": access,
             "refresh": refresh
         })),

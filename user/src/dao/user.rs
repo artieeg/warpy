@@ -1,6 +1,6 @@
 use crate::errors::dao::DAOInsertError;
 use crate::models::User;
-use mongodb::{error::Error, Database, Collection};
+use mongodb::{error::Error, Database, Collection, bson::doc};
 
 #[derive(Clone)]
 pub struct UserDAO {
@@ -19,5 +19,14 @@ impl UserDAO {
             Ok(result) => Ok(result.inserted_id.to_string()),
             Err(_) => return Err(DAOInsertError {}),
         }
+    }
+
+    pub async fn find_user(&self, username: &str, email: &str) -> Option<User> {
+        self.collection.find_one(doc! {
+            "$or": vec![
+                doc! {"username": username},
+                doc! {"email": email},
+            ]
+        }, None).await.unwrap()
     }
 }
