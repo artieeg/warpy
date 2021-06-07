@@ -1,9 +1,4 @@
-use std::pin::Pin;
 use std::task::{Context, Poll};
-
-use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
-use serde::{Deserialize, Serialize};
-
 use actix_service::{Service, Transform};
 use actix_web::{
     dev::ServiceRequest,
@@ -13,7 +8,6 @@ use actix_web::{
     Error,
 };
 use futures::future::{ok, Ready, Either};
-use futures::Future;
 
 use crate::jwt::Claims;
 
