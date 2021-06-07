@@ -5,6 +5,7 @@ mod routes;
 mod errors;
 mod payloads;
 mod jwt;
+mod middlewares;
 
 use context::Context;
 use models::User;

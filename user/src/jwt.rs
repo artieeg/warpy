@@ -18,7 +18,7 @@ pub struct Claims {
 }
 
 impl Claims {
-    fn from_string(claims: String) -> Result<Claims, Error> {
+    pub fn from_string(claims: &str) -> Result<Claims, Error> {
         let v = Validation::default();
         let result = decode::<Claims>(
             &claims,
@@ -32,7 +32,7 @@ impl Claims {
         }
     }
 
-    fn new(user: User) -> Result<String, Error> {
+    pub fn new(user: User) -> Result<String, Error> {
         let claims = Claims {
             sub: user.id,
             iss: String::from("warpy.tv"),

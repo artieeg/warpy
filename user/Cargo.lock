@@ -2498,8 +2498,10 @@ dependencies = [
 name = "user"
 version = "0.1.0"
 dependencies = [
+ "actix-service",
  "actix-web",
  "bcrypt",
+ "futures",
  "jsonwebtoken",
  "lazy_static",
  "mongodb",
