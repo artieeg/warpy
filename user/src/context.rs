@@ -1,7 +1,7 @@
 use crate::UserDAO;
 
 pub struct Context {
-    user_dao: UserDAO
+    pub user_dao: UserDAO
 }
 
 impl Context {
