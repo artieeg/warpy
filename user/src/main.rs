@@ -4,6 +4,7 @@ mod user_dao;
 mod routes;
 mod errors;
 mod payloads;
+mod jwt;
 
 use context::Context;
 use models::User;

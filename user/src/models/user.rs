@@ -16,7 +16,7 @@ enum SignUpMethod {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct User {
-    id: String,
+    pub id: String,
     first_name: String,
     last_name: String,
     username: String,

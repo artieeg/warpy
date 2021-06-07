@@ -2501,6 +2501,7 @@ dependencies = [
  "actix-web",
  "bcrypt",
  "jsonwebtoken",
+ "lazy_static",
  "mongodb",
  "nanoid",
  "serde",

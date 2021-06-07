@@ -1,15 +1,10 @@
-use mongodb::{Client, error::Error, options::ClientOptions, Collection};
-use crate::User;
 use crate::errors::user_dao::AddUserError;
+use crate::User;
+use mongodb::{error::Error, options::ClientOptions, Client, Collection};
 
 #[derive(Clone)]
 pub struct UserDAO {
-    collection: Collection<User>
-}
-
-enum AddUserResult {
-    Ok(String),
-    Err(AddUserError)
+    collection: Collection<User>,
 }
 
 impl UserDAO {
@@ -21,14 +16,14 @@ impl UserDAO {
         let db = client.database("warpy");
 
         Ok(Self {
-            collection: db.collection_with_type::<User>("users")
+            collection: db.collection_with_type::<User>("users"),
         })
     }
 
     pub async fn add_user(&self, user: User) -> Result<String, AddUserError> {
         match self.collection.insert_one(user, None).await {
             Ok(result) => Ok(result.inserted_id.to_string()),
-            Err(e) => return Err(AddUserError {})
+            Err(_) => return Err(AddUserError {}),
         }
     }
 }
