@@ -1,3 +1,4 @@
+use crate::errors::user::UserAlreadyExistsError;
 use crate::jwt::{Claims, TokenType};
 use crate::payloads::user;
 use crate::{
@@ -27,14 +28,22 @@ pub async fn create(
 
     let data = data.lock().unwrap();
 
-    let user_already_exists = data
+    //Check if user already exists
+    let existing_user = data
         .user_dao
         .find_user(username.as_str(), email.as_str())
-        .await
-        .is_some();
+        .await;
 
-    if user_already_exists {
-        unimplemented!();
+    if let Some(existing_user) = existing_user {
+        let same_username = existing_user.username == username;
+        let same_email = existing_user.email == email;
+
+        let error = UserAlreadyExistsError {
+            same_username,
+            same_email,
+        };
+
+        return error.into();
     }
 
     //Save refresh token to the DB

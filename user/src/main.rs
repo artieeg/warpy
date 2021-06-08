@@ -10,14 +10,9 @@ mod dao;
 use context::Context;
 use dao::*;
 
-use actix_web::{get, web, App, HttpServer, Responder};
+use actix_web::{web, App, HttpServer};
 use mongodb::{options::ClientOptions, Client};
 use std::sync::Mutex;
-
-#[get("/")]
-async fn index() -> impl Responder {
-    format!("monke")
-}
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -41,7 +36,6 @@ async fn main() -> std::io::Result<()> {
             .app_data(data.clone())
             .data(data.clone())
             .configure(routes::user::config)
-            .service(index)
     })
     .bind(format!("0.0.0.0:{}", port))?
     .run()
