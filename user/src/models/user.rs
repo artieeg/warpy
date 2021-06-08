@@ -1,17 +1,16 @@
 use crate::errors;
 use crate::payloads::user;
-use actix_web::web;
 use bcrypt;
+use nanoid::nanoid;
 use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
-use nanoid::nanoid;
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
 enum SignUpMethod {
     Google,
     Apple,
     Facebook,
-    Password
+    Password,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -21,7 +20,7 @@ pub struct User {
     pub last_name: String,
     pub username: String,
     pub avatar: String,
-    sign_up_method: SignUpMethod, 
+    sign_up_method: SignUpMethod,
     pub email: String,
     pub credential: String,
 }

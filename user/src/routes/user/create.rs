@@ -1,9 +1,9 @@
+use crate::context::WarpyContext;
+use crate::dao::{refresh_token::*, user::*};
 use crate::errors::user::UserAlreadyExistsError;
 use crate::jwt::{Claims, TokenType};
-use crate::payloads::user;
 use crate::models::{RefreshToken, User};
-use crate::context::WarpyContext;
-use crate::dao::{user::*, refresh_token::*};
+use crate::payloads::user;
 use actix_web::{web, HttpResponse};
 use serde_json::json;
 use std::convert::TryFrom;
@@ -12,7 +12,11 @@ use std::sync::Mutex;
 pub async fn create<U, R>(
     payload: web::Json<user::CreateWithPassword>,
     data: web::Data<Mutex<WarpyContext<U, R>>>,
-) -> HttpResponse where U: UserDAOExt, R: RefreshTokenDAOExt {
+) -> HttpResponse
+where
+    U: UserDAOExt,
+    R: RefreshTokenDAOExt,
+{
     let user = match User::try_from(payload.into_inner()) {
         Ok(user) => user,
         Err(e) => return e.into(),
@@ -69,33 +73,10 @@ pub async fn create<U, R>(
 mod tests {
     use super::*;
 
-    use crate::dao::{user::*, refresh_token::*};
-    use crate::payloads::user::CreateWithPassword;
     use crate::context::WarpyContext;
-    use actix_web::{http::StatusCode, test, web};
-    use serde_json::json;
-    use crate::errors::dao::DAOInsertError;
-    use mockall::*;
-    use mockall::predicate::*;
-    use async_trait::async_trait;
-
-    mock! {
-        pub RefreshTokenDAO {  }
-        #[async_trait]
-        impl RefreshTokenDAOExt for RefreshTokenDAO {
-            async fn add_token(&self, token: RefreshToken) -> Result<(), DAOInsertError>;
-        }
-    }
-
-    mock! {
-        pub UserDAO {  }
-        #[async_trait]
-        impl UserDAOExt for UserDAO {
-            async fn add_user<'a>(&'a self, user: User) -> Result<(), DAOInsertError>;
-            async fn find_user<'a>(&'a self, username: &'a str, email: &'a str) -> Option<User>;
-            async fn get_user<'a>(&'a self, id: &'a str) -> Option<User>;
-        }
-    }
+    use crate::dao::mocks::*;
+    use crate::payloads::user::CreateWithPassword;
+    use actix_web::{http::StatusCode, web};
 
     #[actix_rt::test]
     async fn create_user_test() {
@@ -106,7 +87,10 @@ mod tests {
         refresh_token_dao.expect_add_token().returning(|_| Ok(()));
         user_dao.expect_add_user().returning(|_| Ok(()));
 
-        let context = web::Data::new(Mutex::new(WarpyContext::create(user_dao, refresh_token_dao)));
+        let context = web::Data::new(Mutex::new(WarpyContext::create(
+            user_dao,
+            refresh_token_dao,
+        )));
 
         let payload = web::Json(CreateWithPassword {
             first_name: "John".to_string(),
@@ -114,7 +98,7 @@ mod tests {
             username: "somebody".to_string(),
             password: "test_password".to_string(),
             avatar: "avatar".to_string(),
-            email: "jd@test.com".to_string()
+            email: "jd@test.com".to_string(),
         });
 
         let resp = create(payload, context).await;
