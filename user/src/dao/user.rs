@@ -29,4 +29,10 @@ impl UserDAO {
             ]
         }, None).await.unwrap()
     }
+
+    pub async fn get_user(&self, id: &str) -> Option<User> {
+        self.collection.find_one(doc! {
+            "id": id
+        }, None).await.unwrap()
+    }
 }
