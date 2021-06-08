@@ -2,27 +2,52 @@ use crate::errors::dao::DAOInsertError;
 use crate::models::User;
 use mongodb::{error::Error, Database, Collection, bson::doc};
 
-#[derive(Clone)]
-pub struct UserDAO {
-    collection: Collection<User>,
+use async_trait::async_trait;
+
+#[cfg(test)]
+use mockall::{automock, mock};
+
+#[async_trait]
+#[cfg_attr(test, automock)]
+pub trait UserDAOExt {
+    async fn add_user<'a>(&'a self, user: User) -> Result<(), DAOInsertError>;
+    async fn find_user<'a>(&'a self, username: &'a str, email: &'a str) -> Option<User>;
+    async fn get_user<'a>(&'a self, id: &'a str) -> Option<User>;
 }
 
+#[derive(Clone)]
+pub struct UserDAO {
+    collection: Option<Collection<User>>,
+}
+
+#[cfg_attr(test, automock)]
 impl UserDAO {
-    pub async fn new(db: &Database) -> Result<Self, Error> {
-        Ok(Self {
-            collection: db.collection_with_type::<User>("users"),
-        })
+    pub fn new() -> Self {
+        Self {
+            collection: None
+        }
     }
 
-    pub async fn add_user(&self, user: User) -> Result<String, DAOInsertError> {
-        match self.collection.insert_one(user, None).await {
-            Ok(result) => Ok(result.inserted_id.to_string()),
+    pub async fn connect(&mut self, db: &Database) {
+        self.collection = Some(db.collection_with_type::<User>("users"));
+    }
+}
+
+#[async_trait]
+impl UserDAOExt for UserDAO {
+    async fn add_user<'a>(&'a self, user: User) -> Result<(), DAOInsertError> {
+        let collection = self.collection.as_ref().unwrap();
+
+        match collection.insert_one(user, None).await {
+            Ok(_) => Ok(()),
             Err(_) => return Err(DAOInsertError {}),
         }
     }
 
-    pub async fn find_user(&self, username: &str, email: &str) -> Option<User> {
-        self.collection.find_one(doc! {
+    async fn find_user<'a>(&'a self, username: &'a str, email: &'a str) -> Option<User> {
+        let collection = self.collection.as_ref().unwrap();
+        
+        collection.find_one(doc! {
             "$or": vec![
                 doc! {"username": username},
                 doc! {"email": email},
@@ -30,8 +55,10 @@ impl UserDAO {
         }, None).await.unwrap()
     }
 
-    pub async fn get_user(&self, id: &str) -> Option<User> {
-        self.collection.find_one(doc! {
+    async fn get_user<'a>(&'a self, id: &'a str) -> Option<User> {
+        let collection = self.collection.as_ref().unwrap();
+
+        collection.find_one(doc! {
             "id": id
         }, None).await.unwrap()
     }

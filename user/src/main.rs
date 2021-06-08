@@ -7,8 +7,8 @@ mod payloads;
 mod routes;
 mod dao;
 
-use context::Context;
-use dao::*;
+use context::WarpyContext;
+use dao::{user::*, refresh_token::*};
 
 use actix_web::{web, App, HttpServer};
 use mongodb::{options::ClientOptions, Client};
@@ -22,10 +22,13 @@ async fn main() -> std::io::Result<()> {
 
     let db = client.database("warpy");
 
-    let user_dao = UserDAO::new(&db).await.unwrap();
-    let refresh_token_dao = RefreshTokenDAO::new(&db).await.unwrap();
+    let mut user_dao = UserDAO::new();
+    user_dao.connect(&db).await;
 
-    let context = Context::create(user_dao, refresh_token_dao);
+    let mut refresh_token_dao = RefreshTokenDAO::new();
+    refresh_token_dao.connect(&db).await;
+
+    let context = WarpyContext::create(user_dao, refresh_token_dao);
     let data = web::Data::new(Mutex::new(context));
 
     let port = std::env::var("PORT").unwrap();

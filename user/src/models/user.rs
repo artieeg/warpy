@@ -26,10 +26,10 @@ pub struct User {
     pub credential: String,
 }
 
-impl TryFrom<web::Json<user::CreateWithPassword>> for User {
+impl TryFrom<user::CreateWithPassword> for User {
     type Error = errors::user::CreateUserError;
 
-    fn try_from(payload: web::Json<user::CreateWithPassword>) -> Result<Self, Self::Error> {
+    fn try_from(payload: user::CreateWithPassword) -> Result<Self, Self::Error> {
         let username = payload.username.clone();
 
         if username.len() < 3 {

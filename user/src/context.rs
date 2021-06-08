@@ -1,12 +1,12 @@
-use crate::dao::*;
+use crate::dao::{user::*, refresh_token::*};
 
-pub struct Context {
-    pub user_dao: UserDAO,
-    pub refresh_token_dao: RefreshTokenDAO
+pub struct WarpyContext<U: UserDAOExt, R: RefreshTokenDAOExt> {
+    pub user_dao: U,
+    pub refresh_token_dao: R
 }
 
-impl Context {
-    pub fn create(user_dao: UserDAO, refresh_token_dao: RefreshTokenDAO) -> Self {
+impl<U: UserDAOExt, R: RefreshTokenDAOExt> WarpyContext<U, R> {
+    pub fn create(user_dao: U, refresh_token_dao: R) -> Self {
         Self {
             user_dao,
             refresh_token_dao
@@ -14,7 +14,8 @@ impl Context {
     }
 }
 
-impl Clone for Context {
+/*
+impl<U: UserDAOExt + Clone, R: RefreshTokenDAOExt + Clone> Clone for Context<U, R> {
     fn clone(&self) -> Self {
         Self {
             user_dao: self.user_dao.clone(),
@@ -22,3 +23,6 @@ impl Clone for Context {
         }
     }
 }
+*/
+
+//pub type WarpyContext = Context<UserDAO, RefreshTokenDAO>;
