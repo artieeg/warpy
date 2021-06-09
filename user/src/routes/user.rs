@@ -12,19 +12,20 @@ use crate::middlewares::Auth;
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.route(
         "/user",
-        web::post().to(create::create::<UserDAO, RefreshTokenDAO>),
+        web::post().to(create::route::<UserDAO, RefreshTokenDAO>),
     )
     .service(
         web::resource("/user/{user_id}")
             .wrap(Auth)
-            .route(web::delete().to(delete::delete::<UserDAO, RefreshTokenDAO>)),
+            .route(web::delete().to(delete::route::<UserDAO, RefreshTokenDAO>)),
     )
     .service(
-        web::resource("/user/{user_id}").route(web::get().to(get::get::<UserDAO, RefreshTokenDAO>)),
+        web::resource("/user/{user_id}")
+            .route(web::get().to(get::route::<UserDAO, RefreshTokenDAO>)),
     )
     .service(
         web::resource("/user")
             .wrap(Auth)
-            .route(web::get().to(get::get::<UserDAO, RefreshTokenDAO>)),
+            .route(web::put().to(update::route::<UserDAO, RefreshTokenDAO>)),
     );
 }

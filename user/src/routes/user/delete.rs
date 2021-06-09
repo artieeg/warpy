@@ -3,7 +3,7 @@ use crate::dao::*;
 use actix_web::{web, HttpResponse};
 use std::sync::Mutex;
 
-pub async fn delete<U, R>(
+pub async fn route<U, R>(
     path: web::Path<String>,
     data: web::Data<Mutex<WarpyContext<U, R>>>,
 ) -> HttpResponse
@@ -41,7 +41,7 @@ mod tests {
 
         let context = build_context(user_dao, refresh_token_dao);
 
-        let response = delete(web::Path("/user/test_user_id".to_string()), context).await;
+        let response = route(web::Path("/user/test_user_id".to_string()), context).await;
         assert_eq!(response.status(), StatusCode::NOT_FOUND);
     }
 
@@ -60,7 +60,7 @@ mod tests {
 
         let context = build_context(user_dao, refresh_token_dao);
 
-        let response = delete(web::Path("/user/test_user_id".to_string()), context).await;
+        let response = route(web::Path("/user/test_user_id".to_string()), context).await;
         assert_eq!(response.status(), StatusCode::OK);
     }
 }

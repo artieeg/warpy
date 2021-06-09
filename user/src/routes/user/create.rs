@@ -16,7 +16,7 @@ fn get_tokens(user: &User) -> (String, String) {
     (access, refresh)
 }
 
-pub async fn create<U, R>(
+pub async fn route<U, R>(
     payload: web::Json<user::CreateWithPassword>,
     data: web::Data<Mutex<WarpyContext<U, R>>>,
 ) -> HttpResponse
@@ -95,7 +95,7 @@ mod tests {
         let context = build_context(user_dao, refresh_token_dao);
         let payload = create_payload_fixture();
 
-        let resp = create(web::Json(payload), context).await;
+        let resp = route(web::Json(payload), context).await;
 
         assert_eq!(resp.status(), StatusCode::OK);
     }
@@ -113,7 +113,7 @@ mod tests {
         user_dao.expect_add_user().returning(|_| Ok(()));
 
         let context = build_context(user_dao, refresh_token_dao);
-        let resp = create(web::Json(payload), context).await;
+        let resp = route(web::Json(payload), context).await;
 
         assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
     }
@@ -130,7 +130,7 @@ mod tests {
         user_dao.expect_add_user().returning(|_| Ok(()));
 
         let context = build_context(user_dao, refresh_token_dao);
-        let resp = create(web::Json(payload), context).await;
+        let resp = route(web::Json(payload), context).await;
 
         assert_eq!(resp.status(), StatusCode::CONFLICT);
     }

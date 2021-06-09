@@ -3,7 +3,7 @@ use crate::dao::*;
 use actix_web::{web, HttpResponse};
 use std::sync::Mutex;
 
-pub async fn get<U, R>(
+pub async fn route<U, R>(
     path: web::Path<String>,
     data: web::Data<Mutex<WarpyContext<U, R>>>,
 ) -> HttpResponse
