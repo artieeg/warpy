@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
-enum SignUpMethod {
+pub enum SignUpMethod {
     Google,
     Apple,
     Facebook,
@@ -20,7 +20,7 @@ pub struct User {
     pub last_name: String,
     pub username: String,
     pub avatar: String,
-    sign_up_method: SignUpMethod,
+    pub sign_up_method: SignUpMethod,
     pub email: String,
     pub credential: String,
 }

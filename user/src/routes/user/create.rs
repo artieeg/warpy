@@ -9,6 +9,13 @@ use serde_json::json;
 use std::convert::TryFrom;
 use std::sync::Mutex;
 
+fn get_tokens(user: &User) -> (String, String) {
+    let refresh = Claims::new(user, TokenType::Refresh).unwrap();
+    let access = Claims::new(user, TokenType::Access).unwrap();
+
+    (access, refresh)
+}
+
 pub async fn create<U, R>(
     payload: web::Json<user::CreateWithPassword>,
     data: web::Data<Mutex<WarpyContext<U, R>>>,
@@ -26,8 +33,7 @@ where
     let username = user.username.clone();
     let email = user.email.clone();
 
-    let refresh = Claims::new(&user, TokenType::Refresh).unwrap();
-    let access = Claims::new(&user, TokenType::Access).unwrap();
+    let (access, refresh) = get_tokens(&user);
 
     let data = data.lock().unwrap();
 
@@ -75,7 +81,7 @@ mod tests {
 
     use crate::context::WarpyContext;
     use crate::dao::mocks::*;
-    use crate::payloads::user::CreateWithPassword;
+    use crate::fixtures::*;
     use actix_web::{http::StatusCode, web};
 
     #[actix_rt::test]
@@ -92,17 +98,53 @@ mod tests {
             refresh_token_dao,
         )));
 
-        let payload = web::Json(CreateWithPassword {
-            first_name: "John".to_string(),
-            last_name: "Dou".to_string(),
-            username: "somebody".to_string(),
-            password: "test_password".to_string(),
-            avatar: "avatar".to_string(),
-            email: "jd@test.com".to_string(),
-        });
+        let payload = create_payload_fixture();
 
-        let resp = create(payload, context).await;
+        let resp = create(web::Json(payload), context).await;
 
         assert_eq!(resp.status(), StatusCode::OK);
+    }
+
+    #[actix_rt::test]
+    async fn invalid_username_test() {
+        let mut user_dao = MockUserDAO::new();
+        let mut refresh_token_dao = MockRefreshTokenDAO::new();
+
+        let mut payload = create_payload_fixture();
+        payload.username = "k".to_string();
+
+        user_dao.expect_find_user().returning(|_, _| Some(user_fixture()));
+        refresh_token_dao.expect_add_token().returning(|_| Ok(()));
+        user_dao.expect_add_user().returning(|_| Ok(()));
+
+        let context = web::Data::new(Mutex::new(WarpyContext::create(
+            user_dao,
+            refresh_token_dao,
+        )));
+
+        let resp = create(web::Json(payload), context).await;
+
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+    }
+
+    #[actix_rt::test]
+    async fn fail_duplicate_test() {
+        let mut user_dao = MockUserDAO::new();
+        let mut refresh_token_dao = MockRefreshTokenDAO::new();
+
+        let payload = create_payload_fixture();
+
+        user_dao.expect_find_user().returning(|_, _| Some(user_fixture()));
+        refresh_token_dao.expect_add_token().returning(|_| Ok(()));
+        user_dao.expect_add_user().returning(|_| Ok(()));
+
+        let context = web::Data::new(Mutex::new(WarpyContext::create(
+            user_dao,
+            refresh_token_dao,
+        )));
+
+        let resp = create(web::Json(payload), context).await;
+
+        assert_eq!(resp.status(), StatusCode::CONFLICT);
     }
 }

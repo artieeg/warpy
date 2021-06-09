@@ -1,5 +1,5 @@
 mod user;
 mod refresh_token;
 
-pub use user::User;
+pub use user::*;
 pub use refresh_token::RefreshToken;

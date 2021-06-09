@@ -8,6 +8,9 @@ mod routes;
 mod dao;
 mod database;
 
+#[cfg(test)]
+mod fixtures;
+
 use database::Database;
 use context::WarpyContext;
 
