@@ -1,6 +1,5 @@
 use mongodb::{options::ClientOptions, Client};
-use crate::dao::user::UserDAO;
-use crate::dao::refresh_token::RefreshTokenDAO;
+use crate::dao::*;
 pub struct Database;
 
 impl Database {

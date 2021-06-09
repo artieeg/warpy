@@ -1,5 +1,5 @@
 use crate::context::WarpyContext;
-use crate::dao::{refresh_token::*, user::*};
+use crate::dao::*;
 use crate::errors::user::UserAlreadyExistsError;
 use crate::jwt::{Claims, TokenType};
 use crate::models::{RefreshToken, User};
