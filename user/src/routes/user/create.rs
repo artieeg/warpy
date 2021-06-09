@@ -79,7 +79,6 @@ where
 mod tests {
     use super::*;
 
-    use crate::context::WarpyContext;
     use crate::dao::mocks::*;
     use crate::fixtures::*;
     use actix_web::{http::StatusCode, web};
@@ -93,11 +92,7 @@ mod tests {
         refresh_token_dao.expect_add_token().returning(|_| Ok(()));
         user_dao.expect_add_user().returning(|_| Ok(()));
 
-        let context = web::Data::new(Mutex::new(WarpyContext::create(
-            user_dao,
-            refresh_token_dao,
-        )));
-
+        let context = build_context(user_dao, refresh_token_dao);
         let payload = create_payload_fixture();
 
         let resp = create(web::Json(payload), context).await;
@@ -117,32 +112,24 @@ mod tests {
         refresh_token_dao.expect_add_token().returning(|_| Ok(()));
         user_dao.expect_add_user().returning(|_| Ok(()));
 
-        let context = web::Data::new(Mutex::new(WarpyContext::create(
-            user_dao,
-            refresh_token_dao,
-        )));
-
+        let context = build_context(user_dao, refresh_token_dao);
         let resp = create(web::Json(payload), context).await;
 
         assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
     }
 
     #[actix_rt::test]
-    async fn fail_duplicate_test() {
+    async fn user_already_exists_test() {
+        let payload = create_payload_fixture();
+
         let mut user_dao = MockUserDAO::new();
         let mut refresh_token_dao = MockRefreshTokenDAO::new();
-
-        let payload = create_payload_fixture();
 
         user_dao.expect_find_user().returning(|_, _| Some(user_fixture()));
         refresh_token_dao.expect_add_token().returning(|_| Ok(()));
         user_dao.expect_add_user().returning(|_| Ok(()));
 
-        let context = web::Data::new(Mutex::new(WarpyContext::create(
-            user_dao,
-            refresh_token_dao,
-        )));
-
+        let context = build_context(user_dao, refresh_token_dao);
         let resp = create(web::Json(payload), context).await;
 
         assert_eq!(resp.status(), StatusCode::CONFLICT);

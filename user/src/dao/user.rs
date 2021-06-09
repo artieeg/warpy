@@ -1,4 +1,4 @@
-use crate::errors::dao::DAOInsertError;
+use crate::errors::dao::DAOError;
 use crate::models::User;
 use mongodb::{bson::doc, Collection, Database};
 
@@ -6,9 +6,10 @@ use async_trait::async_trait;
 
 #[async_trait]
 pub trait UserDAOExt {
-    async fn add_user(&self, user: User) -> Result<(), DAOInsertError>;
+    async fn add_user(&self, user: User) -> Result<(), DAOError>;
     async fn find_user(&self, username: &str, email: &str) -> Option<User>;
     async fn get_user(&self, id: &str) -> Option<User>;
+    async fn del_user(&self, id: &str) -> Result<(), DAOError>;
 }
 
 pub struct UserDAO {
@@ -27,12 +28,12 @@ impl UserDAO {
 
 #[async_trait]
 impl UserDAOExt for UserDAO {
-    async fn add_user(&self, user: User) -> Result<(), DAOInsertError> {
+    async fn add_user(&self, user: User) -> Result<(), DAOError> {
         let collection = self.collection.as_ref().unwrap();
 
         match collection.insert_one(user, None).await {
             Ok(_) => Ok(()),
-            Err(_) => return Err(DAOInsertError {}),
+            Err(_) => return Err(DAOError::Insert),
         }
     }
 
@@ -65,5 +66,9 @@ impl UserDAOExt for UserDAO {
             )
             .await
             .unwrap()
+    }
+
+    async fn del_user(&self, id: &str) -> Result<(), DAOError> {
+        unimplemented!();
     }
 }

@@ -4,21 +4,39 @@ use serde_json::json;
 use std::fmt;
 
 #[derive(Debug, Clone)]
-pub struct CreateUserError {
-    status: StatusCode,
-    message: String,
+pub struct InvalidEmail {
+    pub email: String
 }
+
+impl From<InvalidEmail> for CreateUserError {
+    fn from(e: InvalidEmail) -> Self {
+        CreateUserError {
+            status: StatusCode::BAD_REQUEST,
+            message: format!("Email {} cannot be used", e.email),
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct InvalidPassword {
+    pub password: String
+}
+
+impl From<InvalidPassword> for CreateUserError {
+    fn from(e: InvalidPassword) -> Self {
+        CreateUserError {
+            status: StatusCode::BAD_REQUEST,
+            message: format!("Password {} cannot be used", e.password),
+        }
+    }
+}
+
 
 #[derive(Debug, Clone)]
 pub struct InvalidUsername {
     pub username: String,
 }
 
-impl fmt::Display for CreateUserError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Failed to convert user from payload")
-    }
-}
 
 impl From<InvalidUsername> for CreateUserError {
     fn from(e: InvalidUsername) -> Self {
@@ -27,6 +45,13 @@ impl From<InvalidUsername> for CreateUserError {
             message: format!("Username {} cannot be used", e.username),
         }
     }
+}
+
+
+#[derive(Debug, Clone)]
+pub struct CreateUserError {
+    status: StatusCode,
+    message: String,
 }
 
 impl From<bcrypt::BcryptError> for CreateUserError {

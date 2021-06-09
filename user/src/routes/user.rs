@@ -11,5 +11,8 @@ pub fn config(cfg: &mut web::ServiceConfig) {
         "/user",
         web::post().to(create::create::<UserDAO, RefreshTokenDAO>),
     )
-    .service(delete::delete);
+    .service(
+        web::resource("/user/{user_id}")
+            .route(web::delete().to(delete::delete::<UserDAO, RefreshTokenDAO>)),
+    );
 }

@@ -30,9 +30,14 @@ impl TryFrom<user::CreateWithPassword> for User {
 
     fn try_from(payload: user::CreateWithPassword) -> Result<Self, Self::Error> {
         let username = payload.username.clone();
+        let password = payload.password.clone();
 
         if username.len() < 3 {
             return Err(errors::user::InvalidUsername { username }.into());
+        }
+
+        if password.len() < 5 {
+            return Err(errors::user::InvalidPassword { password }.into());
         }
 
         let hashed_password = bcrypt::hash(payload.password.clone(), bcrypt::DEFAULT_COST)?;
