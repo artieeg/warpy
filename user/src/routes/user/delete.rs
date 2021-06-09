@@ -1,6 +1,6 @@
 use crate::context::WarpyContext;
 use crate::dao::*;
-use actix_web::{delete, web, HttpRequest, HttpResponse};
+use actix_web::{web, HttpResponse};
 use std::sync::Mutex;
 
 pub async fn delete<U, R>(
