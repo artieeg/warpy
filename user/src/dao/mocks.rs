@@ -23,5 +23,6 @@ mock! {
         async fn find_user(&self, username: &str, email: &str) -> Option<User>;
         async fn get_user(&self, id: &str) -> Option<User>;
         async fn del_user(&self, id: &str) -> Result<(), DAOError>;
+        async fn update(&self, id: &str, updated_user: User) -> Result<(), DAOError>;
     }
 }
