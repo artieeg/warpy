@@ -4,7 +4,8 @@ use serde_json::json;
 pub enum DAOError {
     Insert,
     Delete,
-    Update(&'static str),
+    AlreadyExists(&'static str),
+    Update,
     NotFound,
 }
 
@@ -26,10 +27,15 @@ impl Into<HttpResponse> for DAOError {
                     "message": "Not found"
                 }
             })),
-            DAOError::Update(field) => HttpResponse::BadRequest().json(json!({
+            DAOError::AlreadyExists(field) => HttpResponse::BadRequest().json(json!({
                 "error": {
                     "reason": field,
                     "message": format!("Field {} is invalid", field)
+                }
+            })),
+            DAOError::Update => HttpResponse::InternalServerError().json(json!({
+                "error": {
+                    "message": "Failed to update, try again later"
                 }
             }))
         }

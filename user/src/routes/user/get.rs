@@ -44,7 +44,7 @@ mod tests {
             .returning(move |_| Some(user_fixture()));
 
         let context = build_context(user_dao, refresh_token_dao);
-        let result = route(web::Path::from("/user/user-id".to_string()), context).await;
+        let result = route(web::Path::from("user-id".to_string()), context).await;
 
         assert_eq!(result.status(), StatusCode::OK);
     }
@@ -57,7 +57,7 @@ mod tests {
         user_dao.expect_get_user().returning(move |_| None);
 
         let context = build_context(user_dao, refresh_token_dao);
-        let result = route(web::Path::from("/user/user-id".to_string()), context).await;
+        let result = route(web::Path::from("user-id".to_string()), context).await;
 
         assert_eq!(result.status(), StatusCode::NOT_FOUND);
     }

@@ -21,8 +21,9 @@ mock! {
     impl UserDAOExt for UserDAO {
         async fn add_user(&self, user: User) -> Result<(), DAOError>;
         async fn find_user(&self, username: &str, email: &str) -> Option<User>;
+        async fn check_username(&self, username: &str) -> Result<(), DAOError>;
         async fn get_user(&self, id: &str) -> Option<User>;
         async fn del_user(&self, id: &str) -> Result<(), DAOError>;
-        async fn update(&self, id: &str, updated_user: User) -> Result<(), DAOError>;
+        async fn update(&self, updated_user: User) -> Result<(), DAOError>;
     }
 }

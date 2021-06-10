@@ -25,6 +25,26 @@ pub struct User {
     pub credential: String,
 }
 
+impl User {
+    pub fn apply_updates(&mut self, update: user::UpdateUser) {
+        if let Some(username) = update.username {
+            self.username = username;
+        }
+
+        if let Some(avatar) = update.avatar {
+            self.avatar = avatar;
+        }
+
+        if let Some(last_name) = update.last_name {
+            self.last_name = last_name;
+        }
+
+        if let Some(first_name) = update.first_name {
+            self.first_name = first_name;
+        }
+    }
+}
+
 impl TryFrom<user::CreateWithPassword> for User {
     type Error = errors::user::CreateUserError;
 

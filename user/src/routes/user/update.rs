@@ -14,19 +14,39 @@ where
     U: UserDAOExt,
     R: RefreshTokenDAOExt,
 {
-    println!("{:#?}", update);
+    let user_id = req.headers().get("user-id").unwrap().to_str().unwrap();
+    let data = data.lock().unwrap();
 
-    HttpResponse::NotImplemented().finish()
+    if let Some(new_username) = &update.username {
+        let username_check_result = data.user_dao.check_username(new_username.as_str()).await;
+
+        if let Err(e) = username_check_result {
+            return e.into();
+        }
+    }
+
+    let user = data.user_dao.get_user(user_id).await;
+
+    if user.is_none() {
+        return HttpResponse::NotFound().finish();
+    }
+
+    let mut user = user.unwrap();
+    user.apply_updates(update.into_inner());
+    match data.user_dao.update(user).await {
+        Ok(_) => HttpResponse::Ok().finish(),
+        Err(e) => e.into()
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::dao::mocks::*;
-    use crate::fixtures::*;
     use crate::errors::dao::*;
+    use crate::fixtures::*;
     use actix_rt;
-    use actix_web::{test, http::StatusCode};
+    use actix_web::{http::StatusCode, test};
 
     #[actix_rt::test]
     async fn username_not_available_test() {
@@ -34,7 +54,17 @@ mod tests {
         let refresh_token_dao = MockRefreshTokenDAO::new();
 
         //Simulate update error
-        user_dao.expect_update().returning(|_, _| Err(DAOError::Update("username")));
+        user_dao
+            .expect_update()
+            .returning(|_| Ok(()));
+
+        user_dao
+            .expect_get_user()
+            .returning(|_| Some(user_fixture()));
+
+        user_dao
+            .expect_check_username()
+            .returning(|_| Err(DAOError::AlreadyExists("username")));
 
         let context = build_context(user_dao, refresh_token_dao);
 
@@ -46,7 +76,7 @@ mod tests {
         };
 
         let request = test::TestRequest::put()
-            .header("authorization", "test-token")
+            .header("user-id", "test-user-id")
             .to_http_request();
 
         let resp = route(request, web::Json(payload), context).await;
@@ -59,7 +89,15 @@ mod tests {
         let mut user_dao = MockUserDAO::new();
         let refresh_token_dao = MockRefreshTokenDAO::new();
 
-        user_dao.expect_update().returning(|_, _| Ok(()));
+        user_dao.expect_update().returning(|_| Ok(()));
+
+        user_dao
+            .expect_check_username()
+            .returning(|_| Ok(()));
+
+        user_dao
+            .expect_get_user()
+            .returning(|_| Some(user_fixture()));
 
         let context = build_context(user_dao, refresh_token_dao);
 
@@ -71,7 +109,7 @@ mod tests {
         };
 
         let request = test::TestRequest::put()
-            .header("authorization", "test-token")
+            .header("user-id", "test-user-id")
             .to_http_request();
 
         let resp = route(request, web::Json(payload), context).await;
