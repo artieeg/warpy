@@ -1,7 +1,6 @@
 use crate::errors::dao::DAOError;
 use crate::models::User;
 use mongodb::bson;
-use mongodb::options::UpdateModifications;
 use mongodb::{bson::doc, Collection, Database};
 
 use async_trait::async_trait;
@@ -53,7 +52,7 @@ impl UserDAOExt for UserDAO {
             .unwrap();
 
         match result {
-            Some(user) => Err(DAOError::AlreadyExists("username")),
+            Some(_) => Err(DAOError::AlreadyExists("username")),
             None => Ok(())
         }
     }
