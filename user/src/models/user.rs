@@ -1,4 +1,4 @@
-use crate::errors;
+use errors;
 use crate::payloads::user;
 use nanoid::nanoid;
 use serde::{Deserialize, Serialize};

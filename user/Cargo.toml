@@ -21,6 +21,7 @@ async-trait = "0.1.50"
 lapin = "1.7.1"
 auth_middleware = {path = "../crates/auth_middleware"}
 claims = {path = "../crates/claims"}
+errors = {path = "../crates/errors"}
 
 [dev-dependencies]
 mockall = "0.9.1"

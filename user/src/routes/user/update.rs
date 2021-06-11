@@ -43,7 +43,7 @@ where
 mod tests {
     use super::*;
     use crate::dao::mocks::*;
-    use crate::errors::dao::*;
+    use errors::dao::*;
     use crate::fixtures::*;
     use actix_rt;
     use actix_web::{http::StatusCode, test};

@@ -1,6 +1,5 @@
 use crate::context::WarpyContext;
 use crate::dao::*;
-use crate::errors::user::UserAlreadyExistsError;
 use claims::{Claims, TokenType};
 use crate::models::{RefreshToken, User};
 use crate::payloads::user;
@@ -31,28 +30,14 @@ where
 
     let id = user.id.clone();
     let username = user.username.clone();
-    let email = user.email.clone();
 
     let (access, refresh) = get_tokens(&user);
 
     let data = data.lock().unwrap();
 
     //Check if user already exists
-    let existing_user = data
-        .user_dao
-        .find(username.as_str(), email.as_str())
-        .await;
-
-    if let Some(existing_user) = existing_user {
-        let same_username = existing_user.username == username;
-        let same_email = existing_user.email == email;
-
-        let error = UserAlreadyExistsError {
-            same_username,
-            same_email,
-        };
-
-        return error.into();
+    if let Err(e) = data.user_dao.check_username(username.as_str()).await {
+        return e.into();
     }
 
     //Save refresh token to the DB

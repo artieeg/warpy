@@ -1,6 +1,6 @@
 use super::refresh_token::RefreshTokenDAOExt;
 use super::user::UserDAOExt;
-use crate::errors::dao::*;
+use errors::dao::*;
 use crate::models::{RefreshToken, User};
 use async_trait::async_trait;
 use mockall::mock;

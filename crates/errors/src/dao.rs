@@ -14,12 +14,12 @@ impl Into<HttpResponse> for DAOError {
         match self {
             DAOError::Insert => HttpResponse::InternalServerError().json(json!({
                 "error": {
-                    "message": "Failed to save user"
+                    "message": "Failed to save the record"
                 }
             })),
             DAOError::Delete => HttpResponse::InternalServerError().json(json!({
                 "error": {
-                    "message": "Failed to delete the user"
+                    "message": "Failed to delete the record"
                 }
             })),
             DAOError::NotFound => HttpResponse::NotFound().json(json!({
@@ -30,7 +30,7 @@ impl Into<HttpResponse> for DAOError {
             DAOError::AlreadyExists(field) => HttpResponse::BadRequest().json(json!({
                 "error": {
                     "reason": field,
-                    "message": format!("Field {} is invalid", field)
+                    "message": format!("Value for {} is invalid", field)
                 }
             })),
             DAOError::Update => HttpResponse::InternalServerError().json(json!({

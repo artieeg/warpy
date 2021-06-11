@@ -1,4 +1,4 @@
-use crate::errors::dao::DAOError;
+use errors::dao::DAOError;
 use crate::models::User;
 use mongodb::bson;
 use mongodb::{bson::doc, Collection, Database};

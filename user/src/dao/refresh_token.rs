@@ -1,4 +1,4 @@
-use crate::errors::dao::*;
+use errors::dao::*;
 use crate::models::RefreshToken;
 use mongodb::{Database, bson::doc, Collection};
 
