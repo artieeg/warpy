@@ -17,7 +17,7 @@ fn get_tokens(user: &User) -> (String, String) {
 }
 
 pub async fn route<U, R>(
-    payload: web::Json<user::CreateWithPassword>,
+    payload: web::Json<user::CreateDev>,
     data: web::Data<Mutex<WarpyContext<U, R>>>,
 ) -> HttpResponse
 where

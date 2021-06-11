@@ -1,6 +1,6 @@
 use actix_web::web;
 
-mod create;
+mod create_dev;
 mod delete;
 mod get;
 mod update;
@@ -11,8 +11,8 @@ use crate::middlewares::Auth;
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.route(
-        "/user",
-        web::post().to(create::route::<UserDAO, RefreshTokenDAO>),
+        "/user/dev",
+        web::post().to(create_dev::route::<UserDAO, RefreshTokenDAO>),
     )
     .service(
         web::resource("/user/{user_id}")

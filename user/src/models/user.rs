@@ -1,6 +1,5 @@
 use crate::errors;
 use crate::payloads::user;
-use bcrypt;
 use nanoid::nanoid;
 use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
@@ -10,7 +9,7 @@ pub enum SignUpMethod {
     Google,
     Apple,
     Facebook,
-    Password,
+    Dev,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -45,28 +44,21 @@ impl User {
     }
 }
 
-impl TryFrom<user::CreateWithPassword> for User {
+impl TryFrom<user::CreateDev> for User {
     type Error = errors::user::CreateUserError;
 
-    fn try_from(payload: user::CreateWithPassword) -> Result<Self, Self::Error> {
+    fn try_from(payload: user::CreateDev) -> Result<Self, Self::Error> {
         let username = payload.username.clone();
-        let password = payload.password.clone();
 
         if username.len() < 3 {
             return Err(errors::user::InvalidUsername { username }.into());
         }
 
-        if password.len() < 5 {
-            return Err(errors::user::InvalidPassword { password }.into());
-        }
-
-        let hashed_password = bcrypt::hash(payload.password.clone(), bcrypt::DEFAULT_COST)?;
-
         Ok(User {
             id: nanoid!(),
-            sign_up_method: SignUpMethod::Password,
+            sign_up_method: SignUpMethod::Dev,
             email: payload.email.clone(),
-            credential: hashed_password,
+            credential: "DEV_ACCOUNT".to_string(),
             first_name: payload.first_name.clone(),
             last_name: payload.last_name.clone(),
             username: payload.username.clone(),

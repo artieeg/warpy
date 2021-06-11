@@ -1,5 +1,4 @@
 use actix_web::{http::StatusCode, HttpResponse};
-use bcrypt;
 use serde_json::json;
 use std::fmt;
 
@@ -16,21 +15,6 @@ impl From<InvalidEmail> for CreateUserError {
         }
     }
 }
-
-#[derive(Debug, Clone)]
-pub struct InvalidPassword {
-    pub password: String
-}
-
-impl From<InvalidPassword> for CreateUserError {
-    fn from(e: InvalidPassword) -> Self {
-        CreateUserError {
-            status: StatusCode::BAD_REQUEST,
-            message: format!("Password {} cannot be used", e.password),
-        }
-    }
-}
-
 
 #[derive(Debug, Clone)]
 pub struct InvalidUsername {
@@ -52,15 +36,6 @@ impl From<InvalidUsername> for CreateUserError {
 pub struct CreateUserError {
     status: StatusCode,
     message: String,
-}
-
-impl From<bcrypt::BcryptError> for CreateUserError {
-    fn from(_: bcrypt::BcryptError) -> Self {
-        CreateUserError {
-            status: StatusCode::INTERNAL_SERVER_ERROR,
-            message: String::from("Password Encryption Error"),
-        }
-    }
 }
 
 impl Into<HttpResponse> for CreateUserError {

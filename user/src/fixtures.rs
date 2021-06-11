@@ -2,7 +2,7 @@ use crate::{
     context::WarpyContext,
     dao::mocks::*,
     models::{SignUpMethod, User},
-    payloads::user::CreateWithPassword,
+    payloads::user::CreateDev,
 };
 use actix_web::web;
 use rstest::*;
@@ -16,19 +16,18 @@ pub fn user_fixture() -> User {
         last_name: "Dou".to_string(),
         username: "monke".to_string(),
         avatar: "avatar.com/avatar.gif".to_string(),
-        sign_up_method: SignUpMethod::Password,
+        sign_up_method: SignUpMethod::Dev,
         email: "dou@monkecorp.com".to_string(),
-        credential: "$2y$12$uFuMl2xK5YBuXHC9x08.SenwLmZo.HcrpvPv.cB2hGhW7aXWg4mtu".to_string(),
+        credential: "DEV_ACCOUNT".to_string(),
     }
 }
 
 #[fixture]
-pub fn create_payload_fixture() -> CreateWithPassword {
-    CreateWithPassword {
+pub fn create_payload_fixture() -> CreateDev {
+    CreateDev {
         first_name: "John".to_string(),
         last_name: "Dou".to_string(),
         username: "monke".to_string(),
-        password: "test_password".to_string(),
         avatar: "avatar".to_string(),
         email: "jd@test.com".to_string(),
     }
