@@ -25,7 +25,7 @@ where
         }
     }
 
-    let user = data.user_dao.get_user(user_id).await;
+    let user = data.user_dao.get(user_id).await;
 
     if user.is_none() {
         return HttpResponse::NotFound().finish();
@@ -59,7 +59,7 @@ mod tests {
             .returning(|_| Ok(()));
 
         user_dao
-            .expect_get_user()
+            .expect_get()
             .returning(|_| Some(user_fixture()));
 
         user_dao
@@ -96,7 +96,7 @@ mod tests {
             .returning(|_| Ok(()));
 
         user_dao
-            .expect_get_user()
+            .expect_get()
             .returning(|_| Some(user_fixture()));
 
         let context = build_context(user_dao, refresh_token_dao);

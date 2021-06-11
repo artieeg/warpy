@@ -21,7 +21,7 @@ where
 
     let data = data.lock().unwrap();
 
-    match data.user_dao.del_user(user_id).await {
+    match data.user_dao.delete(user_id).await {
         Ok(_) => HttpResponse::Ok().finish(),
         Err(e) => e.into(),
     }
@@ -44,7 +44,7 @@ mod tests {
         let mut refresh_token_dao = MockRefreshTokenDAO::new();
 
         user_dao
-            .expect_del_user()
+            .expect_delete()
             .returning(|_| Err(DAOError::NotFound));
 
         refresh_token_dao.expect_del_token().returning(|_| Ok(()));
@@ -64,7 +64,7 @@ mod tests {
         let mut refresh_token_dao = MockRefreshTokenDAO::new();
 
         user_dao
-            .expect_del_user()
+            .expect_delete()
             .returning(|_| Err(DAOError::NotFound));
 
         refresh_token_dao.expect_del_token().returning(|_| Ok(()));
@@ -85,7 +85,7 @@ mod tests {
 
         refresh_token_dao.expect_del_token().returning(|_| Ok(()));
 
-        user_dao.expect_del_user().returning(|_| Ok(()));
+        user_dao.expect_delete().returning(|_| Ok(()));
 
         let context = build_context(user_dao, refresh_token_dao);
 

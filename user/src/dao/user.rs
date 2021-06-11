@@ -7,11 +7,11 @@ use async_trait::async_trait;
 
 #[async_trait]
 pub trait UserDAOExt {
-    async fn add_user(&self, user: User) -> Result<(), DAOError>;
-    async fn find_user(&self, username: &str, email: &str) -> Option<User>;
+    async fn create(&self, user: User) -> Result<(), DAOError>;
+    async fn find(&self, username: &str, email: &str) -> Option<User>;
     async fn check_username(&self, username: &str) -> Result<(), DAOError>;
-    async fn get_user(&self, id: &str) -> Option<User>;
-    async fn del_user(&self, id: &str) -> Result<(), DAOError>;
+    async fn get(&self, id: &str) -> Option<User>;
+    async fn delete(&self, id: &str) -> Result<(), DAOError>;
     async fn update(&self, updated_user: User) -> Result<(), DAOError>;
 }
 
@@ -31,7 +31,7 @@ impl UserDAO {
 
 #[async_trait]
 impl UserDAOExt for UserDAO {
-    async fn add_user(&self, user: User) -> Result<(), DAOError> {
+    async fn create(&self, user: User) -> Result<(), DAOError> {
         let collection = self.collection.as_ref().unwrap();
 
         match collection.insert_one(user, None).await {
@@ -57,7 +57,7 @@ impl UserDAOExt for UserDAO {
         }
     }
 
-    async fn find_user(&self, username: &str, email: &str) -> Option<User> {
+    async fn find(&self, username: &str, email: &str) -> Option<User> {
         let collection = self.collection.as_ref().unwrap();
 
         collection
@@ -74,7 +74,7 @@ impl UserDAOExt for UserDAO {
             .unwrap()
     }
 
-    async fn get_user(&self, id: &str) -> Option<User> {
+    async fn get(&self, id: &str) -> Option<User> {
         let collection = self.collection.as_ref().unwrap();
 
         collection
@@ -88,7 +88,7 @@ impl UserDAOExt for UserDAO {
             .unwrap()
     }
 
-    async fn del_user(&self, id: &str) -> Result<(), DAOError> {
+    async fn delete(&self, id: &str) -> Result<(), DAOError> {
         let collection = self.collection.as_ref().unwrap();
 
         let delete_result = collection

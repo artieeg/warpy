@@ -16,7 +16,7 @@ where
 
     let data = data.lock().unwrap();
 
-    match data.user_dao.get_user(user_id).await {
+    match data.user_dao.get(user_id).await {
         Some(user) => HttpResponse::Ok().json(json! ({
             "result": {
                 "user": user
@@ -40,7 +40,7 @@ mod tests {
         let refresh_token_dao = MockRefreshTokenDAO::new();
 
         user_dao
-            .expect_get_user()
+            .expect_get()
             .returning(move |_| Some(user_fixture()));
 
         let context = build_context(user_dao, refresh_token_dao);
@@ -54,7 +54,7 @@ mod tests {
         let mut user_dao = MockUserDAO::new();
         let refresh_token_dao = MockRefreshTokenDAO::new();
 
-        user_dao.expect_get_user().returning(move |_| None);
+        user_dao.expect_get().returning(move |_| None);
 
         let context = build_context(user_dao, refresh_token_dao);
         let result = route(web::Path::from("user-id".to_string()), context).await;

@@ -40,7 +40,7 @@ where
     //Check if user already exists
     let existing_user = data
         .user_dao
-        .find_user(username.as_str(), email.as_str())
+        .find(username.as_str(), email.as_str())
         .await;
 
     if let Some(existing_user) = existing_user {
@@ -65,7 +65,7 @@ where
         return e.into();
     }
 
-    match data.user_dao.add_user(user).await {
+    match data.user_dao.create(user).await {
         Ok(_) => HttpResponse::Ok().json(json! ({
             "user_id": id,
             "access": access,
@@ -88,9 +88,9 @@ mod tests {
         let mut user_dao = MockUserDAO::new();
         let mut refresh_token_dao = MockRefreshTokenDAO::new();
 
-        user_dao.expect_find_user().returning(|_, _| None);
+        user_dao.expect_find().returning(|_, _| None);
         refresh_token_dao.expect_add_token().returning(|_| Ok(()));
-        user_dao.expect_add_user().returning(|_| Ok(()));
+        user_dao.expect_create().returning(|_| Ok(()));
 
         let context = build_context(user_dao, refresh_token_dao);
         let payload = create_payload_fixture();
@@ -108,9 +108,9 @@ mod tests {
         let mut payload = create_payload_fixture();
         payload.username = "k".to_string();
 
-        user_dao.expect_find_user().returning(|_, _| Some(user_fixture()));
+        user_dao.expect_find().returning(|_, _| Some(user_fixture()));
         refresh_token_dao.expect_add_token().returning(|_| Ok(()));
-        user_dao.expect_add_user().returning(|_| Ok(()));
+        user_dao.expect_create().returning(|_| Ok(()));
 
         let context = build_context(user_dao, refresh_token_dao);
         let resp = route(web::Json(payload), context).await;
@@ -125,9 +125,9 @@ mod tests {
         let mut user_dao = MockUserDAO::new();
         let mut refresh_token_dao = MockRefreshTokenDAO::new();
 
-        user_dao.expect_find_user().returning(|_, _| Some(user_fixture()));
+        user_dao.expect_find().returning(|_, _| Some(user_fixture()));
         refresh_token_dao.expect_add_token().returning(|_| Ok(()));
-        user_dao.expect_add_user().returning(|_| Ok(()));
+        user_dao.expect_create().returning(|_| Ok(()));
 
         let context = build_context(user_dao, refresh_token_dao);
         let resp = route(web::Json(payload), context).await;
