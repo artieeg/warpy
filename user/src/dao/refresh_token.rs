@@ -1,6 +1,6 @@
 use crate::errors::dao::*;
 use crate::models::RefreshToken;
-use mongodb::{Database, Collection};
+use mongodb::{Database, bson::doc, Collection};
 
 use async_trait::async_trait;
 
@@ -8,6 +8,7 @@ use async_trait::async_trait;
 pub trait RefreshTokenDAOExt {
     async fn add_token(&self, token: RefreshToken) -> Result<(), DAOError>;
     async fn del_token(&self, owner: &str) -> Result<(), DAOError>;
+    async fn get(&self, token: &str) -> Option<RefreshToken>;
 }
 
 pub struct RefreshTokenDAO {
@@ -39,5 +40,13 @@ impl RefreshTokenDAOExt for RefreshTokenDAO {
 
     async fn del_token(&self, owner: &str) -> Result<(), DAOError> {
         unimplemented!();
+    }
+
+    async fn get(&self, token: &str) -> Option<RefreshToken> {
+        let collection = self.collection.as_ref().unwrap();
+
+        collection.find_one(doc! {
+            "token": token
+        }, None).await.unwrap()
     }
 }

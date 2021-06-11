@@ -10,8 +10,8 @@ use std::convert::TryFrom;
 use std::sync::Mutex;
 
 fn get_tokens(user: &User) -> (String, String) {
-    let refresh = Claims::new(user, TokenType::Refresh).unwrap();
-    let access = Claims::new(user, TokenType::Access).unwrap();
+    let refresh = Claims::new(user.id.clone(), TokenType::Refresh).unwrap();
+    let access = Claims::new(user.id.clone(), TokenType::Access).unwrap();
 
     (access, refresh)
 }

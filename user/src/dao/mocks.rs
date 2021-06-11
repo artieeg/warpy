@@ -11,6 +11,7 @@ mock! {
     impl RefreshTokenDAOExt for RefreshTokenDAO {
         async fn add_token(&self, token: RefreshToken) -> Result<(), DAOError>;
         async fn del_token(&self, owner: &str) -> Result<(), DAOError>;
+        async fn get(&self, token: &str) -> Option<RefreshToken>;
     }
 }
 
