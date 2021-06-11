@@ -6,6 +6,18 @@ services:
     volumes:
     - ./dev_env/database:/data/db
 
+  streams:
+    image: rust-dev:1.51.0
+    env_file:
+      dev_env/streams.env
+    ports:
+      - "10001:10000"
+    volumes:
+      - ./streams:/streams
+      - ./streams/target/docker:/target
+    working_dir: /streams
+    command: cargo watch -x run
+
   user:
     image: rust-dev:1.51.0
     env_file:
