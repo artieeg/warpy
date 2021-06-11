@@ -1,6 +1,6 @@
 use crate::context::WarpyContext;
 use crate::dao::*;
-use crate::jwt::*;
+use claims::*;
 use crate::payloads::refresh_token::TokenRefreshPayload;
 use actix_web::{web, HttpResponse};
 use serde_json::json;

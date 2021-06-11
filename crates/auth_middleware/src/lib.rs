@@ -8,7 +8,7 @@ use actix_web::{
 use futures::future::{ok, Either, Ready};
 use std::task::{Context, Poll};
 
-use crate::jwt::Claims;
+use claims::Claims;
 
 pub struct Auth;
 

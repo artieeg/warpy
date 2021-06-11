@@ -2,8 +2,6 @@ mod context;
 mod dao;
 mod database;
 mod errors;
-mod jwt;
-mod middlewares;
 mod models;
 mod payloads;
 mod routes;

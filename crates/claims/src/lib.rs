@@ -1,4 +1,3 @@
-use crate::models::User;
 use jsonwebtoken::{decode, encode, errors::Error, DecodingKey, EncodingKey, Header, Validation};
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
@@ -86,5 +85,13 @@ impl Into<JWTError> for Error {
 impl Into<HttpResponse> for JWTError {
     fn into(self) -> HttpResponse {
         HttpResponse::Forbidden().finish()        
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn it_works() {
+        assert_eq!(2 + 2, 4);
     }
 }

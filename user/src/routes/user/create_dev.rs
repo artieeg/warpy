@@ -1,7 +1,7 @@
 use crate::context::WarpyContext;
 use crate::dao::*;
 use crate::errors::user::UserAlreadyExistsError;
-use crate::jwt::{Claims, TokenType};
+use claims::{Claims, TokenType};
 use crate::models::{RefreshToken, User};
 use crate::payloads::user;
 use actix_web::{web, HttpResponse};

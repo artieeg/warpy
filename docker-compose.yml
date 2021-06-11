@@ -13,6 +13,7 @@ services:
     ports:
       - "10001:10000"
     volumes:
+      - ./crates:/crates
       - ./streams:/streams
       - ./streams/target/docker:/target
     working_dir: /streams
@@ -25,6 +26,7 @@ services:
     ports:
       - "10000:10000"
     volumes:
+      - ./crates:/crates
       - ./user:/user
       - ./user/target/docker:/target
     working_dir: /user

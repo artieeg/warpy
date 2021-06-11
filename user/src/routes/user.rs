@@ -7,7 +7,7 @@ mod update;
 
 use crate::dao::refresh_token::*;
 use crate::dao::user::*;
-use crate::middlewares::Auth;
+use auth_middleware::Auth;
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.route(
