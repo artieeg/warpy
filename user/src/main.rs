@@ -1,18 +1,18 @@
 mod context;
+mod dao;
+mod database;
 mod errors;
 mod jwt;
 mod middlewares;
 mod models;
 mod payloads;
 mod routes;
-mod dao;
-mod database;
 
 #[cfg(test)]
 mod fixtures;
 
-use database::Database;
 use context::WarpyContext;
+use database::Database;
 
 use actix_web::{web, App, HttpServer};
 use std::sync::Mutex;
@@ -32,9 +32,9 @@ async fn main() -> std::io::Result<()> {
             .app_data(data.clone())
             .data(data.clone())
             .configure(routes::user::config)
+            .configure(routes::token_refresh::config)
     })
     .bind(format!("0.0.0.0:{}", port))?
     .run()
     .await
 }
-

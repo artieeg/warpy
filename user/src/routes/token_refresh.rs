@@ -6,7 +6,7 @@ use actix_web::{web, HttpResponse};
 use serde_json::json;
 use std::sync::Mutex;
 
-pub async fn route<U, R>(
+async fn route<U, R>(
     payload: web::Json<TokenRefreshPayload>,
     data: web::Data<Mutex<WarpyContext<U, R>>>,
 ) -> HttpResponse
@@ -32,8 +32,15 @@ where
         Ok(access_token) => {
             HttpResponse::Ok().json(json!({
                 "access": access_token
-            })).finish()
+            }))
         },
         Err(e) => e.into()
     }
+}
+
+pub fn config(cfg: &mut web::ServiceConfig) {
+    cfg.route(
+        "/token/refresh",
+        web::post().to(route::<UserDAO, RefreshTokenDAO>),
+    );
 }
