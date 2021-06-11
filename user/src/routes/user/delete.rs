@@ -47,7 +47,7 @@ mod tests {
             .expect_delete()
             .returning(|_| Err(DAOError::NotFound));
 
-        refresh_token_dao.expect_del_token().returning(|_| Ok(()));
+        refresh_token_dao.expect_delete().returning(|_| Ok(()));
 
         let context = build_context(user_dao, refresh_token_dao);
 
@@ -67,7 +67,7 @@ mod tests {
             .expect_delete()
             .returning(|_| Err(DAOError::NotFound));
 
-        refresh_token_dao.expect_del_token().returning(|_| Ok(()));
+        refresh_token_dao.expect_delete().returning(|_| Ok(()));
 
         let context = build_context(user_dao, refresh_token_dao);
 
@@ -83,7 +83,7 @@ mod tests {
         let mut user_dao = MockUserDAO::new();
         let mut refresh_token_dao = MockRefreshTokenDAO::new();
 
-        refresh_token_dao.expect_del_token().returning(|_| Ok(()));
+        refresh_token_dao.expect_delete().returning(|_| Ok(()));
 
         user_dao.expect_delete().returning(|_| Ok(()));
 

@@ -58,7 +58,7 @@ where
     //Save refresh token to the DB
     if let Err(e) = data
         .refresh_token_dao
-        .add_token(RefreshToken::new(&id, &refresh))
+        .create(RefreshToken::new(&id, &refresh))
         .await
     {
         //Return an error if any
@@ -89,7 +89,7 @@ mod tests {
         let mut refresh_token_dao = MockRefreshTokenDAO::new();
 
         user_dao.expect_find().returning(|_, _| None);
-        refresh_token_dao.expect_add_token().returning(|_| Ok(()));
+        refresh_token_dao.expect_create().returning(|_| Ok(()));
         user_dao.expect_create().returning(|_| Ok(()));
 
         let context = build_context(user_dao, refresh_token_dao);
@@ -109,7 +109,7 @@ mod tests {
         payload.username = "k".to_string();
 
         user_dao.expect_find().returning(|_, _| Some(user_fixture()));
-        refresh_token_dao.expect_add_token().returning(|_| Ok(()));
+        refresh_token_dao.expect_create().returning(|_| Ok(()));
         user_dao.expect_create().returning(|_| Ok(()));
 
         let context = build_context(user_dao, refresh_token_dao);
@@ -126,7 +126,7 @@ mod tests {
         let mut refresh_token_dao = MockRefreshTokenDAO::new();
 
         user_dao.expect_find().returning(|_, _| Some(user_fixture()));
-        refresh_token_dao.expect_add_token().returning(|_| Ok(()));
+        refresh_token_dao.expect_create().returning(|_| Ok(()));
         user_dao.expect_create().returning(|_| Ok(()));
 
         let context = build_context(user_dao, refresh_token_dao);

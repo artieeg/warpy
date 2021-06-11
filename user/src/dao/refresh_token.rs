@@ -6,8 +6,8 @@ use async_trait::async_trait;
 
 #[async_trait]
 pub trait RefreshTokenDAOExt {
-    async fn add_token(&self, token: RefreshToken) -> Result<(), DAOError>;
-    async fn del_token(&self, owner: &str) -> Result<(), DAOError>;
+    async fn create(&self, token: RefreshToken) -> Result<(), DAOError>;
+    async fn delete(&self, owner: &str) -> Result<(), DAOError>;
     async fn get(&self, token: &str) -> Option<RefreshToken>;
 }
 
@@ -29,7 +29,7 @@ impl RefreshTokenDAO {
 
 #[async_trait]
 impl RefreshTokenDAOExt for RefreshTokenDAO {
-    async fn add_token(&self, token: RefreshToken) -> Result<(), DAOError> {
+    async fn create(&self, token: RefreshToken) -> Result<(), DAOError> {
         let collection = self.collection.as_ref().unwrap();
 
         match collection.insert_one(token, None).await {
@@ -38,7 +38,7 @@ impl RefreshTokenDAOExt for RefreshTokenDAO {
         }
     }
 
-    async fn del_token(&self, owner: &str) -> Result<(), DAOError> {
+    async fn delete(&self, owner: &str) -> Result<(), DAOError> {
         unimplemented!();
     }
 
