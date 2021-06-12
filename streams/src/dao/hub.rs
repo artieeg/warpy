@@ -1,10 +1,12 @@
-use async_trait::async_trait;
 use crate::models::Stream;
-use mongodb::{Collection, Database};
+use async_trait::async_trait;
+use futures::stream::StreamExt;
+use mongodb::{error::Result, Collection, Database};
+use serde_json::json;
 
 #[async_trait]
 pub trait HubDAOExt {
-    async fn get_all(&self) -> Option<Vec<Stream>>;
+    async fn get_all(&self) -> Vec<Stream>;
     async fn exists(&self, id: &str) -> bool;
 }
 
@@ -24,8 +26,17 @@ impl HubDAO {
 
 #[async_trait]
 impl HubDAOExt for HubDAO {
-    async fn get_all(&self) -> Option<Vec<Stream>> {
-        unimplemented!();
+    async fn get_all(&self) -> Vec<Stream> {
+        let collection = self.collection.as_ref().unwrap();
+
+        let result: Vec<Result<Stream>> =
+            collection.find(None, None).await.unwrap().collect().await;
+
+        result
+            .into_iter()
+            .filter(|r| r.is_ok())
+            .map(|r| r.unwrap())
+            .collect()
     }
 
     async fn exists(&self, id: &str) -> bool {
