@@ -376,6 +376,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "auth_middleware"
+version = "0.1.0"
+dependencies = [
+ "actix-service",
+ "actix-web",
+ "claims",
+ "futures",
+]
+
+[[package]]
 name = "autocfg"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -597,6 +607,17 @@ dependencies = [
  "num-traits",
  "time 0.1.44",
  "winapi 0.3.9",
+]
+
+[[package]]
+name = "claims"
+version = "0.1.0"
+dependencies = [
+ "actix-web",
+ "jsonwebtoken",
+ "lazy_static",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
@@ -837,6 +858,15 @@ dependencies = [
  "rustversion",
  "syn",
  "synstructure",
+]
+
+[[package]]
+name = "errors"
+version = "0.1.0"
+dependencies = [
+ "actix-web",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
@@ -2591,6 +2621,8 @@ dependencies = [
  "actix-service",
  "actix-web",
  "async-trait",
+ "auth_middleware",
+ "errors",
  "futures",
  "jsonwebtoken",
  "lapin",

@@ -19,6 +19,8 @@ actix-service = "1"
 actix-rt = "2.2.0"
 async-trait = "0.1.50"
 lapin = "1.7.1"
+errors = {path = "../crates/errors"}
+auth_middleware = {path = "../crates/auth_middleware"}
 
 [dev-dependencies]
 mockall = "0.9.1"

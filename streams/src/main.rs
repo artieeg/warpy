@@ -1,9 +1,10 @@
 mod models;
 mod dao;
+mod database;
 use actix_web;
-use dao::*;
+use database::Database;
 
 #[actix_web::main]
 async fn main() {
-    println!("Hello, world!");
+    let stream_dao = Database::connect().await;
 }
