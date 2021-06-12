@@ -1,6 +1,8 @@
 use crate::context::WarpyContext;
 use crate::dao::*;
+use crate::models::Stream;
 use crate::payloads::CreateStreamPayload;
+use serde_json::json;
 use actix_web::{web, HttpRequest, HttpResponse};
 use std::sync::Mutex;
 
@@ -13,7 +15,25 @@ where
     S: StreamDAOExt,
     H: HubDAOExt,
 {
-    HttpResponse::NotImplemented().finish()
+    let user = req.headers().get("user-id").unwrap().to_str().unwrap();
+    let data = data.lock().unwrap();
+
+    //Check if hub id is valid
+    let hub_id = payload.hub.as_str();
+    if !data.hub_dao.exists(hub_id).await {
+        return HttpResponse::BadRequest().finish();
+    }
+
+    let already_streaming = data.stream_dao.is_user_live(user).await;
+    if already_streaming {
+        return HttpResponse::Conflict().finish();
+    }
+
+    let stream = Stream::from_payload(payload.into_inner(), user);
+    match data.stream_dao.create(stream).await {
+        Ok(_) => HttpResponse::Ok().finish(),
+        Err(e) => e.into()
+    }
 }
 
 #[cfg(test)]
@@ -36,7 +56,7 @@ mod tests {
         let mut hub_dao = MockHubDAO::new();
 
         hub_dao.expect_exists().returning(|_| true);
-        stream_dao.expect_is_user_live().returning(|_| true);
+        stream_dao.expect_is_user_live().returning(|_| false);
         stream_dao.expect_create().returning(|_| Ok(()));
 
         let context = build_context(stream_dao, hub_dao);
