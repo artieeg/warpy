@@ -1,11 +1,15 @@
 use crate::dao::*;
 
-pub struct WarpyContext<S: StreamDAOExt> {
+pub struct WarpyContext<S: StreamDAOExt, H: HubDAOExt> {
     pub stream_dao: S,
+    pub hub_dao: S,
 }
 
-impl<S: StreamDAOExt> WarpyContext<S> {
-    pub fn create(stream_dao: S) -> Self {
-        Self { stream_dao }
+impl<S: StreamDAOExt, H: HubDAOExt> WarpyContext<S, H> {
+    pub fn create(stream_dao: S, hub_dao: H) -> Self {
+        Self {
+            stream_dao,
+            hub_dao,
+        }
     }
 }

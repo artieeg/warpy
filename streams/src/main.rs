@@ -11,8 +11,8 @@ use std::sync::Mutex;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let stream_dao = Database::connect().await;
-    let context = WarpyContext::create(stream_dao);
+    let (stream_dao, hub_dao) = Database::connect().await;
+    let context = WarpyContext::create(stream_dao, hub_dao);
     let data = web::Data::new(Mutex::new(context));
 
     let port = std::env::var("PORT").unwrap();
