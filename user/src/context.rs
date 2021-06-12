@@ -13,16 +13,3 @@ impl<U: UserDAOExt, R: RefreshTokenDAOExt> WarpyContext<U, R> {
         }
     }
 }
-
-/*
-impl<U: UserDAOExt + Clone, R: RefreshTokenDAOExt + Clone> Clone for Context<U, R> {
-    fn clone(&self) -> Self {
-        Self {
-            user_dao: self.user_dao.clone(),
-            refresh_token_dao: self.refresh_token_dao.clone()
-        }
-    }
-}
-*/
-
-//pub type WarpyContext = Context<UserDAO, RefreshTokenDAO>;
