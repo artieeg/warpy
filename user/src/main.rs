@@ -28,7 +28,6 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(data.clone())
-            .data(data.clone())
             .configure(routes::user::config)
             .configure(routes::token_refresh::config)
     })
