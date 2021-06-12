@@ -11,7 +11,7 @@ mock! {
         async fn create(&self, stream: Stream) -> Result<(), DAOError>;
         async fn delete(&self, id: &str) -> Result<(), DAOError>;
         async fn get(&self, id: &str) -> Option<Stream>;
-        async fn rename(&self, id: &str, name: &str) -> Option<Stream>;
+        async fn rename(&self, id: &str, name: &str) -> Result<(), DAOError>;
         async fn is_user_live(&self, user_id: &str) -> bool;
     }
 }
