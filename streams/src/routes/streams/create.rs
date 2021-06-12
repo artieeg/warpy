@@ -19,20 +19,68 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::dao::mocks::*;
+    use crate::fixtures::*;
     use actix_rt;
+    use actix_web::{http::StatusCode, test, HttpRequest};
+
+    fn get_request() -> HttpRequest {
+        test::TestRequest::post()
+            .header("user-id", "test-user-id")
+            .to_http_request()
+    }
 
     #[actix_rt::test]
     async fn create_stream_test() {
-        unimplemented!();
+        let mut stream_dao = MockStreamDAO::new();
+        let mut hub_dao = MockHubDAO::new();
+
+        hub_dao.expect_exists().returning(|_| true);
+        stream_dao.expect_is_user_live().returning(|_| true);
+        stream_dao.expect_create().returning(|_| Ok(()));
+
+        let context = build_context(stream_dao, hub_dao);
+        let req = get_request();
+        let payload = create_stream_payload_fixture();
+
+        let resp = route(req, web::Json(payload), context).await;
+
+        assert_eq!(resp.status(), StatusCode::OK);
     }
 
     #[actix_rt::test]
     async fn already_streaming_test() {
-        unimplemented!();
+        let mut stream_dao = MockStreamDAO::new();
+        let mut hub_dao = MockHubDAO::new();
+
+        hub_dao.expect_exists().returning(|_| true);
+        stream_dao.expect_is_user_live().returning(|_| true);
+        stream_dao.expect_create().returning(|_| Ok(()));
+
+        let context = build_context(stream_dao, hub_dao);
+        let req = get_request();
+        let payload = create_stream_payload_fixture();
+
+        let resp = route(req, web::Json(payload), context).await;
+
+        assert_eq!(resp.status(), StatusCode::CONFLICT);
     }
 
     #[actix_rt::test]
     async fn invalid_hub_test() {
-        unimplemented!();
+        let mut stream_dao = MockStreamDAO::new();
+        let mut hub_dao = MockHubDAO::new();
+
+        hub_dao.expect_exists().returning(|_| false);
+        stream_dao.expect_is_user_live().returning(|_| true);
+        stream_dao.expect_create().returning(|_| Ok(()));
+
+        let context = build_context(stream_dao, hub_dao);
+        let req = get_request();
+        let payload = create_stream_payload_fixture();
+
+        let resp = route(req, web::Json(payload), context).await;
+
+        assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
     }
 }

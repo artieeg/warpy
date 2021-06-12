@@ -9,6 +9,7 @@ pub trait StreamDAOExt {
     async fn delete(&self, id: &str) -> Result<(), DAOError>;
     async fn get(&self, id: &str) -> Option<Stream>;
     async fn rename(&self, id: &str, name: &str) -> Option<Stream>;
+    async fn is_user_live(&self, user_id: &str) -> bool;
 }
 
 pub struct StreamDAO {
@@ -43,4 +44,7 @@ impl StreamDAOExt for StreamDAO {
         unimplemented!();
     }
 
+    async fn is_user_live(&self, user_id: &str) -> bool {
+        unimplemented!();
+    }
 }

@@ -9,6 +9,9 @@ use context::WarpyContext;
 use database::Database;
 use std::sync::Mutex;
 
+#[cfg(test)]
+mod fixtures;
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let (stream_dao, hub_dao) = Database::connect().await;

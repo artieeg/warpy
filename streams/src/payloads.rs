@@ -2,6 +2,6 @@ use serde::Deserialize;
 
 #[derive(Deserialize)]
 pub struct CreateStreamPayload {
-    title: String,
-    hub: String,
+    pub title: String,
+    pub hub: String,
 }
