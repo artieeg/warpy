@@ -6,15 +6,13 @@ use serde_json::json;
 
 pub async fn route<U, R>(
     path: web::Path<String>,
-    data: web::Data<Mutex<WarpyContext<U, R>>>,
+    data: web::Data<WarpyContext<U, R>>,
 ) -> HttpResponse
 where
     U: UserDAOExt,
     R: RefreshTokenDAOExt,
 {
     let user_id = path.0.as_str();
-
-    let data = data.lock().unwrap();
 
     match data.user_dao.get(user_id).await {
         Some(user) => HttpResponse::Ok().json(json! ({

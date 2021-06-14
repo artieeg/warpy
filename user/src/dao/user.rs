@@ -2,6 +2,7 @@ use errors::dao::DAOError;
 use crate::models::User;
 use mongodb::bson;
 use mongodb::{bson::doc, Collection, Database};
+use actix_web::web;
 
 use async_trait::async_trait;
 

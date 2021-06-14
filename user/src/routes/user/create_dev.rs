@@ -6,7 +6,6 @@ use crate::payloads::user;
 use actix_web::{web, HttpResponse};
 use serde_json::json;
 use std::convert::TryFrom;
-use std::sync::Mutex;
 
 fn get_tokens(user: &User) -> (String, String) {
     let refresh = Claims::new(user.id.clone(), TokenType::Refresh).unwrap();
@@ -17,7 +16,7 @@ fn get_tokens(user: &User) -> (String, String) {
 
 pub async fn route<U, R>(
     payload: web::Json<user::CreateDev>,
-    data: web::Data<Mutex<WarpyContext<U, R>>>,
+    data: web::Data<WarpyContext<U, R>>,
 ) -> HttpResponse
 where
     U: UserDAOExt,
@@ -33,7 +32,6 @@ where
 
     let (access, refresh) = get_tokens(&user);
 
-    let data = data.lock().unwrap();
 
     //Check if user already exists
     if let Err(e) = data.user_dao.check_username(username.as_str()).await {

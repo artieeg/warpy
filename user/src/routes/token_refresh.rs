@@ -8,7 +8,7 @@ use std::sync::Mutex;
 
 async fn route<U, R>(
     payload: web::Json<TokenRefreshPayload>,
-    data: web::Data<Mutex<WarpyContext<U, R>>>,
+    data: web::Data<WarpyContext<U, R>>,
 ) -> HttpResponse
 where
     U: UserDAOExt,
@@ -20,8 +20,6 @@ where
         Ok(claims) => claims,
         Err(e) => return e.into(),
     };
-
-    let data = data.lock().unwrap();
 
     //If token does not exist in DB
     if data.refresh_token_dao.get(token).await.is_none() {

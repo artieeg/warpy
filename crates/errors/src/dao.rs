@@ -1,6 +1,7 @@
 use actix_web::HttpResponse;
 use serde_json::json;
 
+#[derive(Debug)]
 pub enum DAOError {
     Insert,
     Delete,

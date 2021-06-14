@@ -20,7 +20,7 @@ mock! {
     pub UserDAO {  }
     #[async_trait]
     impl UserDAOExt for UserDAO {
-        async fn create(&self, user: User) -> Result<(), DAOError>;
+        fn create(&self, user: User) -> Result<(), DAOError>;
         async fn find(&self, username: &str, email: &str) -> Option<User>;
         async fn check_username(&self, username: &str) -> Result<(), DAOError>;
         async fn get(&self, id: &str) -> Option<User>;

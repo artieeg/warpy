@@ -6,7 +6,6 @@ use crate::{
 };
 use actix_web::web;
 use rstest::*;
-use std::sync::Mutex;
 
 #[fixture]
 pub fn user_fixture() -> User {
@@ -36,9 +35,9 @@ pub fn create_payload_fixture() -> CreateDev {
 pub fn build_context(
     user_dao: MockUserDAO,
     refresh_token_dao: MockRefreshTokenDAO,
-) -> web::Data<Mutex<WarpyContext<MockUserDAO, MockRefreshTokenDAO>>> {
-    web::Data::new(Mutex::new(WarpyContext::create(
+) -> web::Data<WarpyContext<MockUserDAO, MockRefreshTokenDAO>> {
+    web::Data::new(WarpyContext::create(
         user_dao,
         refresh_token_dao,
-    )))
+    ))
 }

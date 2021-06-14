@@ -8,14 +8,13 @@ use std::sync::Mutex;
 pub async fn route<U, R>(
     req: HttpRequest,
     update: web::Json<UpdateUser>,
-    data: web::Data<Mutex<WarpyContext<U, R>>>,
+    data: web::Data<WarpyContext<U, R>>,
 ) -> HttpResponse
 where
     U: UserDAOExt,
     R: RefreshTokenDAOExt,
 {
     let user_id = req.headers().get("user-id").unwrap().to_str().unwrap();
-    let data = data.lock().unwrap();
 
     if let Some(new_username) = &update.username {
         let username_check_result = data.user_dao.check_username(new_username.as_str()).await;

@@ -6,7 +6,7 @@ use std::sync::Mutex;
 pub async fn route<U, R>(
     req: HttpRequest,
     path: web::Path<String>,
-    data: web::Data<Mutex<WarpyContext<U, R>>>,
+    data: web::Data<WarpyContext<U, R>>,
 ) -> HttpResponse
 where
     U: UserDAOExt,
@@ -18,8 +18,6 @@ where
     if auth_user_id != user_id {
         return HttpResponse::Forbidden().finish();
     }
-
-    let data = data.lock().unwrap();
 
     match data.user_dao.delete(user_id).await {
         Ok(_) => HttpResponse::Ok().finish(),
