@@ -11,35 +11,31 @@ class DevSignUpScreen extends StatefulWidget {
 class DevSignUpState extends State<DevSignUpScreen> {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => DevSignUpViewModel(),
-      child: Consumer<DevSignUpViewModel>(
-        builder: (_, model, __) => Scaffold(
-            body: Padding(
-              padding:
-                  EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 20),
-              child: Column(children: [
-                TextField(
-                    controller: model.email,
-                    decoration: InputDecoration(hintText: "E-Mail")),
-                TextField(
-                    controller: model.username,
-                    decoration: InputDecoration(hintText: "Username")),
-                TextField(
-                    controller: model.password,
-                    decoration: InputDecoration(hintText: "Password")),
-                TextField(
-                    controller: model.firstName,
-                    decoration: InputDecoration(hintText: "First name")),
-                TextField(
-                    controller: model.lastName,
-                    decoration: InputDecoration(hintText: "Last name")),
-              ]),
-            ),
-            floatingActionButton: FloatingActionButton(
-                onPressed: () => _onSignUpPressed(model),
-                child: Icon(Icons.check))),
-      ),
+    return ViewModelProvider<DevSignUpViewModel>(
+      builder: (model) => Scaffold(
+          body: Padding(
+            padding: EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 20),
+            child: Column(children: [
+              TextField(
+                  controller: model.email,
+                  decoration: InputDecoration(hintText: "E-Mail")),
+              TextField(
+                  controller: model.username,
+                  decoration: InputDecoration(hintText: "Username")),
+              TextField(
+                  controller: model.password,
+                  decoration: InputDecoration(hintText: "Password")),
+              TextField(
+                  controller: model.firstName,
+                  decoration: InputDecoration(hintText: "First name")),
+              TextField(
+                  controller: model.lastName,
+                  decoration: InputDecoration(hintText: "Last name")),
+            ]),
+          ),
+          floatingActionButton: FloatingActionButton(
+              onPressed: () => _onSignUpPressed(model),
+              child: Icon(Icons.check))),
     );
   }
 

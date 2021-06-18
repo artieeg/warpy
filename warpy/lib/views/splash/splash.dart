@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './dev_signup/dev_signup.dart';
+import '../dev_signup/dev_signup.dart';
 
 class SplashScreen extends StatelessWidget {
   void doSomeWorkAndNavigate(BuildContext context) {
