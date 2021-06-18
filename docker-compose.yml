@@ -1,17 +1,20 @@
 services:
+  ngixn:
+    image: warpy_nginx
+    ports:
+      - 9999:9999
+
   mongo:
     image: mongo:4.2
     ports:
     - 27017:27017
     volumes:
-    - ./dev_env/database:/data/db
+    - /data/warpy:/data/db
 
   streams:
     image: rust-dev:1.51.0
     env_file:
       dev_env/streams.env
-    ports:
-      - "10001:10000"
     volumes:
       - ./crates:/crates
       - ./streams:/streams
@@ -23,8 +26,6 @@ services:
     image: rust-dev:1.51.0
     env_file:
       dev_env/user.env
-    ports:
-      - "10000:10000"
     volumes:
       - ./crates:/crates
       - ./user:/user
