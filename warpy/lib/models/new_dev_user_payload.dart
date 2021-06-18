@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-class CreateDevUserPayload {
+class NewDevUserPayload {
   String firstName;
   String lastName;
   String email;
   String username;
   String avatar;
 
-  CreateDevUserPayload(
+  NewDevUserPayload(
       this.firstName, this.lastName, this.email, this.username, this.avatar);
 
   Map<String, dynamic> toMap() {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'views/views.dart';
+import 'screens/screens.dart';
 import './locator.dart';
 
 void main() {

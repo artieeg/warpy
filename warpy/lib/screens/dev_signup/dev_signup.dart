@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../viewmodel_provider.dart';
 import './dev_signup_viewmodel.dart';
 
@@ -41,7 +40,6 @@ class DevSignUpState extends State<DevSignUpScreen> {
 
   Future<void> _onSignUpPressed(DevSignUpViewModel model) async {
     await model.signUp();
-
     Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
   }
 }

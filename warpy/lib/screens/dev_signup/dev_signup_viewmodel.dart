@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:warpy/locator.dart';
+import 'package:warpy/models/new_dev_user_payload.dart';
 import 'package:warpy/services/services.dart';
 
 class DevSignUpViewModel extends ChangeNotifier {
@@ -12,8 +13,8 @@ class DevSignUpViewModel extends ChangeNotifier {
   final lastName = TextEditingController();
   final password = TextEditingController();
 
-  CreateDevUserPayload _getPayload() {
-    return CreateDevUserPayload(firstName.text, lastName.text, email.text,
+  NewDevUserPayload _getPayload() {
+    return NewDevUserPayload(firstName.text, lastName.text, email.text,
         username.text, password.text);
   }
 
@@ -22,8 +23,6 @@ class DevSignUpViewModel extends ChangeNotifier {
 
     await storageService.saveAccessToken(response.access);
     await storageService.saveRefreshToken(response.refresh);
-
-    locator<APIService>().setTokens(response.access, response.refresh);
   }
 
   @override

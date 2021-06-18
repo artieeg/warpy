@@ -17,14 +17,22 @@ class StorageService extends ChangeNotifier {
     await storage.delete(key: 'refresh');
   }
 
-  Future<String?> getAccessToken() async {
+  Future<String> getAccessToken() async {
     final result = await storage.read(key: 'access');
+
+    if (result == null) {
+      throw Exception();
+    }
 
     return result;
   }
 
-  Future<String?> getRefreshToken() async {
+  Future<String> getRefreshToken() async {
     final result = await storage.read(key: 'refresh');
+
+    if (result == null) {
+      throw Exception();
+    }
 
     return result;
   }
