@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:warpy/providers/auth_provider.dart';
+import 'package:warpy/services/auth_service.dart';
 
 class DevLoginScreen extends StatelessWidget {
   @override
@@ -9,7 +9,7 @@ class DevLoginScreen extends StatelessWidget {
         color: Theme.of(context).backgroundColor,
         child: Center(
             child: FutureBuilder<Map<String, dynamic>>(
-                future: Provider.of<AuthProvider>(context, listen: false)
+                future: Provider.of<AuthService>(context, listen: false)
                     .testGetRequest(),
                 builder: (BuildContext context,
                     AsyncSnapshot<Map<String, dynamic>> snapshot) {

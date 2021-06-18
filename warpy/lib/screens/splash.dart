@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import './dev_login.dart';
+import './dev_signup.dart';
 
 class SplashScreen extends StatelessWidget {
   void doSomeWorkAndNavigate(BuildContext context) {
     Future.delayed(Duration(milliseconds: 500), () {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => DevLoginScreen()),
+        MaterialPageRoute(builder: (context) => DevSignUpScreen()),
       );
     });
   }
