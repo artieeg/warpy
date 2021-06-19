@@ -60,7 +60,8 @@ impl AMQPClientExt for AMQPClient {
             .expect("Consuming stream.created queue");
 
         while let Some(delivery) = consume.next().await {
-            println!("delivery {:#?}", delivery);
+            let (_, delivery) = delivery.expect("error in consumer");
+            let payload = std::str::from_utf8(&delivery.data);
         }
     }
 }

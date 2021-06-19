@@ -1,6 +1,7 @@
 use actix_web::{web, App, HttpServer};
 
 mod amqp_client;
+mod amqp_handlers;
 mod context;
 mod dao;
 mod models;
