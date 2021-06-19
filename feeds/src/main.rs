@@ -8,19 +8,13 @@ mod routes;
 
 use context::WarpyContext;
 use dao::FeedDAO;
-use lapin::{Connection, ConnectionProperties};
 
 use crate::amqp_client::{AMQPClient, AMQPClientExt};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let uri = std::env::var("AMQP_URI").unwrap();
-    let connection = Connection::connect(&uri, ConnectionProperties::default())
-        .await
-        .expect("Connecting to AMQP service");
-
     let mut amqp_client = AMQPClient::new();
-    amqp_client.connect(&connection).await;
+    amqp_client.connect().await;
 
     let feed_dao = FeedDAO::new();
 

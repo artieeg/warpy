@@ -5,11 +5,10 @@ use lapin::{
     types::FieldTable,
     Channel, Connection, ConnectionProperties,
 };
-use std::sync::{Arc, RwLock};
 
 #[async_trait]
 pub trait AMQPClientExt {
-    async fn connect(&mut self, connection: &Connection);
+    async fn connect(&mut self);
     async fn on_new_stream(&mut self);
 }
 
@@ -23,25 +22,24 @@ impl AMQPClient {
         Self { channel: None }
     }
 
-    /*
     fn get_channel(&self) -> &Channel {
-        self.channel.read().unwrap().as_ref().unwrap()
+        self.channel.as_ref().unwrap()
     }
-
-    fn get_connection(&self) -> &Connection {
-        self.connection.read().unwrap().as_ref().unwrap()
-    }
-    */
 }
 
 #[async_trait]
 impl AMQPClientExt for AMQPClient {
-    async fn connect(&mut self, connection: &Connection) {
+    async fn connect(&mut self) {
+        let uri = std::env::var("AMQP_URI").unwrap();
+        let connection = Connection::connect(&uri, ConnectionProperties::default())
+            .await
+            .expect("Connecting to AMQP service");
+
         self.channel = Some(connection.create_channel().await.expect("Create channel"));
     }
 
     async fn on_new_stream(&mut self) {
-        let channel = self.channel.as_ref().unwrap();
+        let channel = self.get_channel();
         channel
             .queue_declare(
                 "stream.created",
