@@ -1,1 +1,9 @@
-pub struct Stream {  }
+use serde::{Deserialize, Serialize};
+use super::User;
+
+#[derive(Serialize, Deserialize)]
+pub struct Stream {
+    id: String,
+    user: User,
+    hub: String,
+}
