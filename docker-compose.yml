@@ -1,8 +1,11 @@
 services:
-  ngixn:
+  nginx:
     image: warpy_nginx
     ports:
       - 9999:9999
+
+  rabbitmq:
+    image: rabbitmq:3.8
 
   mongo:
     image: mongo:4.2
@@ -10,6 +13,17 @@ services:
     - 27017:27017
     volumes:
     - /data/warpy:/data/db
+
+  feeds:
+    image: rust-dev:1.51.0
+    env_file:
+      dev_env/feeds.env
+    volumes:
+      - ./crates:/crates
+      - ./feeds:/feeds
+      - ./feeds/target/docker:/target
+    working_dir: /feeds
+    command: cargo watch -x run
 
   streams:
     image: rust-dev:1.51.0
