@@ -6,10 +6,14 @@ use lapin::{
     Channel, Connection, ConnectionProperties,
 };
 
+use crate::amqp_handlers::BaseAMQPHandler;
+
 #[async_trait]
 pub trait AMQPClientExt {
     async fn connect(&mut self);
-    async fn on_new_stream(&mut self);
+    async fn on_new_stream<T>(&mut self, handler: T)
+    where
+        T: BaseAMQPHandler + Send;
 }
 
 #[derive(Clone)]
@@ -38,7 +42,10 @@ impl AMQPClientExt for AMQPClient {
         self.channel = Some(connection.create_channel().await.expect("Create channel"));
     }
 
-    async fn on_new_stream(&mut self) {
+    async fn on_new_stream<T>(&mut self, handler: T)
+    where
+        T: BaseAMQPHandler + Send,
+    {
         let channel = self.get_channel();
         channel
             .queue_declare(
@@ -60,8 +67,7 @@ impl AMQPClientExt for AMQPClient {
             .expect("Consuming stream.created queue");
 
         while let Some(delivery) = consume.next().await {
-            let (_, delivery) = delivery.expect("error in consumer");
-            let payload = std::str::from_utf8(&delivery.data);
+            handler.handle_delivery(delivery);
         }
     }
 }

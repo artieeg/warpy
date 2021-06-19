@@ -10,10 +10,12 @@ mod routes;
 use context::WarpyContext;
 use dao::FeedDAO;
 
-use crate::amqp_client::{AMQPClient, AMQPClientExt};
+use crate::{amqp_client::{AMQPClient, AMQPClientExt}, amqp_handlers::NewStreamAMQPHandler};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    let stream_handler = NewStreamAMQPHandler::new();
+
     let mut amqp_client = AMQPClient::new();
     amqp_client.connect().await;
 
@@ -32,7 +34,7 @@ async fn main() -> std::io::Result<()> {
     .bind(format!("0.0.0.0:{}", port))?;
 
     actix_web::rt::spawn(async move {
-        amqp_client.clone().on_new_stream().await;
+        amqp_client.clone().on_new_stream(stream_handler).await;
     });
 
     println!("Started feeds service on {}", port);
