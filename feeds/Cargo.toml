@@ -21,6 +21,7 @@ lapin = "1.7.1"
 auth_middleware = {path = "../crates/auth_middleware"}
 claims = {path = "../crates/claims"}
 errors = {path = "../crates/errors"}
+redis = "0.20.1"
 
 [dev-dependencies]
 mockall = "0.9.1"
