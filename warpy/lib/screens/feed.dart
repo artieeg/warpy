@@ -6,7 +6,8 @@ class FeedScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelProvider<FeedViewModel>(
         builder: (model) => Scaffold(
-            body: Center(
-                child: Container(width: 30, height: 30, color: Colors.red))));
+            body: Padding(
+                padding: EdgeInsets.all(24),
+                child: Text(model.streams.toString()))));
   }
 }

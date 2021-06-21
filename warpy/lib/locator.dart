@@ -11,4 +11,5 @@ void setupLocator() {
   locator.registerLazySingleton<SignUpService>(() => SignUpService());
   locator.registerLazySingleton<DevSignUpViewModel>(() => DevSignUpViewModel());
   locator.registerLazySingleton<FeedViewModel>(() => FeedViewModel());
+  locator.registerLazySingleton<FeedService>(() => FeedService());
 }
