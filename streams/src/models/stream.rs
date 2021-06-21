@@ -4,7 +4,7 @@ use crate::payloads::CreateStreamPayload;
 use nanoid::nanoid;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Stream {
     pub id: String,
     pub owner: String,

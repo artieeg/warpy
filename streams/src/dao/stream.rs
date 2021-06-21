@@ -1,6 +1,7 @@
 use crate::models::Stream;
 use async_trait::async_trait;
 use errors::dao::DAOError;
+use futures::stream::StreamExt;
 use mongodb::{bson::doc, Collection, Database};
 
 #[async_trait]
@@ -23,6 +24,25 @@ impl StreamDAO {
 
     pub async fn connect(&mut self, db: &Database) {
         self.collection = Some(db.collection_with_type::<Stream>("streams"));
+    }
+
+    //Temporary dev function until feeds service is ready
+    pub async fn dev_get_feed(&self) -> Vec<Stream> {
+        let result: Vec<mongodb::error::Result<Stream>> = self
+            .collection
+            .as_ref()
+            .unwrap()
+            .find(doc! {}, None)
+            .await
+            .unwrap()
+            .collect()
+            .await;
+
+        result
+            .iter()
+            .filter(|i| i.is_ok())
+            .map(|i| i.as_ref().unwrap().clone())
+            .collect()
     }
 }
 
@@ -57,21 +77,29 @@ impl StreamDAOExt for StreamDAO {
     async fn get(&self, id: &str) -> Option<Stream> {
         let collection = self.collection.as_ref().unwrap();
 
-        collection.find_one(doc! {
-            "id": id
-        }, None).await.unwrap()
+        collection
+            .find_one(
+                doc! {
+                    "id": id
+                },
+                None,
+            )
+            .await
+            .unwrap()
     }
 
     async fn rename(&self, id: &str, name: &str) -> Result<(), DAOError> {
         let collection = self.collection.as_ref().unwrap();
 
-        let update_result = collection.update_one(
-            doc! {"id": id},
-            doc! {"$set": doc! {
-                "name": name
-            }},
-            None,
-        ).await;
+        let update_result = collection
+            .update_one(
+                doc! {"id": id},
+                doc! {"$set": doc! {
+                    "name": name
+                }},
+                None,
+            )
+            .await;
 
         match update_result {
             Ok(result) => {
@@ -80,17 +108,24 @@ impl StreamDAOExt for StreamDAO {
                 } else {
                     Ok(())
                 }
-            },
-            Err(_) => Err(DAOError::Update)
+            }
+            Err(_) => Err(DAOError::Update),
         }
     }
 
     async fn is_user_live(&self, user_id: &str) -> bool {
         let collection = self.collection.as_ref().unwrap();
 
-        collection.find_one(Some(doc! {
-            "owner": user_id,
-            "live": true
-        }), None).await.unwrap().is_some()
+        collection
+            .find_one(
+                Some(doc! {
+                    "owner": user_id,
+                    "live": true
+                }),
+                None,
+            )
+            .await
+            .unwrap()
+            .is_some()
     }
 }
