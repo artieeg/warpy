@@ -3,8 +3,8 @@ use super::User;
 
 #[derive(Serialize, Deserialize)]
 pub struct Stream {
-    id: String,
-    user: User,
-    hub: String,
-    created_at: u128
+    pub id: String,
+    pub user: User,
+    pub hub: String,
+    pub created_at: u128
 }
