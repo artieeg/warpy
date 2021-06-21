@@ -1,14 +1,17 @@
-use serde::{Serialize, Deserialize};
+use std::time::{SystemTime, UNIX_EPOCH};
+
 use crate::payloads::CreateStreamPayload;
 use nanoid::nanoid;
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Stream {
-    pub id: String, 
+    pub id: String,
     pub owner: String,
     pub hub: String,
     pub live: bool,
-    pub title: String
+    pub title: String,
+    pub created_at: u128,
 }
 
 impl Stream {
@@ -19,6 +22,10 @@ impl Stream {
             hub: payload.hub,
             title: payload.title,
             live: true,
+            created_at: SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_millis(),
         }
     }
 }
