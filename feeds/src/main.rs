@@ -10,10 +10,12 @@ mod routes;
 use context::WarpyContext;
 use dao::FeedDAO;
 
-use crate::{amqp_client::{AMQPClient, AMQPClientExt}, amqp_handlers::NewStreamAMQPHandler};
+use crate::{amqp_client::{AMQPClient, AMQPClientExt}, amqp_handlers::NewStreamAMQPHandler, dao::{FeedCandidateDAO, FeedCandidateDAOExt}};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    let mut feed_candidate = FeedCandidateDAO::new();
+    feed_candidate.connect().await;
     let stream_handler = NewStreamAMQPHandler::new();
 
     let mut amqp_client = AMQPClient::new();

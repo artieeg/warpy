@@ -4,6 +4,9 @@ services:
     ports:
       - 9999:9999
 
+  redis:
+    image: redis:6.2.4-alpine
+
   rabbitmq:
     image: rabbitmq:3.8
 
