@@ -6,6 +6,9 @@ use mongodb::{bson::doc, Collection, Database};
 
 #[async_trait]
 pub trait StreamDAOExt {
+    //Temporary dev function until feeds service is ready
+    async fn dev_get_feed(&self) -> Vec<Stream>;
+
     async fn create(&self, stream: Stream) -> Result<(), DAOError>;
     async fn delete(&self, id: &str) -> Result<(), DAOError>;
     async fn get(&self, id: &str) -> Option<Stream>;
@@ -25,9 +28,12 @@ impl StreamDAO {
     pub async fn connect(&mut self, db: &Database) {
         self.collection = Some(db.collection_with_type::<Stream>("streams"));
     }
+}
 
+#[async_trait]
+impl StreamDAOExt for StreamDAO {
     //Temporary dev function until feeds service is ready
-    pub async fn dev_get_feed(&self) -> Vec<Stream> {
+    async fn dev_get_feed(&self) -> Vec<Stream> {
         let result: Vec<mongodb::error::Result<Stream>> = self
             .collection
             .as_ref()
@@ -44,10 +50,7 @@ impl StreamDAO {
             .map(|i| i.as_ref().unwrap().clone())
             .collect()
     }
-}
 
-#[async_trait]
-impl StreamDAOExt for StreamDAO {
     async fn create(&self, stream: Stream) -> Result<(), DAOError> {
         let collection = self.collection.as_ref().unwrap();
 

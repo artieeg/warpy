@@ -2,7 +2,6 @@ use crate::context::WarpyContext;
 use crate::dao::*;
 use crate::models::Stream;
 use crate::payloads::CreateStreamPayload;
-use serde_json::json;
 use actix_web::{web, HttpRequest, HttpResponse};
 use std::sync::Mutex;
 

@@ -26,6 +26,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(data.clone())
             .configure(routes::streams::config)
             .configure(routes::hubs::config)
+            .configure(routes::feed::config)
     })
     .bind(format!("0.0.0.0:{}", port))?
     .run()
