@@ -6,4 +6,5 @@ pub struct Stream {
     id: String,
     user: User,
     hub: String,
+    created_at: u128
 }
