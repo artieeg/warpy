@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../viewmodel_provider.dart';
-import './splash_viewmodel.dart';
+import 'package:warpy/viewmodels/viewmodels.dart';
 import 'package:warpy/locator.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -9,7 +8,7 @@ class SplashScreen extends StatelessWidget {
   Future<void> _onStart(BuildContext context) async {
     try {
       await model.initializeAPI();
-      print("session exists");
+      Navigator.pushNamed(context, "/feed");
     } catch (e) {
       Navigator.pushNamed(context, "/signup/dev");
     }

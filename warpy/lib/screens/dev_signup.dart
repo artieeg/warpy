@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../viewmodel_provider.dart';
-import './dev_signup_viewmodel.dart';
+import 'package:warpy/viewmodels/viewmodels.dart';
 
 class DevSignUpScreen extends StatefulWidget {
   @override

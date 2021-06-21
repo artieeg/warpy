@@ -16,12 +16,20 @@ class APIService {
     _refreshToken = refresh;
   }
 
-  Future<NewUserResponse> createDevUser(NewDevUserPayload payload) async {
-    var url = Uri.parse(Constants.WARPY_API + 'user/dev');
+  Uri _getUri(String resource) {
+    return Uri.parse(Constants.WARPY_API + resource);
+  }
 
-    var response = await _client.post(url, body: payload.toJson(), headers: {
-      'Content-Type': 'application/json',
-    });
+  Future<List<Map<String, dynamic>>> getStreams() async {
+    var url = _getUri("feed");
+    var response = await _client.get(url, headers: _getHeaders());
+    return jsonDecode(response.body)['streams'];
+  }
+
+  Future<NewUserResponse> createDevUser(NewDevUserPayload payload) async {
+    var url = _getUri("user/dev");
+
+    var response = await _client.post(url, body: payload.toJson(), headers: _getHeaders());
     print(response.body);
     print(response.statusCode);
     print(response.headers);
@@ -34,7 +42,7 @@ class APIService {
     }
   }
 
-  Map<String, dynamic> _getHeaders() {
+  Map<String, String> _getHeaders() {
     return {"authorization": _accessToken};
   }
 }

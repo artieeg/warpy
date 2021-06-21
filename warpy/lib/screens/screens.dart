@@ -1,2 +1,3 @@
-export './dev_signup/dev_signup.dart';
-export './splash/splash.dart';
+export './dev_signup.dart';
+export './splash.dart';
+export './feed.dart';

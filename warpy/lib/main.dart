@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
         routes: {
           "/": (_) => SplashScreen(),
           "/signup/dev": (_) => DevSignUpScreen(),
+          "/feed": (_) => FeedScreen(),
         });
   }
 }
