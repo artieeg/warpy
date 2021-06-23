@@ -24,9 +24,9 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(data.clone())
+            .configure(routes::feed::config)
             .configure(routes::streams::config)
             .configure(routes::hubs::config)
-            .configure(routes::feed::config)
     })
     .bind(format!("0.0.0.0:{}", port))?
     .run()

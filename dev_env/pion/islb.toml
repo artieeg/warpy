@@ -1,0 +1,17 @@
+[global]
+pprof = ":6061"
+dc = "dc1"
+
+[log]
+level = "info"
+
+[nats]
+url = "nats://nats:4222"
+
+[node]
+nid = "islb01"
+
+[redis]
+addrs = [":6379"]
+password = ""
+db = 1

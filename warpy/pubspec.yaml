@@ -17,6 +17,7 @@ dependencies:
   stacked: ^2.1.8
   flutter_secure_storage: ^4.2.0
   get_it: ^7.1.3
+  video_player: ^2.1.6
 
 dev_dependencies:
   flutter_test:
