@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:flutter_ion/flutter_ion.dart' as ion;
 
 class NewStream extends StatefulWidget {
   @override
@@ -7,8 +8,9 @@ class NewStream extends StatefulWidget {
 }
 
 class _NewStreamState extends State<NewStream> {
-  late MediaStream localStream;
+  //late MediaStream localStream;
   final localRenderer = RTCVideoRenderer();
+  late ion.LocalStream localStream;
 
   @override
   void initState() {
@@ -18,24 +20,10 @@ class _NewStreamState extends State<NewStream> {
 
   void initLocalRenderer() async {
     await localRenderer.initialize();
+    ion.LocalStream localStream = await ion.LocalStream.getUserMedia(
+        constraints: ion.Constraints.defaults..simulcast = true);
 
-    final mediaConstraints = <String, dynamic>{
-      'audio': false,
-      'video': {
-        'mandatory': {
-          'minWidth': '720',
-          'minHeight': '1080',
-          'minFrameRate': '24',
-        },
-        'facingMode': 'user',
-        'optional': [],
-      }
-    };
-
-    var stream = await navigator.mediaDevices.getUserMedia(mediaConstraints);
-    localStream = stream;
-    localRenderer.srcObject = localStream;
-
+    localRenderer.srcObject = localStream.stream;
     setState(() {});
   }
 
@@ -56,7 +44,6 @@ class _NewStreamState extends State<NewStream> {
 
   @override
   void dispose() {
-    localStream.dispose();
     localRenderer.dispose();
 
     super.dispose();
