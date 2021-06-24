@@ -6,12 +6,12 @@ dc = "dc1"
 level = "info"
 
 [nats]
-url = "nats://nats:4222"
+url = "nats://warpy_nats_1:4222"
 
 [node]
 nid = "islb01"
 
 [redis]
-addrs = ["redis:6379"]
+addrs = ["warpy_redis_1:6379"]
 password = ""
 db = 1

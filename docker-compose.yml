@@ -7,11 +7,66 @@ services:
       - 8222:8222
 
   islb:
-    image: warpy-ion-islb 
-    ports:
-      - 6061:6061/tcp
+    image: warpy-ion-islb
+    build:
+      dockerfile: ./docker/islb.Dockerfile
+      context: ./ion
     volumes:
     - ./dev_env/pion/islb.toml:/configs/islb.toml
+    depends_on:
+      - nats
+      - redis
+
+  sfu:
+    image: warpy-ion-sfu
+    build:
+      dockerfile: ./docker/sfu.Dockerfile
+      context: ./ion
+    volumes:
+      - ./dev_env/pion/sfu.toml:/configs/sfu.toml
+    ports:
+      - "5000:5000/udp"
+      - 3478:3478
+    depends_on:
+      - nats
+      - islb
+
+  avp:
+    image: warpy-ion-avp
+    build:
+      dockerfile: ./docker/avp.Dockerfile
+      context: ./ion
+    volumes:
+      - ./dev_env/pion/avp.toml:/configs/avp.toml
+      - "./out:/out/"
+    depends_on:
+      - nats
+      - islb
+
+  signal:
+    image: warpy_signal_1
+    build:
+      dockerfile: ./docker/signal.Dockerfile
+      context: ./ion
+    volumes:
+      - ./dev_env/pion/signal.toml:/configs/signal.toml
+    ports:
+      - 5551:5551
+    depends_on:
+      - islb
+      - biz
+
+  biz:
+    image: warpy_ion_biz
+    build:
+      dockerfile: ./docker/app-biz.Dockerfile
+      context: ./ion
+    volumes:
+      - ./biz:/apps/biz/
+      - ./dev_env/pion/app-biz.toml:/configs/app-biz.toml
+    depends_on:
+      - nats
+      - islb
 
   nginx:
     image: warpy_nginx
