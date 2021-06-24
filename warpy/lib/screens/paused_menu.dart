@@ -21,9 +21,12 @@ class PausedMenuScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     renderPausedText(context),
-                    RoundTextButton("Start a stream"),
+                    RoundTextButton("Start a stream",
+                        onTap: () =>
+                            Navigator.of(context).pushNamed("/stream/new")),
                     const SizedBox(height: 16),
-                    RoundTextButton("Resume", opaque: true)
+                    RoundTextButton("Resume",
+                        opaque: true, onTap: () => Navigator.of(context).pop())
                   ]),
             ),
           ),
