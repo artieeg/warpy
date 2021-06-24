@@ -13,12 +13,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
-          backgroundColor: Colors.white,
-          textTheme: TextTheme(
-              button:  TextStyle(fontSize: 16, color: Colors.white)
-          )
-        ),
+            primarySwatch: Colors.blue,
+            backgroundColor: Colors.white,
+            textTheme: TextTheme(
+                headline1: TextStyle(
+                    fontSize: 64,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
+                button: TextStyle(fontSize: 16, color: Colors.white))),
         onGenerateRoute: (settings) {},
         routes: {
           "/": (_) => SplashScreen(),

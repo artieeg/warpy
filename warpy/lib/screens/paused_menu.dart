@@ -20,6 +20,7 @@ class PausedMenuScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    renderPausedText(context),
                     RoundTextButton("Start a stream"),
                     const SizedBox(height: 16),
                     RoundTextButton("Resume", opaque: true)
@@ -27,5 +28,13 @@ class PausedMenuScreen extends StatelessWidget {
             ),
           ),
         ));
+  }
+
+  Expanded renderPausedText(BuildContext context) {
+    return Expanded(
+      child: Center(
+        child: Text("Paused", style: Theme.of(context).textTheme.headline1),
+      ),
+    );
   }
 }
