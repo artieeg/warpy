@@ -12,6 +12,6 @@ url = "nats://nats:4222"
 nid = "islb01"
 
 [redis]
-addrs = [":6379"]
+addrs = ["redis:6379"]
 password = ""
 db = 1

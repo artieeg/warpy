@@ -6,6 +6,13 @@ services:
       - 6222:6222 
       - 8222:8222
 
+  islb:
+    image: warpy-ion-islb 
+    ports:
+      - 6061:6061/tcp
+    volumes:
+    - ./dev_env/pion/islb.toml:/configs/islb.toml
+
   nginx:
     image: warpy_nginx
     ports:
