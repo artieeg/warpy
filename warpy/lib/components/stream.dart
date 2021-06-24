@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class Stream extends StatefulWidget {
+  Function onTap;
+
+  Stream({required this.onTap});
+
   @override
   _StreamState createState() => _StreamState();
 }
@@ -24,12 +28,17 @@ class _StreamState extends State<Stream> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return FittedBox(
-      fit: BoxFit.cover,
-      child: SizedBox(
-          width: size.width,
-          height: size.height,
-          child: VideoPlayer(_controller)),
+    return GestureDetector(
+      onTap: () {
+        widget.onTap();
+      },
+      child: FittedBox(
+        fit: BoxFit.cover,
+        child: SizedBox(
+            width: size.width,
+            height: size.height,
+            child: VideoPlayer(_controller)),
+      ),
     );
   }
 

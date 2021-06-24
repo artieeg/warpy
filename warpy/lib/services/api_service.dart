@@ -29,7 +29,9 @@ class APIService {
   Future<NewUserResponse> createDevUser(NewDevUserPayload payload) async {
     var url = _getUri("user/dev");
 
-    var response = await _client.post(url, body: payload.toJson(), headers: _getHeaders());
+    var response = await _client.post(url, body: payload.toJson(), headers: {
+      "content-type": "application/json"
+    });
     print(response.body);
     print(response.statusCode);
     print(response.headers);
