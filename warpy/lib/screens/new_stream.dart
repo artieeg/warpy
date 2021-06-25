@@ -27,31 +27,34 @@ class _NewStreamState extends State<NewStream> {
       model: model,
       builder: (model) => Scaffold(
           body: Stack(
-        children: [
-          FittedBox(
-              fit: BoxFit.cover,
-              child: SizedBox(
-                  width: size.width,
-                  height: size.height,
-                  child: RTCVideoView(model.localRenderer,
-                      mirror: true,
-                      objectFit:
-                          RTCVideoViewObjectFit.RTCVideoViewObjectFitCover))),
-          SizedBox.expand(
-              child: Container(
-                  color: Color.fromRGBO(1, 26, 40, 0.4),
-                  child: Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          StreamTitleInput(
-                              controller: model.streamTitleController),
-                          RoundTextButton("Go Live", onTap: model.goLive)
-                        ],
-                      ))))
-        ],
+        children: [renderVideo(size, model), renderOverlay(model)],
       )),
     );
+  }
+
+  SizedBox renderOverlay(NewStreamViewModel model) {
+    return SizedBox.expand(
+        child: Container(
+            color: Color.fromRGBO(1, 26, 40, 0.4),
+            child: Padding(
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    StreamTitleInput(controller: model.streamTitleController),
+                    RoundTextButton("Go Live", onTap: model.goLive)
+                  ],
+                ))));
+  }
+
+  FittedBox renderVideo(Size size, NewStreamViewModel model) {
+    return FittedBox(
+        fit: BoxFit.cover,
+        child: SizedBox(
+            width: size.width,
+            height: size.height,
+            child: RTCVideoView(model.localRenderer,
+                mirror: true,
+                objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover)));
   }
 }
