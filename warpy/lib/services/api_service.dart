@@ -26,12 +26,18 @@ class APIService {
     return jsonDecode(response.body)['streams'];
   }
 
+  Future<String> createStream(String title, String hub) async {
+    var url = _getUri("stream");
+    var response = await _client.post(url, headers: _getHeaders());
+
+    return jsonDecode(response.body)["stream_id"];
+  }
+
   Future<NewUserResponse> createDevUser(NewDevUserPayload payload) async {
     var url = _getUri("user/dev");
 
-    var response = await _client.post(url, body: payload.toJson(), headers: {
-      "content-type": "application/json"
-    });
+    var response = await _client.post(url,
+        body: payload.toJson(), headers: {"content-type": "application/json"});
     print(response.body);
     print(response.statusCode);
     print(response.headers);

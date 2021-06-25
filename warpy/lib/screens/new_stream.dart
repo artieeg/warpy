@@ -45,8 +45,9 @@ class _NewStreamState extends State<NewStream> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          StreamTitleInput(),
-                          RoundTextButton("Go Live", onTap: () {})
+                          StreamTitleInput(
+                              controller: model.streamTitleController),
+                          RoundTextButton("Go Live", onTap: model.goLive)
                         ],
                       ))))
         ],
