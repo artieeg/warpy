@@ -4,6 +4,7 @@ use crate::models::Stream;
 use crate::payloads::CreateStreamPayload;
 use actix_web::{web, HttpRequest, HttpResponse};
 use std::sync::Mutex;
+use serde_json::json;
 
 pub async fn route<S, H>(
     req: HttpRequest,
@@ -30,7 +31,9 @@ where
 
     let stream = Stream::from_payload(payload.into_inner(), user);
     match data.stream_dao.create(stream).await {
-        Ok(_) => HttpResponse::Ok().finish(),
+        Ok(id) => HttpResponse::Ok().json(json!({
+            "stream_id": id
+        })),
         Err(e) => e.into()
     }
 }

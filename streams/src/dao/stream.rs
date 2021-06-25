@@ -9,7 +9,7 @@ pub trait StreamDAOExt {
     //Temporary dev function until feeds service is ready
     async fn dev_get_feed(&self) -> Vec<Stream>;
 
-    async fn create(&self, stream: Stream) -> Result<(), DAOError>;
+    async fn create(&self, stream: Stream) -> Result<String, DAOError>;
     async fn delete(&self, id: &str) -> Result<(), DAOError>;
     async fn get(&self, id: &str) -> Option<Stream>;
     async fn rename(&self, id: &str, name: &str) -> Result<(), DAOError>;
@@ -51,11 +51,12 @@ impl StreamDAOExt for StreamDAO {
             .collect()
     }
 
-    async fn create(&self, stream: Stream) -> Result<(), DAOError> {
+    async fn create(&self, stream: Stream) -> Result<String, DAOError> {
         let collection = self.collection.as_ref().unwrap();
+        let id = stream.id.clone();
 
         match collection.insert_one(stream, None).await {
-            Ok(_) => Ok(()),
+            Ok(_) => Ok(id),
             Err(_) => Err(DAOError::Insert),
         }
     }

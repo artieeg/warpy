@@ -8,7 +8,7 @@ mock! {
     pub StreamDAO {  }
     #[async_trait]
     impl StreamDAOExt for StreamDAO {
-        async fn create(&self, stream: Stream) -> Result<(), DAOError>;
+        async fn create(&self, stream: Stream) -> Result<String, DAOError>;
         async fn delete(&self, id: &str) -> Result<(), DAOError>;
         async fn get(&self, id: &str) -> Option<Stream>;
         async fn rename(&self, id: &str, name: &str) -> Result<(), DAOError>;
