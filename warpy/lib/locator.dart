@@ -10,6 +10,7 @@ void setupLocator() {
   locator.registerSingleton<SplashViewModel>(SplashViewModel());
   locator.registerLazySingleton<SignUpService>(() => SignUpService());
   locator.registerLazySingleton<DevSignUpViewModel>(() => DevSignUpViewModel());
+  locator.registerLazySingleton<NewStreamViewModel>(() => NewStreamViewModel());
   locator.registerLazySingleton<FeedViewModel>(() => FeedViewModel());
   locator.registerLazySingleton<FeedService>(() => FeedService());
 }

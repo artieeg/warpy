@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:flutter_ion/flutter_ion.dart' as ion;
+import 'package:warpy/viewmodels/viewmodels.dart';
+
+import '../locator.dart';
 
 class NewStream extends StatefulWidget {
   @override
@@ -8,44 +10,28 @@ class NewStream extends StatefulWidget {
 }
 
 class _NewStreamState extends State<NewStream> {
-  //late MediaStream localStream;
-  final localRenderer = RTCVideoRenderer();
-  late ion.LocalStream localStream;
-
   @override
   void initState() {
     super.initState();
-    initLocalRenderer();
-  }
+    var model = locator<NewStreamViewModel>();
 
-  void initLocalRenderer() async {
-    await localRenderer.initialize();
-    ion.LocalStream localStream = await ion.LocalStream.getUserMedia(
-        constraints: ion.Constraints.defaults..simulcast = true);
-
-    localRenderer.srcObject = localStream.stream;
-    setState(() {});
+    model.initLocalRenderer();
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Scaffold(
-        body: FittedBox(
-            fit: BoxFit.cover,
-            child: SizedBox(
-                width: size.width,
-                height: size.height,
-                child: RTCVideoView(localRenderer,
-                    mirror: true,
-                    objectFit:
-                        RTCVideoViewObjectFit.RTCVideoViewObjectFitCover))));
-  }
-
-  @override
-  void dispose() {
-    localRenderer.dispose();
-
-    super.dispose();
+    return ViewModelProvider<NewStreamViewModel>(
+      builder: (model) => Scaffold(
+          body: FittedBox(
+              fit: BoxFit.cover,
+              child: SizedBox(
+                  width: size.width,
+                  height: size.height,
+                  child: RTCVideoView(model.localRenderer,
+                      mirror: true,
+                      objectFit:
+                          RTCVideoViewObjectFit.RTCVideoViewObjectFitCover)))),
+    );
   }
 }
