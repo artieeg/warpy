@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:warpy/components/components.dart';
 import 'package:warpy/viewmodels/viewmodels.dart';
 
 import '../locator.dart';
@@ -10,10 +11,11 @@ class NewStream extends StatefulWidget {
 }
 
 class _NewStreamState extends State<NewStream> {
+  var model = locator<NewStreamViewModel>();
+
   @override
   void initState() {
     super.initState();
-    var model = locator<NewStreamViewModel>();
 
     model.initLocalRenderer();
   }
@@ -22,8 +24,11 @@ class _NewStreamState extends State<NewStream> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return ViewModelProvider<NewStreamViewModel>(
+      model: model,
       builder: (model) => Scaffold(
-          body: FittedBox(
+          body: Stack(
+        children: [
+          FittedBox(
               fit: BoxFit.cover,
               child: SizedBox(
                   width: size.width,
@@ -31,7 +36,21 @@ class _NewStreamState extends State<NewStream> {
                   child: RTCVideoView(model.localRenderer,
                       mirror: true,
                       objectFit:
-                          RTCVideoViewObjectFit.RTCVideoViewObjectFitCover)))),
+                          RTCVideoViewObjectFit.RTCVideoViewObjectFitCover))),
+          SizedBox.expand(
+              child: Container(
+                  color: Color.fromRGBO(1, 26, 40, 0.4),
+                  child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          StreamTitleInput(),
+                          RoundTextButton("Go Live", onTap: () {})
+                        ],
+                      ))))
+        ],
+      )),
     );
   }
 }

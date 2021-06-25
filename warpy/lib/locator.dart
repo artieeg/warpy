@@ -7,10 +7,11 @@ GetIt locator = GetIt.instance;
 void setupLocator() {
   locator.registerSingleton<APIService>(APIService());
   locator.registerSingleton<StorageService>(StorageService());
-  locator.registerSingleton<SplashViewModel>(SplashViewModel());
   locator.registerLazySingleton<SignUpService>(() => SignUpService());
-  locator.registerLazySingleton<DevSignUpViewModel>(() => DevSignUpViewModel());
-  locator.registerLazySingleton<NewStreamViewModel>(() => NewStreamViewModel());
   locator.registerLazySingleton<FeedViewModel>(() => FeedViewModel());
   locator.registerLazySingleton<FeedService>(() => FeedService());
+
+  locator.registerFactory<SplashViewModel>(() => SplashViewModel());
+  locator.registerFactory<DevSignUpViewModel>(() => DevSignUpViewModel());
+  locator.registerFactory<NewStreamViewModel>(() => NewStreamViewModel());
 }

@@ -37,7 +37,8 @@ class _StreamState extends State<Stream> {
         child: SizedBox(
             width: size.width,
             height: size.height,
-            child: VideoPlayer(_controller)),
+            child: Container(color: Colors.orange))
+            //VideoPlayer(_controller)),
       ),
     );
   }
