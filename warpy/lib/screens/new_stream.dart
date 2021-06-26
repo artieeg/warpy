@@ -27,12 +27,21 @@ class _NewStreamState extends State<NewStream> {
       model: model,
       builder: (model) => Scaffold(
           body: Stack(
-        children: [renderVideo(size, model), renderOverlay(model)],
+        children: [
+          renderVideo(size),
+          model.streamId == null
+              ? renderCreateStreamOverlay()
+              : renderStreamControl()
+        ],
       )),
     );
   }
 
-  SizedBox renderOverlay(NewStreamViewModel model) {
+  Widget renderStreamControl() {
+    return StreamControl(onStop: model.stopStream);
+  }
+
+  SizedBox renderCreateStreamOverlay() {
     return SizedBox.expand(
         child: Container(
             color: Color.fromRGBO(1, 26, 40, 0.4),
@@ -47,7 +56,7 @@ class _NewStreamState extends State<NewStream> {
                 ))));
   }
 
-  FittedBox renderVideo(Size size, NewStreamViewModel model) {
+  FittedBox renderVideo(Size size) {
     return FittedBox(
         fit: BoxFit.cover,
         child: SizedBox(

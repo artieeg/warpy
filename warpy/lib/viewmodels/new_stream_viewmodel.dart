@@ -15,6 +15,11 @@ class NewStreamViewModel extends ChangeNotifier {
   final ion.IonBaseConnector connector = ion.IonBaseConnector(Constants.ION);
   late ion.IonAppBiz biz;
   late ion.IonSDKSFU sfu;
+  String? streamId;
+
+  void stopStream() async {
+    print("oke");
+  }
 
   void initPion() async {
     biz = ion.IonAppBiz(connector);
@@ -35,8 +40,8 @@ class NewStreamViewModel extends ChangeNotifier {
     var streamTitle = streamTitleController.text;
     var hubId = "test-hub-id";
 
-    var streamId = await streamService.createStream(streamTitle, hubId);
-    print("STREAM ID: $streamId");
+    streamId = await streamService.createStream(streamTitle, hubId);
+    notifyListeners();
   }
 
   @override
