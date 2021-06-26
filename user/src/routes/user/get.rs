@@ -1,7 +1,6 @@
 use crate::context::WarpyContext;
 use crate::dao::*;
 use actix_web::{web, HttpResponse};
-use std::sync::Mutex;
 use serde_json::json;
 
 pub async fn route<U, R>(

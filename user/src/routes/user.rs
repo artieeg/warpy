@@ -4,6 +4,7 @@ mod create_dev;
 mod delete;
 mod get;
 mod update;
+mod whoami;
 
 use crate::dao::refresh_token::*;
 use crate::dao::user::*;
@@ -18,6 +19,11 @@ pub fn config(cfg: &mut web::ServiceConfig) {
         web::resource("/user/{user_id}")
             .wrap(Auth)
             .route(web::delete().to(delete::route::<UserDAO, RefreshTokenDAO>)),
+    )
+    .service(
+        web::resource("/whoami")
+            .wrap(Auth)
+            .route(web::get().to(whoami::route::<UserDAO, RefreshTokenDAO>)),
     )
     .service(
         web::resource("/user/{user_id}")
