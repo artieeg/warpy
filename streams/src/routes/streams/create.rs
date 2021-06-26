@@ -3,6 +3,7 @@ use crate::dao::*;
 use crate::models::Stream;
 use crate::payloads::CreateStreamPayload;
 use actix_web::{web, HttpRequest, HttpResponse};
+use log::error;
 use std::sync::Mutex;
 use serde_json::json;
 
@@ -36,7 +37,10 @@ where
         Ok(id) => HttpResponse::Ok().json(json!({
             "stream_id": id
         })),
-        Err(e) => e.into()
+        Err(e) => {
+            error!("{:#?}", e);
+            e.into()
+        }
     }
 }
 
@@ -61,7 +65,7 @@ mod tests {
 
         hub_dao.expect_exists().returning(|_| true);
         stream_dao.expect_is_user_live().returning(|_| false);
-        stream_dao.expect_create().returning(|_| Ok(()));
+        stream_dao.expect_create().returning(|_| Ok("id"));
 
         let context = build_context(stream_dao, hub_dao);
         let req = get_request();
@@ -79,7 +83,7 @@ mod tests {
 
         hub_dao.expect_exists().returning(|_| true);
         stream_dao.expect_is_user_live().returning(|_| true);
-        stream_dao.expect_create().returning(|_| Ok(()));
+        stream_dao.expect_create().returning(|_| Ok("id"));
 
         let context = build_context(stream_dao, hub_dao);
         let req = get_request();
@@ -97,7 +101,7 @@ mod tests {
 
         hub_dao.expect_exists().returning(|_| false);
         stream_dao.expect_is_user_live().returning(|_| true);
-        stream_dao.expect_create().returning(|_| Ok(()));
+        stream_dao.expect_create().returning(|_| Ok("id"));
 
         let context = build_context(stream_dao, hub_dao);
         let req = get_request();

@@ -14,6 +14,8 @@ mod fixtures;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    env_logger::init();
+
     let (stream_dao, hub_dao) = Database::connect().await;
     let context = WarpyContext::create(stream_dao, hub_dao);
     let data = web::Data::new(Mutex::new(context));

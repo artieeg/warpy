@@ -57,7 +57,10 @@ impl StreamDAOExt for StreamDAO {
 
         match collection.insert_one(stream, None).await {
             Ok(_) => Ok(id),
-            Err(_) => Err(DAOError::Insert),
+            Err(e) => {
+                log::error!("{:#?}", e);
+                Err(DAOError::Insert)
+            },
         }
     }
 

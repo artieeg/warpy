@@ -11,7 +11,7 @@ pub struct Stream {
     pub hub: String,
     pub live: bool,
     pub title: String,
-    pub created_at: u128,
+    pub created_at: i64,
 }
 
 impl Stream {
@@ -25,7 +25,7 @@ impl Stream {
             created_at: SystemTime::now()
                 .duration_since(UNIX_EPOCH)
                 .unwrap()
-                .as_millis(),
+                .as_secs() as i64,
         }
     }
 }
