@@ -32,7 +32,10 @@ pub struct Claims {
 
 impl Claims {
     pub fn from_string(claims_string: &str) -> Result<Claims, JWTError> {
-        let v = Validation::default();
+        let mut v = Validation::default();
+
+        v.validate_exp = false;
+
         let result = decode::<Claims>(
             &claims_string,
             &DecodingKey::from_secret(&*SECRET.as_bytes()),
