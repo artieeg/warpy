@@ -31,14 +31,19 @@ class _NewStreamState extends State<NewStream> {
           renderVideo(size),
           model.streamId == null
               ? renderCreateStreamOverlay()
-              : renderStreamControl()
+              : renderStreamControl(context)
         ],
       )),
     );
   }
 
-  Widget renderStreamControl() {
-    return StreamControl(onStop: model.stopStream);
+  Widget renderStreamControl(BuildContext context) {
+    return StreamControl(onStop: () => _stopStream(context));
+  }
+
+  void _stopStream(BuildContext context) async {
+    await model.stopStream();
+    Navigator.of(context).popUntil(ModalRoute.withName('/feed'));
   }
 
   SizedBox renderCreateStreamOverlay() {

@@ -17,8 +17,10 @@ class NewStreamViewModel extends ChangeNotifier {
   late ion.IonSDKSFU sfu;
   String? streamId;
 
-  void stopStream() async {
-    print("oke");
+  Future<void> stopStream() async {
+    if (this.streamId != null) {
+      await streamService.deleteStream(this.streamId!);
+    }
   }
 
   void initPion() async {
