@@ -18,11 +18,13 @@ where
     let user = req.headers().get("user-id").unwrap().to_str().unwrap();
     let data = data.lock().unwrap();
 
+    /*
     //Check if hub id is valid
     let hub_id = payload.hub.as_str();
     if !data.hub_dao.exists(hub_id).await {
         return HttpResponse::BadRequest().finish();
     }
+    */
 
     let already_streaming = data.stream_dao.is_user_live(user).await;
     if already_streaming {
