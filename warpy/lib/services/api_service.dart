@@ -26,17 +26,19 @@ class APIService {
     return jsonDecode(response.body)['streams'];
   }
 
+  Future<void> deleteStream(String id) async {
+    var url = _getUri("streams");
+
+    await _client.delete(url,
+        body: json.encode({"id": id}), headers: _getHeaders());
+  }
+
   Future<String> createStream(String title, String hub) async {
     var url = _getUri("streams");
 
-    print("headers ${_getHeaders()}");
     var response = await _client.post(url,
         body: json.encode({"title": title, "hub": hub}),
         headers: _getHeaders());
-
-    print("Status code ${response.statusCode}");
-    print("headers ${response.headers}");
-    print("Body ${response.body}");
 
     return jsonDecode(response.body)["stream_id"];
   }

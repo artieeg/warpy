@@ -9,4 +9,8 @@ class StreamService {
 
     return streamId;
   }
+
+  Future<void> deleteStream(String id) async {
+    await api.deleteStream(id);
+  }
 }
