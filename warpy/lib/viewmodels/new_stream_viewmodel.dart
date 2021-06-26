@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:flutter_ion/flutter_ion.dart' as ion;
 import 'package:flutter/foundation.dart';
+import 'package:warpy/constants.dart';
 import 'package:warpy/locator.dart';
 import 'package:warpy/services/services.dart';
 
@@ -11,6 +12,14 @@ class NewStreamViewModel extends ChangeNotifier {
   final localRenderer = RTCVideoRenderer();
   late ion.LocalStream localStream;
   bool localViewInitialized = false;
+  final ion.IonBaseConnector connector = ion.IonBaseConnector(Constants.ION);
+  late ion.IonAppBiz biz;
+  late ion.IonSDKSFU sfu;
+
+  void initPion() async {
+    biz = ion.IonAppBiz(connector);
+    sfu = ion.IonSDKSFU(connector);
+  }
 
   void initLocalRenderer() async {
     await localRenderer.initialize();
@@ -26,7 +35,8 @@ class NewStreamViewModel extends ChangeNotifier {
     var streamTitle = streamTitleController.text;
     var hubId = "test-hub-id";
 
-    await streamService.createStream(streamTitle, hubId);
+    var streamId = await streamService.createStream(streamTitle, hubId);
+    print("STREAM ID: $streamId");
   }
 
   @override

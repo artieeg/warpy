@@ -27,8 +27,16 @@ class APIService {
   }
 
   Future<String> createStream(String title, String hub) async {
-    var url = _getUri("stream");
-    var response = await _client.post(url, headers: _getHeaders());
+    var url = _getUri("streams");
+
+    print("headers ${_getHeaders()}");
+    var response = await _client.post(url,
+        body: json.encode({"title": title, "hub": hub}),
+        headers: _getHeaders());
+
+    print("Status code ${response.statusCode}");
+    print("headers ${response.headers}");
+    print("Body ${response.body}");
 
     return jsonDecode(response.body)["stream_id"];
   }
@@ -51,6 +59,6 @@ class APIService {
   }
 
   Map<String, String> _getHeaders() {
-    return {"authorization": _accessToken};
+    return {"content-type": "application/json", "authorization": _accessToken};
   }
 }

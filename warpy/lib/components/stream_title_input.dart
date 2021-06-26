@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class StreamTitleInput extends StatelessWidget {
-  TextEditingController controller;
+  final TextEditingController controller;
 
   StreamTitleInput({required this.controller});
 
@@ -12,7 +12,7 @@ class StreamTitleInput extends StatelessWidget {
       style: TextStyle(color: Colors.white, fontSize: 32),
       decoration: InputDecoration(
           border: InputBorder.none,
-          hintText: "Stream Title 5",
+          hintText: "Stream Title",
           hintStyle: TextStyle(color: Colors.grey)),
     );
   }
