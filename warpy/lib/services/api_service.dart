@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:warpy/constants.dart';
 import 'package:warpy/models/new_dev_user_payload.dart';
 import 'package:warpy/models/new_user_response.dart';
+import 'package:warpy/models/user.dart';
 
 class APIService {
   var _client = http.Client();
@@ -31,6 +32,18 @@ class APIService {
 
     await _client.delete(url,
         body: json.encode({"id": id}), headers: _getHeaders());
+  }
+
+  Future<User> getAppUserData() async {
+    var url = _getUri("whoami");
+
+    var response = await _client.get(url,
+        headers: _getHeaders());
+
+    var body = jsonDecode(response.body);
+    var user = User.fromMap(body['result']['user']);
+    
+    return user;
   }
 
   Future<String> createStream(String title, String hub) async {

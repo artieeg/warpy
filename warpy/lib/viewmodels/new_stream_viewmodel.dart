@@ -8,6 +8,7 @@ import 'package:warpy/services/services.dart';
 
 class NewStreamViewModel extends ChangeNotifier {
   final streamService = locator<StreamService>();
+  final userService = locator<UserService>();
   final streamTitleController = TextEditingController();
   final localRenderer = RTCVideoRenderer();
   late ion.LocalStream localStream;
@@ -24,8 +25,14 @@ class NewStreamViewModel extends ChangeNotifier {
   }
 
   void initPion() async {
+    var userId = userService.user.id;
+    print(userId);
+
     biz = ion.IonAppBiz(connector);
     sfu = ion.IonSDKSFU(connector);
+    
+    await biz.connect();
+    //await biz.join();
   }
 
   void initLocalRenderer() async {
@@ -43,6 +50,9 @@ class NewStreamViewModel extends ChangeNotifier {
     var hubId = "test-hub-id";
 
     streamId = await streamService.createStream(streamTitle, hubId);
+
+    var userId = userService.user.id;
+    print("USER ID $userId");
     notifyListeners();
   }
 
