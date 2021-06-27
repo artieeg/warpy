@@ -15,6 +15,16 @@ class User {
     required this.avatar,
   });
 
+  Map<String, String> toMap() {
+    return {
+      'id': id,
+      'first_name': firstName,
+      'last_name': lastName,
+      'username': username,
+      'avatar': avatar,
+    };
+  }
+
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
       id: map['id'],

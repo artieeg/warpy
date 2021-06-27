@@ -8,12 +8,12 @@ import 'package:warpy/services/services.dart';
 
 class NewStreamViewModel extends ChangeNotifier {
   final streamService = locator<StreamService>();
-  final userService = locator<UserService>();
   final streamTitleController = TextEditingController();
   final localRenderer = RTCVideoRenderer();
   late ion.LocalStream localStream;
   bool localViewInitialized = false;
   final ion.IonBaseConnector connector = ion.IonBaseConnector(Constants.ION);
+  final user = locator<UserService>().user;
   late ion.IonAppBiz biz;
   late ion.IonSDKSFU sfu;
   String? streamId;
@@ -24,25 +24,41 @@ class NewStreamViewModel extends ChangeNotifier {
     }
   }
 
-  void initPion() async {
-    var userId = userService.user.id;
-    print(userId);
+  Future<void> initPion() async {
+    var userId = user.id;
 
     biz = ion.IonAppBiz(connector);
     sfu = ion.IonSDKSFU(connector);
-    
+
+    biz.onJoin = (bool joined, String reason) async {
+      if (!joined) {
+        //TODO: handle
+      }
+
+      await sfu.connect();
+      await sfu.join(streamId!, user.id);
+
+      localStream = await ion.LocalStream.getUserMedia(
+          constraints: ion.Constraints.defaults..simulcast = true..codec = "vp8");
+
+      localViewInitialized = true;
+
+      Future.delayed(Duration(milliseconds: 400), () {
+        sfu.publish(localStream);
+      });
+
+      localRenderer.srcObject = localStream.stream;
+      notifyListeners();
+    };
+
     await biz.connect();
-    //await biz.join();
+    biz.join(info: user.toMap(), sid: streamId!, uid: userId);
+
+    print("connecting to ion...");
   }
 
   void initLocalRenderer() async {
     await localRenderer.initialize();
-    ion.LocalStream localStream = await ion.LocalStream.getUserMedia(
-        constraints: ion.Constraints.defaults..simulcast = true);
-
-    localRenderer.srcObject = localStream.stream;
-    localViewInitialized = true;
-    notifyListeners();
   }
 
   void goLive() async {
@@ -51,8 +67,8 @@ class NewStreamViewModel extends ChangeNotifier {
 
     streamId = await streamService.createStream(streamTitle, hubId);
 
-    var userId = userService.user.id;
-    print("USER ID $userId");
+    initPion();
+
     notifyListeners();
   }
 
