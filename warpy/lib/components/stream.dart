@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:flutter_ion/flutter_ion.dart' as ion;
+import 'package:warpy/constants.dart';
+import 'package:warpy/locator.dart';
+import 'package:warpy/services/services.dart';
 
 class Stream extends StatefulWidget {
   final Function onTap;
@@ -13,17 +18,32 @@ class Stream extends StatefulWidget {
 
 class _StreamState extends State<Stream> {
   late VideoPlayerController _controller;
+  var user = locator<UserService>().user;
+
+  late ion.Signal signal;
+  late ion.Client client;
+  late ion.LocalStream localStream;
+  var renderer = RTCVideoRenderer();
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(
-        'https://media.giphy.com/media/lpWq49FLATPlCTH4Yj/giphy.mp4')
-      ..initialize().then((_) {
-        setState(() {});
-        _controller.play();
-        _controller.setLooping(true);
-      });
+    connect();
+  }
+
+  void connect() async {
+    print("connecting to ion stream");
+    await renderer.initialize();
+    signal = ion.GRPCWebSignal(Constants.ION);
+    client = await ion.Client.create(
+        sid: widget.streamId, uid: user.id, signal: signal);
+
+    client.ontrack = (track, ion.RemoteStream remoteStream) async {
+      if (track.kind == 'video') {
+        print('ontrack: remote stream => ${remoteStream.id}');
+        renderer.srcObject = remoteStream.stream;
+      }
+    };
   }
 
   @override
@@ -38,7 +58,8 @@ class _StreamState extends State<Stream> {
           child: SizedBox(
               width: size.width,
               height: size.height,
-              child: Container(color: Colors.orange))
+              child: RTCVideoView(renderer,
+                  objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover))
           //VideoPlayer(_controller)),
           ),
     );
