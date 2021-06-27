@@ -8,6 +8,10 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  Widget wrapScreen(Widget screen) {
+    return ClipRRect(borderRadius: BorderRadius.circular(40.0), child: screen);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,13 +25,12 @@ class MyApp extends StatelessWidget {
                     color: Colors.white,
                     fontWeight: FontWeight.bold),
                 button: TextStyle(fontSize: 16, color: Colors.white))),
-        onGenerateRoute: (settings) {},
         routes: {
-          "/": (_) => SplashScreen(),
-          "/signup/dev": (_) => DevSignUpScreen(),
-          "/feed": (_) => FeedScreen(),
-          "/stream/new": (_) => NewStream(),
-          "/stream/paused": (_) => PausedMenuScreen(),
+          "/": (_) => wrapScreen(SplashScreen()),
+          "/signup/dev": (_) => wrapScreen(DevSignUpScreen()),
+          "/feed": (_) => wrapScreen(FeedScreen()),
+          "/stream/new": (_) => wrapScreen(NewStream()),
+          "/stream/paused": (_) => wrapScreen(PausedMenuScreen()),
         });
   }
 }

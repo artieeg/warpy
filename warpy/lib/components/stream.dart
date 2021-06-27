@@ -59,9 +59,8 @@ class _StreamState extends State<Stream> {
               width: size.width,
               height: size.height,
               child: RTCVideoView(renderer,
-                  objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover))
-          //VideoPlayer(_controller)),
-          ),
+                  objectFit:
+                      RTCVideoViewObjectFit.RTCVideoViewObjectFitCover))),
     );
   }
 
