@@ -2,19 +2,18 @@ import 'dart:convert';
 
 import 'package:warpy/models/user.dart';
 
-class Stream {
+class WarpyStream {
   String id;
   String hub;
-  User owner;
+  String owner;
 
-  Stream({required this.id, required this.hub, required this.owner});
+  WarpyStream({required this.id, required this.hub, required this.owner});
 
-  factory Stream.fromMap(Map<String, dynamic> map) {
-    return Stream(
-        id: map['id'], hub: map['hub'], owner: User.fromMap(map['owner']));
+  factory WarpyStream.fromMap(Map<String, dynamic> map) {
+    return WarpyStream(id: map['id'], hub: map['hub'], owner: map['owner']);
   }
 
-  factory Stream.fromJson(String json) {
-    return Stream.fromMap(jsonDecode(json));
+  factory WarpyStream.fromJson(String json) {
+    return WarpyStream.fromMap(jsonDecode(json));
   }
 }

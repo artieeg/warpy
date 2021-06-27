@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class Stream extends StatefulWidget {
-  Function onTap;
+  final Function onTap;
+  final String streamId;
 
-  Stream({required this.onTap});
+  Stream({required this.onTap, required this.streamId});
 
   @override
   _StreamState createState() => _StreamState();
@@ -33,13 +34,13 @@ class _StreamState extends State<Stream> {
         widget.onTap();
       },
       child: FittedBox(
-        fit: BoxFit.cover,
-        child: SizedBox(
-            width: size.width,
-            height: size.height,
-            child: Container(color: Colors.orange))
-            //VideoPlayer(_controller)),
-      ),
+          fit: BoxFit.cover,
+          child: SizedBox(
+              width: size.width,
+              height: size.height,
+              child: Container(color: Colors.orange))
+          //VideoPlayer(_controller)),
+          ),
     );
   }
 

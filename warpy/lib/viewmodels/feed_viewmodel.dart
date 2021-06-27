@@ -1,10 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:warpy/locator.dart';
+import 'package:warpy/models/stream.dart';
 import 'package:warpy/services/services.dart';
 
 class FeedViewModel extends ChangeNotifier {
   var feedService = locator<FeedService>();
-  List<Stream> streams = [];
+  List<WarpyStream> streams = [];
 
   FeedViewModel() : super() {
     _fetchStreams();
@@ -12,7 +13,9 @@ class FeedViewModel extends ChangeNotifier {
 
   Future<void> _fetchStreams() async {
     var newStreams = await feedService.getStreams();
-    streams = [...streams, ...newStreams as List<Stream<dynamic>>];
+    streams = [...streams, ...newStreams];
+
+    print("streams $streams");
 
     notifyListeners();
   }
