@@ -68,6 +68,14 @@ services:
       - nats
       - islb
 
+  postgres:
+    image: postgres:13-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=warpy
+      - POSTGRES_PASSWORD=warpydev00
+
   nginx:
     image: warpy_nginx
     volumes:
