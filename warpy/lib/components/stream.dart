@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:flutter_ion/flutter_ion.dart' as ion;
+import 'package:warpy/components/components.dart';
 import 'package:warpy/constants.dart';
 import 'package:warpy/locator.dart';
 import 'package:warpy/services/services.dart';
@@ -53,15 +54,25 @@ class _StreamState extends State<Stream> {
       onTap: () {
         widget.onTap();
       },
-      child: FittedBox(
-          fit: BoxFit.cover,
-          child: SizedBox(
-              width: size.width,
-              height: size.height,
-              child: RTCVideoView(renderer,
-                  objectFit:
-                      RTCVideoViewObjectFit.RTCVideoViewObjectFitCover))),
+      child: Stack(
+        children: [_renderRemoteVideo(size), StreamViewerControl()],
+      ),
     );
+  }
+
+  FittedBox _renderRemoteVideo(Size size) {
+    return FittedBox(
+        fit: BoxFit.cover,
+        child: SizedBox(
+            width: size.width,
+            height: size.height,
+            child: Container(color: Colors.teal)
+
+            /*
+            RTCVideoView(renderer,
+                objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover)
+                */
+            ));
   }
 
   @override

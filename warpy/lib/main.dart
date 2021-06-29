@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'screens/screens.dart';
 import './locator.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   setupLocator();
+
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIOverlays([
+    SystemUiOverlay.bottom, //This line is used for showing the bottom bar
+  ]);
+
   runApp(MyApp());
 }
 

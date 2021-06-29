@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:warpy/components/icon_button.dart';
 
-class StreamControl extends StatelessWidget {
+class StreamProducerControl extends StatelessWidget {
   final Function onStop;
 
-  StreamControl({required this.onStop});
+  StreamProducerControl({required this.onStop});
 
   @override
   Widget build(BuildContext context) {

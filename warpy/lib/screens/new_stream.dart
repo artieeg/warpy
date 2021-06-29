@@ -38,7 +38,7 @@ class _NewStreamState extends State<NewStream> {
   }
 
   Widget renderStreamControl(BuildContext context) {
-    return StreamControl(onStop: () => _stopStream(context));
+    return StreamProducerControl(onStop: () => _stopStream(context));
   }
 
   void _stopStream(BuildContext context) async {

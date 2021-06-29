@@ -18,7 +18,8 @@ class FeedScreen extends StatelessWidget {
     return ViewModelProvider<FeedViewModel>(
         builder: (model) => Scaffold(
             body: Container(
-                color: Colors.lightGreen,
+                color: Colors.green,
+                /*
                 child: model.streams.length == 0
                     ? SizedBox.expand(
                         child: GestureDetector(
@@ -32,6 +33,12 @@ class FeedScreen extends StatelessWidget {
                         streamId: model.streams[0].id,
                         onTap: () {
                           _onPause(context);
-                        }))));
+                        })
+                        */
+                child: Stream(
+                    streamId: "test-stream-id",
+                    onTap: () {
+                      _onPause(context);
+                    }))));
   }
 }
