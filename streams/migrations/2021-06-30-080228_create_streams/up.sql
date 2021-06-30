@@ -1,0 +1,6 @@
+CREATE TABLE streams (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR NOT NULL,
+  hub VARCHAR NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+)
