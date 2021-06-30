@@ -16,6 +16,7 @@ pub trait UserDAOExt {
     async fn update(&self, updated_user: User) -> Result<(), DAOError>;
 }
 
+#[derive(Clone)]
 pub struct UserDAO {
     collection: Option<Collection<User>>,
 }
