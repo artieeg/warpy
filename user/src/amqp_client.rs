@@ -1,20 +1,11 @@
-use async_trait::async_trait;
 use futures::StreamExt;
 use lapin::{
-    options::{BasicConsumeOptions, ExchangeDeclareOptions, QueueBindOptions, QueueDeclareOptions},
+    options::{BasicConsumeOptions, QueueDeclareOptions},
     types::FieldTable,
-    Channel, Connection, ConnectionProperties, ExchangeKind,
+    Channel, Connection, ConnectionProperties,
 };
 
 use crate::amqp_handlers::BaseAMQPHandler;
-
-#[async_trait]
-pub trait AMQPClientExt {
-    async fn connect(&mut self);
-    async fn handle_user_request<T>(&mut self, handler: T)
-    where
-        T: BaseAMQPHandler + Send;
-}
 
 #[derive(Clone)]
 pub struct AMQPClient {
@@ -26,14 +17,7 @@ impl AMQPClient {
         Self { channel: None }
     }
 
-    fn get_channel(&self) -> &Channel {
-        self.channel.as_ref().unwrap()
-    }
-}
-
-#[async_trait]
-impl AMQPClientExt for AMQPClient {
-    async fn connect(&mut self) {
+    pub async fn connect(&mut self) {
         let uri = std::env::var("AMQP_URI").unwrap();
         let connection = Connection::connect(&uri, ConnectionProperties::default())
             .await
@@ -42,9 +26,13 @@ impl AMQPClientExt for AMQPClient {
         self.channel = Some(connection.create_channel().await.expect("Create channel"));
     }
 
-    async fn handle_user_request<T>(&mut self, handler: T)
+    fn get_channel(&self) -> &Channel {
+        self.channel.as_ref().unwrap()
+    }
+
+    pub async fn handle_user_request<T>(&mut self, handler: T)
     where
-        T: BaseAMQPHandler + Send,
+        T: BaseAMQPHandler + Send
     {
         let channel = self.get_channel();
         channel
@@ -67,7 +55,7 @@ impl AMQPClientExt for AMQPClient {
             .expect("Consuming user.request queue");
 
         while let Some(delivery) = consume.next().await {
-            handler.handle_delivery(delivery);
+            handler.handle_delivery(delivery).await;
         }
     }
 }

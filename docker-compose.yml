@@ -82,6 +82,8 @@ services:
 
   rabbitmq:
     image: rabbitmq:3.8
+    ports:
+      - 5672:5672
 
   mongo:
     image: mongo:4.2

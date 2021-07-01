@@ -16,3 +16,8 @@ pub struct UpdateUser {
     pub username: Option<String>,
     pub avatar: Option<String>,
 }
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct AMQPGet {
+    pub id: String,
+}

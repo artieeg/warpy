@@ -10,6 +10,8 @@ mod amqp_handlers;
 #[cfg(test)]
 mod fixtures;
 
+use std::sync::Mutex;
+
 use context::WarpyContext;
 use database::Database;
 use amqp_handlers::*;
@@ -33,8 +35,8 @@ async fn main() -> std::io::Result<()> {
     amqp_client.connect().await;
 
     let request_user_handler = RequestUserAMQPHandler::new(user_dao.clone());
-
     actix_web::rt::spawn(async move {
+
         let mut amqp_client = amqp_client.clone();
         amqp_client.handle_user_request(request_user_handler).await;
     });
