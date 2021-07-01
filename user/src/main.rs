@@ -10,14 +10,11 @@ mod amqp_handlers;
 #[cfg(test)]
 mod fixtures;
 
-use std::sync::Mutex;
-
 use context::WarpyContext;
 use database::Database;
 use amqp_handlers::*;
 
 use actix_web::{web, App, HttpServer};
-use futures::join;
 
 use crate::amqp_client::*;
 

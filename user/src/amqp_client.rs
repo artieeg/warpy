@@ -5,7 +5,7 @@ use lapin::{
     Channel, Connection, ConnectionProperties,
 };
 
-use crate::amqp_handlers::BaseAMQPHandler;
+use base_amqp_handler::BaseAMQPHandler;
 
 #[derive(Clone)]
 pub struct AMQPClient {

@@ -22,6 +22,7 @@ lapin = "1.7.1"
 auth_middleware = {path = "../crates/auth_middleware"}
 claims = {path = "../crates/claims"}
 errors = {path = "../crates/errors"}
+base_amqp_handler = {path = "../crates/base_amqp_handler"}
 
 [dev-dependencies]
 mockall = "0.9.1"

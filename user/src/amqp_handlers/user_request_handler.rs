@@ -1,6 +1,6 @@
 use crate::dao::*;
 
-use super::{AMQPDelivery, BaseAMQPHandler};
+use base_amqp_handler::{AMQPDelivery, BaseAMQPHandler};
 use crate::payloads::user::AMQPGet;
 use lapin::{options::BasicPublishOptions, BasicProperties};
 use serde_json::Result;
