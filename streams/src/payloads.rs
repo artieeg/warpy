@@ -1,4 +1,5 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use crate::models::User;
 
 #[derive(Deserialize)]
 pub struct CreateStreamPayload {
@@ -9,4 +10,11 @@ pub struct CreateStreamPayload {
 #[derive(Deserialize)]
 pub struct DeleteStreamPayload {
     pub id: String,
+}
+
+#[derive(Serialize)]
+pub struct AMQPEventNewStream {
+    pub id: String,
+    pub hub: String,
+    pub owner: User,
 }

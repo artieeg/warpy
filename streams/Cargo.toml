@@ -23,6 +23,8 @@ errors = {path = "../crates/errors"}
 auth_middleware = {path = "../crates/auth_middleware"}
 log = "0.4.0"
 env_logger = "0.8.4"
+base_amqp_handler = {path = "../crates/base_amqp_handler"}
+tokio = "0.2.25"
 
 [dev-dependencies]
 mockall = "0.9.1"

@@ -24,6 +24,7 @@ impl RequestUserAMQPHandler {
 #[async_trait::async_trait]
 impl BaseAMQPHandler for RequestUserAMQPHandler {
     async fn handle_delivery(&self, delivery: AMQPDelivery) {
+        println!("requesting user");
         let (ch, delivery) = delivery.expect("error in consumer");
         let payload = match std::str::from_utf8(&delivery.data) {
             Ok(p) => p,
@@ -34,6 +35,7 @@ impl BaseAMQPHandler for RequestUserAMQPHandler {
             Ok(id) => id,
             Err(_) => return
         };
+        println!("user id {}", requested_id);
 
         let correlation_id = delivery
             .properties

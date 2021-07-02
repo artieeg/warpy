@@ -466,6 +466,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "904dfeac50f3cdaba28fc6f57fdcddb75f49ed61346676a78c4ffe55877802fd"
 
 [[package]]
+name = "base_amqp_handler"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "lapin",
+]
+
+[[package]]
 name = "bitflags"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2652,6 +2660,7 @@ dependencies = [
  "actix-web",
  "async-trait",
  "auth_middleware",
+ "base_amqp_handler",
  "env_logger",
  "errors",
  "futures",
@@ -2665,6 +2674,7 @@ dependencies = [
  "rstest",
  "serde",
  "serde_json",
+ "tokio 0.2.25",
 ]
 
 [[package]]

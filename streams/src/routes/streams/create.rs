@@ -1,6 +1,7 @@
 use crate::context::WarpyContext;
 use crate::dao::*;
 use crate::models::Stream;
+use crate::payloads::AMQPEventNewStream;
 use crate::payloads::CreateStreamPayload;
 use actix_web::{web, HttpRequest, HttpResponse};
 use log::error;
@@ -33,6 +34,15 @@ where
     }
 
     let stream = Stream::from_payload(payload.into_inner(), user);
+
+    /*
+    let new_stream_event = AMQPEventNewStream {
+        id: stream.id,
+        hub: stream.hub,
+        owner
+    }
+    */
+
     match data.stream_dao.create(stream).await {
         Ok(id) => HttpResponse::Ok().json(json!({
             "stream_id": id
