@@ -8,6 +8,7 @@ export const connect = async () => {
   }
 
   await mongoose.connect(url, {
+    dbName: "warpy",
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,

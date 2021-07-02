@@ -31,3 +31,10 @@ export const createDevUser = async (data: any) => {
     refresh_token: refreshToken,
   };
 };
+
+export const getUserById = async (userId: string) => {
+  const result = await User.findOne({ _id: userId });
+  const user = result.toJSON();
+
+  return user;
+};

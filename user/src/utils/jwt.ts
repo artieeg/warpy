@@ -9,3 +9,11 @@ if (!secret) {
 export const createToken = (sub: string, expiresIn: string) => {
   return jsonwebtoken.sign({ sub }, secret, { expiresIn });
 };
+
+export const verifyAccessToken = (token: string) => {
+  const { sub } = jsonwebtoken.verify(token, secret, {
+    ignoreExpiration: true, //TODO: Remove
+  }) as any;
+
+  return sub;
+};

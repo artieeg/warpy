@@ -1,3 +1,4 @@
 import create from "./create";
+import whoami from "./whoami";
 
-export default [create];
+export default [create, whoami];
