@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "workspaces": ["backend-lib", "user", "streams"],
+  "nohoist": [
+      "**streams**",
+      "**user**",
+      "**module-alias**"
+  ]
+}

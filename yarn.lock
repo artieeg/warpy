@@ -135,6 +135,11 @@
     "@types/mime" "^1"
     "@types/node" "*"
 
+"@types/yup@^0.29.12":
+  version "0.29.12"
+  resolved "https://registry.yarnpkg.com/@types/yup/-/yup-0.29.12.tgz#59c9577bea11d2b3d78717ea7591caacad6dfa1b"
+  integrity sha512-fA7bXyBzWEAgOwX2SD/5/iaZY/4In0EvJEzFmBWzaGNF4vxr8d5iOFUMFBpL4cMEmlSx2wW9ginJNnoZjE/vOg==
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -189,15 +194,6 @@ array-flatten@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/array-flatten/-/array-flatten-1.1.1.tgz#9a5f699051b1e7073328f2a008968b64ea2955d2"
   integrity sha1-ml9pkFGx5wczKPKgCJaLZOopVdI=
-
-backend-lib@../backend-lib:
-  version "1.0.0"
-  dependencies:
-    cross-env "^7.0.3"
-    express "^4.17.1"
-    jsonwebtoken "^8.5.1"
-    typescript "^4.3.5"
-    yup "^0.32.9"
 
 balanced-match@^1.0.0:
   version "1.0.2"
@@ -1042,9 +1038,9 @@ mongoose-legacy-pluralize@1.0.2:
   integrity sha512-Yo/7qQU4/EyIS8YDFSeenIvXxZN+ld7YdV9LqFVQJzTLye8unujAWPZ4NWKfFA+RNjh+wvTWKY9Z3E5XM6ZZiQ==
 
 mongoose@^5.13.0:
-  version "5.13.0"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.13.0.tgz#3d5241991261681a913696d5b7c88f76b31aedb0"
-  integrity sha512-8dvu7vxmDzlupj4I9T0g33GPf4HzSZmIOKQfG9RJQ5Nxk/Ztx1b8zlYp+blvaCfWwtBpiAJuKYOBU17Wq1RVFQ==
+  version "5.13.1"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.13.1.tgz#13e5d4afb264297fbdde0b244fce0d294b22d07e"
+  integrity sha512-xbaR1gLMMJVJCeHVjnrcZeUVa4fF8S2Twkyc2jHcVYm9QvCLQPfJG90yi37IDHF3/mDDmVoENNaGHm225/MG3A==
   dependencies:
     "@types/mongodb" "^3.5.27"
     bson "^1.1.4"
@@ -1101,9 +1097,9 @@ nanoclone@^0.2.1:
   integrity sha512-wynEP02LmIbLpcYw8uBKpcfF6dmg2vcpKqxeH5UcoKEYdExslsdUA4ugFauuaeYdTB76ez6gJW8XAZ6CgkXYxA==
 
 nats@^2.0.8:
-  version "2.0.8"
-  resolved "https://registry.yarnpkg.com/nats/-/nats-2.0.8.tgz#06b18cb2bc60b2623bec4bc34eecb169374625f8"
-  integrity sha512-jh/e6as5gFttjMdq2OPIZuh4fZfThYG+EAmCsqP/PVlii91Qp7kcjPH+j5eaqtQRSw5pKccV77s8L+vmg7bIug==
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/nats/-/nats-2.1.0.tgz#1ff960710e257d0fa7855ad86562248659d644e4"
+  integrity sha512-4SuNeQEwl3CwgnW7GyiQG82CWRrTPvPrtUp7Wi2hsmLI8PunIvitiMjwHXRMSFdMN7Cy97lguLRuORZcocVk0Q==
   dependencies:
     nkeys.js "^1.0.0-9"
 

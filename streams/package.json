@@ -9,10 +9,10 @@
     "start:dev": "npx nodemon index.ts"
   },
   "_moduleAliases": {
-    "@app": "./src"
+    "@app": "./lib"
   },
   "dependencies": {
-    "backend-lib": "../backend-lib",
+    "backend-lib": "1.0.0",
     "express": "^4.17.1",
     "module-alias": "^2.2.2",
     "mongoose": "^5.13.0",

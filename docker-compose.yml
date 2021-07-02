@@ -87,11 +87,20 @@ services:
     volumes:
     - /data/warpy:/data/db
 
+  streams:
+    image: node:16.0.0-alpine
+    env_file:
+      dev_env/streams.env
+    volumes:
+      - ./:/warpy
+    working_dir: /warpy/streams
+    command: yarn start:dev
+
   user:
     image: node:16.0.0-alpine
     env_file:
       dev_env/user.env
     volumes:
-      - ./user:/user
-    working_dir: /user
+      - ./:/warpy
+    working_dir: /warpy/user
     command: yarn start:dev

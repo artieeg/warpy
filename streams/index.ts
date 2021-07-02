@@ -1,7 +1,7 @@
 import "module-alias/register";
 
 import express from "express";
-import routes from "./src/routes";
+import routes from "./lib/routes";
 
 const app = express();
 
