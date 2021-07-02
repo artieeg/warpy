@@ -12,4 +12,8 @@ const UserSchema = new Schema({
 UserSchema.index({ username: 1 }, { unique: true });
 UserSchema.index({ email: 1 }, { unique: true });
 
+UserSchema.set("toJSON", {
+  virtuals: true,
+});
+
 export const User = mongoose.model("User", UserSchema);

@@ -10,5 +10,6 @@ export const connect = async () => {
   await mongoose.connect(url, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    useCreateIndex: true,
   });
 };

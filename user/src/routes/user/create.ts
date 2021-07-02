@@ -6,9 +6,8 @@ import { UserService } from "@app/services";
 const router = express.Router();
 
 const handler: RequestHandler = async (req, res) => {
-  const id = await UserService.createDevUser(req.body);
-
-  res.send();
+  const response = await UserService.createDevUser(req.body);
+  res.send(response);
 };
 
 router.post("/user/dev", validator("POST", createDevUserSchema), handler);
