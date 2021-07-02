@@ -80,11 +80,6 @@ services:
     ports:
       - 6379:6379
 
-  rabbitmq:
-    image: rabbitmq:3.8
-    ports:
-      - 5672:5672
-
   mongo:
     image: mongo:4.2
     ports:
@@ -92,35 +87,11 @@ services:
     volumes:
     - /data/warpy:/data/db
 
-  feeds:
-    image: rust-dev:1.51.0
-    env_file:
-      dev_env/feeds.env
-    volumes:
-      - ./crates:/crates
-      - ./feeds:/feeds
-      - ./feeds/target/docker:/target
-    working_dir: /feeds
-    command: cargo watch -x run
-
-  streams:
-    image: rust-dev:1.51.0
-    env_file:
-      dev_env/streams.env
-    volumes:
-      - ./crates:/crates
-      - ./streams:/streams
-      - ./streams/target/docker:/target
-    working_dir: /streams
-    command: cargo watch -x run
-
   user:
-    image: rust-dev:1.51.0
+    image: node:16.0.0-alpine
     env_file:
       dev_env/user.env
     volumes:
-      - ./crates:/crates
       - ./user:/user
-      - ./user/target/docker:/target
     working_dir: /user
-    command: cargo watch -x run
+    command: yarn start:dev
