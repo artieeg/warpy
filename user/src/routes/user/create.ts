@@ -6,7 +6,7 @@ import { UserService } from "@app/services";
 const router = express.Router();
 
 const handler: RequestHandler = async (req, res) => {
-  await UserService.createDevUser(req.body);
+  const id = await UserService.createDevUser(req.body);
 
   res.send();
 };
