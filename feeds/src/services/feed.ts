@@ -7,3 +7,7 @@ interface IGetFeed {
 export const getUserFeed = (params: IGetFeed) => {
   //TODO: implement
 };
+
+export const onNewCandidate = (data: any) => {
+  //TODO: implement
+};
