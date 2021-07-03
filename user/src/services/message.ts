@@ -1,5 +1,5 @@
-import { connect, NatsConnection, StringCodec } from "nats";
-import { UserService } from "./services";
+import { connect, JSONCodec, NatsConnection } from "nats";
+import { UserService } from ".";
 
 const NATS = process.env.NATS_ADDR;
 if (!NATS) {
@@ -17,13 +17,13 @@ export const init = async () => {
 const handleUserRequests = async () => {
   const sub = nc.subscribe("user.get");
 
-  const sc = StringCodec();
+  const jc = JSONCodec();
 
   for await (const msg of sub) {
-    const { id } = JSON.parse(sc.decode(msg.data));
+    const { id } = jc.decode(msg.data) as any;
     const user = await UserService.getUserById(id);
 
-    const reply = sc.encode(JSON.stringify(user));
+    const reply = jc.encode(user);
     msg.respond(reply);
   }
 };
