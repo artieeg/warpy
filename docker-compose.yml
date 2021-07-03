@@ -96,6 +96,15 @@ services:
     working_dir: /warpy/streams
     command: yarn start:dev
 
+  user:
+    image: node:16.0.0-alpine
+    env_file:
+      dev_env/user.env
+    volumes:
+      - ./:/warpy
+    working_dir: /warpy/user
+    command: yarn start:dev
+
   feeds:
     image: node:16.0.0-alpine
     env_file:

@@ -16,7 +16,7 @@ if (!PORT) {
 }
 const main = async () => {
   await db.connect();
-  init();
+  await init();
 
   app.listen(Number.parseInt(PORT), `0.0.0.0`, () => {
     console.log(`Started user service on port ${PORT}`);
