@@ -2,8 +2,8 @@ import "module-alias/register";
 
 import express from "express";
 import routes from "@app/routes";
-import * as nats from "@app/nats";
 import * as db from "@app/db";
+import { MessageService } from "@app/services";
 
 const app = express();
 
@@ -14,7 +14,7 @@ if (!PORT) {
 }
 
 const main = async () => {
-  await nats.init();
+  await MessageService.init();
   await db.connect();
 
   app.use(express.json());

@@ -1,5 +1,5 @@
 import { Stream } from "@app/models";
-import { sendNewStreamEvent } from "@app/nats";
+import * as MessageService from "./message";
 import { AccessDeniedError } from "@app/errors";
 
 interface INewStream {
@@ -18,7 +18,7 @@ export const createNewStream = async (params: INewStream) => {
   });
 
   await stream.save();
-  await sendNewStreamEvent(stream);
+  await MessageService.sendNewStreamEvent(stream);
 
   return stream.id;
 };
