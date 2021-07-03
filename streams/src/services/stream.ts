@@ -1,4 +1,6 @@
 import { Stream } from "@app/models";
+import { sendNewStreamEvent } from "@app/nats";
+import { AccessDeniedError } from "@app/errors";
 
 interface INewStream {
   owner: string;
@@ -16,6 +18,21 @@ export const createNewStream = async (params: INewStream) => {
   });
 
   await stream.save();
+  await sendNewStreamEvent(stream);
 
   return stream.id;
+};
+
+export const stopStream = async (id: string) => {
+  //TODO: implement
+};
+
+interface IChangeStreamTitle {
+  id: string;
+  user: string;
+  title: string;
+}
+
+export const changeStreamTitle = async (params: IChangeStreamTitle) => {
+  //TODO: implement
 };

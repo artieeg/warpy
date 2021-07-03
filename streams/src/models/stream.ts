@@ -1,6 +1,14 @@
 import mongoose from "mongoose";
 
-const StreamSchema = new mongoose.Schema({
+export interface IStream {
+  id: string;
+  title: string;
+  owner: string;
+  hub: string;
+  live: boolean;
+}
+
+const StreamSchema = new mongoose.Schema<IStream>({
   title: String,
   owner: mongoose.Schema.Types.ObjectId,
   hub: mongoose.Schema.Types.ObjectId,
@@ -13,4 +21,4 @@ StreamSchema.set("toJSON", {
   virtuals: true,
 });
 
-export const Stream = mongoose.model("Stream", StreamSchema);
+export const Stream = mongoose.model<IStream>("Stream", StreamSchema);

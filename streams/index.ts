@@ -2,6 +2,7 @@ import "module-alias/register";
 
 import express from "express";
 import routes from "@app/routes";
+import * as nats from "@app/nats";
 
 const app = express();
 
@@ -12,6 +13,8 @@ if (!PORT) {
 }
 
 const main = async () => {
+  await nats.init();
+
   app.use(express.json());
   app.use(routes);
 
