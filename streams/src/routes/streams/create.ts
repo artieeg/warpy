@@ -4,7 +4,6 @@ import express, { RequestHandler } from "express";
 import * as yup from "yup";
 
 const createNewStreamSchema = yup.object().shape({
-  owner: yup.string().required(),
   hub: yup.string().required(),
   title: yup.string().required(),
 });
