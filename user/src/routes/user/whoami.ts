@@ -1,6 +1,6 @@
 import express, { RequestHandler } from "express";
 import { UserService } from "@app/services";
-import { auth } from "backend-lib";
+import { auth } from "@app/middlewares";
 
 const handler: RequestHandler = async (_, res) => {
   const id = res.locals.id;

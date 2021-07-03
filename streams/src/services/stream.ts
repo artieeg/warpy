@@ -1,3 +1,5 @@
+import { Stream } from "@app/models";
+
 interface INewStream {
   owner: string;
   title: string;
@@ -7,5 +9,13 @@ interface INewStream {
 export const createNewStream = async (params: INewStream) => {
   const { owner, title, hub } = params;
 
-  return "mock-id";
+  const stream = new Stream({
+    owner,
+    title,
+    hub,
+  });
+
+  await stream.save();
+
+  return stream.id;
 };

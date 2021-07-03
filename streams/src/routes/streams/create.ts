@@ -1,7 +1,13 @@
-import { auth } from "backend-lib";
-
+import { auth, validator } from "@app/middlewares";
 import { StreamService } from "@app/services";
 import express, { RequestHandler } from "express";
+import * as yup from "yup";
+
+const createNewStreamSchema = yup.object().shape({
+  owner: yup.string().required(),
+  hub: yup.string().required(),
+  title: yup.string().required(),
+});
 
 const handler: RequestHandler = async (req, res) => {
   const owner = res.locals.id;
@@ -19,6 +25,8 @@ const handler: RequestHandler = async (req, res) => {
 };
 
 const router = express.Router();
-router.post("/streams", auth, handler);
+const middlewares = [auth, validator("POST", createNewStreamSchema)];
+
+router.post("/streams", middlewares, handler);
 
 export default router;
