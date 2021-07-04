@@ -1,6 +1,8 @@
 export interface IStats {
   id: string;
-  claps: number;
   participants: number;
+  claps: number;
   started: number;
 }
+
+export const getAllStats = async () => {};

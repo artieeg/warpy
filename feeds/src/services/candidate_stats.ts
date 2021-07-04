@@ -1,3 +1,4 @@
+import { IStats } from "@app/models";
 import redis from "redis";
 
 const URL = process.env.STATS_CACHE || "redis://127.0.0.1:6379/2";
@@ -10,7 +11,23 @@ const client = redis.createClient({
 
 export const connect = () => {};
 
-const addScore = async (streamId: string, hub?: string) => {
+export const updateScore = async (
+  streamId: string,
+  score: number,
+  hub?: string
+) => {
+  return new Promise<void>((resolve) => {
+    client.zadd("main-feed", "XX", score, streamId);
+
+    if (hub) {
+      client.zadd(hub, "XX", score, streamId);
+    }
+
+    resolve();
+  });
+};
+
+export const addScore = async (streamId: string, hub?: string) => {
   return new Promise<void>((resolve) => {
     client.zadd("main-feed", "NX", 0, streamId);
 
@@ -34,6 +51,25 @@ const initCandidateStats = async (streamId: string) => {
     });
 
     resolve();
+  });
+};
+
+export const getStats = async (streamId: string): Promise<IStats> => {
+  return new Promise((resolve, reject) => {
+    client.smembers(streamId, (err, [claps, participants, started]) => {
+      if (err) {
+        reject(err);
+      }
+
+      const stats: IStats = {
+        claps: Number.parseInt(claps),
+        participants: Number.parseInt(participants),
+        started: Number.parseInt(started),
+        id: streamId,
+      };
+
+      resolve(stats);
+    });
   });
 };
 

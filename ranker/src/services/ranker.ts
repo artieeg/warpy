@@ -3,7 +3,8 @@ interface IRankParams {
   claps: number;
   duration: number;
 }
-export const rank = (params: IRankParams) => {
+
+export const calculateNewRank = (params: IRankParams) => {
   /* New streams need to be boosted in the feed.
      This defines time in seconds until the effect starts
      to wear down. */
