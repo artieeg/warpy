@@ -10,6 +10,6 @@ export const connect = () => {
   });
 };
 
-export const getServedStreams = async (): Promise<string[]> => {
+export const getServedStreams = async (user: string): Promise<string[]> => {
   return [];
 };

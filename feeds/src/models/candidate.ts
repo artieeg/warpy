@@ -1,10 +1,15 @@
 import mongoose from "mongoose";
+import { IParticipant } from "./participant";
 
 export interface ICandidate {
   id: string;
   owner: string;
   title: string;
   hub: string;
+}
+
+export interface IStream extends ICandidate {
+  participants: IParticipant[];
 }
 
 const CandidateSchema = new mongoose.Schema<ICandidate>({

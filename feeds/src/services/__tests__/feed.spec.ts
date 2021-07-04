@@ -3,7 +3,8 @@ import * as StatsCacheService from "../stats_cache";
 import * as MessageService from "../message";
 import {
   createCandidateFixture,
-  createStatsFixture,
+  createStreamFixture,
+  createParticipantFixture,
   createUserFixture,
 } from "@app/__fixtures__";
 import { Candidate, Participant } from "@app/models";
@@ -18,7 +19,7 @@ describe("feed service", () => {
   });
 
   it("builds feed", async () => {
-    Candidate.prototype.findMany = jest
+    Candidate.find = jest
       .fn()
       .mockResolvedValue([
         createCandidateFixture({ id: "id1" }),
@@ -28,8 +29,14 @@ describe("feed service", () => {
         createCandidateFixture({ id: "id5" }),
       ]);
 
+    const participant1 = createParticipantFixture({ stream: "id5" });
+    const participant2 = createParticipantFixture({ stream: "id1" });
+    const participant3 = createParticipantFixture({ stream: "id3" });
+
     //Can be empty for this test
-    Participant.prototype.findMany = jest.fn().mockResolvedValue([]);
+    Participant.find = jest
+      .fn()
+      .mockResolvedValue([participant1, participant2, participant3]);
 
     jest
       .spyOn(FeedsCacheService, "getServedStreams")
@@ -52,10 +59,10 @@ describe("feed service", () => {
       user: "test-user-id",
     });
 
-    expect(result).toBe([
-      createCandidateFixture({ id: "id5" }),
-      createCandidateFixture({ id: "id1" }),
-      createCandidateFixture({ id: "id3" }),
+    expect(result).toEqual([
+      createStreamFixture({ id: "id5", participants: [participant1] }),
+      createStreamFixture({ id: "id1", participants: [participant2] }),
+      createStreamFixture({ id: "id3", participants: [participant3] }),
     ]);
   });
 
