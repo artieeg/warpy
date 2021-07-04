@@ -1,5 +1,6 @@
 import { Stream } from "@app/models";
 import * as MessageService from "./message";
+import mongoose from "mongoose";
 import { AccessDeniedError } from "@app/errors";
 
 interface INewStream {
@@ -23,8 +24,15 @@ export const createNewStream = async (params: INewStream) => {
   return stream.id;
 };
 
-export const stopStream = async (id: string) => {
-  //TODO: implement
+export const stopStream = async (id: string, owner: string) => {
+  const result = await Stream.updateOne(
+    { _id: mongoose.Types.ObjectId(id), owner: mongoose.Types.ObjectId(owner) },
+    { $set: { live: false } }
+  );
+
+  if (result.nModified === 1) {
+    await MessageService.sendStreamEndedEvent(id);
+  }
 };
 
 interface IChangeStreamTitle {

@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
 export interface IStream {
-  id: string;
+  id: mongoose.Types.ObjectId;
   title: string;
-  owner: string;
-  hub: string;
+  owner: mongoose.Types.ObjectId;
+  hub: mongoose.Types.ObjectId;
   live: boolean;
 }
 

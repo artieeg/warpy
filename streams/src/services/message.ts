@@ -20,6 +20,7 @@ export const sendNewStreamEvent = async (stream: IStream) => {
 };
 
 export const sendStreamEndedEvent = async (streamId: string) => {};
+
 export const sendStreamTitleChangeEvent = async (
   id: string,
   title: string

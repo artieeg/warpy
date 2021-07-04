@@ -1,2 +1,3 @@
 import create from "./create";
-export default [create];
+import del from "./delete";
+export default [create, del];
