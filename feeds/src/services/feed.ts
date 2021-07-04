@@ -1,5 +1,5 @@
-import { Candidate } from "@app/models";
-import { StatsCacheService } from ".";
+import { Candidate, Participant } from "@app/models";
+import { MessageService, StatsCacheService } from ".";
 
 interface IGetFeed {
   user: string;
@@ -12,14 +12,23 @@ export const getUserFeed = (params: IGetFeed) => {
 };
 
 export const onNewCandidate = async (data: any) => {
-  const { id, title, hub, owner } = data;
+  const { id, title, hub, owner: ownerId } = data;
+
+  const owner = await MessageService.getUser(ownerId);
 
   const candidate = new Candidate({
     id,
     title,
     hub,
-    owner,
+    owner: ownerId,
   });
 
-  //TODO: implement
+  const participant = new Participant({
+    ...owner,
+    role: "streamer",
+  });
+
+  await Promise.all([candidate.save(), participant.save()]);
+
+  await StatsCacheService.createStats(candidate.id);
 };

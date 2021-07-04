@@ -18,6 +18,8 @@ describe("feed service", () => {
     const candidate = createCandidateFixture({ owner: streamOwnerId });
     await FeedService.onNewCandidate(candidate);
 
+    expect(MessageService.getUser).toBeCalledWith(candidate.owner);
+
     expect(Candidate.prototype.constructor).toBeCalledWith(candidate);
     expect(Candidate.prototype.save).toBeCalled();
     expect(Participant.prototype.constructor).toBeCalledWith({
@@ -26,7 +28,6 @@ describe("feed service", () => {
     });
     expect(Participant.prototype.save).toBeCalled();
 
-    expect(MessageService.getUser).toBeCalledWith(candidate.owner);
     expect(StatsCacheService.createStats).toBeCalled();
   });
 });
