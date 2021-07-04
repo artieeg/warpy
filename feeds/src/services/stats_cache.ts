@@ -1,3 +1,4 @@
+import { IStats } from "@app/models";
 import redis, { RedisClient } from "redis";
 
 let client: RedisClient;
@@ -12,4 +13,11 @@ export const connect = () => {
 
 export const createStats = async (streamId: string) => {
   //TODO: implement
+};
+
+/*
+ * Returns sorted by score stream ids from Redis sorted set
+ */
+export const getSortedStreamIds = async (): Promise<String[]> => {
+  return [];
 };

@@ -1,4 +1,4 @@
-import { ICandidate, IUser } from "@app/models";
+import { ICandidate, IStats, IUser } from "@app/models";
 export const createCandidateFixture = (data: Partial<ICandidate>) => {
   const fixture = {
     id: "test-id",
@@ -20,4 +20,15 @@ export const createUserFixture = (data: Partial<IUser>) => {
   };
 
   return { ...fixture, ...data };
+};
+
+export const createStatsFixture = (data: Partial<IStats>) => {
+  const fixture = {
+    id: "test-stream-id",
+    claps: 1000,
+    participants: 30,
+    score: 1.3,
+  };
+
+  return { ...fixture, ...data } as IStats;
 };

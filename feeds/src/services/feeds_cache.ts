@@ -9,3 +9,7 @@ export const connect = () => {
     url: URL,
   });
 };
+
+export const getServedStreams = async (): Promise<string[]> => {
+  return [];
+};

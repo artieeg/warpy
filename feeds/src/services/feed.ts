@@ -3,11 +3,10 @@ import { MessageService, StatsCacheService } from ".";
 
 interface IGetFeed {
   user: string;
-  hub: string;
-  page: number;
+  hub?: string;
 }
 
-export const getUserFeed = (params: IGetFeed) => {
+export const getFeed = async (params: IGetFeed) => {
   //TODO: implement
 };
 
