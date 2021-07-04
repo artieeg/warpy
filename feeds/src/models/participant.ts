@@ -10,7 +10,7 @@ export interface IUser {
 
 export interface IParticipant extends IUser {
   role: "speaker" | "streamer" | "viewer";
-  stream: string;
+  stream: mongoose.Types.ObjectId;
 }
 
 const ParticipantSchema = new mongoose.Schema<IParticipant>({
@@ -19,7 +19,7 @@ const ParticipantSchema = new mongoose.Schema<IParticipant>({
   username: String,
   avatar: String,
   role: String,
-  stream: String,
+  stream: mongoose.Schema.Types.ObjectId,
 });
 
 ParticipantSchema.set("toJSON", {

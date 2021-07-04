@@ -1,5 +1,6 @@
 import { Candidate, Participant } from "@app/models";
 import { FeedsCacheService, MessageService, CandidateStatsService } from ".";
+import mongoose from "mongoose";
 
 interface IGetFeed {
   user: string;
@@ -45,7 +46,7 @@ export const onNewCandidate = async (data: any) => {
   const owner = await MessageService.getUser(ownerId);
 
   const candidate = new Candidate({
-    id,
+    _id: id,
     title,
     hub,
     owner: ownerId,
@@ -53,10 +54,22 @@ export const onNewCandidate = async (data: any) => {
 
   const participant = new Participant({
     ...owner,
+    stream: id,
     role: "streamer",
   });
 
   await Promise.all([candidate.save(), participant.save()]);
 
   await CandidateStatsService.createStats(candidate.id);
+};
+
+export const onRemoveCandidate = async (data: any) => {
+  const { id } = data;
+
+  await Promise.all([
+    Candidate.deleteOne({ _id: id }),
+    Participant.deleteMany({ stream: mongoose.Types.ObjectId(id) }),
+  ]);
+
+  await CandidateStatsService.deleteStats(id);
 };

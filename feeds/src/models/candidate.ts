@@ -15,7 +15,7 @@ export interface IStream extends ICandidate {
 const CandidateSchema = new mongoose.Schema<ICandidate>({
   owner: mongoose.Schema.Types.ObjectId,
   hub: mongoose.Schema.Types.ObjectId,
-  title: mongoose.Schema.Types.ObjectId,
+  title: String,
 });
 
 CandidateSchema.set("toJSON", {

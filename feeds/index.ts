@@ -18,6 +18,7 @@ const main = async () => {
   await MessageService.init();
 
   MessageService.on("new-stream", FeedService.onNewCandidate);
+  MessageService.on("stream-end", FeedService.onRemoveCandidate);
 
   const app = express();
   app.use(express.json());

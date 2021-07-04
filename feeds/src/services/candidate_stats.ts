@@ -39,6 +39,18 @@ export const addHub = async (hub?: string) => {
   });
 };
 
+export const getHubs = async (): Promise<string[]> => {
+  return new Promise((resolve, reject) => {
+    client.smembers("hubs", (err, hubs) => {
+      if (err) {
+        return reject(err);
+      }
+
+      resolve(hubs);
+    });
+  });
+};
+
 export const addScore = async (streamId: string, hub?: string) => {
   return new Promise<void>((resolve) => {
     client.zadd("main-feed", "NX", 0, streamId);
@@ -94,6 +106,18 @@ export const createStats = async (streamId: string, hub?: string) => {
     initCandidateStats(streamId),
     addHub(hub),
   ]);
+};
+
+export const deleteStats = async (streamId: string) => {
+  const hubs = await getHubs();
+
+  client.zrem("main-feed", streamId);
+
+  for (const hub of hubs) {
+    client.zrem(hub, streamId);
+  }
+
+  client.del(streamId);
 };
 
 /*
