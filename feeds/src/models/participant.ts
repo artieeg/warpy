@@ -1,11 +1,14 @@
 import mongoose from "mongoose";
 
-export interface IParticipant {
+export interface IUser {
   id: string;
   last_name: string;
   first_name: string;
   username: string;
   avatar: string;
+}
+
+export interface IParticipant extends IUser {
   role: "speaker" | "streamer" | "viewer";
 }
 
