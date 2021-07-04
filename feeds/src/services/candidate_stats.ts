@@ -24,7 +24,10 @@ const addScore = async (streamId: string, hub?: string) => {
 
 const initCandidateStats = async (streamId: string) => {
   return new Promise<void>((resolve, reject) => {
-    client.sadd(streamId, "0", "0", (err) => {
+    const claps = "0";
+    const participants = "0";
+    const started = (Date.now() / 1000).toString();
+    client.sadd(streamId, claps, participants, started, (err) => {
       if (err) {
         reject(err);
       }
@@ -48,7 +51,7 @@ export const getSortedStreamIds = async (hub?: string): Promise<string[]> => {
   return new Promise((resolve, reject) => {
     const key = hub || "scores";
 
-    client.zrangebyscore(key, 0, 1, (err, result) => {
+    client.zrangebyscore(key, 0, "+inf", (err, result) => {
       if (err) {
         return reject(err);
       }
