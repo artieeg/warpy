@@ -13,3 +13,8 @@ export const connect = () => {
 export const getServedStreams = async (user: string): Promise<string[]> => {
   return [];
 };
+
+export const addServedStreams = async (
+  user: string,
+  servedStreams: string[]
+) => {};

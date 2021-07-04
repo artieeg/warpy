@@ -1,5 +1,5 @@
 import * as FeedService from "../feed";
-import * as StatsCacheService from "../stats_cache";
+import * as CandidateStatsService from "../candidate_stats";
 import * as MessageService from "../message";
 import {
   createCandidateFixture,
@@ -33,7 +33,8 @@ describe("feed service", () => {
     const participant2 = createParticipantFixture({ stream: "id1" });
     const participant3 = createParticipantFixture({ stream: "id3" });
 
-    //Can be empty for this test
+    jest.spyOn(FeedsCacheService, "addServedStreams");
+
     Participant.find = jest
       .fn()
       .mockResolvedValue([participant1, participant2, participant3]);
@@ -43,7 +44,7 @@ describe("feed service", () => {
       .mockResolvedValue(["id2", "id4"]);
 
     jest
-      .spyOn(StatsCacheService, "getSortedStreamIds")
+      .spyOn(CandidateStatsService, "getSortedStreamIds")
       .mockResolvedValue([
         "id2",
         "id4",
@@ -64,13 +65,15 @@ describe("feed service", () => {
       createStreamFixture({ id: "id1", participants: [participant2] }),
       createStreamFixture({ id: "id3", participants: [participant3] }),
     ]);
+
+    expect(FeedsCacheService.addServedStreams).toBeCalled();
   });
 
   it("handles new candidate", async () => {
     const streamOwnerId = "test-stream-owner";
     const owner = createUserFixture({ id: streamOwnerId });
 
-    jest.spyOn(StatsCacheService, "createStats");
+    jest.spyOn(CandidateStatsService, "createStats");
     jest.spyOn(MessageService, "getUser").mockResolvedValue(owner);
 
     const candidate = createCandidateFixture({ owner: streamOwnerId });
@@ -86,6 +89,6 @@ describe("feed service", () => {
     });
     expect(Participant.prototype.save).toBeCalled();
 
-    expect(StatsCacheService.createStats).toBeCalled();
+    expect(CandidateStatsService.createStats).toBeCalled();
   });
 });

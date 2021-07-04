@@ -18,6 +18,6 @@ export const createStats = async (streamId: string) => {
 /*
  * Returns sorted by score stream ids from Redis sorted set
  */
-export const getSortedStreamIds = async (): Promise<string[]> => {
+export const getSortedStreamIds = async (hub?: string): Promise<string[]> => {
   return [];
 };

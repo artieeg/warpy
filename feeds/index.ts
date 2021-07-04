@@ -4,7 +4,7 @@ import express from "express";
 import {
   FeedService,
   FeedsCacheService,
-  StatsCacheService,
+  CandidateStatsService,
   MessageService,
   DatabaseService,
 } from "@app/services";
@@ -13,7 +13,7 @@ const PORT = Number.parseInt(process.env.PORT || "10000");
 
 const main = async () => {
   FeedsCacheService.connect();
-  StatsCacheService.connect();
+  CandidateStatsService.connect();
   await DatabaseService.connect();
   await MessageService.init();
 

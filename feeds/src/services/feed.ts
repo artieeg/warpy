@@ -1,27 +1,16 @@
 import { Candidate, Participant } from "@app/models";
-import { FeedsCacheService, MessageService, StatsCacheService } from ".";
-import mongoose from "mongoose";
+import { FeedsCacheService, MessageService, CandidateStatsService } from ".";
 
 interface IGetFeed {
   user: string;
   hub?: string;
 }
 
-const getQuery = (hub?: string) => {
-  if (hub) {
-    return {
-      hub: mongoose.Types.ObjectId(hub),
-    };
-  }
-
-  return {};
-};
-
 export const getFeed = async (params: IGetFeed) => {
   const { user, hub } = params;
 
   const servedStreams = await FeedsCacheService.getServedStreams(user);
-  const streamIds = await StatsCacheService.getSortedStreamIds();
+  const streamIds = await CandidateStatsService.getSortedStreamIds(hub);
 
   const candidateIds = [];
   for (const id of streamIds) {
@@ -45,6 +34,8 @@ export const getFeed = async (params: IGetFeed) => {
     participants: participants.filter((p: any) => p.stream == id),
   }));
 
+  await FeedsCacheService.addServedStreams(user, candidateIds);
+
   return feed;
 };
 
@@ -67,5 +58,5 @@ export const onNewCandidate = async (data: any) => {
 
   await Promise.all([candidate.save(), participant.save()]);
 
-  await StatsCacheService.createStats(candidate.id);
+  await CandidateStatsService.createStats(candidate.id);
 };
