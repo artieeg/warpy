@@ -27,6 +27,18 @@ export const updateScore = async (
   });
 };
 
+export const addHub = async (hub?: string) => {
+  return new Promise<void>((resolve) => {
+    if (hub) {
+      client.sadd("hubs", hub, () => {
+        resolve();
+      });
+    } else {
+      resolve();
+    }
+  });
+};
+
 export const addScore = async (streamId: string, hub?: string) => {
   return new Promise<void>((resolve) => {
     client.zadd("main-feed", "NX", 0, streamId);
@@ -77,7 +89,11 @@ export const getStats = async (streamId: string): Promise<IStats> => {
  * Initialize stats for candidate
  */
 export const createStats = async (streamId: string, hub?: string) => {
-  return Promise.all([addScore(streamId, hub), initCandidateStats(streamId)]);
+  return Promise.all([
+    addScore(streamId, hub),
+    initCandidateStats(streamId),
+    addHub(hub),
+  ]);
 };
 
 /*

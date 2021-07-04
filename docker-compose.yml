@@ -113,3 +113,13 @@ services:
       - ./:/warpy
     working_dir: /warpy/feeds
     command: yarn start:dev
+
+  ranker:
+    image: node:16.0.0-alpine
+    env_file:
+      dev_env/ranker.env
+    volumes:
+      - ./:/warpy
+    working_dir: /warpy/ranker
+    command: yarn start:dev
+
