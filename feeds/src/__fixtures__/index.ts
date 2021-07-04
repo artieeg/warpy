@@ -46,7 +46,6 @@ export const createStatsFixture = (data: Partial<IStats>) => {
     id: "test-stream-id",
     claps: 1000,
     participants: 30,
-    score: 1.3,
   };
 
   return { ...fixture, ...data } as IStats;
