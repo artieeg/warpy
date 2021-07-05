@@ -20,12 +20,9 @@ export const getServedStreams = async (user: string): Promise<string[]> => {
   }
 };
 
-export const addServedStreams = async (
-  user: string,
-  servedStreams: string[]
-) => {
+const addServedStream = async (user: string, streamId: string) => {
   return new Promise<void>((resolve, reject) => {
-    client.sadd(user, servedStreams, (err) => {
+    client.sadd(user, streamId, (err) => {
       if (err) {
         return reject(err);
       }
@@ -33,4 +30,13 @@ export const addServedStreams = async (
       return resolve();
     });
   });
+};
+
+export const addServedStreams = async (
+  user: string,
+  servedStreams: string[]
+) => {
+  const promises = servedStreams.map((id) => addServedStream(user, id));
+
+  await Promise.all(promises);
 };

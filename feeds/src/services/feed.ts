@@ -1,4 +1,4 @@
-import { Candidate, Participant } from "@app/models";
+import { Candidate, Participant, IParticipant } from "@app/models";
 import { FeedsCacheService, MessageService, CandidateStatsService } from ".";
 import mongoose from "mongoose";
 
@@ -25,15 +25,31 @@ export const getFeed = async (params: IGetFeed) => {
   }
 
   const [candidates, participants] = await Promise.all([
-    Candidate.find({ id: { $in: candidateIds } }),
+    Candidate.find({ _id: { $in: candidateIds } }),
     Participant.find({ stream: { $in: candidateIds } }),
   ]);
 
-  //TODO: ugly, change later
-  const feed = candidateIds.map((id) => ({
-    ...candidates.find((c: any) => c.id == id),
-    participants: participants.filter((p: any) => p.stream == id),
-  }));
+  console.log(candidates);
+
+  //TODO: too ugly, change later
+  const feed = candidateIds
+    .map((id) => {
+      const candidate = candidates.find((c: any) => c.id == id);
+
+      if (!candidate) {
+        return null;
+      }
+
+      const currentParticipants = participants.filter(
+        (p: IParticipant) => p.stream.toString() == id
+      );
+
+      return {
+        ...candidate.toJSON(),
+        participants: currentParticipants,
+      };
+    })
+    .filter((candidate) => candidate !== null);
 
   await FeedsCacheService.addServedStreams(user, candidateIds);
 

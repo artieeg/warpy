@@ -125,7 +125,7 @@ export const deleteStats = async (streamId: string) => {
  */
 export const getSortedStreamIds = async (hub?: string): Promise<string[]> => {
   return new Promise((resolve, reject) => {
-    const key = hub || "scores";
+    const key = hub || "main-feed";
 
     client.zrangebyscore(key, 0, "+inf", (err, result) => {
       if (err) {
