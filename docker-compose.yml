@@ -123,3 +123,12 @@ services:
     working_dir: /warpy/ranker
     command: yarn start:dev
 
+  ws_gateway:
+    image: node:16.0.0-alpine
+    env_file:
+      dev_env/ws_gateway.env
+    volumes:
+      - ./:/warpy
+    working_dir: /warpy/ws_gateway
+    command: yarn start:dev
+

@@ -1,6 +1,7 @@
+import { Context, Handler } from "@app/types";
 import { jwt } from "@app/utils";
 
-export const onJoinStream = async (data: any) => {
+export const onJoinStream: Handler = async (data: any, context?: Context) => {
   const { token, stream_id } = data;
 
   try {
