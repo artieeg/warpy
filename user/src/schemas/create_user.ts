@@ -5,5 +5,4 @@ export const createDevUserSchema = yup.object().shape({
   last_name: yup.string().required(),
   first_name: yup.string().required(),
   email: yup.string().required(),
-  password: yup.string().required(),
 });

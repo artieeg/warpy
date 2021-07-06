@@ -4,9 +4,9 @@ import { auth } from "@app/middlewares";
 
 const handler: RequestHandler = async (_, res) => {
   const id = res.locals.id;
-  const userData = await UserService.getUserById(id);
+  const user = await UserService.getUserById(id);
 
-  res.send(userData);
+  res.send({ user });
 };
 
 const router = express.Router();

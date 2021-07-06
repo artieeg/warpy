@@ -43,7 +43,7 @@ class APIService {
     var response = await _client.get(url, headers: _getHeaders());
 
     var body = jsonDecode(response.body);
-    var user = User.fromMap(body['result']['user']);
+    var user = User.fromMap(body['user']);
 
     return user;
   }
@@ -54,6 +54,8 @@ class APIService {
     var response = await _client.post(url,
         body: json.encode({"title": title, "hub": hub}),
         headers: _getHeaders());
+
+    print("RECEIVED ${response.body}");
 
     return jsonDecode(response.body)["stream_id"];
   }
@@ -76,6 +78,8 @@ class APIService {
   }
 
   Map<String, String> _getHeaders() {
+    print("ACCESS TOKEN $_accessToken");
+
     return {"content-type": "application/json", "authorization": _accessToken};
   }
 }

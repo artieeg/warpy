@@ -21,6 +21,8 @@ class DevSignUpViewModel extends ChangeNotifier {
   Future<void> signUp() async {
     final response = await signUpService.createDevUser(_getPayload());
 
+    print("SIGN UP RESPONSE ${response.toString()}");
+
     await storageService.saveAccessToken(response.access);
     await storageService.saveRefreshToken(response.refresh);
   }

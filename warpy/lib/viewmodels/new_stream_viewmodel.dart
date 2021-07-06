@@ -44,7 +44,7 @@ class NewStreamViewModel extends ChangeNotifier {
 
   void goLive() async {
     var streamTitle = streamTitleController.text;
-    var hubId = "test-hub-id";
+    var hubId = "60e3fb246c575a0041601231";
 
     streamId = await streamService.createStream(streamTitle, hubId);
 

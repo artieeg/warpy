@@ -27,8 +27,8 @@ export const createDevUser = async (data: any) => {
 
   return {
     id: user.id,
-    access_token: accessToken,
-    refresh_token: refreshToken,
+    access: accessToken,
+    refresh: refreshToken,
   };
 };
 
