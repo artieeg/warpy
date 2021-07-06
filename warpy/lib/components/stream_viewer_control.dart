@@ -34,7 +34,8 @@ class StreamViewerControl extends StatelessWidget {
               ],
             ),
             SizedBox(height: 16),
-            Container(color: Colors.green, height: 50, width: 30),
+            ParticipantsRow(participants: stream.participants)
+            //Container(color: Colors.green, height: 50, width: 30),
           ]),
     );
   }
