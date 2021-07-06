@@ -5,13 +5,14 @@ import 'package:flutter_ion/flutter_ion.dart' as ion;
 import 'package:warpy/components/components.dart';
 import 'package:warpy/constants.dart';
 import 'package:warpy/locator.dart';
+import 'package:warpy/models/stream.dart';
 import 'package:warpy/services/services.dart';
 
 class Stream extends StatefulWidget {
   final Function onTap;
-  final String streamId;
+  final WarpyStream stream;
 
-  Stream({required this.onTap, required this.streamId});
+  Stream({required this.onTap, required this.stream});
 
   @override
   _StreamState createState() => _StreamState();
@@ -37,7 +38,7 @@ class _StreamState extends State<Stream> {
     await renderer.initialize();
     signal = ion.GRPCWebSignal(Constants.ION);
     client = await ion.Client.create(
-        sid: widget.streamId, uid: user.id, signal: signal);
+        sid: widget.stream.id, uid: user.id, signal: signal);
 
     client.ontrack = (track, ion.RemoteStream remoteStream) async {
       if (track.kind == 'video') {
@@ -55,7 +56,10 @@ class _StreamState extends State<Stream> {
         widget.onTap();
       },
       child: Stack(
-        children: [_renderRemoteVideo(size), StreamViewerControl()],
+        children: [
+          _renderRemoteVideo(size),
+          StreamViewerControl(stream: widget.stream)
+        ],
       ),
     );
   }
@@ -66,13 +70,8 @@ class _StreamState extends State<Stream> {
         child: SizedBox(
             width: size.width,
             height: size.height,
-            child: Container(color: Colors.teal)
-
-            /*
-            RTCVideoView(renderer,
-                objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover)
-                */
-            ));
+            child: RTCVideoView(renderer,
+                objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover)));
   }
 
   @override

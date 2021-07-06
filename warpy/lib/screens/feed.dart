@@ -29,10 +29,9 @@ class FeedScreen extends StatelessWidget {
                                 color: Colors.red,
                                 child: Center(child: Text("No Streams")))))
                     : Stream(
-                        streamId: model.streams[0].id,
+                        stream: model.streams[0],
                         onTap: () {
                           _onPause(context);
-                        })
-                )));
+                        }))));
   }
 }

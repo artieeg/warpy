@@ -23,7 +23,7 @@ class APIService {
   }
 
   Future<List<WarpyStream>> getStreams() async {
-    var url = _getUri("feed");
+    var url = _getUri("feeds");
     var response = await _client.get(url, headers: _getHeaders());
     var streamsData = jsonDecode(response.body)['streams'] as List<dynamic>;
 

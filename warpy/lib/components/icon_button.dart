@@ -20,6 +20,6 @@ class RoundIconButton extends StatelessWidget {
         onTap: onTap,
         width: width,
         height: height,
-        child: Icon(icon, size: this.width - 10, color: Colors.white));
+        child: Icon(icon, size: this.width - 20, color: Colors.white));
   }
 }
