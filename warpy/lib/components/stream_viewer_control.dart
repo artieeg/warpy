@@ -34,7 +34,14 @@ class StreamViewerControl extends StatelessWidget {
               ],
             ),
             SizedBox(height: 16),
-            ParticipantsRow(participants: stream.participants)
+            Row(
+              children: [
+                Expanded(
+                    child: ParticipantsRow(participants: stream.participants)),
+                RoundIconButton(
+                    onTap: () {}, width: 50, height: 50, icon: WarpyIcons.hand)
+              ],
+            )
             //Container(color: Colors.green, height: 50, width: 30),
           ]),
     );
