@@ -1,0 +1,29 @@
+{
+  "name": "conversations",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "npx tsc -p ./tsconfig.json",
+    "start": "node build/index.js",
+    "start:dev": "npx nodemon index.ts"
+  },
+  "_moduleAliases": {
+    "@app": "./src"
+  },
+  "dependencies": {
+    "module-alias": "^2.2.2",
+    "nats": "^2.1.0",
+    "ws": "^7.5.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.23",
+    "@types/node": "^16.0.0",
+    "@types/ws": "^7.4.6",
+    "jest": "^27.0.6",
+    "nodemon": "^2.0.9",
+    "ts-jest": "^27.0.3",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.5"
+  }
+}

@@ -42,7 +42,6 @@ class StreamViewerControl extends StatelessWidget {
                     onTap: () {}, width: 50, height: 50, icon: WarpyIcons.hand)
               ],
             )
-            //Container(color: Colors.green, height: 50, width: 30),
           ]),
     );
   }
