@@ -13,12 +13,22 @@ export const init = async () => {
 
   handleNewStreamEvent();
   handleStreamEndEvent();
+  handleUserDisconnect();
 };
 
-type Events = "new-stream" | "stream-end";
+type Events = "stream-new" | "stream-end" | "user-disconnect";
 
 export const on = (event: Events, handler: any) => {
   eventEmitter.on(event, handler);
+};
+
+const handleUserDisconnect = async () => {
+  const sub = nc.subscribe("user.disconnected");
+
+  for await (const msg of sub) {
+    const { id } = jc.decode(msg.data) as any;
+    eventEmitter.emit("user-disconnected", id);
+  }
 };
 
 const handleNewStreamEvent = async () => {
@@ -26,7 +36,7 @@ const handleNewStreamEvent = async () => {
 
   for await (const msg of sub) {
     const data = jc.decode(msg.data);
-    eventEmitter.emit("new-stream", data);
+    eventEmitter.emit("stream-new", data);
   }
 };
 

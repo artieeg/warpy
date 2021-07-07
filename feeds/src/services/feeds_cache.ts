@@ -40,3 +40,7 @@ export const addServedStreams = async (
 
   await Promise.all(promises);
 };
+
+export const removeServedStreams = async (user: string) => {
+  client.del(user);
+};

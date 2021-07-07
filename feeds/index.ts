@@ -17,8 +17,9 @@ const main = async () => {
   await DatabaseService.connect();
   await MessageService.init();
 
-  MessageService.on("new-stream", FeedService.onNewCandidate);
+  MessageService.on("stream-new", FeedService.onNewCandidate);
   MessageService.on("stream-end", FeedService.onRemoveCandidate);
+  MessageService.on("user-disconnect", FeedsCacheService.removeServedStreams);
 
   const app = express();
   app.use(express.json());
