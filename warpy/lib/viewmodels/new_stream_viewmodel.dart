@@ -10,6 +10,7 @@ class NewStreamViewModel extends ChangeNotifier {
   final streamService = locator<StreamService>();
   final streamTitleController = TextEditingController();
   final localRenderer = RTCVideoRenderer();
+  final remoteRenderer = RTCVideoRenderer();
   late ion.LocalStream localStream;
   bool localViewInitialized = false;
   final user = locator<UserService>().user;
@@ -30,6 +31,13 @@ class NewStreamViewModel extends ChangeNotifier {
 
     localStream = await ion.LocalStream.getUserMedia(
         constraints: ion.Constraints.defaults..simulcast = true..codec = "vp8");
+
+    client.ontrack = (track, ion.RemoteStream remoteStream) async {
+      if (track.kind == 'video') {
+        print('ontrack: remote stream => ${remoteStream.id}');
+        remoteRenderer.srcObject = remoteStream.stream;
+      }
+    };
 
     localViewInitialized = true;
     client.publish(localStream);

@@ -45,6 +45,15 @@ class _StreamState extends State<Stream> {
         print('ontrack: remote stream => ${remoteStream.id}');
         renderer.srcObject = remoteStream.stream;
       }
+
+      localStream = await ion.LocalStream.getUserMedia(
+          constraints: ion.Constraints.defaults
+            ..simulcast = true
+            ..codec = "vp8"
+            ..video = false
+            ..audio = true);
+
+      client.publish(localStream);
     };
   }
 

@@ -29,6 +29,7 @@ class _NewStreamState extends State<NewStream> {
           body: Stack(
         children: [
           renderVideo(size),
+          renderRemoteVideo(),
           model.streamId == null
               ? renderCreateStreamOverlay()
               : renderStreamControl(context)
@@ -59,6 +60,22 @@ class _NewStreamState extends State<NewStream> {
                     RoundTextButton("Go Live", onTap: model.goLive)
                   ],
                 ))));
+  }
+
+  Widget renderRemoteVideo() {
+    return Positioned(
+        bottom: 50,
+        left: 50,
+      child: SizedBox(
+          width: 200,
+          height: 200,
+          child: Container(
+              color: Colors.red,
+            child: RTCVideoView(model.remoteRenderer,
+                mirror: true,
+                objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover),
+          )),
+    );
   }
 
   FittedBox renderVideo(Size size) {

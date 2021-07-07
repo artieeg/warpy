@@ -2,7 +2,7 @@ import "module-alias/register";
 
 import { onAuth, onJoinStream } from "@app/handlers";
 import { IMessage } from "@app/models";
-import { PingPongService } from "@app/services";
+import { MessageService, PingPongService } from "@app/services";
 import { Context, Handlers } from "@app/types";
 import ws from "ws";
 
@@ -17,22 +17,30 @@ const handlers: Handlers = {
   "join-stream": onJoinStream,
 };
 
-server.on("connection", (ws) => {
-  const context: Context = { ws };
+const main = async () => {
+  await MessageService.init();
 
-  ws.on("message", (msg) => {
-    const message: IMessage = JSON.parse(msg.toString());
+  console.log("Started ws gateway service");
 
-    const { event, data } = message;
+  server.on("connection", (ws) => {
+    const context: Context = { ws };
 
-    handlers[event](data);
+    ws.on("message", (msg) => {
+      const message: IMessage = JSON.parse(msg.toString());
+
+      const { event, data } = message;
+
+      handlers[event](data);
+    });
+
+    ws.on("pong", () => {
+      if (context.user) {
+        PingPongService.updatePing(context.user);
+      }
+
+      ws.pong();
+    });
   });
+};
 
-  ws.on("pong", () => {
-    if (context.user) {
-      PingPongService.updatePing(context.user);
-    }
-
-    ws.pong();
-  });
-});
+main();

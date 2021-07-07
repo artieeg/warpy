@@ -1,3 +1,17 @@
-import nats from "nats";
+import { connect, JSONCodec, NatsConnection } from "nats";
 
-export const onUserDisconnected = (user: string) => {};
+const NATS = process.env.NATS_ADDR;
+if (!NATS) {
+  throw new Error("No nats addr specified");
+}
+
+let nc: NatsConnection;
+const jc = JSONCodec();
+
+export const init = async () => {
+  nc = await connect({ servers: [NATS] });
+};
+
+export const sendUserJoinEvent = (user: string) => {};
+export const sendUserLeaveEvent = (user: string) => {};
+export const sendUserDisconnectEvent = (user: string) => {};
