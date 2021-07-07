@@ -8,10 +8,14 @@ export const setParticipantRole = async (
   role: Roles
 ) => {};
 export const removeParticipant = async (participant: IParticipant) => {};
-export const getAllParticipants = async (streamId: string) => {};
+export const getStreamParticipants = async (streamId: string) => {
+  return [] as string[];
+};
 export const removeAllParticipants = async (streamId: string) => {};
 export const getCurrentStreamFor = async (
   user: string
 ): Promise<string | null> => {
   return null;
 };
+
+export const setCurrentStreamFor = async (participant: IParticipant) => {};

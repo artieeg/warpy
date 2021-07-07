@@ -50,10 +50,13 @@ describe("conversation service", () => {
 
     await ConversationService.handleParticipantLeave(user);
     expect(ParticipantService.getCurrentStreamFor).toBeCalledWith(user);
+    expect(ParticipantService.getStreamParticipants).toBeCalledWith(stream);
     expect(ParticipantService.removeParticipant).toBeCalledWith({
       id: user,
       stream,
     });
+
+    expect(MessageService.sendMessageBroadcast).toBeCalled();
   });
 
   it("handles join conversation", async () => {
@@ -68,11 +71,18 @@ describe("conversation service", () => {
       role: "viewer",
     });
 
+    expect(ParticipantService.setCurrentStreamFor).toBeCalledWith({
+      id: user,
+      stream,
+      role: "viewer",
+    });
+
     expect(ParticipantService.addParticipant).toBeCalledWith({
       id: user,
       stream,
       role: "viewer",
     });
+
     expect(MessageService.sendMessageBroadcast).toBeCalled();
   });
 

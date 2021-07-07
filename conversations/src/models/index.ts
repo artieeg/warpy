@@ -8,5 +8,5 @@ export interface IStream {
 export interface IParticipant {
   id: string;
   stream: string;
-  role: Roles;
+  role?: Roles;
 }
