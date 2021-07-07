@@ -1,5 +1,5 @@
 import { IParticipant, IStream } from "@app/models";
-import { ParticipantService, RoleService } from ".";
+import { ParticipantService } from ".";
 
 /*
  * Create a new conversation for a new stream
@@ -7,10 +7,13 @@ import { ParticipantService, RoleService } from ".";
 export const handleNewConversation = async (stream: IStream) => {
   const { id, owner } = stream;
 
-  await Promise.all([
-    ParticipantService.addParticipant(owner, id),
-    RoleService.setRole(owner, "streamer"),
-  ]);
+  const participant: IParticipant = {
+    stream: id,
+    id: owner,
+    role: "streamer",
+  };
+
+  await ParticipantService.addParticipant(participant);
 };
 
 /*

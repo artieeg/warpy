@@ -1,14 +1,8 @@
 import { IStream } from "@app/models";
-import {
-  RoleService,
-  ConversationService,
-  ParticipantService,
-  MessageService,
-} from "..";
+import { ConversationService, ParticipantService, MessageService } from "..";
 
 jest.mock("@app/services/participants");
 jest.mock("@app/services/message");
-jest.mock("@app/services/role");
 jest.spyOn(ParticipantService, "addParticipant");
 jest.spyOn(ParticipantService, "removeAllParticipants");
 jest.spyOn(ParticipantService, "removeParticipant");
@@ -27,12 +21,11 @@ describe("conversation service", () => {
 
     await ConversationService.handleNewConversation(stream);
 
-    expect(ParticipantService.addParticipant).toBeCalledWith(
-      stream.owner,
-      stream.id
-    );
-
-    expect(RoleService.setRole).toBeCalledWith(stream.owner, "streamer");
+    expect(ParticipantService.addParticipant).toBeCalledWith({
+      id: stream.owner,
+      stream: stream.id,
+      role: "streamer",
+    });
   });
 
   it("deletes conversation", async () => {
@@ -43,6 +36,8 @@ describe("conversation service", () => {
     expect(ParticipantService.removeAllParticipants).toBeCalledWith(
       endedStreamId
     );
+
+    expect(MessageService.sendMessageBroadcast).toBeCalled();
   });
 
   it("handle participant leave", async () => {
@@ -66,8 +61,6 @@ describe("conversation service", () => {
     const stream = "test stream";
 
     jest.spyOn(ParticipantService, "addParticipant");
-    jest.spyOn(RoleService, "clearRole");
-    jest.spyOn(RoleService, "setRole");
 
     await ConversationService.handleParticipantJoin({
       id: user,
@@ -75,8 +68,6 @@ describe("conversation service", () => {
       role: "viewer",
     });
 
-    expect(RoleService.clearRole).toBeCalledWith(user);
-    expect(RoleService.setRole).toBeCalledWith(user, "viewer");
     expect(ParticipantService.addParticipant).toBeCalledWith({
       id: user,
       stream,
