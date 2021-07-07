@@ -13,5 +13,25 @@ export const init = async () => {
 };
 
 export const sendUserJoinEvent = (user: string) => {};
+
 export const sendUserLeaveEvent = (user: string) => {};
+
 export const sendUserDisconnectEvent = (user: string) => {};
+
+export const subscribeForEvents = async (
+  user: string,
+  callback: any
+): Promise<[any, Promise<void>]> => {
+  const sub = nc.subscribe(`reply.user.${user}`);
+
+  const listen = new Promise<void>(async (resolve) => {
+    for await (const msg of sub) {
+      const data = jc.decode(msg.data) as any;
+      callback(data);
+    }
+
+    resolve();
+  });
+
+  return [sub, listen];
+};
