@@ -1,3 +1,5 @@
+import { Roles } from "@app/types";
+
 export interface IStream {
   id: string;
   owner: string;
@@ -6,5 +8,5 @@ export interface IStream {
 export interface IParticipant {
   id: string;
   stream: string;
-  role: "streamer" | "speaker" | "viewer";
+  role: Roles;
 }

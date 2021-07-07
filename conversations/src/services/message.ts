@@ -38,3 +38,5 @@ const handleNewStream = async () => {
     eventEmitter.emit("new-conversation", newStream);
   }
 };
+
+export const sendMessageBroadcast = async (users: string[], message: any) => {};

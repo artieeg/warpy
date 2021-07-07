@@ -1,12 +1,18 @@
 import { IStream } from "@app/models";
-import * as ConversationService from "../conversation";
-import * as Participants from "../participants";
+import {
+  RoleService,
+  ConversationService,
+  ParticipantService,
+  MessageService,
+} from "..";
 
 jest.mock("@app/services/participants");
-jest.spyOn(Participants, "addParticipant");
-jest.spyOn(Participants, "removeAllParticipants");
-jest.spyOn(Participants, "removeParticipant");
-jest.spyOn(Participants, "getCurrentStreamFor");
+jest.mock("@app/services/message");
+jest.mock("@app/services/role");
+jest.spyOn(ParticipantService, "addParticipant");
+jest.spyOn(ParticipantService, "removeAllParticipants");
+jest.spyOn(ParticipantService, "removeParticipant");
+jest.spyOn(ParticipantService, "getCurrentStreamFor");
 
 describe("conversation service", () => {
   beforeEach(() => {
@@ -21,10 +27,12 @@ describe("conversation service", () => {
 
     await ConversationService.handleNewConversation(stream);
 
-    expect(Participants.addParticipant).toBeCalledWith({
-      stream: stream.id,
-      id: stream.owner,
-    });
+    expect(ParticipantService.addParticipant).toBeCalledWith(
+      stream.owner,
+      stream.id
+    );
+
+    expect(RoleService.setRole).toBeCalledWith(stream.owner, "streamer");
   });
 
   it("deletes conversation", async () => {
@@ -32,21 +40,49 @@ describe("conversation service", () => {
 
     await ConversationService.handleConversationEnd(endedStreamId);
 
-    expect(Participants.removeAllParticipants).toBeCalledWith(endedStreamId);
+    expect(ParticipantService.removeAllParticipants).toBeCalledWith(
+      endedStreamId
+    );
   });
 
   it("handle participant leave", async () => {
     const user = "test user";
     const stream = "test stream";
 
-    jest.spyOn(Participants, "getCurrentStreamFor").mockResolvedValue(stream);
+    jest
+      .spyOn(ParticipantService, "getCurrentStreamFor")
+      .mockResolvedValue(stream);
 
-    await ConversationService.handleParticipantLeft(user);
-    expect(Participants.getCurrentStreamFor).toBeCalledWith(user);
-    expect(Participants.removeParticipant).toBeCalledWith({
+    await ConversationService.handleParticipantLeave(user);
+    expect(ParticipantService.getCurrentStreamFor).toBeCalledWith(user);
+    expect(ParticipantService.removeParticipant).toBeCalledWith({
       id: user,
       stream,
     });
+  });
+
+  it("handles join conversation", async () => {
+    const user = "test user";
+    const stream = "test stream";
+
+    jest.spyOn(ParticipantService, "addParticipant");
+    jest.spyOn(RoleService, "clearRole");
+    jest.spyOn(RoleService, "setRole");
+
+    await ConversationService.handleParticipantJoin({
+      id: user,
+      stream,
+      role: "viewer",
+    });
+
+    expect(RoleService.clearRole).toBeCalledWith(user);
+    expect(RoleService.setRole).toBeCalledWith(user, "viewer");
+    expect(ParticipantService.addParticipant).toBeCalledWith({
+      id: user,
+      stream,
+      role: "viewer",
+    });
+    expect(MessageService.sendMessageBroadcast).toBeCalled();
   });
 
   it.todo("handles raised hand event");
