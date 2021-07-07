@@ -40,7 +40,7 @@ describe("conversation service", () => {
     expect(MessageService.sendMessageBroadcast).toBeCalled();
   });
 
-  it("handle participant leave", async () => {
+  it("handles participant leave", async () => {
     const user = "test user";
     const stream = "test stream";
 
@@ -59,7 +59,7 @@ describe("conversation service", () => {
     expect(MessageService.sendMessageBroadcast).toBeCalled();
   });
 
-  it("handles join conversation", async () => {
+  it("handles participant join", async () => {
     const user = "test user";
     const stream = "test stream";
 

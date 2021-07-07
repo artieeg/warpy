@@ -1,6 +1,7 @@
 import { IParticipant } from "@app/models";
 import { Roles } from "@app/types";
 
+export const init = async () => {};
 export const addParticipant = async (participant: IParticipant) => {};
 export const setParticipantRole = async (
   stream: string,
