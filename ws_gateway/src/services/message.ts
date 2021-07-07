@@ -18,6 +18,12 @@ export const sendUserLeaveEvent = (user: string) => {};
 
 export const sendUserDisconnectEvent = (user: string) => {};
 
+export const sendUserRaiseHandEvent = (user: string) => {
+  const payload = jc.encode({ id: user });
+
+  nc.publish("user.raise-hand", payload);
+};
+
 export const subscribeForEvents = async (
   user: string,
   callback: any

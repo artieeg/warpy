@@ -1,6 +1,6 @@
 import "module-alias/register";
 
-import { onAuth, onJoinStream } from "@app/handlers";
+import { onAuth, onRaiseHand, onJoinStream } from "@app/handlers";
 import { IMessage } from "@app/models";
 import { MessageService, PingPongService } from "@app/services";
 import { Context, Handlers } from "@app/types";
@@ -15,6 +15,7 @@ const server = new ws.Server({
 const handlers: Handlers = {
   auth: onAuth,
   "join-stream": onJoinStream,
+  "raise-hand": onRaiseHand,
 };
 
 const main = async () => {
