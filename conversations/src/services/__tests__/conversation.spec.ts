@@ -74,7 +74,7 @@ describe("conversation service", () => {
     expect(ParticipantService.setCurrentStreamFor).toBeCalledWith({
       id: user,
       stream,
-      role: "viewer",
+      role: expect.anything(),
     });
 
     expect(ParticipantService.addParticipant).toBeCalledWith({
