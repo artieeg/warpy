@@ -72,10 +72,16 @@ export const handleRaisedHand = async (user: string) => {
 
   const participants = await ParticipantService.getStreamParticipants(stream);
 
-  MessageService.sendMessageBroadcast(participants, {});
+  MessageService.sendMessageBroadcast(participants, {
+    event: "raise-hand",
+    payload: {
+      user,
+      stream,
+    },
+  });
 };
 
-export const handleAllowSpeaker = async (user: string, _speaker: string) => {
+export const handleAllowSpeaker = async (user: string, speaker: string) => {
   const stream = await ParticipantService.getCurrentStreamFor(user);
 
   if (!stream) {
@@ -84,5 +90,11 @@ export const handleAllowSpeaker = async (user: string, _speaker: string) => {
 
   const participants = await ParticipantService.getStreamParticipants(stream);
 
-  MessageService.sendMessageBroadcast(participants, {});
+  MessageService.sendMessageBroadcast(participants, {
+    event: "allow-speaker",
+    payload: {
+      speaker,
+      stream,
+    },
+  });
 };

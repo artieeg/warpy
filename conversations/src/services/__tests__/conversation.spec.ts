@@ -102,10 +102,13 @@ describe("conversation service", () => {
 
     await ConversationService.handleRaisedHand(user);
 
-    expect(MessageService.sendMessageBroadcast).toBeCalledWith(
-      participants,
-      {}
-    );
+    expect(MessageService.sendMessageBroadcast).toBeCalledWith(participants, {
+      event: "raise-hand",
+      payload: {
+        user,
+        stream,
+      },
+    });
   });
 
   it("handles allow speaker event", async () => {
@@ -124,10 +127,13 @@ describe("conversation service", () => {
 
     await ConversationService.handleAllowSpeaker(user, speaker);
 
-    expect(MessageService.sendMessageBroadcast).toBeCalledWith(
-      participants,
-      {}
-    );
+    expect(MessageService.sendMessageBroadcast).toBeCalledWith(participants, {
+      event: "allow-speaker",
+      payload: {
+        speaker,
+        stream,
+      },
+    });
   });
 
   it.todo("handles published track event");
