@@ -54,13 +54,14 @@ export const handleParticipantJoin = async (participant: IParticipant) => {
   const { stream, id } = participant;
 
   const participants = await ParticipantService.getStreamParticipants(stream);
+  const participantsToBroadcast = participants.filter((p) => p !== id);
 
   await Promise.all([
     ParticipantService.addParticipant(participant),
     ParticipantService.setCurrentStreamFor(participant),
   ]);
 
-  await MessageService.sendMessageBroadcast(participants, {
+  await MessageService.sendMessageBroadcast(participantsToBroadcast, {
     event: "user-join",
     data: {
       stream,
