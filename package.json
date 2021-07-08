@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "redis-mock": "^0.56.3"
+  }
+}
