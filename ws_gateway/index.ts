@@ -33,7 +33,7 @@ const main = async () => {
 
       const { event, data } = message;
 
-      handlers[event](data);
+      handlers[event](data, context);
     });
 
     ws.on("pong", () => {
