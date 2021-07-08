@@ -10,6 +10,8 @@ const PORT = Number.parseInt(process.env.PORT || "10000");
 
 const server = new ws.Server({
   port: PORT,
+  path: "/ws",
+  host: "0.0.0.0",
 });
 
 const handlers: Handlers = {

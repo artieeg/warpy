@@ -1,7 +1,7 @@
 import { IParticipant, IStream } from "@app/models";
 import { MessageService, ParticipantService } from ".";
 
-/*
+/**
  * Create a new conversation for a new stream
  */
 export const handleNewConversation = async (stream: IStream) => {
@@ -19,7 +19,7 @@ export const handleNewConversation = async (stream: IStream) => {
   ]);
 };
 
-/*
+/**
  * Clears up participants and track ids after the end of a stream
  */
 export const handleConversationEnd = async (streamId: string) => {
@@ -29,7 +29,7 @@ export const handleConversationEnd = async (streamId: string) => {
   await MessageService.sendMessageBroadcast(participants, {}); //TODO
 };
 
-/*
+/**
  * Removes user from participants list & removes their track ids
  */
 export const handleParticipantLeave = async (user: string) => {

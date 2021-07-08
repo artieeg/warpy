@@ -1,3 +1,4 @@
 dev_env/database/*
 target
 node_modules
+.vim

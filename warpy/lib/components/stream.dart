@@ -44,8 +44,11 @@ class _StreamState extends State<Stream> {
       if (track.kind == 'video') {
         print('ontrack: remote stream => ${remoteStream.id}');
         renderer.srcObject = remoteStream.stream;
+
+        setState(() {});
       }
 
+      /*
       localStream = await ion.LocalStream.getUserMedia(
           constraints: ion.Constraints.defaults
             ..simulcast = true
@@ -54,6 +57,7 @@ class _StreamState extends State<Stream> {
             ..audio = true);
 
       client.publish(localStream);
+      */
     };
   }
 

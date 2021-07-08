@@ -7,6 +7,7 @@ GetIt locator = GetIt.instance;
 void setupLocator() {
   locator.registerSingleton<APIService>(APIService());
   locator.registerSingleton<StorageService>(StorageService());
+  locator.registerSingleton<WSService>(WSService());
   locator.registerLazySingleton<SignUpService>(() => SignUpService());
   locator.registerLazySingleton<FeedService>(() => FeedService());
   locator.registerLazySingleton<StreamService>(() => StreamService());
