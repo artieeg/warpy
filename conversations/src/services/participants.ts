@@ -46,8 +46,51 @@ export const setParticipantRole = async (
   stream: string,
   user: string,
   role: Roles
-) => {};
-export const removeParticipant = async (participant: IParticipant) => {};
+) => {
+  const streamKey = `stream_${stream}`;
+
+  return new Promise<void>((resolve, reject) => {
+    client.hset(streamKey, user, role, (err) => {
+      if (err) {
+        return reject(err);
+      }
+
+      resolve();
+    });
+  });
+};
+
+export const removeParticipant = async (participant: IParticipant) => {
+  const user = participant.id;
+  const stream = participant.stream;
+
+  const userKey = `user_${user}`;
+  const streamKey = `stream_${stream}`;
+
+  //Remove user from stream participants hashmap
+  const removeParticipantPromise = new Promise<void>((resolve, reject) => {
+    client.hdel(streamKey, user, (err) => {
+      if (err) {
+        return reject(err);
+      }
+
+      resolve();
+    });
+  });
+
+  //Remove user's current stream record
+  const removeCurrentStreamPromise = new Promise<void>((resolve, reject) => {
+    client.del(userKey, (err) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve();
+    });
+  });
+
+  await Promise.all([removeParticipantPromise, removeCurrentStreamPromise]);
+};
+
 export const getStreamParticipants = async (streamId: string) => {
   return [] as string[];
 };
