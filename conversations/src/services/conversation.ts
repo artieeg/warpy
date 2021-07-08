@@ -62,3 +62,5 @@ export const handleParticipantJoin = async (participant: IParticipant) => {
 
   await MessageService.sendMessageBroadcast(participants, {});
 };
+
+export const handleRaisedHand = async (user: string) => {};

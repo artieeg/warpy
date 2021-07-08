@@ -8,7 +8,7 @@ void main() {
 
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIOverlays([
-    SystemUiOverlay.bottom, //This line is used for showing the bottom bar
+    SystemUiOverlay.bottom,
   ]);
 
   runApp(MyApp());

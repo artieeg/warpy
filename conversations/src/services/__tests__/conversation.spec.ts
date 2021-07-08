@@ -86,7 +86,27 @@ describe("conversation service", () => {
     expect(MessageService.sendMessageBroadcast).toBeCalled();
   });
 
-  it.todo("handles raised hand event");
+  it("handles raised hand event", async () => {
+    const user = "test user";
+    const stream = "test stream";
+
+    const participants = ["owner", "user1", "user2", user];
+
+    jest
+      .spyOn(ParticipantService, "getStreamParticipants")
+      .mockResolvedValue(participants);
+
+    jest
+      .spyOn(ParticipantService, "getCurrentStreamFor")
+      .mockResolvedValue(stream);
+
+    await ConversationService.handleRaisedHand(user);
+
+    expect(MessageService.sendMessageBroadcast).toBeCalledWith(
+      participants,
+      {}
+    );
+  });
   it.todo("handles allow speaker event");
   it.todo("handles published track event");
 });
