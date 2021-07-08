@@ -81,5 +81,16 @@ const handleNewStream = async () => {
   }
 };
 
-export const sendMessageBroadcast = async (users: string[], message: any) => {};
-export const sendMessage = async (user: string, message: any) => {};
+const _sendMessage = async (user: string, message: Uint8Array) => {
+  nc.publish(`reply.${user}`, message);
+};
+
+export const sendMessage = async (user: string, message: any) => {
+  _sendMessage(user, jc.encode(message));
+};
+
+export const sendMessageBroadcast = async (users: string[], message: any) => {
+  const encodedMessage = jc.encode(message);
+
+  users.forEach((user) => _sendMessage(user, encodedMessage));
+};
