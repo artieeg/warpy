@@ -63,5 +63,26 @@ export const handleParticipantJoin = async (participant: IParticipant) => {
   await MessageService.sendMessageBroadcast(participants, {});
 };
 
-export const handleRaisedHand = async (user: string) => {};
-export const handleAllowSpeaker = async (user: string, speaker: string) => {};
+export const handleRaisedHand = async (user: string) => {
+  const stream = await ParticipantService.getCurrentStreamFor(user);
+
+  if (!stream) {
+    return;
+  }
+
+  const participants = await ParticipantService.getStreamParticipants(stream);
+
+  MessageService.sendMessageBroadcast(participants, {});
+};
+
+export const handleAllowSpeaker = async (user: string, _speaker: string) => {
+  const stream = await ParticipantService.getCurrentStreamFor(user);
+
+  if (!stream) {
+    return;
+  }
+
+  const participants = await ParticipantService.getStreamParticipants(stream);
+
+  MessageService.sendMessageBroadcast(participants, {});
+};
