@@ -64,3 +64,4 @@ export const handleParticipantJoin = async (participant: IParticipant) => {
 };
 
 export const handleRaisedHand = async (user: string) => {};
+export const handleAllowSpeaker = async (user: string, speaker: string) => {};

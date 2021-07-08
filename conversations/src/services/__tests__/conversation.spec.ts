@@ -107,6 +107,28 @@ describe("conversation service", () => {
       {}
     );
   });
-  it.todo("handles allow speaker event");
+
+  it("handles allow speaker event", async () => {
+    const user = "test user";
+    const speaker = "test speaker";
+    const stream = "test stream";
+
+    const participants = [user, speaker, "user1", "user2"];
+
+    jest
+      .spyOn(ParticipantService, "getCurrentStreamFor")
+      .mockResolvedValue(stream);
+    jest
+      .spyOn(ParticipantService, "getStreamParticipants")
+      .mockResolvedValue(participants);
+
+    await ConversationService.handleAllowSpeaker(user, speaker);
+
+    expect(MessageService.sendMessageBroadcast).toBeCalledWith(
+      participants,
+      {}
+    );
+  });
+
   it.todo("handles published track event");
 });
