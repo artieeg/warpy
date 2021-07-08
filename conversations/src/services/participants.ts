@@ -92,19 +92,89 @@ export const removeParticipant = async (participant: IParticipant) => {
 };
 
 export const getStreamParticipants = async (streamId: string) => {
-  return [] as string[];
-};
-export const removeAllParticipants = async (streamId: string) => {};
-export const getCurrentStreamFor = async (
-  user: string
-): Promise<string | null> => {
-  return null;
+  const streamKey = `stream_${streamId}`;
+
+  return new Promise<string[]>((resolve, reject) => {
+    client.hkeys(streamKey, (err, ids) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(ids);
+    });
+  });
 };
 
-export const setCurrentStreamFor = async (participant: IParticipant) => {};
+export const removeAllParticipants = async (streamId: string) => {
+  const streamKey = `stream_${streamId}`;
+
+  const users = await getStreamParticipants(streamId);
+
+  const removeParticipantsPromise = new Promise<void>((resolve, reject) => {
+    client.del(streamKey, (err) => {
+      if (err) {
+        return reject(err);
+      }
+
+      resolve();
+    });
+  });
+
+  const removeCurrentStreamPromises: Promise<void>[] = users.map(
+    (user) =>
+      new Promise<void>((resolve) => {
+        const userKey = `user_${user}`;
+        client.del(userKey, () => {
+          resolve();
+        });
+      })
+  );
+
+  Promise.all([removeParticipantsPromise, ...removeCurrentStreamPromises]);
+};
+
+export const getCurrentStreamFor = async (user: string) => {
+  const userKey = `user_${user}`;
+
+  return new Promise<string | null>((resolve, reject) => {
+    client.get(userKey, (err, stream) => {
+      if (err) {
+        return reject(err);
+      }
+
+      resolve(stream);
+    });
+  });
+};
+
+export const setCurrentStreamFor = async (participant: IParticipant) => {
+  const { id, stream } = participant;
+
+  const userKey = `user_${id}`;
+
+  return new Promise<void>((resolve, reject) => {
+    client.set(userKey, stream, (err) => {
+      if (err) {
+        return reject(err);
+      }
+
+      resolve();
+    });
+  });
+};
+
 export const getRoleFor = async (
   user: string,
   stream: string
 ): Promise<Roles> => {
-  return "viewer";
+  const streamKey = `stream_${stream}`;
+
+  return new Promise((resolve, reject) => {
+    client.hget(streamKey, user, (err, role) => {
+      if (err) {
+        return reject(err);
+      }
+
+      resolve(role as Roles);
+    });
+  });
 };
