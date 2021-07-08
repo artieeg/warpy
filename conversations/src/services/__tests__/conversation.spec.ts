@@ -117,6 +117,7 @@ describe("conversation service", () => {
     const stream = "test stream";
 
     const participants = [user, speaker, "user1", "user2"];
+    const participantsToBroadcast = participants.filter((p) => p !== speaker);
 
     jest
       .spyOn(ParticipantService, "getCurrentStreamFor")
@@ -127,14 +128,75 @@ describe("conversation service", () => {
 
     await ConversationService.handleAllowSpeaker(user, speaker);
 
-    expect(MessageService.sendMessageBroadcast).toBeCalledWith(participants, {
-      event: "allow-speaker",
+    expect(MessageService.sendMessage).toBeCalledWith(speaker, {
+      event: "speaking-allowed",
       payload: {
-        speaker,
         stream,
       },
     });
+
+    expect(MessageService.sendMessageBroadcast).toBeCalledWith(
+      participantsToBroadcast,
+      {
+        event: "allow-speaker",
+        payload: {
+          speaker,
+          stream,
+        },
+      }
+    );
   });
 
-  it.todo("handles published track event");
+  it("handles published track event", async () => {
+    const user = "test user";
+    const track = "test track";
+    const stream = "test stream";
+
+    const participants = ["owner", "user1", "user2", user];
+    const participantsToBroadcast = participants.filter((p) => p !== user);
+
+    jest
+      .spyOn(ParticipantService, "getCurrentStreamFor")
+      .mockResolvedValue(stream);
+    jest
+      .spyOn(ParticipantService, "getStreamParticipants")
+      .mockResolvedValue(participants);
+
+    jest.spyOn(ParticipantService, "getRoleFor").mockResolvedValue("speaker");
+
+    await ConversationService.handleNewTrack(user, track);
+
+    expect(MessageService.sendMessageBroadcast).toBeCalledWith(
+      participantsToBroadcast,
+      {
+        event: "track-new",
+        payload: {
+          user,
+          track,
+          stream,
+        },
+      }
+    );
+  });
+
+  it("does not publish tracks if viewer", async () => {
+    const user = "test user";
+    const track = "test track";
+    const stream = "test stream";
+
+    const participants = ["owner", "user1", "user2", user];
+
+    jest
+      .spyOn(ParticipantService, "getCurrentStreamFor")
+      .mockResolvedValue(stream);
+    jest
+      .spyOn(ParticipantService, "getStreamParticipants")
+      .mockResolvedValue(participants);
+
+    jest.spyOn(ParticipantService, "getRoleFor").mockResolvedValue("viewer");
+
+    await ConversationService.handleNewTrack(user, track);
+
+    expect(MessageService.sendMessageBroadcast).toBeCalledTimes(0);
+  });
 });

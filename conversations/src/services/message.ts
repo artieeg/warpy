@@ -82,3 +82,4 @@ const handleNewStream = async () => {
 };
 
 export const sendMessageBroadcast = async (users: string[], message: any) => {};
+export const sendMessage = async (user: string, message: any) => {};

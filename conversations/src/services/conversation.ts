@@ -89,12 +89,46 @@ export const handleAllowSpeaker = async (user: string, speaker: string) => {
   }
 
   const participants = await ParticipantService.getStreamParticipants(stream);
+  const participantsToBroadcast = participants.filter((p) => p !== speaker);
 
-  MessageService.sendMessageBroadcast(participants, {
+  MessageService.sendMessage(speaker, {
+    event: "speaking-allowed",
+    payload: {
+      stream,
+    },
+  });
+
+  MessageService.sendMessageBroadcast(participantsToBroadcast, {
     event: "allow-speaker",
     payload: {
       speaker,
       stream,
+    },
+  });
+};
+
+export const handleNewTrack = async (user: string, track: string) => {
+  const stream = await ParticipantService.getCurrentStreamFor(user);
+
+  if (!stream) {
+    return;
+  }
+
+  const participants = await ParticipantService.getStreamParticipants(stream);
+  const role = await ParticipantService.getRoleFor(user, stream);
+
+  if (role === "viewer") {
+    return;
+  }
+
+  const participantsToBroadcast = participants.filter((p) => p !== user);
+
+  MessageService.sendMessageBroadcast(participantsToBroadcast, {
+    event: "track-new",
+    payload: {
+      user,
+      stream,
+      track,
     },
   });
 };

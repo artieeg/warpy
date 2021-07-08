@@ -20,3 +20,9 @@ export const getCurrentStreamFor = async (
 };
 
 export const setCurrentStreamFor = async (participant: IParticipant) => {};
+export const getRoleFor = async (
+  user: string,
+  stream: string
+): Promise<Roles> => {
+  return "viewer";
+};
