@@ -51,7 +51,7 @@ export const handleParticipantLeave = async (user: string) => {
 };
 
 export const handleParticipantJoin = async (participant: IParticipant) => {
-  const { stream } = participant;
+  const { stream, id } = participant;
 
   const participants = await ParticipantService.getStreamParticipants(stream);
 
@@ -60,7 +60,13 @@ export const handleParticipantJoin = async (participant: IParticipant) => {
     ParticipantService.setCurrentStreamFor(participant),
   ]);
 
-  await MessageService.sendMessageBroadcast(participants, {});
+  await MessageService.sendMessageBroadcast(participants, {
+    event: "user-join",
+    data: {
+      stream,
+      id,
+    },
+  });
 };
 
 export const handleRaisedHand = async (user: string) => {
@@ -74,7 +80,7 @@ export const handleRaisedHand = async (user: string) => {
 
   MessageService.sendMessageBroadcast(participants, {
     event: "raise-hand",
-    payload: {
+    data: {
       user,
       stream,
     },
@@ -93,14 +99,14 @@ export const handleAllowSpeaker = async (user: string, speaker: string) => {
 
   MessageService.sendMessage(speaker, {
     event: "speaking-allowed",
-    payload: {
+    data: {
       stream,
     },
   });
 
   MessageService.sendMessageBroadcast(participantsToBroadcast, {
     event: "allow-speaker",
-    payload: {
+    data: {
       speaker,
       stream,
     },
@@ -125,7 +131,7 @@ export const handleNewTrack = async (user: string, track: string) => {
 
   MessageService.sendMessageBroadcast(participantsToBroadcast, {
     event: "track-new",
-    payload: {
+    data: {
       user,
       stream,
       track,
