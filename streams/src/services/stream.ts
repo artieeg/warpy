@@ -1,7 +1,6 @@
 import { Stream } from "@app/models";
 import * as MessageService from "./message";
 import mongoose from "mongoose";
-import { AccessDeniedError } from "@app/errors";
 
 interface INewStream {
   owner: string;
@@ -16,6 +15,7 @@ export const createNewStream = async (params: INewStream) => {
     owner,
     title,
     hub,
+    live: true,
   });
 
   await stream.save();
