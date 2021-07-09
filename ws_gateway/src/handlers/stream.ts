@@ -1,16 +1,10 @@
+import { MessageService } from "@app/services";
 import { Context, Handler } from "@app/types";
-import { jwt } from "@app/utils";
 
 export const onJoinStream: Handler = async (data: any, context?: Context) => {
-  const { token, stream_id } = data;
+  const { stream } = data;
 
-  try {
-    const id = jwt.verifyAccessToken(token);
+  console.log("joining new stream", stream, context!.user);
 
-    //TODO: send join event via nats
-  } catch (e) {
-    console.error(e);
-
-    return;
-  }
+  MessageService.sendUserJoinEvent({ stream, id: context!.user });
 };

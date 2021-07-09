@@ -12,7 +12,9 @@ export const init = async () => {
   nc = await connect({ servers: [NATS] });
 };
 
-export const sendUserJoinEvent = (user: string) => {};
+export const sendUserJoinEvent = (data: any) => {
+  nc.publish("stream.user.join", jc.encode(data));
+};
 
 export const sendUserLeaveEvent = (user: string) => {};
 
@@ -24,20 +26,20 @@ export const sendUserRaiseHandEvent = (user: string) => {
   nc.publish("user.raise-hand", payload);
 };
 
-export const subscribeForEvents = async (
-  user: string,
-  callback: any
-): Promise<[any, Promise<void>]> => {
+export const subscribeForEvents = async (user: string, callback: any) => {
+  console.log(`subbign for reply.user.${user}`);
+
   const sub = nc.subscribe(`reply.user.${user}`);
 
-  const listen = new Promise<void>(async (resolve) => {
-    for await (const msg of sub) {
-      const data = jc.decode(msg.data) as any;
-      callback(data);
-    }
+  //const listen = new Promise<void>(async (resolve) => {
+  for await (const msg of sub) {
+    const data = jc.decode(msg.data) as any;
+    console.log("received a reply", data);
+    callback(data);
+  }
 
-    resolve();
-  });
+  //resolve();
+  //});
 
-  return [sub, listen];
+  //return [sub, listen];
 };

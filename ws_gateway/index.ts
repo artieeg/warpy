@@ -2,9 +2,9 @@ import "module-alias/register";
 
 import { onAuth, onRaiseHand, onJoinStream } from "@app/handlers";
 import { IMessage } from "@app/models";
-import { MessageService, PingPongService } from "@app/services";
 import { Context, Handlers } from "@app/types";
 import ws from "ws";
+import { MessageService, PingPongService } from "@app/services";
 
 const PORT = Number.parseInt(process.env.PORT || "10000");
 
