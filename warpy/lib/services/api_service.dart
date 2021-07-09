@@ -31,10 +31,9 @@ class APIService {
   }
 
   Future<void> deleteStream(String id) async {
-    var url = _getUri("streams");
+    var url = _getUri("streams/$id");
 
-    await _client.delete(url,
-        body: json.encode({"id": id}), headers: _getHeaders());
+    await _client.delete(url, headers: _getHeaders());
   }
 
   Future<User> getAppUserData() async {
@@ -54,8 +53,6 @@ class APIService {
     var response = await _client.post(url,
         body: json.encode({"title": title, "hub": hub}),
         headers: _getHeaders());
-
-    print("RECEIVED ${response.body}");
 
     return jsonDecode(response.body)["stream_id"];
   }
