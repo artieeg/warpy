@@ -1,4 +1,4 @@
-import { IParticipant, IStream } from "@app/models";
+import { IAllowSpeakerPayload, IParticipant, IStream } from "@app/models";
 import { MessageService, ParticipantService } from ".";
 
 /**
@@ -91,7 +91,8 @@ export const handleRaisedHand = async (user: string) => {
   });
 };
 
-export const handleAllowSpeaker = async (user: string, speaker: string) => {
+export const handleAllowSpeaker = async (data: IAllowSpeakerPayload) => {
+  const { speaker, user } = data;
   const stream = await ParticipantService.getCurrentStreamFor(user);
 
   if (!stream) {
@@ -101,6 +102,7 @@ export const handleAllowSpeaker = async (user: string, speaker: string) => {
   const participants = await ParticipantService.getStreamParticipants(stream);
   const participantsToBroadcast = participants.filter((p) => p !== speaker);
 
+  console.log(`sending speakign allowed event to ${speaker}`);
   MessageService.sendMessage(speaker, {
     event: "speaking-allowed",
     data: {

@@ -126,7 +126,7 @@ describe("conversation service", () => {
       .spyOn(ParticipantService, "getStreamParticipants")
       .mockResolvedValue(participants);
 
-    await ConversationService.handleAllowSpeaker(user, speaker);
+    await ConversationService.handleAllowSpeaker({ user, speaker });
 
     expect(MessageService.sendMessage).toBeCalledWith(speaker, {
       event: "speaking-allowed",

@@ -10,3 +10,8 @@ export interface IParticipant {
   stream: string;
   role?: Roles;
 }
+
+export interface IAllowSpeakerPayload {
+  speaker: string;
+  user: string;
+}

@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import { connect, JSONCodec, NatsConnection } from "nats";
-import { IParticipant, IStream } from "@app/models";
+import { IAllowSpeakerPayload, IParticipant, IStream } from "@app/models";
 
 const eventEmitter = new EventEmitter();
 
@@ -19,16 +19,31 @@ export const init = async () => {
   handleStreamEnd();
   handleStreamJoin();
   handleStreamLeave();
+  handleAllowSpeaker();
+  handleRaisedHand();
 };
 
 type Events =
   | "conversation-new"
   | "conversation-end"
   | "participant-new"
+  | "speaker-allow"
+  | "raise-hand"
   | "participant-leave";
 
 export const on = (event: Events, handler: any) => {
   eventEmitter.on(event, handler);
+};
+
+const handleRaisedHand = async () => {
+  const sub = nc.subscribe("user.raise-hand");
+
+  for await (const msg of sub) {
+    const { id } = jc.decode(msg.data) as any;
+    console.log("raised hand event", id);
+
+    eventEmitter.emit("raise-hand", id);
+  }
 };
 
 const handleStreamLeave = async () => {
@@ -41,13 +56,24 @@ const handleStreamLeave = async () => {
   }
 };
 
+const handleAllowSpeaker = async () => {
+  const sub = nc.subscribe("speaker.allow");
+
+  for await (const msg of sub) {
+    const { speaker, user } = jc.decode(msg.data) as any;
+
+    eventEmitter.emit("speaker-allow", {
+      speaker,
+      user,
+    } as IAllowSpeakerPayload);
+  }
+};
+
 const handleStreamJoin = async () => {
   const sub = nc.subscribe("stream.user.join");
 
   for await (const msg of sub) {
     const { id, stream } = jc.decode(msg.data) as any;
-
-    console.log("new join", id, stream);
 
     const participant: IParticipant = {
       id,
