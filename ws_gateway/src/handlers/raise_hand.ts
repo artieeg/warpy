@@ -6,5 +6,7 @@ export const onRaiseHand: Handler = (_data, context?) => {
     return;
   }
 
+  console.log("sending raise hand event");
+
   MessageService.sendUserRaiseHandEvent(context.user);
 };

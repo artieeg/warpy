@@ -20,6 +20,13 @@ export const sendUserLeaveEvent = (user: string) => {};
 
 export const sendUserDisconnectEvent = (user: string) => {};
 
+export const sendSpeakerAllowEvent = (data: any) => {
+  console.log("sending allow event", data, "speaker.allow");
+  const payload = jc.encode(data);
+
+  nc.publish("speaker.allow", payload);
+};
+
 export const sendUserRaiseHandEvent = (user: string) => {
   const payload = jc.encode({ id: user });
 

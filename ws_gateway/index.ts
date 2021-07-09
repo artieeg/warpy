@@ -1,6 +1,11 @@
 import "module-alias/register";
 
-import { onAuth, onRaiseHand, onJoinStream } from "@app/handlers";
+import {
+  onAuth,
+  onRaiseHand,
+  onJoinStream,
+  onAllowSpeaker,
+} from "@app/handlers";
 import { IMessage } from "@app/models";
 import { Context, Handlers } from "@app/types";
 import ws from "ws";
@@ -18,6 +23,7 @@ const handlers: Handlers = {
   auth: onAuth,
   "join-stream": onJoinStream,
   "raise-hand": onRaiseHand,
+  "speaker-allow": onAllowSpeaker,
 };
 
 const main = async () => {
