@@ -8,6 +8,7 @@ import 'package:warpy/services/services.dart';
 
 class NewStreamViewModel extends ChangeNotifier {
   final streamService = locator<StreamService>();
+  final wsService = locator<WSService>();
   final streamTitleController = TextEditingController();
   final localRenderer = RTCVideoRenderer();
   final remoteRenderer = RTCVideoRenderer();
@@ -57,6 +58,10 @@ class NewStreamViewModel extends ChangeNotifier {
     streamId = await streamService.createStream(streamTitle, hubId);
 
     initPion();
+
+    wsService.onNewUserJoin = (data) {
+      print("dang new viewer ${data.toString()}");
+    };
 
     notifyListeners();
   }

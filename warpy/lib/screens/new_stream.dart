@@ -70,7 +70,6 @@ class _NewStreamState extends State<NewStream> {
           width: 200,
           height: 200,
           child: Container(
-              color: Colors.red,
             child: RTCVideoView(model.remoteRenderer,
                 mirror: true,
                 objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover),

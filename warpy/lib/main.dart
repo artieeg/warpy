@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:warpy/services/ws_service.dart';
 import 'screens/screens.dart';
 import './locator.dart';
 import 'package:flutter/services.dart';
 
 void main() {
   setupLocator();
+
+  var wsService = locator<WSService>();
+  wsService.listen();
 
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIOverlays([

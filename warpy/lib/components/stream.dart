@@ -21,6 +21,7 @@ class Stream extends StatefulWidget {
 class _StreamState extends State<Stream> {
   late VideoPlayerController _controller;
   var user = locator<UserService>().user;
+  var ws = locator<WSService>();
 
   late ion.Signal signal;
   late ion.Client client;
@@ -34,6 +35,8 @@ class _StreamState extends State<Stream> {
   }
 
   void connect() async {
+    ws.join(widget.stream.id);
+
     print("connecting to ion stream");
     await renderer.initialize();
     signal = ion.GRPCWebSignal(Constants.ION);
@@ -48,7 +51,6 @@ class _StreamState extends State<Stream> {
         setState(() {});
       }
 
-      /*
       localStream = await ion.LocalStream.getUserMedia(
           constraints: ion.Constraints.defaults
             ..simulcast = true
@@ -57,7 +59,6 @@ class _StreamState extends State<Stream> {
             ..audio = true);
 
       client.publish(localStream);
-      */
     };
   }
 
