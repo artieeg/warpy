@@ -5,8 +5,9 @@ import './icons.dart';
 
 class StreamViewerControl extends StatelessWidget {
   final WarpyStream stream;
+  final Function onRaiseHand;
 
-  StreamViewerControl({required this.stream});
+  StreamViewerControl({required this.stream, required this.onRaiseHand});
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +28,7 @@ class StreamViewerControl extends StatelessWidget {
                         child: Text(stream.title,
                             style: Theme.of(context).textTheme.subtitle1))),
                 RoundIconButton(
-                    onTap: () {},
-                    width: 50,
-                    height: 50,
-                    icon: WarpyIcons.clapping)
+                    onTap: () {}, width: 50, height: 50, icon: WarpyIcons.claps)
               ],
             ),
             SizedBox(height: 16),
@@ -39,7 +37,10 @@ class StreamViewerControl extends StatelessWidget {
                 Expanded(
                     child: ParticipantsRow(participants: stream.participants)),
                 RoundIconButton(
-                    onTap: () {}, width: 50, height: 50, icon: WarpyIcons.hand)
+                    onTap: this.onRaiseHand,
+                    width: 50,
+                    height: 50,
+                    icon: WarpyIcons.hand)
               ],
             )
           ]),

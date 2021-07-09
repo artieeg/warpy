@@ -18,6 +18,7 @@ class NewStreamViewModel extends ChangeNotifier {
   late ion.Signal signal;
   late ion.Client client;
   String? streamId;
+  String? userWithRaisedHand;
 
   Future<void> stopStream() async {
     if (this.streamId != null) {
@@ -27,11 +28,13 @@ class NewStreamViewModel extends ChangeNotifier {
 
   Future<void> initPion() async {
     signal = ion.GRPCWebSignal(Constants.ION);
-    client = await ion.Client.create(
-          sid: streamId!, uid: user.id, signal: signal);
+    client =
+        await ion.Client.create(sid: streamId!, uid: user.id, signal: signal);
 
     localStream = await ion.LocalStream.getUserMedia(
-        constraints: ion.Constraints.defaults..simulcast = true..codec = "vp8");
+        constraints: ion.Constraints.defaults
+          ..simulcast = true
+          ..codec = "vp8");
 
     client.ontrack = (track, ion.RemoteStream remoteStream) async {
       if (track.kind == 'video') {
@@ -59,11 +62,20 @@ class NewStreamViewModel extends ChangeNotifier {
 
     initPion();
 
-    wsService.onNewUserJoin = (data) {
-      print("dang new viewer ${data.toString()}");
-    };
+    wsService.onNewUserJoin = (data) {};
+    wsService.onParticipantRaiseHand = _onParticipantRaiseHand;
 
     notifyListeners();
+  }
+
+  void _onParticipantRaiseHand(dynamic data) {
+    userWithRaisedHand = data["user"];
+    print("USER WITH RAISED HAND $userWithRaisedHand");
+    notifyListeners();
+  }
+
+  void allowSpeaker() {
+    wsService.allowSpeaker(streamId!, userWithRaisedHand!);
   }
 
   @override

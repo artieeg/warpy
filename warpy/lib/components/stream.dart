@@ -43,6 +43,13 @@ class _StreamState extends State<Stream> {
     client = await ion.Client.create(
         sid: widget.stream.id, uid: user.id, signal: signal);
 
+    ws.onParticipantRaiseHand = (data) {
+      print("viewer: somebody raised hand");
+    };
+    ws.onSpeakingAllowed = (data) {
+      print("viewer: allowed speaking");
+    };
+
     client.ontrack = (track, ion.RemoteStream remoteStream) async {
       if (track.kind == 'video') {
         print('ontrack: remote stream => ${remoteStream.id}');
@@ -51,6 +58,7 @@ class _StreamState extends State<Stream> {
         setState(() {});
       }
 
+      /*
       localStream = await ion.LocalStream.getUserMedia(
           constraints: ion.Constraints.defaults
             ..simulcast = true
@@ -59,6 +67,7 @@ class _StreamState extends State<Stream> {
             ..audio = true);
 
       client.publish(localStream);
+      */
     };
   }
 
@@ -72,10 +81,14 @@ class _StreamState extends State<Stream> {
       child: Stack(
         children: [
           _renderRemoteVideo(size),
-          StreamViewerControl(stream: widget.stream)
+          StreamViewerControl(stream: widget.stream, onRaiseHand: onRaiseHand)
         ],
       ),
     );
+  }
+
+  void onRaiseHand() {
+    ws.raiseHand();
   }
 
   FittedBox _renderRemoteVideo(Size size) {

@@ -23,6 +23,7 @@ class _NewStreamState extends State<NewStream> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
     return ViewModelProvider<NewStreamViewModel>(
       model: model,
       builder: (model) => Scaffold(
@@ -32,7 +33,15 @@ class _NewStreamState extends State<NewStream> {
           renderRemoteVideo(),
           model.streamId == null
               ? renderCreateStreamOverlay()
-              : renderStreamControl(context)
+              : renderStreamControl(context),
+          if (model.userWithRaisedHand != null)
+            Positioned(
+                bottom: 30,
+                left: 30,
+                right: 30,
+                child: TextButton(
+                    child: Text("allow ${model.userWithRaisedHand}"),
+                    onPressed: model.allowSpeaker))
         ],
       )),
     );
@@ -64,8 +73,8 @@ class _NewStreamState extends State<NewStream> {
 
   Widget renderRemoteVideo() {
     return Positioned(
-        bottom: 50,
-        left: 50,
+      bottom: 50,
+      left: 50,
       child: SizedBox(
           width: 200,
           height: 200,

@@ -21,6 +21,7 @@ class WarpyIcons {
   static const _kFontFam = 'WarpyIcons';
   static const String? _kFontPkg = null;
 
-  static const IconData clapping = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData hand = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData hand = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData claps = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData black_hole = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }
