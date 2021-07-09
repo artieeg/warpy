@@ -47,6 +47,8 @@ const handleStreamJoin = async () => {
   for await (const msg of sub) {
     const { id, stream } = jc.decode(msg.data) as any;
 
+    console.log("new join", id, stream);
+
     const participant: IParticipant = {
       id,
       stream,
@@ -57,7 +59,7 @@ const handleStreamJoin = async () => {
 };
 
 const handleStreamEnd = async () => {
-  const sub = nc.subscribe("stream.ended");
+  const sub = nc.subscribe("stream.ended", { queue: "conversations" });
 
   for await (const msg of sub) {
     const { id } = jc.decode(msg.data) as any;
@@ -67,7 +69,7 @@ const handleStreamEnd = async () => {
 };
 
 const handleNewStream = async () => {
-  const sub = nc.subscribe("stream.created");
+  const sub = nc.subscribe("stream.created", { queue: "conversations" });
 
   for await (const msg of sub) {
     const message = jc.decode(msg.data) as any;
@@ -77,12 +79,12 @@ const handleNewStream = async () => {
       owner: message.owner,
     };
 
-    eventEmitter.emit("new-conversation", newStream);
+    eventEmitter.emit("conversation-new", newStream);
   }
 };
 
 const _sendMessage = async (user: string, message: Uint8Array) => {
-  nc.publish(`reply.${user}`, message);
+  nc.publish(`reply.user.${user}`, message);
 };
 
 export const sendMessage = async (user: string, message: any) => {

@@ -7,6 +7,8 @@ import { MessageService, ParticipantService } from ".";
 export const handleNewConversation = async (stream: IStream) => {
   const { id, owner } = stream;
 
+  console.log("new stream event", stream);
+
   const participant: IParticipant = {
     stream: id,
     id: owner,
@@ -54,14 +56,15 @@ export const handleParticipantJoin = async (participant: IParticipant) => {
   const { stream, id } = participant;
 
   const participants = await ParticipantService.getStreamParticipants(stream);
-  const participantsToBroadcast = participants.filter((p) => p !== id);
+
+  console.log("broadcasting to", participants);
 
   await Promise.all([
     ParticipantService.addParticipant(participant),
     ParticipantService.setCurrentStreamFor(participant),
   ]);
 
-  await MessageService.sendMessageBroadcast(participantsToBroadcast, {
+  await MessageService.sendMessageBroadcast(participants, {
     event: "user-join",
     data: {
       stream,
