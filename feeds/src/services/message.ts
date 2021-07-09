@@ -32,7 +32,7 @@ const handleUserDisconnect = async () => {
 };
 
 const handleNewStreamEvent = async () => {
-  const sub = nc.subscribe("stream.created");
+  const sub = nc.subscribe("stream.created", { queue: "feeds" });
 
   for await (const msg of sub) {
     const data = jc.decode(msg.data);
@@ -41,7 +41,7 @@ const handleNewStreamEvent = async () => {
 };
 
 const handleStreamEndEvent = async () => {
-  const sub = nc.subscribe("stream.ended");
+  const sub = nc.subscribe("stream.ended", { queue: "feeds" });
 
   for await (const msg of sub) {
     const data = jc.decode(msg.data);
