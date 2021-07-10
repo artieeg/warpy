@@ -58,7 +58,6 @@ class _StreamState extends State<Stream> {
         setState(() {});
       }
 
-      /*
       localStream = await ion.LocalStream.getUserMedia(
           constraints: ion.Constraints.defaults
             ..simulcast = true
@@ -67,7 +66,6 @@ class _StreamState extends State<Stream> {
             ..audio = true);
 
       client.publish(localStream);
-      */
     };
   }
 

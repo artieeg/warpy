@@ -15,6 +15,12 @@ class WSService {
     _accessToken = token;
   }
 
+  void newTrack(String track) {
+    websocket.sink.add(jsonEncode({"event": "new-track", "data": {
+      "track": track
+    }}));
+  }
+
   void raiseHand() {
     websocket.sink.add(jsonEncode({"event": "raise-hand", "data": {}}));
   }

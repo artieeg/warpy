@@ -37,10 +37,8 @@ class NewStreamViewModel extends ChangeNotifier {
           ..codec = "vp8");
 
     client.ontrack = (track, ion.RemoteStream remoteStream) async {
-      if (track.kind == 'video') {
-        print('ontrack: remote stream => ${remoteStream.id}');
-        remoteRenderer.srcObject = remoteStream.stream;
-      }
+      await remoteStream.mute!('audio');
+      await remoteStream.mute!('video');
     };
 
     localViewInitialized = true;
