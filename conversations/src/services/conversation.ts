@@ -1,4 +1,9 @@
-import { IAllowSpeakerPayload, IParticipant, IStream } from "@app/models";
+import {
+  IAllowSpeakerPayload,
+  INewTrackPayload,
+  IParticipant,
+  IStream,
+} from "@app/models";
 import { MessageService, ParticipantService } from ".";
 
 /**
@@ -119,7 +124,9 @@ export const handleAllowSpeaker = async (data: IAllowSpeakerPayload) => {
   });
 };
 
-export const handleNewTrack = async (user: string, track: string) => {
+export const handleNewTrack = async (data: INewTrackPayload) => {
+  const { track, user } = data;
+
   const stream = await ParticipantService.getCurrentStreamFor(user);
 
   if (!stream) {

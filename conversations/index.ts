@@ -26,6 +26,7 @@ const main = async () => {
     "participant-leave",
     ConversationService.handleParticipantLeave
   );
+  MessageService.on("new-track", ConversationService.handleNewTrack);
   MessageService.on("raise-hand", ConversationService.handleRaisedHand);
   MessageService.on("speaker-allow", ConversationService.handleAllowSpeaker);
 };

@@ -15,3 +15,8 @@ export interface IAllowSpeakerPayload {
   speaker: string;
   user: string;
 }
+
+export interface INewTrackPayload {
+  user: string;
+  track: string;
+}

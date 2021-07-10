@@ -1,6 +1,11 @@
 import { EventEmitter } from "events";
 import { connect, JSONCodec, NatsConnection } from "nats";
-import { IAllowSpeakerPayload, IParticipant, IStream } from "@app/models";
+import {
+  IAllowSpeakerPayload,
+  INewTrackPayload,
+  IParticipant,
+  IStream,
+} from "@app/models";
 
 const eventEmitter = new EventEmitter();
 
@@ -21,6 +26,7 @@ export const init = async () => {
   handleStreamLeave();
   handleAllowSpeaker();
   handleRaisedHand();
+  handleNewTrack();
 };
 
 type Events =
@@ -29,10 +35,26 @@ type Events =
   | "participant-new"
   | "speaker-allow"
   | "raise-hand"
+  | "new-track"
   | "participant-leave";
 
 export const on = (event: Events, handler: any) => {
   eventEmitter.on(event, handler);
+};
+
+const handleNewTrack = async () => {
+  const sub = nc.subscribe("stream.new-track");
+
+  for await (const msg of sub) {
+    const { user, track } = jc.decode(msg.data) as any;
+
+    const data: INewTrackPayload = {
+      user,
+      track,
+    };
+
+    eventEmitter.emit("new-track", data);
+  }
 };
 
 const handleRaisedHand = async () => {
