@@ -12,6 +12,10 @@ export const init = async () => {
   nc = await connect({ servers: [NATS] });
 };
 
+export const sendNewTrackEvent = (data: any) => {
+  nc.publish("stream.new-track", jc.encode(data));
+};
+
 export const sendUserJoinEvent = (data: any) => {
   nc.publish("stream.user.join", jc.encode(data));
 };
@@ -21,7 +25,6 @@ export const sendUserLeaveEvent = (user: string) => {};
 export const sendUserDisconnectEvent = (user: string) => {};
 
 export const sendSpeakerAllowEvent = (data: any) => {
-  console.log("sending allow event", data, "speaker.allow");
   const payload = jc.encode(data);
 
   nc.publish("speaker.allow", payload);

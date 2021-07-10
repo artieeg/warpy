@@ -5,6 +5,7 @@ import {
   onRaiseHand,
   onJoinStream,
   onAllowSpeaker,
+  onNewTrack,
 } from "@app/handlers";
 import { IMessage } from "@app/models";
 import { Context, Handlers } from "@app/types";
@@ -24,6 +25,7 @@ const handlers: Handlers = {
   "join-stream": onJoinStream,
   "raise-hand": onRaiseHand,
   "speaker-allow": onAllowSpeaker,
+  "new-track": onNewTrack,
 };
 
 const main = async () => {
