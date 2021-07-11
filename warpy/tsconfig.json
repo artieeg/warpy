@@ -9,7 +9,10 @@
     "moduleResolution": "node",
     "noEmit": true,
     "strict": true,
-    "target": "esnext"
+    "target": "esnext",
+    "paths": {
+      "@app/*": ["./src/*"]
+    }
   },
   "exclude": [
     "node_modules",

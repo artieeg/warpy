@@ -1,29 +1,20 @@
 {
-  "presets": [
-    "module:metro-react-native-babel-preset"
-  ],
   "plugins": [
     [
       "module-resolver",
       {
-        "root": [
-          "./src"
-        ],
-        "extensions": [
-          ".ios.ts",
-          ".android.ts",
-          ".ts",
-          ".ios.tsx",
-          ".android.tsx",
-          ".jsx",
-          ".js",
-          ".json"
-        ],
+        "cwd": "babelrc",
+        "root": ["./src"],
+        "extensions": [".js", ".ios.js", ".android.js", ".tsx", ".ts"],
         "alias": {
           "@app": "./src",
-          "@assets": "./src/assets"
         }
       }
     ]
-  ]
+  ],
+  "env": {
+    "test": {
+      "plugins": ["@babel/plugin-transform-modules-commonjs"]
+    }
+  }
 }
