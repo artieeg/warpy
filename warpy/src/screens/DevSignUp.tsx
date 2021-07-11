@@ -1,6 +1,6 @@
-import {signUpWithDev} from '@app/services';
+import {setToken, signUpWithDev} from '@app/services';
 import React, {useCallback, useState} from 'react';
-import {Text, View, TextInput, Button, StyleSheet} from 'react-native';
+import {View, TextInput, Button, StyleSheet} from 'react-native';
 
 export const DevSignUp = () => {
   const [username, setUsername] = useState('');
@@ -16,7 +16,9 @@ export const DevSignUp = () => {
       email,
     });
 
-    //TODO
+    console.log(refresh, access);
+    await setToken(access, 'access');
+    await setToken(refresh, 'refresh');
   }, [username, lastName, firstName, email]);
 
   return (

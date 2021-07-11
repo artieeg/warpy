@@ -5,11 +5,13 @@ export let refreshToken: string;
 
 type TokenKind = 'access' | 'refresh';
 
-export const setToken = (token: string, kind?: TokenKind) => {
+export const setToken = async (token: string, kind?: TokenKind) => {
   if (kind === 'refresh') {
     refreshToken = token;
+    await AsyncStorage.setItem('access', token);
   } else {
     accessToken = token;
+    await AsyncStorage.setItem('refresh', token);
   }
 };
 
