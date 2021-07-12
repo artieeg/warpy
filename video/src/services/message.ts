@@ -1,4 +1,4 @@
-import { ICreateNewRoom } from "@app/models";
+import { ICreateNewRoom, IMessage } from "@app/models";
 import EventEmitter from "events";
 import { connect, JSONCodec, NatsConnection } from "nats";
 
@@ -32,6 +32,10 @@ export const handleCreateNewRoom = async () => {
 
     eventEmitter.emit("create-room", data);
   }
+};
+
+export const sendMessageToUser = (user: string, message: IMessage) => {
+  nc.publish(`reply.user.${user}`, jc.encode(message));
 };
 
 type Event = "create-room";

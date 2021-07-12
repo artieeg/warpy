@@ -70,6 +70,16 @@ services:
     working_dir: /warpy/ws_gateway
     command: yarn start:dev
 
+  video:
+    image: node:16.0.0-alpine
+    env_file:
+      dev_env/video.env
+    volumes:
+      - ./:/warpy
+    working_dir: /warpy/video
+    command: yarn start:dev
+
+
   conversations:
     image: node:16.0.0-alpine
     env_file:
