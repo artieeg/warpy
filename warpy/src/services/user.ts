@@ -4,7 +4,7 @@ import {get, post} from './api';
 export const getAppUserData = async () => {
   try {
     const response = await get('whoami', {auth: true});
-    const {user} = JSON.parse(response.data);
+    const {user} = response.data;
 
     return User.fromJSON(user);
   } catch (e) {

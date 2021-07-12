@@ -13,9 +13,9 @@ export const setAppUser = (user: IUser) => {
   };
 };
 
-export const getCurrentUser = (): AppThunk => {
+export const getCurrentUser = (): AppThunk<void> => {
   return async dispatch => {
     const user = await getAppUserData();
-    dispatch(setAppUser(user));
+    return dispatch(setAppUser(user));
   };
 };

@@ -1,4 +1,5 @@
 import {setToken, signUpWithDev} from '@app/services';
+import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useState} from 'react';
 import {View, TextInput, Button, StyleSheet} from 'react-native';
 
@@ -7,6 +8,8 @@ export const DevSignUp = () => {
   const [lastName, setLastName] = useState('');
   const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
+
+  const navigation = useNavigation();
 
   const onSignUp = useCallback(async () => {
     const {refresh, access} = await signUpWithDev({
@@ -19,7 +22,12 @@ export const DevSignUp = () => {
     console.log(refresh, access);
     await setToken(access, 'access');
     await setToken(refresh, 'refresh');
-  }, [username, lastName, firstName, email]);
+
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'Splash'}],
+    });
+  }, [username, lastName, navigation, firstName, email]);
 
   return (
     <View style={styles.wrapper}>
