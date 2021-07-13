@@ -19,6 +19,7 @@ export const handleNewRoom = async (data: ICreateNewRoom) => {
   }
 
   const room = createNewRoom();
+  rooms[roomId] = room;
 
   const [sendTransport, recvTransport] = await Promise.all([
     createTransport("send", room.router, host),
@@ -34,7 +35,7 @@ export const handleNewRoom = async (data: ICreateNewRoom) => {
 
   MessageService.sendMessageToUser(host, {
     event: "created-room",
-    payload: {
+    data: {
       roomId,
       peerId: host,
       routerRtpCapabilities: rooms[roomId].router.rtpCapabilities,

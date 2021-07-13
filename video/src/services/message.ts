@@ -14,6 +14,8 @@ let nc: NatsConnection;
 
 export const init = async () => {
   nc = await connect({ servers: [NATS] });
+
+  handleCreateNewRoom();
 };
 
 export const handleCreateNewRoom = async () => {
@@ -35,6 +37,7 @@ export const handleCreateNewRoom = async () => {
 };
 
 export const sendMessageToUser = (user: string, message: IMessage) => {
+  console.log(`sending ${JSON.stringify(message)} to ${user}`);
   nc.publish(`reply.user.${user}`, jc.encode(message));
 };
 
