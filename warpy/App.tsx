@@ -4,10 +4,13 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {DevSignUp, Feed, NewStream, Splash} from './src/screens';
 import {Provider} from 'react-redux';
 import {store} from '@app/store';
+import {connectWebSocket} from '@app/services/websocket';
 
 const Stack = createStackNavigator();
 
 const App = () => {
+  connectWebSocket();
+
   return (
     <Provider store={store}>
       <NavigationContainer>

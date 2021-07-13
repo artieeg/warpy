@@ -1,6 +1,6 @@
 import {getCurrentUser} from '@app/actions';
 import {useAppUser} from '@app/hooks';
-import {loadTokens} from '@app/services';
+import {accessToken, authSocket, loadTokens} from '@app/services';
 import {useAppDispatch} from '@app/store';
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect} from 'react';
@@ -21,6 +21,7 @@ export const Splash = () => {
   useEffect(() => {
     loadTokens()
       .then(() => {
+        authSocket(accessToken);
         dispatch(getCurrentUser());
       })
       .catch(() => navigation.navigate('DevSignUp'));

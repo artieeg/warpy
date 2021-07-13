@@ -1,7 +1,8 @@
 import axios from 'axios';
 import * as TokenService from './token';
+import config from '@app/config';
 
-const API = 'http://192.168.1.8:9999/';
+const API = config.API;
 
 interface IAPIParams {
   auth: boolean;
