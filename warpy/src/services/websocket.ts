@@ -6,7 +6,11 @@ type WebSocketEvent =
   | 'user-join'
   | 'raise-hand'
   | 'allow-speaker'
-  | 'created-room';
+  | 'created-room'
+  | 'send-transport-connected'
+  | 'recv-transport-connected'
+  | 'send-track-created'
+  | 'recv-track-created';
 
 type Handler = (data: any) => void;
 interface IHandlers {
@@ -53,4 +57,22 @@ const listen = () => {
 
 export const onWebSocketEvent = (event: WebSocketEvent, handler: any) => {
   handlers[event] = handler;
+};
+
+export const sendNewTrack = (data: any) => {
+  ws.send(
+    JSON.stringify({
+      event: 'new-track',
+      data,
+    }),
+  );
+};
+
+export const sendConnectTransport = (data: any) => {
+  ws.send(
+    JSON.stringify({
+      event: 'connect-transport',
+      data,
+    }),
+  );
 };
