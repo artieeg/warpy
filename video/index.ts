@@ -10,6 +10,7 @@ const main = async () => {
 
   MessageService.on("create-room", RoomService.handleNewRoom);
   MessageService.on("send-track", RoomService.handleNewTrack);
+  MessageService.on("connect-transport", RoomService.handleConnectTransport);
 };
 
 main();

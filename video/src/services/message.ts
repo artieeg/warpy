@@ -1,4 +1,9 @@
-import { ICreateNewRoom, IMessage, INewTrack } from "@app/models";
+import {
+  IConnectTransport,
+  ICreateNewRoom,
+  IMessage,
+  INewTrack,
+} from "@app/models";
 import EventEmitter from "events";
 import { connect, JSONCodec, NatsConnection } from "nats";
 
@@ -19,8 +24,17 @@ export const init = async () => {
   handleNewTrack();
 };
 
+export const handleConnectTransport = async () => {
+  const sub = nc.subscribe("video.transport.connect");
+
+  for await (const msg of sub) {
+    const newTrack: IConnectTransport = jc.decode(msg.data) as any;
+    eventEmitter.emit("connect-transport", newTrack);
+  }
+};
+
 export const handleNewTrack = async () => {
-  const sub = nc.subscribe("track.new");
+  const sub = nc.subscribe("video.track.new");
 
   for await (const msg of sub) {
     const newTrack: INewTrack = jc.decode(msg.data) as any;
@@ -51,7 +65,7 @@ export const sendMessageToUser = (user: string, message: IMessage) => {
   nc.publish(`reply.user.${user}`, jc.encode(message));
 };
 
-type Event = "create-room" | "send-track";
+type Event = "create-room" | "send-track" | "connect-transport";
 
 export const on = (event: Event, handler: any) => {
   eventEmitter.on(event, handler);

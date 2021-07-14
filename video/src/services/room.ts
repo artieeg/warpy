@@ -1,4 +1,10 @@
-import { ICreateNewRoom, INewTrack, IRoom, Rooms } from "@app/models";
+import {
+  IConnectTransport,
+  ICreateNewRoom,
+  INewTrack,
+  IRoom,
+  Rooms,
+} from "@app/models";
 import { MessageService, VideoService } from ".";
 import { createTransport } from "./video";
 
@@ -45,6 +51,38 @@ export const handleNewRoom = async (data: ICreateNewRoom) => {
   });
 };
 
+export const handleConnectTransport = async (data: IConnectTransport) => {
+  const { roomId, user, dtlsParameters, direction } = data;
+
+  const room = rooms[roomId];
+
+  if (!room) {
+    return; //TODO;;; send error
+  }
+
+  const peer = room.peers[user];
+  const transport =
+    direction === "send" ? peer.sendTransport : peer.recvTransport;
+
+  if (!transport) {
+    return;
+  }
+
+  try {
+    await transport.connect({ dtlsParameters });
+  } catch (e) {
+    //TODO
+    return;
+  }
+
+  MessageService.sendMessageToUser(user, {
+    event: `${direction}-transport-connected`,
+    data: {
+      roomId,
+    },
+  });
+};
+
 export const handleNewTrack = async (data: INewTrack) => {
   const {
     roomId,
@@ -72,20 +110,25 @@ export const handleNewTrack = async (data: INewTrack) => {
 
   //TODO: Close previous producer if there's one
 
-  const newProducer = await transport.produce({
-    kind,
-    rtpParameters,
-    appData: { ...appData, user, transportId },
-  });
+  let resultId = null;
 
-  peer.producer = newProducer;
+  try {
+    const newProducer = await transport.produce({
+      kind,
+      rtpParameters,
+      appData: { ...appData, user, transportId },
+    });
+
+    peer.producer = newProducer;
+    resultId = newProducer.id;
+  } catch {}
 
   //TODO: create consumers for each peer
 
   MessageService.sendMessageToUser(user, {
     event: `${direction}-track-created`,
     data: {
-      id: newProducer.id,
+      id: resultId,
     },
   });
 };

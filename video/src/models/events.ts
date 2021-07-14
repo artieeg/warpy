@@ -4,10 +4,18 @@ import {
   RtpCapabilities,
   RtpParameters,
 } from "mediasoup/lib/RtpParameters";
+import { DtlsParameters } from "mediasoup/lib/WebRtcTransport";
 
 export interface ICreateNewRoom {
   host: string;
   roomId: string;
+}
+
+export interface IConnectTransport {
+  roomId: string;
+  user: string;
+  dtlsParameters: DtlsParameters;
+  direction: MediaDirection;
 }
 
 export interface INewTrack {
