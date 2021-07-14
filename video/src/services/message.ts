@@ -1,4 +1,4 @@
-import { ICreateNewRoom, IMessage } from "@app/models";
+import { ICreateNewRoom, IMessage, INewTrack } from "@app/models";
 import EventEmitter from "events";
 import { connect, JSONCodec, NatsConnection } from "nats";
 
@@ -16,6 +16,16 @@ export const init = async () => {
   nc = await connect({ servers: [NATS] });
 
   handleCreateNewRoom();
+  handleNewTrack();
+};
+
+export const handleNewTrack = async () => {
+  const sub = nc.subscribe("track.new");
+
+  for await (const msg of sub) {
+    const newTrack: INewTrack = jc.decode(msg.data) as any;
+    eventEmitter.emit("new-track", newTrack);
+  }
 };
 
 export const handleCreateNewRoom = async () => {
@@ -41,7 +51,7 @@ export const sendMessageToUser = (user: string, message: IMessage) => {
   nc.publish(`reply.user.${user}`, jc.encode(message));
 };
 
-type Event = "create-room";
+type Event = "create-room" | "send-track";
 
 export const on = (event: Event, handler: any) => {
   eventEmitter.on(event, handler);

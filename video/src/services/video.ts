@@ -1,7 +1,7 @@
 import os from "os";
 import { createWorker } from "mediasoup";
 import { IWorker } from "@app/models";
-import { Direction } from "@app/types";
+import { MediaDirection } from "@app/types";
 import { Router, WebRtcTransport } from "mediasoup/lib/types";
 import { config } from "@app/config";
 
@@ -37,7 +37,7 @@ export const getWorker = () => {
 };
 
 export const createTransport = async (
-  direction: Direction,
+  direction: MediaDirection,
   router: Router,
   peerId: string
 ) => {

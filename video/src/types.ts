@@ -1,1 +1,1 @@
-export type Direction = "send" | "recv";
+export type MediaDirection = "send" | "recv";

@@ -9,6 +9,7 @@ const main = async () => {
   await Promise.all([MessageService.init(), VideoService.startWorkers()]);
 
   MessageService.on("create-room", RoomService.handleNewRoom);
+  MessageService.on("send-track", RoomService.handleNewTrack);
 };
 
 main();
