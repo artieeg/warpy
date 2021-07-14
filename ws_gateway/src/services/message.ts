@@ -13,6 +13,7 @@ export const init = async () => {
 };
 
 export const sendTransportConnect = (data: any) => {
+  console.log("transport event", data);
   nc.publish("video.transport.connect", jc.encode(data));
 };
 

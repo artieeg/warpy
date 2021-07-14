@@ -13,5 +13,7 @@ export const onNewTrack: Handler = (data, context?) => {
     user,
   };
 
+  console.log("new track event", eventData);
+
   MessageService.sendNewTrackEvent(eventData);
 };
