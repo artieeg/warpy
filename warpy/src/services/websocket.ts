@@ -32,9 +32,7 @@ export const connectWebSocket = async () => {
       console.log(e);
     };
     ws.onopen = () => {
-      console.log('connected');
       listen();
-
       resolve();
     };
   });

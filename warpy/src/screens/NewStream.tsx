@@ -8,6 +8,7 @@ import {
 } from 'react-native-webrtc';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Button, StyleSheet, useWindowDimensions} from 'react-native';
+import {Device} from 'mediasoup-client';
 
 const useLocalStream = () => {
   const [localStream, setLocalStream] = useState<MediaStream>();
@@ -50,10 +51,21 @@ const useLocalStream = () => {
   return localStream;
 };
 
+const useDevice = () => {
+  const device = useRef<Device>();
+
+  useEffect(() => {
+    device.current = new Device({handlerName: 'ReactNative'});
+  }, []);
+
+  return device.current;
+};
+
 export const NewStream = () => {
   const [title, setTitle] = useState('test stream');
   const [hub, setHub] = useState('60ec569668b42c003304630b');
   const [user] = useAppUser();
+  const device = useDevice();
   const {width, height} = useWindowDimensions();
 
   const localStream = useLocalStream();
