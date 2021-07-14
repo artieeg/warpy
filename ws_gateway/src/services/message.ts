@@ -12,8 +12,12 @@ export const init = async () => {
   nc = await connect({ servers: [NATS] });
 };
 
+export const sendTransportConnect = (data: any) => {
+  nc.publish("video.transport.connect", jc.encode(data));
+};
+
 export const sendNewTrackEvent = (data: any) => {
-  nc.publish("track.new", jc.encode(data));
+  nc.publish("video.track.new", jc.encode(data));
 };
 
 export const sendUserJoinEvent = (data: any) => {

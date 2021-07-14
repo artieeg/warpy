@@ -11,6 +11,7 @@ import { IMessage } from "@app/models";
 import { Context, Handlers } from "@app/types";
 import ws from "ws";
 import { MessageService, PingPongService } from "@app/services";
+import { onConnectTransport } from "@app/handlers/connect_transport";
 
 const PORT = Number.parseInt(process.env.PORT || "10000");
 
@@ -26,6 +27,7 @@ const handlers: Handlers = {
   "raise-hand": onRaiseHand,
   "speaker-allow": onAllowSpeaker,
   "new-track": onNewTrack,
+  "connect-transport": onConnectTransport,
 };
 
 const main = async () => {
