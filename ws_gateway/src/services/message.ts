@@ -13,7 +13,7 @@ export const init = async () => {
 };
 
 export const sendNewTrackEvent = (data: any) => {
-  nc.publish("stream.new-track", jc.encode(data));
+  nc.publish("track.new", jc.encode(data));
 };
 
 export const sendUserJoinEvent = (data: any) => {
