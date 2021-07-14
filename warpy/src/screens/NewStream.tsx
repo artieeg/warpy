@@ -6,9 +6,10 @@ import {
   MediaTrackConstraints,
   RTCView,
 } from 'react-native-webrtc';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {Ref, useCallback, useEffect, useRef, useState} from 'react';
 import {View, Button, StyleSheet, useWindowDimensions} from 'react-native';
 import {Device} from 'mediasoup-client';
+import {createTransport} from '@app/services/video';
 
 const useLocalStream = () => {
   const [localStream, setLocalStream] = useState<MediaStream>();
@@ -51,33 +52,52 @@ const useLocalStream = () => {
   return localStream;
 };
 
-const useDevice = () => {
-  const device = useRef<Device>();
+const sendVideoStream = async (
+  localStream: MediaStream,
+  stream: string,
+  options: any,
+) => {
+  const {routerRtpCapabilities} = options;
+  const device = new Device({handlerName: 'ReactNative'});
+  await device.load({routerRtpCapabilities});
 
-  useEffect(() => {
-    device.current = new Device({handlerName: 'ReactNative'});
-  }, []);
+  const transport = await createTransport({
+    roomId: stream,
+    device,
+    direction: 'send',
+    options,
+  });
 
-  return device.current;
+  const video = localStream.getVideoTracks()[0];
+  console.log('producing video...', video);
+  await transport.produce({
+    track: video,
+    appData: {mediaTag: 'video'},
+  });
 };
 
 export const NewStream = () => {
   const [title, setTitle] = useState('test stream');
   const [hub, setHub] = useState('60ec569668b42c003304630b');
   const [user] = useAppUser();
-  const device = useDevice();
+  const [roomData, setRoomData] = useState<any>();
   const {width, height} = useWindowDimensions();
 
   const localStream = useLocalStream();
-  console.log('localstream', localStream);
 
   const [streamId, setStreamId] = useState<string>();
 
   useEffect(() => {
     onWebSocketEvent('created-room', (data: any) => {
-      console.log('craeted room data', data);
+      setRoomData(data);
     });
-  }, []);
+  }, [streamId]);
+
+  useEffect(() => {
+    if (roomData && streamId && localStream) {
+      sendVideoStream(localStream, streamId, roomData);
+    }
+  }, [streamId, roomData, localStream]);
 
   const onStart = useCallback(async () => {
     const newStreamId = await createStream(title, hub);

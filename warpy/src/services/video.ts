@@ -11,16 +11,17 @@ interface ICreateTransportParams {
   roomId: string;
   device: Device;
   direction: MediaDirection;
-  options: TransportOptions;
+  options: any;
 }
 
-export const createTransport = (params: ICreateTransportParams) => {
+export const createTransport = async (params: ICreateTransportParams) => {
   const {device, direction, options} = params;
+  console.log('OPTIONS', options);
 
   const transport =
     direction === 'recv'
-      ? device.createRecvTransport(options)
-      : device.createSendTransport(options);
+      ? device.createRecvTransport(options.recvTransportOptions)
+      : device.createSendTransport(options.sendTransportOptions);
 
   //Source: https://mediasoup.org/documentation/v3/mediasoup-client/api/
   //Transport is about to establish the ICE+DTLS connection and
@@ -33,6 +34,7 @@ export const createTransport = (params: ICreateTransportParams) => {
       transportId: options.id,
       dtlsParameters,
       direction,
+      roomId: options.roomId,
     });
   });
 
@@ -41,29 +43,31 @@ export const createTransport = (params: ICreateTransportParams) => {
   //about a new producer to the associated server side transport.
   //This event occurs before the produce() method completes.
   if (direction === 'send') {
+    console.log('attaching produce listener');
     transport.on('produce', (produceParams, callback, errback) => {
       const {kind, rtpParameters, appData} = produceParams;
+      console.log('received produce params', produceParams);
 
       onWebSocketEvent('send-track-created', (data: any) => {
         const id = data.id;
+        console.log('track created', id);
 
         if (id !== null) {
           callback({id});
         } else {
           errback();
         }
-
-        sendNewTrack({
-          transportId: options.id,
-          kind,
-          rtpParameters,
-          rtpCapabilities: device!.rtpCapabilities,
-          paused: false,
-          appData,
-          direction,
-        });
       });
-      //TODO: send track info and receive track id
+      sendNewTrack({
+        transportId: options.id,
+        kind,
+        rtpParameters,
+        rtpCapabilities: device!.rtpCapabilities,
+        paused: false,
+        roomId: options.roomId,
+        appData,
+        direction,
+      });
     });
   }
 

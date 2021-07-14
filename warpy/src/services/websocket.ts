@@ -47,6 +47,7 @@ const listen = () => {
     const message = JSON.parse(payload.data);
 
     const {event, data} = message;
+    console.log('recevied a response', message);
     const handler = handlers[event as WebSocketEvent];
 
     if (handler) {
@@ -60,19 +61,27 @@ export const onWebSocketEvent = (event: WebSocketEvent, handler: any) => {
 };
 
 export const sendNewTrack = (data: any) => {
-  ws.send(
-    JSON.stringify({
-      event: 'new-track',
-      data,
-    }),
-  );
+  try {
+    ws.send(
+      JSON.stringify({
+        event: 'new-track',
+        data,
+      }),
+    );
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 export const sendConnectTransport = (data: any) => {
-  ws.send(
-    JSON.stringify({
-      event: 'connect-transport',
-      data,
-    }),
-  );
+  try {
+    ws.send(
+      JSON.stringify({
+        event: 'connect-transport',
+        data,
+      }),
+    );
+  } catch (e) {
+    console.log(e);
+  }
 };
