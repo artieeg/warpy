@@ -54,6 +54,8 @@ export const handleNewRoom = async (data: ICreateNewRoom) => {
 export const handleConnectTransport = async (data: IConnectTransport) => {
   const { roomId, user, dtlsParameters, direction } = data;
 
+  console.log("roomid", roomId);
+
   const room = rooms[roomId];
 
   if (!room) {
@@ -71,6 +73,7 @@ export const handleConnectTransport = async (data: IConnectTransport) => {
   try {
     await transport.connect({ dtlsParameters });
   } catch (e) {
+    console.log("e", e, e.message);
     //TODO
     return;
   }
@@ -95,7 +98,10 @@ export const handleNewTrack = async (data: INewTrack) => {
     transportId,
   } = data;
 
+  console.log("room id", roomId);
+
   const room = rooms[roomId];
+  console.log("room", room);
 
   if (!room) {
     return; //TODO: Send error
@@ -103,6 +109,7 @@ export const handleNewTrack = async (data: INewTrack) => {
 
   const peer = room.peers[user];
   const { sendTransport: transport, producer, consumers } = peer;
+  console.log("peer", peer);
 
   if (!transport) {
     return; //TODO: Send error
@@ -125,6 +132,7 @@ export const handleNewTrack = async (data: INewTrack) => {
 
   //TODO: create consumers for each peer
 
+  console.log("sending ", `${direction}-track-created`, "event");
   MessageService.sendMessageToUser(user, {
     event: `${direction}-track-created`,
     data: {

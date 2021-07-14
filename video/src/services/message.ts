@@ -22,14 +22,15 @@ export const init = async () => {
 
   handleCreateNewRoom();
   handleNewTrack();
+  handleConnectTransport();
 };
 
 export const handleConnectTransport = async () => {
   const sub = nc.subscribe("video.transport.connect");
 
   for await (const msg of sub) {
-    const newTrack: IConnectTransport = jc.decode(msg.data) as any;
-    eventEmitter.emit("connect-transport", newTrack);
+    const transport: IConnectTransport = jc.decode(msg.data) as any;
+    eventEmitter.emit("connect-transport", transport);
   }
 };
 
@@ -38,6 +39,7 @@ export const handleNewTrack = async () => {
 
   for await (const msg of sub) {
     const newTrack: INewTrack = jc.decode(msg.data) as any;
+    console.log("new track", newTrack);
     eventEmitter.emit("new-track", newTrack);
   }
 };
@@ -61,11 +63,10 @@ export const handleCreateNewRoom = async () => {
 };
 
 export const sendMessageToUser = (user: string, message: IMessage) => {
-  console.log(`sending ${JSON.stringify(message)} to ${user}`);
   nc.publish(`reply.user.${user}`, jc.encode(message));
 };
 
-type Event = "create-room" | "send-track" | "connect-transport";
+type Event = "create-room" | "new-track" | "connect-transport";
 
 export const on = (event: Event, handler: any) => {
   eventEmitter.on(event, handler);

@@ -18,7 +18,9 @@ export const startWorkers = async () => {
       process.exit(1);
     });
 
-    const router = await worker.createRouter();
+    const router = await worker.createRouter({
+      mediaCodecs: config.mediasoup.router.mediaCodecs,
+    });
 
     workers.push({ worker, router });
   }
