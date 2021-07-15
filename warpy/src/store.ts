@@ -3,9 +3,11 @@ import {createStore, applyMiddleware, AnyAction} from 'redux';
 import thunk, {ThunkAction} from 'redux-thunk';
 import rootReducer from './reducers/index';
 import {IAppUserReducer} from './reducers/user';
+import {IFeedsReducer} from './reducers/feed';
 
 interface IStore {
   user: IAppUserReducer;
+  feed: IFeedsReducer;
 }
 
 export const store = createStore<IStore, any, any, any>(

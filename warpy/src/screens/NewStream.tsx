@@ -6,9 +6,10 @@ import {
   MediaTrackConstraints,
   RTCView,
 } from 'react-native-webrtc';
-import React, {Ref, useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, Button, StyleSheet, useWindowDimensions} from 'react-native';
 import {Device} from 'mediasoup-client';
+import {StopStream} from '@app/components';
 import {createTransport} from '@app/services/video';
 
 const useLocalStream = () => {
@@ -112,8 +113,8 @@ export const NewStream = () => {
 
   return (
     <View>
-      <View />
       <Button onPress={onStart} title="Start" />
+
       {localStream && (
         <RTCView
           objectFit="cover"
@@ -121,6 +122,7 @@ export const NewStream = () => {
           streamURL={localStream.toURL()}
         />
       )}
+      <StopStream />
     </View>
   );
 };

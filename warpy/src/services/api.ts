@@ -4,20 +4,21 @@ import config from '@app/config';
 
 const API = config.API;
 
-interface IAPIParams {
+interface IArgs {
   auth: boolean;
   headers?: any;
   body?: any;
+  params?: any;
 }
 
-const defaultParams: IAPIParams = {
+const defaultParams: IArgs = {
   auth: true,
 };
 
-const getHeaders = (params: IAPIParams) => {
+const getHeaders = (args: IArgs) => {
   return {
-    authorization: params.auth ? TokenService.accessToken : undefined,
-    ...params.headers,
+    authorization: args.auth ? TokenService.accessToken : undefined,
+    ...args.headers,
   };
 };
 
@@ -25,24 +26,19 @@ const client = axios.create({
   baseURL: API,
 });
 
-export const get = async (
-  resource: string,
-  params: IAPIParams = defaultParams,
-) => {
-  const headers = getHeaders(params);
+export const get = async (resource: string, args: IArgs = defaultParams) => {
+  const headers = getHeaders(args);
 
   return client.get(resource, {
     headers,
+    params: args.params,
   });
 };
 
-export const post = async (
-  resource: string,
-  params: IAPIParams = defaultParams,
-) => {
-  const headers = getHeaders(params);
+export const post = async (resource: string, args: IArgs = defaultParams) => {
+  const headers = getHeaders(args);
 
-  return client.post(resource, params.body, {
+  return client.post(resource, args.body, {
     headers,
   });
 };
