@@ -1,8 +1,10 @@
 import {
   IConnectTransport,
   ICreateNewRoom,
+  IJoinRoom,
   IMessage,
   INewTrack,
+  IRecvTracksRequest,
 } from "@app/models";
 import EventEmitter from "events";
 import { connect, JSONCodec, NatsConnection } from "nats";
@@ -23,6 +25,40 @@ export const init = async () => {
   handleCreateNewRoom();
   handleNewTrack();
   handleConnectTransport();
+  handleJoinRoom();
+  handleRecvTracksRequest();
+};
+
+export const handleRecvTracksRequest = async () => {
+  const sub = nc.subscribe("video.track.recv.get");
+
+  for await (const msg of sub) {
+    const data = jc.decode(msg.data) as any;
+
+    const event: IRecvTracksRequest = {
+      user: data.user,
+      roomId: data.stream,
+      rtpCapabilities: data.rtpCapabilities,
+    };
+
+    eventEmitter.emit("recv-tracks-request", event);
+  }
+};
+
+export const handleJoinRoom = async () => {
+  const sub = nc.subscribe("stream.user.join");
+
+  for await (const msg of sub) {
+    const data = jc.decode(msg.data) as any;
+    console.log("join room handler received", data);
+
+    const event: IJoinRoom = {
+      user: data.user,
+      roomId: data.stream,
+    };
+
+    eventEmitter.emit("join-room", event);
+  }
 };
 
 export const handleConnectTransport = async () => {
@@ -66,7 +102,12 @@ export const sendMessageToUser = (user: string, message: IMessage) => {
   nc.publish(`reply.user.${user}`, jc.encode(message));
 };
 
-type Event = "create-room" | "new-track" | "connect-transport";
+type Event =
+  | "create-room"
+  | "new-track"
+  | "connect-transport"
+  | "join-room"
+  | "recv-tracks-request";
 
 export const on = (event: Event, handler: any) => {
   eventEmitter.on(event, handler);

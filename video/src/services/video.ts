@@ -1,8 +1,14 @@
 import os from "os";
 import { createWorker } from "mediasoup";
-import { IWorker } from "@app/models";
+import { Consumer, IPeer, IWorker } from "@app/models";
 import { MediaDirection } from "@app/types";
-import { Router, WebRtcTransport } from "mediasoup/lib/types";
+import {
+  Producer,
+  Router,
+  RtpCapabilities,
+  Transport,
+  WebRtcTransport,
+} from "mediasoup/lib/types";
 import { config } from "@app/config";
 
 let latestUsedWorkerIdx = -1;
@@ -65,3 +71,39 @@ export const getOptionsFromTransport = (transport: WebRtcTransport) => ({
   iceCandidates: transport.iceCandidates,
   dtlsParameters: transport.dtlsParameters,
 });
+
+export const createConsumer = async (
+  router: Router,
+  producer: Producer,
+  rtpCapabilities: RtpCapabilities,
+  transport: Transport,
+  user: string,
+  peerConsuming: IPeer
+): Promise<Consumer> => {
+  if (!router.canConsume({ producerId: producer.id, rtpCapabilities })) {
+    throw new Error(
+      `recv-track: client cannot consume ${producer.appData.peerId}`
+    );
+  }
+
+  const consumer = await transport.consume({
+    producerId: producer.id,
+    rtpCapabilities,
+    paused: false,
+    appData: { user, mediaUserId: producer.appData.user },
+  });
+
+  peerConsuming.consumers.push(consumer);
+
+  return {
+    user: producer.appData.user,
+    consumerParameters: {
+      producerId: producer.id,
+      id: consumer.id,
+      kind: consumer.kind,
+      rtpParameters: consumer.rtpParameters,
+      type: consumer.type,
+      producerPaused: consumer.producerPaused,
+    },
+  };
+};

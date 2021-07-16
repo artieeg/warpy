@@ -1,6 +1,6 @@
+import { Consumer } from "mediasoup/lib/Consumer";
 import { Producer } from "mediasoup/lib/Producer";
 import { Transport } from "mediasoup/lib/Transport";
-import { Consumer } from "nats";
 
 export interface IPeer {
   sendTransport: Transport | null;

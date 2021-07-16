@@ -11,6 +11,8 @@ const main = async () => {
   MessageService.on("create-room", RoomService.handleNewRoom);
   MessageService.on("new-track", RoomService.handleNewTrack);
   MessageService.on("connect-transport", RoomService.handleConnectTransport);
+  MessageService.on("join-room", RoomService.handleJoinRoom);
+  MessageService.on("recv-tracks-request", RoomService.handleRecvTracksRequest);
 };
 
 main();

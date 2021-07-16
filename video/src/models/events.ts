@@ -28,3 +28,14 @@ export interface INewTrack {
   appData: any;
   transportId: string;
 }
+
+export interface IJoinRoom {
+  roomId: string;
+  user: string;
+}
+
+export interface IRecvTracksRequest {
+  roomId: string;
+  user: string;
+  rtpCapabilities: RtpCapabilities;
+}
