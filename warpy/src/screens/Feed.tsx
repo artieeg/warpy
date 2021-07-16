@@ -1,18 +1,18 @@
-import {RemoteStream} from '@app/components';
+import {RemoteStream, Text} from '@app/components';
 import {useFeed} from '@app/hooks';
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {View, Button, Text} from 'react-native';
+import {View, Button} from 'react-native';
 
 export const Feed = () => {
   const feed = useFeed();
   const navigation = useNavigation();
 
-  console.log('feed', feed);
-
   return (
     <View>
-      <Text>Feed</Text>
+      <Text weight="bold" size="large">
+        Feed
+      </Text>
       <Button
         onPress={() => {
           navigation.navigate('NewStream');
