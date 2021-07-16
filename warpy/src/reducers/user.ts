@@ -21,7 +21,7 @@ export const user: Reducer<IAppUserReducer> = (
       };
     }
     default: {
-      return {};
+      return state || {};
     }
   }
 };

@@ -7,10 +7,12 @@ type WebSocketEvent =
   | 'raise-hand'
   | 'allow-speaker'
   | 'created-room'
+  | 'joined-room'
   | 'send-transport-connected'
   | 'recv-transport-connected'
   | 'send-track-created'
-  | 'recv-track-created';
+  | 'recv-track-created'
+  | 'recv-tracks-response';
 
 type Handler = (data: any) => void;
 interface IHandlers {
@@ -61,27 +63,37 @@ export const onWebSocketEvent = (event: WebSocketEvent, handler: any) => {
 };
 
 export const sendNewTrack = (data: any) => {
-  try {
-    ws.send(
-      JSON.stringify({
-        event: 'new-track',
-        data,
-      }),
-    );
-  } catch (e) {
-    console.log(e);
-  }
+  ws.send(
+    JSON.stringify({
+      event: 'new-track',
+      data,
+    }),
+  );
 };
 
 export const sendConnectTransport = (data: any) => {
-  try {
-    ws.send(
-      JSON.stringify({
-        event: 'connect-transport',
-        data,
-      }),
-    );
-  } catch (e) {
-    console.log(e);
-  }
+  ws.send(
+    JSON.stringify({
+      event: 'connect-transport',
+      data,
+    }),
+  );
+};
+
+export const sendJoinStream = (stream: string) => {
+  ws.send(
+    JSON.stringify({
+      event: 'join-stream',
+      data: {stream},
+    }),
+  );
+};
+
+export const sendRecvTracksRequest = (data: any) => {
+  ws.send(
+    JSON.stringify({
+      event: 'recv-tracks-request',
+      data,
+    }),
+  );
 };

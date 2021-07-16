@@ -6,8 +6,6 @@ export const useFeed = () => {
   const feed = useAppSelector(state => state.feed);
   const dispatch = useAppDispatch();
 
-  console.log('feed', feed.feed);
-
   useEffect(() => {
     dispatch(fetchFeed());
   }, [dispatch]);

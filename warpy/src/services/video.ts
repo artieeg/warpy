@@ -15,7 +15,7 @@ interface ICreateTransportParams {
 }
 
 export const createTransport = async (params: ICreateTransportParams) => {
-  const {device, direction, options} = params;
+  const {roomId, device, direction, options} = params;
   console.log('OPTIONS', options);
 
   const transport =
@@ -34,7 +34,7 @@ export const createTransport = async (params: ICreateTransportParams) => {
       transportId: options.id,
       dtlsParameters,
       direction,
-      roomId: options.roomId,
+      roomId: roomId,
     });
   });
 
@@ -64,7 +64,7 @@ export const createTransport = async (params: ICreateTransportParams) => {
         rtpParameters,
         rtpCapabilities: device!.rtpCapabilities,
         paused: false,
-        roomId: options.roomId,
+        roomId: roomId,
         appData,
         direction,
       });
