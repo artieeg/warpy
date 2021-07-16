@@ -3,3 +3,4 @@ export * from "./auth";
 export * from "./raise_hand";
 export * from "./allow_speaker";
 export * from "./new_track";
+export * from "./recv_tracks_request";

@@ -41,6 +41,12 @@ export const sendUserRaiseHandEvent = (user: string) => {
   nc.publish("user.raise-hand", payload);
 };
 
+export const sendRecvTracksRequest = (data: any) => {
+  const payload = jc.encode(data);
+
+  nc.publish("video.track.recv.get", payload);
+};
+
 export const subscribeForEvents = async (user: string, callback: any) => {
   console.log(`subbign for reply.user.${user}`);
 

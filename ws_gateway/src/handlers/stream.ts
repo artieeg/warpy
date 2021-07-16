@@ -6,5 +6,5 @@ export const onJoinStream: Handler = async (data: any, context?: Context) => {
 
   console.log("joining new stream", stream, context!.user);
 
-  MessageService.sendUserJoinEvent({ stream, id: context!.user });
+  MessageService.sendUserJoinEvent({ stream, user: context!.user });
 };

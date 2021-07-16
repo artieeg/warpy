@@ -6,6 +6,7 @@ import {
   onJoinStream,
   onAllowSpeaker,
   onNewTrack,
+  onRecvTracksRequest,
 } from "@app/handlers";
 import { IMessage } from "@app/models";
 import { Context, Handlers } from "@app/types";
@@ -28,6 +29,7 @@ const handlers: Handlers = {
   "speaker-allow": onAllowSpeaker,
   "new-track": onNewTrack,
   "connect-transport": onConnectTransport,
+  "recv-tracks-request": onRecvTracksRequest,
 };
 
 const main = async () => {
