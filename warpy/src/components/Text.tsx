@@ -14,7 +14,12 @@ export const Text = (props: ITextProps) => {
   const {children, weight, size} = props;
 
   return (
-    <BaseText style={[styles[weight || 'regular'], styles[size || 'medium']]}>
+    <BaseText
+      style={[
+        styles.text,
+        styles[weight || 'regular'],
+        styles[size || 'medium'],
+      ]}>
       {children}
     </BaseText>
   );

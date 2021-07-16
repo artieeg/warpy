@@ -2,15 +2,14 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 
 interface IRoundButton {
+  children: React.ReactChild;
   style?: any;
 }
 
-export const RoundButton = ({style}: IRoundButton) => {
-  return (
-    <View style={[styles.wrapper, style]}>
-      <View />
-    </View>
-  );
+export const RoundButton = (props: IRoundButton) => {
+  const {children, style} = props;
+
+  return <View style={[styles.wrapper, style]}>{children}</View>;
 };
 
 const styles = StyleSheet.create({
@@ -19,5 +18,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     backgroundColor: '#011A287F',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

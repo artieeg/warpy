@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {Stream} from '@app/models';
 import {
   onWebSocketEvent,
@@ -10,6 +10,7 @@ import {Device} from 'mediasoup-client';
 import {createTransport} from '@app/services/video';
 import {useAppUser} from '@app/hooks';
 import {MediaStream, RTCView} from 'react-native-webrtc';
+import {Speakers} from './Speakers';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -25,8 +26,6 @@ export const consumeRemoteStream = (
     const device = new Device({handlerName: 'ReactNative'});
     await device.load({routerRtpCapabilities});
 
-    console.log('CONSUMING STREAM ID', stream);
-
     const transport = await createTransport({
       roomId: stream,
       device,
@@ -35,13 +34,11 @@ export const consumeRemoteStream = (
     });
 
     onWebSocketEvent('recv-tracks-response', async (data: any) => {
-      console.log('recv tracks respond', data);
       const {consumerParams} = data;
 
       const consumersPromises: Promise<any>[] = [];
 
       consumerParams.forEach(async (params: any) => {
-        console.log('params', params);
         const {consumerParameters} = params;
         const promise = transport.consume({
           ...consumerParameters,
@@ -56,7 +53,6 @@ export const consumeRemoteStream = (
       });
 
       const consumers = await Promise.all(consumersPromises);
-      console.log('comsumer', consumers);
       const {track} = consumers[0];
 
       resolve(track);
@@ -86,23 +82,54 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
         recvTransportOptions,
       );
 
-      console.log('track', track);
       setMediaStream(new MediaStream([track]));
     });
 
     sendJoinStream(id);
   }, [user?.id || null, id]);
 
+  const {width, height} = useWindowDimensions();
+
+  const wrapperStyle = {
+    ...styles.wrapper,
+    height,
+    width,
+  };
+
+  const mediaStyle = {
+    ...styles.media,
+    height,
+    width,
+  };
+
   return (
-    <View style={{width: 100, height: 200, backgroundColor: '#ff3030'}}>
-      <View />
+    <View style={wrapperStyle}>
       {mediaStream && (
         <RTCView
           objectFit="cover"
-          style={{width: 100, height: 200, backgroundColor: '#30ff30'}}
+          style={mediaStyle}
           streamURL={mediaStream.toURL()}
         />
       )}
+      <Speakers speakers={stream.participants} style={styles.speakers} />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  media: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    backgroundColor: '#ff3030',
+  },
+  wrapper: {
+    backgroundColor: '#30ff30',
+  },
+  speakers: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    right: 20,
+  },
+});
