@@ -11,6 +11,11 @@ import {createTransport} from '@app/services/video';
 import {useAppUser} from '@app/hooks';
 import {MediaStream, RTCView} from 'react-native-webrtc';
 import {Speakers} from './Speakers';
+import {RoundButton} from './RoundButton';
+import {Icon} from './Icon';
+import {ClapButton} from './ClapsButton';
+import {WarpButton} from './WarpButton';
+import {RaiseHandButton} from './RaiseHandButton';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -111,7 +116,18 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
           streamURL={mediaStream.toURL()}
         />
       )}
-      <Speakers speakers={stream.participants} style={styles.speakers} />
+      <View style={styles.bottom}>
+        <Speakers speakers={stream.participants} style={styles.speakers} />
+        <View style={styles.buttons}>
+          <View style={[styles.buttonRow, styles.upperButtonRow]}>
+            <WarpButton style={styles.spaceRight} />
+            <ClapButton />
+          </View>
+          <View style={styles.buttonRow}>
+            <RaiseHandButton />
+          </View>
+        </View>
+      </View>
     </View>
   );
 };
@@ -127,9 +143,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#30ff30',
   },
   speakers: {
+    flex: 1,
+  },
+  bottom: {
+    flexDirection: 'row',
     position: 'absolute',
     bottom: 20,
     left: 20,
     right: 20,
+    alignItems: 'flex-end',
+  },
+  upperButtonRow: {
+    paddingBottom: 10,
+  },
+  spaceRight: {
+    marginRight: 10,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+  },
+  buttons: {
+    alignItems: 'flex-end',
   },
 });
