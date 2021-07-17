@@ -7,6 +7,7 @@ import {
   IRoom,
   Rooms,
 } from "@app/models";
+import { Producer } from "mediasoup/lib/Producer";
 import { MessageService, VideoService } from ".";
 import {
   createConsumer,
@@ -199,18 +200,16 @@ export const handleNewTrack = async (data: INewTrack) => {
     transportId,
   } = data;
 
-  console.log("room id", roomId);
-
   const room = rooms[roomId];
-  console.log("room", room);
 
   if (!room) {
     return; //TODO: Send error
   }
 
-  const peer = room.peers[user];
+  const { peers } = room;
+
+  const peer = peers[user];
   const { sendTransport: transport, producer, consumers } = peer;
-  console.log("peer", peer);
 
   if (!transport) {
     return; //TODO: Send error
@@ -220,18 +219,53 @@ export const handleNewTrack = async (data: INewTrack) => {
 
   let resultId = null;
 
+  let newProducer: Producer;
   try {
-    const newProducer = await transport.produce({
+    newProducer = await transport.produce({
       kind,
       rtpParameters,
       appData: { ...appData, user, transportId },
     });
+  } catch {
+    return;
+  }
 
-    peer.producer = newProducer;
-    resultId = newProducer.id;
-  } catch {}
+  peer.producer = newProducer;
+  resultId = newProducer.id;
 
-  //TODO: create consumers for each peer
+  for (const peerId in peers) {
+    if (peerId === user) {
+      continue;
+    }
+
+    const peerRecvTransport = peers[peerId].recvTransport;
+
+    if (!peerRecvTransport) {
+      continue;
+    }
+
+    try {
+      const { consumerParameters } = await createConsumer(
+        rooms[roomId].router,
+        newProducer,
+        rtpCapabilities,
+        peerRecvTransport,
+        user,
+        peers[peerId]
+      );
+
+      MessageService.sendMessageToUser(peerId, {
+        event: "new-speaker-params",
+        data: {
+          user,
+          consumerParameters,
+          roomId,
+        },
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   console.log("sending ", `${direction}-track-created`, "event");
   MessageService.sendMessageToUser(user, {
