@@ -8,6 +8,7 @@ type WebSocketEvent =
   | 'allow-speaker'
   | 'created-room'
   | 'joined-room'
+  | 'new-speaker-params'
   | 'send-transport-connected'
   | 'recv-transport-connected'
   | 'send-track-created'

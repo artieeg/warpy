@@ -6,14 +6,15 @@ interface IButtonProps {
   title: string;
   onPress?: any;
   filled?: boolean;
+  style?: any;
 }
 
 export const Button = (props: IButtonProps) => {
-  const {onPress, title, filled} = props;
+  const {onPress, style, title, filled} = props;
 
   return (
     <TouchableWithoutFeedback onPress={onPress}>
-      <View style={[styles.button, filled ? styles.filled : null]}>
+      <View style={[styles.button, filled ? styles.filled : null, style]}>
         <Text weight="bold">{title}</Text>
       </View>
     </TouchableWithoutFeedback>

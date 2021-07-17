@@ -2,8 +2,8 @@ import {useAppUser, useLocalStream} from '@app/hooks';
 import {createStream, onWebSocketEvent} from '@app/services';
 import {RTCView} from 'react-native-webrtc';
 import React, {useCallback, useEffect, useState} from 'react';
-import {View, Button, StyleSheet, useWindowDimensions} from 'react-native';
-import {StopStream} from '@app/components';
+import {View, StyleSheet, useWindowDimensions} from 'react-native';
+import {StopStream, Button} from '@app/components';
 import {
   consumeRemoteStreams,
   initDevice,
@@ -17,6 +17,7 @@ export const NewStream = () => {
   const [user] = useAppUser();
   const userId: string = user.id;
   const [roomData, setRoomData] = useState<any>();
+  const [userSpeakRequest, setUserSpeakRequest] = useState<string>();
 
   const {width, height} = useWindowDimensions();
   const localStream = useLocalStream();
@@ -27,7 +28,8 @@ export const NewStream = () => {
     });
 
     onWebSocketEvent('raise-hand', (data: any) => {
-      console.log('participant raised hand', data);
+      console.log('raise hand event', data);
+      setUserSpeakRequest(data.user);
     });
   }, [streamId]);
 
@@ -57,6 +59,13 @@ export const NewStream = () => {
     height,
   };
 
+  const onAllowSpeaking = () => {
+    console.log(`allowing ${userSpeakRequest} to speak`);
+    setUserSpeakRequest(undefined);
+  };
+
+  console.log('user req speak', userSpeakRequest);
+
   return (
     <View>
       <Button onPress={onStart} title="Start" />
@@ -69,6 +78,14 @@ export const NewStream = () => {
         />
       )}
       <StopStream />
+      {userSpeakRequest && (
+        <View style={styles.allowSpeaking}>
+          <Button
+            title={`allow ${userSpeakRequest} to speak`}
+            onPress={onAllowSpeaking}
+          />
+        </View>
+      )}
     </View>
   );
 };
@@ -76,5 +93,11 @@ export const NewStream = () => {
 const styles = StyleSheet.create({
   localStream: {
     backgroundColor: '#303030',
+  },
+  allowSpeaking: {
+    position: 'absolute',
+    bottom: 90,
+    left: 0,
+    right: 0,
   },
 });
