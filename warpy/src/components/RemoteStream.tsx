@@ -1,13 +1,8 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {Stream} from '@app/models';
-import {
-  onWebSocketEvent,
-  sendJoinStream,
-  sendRaiseHand,
-  sendRecvTracksRequest,
-} from '@app/services';
-import {createTransport, device, initDevice} from '@app/services/video';
+import {onWebSocketEvent, sendJoinStream, sendRaiseHand} from '@app/services';
+import {consumeRemoteStream} from '@app/services/video';
 import {useAppUser} from '@app/hooks';
 import {MediaStream, RTCView} from 'react-native-webrtc';
 import {Speakers} from './Speakers';
@@ -18,54 +13,6 @@ import {RaiseHandButton} from './RaiseHandButton';
 interface IRemoteStreamProps {
   stream: Stream;
 }
-
-export const consumeRemoteStream = (
-  user: string,
-  stream: string,
-  routerRtpCapabilities: any,
-  recvTransportOptions: any,
-) => {
-  return new Promise(async resolve => {
-    await initDevice(routerRtpCapabilities);
-
-    const transport = await createTransport({
-      roomId: stream,
-      device,
-      direction: 'recv',
-      options: {recvTransportOptions},
-    });
-
-    onWebSocketEvent('recv-tracks-response', async (data: any) => {
-      const {consumerParams} = data;
-
-      const consumersPromises: Promise<any>[] = [];
-
-      consumerParams.forEach(async (params: any) => {
-        const {consumerParameters} = params;
-        const promise = transport.consume({
-          ...consumerParameters,
-          appData: {
-            user,
-            producerId: consumerParameters.producerId,
-            mediaTag: 'video',
-          },
-        });
-
-        consumersPromises.push(promise);
-      });
-
-      const consumers = await Promise.all(consumersPromises);
-      const {track} = consumers[0];
-
-      resolve(track);
-    });
-
-    sendRecvTracksRequest({
-      rtpCapabilities: device.rtpCapabilities,
-      stream,
-    });
-  });
-};
 
 export const RemoteStream = (props: IRemoteStreamProps) => {
   const {stream} = props;

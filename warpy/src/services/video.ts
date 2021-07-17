@@ -5,6 +5,7 @@ import {
   onWebSocketEvent,
   sendConnectTransport,
   sendNewTrack,
+  sendRecvTracksRequest,
 } from './websocket';
 
 interface ICreateTransportParams {
@@ -115,4 +116,52 @@ export const sendVideoStream = async (
   });
 
   //recvTransport.consume(...); TODO
+};
+
+export const consumeRemoteStream = (
+  user: string,
+  stream: string,
+  routerRtpCapabilities: any,
+  recvTransportOptions: any,
+) => {
+  return new Promise(async resolve => {
+    await initDevice(routerRtpCapabilities);
+
+    const transport = await createTransport({
+      roomId: stream,
+      device,
+      direction: 'recv',
+      options: {recvTransportOptions},
+    });
+
+    onWebSocketEvent('recv-tracks-response', async (data: any) => {
+      const {consumerParams} = data;
+
+      const consumersPromises: Promise<any>[] = [];
+
+      consumerParams.forEach(async (params: any) => {
+        const {consumerParameters} = params;
+        const promise = transport.consume({
+          ...consumerParameters,
+          appData: {
+            user,
+            producerId: consumerParameters.producerId,
+            mediaTag: 'video',
+          },
+        });
+
+        consumersPromises.push(promise);
+      });
+
+      const consumers = await Promise.all(consumersPromises);
+      const {track} = consumers[0];
+
+      resolve(track);
+    });
+
+    sendRecvTracksRequest({
+      rtpCapabilities: device.rtpCapabilities,
+      stream,
+    });
+  });
 };
