@@ -4,13 +4,18 @@ import {RTCView} from 'react-native-webrtc';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Button, StyleSheet, useWindowDimensions} from 'react-native';
 import {StopStream} from '@app/components';
-import {initDevice, sendVideoStream} from '@app/services/video';
+import {
+  consumeRemoteStreams,
+  initDevice,
+  sendVideoStream,
+} from '@app/services/video';
 
 export const NewStream = () => {
   const [streamId, setStreamId] = useState<string>();
   const [title, setTitle] = useState('test stream');
   const [hub, setHub] = useState('60ec569668b42c003304630b');
   const [user] = useAppUser();
+  const userId: string = user.id;
   const [roomData, setRoomData] = useState<any>();
 
   const {width, height} = useWindowDimensions();
@@ -28,11 +33,18 @@ export const NewStream = () => {
 
   useEffect(() => {
     if (roomData && streamId && localStream) {
-      initDevice(roomData.routerRtpCapabilities).then(() => {
-        sendVideoStream(localStream, streamId, roomData);
+      initDevice(roomData.routerRtpCapabilities).then(async () => {
+        await sendVideoStream(localStream, streamId, roomData);
+
+        await consumeRemoteStreams(
+          userId,
+          streamId,
+          roomData.routerRtpCapabilities,
+          roomData.recvTransportOptions,
+        );
       });
     }
-  }, [streamId, roomData, localStream]);
+  }, [streamId, roomData, localStream, userId]);
 
   const onStart = useCallback(async () => {
     const newStreamId = await createStream(title, hub);

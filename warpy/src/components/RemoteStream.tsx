@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {Stream} from '@app/models';
 import {onWebSocketEvent, sendJoinStream, sendRaiseHand} from '@app/services';
-import {consumeRemoteStream} from '@app/services/video';
+import {consumeRemoteStreams} from '@app/services/video';
 import {useAppUser} from '@app/hooks';
 import {MediaStream, RTCView} from 'react-native-webrtc';
 import {Speakers} from './Speakers';
@@ -24,12 +24,14 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
     onWebSocketEvent('joined-room', async (data: any) => {
       const {routerRtpCapabilities, recvTransportOptions} = data;
 
-      const track = await consumeRemoteStream(
+      const consumers = await consumeRemoteStreams(
         user.id,
         id,
         routerRtpCapabilities,
         recvTransportOptions,
       );
+
+      const track = consumers[0].track;
 
       setMediaStream(new MediaStream([track]));
     });
