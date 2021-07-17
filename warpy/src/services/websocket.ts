@@ -49,8 +49,6 @@ const listen = () => {
     const message = JSON.parse(payload.data);
 
     const {event, data} = message;
-    console.log('recevied a response', message);
-    console.log('AVAILABLE HANDLERS', Object.keys(handlers));
     const handler = handlers[event as WebSocketEvent];
 
     if (handler) {

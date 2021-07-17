@@ -62,19 +62,31 @@ const sendVideoStream = async (
   const device = new Device({handlerName: 'ReactNative'});
   await device.load({routerRtpCapabilities});
 
-  const transport = await createTransport({
+  const sendTransport = await createTransport({
     roomId: stream,
     device,
     direction: 'send',
-    options,
+    options: {
+      sendTransportOptions: options.sendTransportOptions,
+    },
   });
 
   const video = localStream.getVideoTracks()[0];
-  console.log('producing video...', video);
-  await transport.produce({
+  await sendTransport.produce({
     track: video,
     appData: {mediaTag: 'video'},
   });
+
+  const recvTransport = await createTransport({
+    roomId: stream,
+    device,
+    direction: 'recv',
+    options: {
+      recvTransportOptions: options.recvTransportOptions,
+    },
+  });
+
+  //recvTransport.consume(...); TODO
 };
 
 export const NewStream = () => {
