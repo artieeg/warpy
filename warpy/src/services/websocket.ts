@@ -50,6 +50,7 @@ const listen = () => {
 
     const {event, data} = message;
     console.log('recevied a response', message);
+    console.log('AVAILABLE HANDLERS', Object.keys(handlers));
     const handler = handlers[event as WebSocketEvent];
 
     if (handler) {
@@ -94,6 +95,27 @@ export const sendRecvTracksRequest = (data: any) => {
     JSON.stringify({
       event: 'recv-tracks-request',
       data,
+    }),
+  );
+};
+
+export const sendRaiseHand = () => {
+  ws.send(
+    JSON.stringify({
+      event: 'raise-hand',
+      data: {},
+    }),
+  );
+};
+
+export const sendAllowSpeaker = (stream: string, speaker: string) => {
+  ws.send(
+    JSON.stringify({
+      event: 'allow-speaker',
+      data: {
+        stream,
+        speaker,
+      },
     }),
   );
 };

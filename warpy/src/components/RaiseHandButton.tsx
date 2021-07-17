@@ -1,10 +1,10 @@
 import React from 'react';
 import {Icon} from './Icon';
-import {RoundButton} from './RoundButton';
+import {IRoundButtonProps, RoundButton} from './RoundButton';
 
-export const RaiseHandButton = () => {
+export const RaiseHandButton = (props: IRoundButtonProps) => {
   return (
-    <RoundButton>
+    <RoundButton {...props}>
       <Icon name="hand" size={30} color="#fff" />
     </RoundButton>
   );

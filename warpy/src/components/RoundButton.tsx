@@ -1,15 +1,20 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 
-interface IRoundButton {
-  children: React.ReactChild;
+export interface IRoundButtonProps {
+  children?: React.ReactChild;
   style?: any;
+  onPress?: any;
 }
 
-export const RoundButton = (props: IRoundButton) => {
-  const {children, style} = props;
+export const RoundButton = (props: IRoundButtonProps) => {
+  const {children, onPress, style} = props;
 
-  return <View style={[styles.wrapper, style]}>{children}</View>;
+  return (
+    <TouchableOpacity onPress={onPress} style={[styles.wrapper, style]}>
+      {children}
+    </TouchableOpacity>
+  );
 };
 
 const styles = StyleSheet.create({

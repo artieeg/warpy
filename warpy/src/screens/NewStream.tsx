@@ -78,19 +78,22 @@ const sendVideoStream = async (
 };
 
 export const NewStream = () => {
+  const [streamId, setStreamId] = useState<string>();
   const [title, setTitle] = useState('test stream');
   const [hub, setHub] = useState('60ec569668b42c003304630b');
   const [user] = useAppUser();
   const [roomData, setRoomData] = useState<any>();
+
   const {width, height} = useWindowDimensions();
-
   const localStream = useLocalStream();
-
-  const [streamId, setStreamId] = useState<string>();
 
   useEffect(() => {
     onWebSocketEvent('created-room', (data: any) => {
       setRoomData(data);
+    });
+
+    onWebSocketEvent('raise-hand', (data: any) => {
+      console.log('participant raised hand', data);
     });
   }, [streamId]);
 

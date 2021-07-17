@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {Stream} from '@app/models';
 import {
   onWebSocketEvent,
   sendJoinStream,
+  sendRaiseHand,
   sendRecvTracksRequest,
 } from '@app/services';
 import {Device} from 'mediasoup-client';
@@ -95,6 +96,11 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
 
   const {width, height} = useWindowDimensions();
 
+  const raiseHand = useCallback(() => {
+    console.log('sneding raise hand event');
+    sendRaiseHand();
+  }, []);
+
   const wrapperStyle = {
     ...styles.wrapper,
     height,
@@ -124,7 +130,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
             <ClapButton />
           </View>
           <View style={styles.buttonRow}>
-            <RaiseHandButton />
+            <RaiseHandButton onPress={raiseHand} />
           </View>
         </View>
       </View>
