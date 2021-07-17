@@ -4,7 +4,7 @@ import {RTCView} from 'react-native-webrtc';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Button, StyleSheet, useWindowDimensions} from 'react-native';
 import {StopStream} from '@app/components';
-import {sendVideoStream} from '@app/services/video';
+import {initDevice, sendVideoStream} from '@app/services/video';
 
 export const NewStream = () => {
   const [streamId, setStreamId] = useState<string>();
@@ -28,7 +28,9 @@ export const NewStream = () => {
 
   useEffect(() => {
     if (roomData && streamId && localStream) {
-      sendVideoStream(localStream, streamId, roomData);
+      initDevice(roomData.routerRtpCapabilities).then(() => {
+        sendVideoStream(localStream, streamId, roomData);
+      });
     }
   }, [streamId, roomData, localStream]);
 

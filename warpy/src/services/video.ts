@@ -1,6 +1,5 @@
 import {MediaDirection} from '@app/types';
 import {Device} from 'mediasoup-client';
-import {TransportOptions} from 'mediasoup-client/lib/Transport';
 import {MediaStream} from 'react-native-webrtc';
 import {
   onWebSocketEvent,
@@ -79,15 +78,18 @@ export const createTransport = async (params: ICreateTransportParams) => {
   return transport;
 };
 
+export let device: Device;
+
+export const initDevice = async (routerRtpCapabilities: any) => {
+  device = new Device({handlerName: 'ReactNative'});
+  await device.load({routerRtpCapabilities});
+};
+
 export const sendVideoStream = async (
   localStream: MediaStream,
   stream: string,
   options: any,
 ) => {
-  const {routerRtpCapabilities} = options;
-  const device = new Device({handlerName: 'ReactNative'});
-  await device.load({routerRtpCapabilities});
-
   const sendTransport = await createTransport({
     roomId: stream,
     device,

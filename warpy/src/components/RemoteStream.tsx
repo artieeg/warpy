@@ -7,13 +7,10 @@ import {
   sendRaiseHand,
   sendRecvTracksRequest,
 } from '@app/services';
-import {Device} from 'mediasoup-client';
-import {createTransport} from '@app/services/video';
+import {createTransport, device, initDevice} from '@app/services/video';
 import {useAppUser} from '@app/hooks';
 import {MediaStream, RTCView} from 'react-native-webrtc';
 import {Speakers} from './Speakers';
-import {RoundButton} from './RoundButton';
-import {Icon} from './Icon';
 import {ClapButton} from './ClapsButton';
 import {WarpButton} from './WarpButton';
 import {RaiseHandButton} from './RaiseHandButton';
@@ -29,8 +26,7 @@ export const consumeRemoteStream = (
   recvTransportOptions: any,
 ) => {
   return new Promise(async resolve => {
-    const device = new Device({handlerName: 'ReactNative'});
-    await device.load({routerRtpCapabilities});
+    await initDevice(routerRtpCapabilities);
 
     const transport = await createTransport({
       roomId: stream,
