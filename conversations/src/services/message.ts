@@ -95,10 +95,10 @@ const handleStreamJoin = async () => {
   const sub = nc.subscribe("stream.user.join");
 
   for await (const msg of sub) {
-    const { id, stream } = jc.decode(msg.data) as any;
+    const { user, stream } = jc.decode(msg.data) as any;
 
     const participant: IParticipant = {
-      id,
+      id: user,
       stream,
     };
 

@@ -29,6 +29,8 @@ const main = async () => {
   MessageService.on("new-track", ConversationService.handleNewTrack);
   MessageService.on("raise-hand", ConversationService.handleRaisedHand);
   MessageService.on("speaker-allow", ConversationService.handleAllowSpeaker);
+
+  console.log("Conversations Service started");
 };
 
 main();
