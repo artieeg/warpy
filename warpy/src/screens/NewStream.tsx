@@ -1,93 +1,10 @@
-import {useAppUser} from '@app/hooks';
+import {useAppUser, useLocalStream} from '@app/hooks';
 import {createStream, onWebSocketEvent} from '@app/services';
-import {
-  mediaDevices,
-  MediaStream,
-  MediaTrackConstraints,
-  RTCView,
-} from 'react-native-webrtc';
+import {RTCView} from 'react-native-webrtc';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Button, StyleSheet, useWindowDimensions} from 'react-native';
-import {Device} from 'mediasoup-client';
 import {StopStream} from '@app/components';
-import {createTransport} from '@app/services/video';
-
-const useLocalStream = () => {
-  const [localStream, setLocalStream] = useState<MediaStream>();
-
-  const getVideoSource = useCallback(async () => {
-    const devices = await mediaDevices.enumerateDevices();
-
-    let videoSourceId = devices.find(
-      (device: any) =>
-        device.kind === 'videoinput' && device.facing === 'front',
-    ).deviceId;
-
-    //Why in the world getUserMedia returns boolean | MediaStream type??
-    const mediaStream = await mediaDevices.getUserMedia({
-      audio: true,
-      video: {
-        facingMode: 'user',
-        deviceId: videoSourceId,
-        mandatory: {
-          minWidth: 640,
-          minHeight: 480,
-          minFrameRate: 24,
-        },
-        optional: [],
-      } as MediaTrackConstraints,
-    });
-
-    //F
-    if (!mediaStream || mediaStream === true) {
-      return;
-    }
-
-    setLocalStream(mediaStream);
-  }, []);
-
-  useEffect(() => {
-    getVideoSource();
-  }, [getVideoSource]);
-
-  return localStream;
-};
-
-const sendVideoStream = async (
-  localStream: MediaStream,
-  stream: string,
-  options: any,
-) => {
-  const {routerRtpCapabilities} = options;
-  const device = new Device({handlerName: 'ReactNative'});
-  await device.load({routerRtpCapabilities});
-
-  const sendTransport = await createTransport({
-    roomId: stream,
-    device,
-    direction: 'send',
-    options: {
-      sendTransportOptions: options.sendTransportOptions,
-    },
-  });
-
-  const video = localStream.getVideoTracks()[0];
-  await sendTransport.produce({
-    track: video,
-    appData: {mediaTag: 'video'},
-  });
-
-  const recvTransport = await createTransport({
-    roomId: stream,
-    device,
-    direction: 'recv',
-    options: {
-      recvTransportOptions: options.recvTransportOptions,
-    },
-  });
-
-  //recvTransport.consume(...); TODO
-};
+import {sendVideoStream} from '@app/services/video';
 
 export const NewStream = () => {
   const [streamId, setStreamId] = useState<string>();

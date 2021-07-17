@@ -4,3 +4,4 @@ export * from './token';
 export * from './stream';
 export * from './websocket';
 export * from './feeds';
+export * from './video';
