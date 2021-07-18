@@ -255,7 +255,7 @@ export const handleNewTrack = async (data: INewTrack) => {
       );
 
       MessageService.sendMessageToUser(peerId, {
-        event: "new-speaker-params",
+        event: "new-speaker-track",
         data: {
           user,
           consumerParameters,
