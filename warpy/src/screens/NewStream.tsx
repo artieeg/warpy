@@ -7,7 +7,7 @@ import {StopStream, Button} from '@app/components';
 import {
   consumeRemoteStreams,
   initDevice,
-  sendVideoStream,
+  sendMediaStream,
 } from '@app/services/video';
 
 export const NewStream = () => {
@@ -15,12 +15,12 @@ export const NewStream = () => {
   const [title, setTitle] = useState('test stream');
   const [hub, setHub] = useState('60ec569668b42c003304630b');
   const [user] = useAppUser();
-  const userId: string = user.id;
+  const userId: string = user!.id;
   const [roomData, setRoomData] = useState<any>();
   const [userSpeakRequest, setUserSpeakRequest] = useState<string>();
 
   const {width, height} = useWindowDimensions();
-  const localStream = useLocalStream();
+  const localStream = useLocalStream('video');
 
   useEffect(() => {
     onWebSocketEvent('created-room', (data: any) => {
@@ -36,7 +36,7 @@ export const NewStream = () => {
   useEffect(() => {
     if (roomData && streamId && localStream) {
       initDevice(roomData.routerRtpCapabilities).then(async () => {
-        await sendVideoStream(localStream, streamId, roomData);
+        await sendMediaStream(localStream, streamId, roomData, 'video');
 
         await consumeRemoteStreams(
           userId,

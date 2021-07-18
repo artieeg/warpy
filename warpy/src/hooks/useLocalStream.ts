@@ -1,3 +1,4 @@
+import {MediaKind} from 'mediasoup-client/lib/RtpParameters';
 import {useState, useCallback, useEffect} from 'react';
 import {
   mediaDevices,
@@ -5,30 +6,32 @@ import {
   MediaTrackConstraints,
 } from 'react-native-webrtc';
 
-export const useLocalStream = () => {
+export const useLocalStream = (kind: MediaKind) => {
   const [localStream, setLocalStream] = useState<MediaStream>();
 
   const getVideoSource = useCallback(async () => {
-    const devices = await mediaDevices.enumerateDevices();
+    //const devices = await mediaDevices.enumerateDevices();
 
+    const videoContstraints: MediaTrackConstraints = {
+      facingMode: 'user',
+      mandatory: {
+        minWidth: 640,
+        minHeight: 480,
+        minFrameRate: 24,
+      },
+      optional: [],
+    };
+
+    /*
     let videoSourceId = devices.find(
-      (device: any) =>
-        device.kind === 'videoinput' && device.facing === 'front',
+      (device: any) => device.kind === deviceKind,
     ).deviceId;
+    */
 
     //Why in the world getUserMedia returns boolean | MediaStream type??
     const mediaStream = await mediaDevices.getUserMedia({
       audio: true,
-      video: {
-        facingMode: 'user',
-        deviceId: videoSourceId,
-        mandatory: {
-          minWidth: 640,
-          minHeight: 480,
-          minFrameRate: 24,
-        },
-        optional: [],
-      } as MediaTrackConstraints,
+      video: kind === 'video' ? videoContstraints : false,
     });
 
     //F
@@ -37,7 +40,7 @@ export const useLocalStream = () => {
     }
 
     setLocalStream(mediaStream);
-  }, []);
+  }, [kind]);
 
   useEffect(() => {
     getVideoSource();
