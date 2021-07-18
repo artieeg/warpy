@@ -1,5 +1,5 @@
 import {useAppUser, useLocalStream} from '@app/hooks';
-import {createStream, onWebSocketEvent} from '@app/services';
+import {createStream, onWebSocketEvent, sendAllowSpeaker} from '@app/services';
 import {RTCView} from 'react-native-webrtc';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, StyleSheet, useWindowDimensions} from 'react-native';
@@ -61,10 +61,9 @@ export const NewStream = () => {
 
   const onAllowSpeaking = () => {
     console.log(`allowing ${userSpeakRequest} to speak`);
+    sendAllowSpeaker(streamId!, userSpeakRequest!);
     setUserSpeakRequest(undefined);
   };
-
-  console.log('user req speak', userSpeakRequest);
 
   return (
     <View>

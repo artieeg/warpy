@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {StyleSheet, useWindowDimensions, View} from 'react-native';
+import {Alert, StyleSheet, useWindowDimensions, View} from 'react-native';
 import {Stream} from '@app/models';
 import {onWebSocketEvent, sendJoinStream, sendRaiseHand} from '@app/services';
 import {consumeRemoteStreams} from '@app/services/video';
@@ -17,6 +17,7 @@ interface IRemoteStreamProps {
 export const RemoteStream = (props: IRemoteStreamProps) => {
   const {stream} = props;
   const [user] = useAppUser();
+  const userId = user!.id;
   const [mediaStream, setMediaStream] = useState<MediaStream>();
   const id = stream.id;
 
@@ -25,7 +26,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
       const {routerRtpCapabilities, recvTransportOptions} = data;
 
       const consumers = await consumeRemoteStreams(
-        user.id,
+        userId,
         id,
         routerRtpCapabilities,
         recvTransportOptions,
@@ -36,8 +37,12 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
       setMediaStream(new MediaStream([track]));
     });
 
+    onWebSocketEvent('speaking-allowed', () => {
+      Alert.alert('speaking allowed');
+    });
+
     sendJoinStream(id);
-  }, [user?.id || null, id]);
+  }, [userId, id]);
 
   const {width, height} = useWindowDimensions();
 

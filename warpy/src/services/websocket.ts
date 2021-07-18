@@ -7,8 +7,9 @@ type WebSocketEvent =
   | 'raise-hand'
   | 'allow-speaker'
   | 'created-room'
+  | 'speaking-allowed'
   | 'joined-room'
-  | 'new-speaker-params'
+  | 'new-speaker-track'
   | 'send-transport-connected'
   | 'recv-transport-connected'
   | 'send-track-created'
@@ -110,7 +111,7 @@ export const sendRaiseHand = () => {
 export const sendAllowSpeaker = (stream: string, speaker: string) => {
   ws.send(
     JSON.stringify({
-      event: 'allow-speaker',
+      event: 'speaker-allow',
       data: {
         stream,
         speaker,
