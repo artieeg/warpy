@@ -16,7 +16,6 @@ export const feed: Reducer<IFeedsReducer> = (
   switch (type) {
     case SET_FEED: {
       const currentFeed = state?.feed || [];
-      console.log('set feed', currentFeed);
       const currentPage = state?.page || 0;
       return {
         feed: [...currentFeed, ...payload.feed],

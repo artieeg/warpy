@@ -34,7 +34,6 @@ export const signUpWithDev = async (params: ISignUpParams) => {
     const {access, refresh} = response.data;
     return {access, refresh};
   } catch (e) {
-    console.log(e.request);
     throw e;
   }
 };

@@ -19,7 +19,6 @@ export const DevSignUp = () => {
       email,
     });
 
-    console.log(refresh, access);
     await setToken(access, 'access');
     await setToken(refresh, 'refresh');
 

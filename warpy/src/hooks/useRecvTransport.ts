@@ -15,7 +15,6 @@ export const useRecvTransport = (params: IRecvTransportHookParams) => {
   const [transport, setTransport] = useState<Transport>();
 
   const createRecvTransport = useCallback(async () => {
-    console.log('params', stream, recvTransportOptions, routerRtpCapabilities);
     if (!recvTransportOptions || !routerRtpCapabilities || !stream) {
       return;
     }

@@ -20,7 +20,6 @@ interface ICreateTransportParams {
 
 export const createTransport = async (params: ICreateTransportParams) => {
   const {roomId, device, direction, options} = params;
-  console.log('OPTIONS', options);
 
   const transport =
     direction === 'recv'
@@ -47,10 +46,8 @@ export const createTransport = async (params: ICreateTransportParams) => {
   //about a new producer to the associated server side transport.
   //This event occurs before the produce() method completes.
   if (direction === 'send') {
-    console.log('attaching produce listener');
     transport.on('produce', (produceParams, callback, errback) => {
       const {kind, rtpParameters, appData} = produceParams;
-      console.log('received produce params', produceParams);
 
       onWebSocketEvent('send-track-created', (data: any) => {
         const id = data.id;
@@ -143,17 +140,6 @@ export const consumeRemoteStreams = (
   transport: Transport,
 ): Promise<Consumer[]> => {
   return new Promise(async resolve => {
-    /*
-    await initDevice(routerRtpCapabilities);
-
-    const transport = await createTransport({
-      roomId: stream,
-      device,
-      direction: 'recv',
-      options: {recvTransportOptions},
-    });
-    */
-
     onWebSocketEvent('recv-tracks-response', async (data: any) => {
       const {consumerParams} = data;
 
@@ -177,7 +163,6 @@ export const consumeRemoteStreams = (
 
       resolve(consumers);
     });
-    console.log('sending recv track req');
 
     sendRecvTracksRequest({
       rtpCapabilities: device.rtpCapabilities,

@@ -2,7 +2,7 @@ import {useAppUser, useLocalStream} from '@app/hooks';
 import {createStream, onWebSocketEvent, sendAllowSpeaker} from '@app/services';
 import {RTCView} from 'react-native-webrtc';
 import React, {useCallback, useEffect, useState} from 'react';
-import {View, StyleSheet, useWindowDimensions, Alert} from 'react-native';
+import {View, StyleSheet, useWindowDimensions} from 'react-native';
 import {StopStream, Button} from '@app/components';
 import {
   consumeRemoteStream,
@@ -35,7 +35,6 @@ export const NewStream = () => {
     });
 
     onWebSocketEvent('raise-hand', (data: any) => {
-      console.log('raise hand event', data);
       setUserSpeakRequest(data.user);
     });
   }, [streamId]);
@@ -79,7 +78,6 @@ export const NewStream = () => {
   };
 
   const onAllowSpeaking = () => {
-    console.log(`allowing ${userSpeakRequest} to speak`);
     sendAllowSpeaker(streamId!, userSpeakRequest!);
     setUserSpeakRequest(undefined);
   };
