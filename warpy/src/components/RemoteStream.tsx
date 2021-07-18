@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Alert, StyleSheet, useWindowDimensions, View} from 'react-native';
+import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {Stream} from '@app/models';
 import {onWebSocketEvent, sendJoinStream, sendRaiseHand} from '@app/services';
 import {consumeRemoteStreams, sendMediaStream} from '@app/services/video';
@@ -9,6 +9,7 @@ import {Speakers} from './Speakers';
 import {ClapButton} from './ClapsButton';
 import {WarpButton} from './WarpButton';
 import {RaiseHandButton} from './RaiseHandButton';
+import {useRecvTransport} from '@app/hooks/useRecvTransport';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -20,22 +21,28 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const userId = user!.id;
   const [mediaStream, setMediaStream] = useState<MediaStream>();
   const audioStream = useLocalStream('audio');
+  const [roomData, setRoomData] = useState<any>(null);
   const id = stream.id;
+
+  const recvTransport = useRecvTransport({
+    stream: id,
+    recvTransportOptions: roomData?.recvTransportOptions,
+    routerRtpCapabilities: roomData?.routerRtpCapabilities,
+  });
+
+  useEffect(() => {
+    if (recvTransport) {
+      consumeRemoteStreams(userId, id, recvTransport).then(consumers => {
+        const track = consumers[0].track;
+
+        setMediaStream(new MediaStream([track]));
+      });
+    }
+  }, [recvTransport, roomData, userId, id]);
 
   useEffect(() => {
     onWebSocketEvent('joined-room', async (data: any) => {
-      const {routerRtpCapabilities, recvTransportOptions} = data;
-
-      const consumers = await consumeRemoteStreams(
-        userId,
-        id,
-        routerRtpCapabilities,
-        recvTransportOptions,
-      );
-
-      const track = consumers[0].track;
-
-      setMediaStream(new MediaStream([track]));
+      setRoomData(data);
     });
 
     sendJoinStream(id);

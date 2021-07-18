@@ -2,13 +2,14 @@ import {useAppUser, useLocalStream} from '@app/hooks';
 import {createStream, onWebSocketEvent, sendAllowSpeaker} from '@app/services';
 import {RTCView} from 'react-native-webrtc';
 import React, {useCallback, useEffect, useState} from 'react';
-import {View, StyleSheet, useWindowDimensions} from 'react-native';
+import {View, StyleSheet, useWindowDimensions, Alert} from 'react-native';
 import {StopStream, Button} from '@app/components';
 import {
-  consumeRemoteStreams,
+  consumeRemoteStream,
   initDevice,
   sendMediaStream,
 } from '@app/services/video';
+import {useRecvTransport} from '@app/hooks/useRecvTransport';
 
 export const NewStream = () => {
   const [streamId, setStreamId] = useState<string>();
@@ -18,6 +19,12 @@ export const NewStream = () => {
   const userId: string = user!.id;
   const [roomData, setRoomData] = useState<any>();
   const [userSpeakRequest, setUserSpeakRequest] = useState<string>();
+
+  const recvTransport = useRecvTransport({
+    stream: streamId,
+    recvTransportOptions: roomData?.recvTransportOptions,
+    routerRtpCapabilities: roomData?.routerRtpCapabilities,
+  });
 
   const {width, height} = useWindowDimensions();
   const localStream = useLocalStream('video');
@@ -34,16 +41,28 @@ export const NewStream = () => {
   }, [streamId]);
 
   useEffect(() => {
+    if (!recvTransport) {
+      return;
+    }
+
+    onWebSocketEvent('new-speaker-track', (data: any) => {
+      consumeRemoteStream(data.consumerParameters, data.user, recvTransport);
+    });
+  }, [recvTransport]);
+
+  useEffect(() => {
     if (roomData && streamId && localStream) {
       initDevice(roomData.routerRtpCapabilities).then(async () => {
         await sendMediaStream(localStream, streamId, roomData, 'video');
 
+        /*
         await consumeRemoteStreams(
           userId,
           streamId,
           roomData.routerRtpCapabilities,
           roomData.recvTransportOptions,
         );
+         */
       });
     }
   }, [streamId, roomData, localStream, userId]);

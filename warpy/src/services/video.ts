@@ -2,6 +2,7 @@ import {MediaDirection} from '@app/types';
 import {Device} from 'mediasoup-client';
 import {Consumer} from 'mediasoup-client/lib/Consumer';
 import {MediaKind} from 'mediasoup-client/lib/RtpParameters';
+import {Transport} from 'mediasoup-client/lib/types';
 import {MediaStream} from 'react-native-webrtc';
 import {
   onWebSocketEvent,
@@ -84,12 +85,13 @@ export const createTransport = async (params: ICreateTransportParams) => {
 export let device: Device;
 
 export const initDevice = async (routerRtpCapabilities: any) => {
-  if (device) {
-    return;
+  if (!device) {
+    device = new Device({handlerName: 'ReactNative'});
   }
 
-  device = new Device({handlerName: 'ReactNative'});
-  await device.load({routerRtpCapabilities});
+  if (!device.loaded) {
+    await device.load({routerRtpCapabilities});
+  }
 };
 
 export const sendMediaStream = async (
@@ -118,13 +120,30 @@ export const sendMediaStream = async (
   });
 };
 
+export const consumeRemoteStream = async (
+  consumerParameters: any,
+  user: string,
+  transport: Transport,
+) => {
+  const consumer = await transport.consume({
+    ...consumerParameters,
+    appData: {
+      user,
+      producerId: consumerParameters.producerId,
+      mediaTag: 'remote-media',
+    },
+  });
+
+  return consumer;
+};
+
 export const consumeRemoteStreams = (
   user: string,
   stream: string,
-  routerRtpCapabilities: any,
-  recvTransportOptions: any,
+  transport: Transport,
 ): Promise<Consumer[]> => {
   return new Promise(async resolve => {
+    /*
     await initDevice(routerRtpCapabilities);
 
     const transport = await createTransport({
@@ -133,6 +152,7 @@ export const consumeRemoteStreams = (
       direction: 'recv',
       options: {recvTransportOptions},
     });
+    */
 
     onWebSocketEvent('recv-tracks-response', async (data: any) => {
       const {consumerParams} = data;
