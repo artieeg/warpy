@@ -2,6 +2,7 @@ import {
   IConnectTransport,
   ICreateNewRoom,
   IJoinRoom,
+  INewSpeaker,
   INewTrack,
   IRecvTracksRequest,
   IRoom,
@@ -22,6 +23,31 @@ const createNewRoom = (): IRoom => {
     ...VideoService.getWorker(),
     peers: {},
   };
+};
+
+export const handleNewSpeaker = async (data: INewSpeaker) => {
+  const { roomId, speaker } = data;
+
+  const room = rooms[roomId];
+
+  if (!room) {
+    return;
+  }
+
+  const peer = room.peers[speaker];
+  peer.sendTransport?.close();
+
+  const transport = await createTransport("send", room.router, speaker);
+  peer.sendTransport = transport;
+
+  const sendTransportOptions = getOptionsFromTransport(transport);
+
+  MessageService.sendMessageToUser(speaker, {
+    event: "speaker-send-transport",
+    data: {
+      sendTransportOptions,
+    },
+  });
 };
 
 export const handleRecvTracksRequest = async (data: IRecvTracksRequest) => {

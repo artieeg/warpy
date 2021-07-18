@@ -3,6 +3,7 @@ import {
   ICreateNewRoom,
   IJoinRoom,
   IMessage,
+  INewSpeaker,
   INewTrack,
   IRecvTracksRequest,
 } from "@app/models";
@@ -27,6 +28,22 @@ export const init = async () => {
   handleConnectTransport();
   handleJoinRoom();
   handleRecvTracksRequest();
+  handleNewSpeaker();
+};
+
+export const handleNewSpeaker = async () => {
+  const sub = nc.subscribe("speaker.send-tracks");
+
+  for await (const msg of sub) {
+    const data = jc.decode(msg.data) as any;
+
+    const event: INewSpeaker = {
+      speaker: data.speaker,
+      roomId: data.stream,
+    };
+
+    eventEmitter.emit("new-speaker", event);
+  }
 };
 
 export const handleRecvTracksRequest = async () => {
@@ -107,6 +124,7 @@ type Event =
   | "new-track"
   | "connect-transport"
   | "join-room"
+  | "new-speaker"
   | "recv-tracks-request";
 
 export const on = (event: Event, handler: any) => {

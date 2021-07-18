@@ -13,6 +13,7 @@ const main = async () => {
   MessageService.on("connect-transport", RoomService.handleConnectTransport);
   MessageService.on("join-room", RoomService.handleJoinRoom);
   MessageService.on("recv-tracks-request", RoomService.handleRecvTracksRequest);
+  MessageService.on("new-speaker", RoomService.handleNewSpeaker);
 };
 
 main();

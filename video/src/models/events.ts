@@ -39,3 +39,8 @@ export interface IRecvTracksRequest {
   user: string;
   rtpCapabilities: RtpCapabilities;
 }
+
+export interface INewSpeaker {
+  roomId: string;
+  speaker: string;
+}
