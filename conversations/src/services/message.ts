@@ -79,7 +79,7 @@ const handleStreamLeave = async () => {
 };
 
 const handleAllowSpeaker = async () => {
-  const sub = nc.subscribe("speaker.allow");
+  const sub = nc.subscribe("speaker.allow", { queue: "conversations" });
 
   for await (const msg of sub) {
     const { speaker, user } = jc.decode(msg.data) as any;
@@ -129,6 +129,13 @@ const handleNewStream = async () => {
 
     eventEmitter.emit("conversation-new", newStream);
   }
+};
+
+export const createSendTracksForSpeaker = async (
+  speaker: string,
+  stream: string
+) => {
+  nc.publish(`speaker.send-tracks`, jc.encode({ speaker, stream }));
 };
 
 const _sendMessage = async (user: string, message: Uint8Array) => {

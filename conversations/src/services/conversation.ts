@@ -122,6 +122,8 @@ export const handleAllowSpeaker = async (data: IAllowSpeakerPayload) => {
       stream,
     },
   });
+
+  MessageService.createSendTracksForSpeaker(speaker, stream);
 };
 
 export const handleNewTrack = async (data: INewTrackPayload) => {
