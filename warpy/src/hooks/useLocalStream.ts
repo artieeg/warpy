@@ -10,8 +10,6 @@ export const useLocalStream = (kind: MediaKind) => {
   const [localStream, setLocalStream] = useState<MediaStream>();
 
   const getVideoSource = useCallback(async () => {
-    //const devices = await mediaDevices.enumerateDevices();
-
     const videoContstraints: MediaTrackConstraints = {
       facingMode: 'user',
       mandatory: {
@@ -21,12 +19,6 @@ export const useLocalStream = (kind: MediaKind) => {
       },
       optional: [],
     };
-
-    /*
-    let videoSourceId = devices.find(
-      (device: any) => device.kind === deviceKind,
-    ).deviceId;
-    */
 
     //Why in the world getUserMedia returns boolean | MediaStream type??
     const mediaStream = await mediaDevices.getUserMedia({

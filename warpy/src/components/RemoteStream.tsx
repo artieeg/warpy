@@ -2,8 +2,8 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {Alert, StyleSheet, useWindowDimensions, View} from 'react-native';
 import {Stream} from '@app/models';
 import {onWebSocketEvent, sendJoinStream, sendRaiseHand} from '@app/services';
-import {consumeRemoteStreams} from '@app/services/video';
-import {useAppUser} from '@app/hooks';
+import {consumeRemoteStreams, sendMediaStream} from '@app/services/video';
+import {useAppUser, useLocalStream} from '@app/hooks';
 import {MediaStream, RTCView} from 'react-native-webrtc';
 import {Speakers} from './Speakers';
 import {ClapButton} from './ClapsButton';
@@ -19,6 +19,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const [user] = useAppUser();
   const userId = user!.id;
   const [mediaStream, setMediaStream] = useState<MediaStream>();
+  const audioStream = useLocalStream('audio');
   const id = stream.id;
 
   useEffect(() => {
@@ -37,17 +38,18 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
       setMediaStream(new MediaStream([track]));
     });
 
-    onWebSocketEvent('speaking-allowed', () => {
-      Alert.alert('speaking allowed');
-    });
-
     sendJoinStream(id);
   }, [userId, id]);
+
+  useEffect(() => {
+    onWebSocketEvent('speaker-send-transport', (options: any) => {
+      sendMediaStream(audioStream!, id, options, 'audio');
+    });
+  }, [id, audioStream]);
 
   const {width, height} = useWindowDimensions();
 
   const raiseHand = useCallback(() => {
-    console.log('sneding raise hand event');
     sendRaiseHand();
   }, []);
 

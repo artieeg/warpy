@@ -14,6 +14,7 @@ type WebSocketEvent =
   | 'recv-transport-connected'
   | 'send-track-created'
   | 'recv-track-created'
+  | 'speaker-send-transport'
   | 'recv-tracks-response';
 
 type Handler = (data: any) => void;
