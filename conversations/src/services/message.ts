@@ -12,6 +12,8 @@ import {
   INewMediaRoomData,
   INewMediaTrack,
   INewSpeakerMediaResponse,
+  IRecvTracksRequest,
+  IRecvTracksResponse,
   MessageHandler,
   subjects,
 } from "@warpy/lib";
@@ -181,6 +183,18 @@ export const createMediaRoom = async (
   });
 
   return jc.decode(reply.data) as INewMediaRoomData;
+};
+
+export const getRecvTracks = async (
+  data: IRecvTracksRequest
+): Promise<IRecvTracksResponse> => {
+  const m = jc.encode(data);
+
+  const reply = await nc.request(subjects.media.track.getRecv, m, {
+    timeout: 1000,
+  });
+
+  return jc.decode(reply.data) as IRecvTracksResponse;
 };
 
 export const connectSpeakerMedia = async (

@@ -20,3 +20,9 @@ export interface INewTrackPayload {
   user: string;
   track: string;
 }
+
+export interface IRequestGetTracks {
+  user: string;
+  stream: string;
+  rtpCapabilities: any;
+}

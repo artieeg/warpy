@@ -1,4 +1,4 @@
-import { IStream } from "@conv/models";
+import { IRequestGetTracks, IStream } from "@conv/models";
 import {
   createNewMediaRoomDataFixture,
   createNewTrackFixture,
@@ -15,6 +15,37 @@ jest.spyOn(ParticipantService, "getCurrentStreamFor");
 describe("conversation service", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  it.todo("does not send recv tracks if user is not a viewer");
+
+  it("handles recv tracks request", async () => {
+    const recvTracksResponse = {
+      consumerParams: [],
+    };
+
+    jest
+      .spyOn(MessageService, "getRecvTracks")
+      .mockResolvedValue(recvTracksResponse);
+
+    const req: IRequestGetTracks = {
+      user: "test_user",
+      stream: "test_stream",
+      rtpCapabilities: {},
+    };
+
+    await ConversationService.handleRecvTracksRequest(req);
+
+    expect(MessageService.getRecvTracks).toBeCalledWith({
+      roomId: req.stream,
+      user: req.user,
+      rtpCapabilities: {},
+    });
+
+    expect(MessageService.sendMessage).toBeCalledWith(req.user, {
+      event: "recv-tracks-response",
+      data: recvTracksResponse,
+    });
   });
 
   it("handles new converation", async () => {

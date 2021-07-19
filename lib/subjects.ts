@@ -19,6 +19,7 @@ export const subjects = {
     },
     track: {
       send: "media.track.send",
+      getRecv: "media.track.recv.get",
     },
   },
 };

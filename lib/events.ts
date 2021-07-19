@@ -70,3 +70,13 @@ export interface INewMediaTrack {
   direction: MediaDirection;
   appData: any;
 }
+
+export interface IRecvTracksRequest {
+  roomId: string;
+  user: string;
+  rtpCapabilities: RtpCapabilities;
+}
+
+export interface IRecvTracksResponse {
+  consumerParams: any[];
+}

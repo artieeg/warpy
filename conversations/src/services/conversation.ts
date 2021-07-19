@@ -2,6 +2,7 @@ import {
   IAllowSpeakerPayload,
   INewTrackPayload,
   IParticipant,
+  IRequestGetTracks,
   IStream,
 } from "@conv/models";
 import { INewMediaTrack, MessageHandler } from "@warpy/lib";
@@ -158,4 +159,23 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
   }
 
   MessageService.sendNewTrack(data);
+};
+
+export const handleRecvTracksRequest = async (data: IRequestGetTracks) => {
+  const { user, stream, rtpCapabilities } = data;
+
+  //TODO: check if user is in the room
+
+  const { consumerParams } = await MessageService.getRecvTracks({
+    roomId: stream,
+    user,
+    rtpCapabilities,
+  });
+
+  MessageService.sendMessage(user, {
+    event: "recv-tracks-response",
+    data: {
+      consumerParams,
+    },
+  });
 };
