@@ -89,7 +89,7 @@ export const handleConnectTransport = async () => {
 };
 
 export const handleNewTrack = async () => {
-  const sub = nc.subscribe("video.track.new");
+  const sub = nc.subscribe(subjects.media.track.send);
 
   for await (const msg of sub) {
     const newTrack: INewMediaTrack = jc.decode(msg.data) as any;
