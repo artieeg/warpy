@@ -4,12 +4,15 @@ import {
   IParticipant,
   IStream,
 } from "@conv/models";
+import { MessageHandler } from "@warpy/lib";
 import { MessageService, ParticipantService } from ".";
 
 /**
  * Create a new conversation for a new stream
  */
-export const handleNewConversation = async (stream: IStream) => {
+export const handleNewConversation: MessageHandler<IStream> = async (
+  stream
+) => {
   const { id, owner } = stream;
 
   const participant: IParticipant = {
@@ -18,10 +21,22 @@ export const handleNewConversation = async (stream: IStream) => {
     role: "streamer",
   };
 
+  const media = await MessageService.createMediaRoom({
+    host: owner,
+    roomId: id,
+  });
+
   await Promise.all([
     ParticipantService.addParticipant(participant),
     ParticipantService.setCurrentStreamFor(participant),
   ]);
+
+  MessageService.sendMessage(owner, {
+    event: "created-room",
+    data: {
+      media,
+    },
+  });
 };
 
 /**

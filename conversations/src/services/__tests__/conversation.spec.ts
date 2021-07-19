@@ -1,4 +1,5 @@
 import { IStream } from "@conv/models";
+import { createNewMediaRoomDataFixture } from "@warpy/lib";
 import { ConversationService, ParticipantService, MessageService } from "..";
 
 jest.mock("@conv/services/participants");
@@ -14,6 +15,10 @@ describe("conversation service", () => {
   });
 
   it("handles new converation", async () => {
+    const media = createNewMediaRoomDataFixture();
+
+    jest.spyOn(MessageService, "createMediaRoom").mockResolvedValue(media);
+
     const stream: IStream = {
       id: "stream-id",
       owner: "owner-id",
@@ -21,10 +26,22 @@ describe("conversation service", () => {
 
     await ConversationService.handleNewConversation(stream);
 
+    expect(MessageService.createMediaRoom).toBeCalledWith({
+      roomId: stream.id,
+      host: stream.owner,
+    });
+
     expect(ParticipantService.addParticipant).toBeCalledWith({
       id: stream.owner,
       stream: stream.id,
       role: "streamer",
+    });
+
+    expect(MessageService.sendMessage).toBeCalledWith(stream.owner, {
+      event: "created-room",
+      data: {
+        media,
+      },
     });
   });
 

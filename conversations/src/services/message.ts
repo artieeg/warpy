@@ -157,7 +157,7 @@ export const sendMessageBroadcast = async (users: string[], message: any) => {
   users.forEach((user) => _sendMessage(user, encodedMessage));
 };
 
-export const createNewMediaRoom = async (
+export const createMediaRoom = async (
   data: ICreateMediaRoom
 ): Promise<INewMediaRoomData> => {
   const m = jc.encode(data);
