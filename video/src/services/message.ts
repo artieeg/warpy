@@ -5,6 +5,7 @@ import {
   IJoinMediaRoom,
   INewMediaTrack,
   MessageHandler,
+  subjects,
 } from "@warpy/lib";
 import EventEmitter from "events";
 import { connect, JSONCodec, NatsConnection } from "nats";
@@ -31,7 +32,7 @@ export const init = async () => {
 };
 
 export const handleNewSpeaker = async () => {
-  const sub = nc.subscribe("media.peer.speaker-tracks");
+  const sub = nc.subscribe(subjects.media.peer.makeSpeaker);
 
   for await (const msg of sub) {
     const data = jc.decode(msg.data) as any;
@@ -41,7 +42,9 @@ export const handleNewSpeaker = async () => {
       roomId: data.stream,
     };
 
-    eventEmitter.emit("new-speaker", event);
+    eventEmitter.emit("new-speaker", event, (response: any) => {
+      msg.respond(response);
+    });
   }
 };
 
@@ -95,7 +98,7 @@ export const handleNewTrack = async () => {
 };
 
 export const handleCreateNewRoom = async () => {
-  const sub = nc.subscribe("media.room.create");
+  const sub = nc.subscribe(subjects.media.room.create);
 
   for await (const msg of sub) {
     const payload = jc.decode(msg.data) as any;
@@ -106,7 +109,9 @@ export const handleCreateNewRoom = async () => {
       roomId,
     };
 
-    eventEmitter.emit("create-room", data);
+    eventEmitter.emit("create-room", data, (d: any) => {
+      msg.respond(d);
+    });
   }
 };
 

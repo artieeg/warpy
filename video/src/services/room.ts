@@ -17,8 +17,8 @@ import {
   IJoinMediaRoom,
   INewMediaRoomData,
   INewMediaTrack,
+  INewSpeakerMediaResponse,
   MessageHandler,
-  MessageRespondCallback,
 } from "@warpy/lib";
 
 const rooms: Rooms = {};
@@ -30,7 +30,10 @@ const createNewRoom = (): IRoom => {
   };
 };
 
-export const handleNewSpeaker = async (data: IConnectNewSpeakerMedia) => {
+export const handleNewSpeaker: MessageHandler<
+  IConnectNewSpeakerMedia,
+  INewSpeakerMediaResponse
+> = async (data, respond) => {
   const { roomId, speaker } = data;
 
   const room = rooms[roomId];
@@ -47,11 +50,8 @@ export const handleNewSpeaker = async (data: IConnectNewSpeakerMedia) => {
 
   const sendTransportOptions = getOptionsFromTransport(transport);
 
-  MessageService.sendMessageToUser(speaker, {
-    event: "speaker-send-transport",
-    data: {
-      sendTransportOptions,
-    },
+  respond!({
+    sendTransportOptions,
   });
 };
 
