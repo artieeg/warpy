@@ -52,3 +52,21 @@ export interface IConnectNewSpeakerMedia {
 export interface INewSpeakerMediaResponse {
   sendTransportOptions: ITransportOptions;
 }
+
+export interface IConnectMediaTransport {
+  transportId: string;
+  dtlsParameters: DtlsParameters;
+  direction: MediaDirection;
+  roomId: string;
+}
+
+export interface INewMediaTrack {
+  transportId: string;
+  kind: MediaKind;
+  rtpParameters: RtpParameters;
+  rtpCapabilities: RtpCapabilities;
+  paused: boolean;
+  roomId: string;
+  direction: MediaDirection;
+  appData: any;
+}
