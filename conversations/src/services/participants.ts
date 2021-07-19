@@ -1,5 +1,5 @@
-import { IParticipant } from "@app/models";
-import { Roles } from "@app/types";
+import { IParticipant } from "@conv/models";
+import { Roles } from "@conv/types";
 import redis from "redis";
 
 const URL = process.env.PARTICIPANTS_CACHE || "redis://127.0.0.1:6375/5";

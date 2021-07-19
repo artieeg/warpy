@@ -3,14 +3,16 @@
   "workspaces": [
     "lib",
     "user",
-    "video"
+    "video",
+    "conversations"
   ],
   "nohoist": [
     "**"
   ],
   "_moduleAliases": {
     "@user": "./user/src",
-    "@video": "./video/src"
+    "@video": "./video/src",
+    "@conv": "./conversations/src"
   },
   "dependencies": {
     "cross-env": "^7.0.3",

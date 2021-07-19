@@ -1,8 +1,8 @@
-import { IStream } from "@app/models";
+import { IStream } from "@conv/models";
 import { ConversationService, ParticipantService, MessageService } from "..";
 
-jest.mock("@app/services/participants");
-jest.mock("@app/services/message");
+jest.mock("@conv/services/participants");
+jest.mock("@conv/services/message");
 jest.spyOn(ParticipantService, "addParticipant");
 jest.spyOn(ParticipantService, "removeAllParticipants");
 jest.spyOn(ParticipantService, "removeParticipant");
@@ -104,7 +104,7 @@ describe("conversation service", () => {
 
     expect(MessageService.sendMessageBroadcast).toBeCalledWith(participants, {
       event: "raise-hand",
-      payload: {
+      data: {
         user,
         stream,
       },
@@ -130,7 +130,7 @@ describe("conversation service", () => {
 
     expect(MessageService.sendMessage).toBeCalledWith(speaker, {
       event: "speaking-allowed",
-      payload: {
+      data: {
         stream,
       },
     });
@@ -139,7 +139,7 @@ describe("conversation service", () => {
       participantsToBroadcast,
       {
         event: "allow-speaker",
-        payload: {
+        data: {
           speaker,
           stream,
         },
@@ -164,13 +164,13 @@ describe("conversation service", () => {
 
     jest.spyOn(ParticipantService, "getRoleFor").mockResolvedValue("speaker");
 
-    await ConversationService.handleNewTrack(user, track);
+    await ConversationService.handleNewTrack({ user, track });
 
     expect(MessageService.sendMessageBroadcast).toBeCalledWith(
       participantsToBroadcast,
       {
         event: "track-new",
-        payload: {
+        data: {
           user,
           track,
           stream,
@@ -195,7 +195,7 @@ describe("conversation service", () => {
 
     jest.spyOn(ParticipantService, "getRoleFor").mockResolvedValue("viewer");
 
-    await ConversationService.handleNewTrack(user, track);
+    await ConversationService.handleNewTrack({ user, track });
 
     expect(MessageService.sendMessageBroadcast).toBeCalledTimes(0);
   });

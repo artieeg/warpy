@@ -4,7 +4,7 @@ import {
   ConversationService,
   MessageService,
   ParticipantService,
-} from "@app/services";
+} from "@conv/services";
 import "module-alias/register";
 
 const main = async () => {

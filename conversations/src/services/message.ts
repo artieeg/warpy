@@ -5,7 +5,12 @@ import {
   INewTrackPayload,
   IParticipant,
   IStream,
-} from "@app/models";
+} from "@conv/models";
+import {
+  ICreateMediaRoom,
+  INewMediaRoomData,
+  MessageHandler,
+} from "@warpy/lib";
 
 const eventEmitter = new EventEmitter();
 
@@ -38,7 +43,7 @@ type Events =
   | "new-track"
   | "participant-leave";
 
-export const on = (event: Events, handler: any) => {
+export const on = (event: Events, handler: MessageHandler<any, any>) => {
   eventEmitter.on(event, handler);
 };
 
@@ -135,7 +140,7 @@ export const createSendTracksForSpeaker = async (
   speaker: string,
   stream: string
 ) => {
-  nc.publish(`speaker.send-tracks`, jc.encode({ speaker, stream }));
+  nc.publish(`media.peer.speaker-tracks`, jc.encode({ speaker, stream }));
 };
 
 const _sendMessage = async (user: string, message: Uint8Array) => {
@@ -150,4 +155,14 @@ export const sendMessageBroadcast = async (users: string[], message: any) => {
   const encodedMessage = jc.encode(message);
 
   users.forEach((user) => _sendMessage(user, encodedMessage));
+};
+
+export const createNewMediaRoom = async (
+  data: ICreateMediaRoom
+): Promise<INewMediaRoomData> => {
+  const m = jc.encode(data);
+
+  const reply = await nc.request("media.room.create", m, { timeout: 1000 });
+
+  return jc.decode(reply.data) as INewMediaRoomData;
 };

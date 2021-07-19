@@ -3,7 +3,7 @@ import {
   INewTrackPayload,
   IParticipant,
   IStream,
-} from "@app/models";
+} from "@conv/models";
 import { MessageService, ParticipantService } from ".";
 
 /**
@@ -11,8 +11,6 @@ import { MessageService, ParticipantService } from ".";
  */
 export const handleNewConversation = async (stream: IStream) => {
   const { id, owner } = stream;
-
-  console.log("new stream event", stream);
 
   const participant: IParticipant = {
     stream: id,
@@ -62,8 +60,6 @@ export const handleParticipantJoin = async (participant: IParticipant) => {
 
   const participants = await ParticipantService.getStreamParticipants(stream);
 
-  console.log("broadcasting to", participants);
-
   await Promise.all([
     ParticipantService.addParticipant(participant),
     ParticipantService.setCurrentStreamFor(participant),
@@ -107,7 +103,6 @@ export const handleAllowSpeaker = async (data: IAllowSpeakerPayload) => {
   const participants = await ParticipantService.getStreamParticipants(stream);
   const participantsToBroadcast = participants.filter((p) => p !== speaker);
 
-  console.log(`sending speakign allowed event to ${speaker}`);
   MessageService.sendMessage(speaker, {
     event: "speaking-allowed",
     data: {

@@ -1,4 +1,4 @@
-import { Roles } from "@app/types";
+import { Roles } from "@conv/types";
 
 export interface IStream {
   id: string;
