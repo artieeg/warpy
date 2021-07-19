@@ -31,7 +31,8 @@ export const NewStream = () => {
 
   useEffect(() => {
     onWebSocketEvent('created-room', (data: any) => {
-      setRoomData(data);
+      console.log('on new room created', data);
+      setRoomData(data.media);
     });
 
     onWebSocketEvent('raise-hand', (data: any) => {
