@@ -133,9 +133,12 @@ describe("conversation service", () => {
     const speaker = "test speaker";
     const stream = "test stream";
 
+    const media = { sendTransportOptions: {} } as any;
+
     const participants = [user, speaker, "user1", "user2"];
     const participantsToBroadcast = participants.filter((p) => p !== speaker);
 
+    jest.spyOn(MessageService, "connectSpeakerMedia").mockResolvedValue(media);
     jest
       .spyOn(ParticipantService, "getCurrentStreamFor")
       .mockResolvedValue(stream);
@@ -159,6 +162,7 @@ describe("conversation service", () => {
         data: {
           speaker,
           stream,
+          media,
         },
       }
     );

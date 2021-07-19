@@ -115,6 +115,11 @@ export const handleAllowSpeaker = async (data: IAllowSpeakerPayload) => {
     return;
   }
 
+  const media = await MessageService.connectSpeakerMedia({
+    speaker,
+    roomId: stream,
+  });
+
   const participants = await ParticipantService.getStreamParticipants(stream);
   const participantsToBroadcast = participants.filter((p) => p !== speaker);
 
@@ -130,10 +135,9 @@ export const handleAllowSpeaker = async (data: IAllowSpeakerPayload) => {
     data: {
       speaker,
       stream,
+      media,
     },
   });
-
-  MessageService.createSendTracksForSpeaker(speaker, stream);
 };
 
 export const handleNewTrack = async (data: INewTrackPayload) => {

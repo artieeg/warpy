@@ -139,13 +139,6 @@ const handleNewStream = async () => {
   }
 };
 
-export const createSendTracksForSpeaker = async (
-  speaker: string,
-  stream: string
-) => {
-  nc.publish(`media.peer.speaker-tracks`, jc.encode({ speaker, stream }));
-};
-
 const _sendMessage = async (user: string, message: Uint8Array) => {
   nc.publish(`reply.user.${user}`, message);
 };
