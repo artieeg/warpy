@@ -4,6 +4,7 @@ import {
   ICreateMediaRoom,
   IJoinMediaRoom,
   INewMediaTrack,
+  MessageHandler,
 } from "@warpy/lib";
 import EventEmitter from "events";
 import { connect, JSONCodec, NatsConnection } from "nats";
@@ -121,6 +122,6 @@ type Event =
   | "new-speaker"
   | "recv-tracks-request";
 
-export const on = (event: Event, handler: any) => {
+export const on = (event: Event, handler: MessageHandler<any, any>) => {
   eventEmitter.on(event, handler);
 };

@@ -15,7 +15,10 @@ import {
   IConnectNewSpeakerMedia,
   ICreateMediaRoom,
   IJoinMediaRoom,
+  INewMediaRoomData,
   INewMediaTrack,
+  MessageHandler,
+  MessageRespondCallback,
 } from "@warpy/lib";
 
 const rooms: Rooms = {};
@@ -146,7 +149,10 @@ export const handleJoinRoom = async (data: IJoinMediaRoom) => {
   });
 };
 
-export const handleNewRoom = async (data: ICreateMediaRoom) => {
+export const handleNewRoom: MessageHandler<
+  ICreateMediaRoom,
+  INewMediaRoomData
+> = async (data, respond) => {
   const { roomId, host } = data;
 
   if (rooms[roomId]) {
@@ -168,15 +174,10 @@ export const handleNewRoom = async (data: ICreateMediaRoom) => {
     producer: null,
   };
 
-  MessageService.sendMessageToUser(host, {
-    event: "created-room",
-    data: {
-      roomId,
-      peerId: host,
-      routerRtpCapabilities: rooms[roomId].router.rtpCapabilities,
-      recvTransportOptions: VideoService.getOptionsFromTransport(recvTransport),
-      sendTransportOptions: VideoService.getOptionsFromTransport(sendTransport),
-    },
+  respond!({
+    routerRtpCapabilities: rooms[roomId].router.rtpCapabilities,
+    recvTransportOptions: VideoService.getOptionsFromTransport(recvTransport),
+    sendTransportOptions: VideoService.getOptionsFromTransport(sendTransport),
   });
 };
 

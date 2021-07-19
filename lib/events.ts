@@ -4,10 +4,28 @@ import {
   RtpCapabilities,
   RtpParameters,
 } from "mediasoup/lib/RtpParameters";
+import {
+  DtlsParameters,
+  IceCandidate,
+  IceParameters,
+} from "mediasoup/lib/types";
+
+export interface ITransportOptions {
+  id: string;
+  iceParameters: IceParameters;
+  iceCandidates: IceCandidate[];
+  dtlsParameters: DtlsParameters;
+}
 
 export interface ICreateMediaRoom {
   host: string;
   roomId: string;
+}
+
+export interface INewMediaRoomData {
+  routerRtpCapabilities: RtpCapabilities;
+  recvTransportOptions: ITransportOptions;
+  sendTransportOptions: ITransportOptions;
 }
 
 export interface INewMediaTrack {

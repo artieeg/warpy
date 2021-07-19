@@ -10,6 +10,7 @@ import {
   WebRtcTransport,
 } from "mediasoup/lib/types";
 import { config } from "@video/config";
+import { ITransportOptions } from "@warpy/lib";
 
 let latestUsedWorkerIdx = -1;
 const workers: IWorker[] = [];
@@ -65,7 +66,9 @@ export const createTransport = async (
   return transport;
 };
 
-export const getOptionsFromTransport = (transport: WebRtcTransport) => ({
+export const getOptionsFromTransport = (
+  transport: WebRtcTransport
+): ITransportOptions => ({
   id: transport.id,
   iceParameters: transport.iceParameters,
   iceCandidates: transport.iceCandidates,
