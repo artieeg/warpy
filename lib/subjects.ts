@@ -1,4 +1,4 @@
-export const Subjects = {
+export const subjects = {
   media: {
     room: {
       create: "media.room.create",
