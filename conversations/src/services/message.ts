@@ -7,9 +7,12 @@ import {
   IStream,
 } from "@conv/models";
 import {
+  IConnectNewSpeakerMedia,
   ICreateMediaRoom,
   INewMediaRoomData,
+  INewSpeakerMediaResponse,
   MessageHandler,
+  subjects,
 } from "@warpy/lib";
 
 const eventEmitter = new EventEmitter();
@@ -162,7 +165,21 @@ export const createMediaRoom = async (
 ): Promise<INewMediaRoomData> => {
   const m = jc.encode(data);
 
-  const reply = await nc.request("media.room.create", m, { timeout: 1000 });
+  const reply = await nc.request(subjects.media.room.create, m, {
+    timeout: 1000,
+  });
+
+  return jc.decode(reply.data) as INewMediaRoomData;
+};
+
+export const connectSpeakerMedia = async (
+  data: IConnectNewSpeakerMedia
+): Promise<INewSpeakerMediaResponse> => {
+  const m = jc.encode(data);
+
+  const reply = await nc.request(subjects.media.peer.makeSpeaker, m, {
+    timeout: 1000,
+  });
 
   return jc.decode(reply.data) as INewMediaRoomData;
 };
