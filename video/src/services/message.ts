@@ -110,7 +110,7 @@ export const handleCreateNewRoom = async () => {
     };
 
     eventEmitter.emit("create-room", data, (d: any) => {
-      msg.respond(d);
+      msg.respond(jc.encode(d));
     });
   }
 };

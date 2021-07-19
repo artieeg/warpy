@@ -174,6 +174,8 @@ export const handleNewRoom: MessageHandler<
     producer: null,
   };
 
+  console.log("created new trasnpors", recvTransport);
+
   respond!({
     routerRtpCapabilities: rooms[roomId].router.rtpCapabilities,
     recvTransportOptions: VideoService.getOptionsFromTransport(recvTransport),
