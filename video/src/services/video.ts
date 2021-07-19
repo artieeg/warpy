@@ -1,7 +1,7 @@
 import os from "os";
 import { createWorker } from "mediasoup";
-import { Consumer, IPeer, IWorker } from "@app/models";
-import { MediaDirection } from "@app/types";
+import { Consumer, IPeer, IWorker } from "@video/models";
+import { MediaDirection } from "@video/types";
 import {
   Producer,
   Router,
@@ -9,7 +9,7 @@ import {
   Transport,
   WebRtcTransport,
 } from "mediasoup/lib/types";
-import { config } from "@app/config";
+import { config } from "@video/config";
 
 let latestUsedWorkerIdx = -1;
 const workers: IWorker[] = [];

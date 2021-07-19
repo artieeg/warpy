@@ -1,12 +1,10 @@
+import { IConnectTransport, IMessage, IRecvTracksRequest } from "@video/models";
 import {
-  IConnectTransport,
-  ICreateNewRoom,
-  IJoinRoom,
-  IMessage,
-  INewSpeaker,
-  INewTrack,
-  IRecvTracksRequest,
-} from "@app/models";
+  IConnectNewSpeakerMedia,
+  ICreateMediaRoom,
+  IJoinMediaRoom,
+  INewMediaTrack,
+} from "@warpy/lib";
 import EventEmitter from "events";
 import { connect, JSONCodec, NatsConnection } from "nats";
 
@@ -32,12 +30,12 @@ export const init = async () => {
 };
 
 export const handleNewSpeaker = async () => {
-  const sub = nc.subscribe("speaker.send-tracks");
+  const sub = nc.subscribe("media.peer.speaker-tracks");
 
   for await (const msg of sub) {
     const data = jc.decode(msg.data) as any;
 
-    const event: INewSpeaker = {
+    const event: IConnectNewSpeakerMedia = {
       speaker: data.speaker,
       roomId: data.stream,
     };
@@ -63,13 +61,12 @@ export const handleRecvTracksRequest = async () => {
 };
 
 export const handleJoinRoom = async () => {
-  const sub = nc.subscribe("stream.user.join");
+  const sub = nc.subscribe("media.user.join");
 
   for await (const msg of sub) {
     const data = jc.decode(msg.data) as any;
-    console.log("join room handler received", data);
 
-    const event: IJoinRoom = {
+    const event: IJoinMediaRoom = {
       user: data.user,
       roomId: data.stream,
     };
@@ -91,22 +88,19 @@ export const handleNewTrack = async () => {
   const sub = nc.subscribe("video.track.new");
 
   for await (const msg of sub) {
-    const newTrack: INewTrack = jc.decode(msg.data) as any;
-    console.log("new track", newTrack);
+    const newTrack: INewMediaTrack = jc.decode(msg.data) as any;
     eventEmitter.emit("new-track", newTrack);
   }
 };
 
 export const handleCreateNewRoom = async () => {
-  const sub = nc.subscribe("stream.created");
+  const sub = nc.subscribe("media.room.create");
 
   for await (const msg of sub) {
-    const newStream = jc.decode(msg.data) as any;
+    const payload = jc.decode(msg.data) as any;
+    const { host, roomId } = payload;
 
-    const host = newStream.owner;
-    const roomId = newStream.id;
-
-    const data: ICreateNewRoom = {
+    const data: ICreateMediaRoom = {
       host,
       roomId,
     };

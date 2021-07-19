@@ -1,8 +1,8 @@
 import "module-alias/register";
 
 import express from "express";
-import routes from "@app/routes";
-import { DatabaseService, MessageService } from "@app/services";
+import routes from "@user/routes";
+import { DatabaseService, MessageService } from "@user/services";
 
 const app = express();
 app.use(express.json());

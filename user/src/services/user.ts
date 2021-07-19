@@ -1,5 +1,5 @@
-import { User, RefreshToken } from "@app/models";
-import { jwt } from "@app/utils";
+import { User, RefreshToken } from "@user/models";
+import { jwt } from "@user/utils";
 
 /*
  * Create a dev account. Should be disabled in production

@@ -1,5 +1,31 @@
 {
+  "private": true,
+  "workspaces": [
+    "lib",
+    "user",
+    "video"
+  ],
+  "nohoist": [
+    "**"
+  ],
+  "_moduleAliases": {
+    "@user": "./user/src",
+    "@video": "./video/src"
+  },
+  "dependencies": {
+    "cross-env": "^7.0.3",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "module-alias": "^2.2.2",
+    "mongoose": "^5.13.0",
+    "nats": "^2.0.8",
+    "typescript": "^4.3.5",
+    "yup": "^0.32.9"
+  },
   "devDependencies": {
-    "redis-mock": "^0.56.3"
+    "@types/express": "^4.17.12",
+    "@types/jsonwebtoken": "^8.5.3",
+    "nodemon": "^2.0.9",
+    "ts-node": "^10.0.0"
   }
 }

@@ -9,7 +9,7 @@
     "start:dev": "npx nodemon index.ts"
   },
   "_moduleAliases": {
-    "@app": "./src"
+    "@video": "./src"
   },
   "devDependencies": {
     "@types/node": "^16.3.1",
@@ -22,6 +22,7 @@
     "dotenv": "^10.0.0",
     "mediasoup": "3",
     "module-alias": "^2.2.2",
-    "nats": "^2.1.0"
+    "nats": "^2.1.0",
+    "@warpy/lib": "1.0.0"
   }
 }

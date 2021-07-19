@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-import { MessageService, RoomService, VideoService } from "@app/services";
+import { MessageService, RoomService, VideoService } from "@video/services";
 
 const main = async () => {
   await Promise.all([MessageService.init(), VideoService.startWorkers()]);

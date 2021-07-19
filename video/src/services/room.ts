@@ -1,13 +1,9 @@
 import {
   IConnectTransport,
-  ICreateNewRoom,
-  IJoinRoom,
-  INewSpeaker,
-  INewTrack,
   IRecvTracksRequest,
   IRoom,
   Rooms,
-} from "@app/models";
+} from "@video/models";
 import { Producer } from "mediasoup/lib/Producer";
 import { MessageService, VideoService } from ".";
 import {
@@ -15,6 +11,12 @@ import {
   createTransport,
   getOptionsFromTransport,
 } from "./video";
+import {
+  IConnectNewSpeakerMedia,
+  ICreateMediaRoom,
+  IJoinMediaRoom,
+  INewMediaTrack,
+} from "@warpy/lib";
 
 const rooms: Rooms = {};
 
@@ -25,7 +27,7 @@ const createNewRoom = (): IRoom => {
   };
 };
 
-export const handleNewSpeaker = async (data: INewSpeaker) => {
+export const handleNewSpeaker = async (data: IConnectNewSpeakerMedia) => {
   const { roomId, speaker } = data;
 
   const room = rooms[roomId];
@@ -108,7 +110,7 @@ export const handleRecvTracksRequest = async (data: IRecvTracksRequest) => {
   });
 };
 
-export const handleJoinRoom = async (data: IJoinRoom) => {
+export const handleJoinRoom = async (data: IJoinMediaRoom) => {
   const { roomId, user } = data;
 
   const room = rooms[roomId];
@@ -144,7 +146,7 @@ export const handleJoinRoom = async (data: IJoinRoom) => {
   });
 };
 
-export const handleNewRoom = async (data: ICreateNewRoom) => {
+export const handleNewRoom = async (data: ICreateMediaRoom) => {
   const { roomId, host } = data;
 
   if (rooms[roomId]) {
@@ -214,7 +216,7 @@ export const handleConnectTransport = async (data: IConnectTransport) => {
   });
 };
 
-export const handleNewTrack = async (data: INewTrack) => {
+export const handleNewTrack = async (data: INewMediaTrack) => {
   const {
     roomId,
     user,
