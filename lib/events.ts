@@ -48,3 +48,7 @@ export interface IConnectNewSpeakerMedia {
   roomId: string;
   speaker: string;
 }
+
+export interface INewSpeakerMediaResponse {
+  sendTransportOptions: ITransportOptions;
+}
