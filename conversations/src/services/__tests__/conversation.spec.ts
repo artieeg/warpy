@@ -1,5 +1,8 @@
 import { IStream } from "@conv/models";
-import { createNewMediaRoomDataFixture } from "@warpy/lib";
+import {
+  createNewMediaRoomDataFixture,
+  createNewTrackFixture,
+} from "@warpy/lib";
 import { ConversationService, ParticipantService, MessageService } from "..";
 
 jest.mock("@conv/services/participants");
@@ -170,7 +173,6 @@ describe("conversation service", () => {
 
   it("handles published track event", async () => {
     const user = "test user";
-    const track = "test track";
     const stream = "test stream";
 
     const participants = ["owner", "user1", "user2", user];
@@ -185,24 +187,16 @@ describe("conversation service", () => {
 
     jest.spyOn(ParticipantService, "getRoleFor").mockResolvedValue("speaker");
 
-    await ConversationService.handleNewTrack({ user, track });
+    const track = createNewTrackFixture({});
 
-    expect(MessageService.sendMessageBroadcast).toBeCalledWith(
-      participantsToBroadcast,
-      {
-        event: "track-new",
-        data: {
-          user,
-          track,
-          stream,
-        },
-      }
-    );
+    await ConversationService.handleNewTrack(track);
+
+    expect(MessageService.sendNewTrack).toBeCalledWith(track);
   });
 
   it("does not publish tracks if viewer", async () => {
     const user = "test user";
-    const track = "test track";
+    const track = createNewTrackFixture();
     const stream = "test stream";
 
     const participants = ["owner", "user1", "user2", user];
@@ -216,8 +210,8 @@ describe("conversation service", () => {
 
     jest.spyOn(ParticipantService, "getRoleFor").mockResolvedValue("viewer");
 
-    await ConversationService.handleNewTrack({ user, track });
+    await ConversationService.handleNewTrack(track);
 
-    expect(MessageService.sendMessageBroadcast).toBeCalledTimes(0);
+    expect(MessageService.sendNewTrack).toBeCalledTimes(0);
   });
 });

@@ -10,6 +10,7 @@ import {
   IConnectNewSpeakerMedia,
   ICreateMediaRoom,
   INewMediaRoomData,
+  INewMediaTrack,
   INewSpeakerMediaResponse,
   MessageHandler,
   subjects,
@@ -51,7 +52,7 @@ export const on = (event: Events, handler: MessageHandler<any, any>) => {
 };
 
 const handleNewTrack = async () => {
-  const sub = nc.subscribe("stream.new-track");
+  const sub = nc.subscribe(subjects.conversations.track.try_send);
 
   for await (const msg of sub) {
     const { user, track } = jc.decode(msg.data) as any;
@@ -175,4 +176,10 @@ export const connectSpeakerMedia = async (
   });
 
   return jc.decode(reply.data) as INewMediaRoomData;
+};
+
+export const sendNewTrack = async (data: INewMediaTrack) => {
+  const m = jc.encode(data);
+
+  nc.publish(subjects.media.peer.makeSpeaker, m);
 };

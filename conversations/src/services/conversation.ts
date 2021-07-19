@@ -4,7 +4,7 @@ import {
   IParticipant,
   IStream,
 } from "@conv/models";
-import { MessageHandler } from "@warpy/lib";
+import { INewMediaTrack, MessageHandler } from "@warpy/lib";
 import { MessageService, ParticipantService } from ".";
 
 /**
@@ -140,8 +140,8 @@ export const handleAllowSpeaker = async (data: IAllowSpeakerPayload) => {
   });
 };
 
-export const handleNewTrack = async (data: INewTrackPayload) => {
-  const { track, user } = data;
+export const handleNewTrack = async (data: INewMediaTrack) => {
+  const { user } = data;
 
   const stream = await ParticipantService.getCurrentStreamFor(user);
 
@@ -149,21 +149,11 @@ export const handleNewTrack = async (data: INewTrackPayload) => {
     return;
   }
 
-  const participants = await ParticipantService.getStreamParticipants(stream);
   const role = await ParticipantService.getRoleFor(user, stream);
 
   if (role === "viewer") {
     return;
   }
 
-  const participantsToBroadcast = participants.filter((p) => p !== user);
-
-  MessageService.sendMessageBroadcast(participantsToBroadcast, {
-    event: "track-new",
-    data: {
-      user,
-      stream,
-      track,
-    },
-  });
+  MessageService.sendNewTrack(data);
 };
