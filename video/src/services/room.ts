@@ -211,6 +211,7 @@ export const handleConnectTransport = async (data: IConnectTransport) => {
     return;
   }
 
+  console.log("transport created", direction);
   MessageService.sendMessageToUser(user, {
     event: `${direction}-transport-connected`,
     data: {

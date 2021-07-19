@@ -20,11 +20,17 @@ interface ICreateTransportParams {
 
 export const createTransport = async (params: ICreateTransportParams) => {
   const {roomId, device, direction, options} = params;
+  console.log('create transport optoins', options);
+
+  const transportOptions =
+    direction === 'recv'
+      ? options.recvTransportOptions
+      : options.sendTransportOptions;
 
   const transport =
     direction === 'recv'
-      ? device.createRecvTransport(options.recvTransportOptions)
-      : device.createSendTransport(options.sendTransportOptions);
+      ? device.createRecvTransport(transportOptions)
+      : device.createSendTransport(transportOptions);
 
   //Source: https://mediasoup.org/documentation/v3/mediasoup-client/api/
   //Transport is about to establish the ICE+DTLS connection and
@@ -33,8 +39,10 @@ export const createTransport = async (params: ICreateTransportParams) => {
     onWebSocketEvent(`${direction}-transport-connected`, (_data: any) => {
       callback();
     });
+
+    console.log('sending transport', options.id);
     sendConnectTransport({
-      transportId: options.id,
+      transportId: transportOptions.id,
       dtlsParameters,
       direction,
       roomId: roomId,
@@ -59,8 +67,10 @@ export const createTransport = async (params: ICreateTransportParams) => {
           errback();
         }
       });
+
+      console.log('gonna send a new track to transport', transportOptions.id);
       sendNewTrack({
-        transportId: options.id,
+        transportId: transportOptions.id,
         kind,
         rtpParameters,
         rtpCapabilities: device!.rtpCapabilities,

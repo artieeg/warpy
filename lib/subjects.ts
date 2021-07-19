@@ -14,6 +14,9 @@ export const subjects = {
     peer: {
       makeSpeaker: "media.peer.make-speaker",
     },
+    transport: {
+      connect: "media.transport.connect",
+    },
     track: {
       send: "media.track.send",
     },

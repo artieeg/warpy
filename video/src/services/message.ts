@@ -80,7 +80,7 @@ export const handleJoinRoom = async () => {
 };
 
 export const handleConnectTransport = async () => {
-  const sub = nc.subscribe("video.transport.connect");
+  const sub = nc.subscribe(subjects.media.transport.connect);
 
   for await (const msg of sub) {
     const transport: IConnectTransport = jc.decode(msg.data) as any;

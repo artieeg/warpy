@@ -14,7 +14,7 @@ export const init = async () => {
 };
 
 export const sendTransportConnect = (data: any) => {
-  nc.publish(subjects.conversations.transport.try_connect, jc.encode(data));
+  nc.publish(subjects.media.transport.connect, jc.encode(data));
 };
 
 export const sendNewTrackEvent = (data: any) => {
