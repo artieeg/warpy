@@ -10,7 +10,7 @@
     "test": "jest"
   },
   "_moduleAliases": {
-    "@app": "./src"
+    "@ws_gateway": "./src"
   },
   "dependencies": {
     "bufferutil": "^4.0.3",
@@ -18,7 +18,8 @@
     "module-alias": "^2.2.2",
     "nats": "^2.1.0",
     "utf-8-validate": "^5.0.5",
-    "ws": "^7.5.2"
+    "ws": "^7.5.2",
+    "@warpy/lib": "1.0.0"
   },
   "devDependencies": {
     "@types/jest": "^26.0.24",

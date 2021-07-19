@@ -1,4 +1,5 @@
 import { connect, JSONCodec, NatsConnection } from "nats";
+import { subjects } from "@warpy/lib";
 
 const NATS = process.env.NATS_ADDR;
 if (!NATS) {
@@ -13,8 +14,7 @@ export const init = async () => {
 };
 
 export const sendTransportConnect = (data: any) => {
-  console.log("transport event", data);
-  nc.publish("video.transport.connect", jc.encode(data));
+  nc.publish(subjects.conversations.transport.try_connect, jc.encode(data));
 };
 
 export const sendNewTrackEvent = (data: any) => {

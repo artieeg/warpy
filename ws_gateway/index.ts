@@ -7,12 +7,12 @@ import {
   onAllowSpeaker,
   onNewTrack,
   onRecvTracksRequest,
-} from "@app/handlers";
-import { IMessage } from "@app/models";
-import { Context, Handlers } from "@app/types";
+} from "@ws_gateway/handlers";
+import { IMessage } from "@ws_gateway/models";
+import { Context, Handlers } from "@ws_gateway/types";
 import ws from "ws";
-import { MessageService, PingPongService } from "@app/services";
-import { onConnectTransport } from "@app/handlers/connect_transport";
+import { MessageService, PingPongService } from "@ws_gateway/services";
+import { onConnectTransport } from "@ws_gateway/handlers/connect_transport";
 
 const PORT = Number.parseInt(process.env.PORT || "10000");
 

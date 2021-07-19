@@ -1,5 +1,5 @@
-import { MessageService } from "@app/services";
-import { Context, Handler } from "@app/types";
+import { MessageService } from "@ws_gateway/services";
+import { Context, Handler } from "@ws_gateway/types";
 
 export const onJoinStream: Handler = async (data: any, context?: Context) => {
   const { stream } = data;

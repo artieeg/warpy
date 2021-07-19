@@ -2,6 +2,6 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   moduleNameMapper: {
-    '^@app/(.*)$': '<rootDir>/src/$1',
+    '^@ws_gateway/(.*)$': '<rootDir>/src/$1',
   },
 };

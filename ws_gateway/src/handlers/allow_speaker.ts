@@ -1,5 +1,5 @@
-import { MessageService } from "@app/services";
-import { Handler } from "@app/types";
+import { MessageService } from "@ws_gateway/services";
+import { Handler } from "@ws_gateway/types";
 
 export const onAllowSpeaker: Handler = (data, context?) => {
   if (!context || !context.user) {
