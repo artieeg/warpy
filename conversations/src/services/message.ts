@@ -55,11 +55,28 @@ const handleNewTrack = async () => {
   const sub = nc.subscribe(subjects.conversations.track.try_send);
 
   for await (const msg of sub) {
-    const { user, track } = jc.decode(msg.data) as any;
-
-    const data: INewTrackPayload = {
+    const {
       user,
-      track,
+      transportId,
+      kind,
+      rtpParameters,
+      rtpCapabilities,
+      paused,
+      roomId,
+      appData,
+      direction,
+    } = jc.decode(msg.data) as any;
+
+    const data: INewMediaTrack = {
+      user,
+      transportId,
+      kind,
+      rtpParameters,
+      rtpCapabilities,
+      paused,
+      roomId,
+      appData,
+      direction,
     };
 
     eventEmitter.emit("new-track", data);
@@ -181,5 +198,5 @@ export const connectSpeakerMedia = async (
 export const sendNewTrack = async (data: INewMediaTrack) => {
   const m = jc.encode(data);
 
-  nc.publish(subjects.media.peer.makeSpeaker, m);
+  nc.publish(subjects.media.track.send, m);
 };

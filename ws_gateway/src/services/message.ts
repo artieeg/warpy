@@ -18,7 +18,7 @@ export const sendTransportConnect = (data: any) => {
 };
 
 export const sendNewTrackEvent = (data: any) => {
-  nc.publish("video.track.new", jc.encode(data));
+  nc.publish(subjects.conversations.track.try_send, jc.encode(data));
 };
 
 export const sendUserJoinEvent = (data: any) => {

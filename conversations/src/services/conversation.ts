@@ -141,6 +141,8 @@ export const handleAllowSpeaker = async (data: IAllowSpeakerPayload) => {
 };
 
 export const handleNewTrack = async (data: INewMediaTrack) => {
+  console.log("handle new track event", data);
+
   const { user } = data;
 
   const stream = await ParticipantService.getCurrentStreamFor(user);
