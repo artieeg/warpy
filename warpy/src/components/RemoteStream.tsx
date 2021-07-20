@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {StyleSheet, useWindowDimensions, View} from 'react-native';
+import {Alert, StyleSheet, useWindowDimensions, View} from 'react-native';
 import {Stream} from '@app/models';
 import {onWebSocketEvent, sendJoinStream, sendRaiseHand} from '@app/services';
 import {consumeRemoteStreams, sendMediaStream} from '@app/services/video';
@@ -49,8 +49,8 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   }, [userId, id]);
 
   useEffect(() => {
-    onWebSocketEvent('speaker-send-transport', (options: any) => {
-      sendMediaStream(audioStream!, id, options, 'audio');
+    onWebSocketEvent('speaking-allowed', (options: any) => {
+      sendMediaStream(audioStream!, id, options.media, 'audio');
     });
   }, [id, audioStream]);
 

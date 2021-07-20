@@ -20,7 +20,6 @@ interface ICreateTransportParams {
 
 export const createTransport = async (params: ICreateTransportParams) => {
   const {roomId, device, direction, options} = params;
-  console.log('create transport optoins', options);
 
   const transportOptions =
     direction === 'recv'
@@ -40,7 +39,6 @@ export const createTransport = async (params: ICreateTransportParams) => {
       callback();
     });
 
-    console.log('sending transport', options.id);
     sendConnectTransport({
       transportId: transportOptions.id,
       dtlsParameters,
@@ -59,7 +57,6 @@ export const createTransport = async (params: ICreateTransportParams) => {
 
       onWebSocketEvent('send-track-created', (data: any) => {
         const id = data.id;
-        console.log('track created', id);
 
         if (id !== null) {
           callback({id});
@@ -68,7 +65,6 @@ export const createTransport = async (params: ICreateTransportParams) => {
         }
       });
 
-      console.log('gonna send a new track to transport', transportOptions.id);
       sendNewTrack({
         transportId: transportOptions.id,
         kind,

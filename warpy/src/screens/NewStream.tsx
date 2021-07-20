@@ -2,7 +2,7 @@ import {useAppUser, useLocalStream} from '@app/hooks';
 import {createStream, onWebSocketEvent, sendAllowSpeaker} from '@app/services';
 import {RTCView} from 'react-native-webrtc';
 import React, {useCallback, useEffect, useState} from 'react';
-import {View, StyleSheet, useWindowDimensions} from 'react-native';
+import {View, StyleSheet, useWindowDimensions, Alert} from 'react-native';
 import {StopStream, Button} from '@app/components';
 import {
   consumeRemoteStream,
@@ -31,7 +31,6 @@ export const NewStream = () => {
 
   useEffect(() => {
     onWebSocketEvent('created-room', (data: any) => {
-      console.log('on new room created', data);
       setRoomData(data.media);
     });
 
