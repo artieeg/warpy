@@ -1,9 +1,4 @@
-import {
-  IConnectTransport,
-  IRecvTracksRequest,
-  IRoom,
-  Rooms,
-} from "@video/models";
+import { IConnectTransport, IRoom, Rooms } from "@video/models";
 import { Producer } from "mediasoup/lib/Producer";
 import { MessageService, VideoService } from ".";
 import {
@@ -18,6 +13,8 @@ import {
   INewMediaRoomData,
   INewMediaTrack,
   INewSpeakerMediaResponse,
+  IRecvTracksRequest,
+  IRecvTracksResponse,
   MessageHandler,
 } from "@warpy/lib";
 
@@ -55,7 +52,10 @@ export const handleNewSpeaker: MessageHandler<
   });
 };
 
-export const handleRecvTracksRequest = async (data: IRecvTracksRequest) => {
+export const handleRecvTracksRequest: MessageHandler<
+  IRecvTracksRequest,
+  IRecvTracksResponse
+> = async (data, respond) => {
   const { roomId, user, rtpCapabilities } = data;
 
   const room = rooms[roomId];
@@ -104,12 +104,8 @@ export const handleRecvTracksRequest = async (data: IRecvTracksRequest) => {
     }
   }
 
-  MessageService.sendMessageToUser(user, {
-    event: "recv-tracks-response",
-    data: {
-      roomId,
-      consumerParams,
-    },
+  respond!({
+    consumerParams,
   });
 };
 
@@ -174,8 +170,6 @@ export const handleNewRoom: MessageHandler<
     producer: null,
   };
 
-  console.log("created new trasnpors", recvTransport);
-
   respond!({
     routerRtpCapabilities: rooms[roomId].router.rtpCapabilities,
     recvTransportOptions: VideoService.getOptionsFromTransport(recvTransport),
@@ -185,9 +179,6 @@ export const handleNewRoom: MessageHandler<
 
 export const handleConnectTransport = async (data: IConnectTransport) => {
   const { roomId, user, dtlsParameters, direction } = data;
-
-  console.log("data", data);
-  console.log("roomid", roomId);
 
   const room = rooms[roomId];
 
@@ -211,7 +202,6 @@ export const handleConnectTransport = async (data: IConnectTransport) => {
     return;
   }
 
-  console.log("transport created", direction);
   MessageService.sendMessageToUser(user, {
     event: `${direction}-transport-connected`,
     data: {
@@ -299,7 +289,6 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
     }
   }
 
-  console.log("sending ", `${direction}-track-created`, "event");
   MessageService.sendMessageToUser(user, {
     event: `${direction}-track-created`,
     data: {

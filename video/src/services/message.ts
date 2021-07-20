@@ -1,9 +1,10 @@
-import { IConnectTransport, IMessage, IRecvTracksRequest } from "@video/models";
+import { IConnectTransport, IMessage } from "@video/models";
 import {
   IConnectNewSpeakerMedia,
   ICreateMediaRoom,
   IJoinMediaRoom,
   INewMediaTrack,
+  IRecvTracksRequest,
   MessageHandler,
   subjects,
 } from "@warpy/lib";
@@ -39,40 +40,42 @@ export const handleNewSpeaker = async () => {
 
     const event: IConnectNewSpeakerMedia = {
       speaker: data.speaker,
-      roomId: data.stream,
+      roomId: data.roomId,
     };
 
     eventEmitter.emit("new-speaker", event, (response: any) => {
-      msg.respond(response);
+      msg.respond(jc.encode(response));
     });
   }
 };
 
 export const handleRecvTracksRequest = async () => {
-  const sub = nc.subscribe("video.track.recv.get");
+  const sub = nc.subscribe(subjects.media.track.getRecv);
 
   for await (const msg of sub) {
     const data = jc.decode(msg.data) as any;
 
     const event: IRecvTracksRequest = {
       user: data.user,
-      roomId: data.stream,
+      roomId: data.roomId,
       rtpCapabilities: data.rtpCapabilities,
     };
 
-    eventEmitter.emit("recv-tracks-request", event);
+    eventEmitter.emit("recv-tracks-request", event, (d: any) => {
+      msg.respond(jc.encode(d));
+    });
   }
 };
 
 export const handleJoinRoom = async () => {
-  const sub = nc.subscribe("media.user.join");
+  const sub = nc.subscribe(subjects.media.peer.join);
 
   for await (const msg of sub) {
     const data = jc.decode(msg.data) as any;
 
     const event: IJoinMediaRoom = {
       user: data.user,
-      roomId: data.stream,
+      roomId: data.roomId,
     };
 
     eventEmitter.emit("join-room", event);

@@ -5,6 +5,7 @@ export const subjects = {
     },
     track: {
       try_send: "conversations.track.try_send",
+      try_get: "conversations.track.try_get",
     },
   },
   media: {
@@ -13,6 +14,7 @@ export const subjects = {
     },
     peer: {
       makeSpeaker: "media.peer.make-speaker",
+      join: "media.peer.join",
     },
     transport: {
       connect: "media.transport.connect",

@@ -8,9 +8,3 @@ export interface IConnectTransport {
   dtlsParameters: DtlsParameters;
   direction: MediaDirection;
 }
-
-export interface IRecvTracksRequest {
-  roomId: string;
-  user: string;
-  rtpCapabilities: RtpCapabilities;
-}
