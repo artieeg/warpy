@@ -13,7 +13,5 @@ export const onRecvTracksRequest: Handler = (data, context?) => {
     user,
   };
 
-  console.log("recv tracks request", eventData);
-
   MessageService.sendRecvTracksRequest(eventData);
 };

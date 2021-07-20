@@ -5,7 +5,6 @@ import { jwt } from "@ws_gateway/utils";
 export const onAuth: Handler = async (data, context) => {
   const { token } = data;
   const user = jwt.verifyAccessToken(token);
-  console.log(`USER ${user} atuehd`);
 
   context!.user = user;
 
