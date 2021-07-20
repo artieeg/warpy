@@ -81,6 +81,11 @@ export const handleParticipantJoin = async (participant: IParticipant) => {
     ParticipantService.setCurrentStreamFor(participant),
   ]);
 
+  await MessageService.joinMediaRoom({
+    user: id,
+    roomId: stream,
+  });
+
   await MessageService.sendMessageBroadcast(participants, {
     event: "user-join",
     data: {
@@ -121,6 +126,8 @@ export const handleAllowSpeaker = async (data: IAllowSpeakerPayload) => {
     roomId: stream,
   });
 
+  await ParticipantService.setParticipantRole(stream, speaker, "speaker");
+
   const participants = await ParticipantService.getStreamParticipants(stream);
   const participantsToBroadcast = participants.filter((p) => p !== speaker);
 
@@ -128,6 +135,7 @@ export const handleAllowSpeaker = async (data: IAllowSpeakerPayload) => {
     event: "speaking-allowed",
     data: {
       stream,
+      media,
     },
   });
 
@@ -136,14 +144,11 @@ export const handleAllowSpeaker = async (data: IAllowSpeakerPayload) => {
     data: {
       speaker,
       stream,
-      media,
     },
   });
 };
 
 export const handleNewTrack = async (data: INewMediaTrack) => {
-  console.log("handle new track event", data);
-
   const { user } = data;
 
   const stream = await ParticipantService.getCurrentStreamFor(user);

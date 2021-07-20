@@ -173,19 +173,30 @@ describe("conversation service", () => {
     const participantsToBroadcast = participants.filter((p) => p !== speaker);
 
     jest.spyOn(MessageService, "connectSpeakerMedia").mockResolvedValue(media);
+
+    jest.spyOn(ParticipantService, "setParticipantRole");
+
     jest
       .spyOn(ParticipantService, "getCurrentStreamFor")
       .mockResolvedValue(stream);
+
     jest
       .spyOn(ParticipantService, "getStreamParticipants")
       .mockResolvedValue(participants);
 
     await ConversationService.handleAllowSpeaker({ user, speaker });
 
+    expect(ParticipantService.setParticipantRole).toBeCalledWith(
+      stream,
+      speaker,
+      "speaker"
+    );
+
     expect(MessageService.sendMessage).toBeCalledWith(speaker, {
       event: "speaking-allowed",
       data: {
         stream,
+        media,
       },
     });
 
@@ -196,7 +207,6 @@ describe("conversation service", () => {
         data: {
           speaker,
           stream,
-          media,
         },
       }
     );

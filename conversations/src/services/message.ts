@@ -4,11 +4,13 @@ import {
   IAllowSpeakerPayload,
   INewTrackPayload,
   IParticipant,
+  IRequestGetTracks,
   IStream,
 } from "@conv/models";
 import {
   IConnectNewSpeakerMedia,
   ICreateMediaRoom,
+  IJoinMediaRoom,
   INewMediaRoomData,
   INewMediaTrack,
   INewSpeakerMediaResponse,
@@ -38,10 +40,13 @@ export const init = async () => {
   handleAllowSpeaker();
   handleRaisedHand();
   handleNewTrack();
+  handleNewTrack();
+  handleRecvTracksRequest();
 };
 
 type Events =
   | "conversation-new"
+  | "recv-tracks-request"
   | "conversation-end"
   | "participant-new"
   | "speaker-allow"
@@ -90,7 +95,6 @@ const handleRaisedHand = async () => {
 
   for await (const msg of sub) {
     const { id } = jc.decode(msg.data) as any;
-    console.log("raised hand event", id);
 
     eventEmitter.emit("raise-hand", id);
   }
@@ -206,11 +210,35 @@ export const connectSpeakerMedia = async (
     timeout: 1000,
   });
 
-  return jc.decode(reply.data) as INewMediaRoomData;
+  return jc.decode(reply.data) as INewSpeakerMediaResponse;
 };
 
 export const sendNewTrack = async (data: INewMediaTrack) => {
   const m = jc.encode(data);
 
   nc.publish(subjects.media.track.send, m);
+};
+
+export const joinMediaRoom = async (data: IJoinMediaRoom) => {
+  const m = jc.encode(data);
+
+  nc.publish(subjects.media.peer.join, m);
+};
+
+export const handleRecvTracksRequest = async () => {
+  const sub = nc.subscribe(subjects.conversations.track.try_get);
+
+  for await (const msg of sub) {
+    const data = jc.decode(msg.data) as any;
+
+    const event: IRequestGetTracks = {
+      user: data.user,
+      stream: data.stream,
+      rtpCapabilities: data.rtpCapabilities,
+    };
+
+    eventEmitter.emit("recv-tracks-request", event, (d: any) => {
+      msg.respond(jc.encode(d));
+    });
+  }
 };
