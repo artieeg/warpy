@@ -9,6 +9,13 @@ export const subjects = {
     },
   },
   media: {
+    egress: {
+      new: "media.egresss.new-server",
+      pipeIsReady: "media.egress.pipe-is-ready",
+    },
+    ingress: {
+      pipeIsReady: "media.ingress.pipe-is-ready",
+    },
     room: {
       create: "media.room.create",
     },
