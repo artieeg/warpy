@@ -1,4 +1,5 @@
 import { IConnectTransport, IMessage } from "@video/models";
+import { ServiceRole } from "@video/types";
 import {
   IConnectNewSpeakerMedia,
   ICreateMediaRoom,
@@ -21,15 +22,35 @@ if (!NATS) {
 const jc = JSONCodec();
 let nc: NatsConnection;
 
+const initProducerFunctions = () => {
+  handleCreateNewRoom();
+  handleNewTrack();
+  handleNewSpeaker();
+};
+
+const initCommonFunctions = () => {
+  handleConnectTransport();
+};
+
+const initConsumerFunctions = () => {
+  handleJoinRoom();
+  handleRecvTracksRequest();
+};
+
 export const init = async () => {
   nc = await connect({ servers: [NATS] });
 
-  handleCreateNewRoom();
-  handleNewTrack();
-  handleConnectTransport();
-  handleJoinRoom();
-  handleRecvTracksRequest();
-  handleNewSpeaker();
+  const role = process.env.ROLE as ServiceRole;
+
+  initCommonFunctions();
+
+  if (role === "PRODUCER" || role === "BOTH") {
+    initProducerFunctions();
+  }
+
+  if (role === "CONSUMER" || role === "BOTH") {
+    initConsumerFunctions();
+  }
 };
 
 export const handleNewSpeaker = async () => {
@@ -83,7 +104,12 @@ export const handleJoinRoom = async () => {
 };
 
 export const handleConnectTransport = async () => {
-  const sub = nc.subscribe(subjects.media.transport.connect);
+  const subject =
+    process.env.ROLE === "PRODUCER"
+      ? subjects.media.transport.connect_producer
+      : subjects.media.transport.connect_consumer;
+
+  const sub = nc.subscribe(subject);
 
   for await (const msg of sub) {
     const transport: IConnectTransport = jc.decode(msg.data) as any;

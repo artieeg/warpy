@@ -18,6 +18,8 @@ export const subjects = {
     },
     transport: {
       connect: "media.transport.connect",
+      connect_producer: "media.transport.connect.producer",
+      connect_consumer: "media.transport.connect.consumer",
     },
     track: {
       send: "media.track.send",
