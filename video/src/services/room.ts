@@ -244,11 +244,14 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
 
   let newProducer: Producer;
   try {
+    console.log("creating a producer");
     newProducer = await transport.produce({
       kind,
       rtpParameters,
       appData: { ...appData, user, transportId },
     });
+
+    VideoService.broadcastNewProducerToEgress(newProducer);
   } catch {
     return;
   }
@@ -313,6 +316,8 @@ export const handleNewEgress: MessageHandler<
 
   console.log("INGRESS PIPE TRANSPORT TUPLE");
   console.log(localPipeTransport.tuple);
+
+  VideoService.pipeToEgress = localPipeTransport;
 
   respond!({
     ip: localIp!,

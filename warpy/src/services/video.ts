@@ -39,12 +39,15 @@ export const createTransport = async (params: ICreateTransportParams) => {
       callback();
     });
 
-    sendConnectTransport({
-      transportId: transportOptions.id,
-      dtlsParameters,
-      direction,
-      roomId: roomId,
-    });
+    sendConnectTransport(
+      {
+        transportId: transportOptions.id,
+        dtlsParameters,
+        direction,
+        roomId: roomId,
+      },
+      true,
+    );
   });
 
   //Source: https://mediasoup.org/documentation/v3/mediasoup-client/api/

@@ -17,7 +17,7 @@ let latestUsedWorkerIdx = -1;
 const workers: IWorker[] = [];
 
 //DEBUG
-export let egressPipe: PipeTransport;
+export let pipeToEgress: PipeTransport;
 
 export const startWorkers = async () => {
   const cpus = os.cpus().length;
@@ -131,5 +131,16 @@ export const createPipeTransport = async (id: number) => {
 };
 
 export const broadcastNewProducerToEgress = async (producer: Producer) => {
-  const;
+  try {
+    const pipeConsumer = await pipeToEgress!.consume({
+      producerId: producer.id!,
+    });
+
+    //TODO: send this things to egress nodes
+    const { id, kind, rtpParameters, appData } = pipeConsumer;
+
+    console.log("new pipe consumer", pipeConsumer);
+  } catch (e) {
+    console.error(e);
+  }
 };

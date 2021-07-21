@@ -73,11 +73,17 @@ export const sendNewTrack = (data: any) => {
   );
 };
 
-export const sendConnectTransport = (data: any) => {
+export const sendConnectTransport = (
+  data: any,
+  isProducer: boolean = false,
+) => {
   ws.send(
     JSON.stringify({
       event: 'connect-transport',
-      data,
+      data: {
+        ...data,
+        isProducer,
+      },
     }),
   );
 };
