@@ -3,6 +3,7 @@ import { createWorker } from "mediasoup";
 import { Consumer, IPeer, IWorker } from "@video/models";
 import { MediaDirection } from "@video/types";
 import {
+  PipeTransport,
   Producer,
   Router,
   RtpCapabilities,
@@ -14,6 +15,9 @@ import { ITransportOptions } from "@warpy/lib";
 
 let latestUsedWorkerIdx = -1;
 const workers: IWorker[] = [];
+
+//DEBUG
+export let egressPipe: PipeTransport;
 
 export const startWorkers = async () => {
   const cpus = os.cpus().length;
@@ -123,9 +127,9 @@ export const createPipeTransport = async (id: number) => {
     enableSrtp: false,
   });
 
-  return {
-    ip: transport.tuple.localIp,
-    port: transport.tuple.localPort,
-    srtp: transport.srtpParameters,
-  };
+  return transport;
+};
+
+export const broadcastNewProducerToEgress = async (producer: Producer) => {
+  const;
 };

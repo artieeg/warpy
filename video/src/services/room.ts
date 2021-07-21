@@ -301,6 +301,38 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
 export const handleNewEgress: MessageHandler<
   IConnectMediaServer,
   IConnectMediaServer
-> = async (data, _respond) => {
-  console.log("ok", data);
+> = async (data, respond) => {
+  const { ip, port, srtp } = data;
+
+  const localPipeTransport = await VideoService.createPipeTransport(0);
+  await localPipeTransport.connect({ ip, port, srtpParameters: srtp });
+
+  //const { remoteIp, remotePort } = localPipeTransport.tuple;
+  const { localIp, localPort } = localPipeTransport.tuple;
+  const { srtpParameters } = localPipeTransport;
+
+  console.log("INGRESS PIPE TRANSPORT TUPLE");
+  console.log(localPipeTransport.tuple);
+
+  respond!({
+    ip: localIp!,
+    port: localPort!,
+    //ip: remoteIp!,
+    //port: remotePort!,
+    srtp: srtpParameters,
+  });
+};
+
+export const tryConnectToIngress = async () => {
+  const transport = await VideoService.createPipeTransport(0);
+
+  const remoteParams = await MessageService.tryConnectToIngress({
+    ip: transport.tuple.localIp,
+    port: transport.tuple.localPort,
+    srtp: transport.srtpParameters,
+  });
+
+  const { ip, port, srtp } = remoteParams;
+
+  await transport.connect({ ip, port, srtpParameters: srtp });
 };

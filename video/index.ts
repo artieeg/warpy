@@ -19,15 +19,12 @@ const main = async () => {
 
   console.log("Media service has started with role", process.env.ROLE);
 
+  if (process.env.ROLE === "PRODUCER") {
+    return;
+  }
   //timeout for dev purposes
   setTimeout(async () => {
-    const { ip, port, srtp } = await VideoService.createPipeTransport(0);
-
-    MessageService.tryConnectToIngress({
-      ip,
-      port,
-      srtp,
-    });
+    RoomService.tryConnectToIngress();
   }, 1000);
 };
 
