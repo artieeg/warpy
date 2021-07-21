@@ -8,6 +8,7 @@ import {
   DtlsParameters,
   IceCandidate,
   IceParameters,
+  SrtpParameters,
 } from "mediasoup/lib/types";
 
 export interface ITransportOptions {
@@ -79,4 +80,10 @@ export interface IRecvTracksRequest {
 
 export interface IRecvTracksResponse {
   consumerParams: any[];
+}
+
+export interface IConnectMediaServer {
+  ip: string;
+  port: number;
+  srtp?: SrtpParameters;
 }

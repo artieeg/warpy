@@ -15,7 +15,20 @@ const main = async () => {
   MessageService.on("recv-tracks-request", RoomService.handleRecvTracksRequest);
   MessageService.on("new-speaker", RoomService.handleNewSpeaker);
 
-  console.log("Media service has started");
+  MessageService.on("new-egress", RoomService.handleNewEgress);
+
+  console.log("Media service has started with role", process.env.ROLE);
+
+  //timeout for dev purposes
+  setTimeout(async () => {
+    const { ip, port, srtp } = await VideoService.createPipeTransport(0);
+
+    MessageService.tryConnectToIngress({
+      ip,
+      port,
+      srtp,
+    });
+  }, 1000);
 };
 
 main();

@@ -1,6 +1,7 @@
 import { IConnectTransport, IMessage } from "@video/models";
 import { ServiceRole } from "@video/types";
 import {
+  IConnectMediaServer,
   IConnectNewSpeakerMedia,
   ICreateMediaRoom,
   IJoinMediaRoom,
@@ -26,6 +27,7 @@ const initProducerFunctions = () => {
   handleCreateNewRoom();
   handleNewTrack();
   handleNewSpeaker();
+  handleNewEgress();
 };
 
 const initCommonFunctions = () => {
@@ -50,6 +52,24 @@ export const init = async () => {
 
   if (role === "CONSUMER" || role === "BOTH") {
     initConsumerFunctions();
+  }
+};
+
+export const handleNewEgress = async () => {
+  const sub = nc.subscribe(subjects.media.egress.tryConnect);
+
+  for await (const msg of sub) {
+    const data = jc.decode(msg.data) as any;
+
+    const event: IConnectMediaServer = {
+      ip: data.ip,
+      port: data.port,
+      srtp: data.srtp,
+    };
+
+    eventEmitter.emit("new-egress", event, (response: IConnectMediaServer) => {
+      msg.respond(jc.encode(response));
+    });
   }
 };
 
@@ -154,8 +174,20 @@ type Event =
   | "connect-transport"
   | "join-room"
   | "new-speaker"
+  | "new-egress"
   | "recv-tracks-request";
 
 export const on = (event: Event, handler: MessageHandler<any, any>) => {
   eventEmitter.on(event, handler);
+};
+
+export const tryConnectToIngress = async (
+  options: IConnectMediaServer
+): Promise<IConnectMediaServer> => {
+  const response = await nc.request(
+    subjects.media.egress.tryConnect,
+    jc.encode(options)
+  );
+
+  return jc.decode(response.data) as IConnectMediaServer;
 };

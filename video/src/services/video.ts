@@ -110,3 +110,22 @@ export const createConsumer = async (
     },
   };
 };
+
+export const createPipeTransport = async (id: number) => {
+  const { listenIps } = config.mediasoup.webRtcTransport;
+
+  const router = workers[id].router;
+
+  const transport = await router.createPipeTransport({
+    listenIp: listenIps[0],
+    enableRtx: true,
+    enableSctp: true,
+    enableSrtp: false,
+  });
+
+  return {
+    ip: transport.tuple.localIp,
+    port: transport.tuple.localPort,
+    srtp: transport.srtpParameters,
+  };
+};

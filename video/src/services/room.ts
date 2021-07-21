@@ -7,6 +7,7 @@ import {
   getOptionsFromTransport,
 } from "./video";
 import {
+  IConnectMediaServer,
   IConnectNewSpeakerMedia,
   ICreateMediaRoom,
   IJoinMediaRoom,
@@ -295,4 +296,11 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
       id: resultId,
     },
   });
+};
+
+export const handleNewEgress: MessageHandler<
+  IConnectMediaServer,
+  IConnectMediaServer
+> = async (data, _respond) => {
+  console.log("ok", data);
 };
