@@ -87,3 +87,10 @@ export interface IConnectMediaServer {
   port: number;
   srtp?: SrtpParameters;
 }
+
+export interface INewProducer {
+  id: string;
+  kind: MediaKind;
+  rtpParameters: RtpParameters;
+  appData: any;
+}

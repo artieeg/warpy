@@ -14,8 +14,8 @@ const main = async () => {
   MessageService.on("join-room", RoomService.handleJoinRoom);
   MessageService.on("recv-tracks-request", RoomService.handleRecvTracksRequest);
   MessageService.on("new-speaker", RoomService.handleNewSpeaker);
-
   MessageService.on("new-egress", RoomService.handleNewEgress);
+  MessageService.on("new-producer", RoomService.handleNewProducer);
 
   console.log("Media service has started with role", process.env.ROLE);
 

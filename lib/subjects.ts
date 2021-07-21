@@ -12,6 +12,7 @@ export const subjects = {
     egress: {
       tryConnect: "media.egress.try-connect",
       pipeIsReady: "media.egress.pipe-is-ready",
+      newProducer: "media.egress.new-producer",
     },
     room: {
       create: "media.room.create",

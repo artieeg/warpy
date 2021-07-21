@@ -6,6 +6,7 @@ import {
   ICreateMediaRoom,
   IJoinMediaRoom,
   INewMediaTrack,
+  INewProducer,
   IRecvTracksRequest,
   MessageHandler,
   subjects,
@@ -37,6 +38,7 @@ const initCommonFunctions = () => {
 const initConsumerFunctions = () => {
   handleJoinRoom();
   handleRecvTracksRequest();
+  handleNewProducerFromIngress();
 };
 
 export const init = async () => {
@@ -175,6 +177,7 @@ type Event =
   | "join-room"
   | "new-speaker"
   | "new-egress"
+  | "new-producer"
   | "recv-tracks-request";
 
 export const on = (event: Event, handler: MessageHandler<any, any>) => {
@@ -190,4 +193,17 @@ export const tryConnectToIngress = async (
   );
 
   return jc.decode(response.data) as IConnectMediaServer;
+};
+
+export const sendNewProducer = (producer: INewProducer) => {
+  nc.publish(subjects.media.egress.newProducer, jc.encode(producer));
+};
+
+export const handleNewProducerFromIngress = async () => {
+  const sub = nc.subscribe(subjects.media.egress.newProducer);
+
+  for await (const msg of sub) {
+    const newProducer: INewProducer = jc.decode(msg.data) as any;
+    eventEmitter.emit("new-producer", newProducer);
+  }
 };

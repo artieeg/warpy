@@ -12,12 +12,14 @@ import {
 } from "mediasoup/lib/types";
 import { config } from "@video/config";
 import { ITransportOptions } from "@warpy/lib";
+import { MessageService } from ".";
 
 let latestUsedWorkerIdx = -1;
 const workers: IWorker[] = [];
 
 //DEBUG
 export let pipeToEgress: PipeTransport;
+export let pipeToIngress: PipeTransport;
 
 export const startWorkers = async () => {
   const cpus = os.cpus().length;
@@ -139,6 +141,12 @@ export const broadcastNewProducerToEgress = async (producer: Producer) => {
     //TODO: send this things to egress nodes
     const { id, kind, rtpParameters, appData } = pipeConsumer;
 
+    MessageService.sendNewProducer({
+      id,
+      kind,
+      rtpParameters,
+      appData,
+    });
     console.log("new pipe consumer", pipeConsumer);
   } catch (e) {
     console.error(e);
