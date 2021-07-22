@@ -33,10 +33,10 @@ const initProducerFunctions = () => {
 
 const initCommonFunctions = () => {
   handleConnectTransport();
+  handleJoinRoom();
 };
 
 const initConsumerFunctions = () => {
-  handleJoinRoom();
   handleRecvTracksRequest();
   handleNewProducerFromIngress();
 };
@@ -105,13 +105,17 @@ export const handleRecvTracksRequest = async () => {
     };
 
     eventEmitter.emit("recv-tracks-request", event, (d: any) => {
+      console.log("recv tracks reqeust response");
+      console.log(d.consumerParams[0].consumerParameters);
       msg.respond(jc.encode(d));
     });
   }
 };
 
 export const handleJoinRoom = async () => {
-  const sub = nc.subscribe(subjects.media.peer.join);
+  const sub = nc.subscribe(subjects.media.peer.join, {
+    queue: process.env.ROLE,
+  });
 
   for await (const msg of sub) {
     const data = jc.decode(msg.data) as any;

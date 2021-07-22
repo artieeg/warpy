@@ -136,15 +136,18 @@ export const handleJoinRoom = async (data: IJoinMediaRoom) => {
     sendTransport: null,
   };
 
-  MessageService.sendMessageToUser(user, {
-    event: "joined-room",
-    data: {
-      roomId,
-      user,
-      routerRtpCapabilities: router.rtpCapabilities,
-      recvTransportOptions: getOptionsFromTransport(recvTransport),
-    },
-  });
+  if (process.env.ROLE === "CONSUMER") {
+    console.log("sending join room message", user);
+    MessageService.sendMessageToUser(user, {
+      event: "joined-room",
+      data: {
+        roomId,
+        user,
+        routerRtpCapabilities: router.rtpCapabilities,
+        recvTransportOptions: getOptionsFromTransport(recvTransport),
+      },
+    });
+  }
 };
 
 export const handleNewRoom: MessageHandler<
@@ -181,6 +184,8 @@ export const handleNewRoom: MessageHandler<
 
 export const handleConnectTransport = async (data: IConnectTransport) => {
   const { roomId, user, dtlsParameters, direction } = data;
+
+  console.log("connecting transport for", user);
 
   const room = rooms[roomId];
 
