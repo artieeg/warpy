@@ -15,7 +15,7 @@ import { ITransportOptions } from "@warpy/lib";
 import { MessageService } from ".";
 
 let latestUsedWorkerIdx = -1;
-const workers: IWorker[] = [];
+export const workers: IWorker[] = [];
 
 //DEBUG
 export let pipeToEgress: PipeTransport;
@@ -41,14 +41,19 @@ export const startWorkers = async () => {
   return workers;
 };
 
-export const getWorker = () => {
+export const getPipeRouter = () => {
+  return workers[0].router;
+};
+
+export const getRouter = () => {
   latestUsedWorkerIdx += 1;
 
   if (latestUsedWorkerIdx == workers.length - 1) {
     latestUsedWorkerIdx = 0;
   }
 
-  return workers[latestUsedWorkerIdx];
+  //return workers[latestUsedWorkerIdx];
+  return workers[0].router; //TODO remove this
 };
 
 export const createTransport = async (
@@ -132,22 +137,30 @@ export const createPipeTransport = async (id: number) => {
   return transport;
 };
 
-export const broadcastNewProducerToEgress = async (producer: Producer) => {
+export const broadcastNewProducerToEgress = async (
+  user: string,
+  room: string,
+  producer: Producer
+) => {
   try {
     const pipeConsumer = await pipeToEgress!.consume({
       producerId: producer.id!,
     });
 
-    //TODO: send this things to egress nodes
     const { id, kind, rtpParameters, appData } = pipeConsumer;
 
     MessageService.sendNewProducer({
+      userId: user,
+      roomId: room,
       id,
       kind,
       rtpParameters,
       appData,
     });
+
     console.log("new pipe consumer", pipeConsumer);
+
+    return pipeConsumer;
   } catch (e) {
     console.error(e);
   }

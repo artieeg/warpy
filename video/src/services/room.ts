@@ -24,7 +24,7 @@ const rooms: Rooms = {};
 
 const createNewRoom = (): IRoom => {
   return {
-    ...VideoService.getWorker(),
+    router: VideoService.getRouter(),
     peers: {},
   };
 };
@@ -252,7 +252,7 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
       appData: { ...appData, user, transportId },
     });
 
-    VideoService.broadcastNewProducerToEgress(newProducer);
+    VideoService.broadcastNewProducerToEgress(user, roomId, newProducer);
   } catch {
     return;
   }
@@ -347,6 +347,8 @@ export const tryConnectToIngress = async () => {
 
 export const handleNewProducer = async (data: INewProducer) => {
   console.log("received i new producer event", data);
+  const { userId, roomId } = data;
+
   const pipeProducer = await VideoService.pipeToIngress.produce({
     id: data.id,
     kind: data.kind,
@@ -355,5 +357,25 @@ export const handleNewProducer = async (data: INewProducer) => {
   });
 
   console.log("EGRESS RECEVIED PIPE PRODUCER");
-  console.log(pipeProducer);
+  //console.log(pipeProducer);
+
+  let room = rooms[roomId];
+
+  if (!room) {
+    room = {
+      router: VideoService.getPipeRouter(),
+      peers: {},
+    };
+    rooms[roomId] = room;
+  }
+
+  room.peers[userId] = {
+    sendTransport: null,
+    recvTransport: null,
+    producer: pipeProducer,
+    consumers: [],
+  };
+
+  console.log("egress rooms now");
+  console.log(rooms);
 };
