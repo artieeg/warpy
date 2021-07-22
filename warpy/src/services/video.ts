@@ -3,6 +3,7 @@ import {Device} from 'mediasoup-client';
 import {Consumer} from 'mediasoup-client/lib/Consumer';
 import {MediaKind} from 'mediasoup-client/lib/RtpParameters';
 import {Transport} from 'mediasoup-client/lib/types';
+import {Alert} from 'react-native';
 import {MediaStream} from 'react-native-webrtc';
 import {
   onWebSocketEvent,
@@ -16,10 +17,11 @@ interface ICreateTransportParams {
   device: Device;
   direction: MediaDirection;
   options: any;
+  isProducer: boolean;
 }
 
 export const createTransport = async (params: ICreateTransportParams) => {
-  const {roomId, device, direction, options} = params;
+  const {roomId, device, direction, options, isProducer} = params;
 
   const transportOptions =
     direction === 'recv'
@@ -46,7 +48,7 @@ export const createTransport = async (params: ICreateTransportParams) => {
         direction,
         roomId: roomId,
       },
-      true,
+      isProducer,
     );
   });
 
@@ -113,6 +115,7 @@ export const sendMediaStream = async (
     options: {
       sendTransportOptions: options.sendTransportOptions,
     },
+    isProducer: true,
   });
 
   const track =

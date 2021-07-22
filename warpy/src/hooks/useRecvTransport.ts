@@ -26,6 +26,7 @@ export const useRecvTransport = (params: IRecvTransportHookParams) => {
       device,
       direction: 'recv',
       options: {recvTransportOptions},
+      isProducer: false,
     });
 
     setTransport(newTransport);

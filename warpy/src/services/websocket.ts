@@ -1,4 +1,5 @@
 import config from '@app/config';
+import {Alert} from 'react-native';
 
 let ws: WebSocket;
 
