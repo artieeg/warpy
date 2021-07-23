@@ -2,13 +2,18 @@ import "module-alias/register";
 
 import {
   ConversationService,
+  MediaService,
   MessageService,
   ParticipantService,
 } from "@conv/services";
 import "module-alias/register";
 
 const main = async () => {
-  await Promise.all([MessageService.init(), ParticipantService.init()]);
+  await Promise.all([
+    MessageService.init(),
+    ParticipantService.init(),
+    MediaService.init(),
+  ]);
 
   MessageService.on(
     "conversation-new",

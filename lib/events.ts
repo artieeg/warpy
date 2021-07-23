@@ -1,4 +1,4 @@
-import { MediaDirection } from "./types";
+import { MediaDirection, MediaServiceRole } from "./types";
 import {
   MediaKind,
   RtpCapabilities,
@@ -97,4 +97,9 @@ export interface INewProducer {
   appData: any;
   roomId: string;
   userId: string;
+}
+
+export interface INewMediaNode {
+  id: string;
+  role: MediaServiceRole;
 }

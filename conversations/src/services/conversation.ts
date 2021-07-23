@@ -168,8 +168,6 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
     return;
   }
 
-  console.log("recevied new track");
-
   MessageService.sendNewTrack(data);
 };
 

@@ -1,3 +1,4 @@
+export type MediaServiceRole = "PRODUCER" | "CONSUMER" | "BOTH";
 export type MediaDirection = "send" | "recv";
 
 export type MessageRespondCallback<T> = (d: T) => void;
