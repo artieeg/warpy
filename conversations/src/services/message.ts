@@ -40,7 +40,6 @@ export const init = async () => {
   handleAllowSpeaker();
   handleRaisedHand();
   handleNewTrack();
-  handleNewTrack();
   handleRecvTracksRequest();
 };
 
@@ -216,6 +215,7 @@ export const connectSpeakerMedia = async (
 export const sendNewTrack = async (data: INewMediaTrack) => {
   const m = jc.encode(data);
 
+  console.log("sending new track");
   nc.publish(subjects.media.track.send, m);
 };
 

@@ -32,6 +32,11 @@ export const handleNewConversation: MessageHandler<IStream> = async (
     ParticipantService.setCurrentStreamFor(participant),
   ]);
 
+  await MessageService.joinMediaRoom({
+    user: owner,
+    roomId: id,
+  });
+
   MessageService.sendMessage(owner, {
     event: "created-room",
     data: {
@@ -162,6 +167,8 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
   if (role === "viewer") {
     return;
   }
+
+  console.log("recevied new track");
 
   MessageService.sendNewTrack(data);
 };
