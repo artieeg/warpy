@@ -3,7 +3,7 @@
   "workspaces": [
     "lib",
     "user",
-    "video",
+    "media",
     "conversations",
     "ws_gateway"
   ],
@@ -12,7 +12,7 @@
   ],
   "_moduleAliases": {
     "@user": "./user/src",
-    "@video": "./video/src",
+    "@media": "./media/src",
     "@conv": "./conversations/src",
     "@ws_gateway": "./ws_gateway/src"
   },
