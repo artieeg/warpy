@@ -35,7 +35,7 @@ export const NewStream = () => {
       setSendRoomData(data.media);
     });
 
-    onWebSocketEvent('joined-room', (data: any) => {
+    onWebSocketEvent('@media/recv-connect-params', (data: any) => {
       Alert.alert('joined room', JSON.stringify(data));
       setRecvRoomData(data);
     });
@@ -50,8 +50,7 @@ export const NewStream = () => {
       return;
     }
 
-    onWebSocketEvent('new-speaker-track', (data: any) => {
-      console.log('new spekaer track', data);
+    onWebSocketEvent('@media/new-track', (data: any) => {
       consumeRemoteStream(data.consumerParameters, data.user, recvTransport);
     });
   }, [recvTransport]);

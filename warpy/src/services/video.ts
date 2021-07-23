@@ -36,9 +36,7 @@ export const createTransport = async (params: ICreateTransportParams) => {
   //Transport is about to establish the ICE+DTLS connection and
   //needs to exchange information with the associated server side transport.
   transport.on('connect', ({dtlsParameters}, callback, _errback) => {
-    console.log('connecting transport');
-    onWebSocketEvent(`${direction}-transport-connected`, (_data: any) => {
-      console.log('connected transport');
+    onWebSocketEvent(`@media/${direction}-transport-connected`, () => {
       callback();
     });
 
@@ -61,7 +59,7 @@ export const createTransport = async (params: ICreateTransportParams) => {
     transport.on('produce', (produceParams, callback, errback) => {
       const {kind, rtpParameters, appData} = produceParams;
 
-      onWebSocketEvent('send-track-created', (data: any) => {
+      onWebSocketEvent('@media/send-track-created', (data: any) => {
         const id = data.id;
 
         if (id !== null) {

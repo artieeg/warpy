@@ -1,5 +1,4 @@
 import config from '@app/config';
-import {Alert} from 'react-native';
 
 let ws: WebSocket;
 
@@ -9,12 +8,12 @@ type WebSocketEvent =
   | 'allow-speaker'
   | 'created-room'
   | 'speaking-allowed'
-  | 'joined-room'
-  | 'new-speaker-track'
-  | 'send-transport-connected'
-  | 'recv-transport-connected'
-  | 'send-track-created'
-  | 'recv-track-created'
+  | '@media/recv-connect-params'
+  | '@media/new-track'
+  | '@media/send-transport-connected'
+  | '@media/recv-transport-connected'
+  | '@media/send-track-created'
+  | '@media/recv-track-created'
   | 'speaker-send-transport'
   | 'recv-tracks-response';
 

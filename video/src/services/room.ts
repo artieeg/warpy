@@ -19,6 +19,7 @@ import {
   IRecvTracksResponse,
   MessageHandler,
 } from "@warpy/lib";
+import { role } from "@video/role";
 
 const rooms: Rooms = {};
 
@@ -114,7 +115,7 @@ export const handleRecvTracksRequest: MessageHandler<
 };
 
 export const handleJoinRoom = async (data: IJoinMediaRoom) => {
-  console.log(process.env.ROLE, "handling new user join");
+  console.log(role, "handling new user join");
 
   const { roomId, user } = data;
 
@@ -142,10 +143,9 @@ export const handleJoinRoom = async (data: IJoinMediaRoom) => {
   }
   console.log(room.peers);
 
-  if (process.env.ROLE === "CONSUMER") {
-    console.log("sent join room event");
+  if (role === "CONSUMER") {
     MessageService.sendMessageToUser(user, {
-      event: "joined-room",
+      event: "@media/recv-connect-params",
       data: {
         roomId,
         user,
@@ -169,7 +169,7 @@ export const handleNewRoom: MessageHandler<
   const room = createNewRoom();
   rooms[roomId] = room;
 
-  if (process.env.ROLE === "CONSUMER") {
+  if (role === "CONSUMER") {
     const recvTransport = await createTransport("recv", room.router, host);
 
     room.peers[host] = {
@@ -220,7 +220,7 @@ export const handleConnectTransport = async (data: IConnectTransport) => {
   const transport =
     direction === "send" ? peer.sendTransport : peer.recvTransport;
 
-  console.log("server role", process.env.ROLE);
+  console.log("server role", role);
   console.log("peer", peer);
 
   if (!transport) {
@@ -236,7 +236,7 @@ export const handleConnectTransport = async (data: IConnectTransport) => {
   }
 
   MessageService.sendMessageToUser(user, {
-    event: `${direction}-transport-connected`,
+    event: `@media/${direction}-transport-connected`,
     data: {
       roomId,
     },
@@ -283,10 +283,8 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
       appData: { ...appData, user, transportId },
     });
 
-    console.log("creating pipe ", newProducer.id);
     const pipeConsumer = await VideoService.createPipeConsumer(newProducer.id);
 
-    console.log("ok");
     MessageService.sendNewProducer({
       userId: user,
       roomId,
@@ -296,8 +294,6 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
       rtpCapabilities: rtpCapabilities,
       appData: pipeConsumer.appData,
     });
-
-    //VideoService.broadcastNewProducerToEgress(user, roomId, newProducer);
   } catch (e) {
     console.error(e);
     process.exit(1);
@@ -306,44 +302,8 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
   peer.producer = newProducer;
   resultId = newProducer.id;
 
-  /*
-  for (const peerId in peers) {
-    if (peerId === user) {
-      continue;
-    }
-
-    const peerRecvTransport = peers[peerId].recvTransport;
-
-    if (!peerRecvTransport) {
-      continue;
-    }
-
-    try {
-      const { consumerParameters } = await createConsumer(
-        rooms[roomId].router,
-        newProducer,
-        rtpCapabilities,
-        peerRecvTransport,
-        user,
-        peers[peerId]
-      );
-
-      MessageService.sendMessageToUser(peerId, {
-        event: "new-speaker-track",
-        data: {
-          user,
-          consumerParameters,
-          roomId,
-        },
-      });
-    } catch (e) {
-      console.error(e);
-    }
-  }
-  */
-
   MessageService.sendMessageToUser(user, {
-    event: `${direction}-track-created`,
+    event: `@media/${direction}-track-created`,
     data: {
       id: resultId,
     },
@@ -461,7 +421,7 @@ export const handleNewProducer = async (data: INewProducer) => {
 
       //console.log("sneding consumer params", consumerParameters);
       MessageService.sendMessageToUser(peerId, {
-        event: "new-speaker-track",
+        event: "@media/new-track",
         data: {
           user: userId,
           consumerParameters,

@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { MessageService, RoomService, VideoService } from "@video/services";
+import { role } from "@video/role";
 
 const main = async () => {
   await Promise.all([MessageService.init(), VideoService.startWorkers()]);
@@ -19,9 +20,10 @@ const main = async () => {
 
   console.log("Media service has started with role", process.env.ROLE);
 
-  if (process.env.ROLE === "PRODUCER") {
+  if (role === "PRODUCER") {
     return;
   }
+
   //timeout for dev purposes
   setTimeout(async () => {
     RoomService.tryConnectToIngress();

@@ -45,7 +45,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   }, [recvTransport, roomData, userId, id]);
 
   useEffect(() => {
-    onWebSocketEvent('joined-room', async (data: any) => {
+    onWebSocketEvent('@media/recv-connect-params', async (data: any) => {
       setRoomData(data);
     });
 
