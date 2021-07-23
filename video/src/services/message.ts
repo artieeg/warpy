@@ -25,13 +25,13 @@ const jc = JSONCodec();
 let nc: NatsConnection;
 
 const initProducerFunctions = () => {
-  handleCreateNewRoom();
   handleNewTrack();
   handleNewSpeaker();
   handleNewEgress();
 };
 
 const initCommonFunctions = () => {
+  handleCreateNewRoom();
   handleConnectTransport();
   handleJoinRoom();
 };
@@ -106,7 +106,7 @@ export const handleRecvTracksRequest = async () => {
 
     eventEmitter.emit("recv-tracks-request", event, (d: any) => {
       console.log("recv tracks reqeust response");
-      console.log(d.consumerParams[0].consumerParameters);
+      console.log(d.consumerParams);
       msg.respond(jc.encode(d));
     });
   }
@@ -147,13 +147,16 @@ export const handleNewTrack = async () => {
   const sub = nc.subscribe(subjects.media.track.send);
 
   for await (const msg of sub) {
+    console.log("recevied new track");
     const newTrack: INewMediaTrack = jc.decode(msg.data) as any;
     eventEmitter.emit("new-track", newTrack);
   }
 };
 
 export const handleCreateNewRoom = async () => {
-  const sub = nc.subscribe(subjects.media.room.create);
+  const sub = nc.subscribe(subjects.media.room.create, {
+    queue: process.env.ROLE,
+  });
 
   for await (const msg of sub) {
     const payload = jc.decode(msg.data) as any;

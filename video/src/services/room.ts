@@ -50,6 +50,7 @@ export const handleNewSpeaker: MessageHandler<
   const sendTransportOptions = getOptionsFromTransport(transport);
 
   respond!({
+    rtpCapabilities: room.router.rtpCapabilities,
     sendTransportOptions,
   });
 };
@@ -127,18 +128,18 @@ export const handleJoinRoom = async (data: IJoinMediaRoom) => {
   const peer = room.peers[user];
   const { router } = room;
 
-  if (peer) {
-    //TODO ?
-  }
-
   const recvTransport = await createTransport("recv", router, user);
 
-  room.peers[user] = {
-    recvTransport,
-    consumers: [],
-    producer: null,
-    sendTransport: null,
-  };
+  if (peer) {
+    peer.recvTransport = recvTransport;
+  } else {
+    room.peers[user] = {
+      recvTransport,
+      consumers: [],
+      producer: null,
+      sendTransport: null, //todo this
+    };
+  }
   console.log(room.peers);
 
   if (process.env.ROLE === "CONSUMER") {
@@ -168,13 +169,30 @@ export const handleNewRoom: MessageHandler<
   const room = createNewRoom();
   rooms[roomId] = room;
 
+  if (process.env.ROLE === "CONSUMER") {
+    const recvTransport = await createTransport("recv", room.router, host);
+
+    room.peers[host] = {
+      recvTransport,
+      sendTransport: null,
+      consumers: [],
+      producer: null,
+    };
+
+    return;
+  }
+
+  const sendTransport = await createTransport("send", room.router, host);
+
+  /*
   const [sendTransport, recvTransport] = await Promise.all([
     createTransport("send", room.router, host),
     createTransport("recv", room.router, host),
   ]);
+  */
 
   room.peers[host] = {
-    recvTransport,
+    recvTransport: null,
     sendTransport,
     consumers: [],
     producer: null,
@@ -182,7 +200,7 @@ export const handleNewRoom: MessageHandler<
 
   respond!({
     routerRtpCapabilities: rooms[roomId].router.rtpCapabilities,
-    recvTransportOptions: VideoService.getOptionsFromTransport(recvTransport),
+    //recvTransportOptions: VideoService.getOptionsFromTransport(recvTransport),
     sendTransportOptions: VideoService.getOptionsFromTransport(sendTransport),
   });
 };
@@ -190,6 +208,8 @@ export const handleNewRoom: MessageHandler<
 export const handleConnectTransport = async (data: IConnectTransport) => {
   const { roomId, user, dtlsParameters, direction } = data;
 
+  console.log("connecting transport");
+  console.log(data);
   const room = rooms[roomId];
 
   if (!room) {
@@ -199,6 +219,9 @@ export const handleConnectTransport = async (data: IConnectTransport) => {
   const peer = room.peers[user];
   const transport =
     direction === "send" ? peer.sendTransport : peer.recvTransport;
+
+  console.log("server role", process.env.ROLE);
+  console.log("peer", peer);
 
   if (!transport) {
     return;
@@ -233,7 +256,7 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
   } = data;
 
   const room = rooms[roomId];
-
+  /*  */
   if (!room) {
     return; //TODO: Send error
   }
@@ -251,17 +274,19 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
 
   let resultId = null;
 
+  console.log("producing", kind, rtpParameters);
   let newProducer: Producer;
   try {
-    console.log("creating a producer");
     newProducer = await transport.produce({
       kind,
       rtpParameters,
       appData: { ...appData, user, transportId },
     });
 
+    console.log("creating pipe ", newProducer.id);
     const pipeConsumer = await VideoService.createPipeConsumer(newProducer.id);
 
+    console.log("ok");
     MessageService.sendNewProducer({
       userId: user,
       roomId,
@@ -273,8 +298,9 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
     });
 
     //VideoService.broadcastNewProducerToEgress(user, roomId, newProducer);
-  } catch {
-    return;
+  } catch (e) {
+    console.error(e);
+    process.exit(1);
   }
 
   peer.producer = newProducer;
@@ -408,10 +434,7 @@ export const handleNewProducer = async (data: INewProducer) => {
   }
 
   for (const peerId in peers) {
-    console.log("peer", peerId);
-    console.log("has transport", peers[peerId].recvTransport !== null);
     if (peerId === userId) {
-      console.log("skipping");
       continue;
     }
 
@@ -421,7 +444,6 @@ export const handleNewProducer = async (data: INewProducer) => {
       continue;
     }
 
-    console.log("is open", pipeProducer.closed);
     if (pipeProducer.closed) {
       process.exit(1);
     }

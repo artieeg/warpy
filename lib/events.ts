@@ -25,7 +25,7 @@ export interface ICreateMediaRoom {
 
 export interface INewMediaRoomData {
   routerRtpCapabilities: RtpCapabilities;
-  recvTransportOptions: ITransportOptions;
+  //recvTransportOptions: ITransportOptions;
   sendTransportOptions: ITransportOptions;
 }
 
@@ -52,6 +52,7 @@ export interface IConnectNewSpeakerMedia {
 
 export interface INewSpeakerMediaResponse {
   sendTransportOptions: ITransportOptions;
+  rtpCapabilities: RtpCapabilities;
 }
 
 export interface IConnectMediaTransport {
