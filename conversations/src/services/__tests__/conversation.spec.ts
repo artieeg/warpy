@@ -17,7 +17,7 @@ describe("conversation service", () => {
     jest.clearAllMocks();
   });
 
-  it.todo("does not send recv tracks if user is not a viewer");
+  it.todo("does not send recv tracks if user is not participant");
 
   it("handles recv tracks request", async () => {
     const recvTracksResponse = {
