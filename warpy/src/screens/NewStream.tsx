@@ -17,13 +17,14 @@ export const NewStream = () => {
   const [hub, setHub] = useState('60ec569668b42c003304630b');
   const [user] = useAppUser();
   const userId: string = user!.id;
-  const [roomData, setRoomData] = useState<any>();
+  const [sendRoomData, setSendRoomData] = useState<any>();
+  const [recvRoomData, setRecvRoomData] = useState<any>();
   const [userSpeakRequest, setUserSpeakRequest] = useState<string>();
 
   const recvTransport = useRecvTransport({
     stream: streamId,
-    recvTransportOptions: roomData?.recvTransportOptions,
-    routerRtpCapabilities: roomData?.routerRtpCapabilities,
+    recvTransportOptions: recvRoomData?.recvTransportOptions,
+    routerRtpCapabilities: recvRoomData?.routerRtpCapabilities,
   });
 
   const {width, height} = useWindowDimensions();
@@ -31,7 +32,12 @@ export const NewStream = () => {
 
   useEffect(() => {
     onWebSocketEvent('created-room', (data: any) => {
-      setRoomData(data.media);
+      setSendRoomData(data.media);
+    });
+
+    onWebSocketEvent('joined-room', (data: any) => {
+      Alert.alert('joined room', JSON.stringify(data));
+      setRecvRoomData(data);
     });
 
     onWebSocketEvent('raise-hand', (data: any) => {
@@ -51,21 +57,21 @@ export const NewStream = () => {
   }, [recvTransport]);
 
   useEffect(() => {
-    if (roomData && streamId && localStream) {
-      initSendDevice(roomData.routerRtpCapabilities).then(async () => {
-        await sendMediaStream(localStream, streamId, roomData, 'video');
+    if (sendRoomData && streamId && localStream) {
+      initSendDevice(sendRoomData.routerRtpCapabilities).then(async () => {
+        await sendMediaStream(localStream, streamId, sendRoomData, 'video');
 
         /*
         await consumeRemoteStreams(
           userId,
           streamId,
-          roomData.routerRtpCapabilities,
-          roomData.recvTransportOptions,
+          sendRoomData.routerRtpCapabilities,
+          sendRoomData.recvTransportOptions,
         );
          */
       });
     }
-  }, [streamId, roomData, localStream, userId]);
+  }, [streamId, sendRoomData, localStream, userId]);
 
   const onStart = useCallback(async () => {
     const newStreamId = await createStream(title, hub);

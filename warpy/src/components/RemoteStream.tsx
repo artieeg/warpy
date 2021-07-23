@@ -2,7 +2,11 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {Stream} from '@app/models';
 import {onWebSocketEvent, sendJoinStream, sendRaiseHand} from '@app/services';
-import {consumeRemoteStreams, sendMediaStream} from '@app/services/video';
+import {
+  consumeRemoteStreams,
+  initSendDevice,
+  sendMediaStream,
+} from '@app/services/video';
 import {useAppUser, useLocalStream} from '@app/hooks';
 import {MediaStream, RTCView} from 'react-native-webrtc';
 import {Speakers} from './Speakers';
@@ -49,7 +53,8 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   }, [userId, id]);
 
   useEffect(() => {
-    onWebSocketEvent('speaking-allowed', (options: any) => {
+    onWebSocketEvent('speaking-allowed', async (options: any) => {
+      await initSendDevice(options.media.rtpCapabilities);
       sendMediaStream(audioStream!, id, options.media, 'audio');
     });
   }, [id, audioStream]);
