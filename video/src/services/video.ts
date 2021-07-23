@@ -117,7 +117,8 @@ export const createConsumer = async (
       kind: consumer.kind,
       rtpParameters: consumer.rtpParameters,
       type: consumer.type,
-      producerPaused: consumer.producerPaused,
+      //producerPaused: consumer.producerPaused,
+      producerPaused: false,
     },
   };
 };
@@ -137,12 +138,22 @@ export const createPipeTransport = async (id: number) => {
   return transport;
 };
 
+export const createPipeConsumer = async (producerId: string) => {
+  const pipeConsumer = await pipeToEgress!.consume({
+    producerId,
+  });
+
+  return pipeConsumer;
+};
+
 export const broadcastNewProducerToEgress = async (
   user: string,
   room: string,
   producer: Producer
 ) => {
   try {
+    const router = getPipeRouter();
+
     const pipeConsumer = await pipeToEgress!.consume({
       producerId: producer.id!,
     });
@@ -155,6 +166,7 @@ export const broadcastNewProducerToEgress = async (
       id,
       kind,
       rtpParameters,
+      rtpCapabilities: router.rtpCapabilities,
       appData,
     });
 

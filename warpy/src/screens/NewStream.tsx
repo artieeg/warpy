@@ -6,7 +6,7 @@ import {View, StyleSheet, useWindowDimensions, Alert} from 'react-native';
 import {StopStream, Button} from '@app/components';
 import {
   consumeRemoteStream,
-  initDevice,
+  initSendDevice,
   sendMediaStream,
 } from '@app/services/video';
 import {useRecvTransport} from '@app/hooks/useRecvTransport';
@@ -45,13 +45,14 @@ export const NewStream = () => {
     }
 
     onWebSocketEvent('new-speaker-track', (data: any) => {
+      console.log('new spekaer track', data);
       consumeRemoteStream(data.consumerParameters, data.user, recvTransport);
     });
   }, [recvTransport]);
 
   useEffect(() => {
     if (roomData && streamId && localStream) {
-      initDevice(roomData.routerRtpCapabilities).then(async () => {
+      initSendDevice(roomData.routerRtpCapabilities).then(async () => {
         await sendMediaStream(localStream, streamId, roomData, 'video');
 
         /*

@@ -91,6 +91,7 @@ export const handleRecvTracksRequest: MessageHandler<
 
     try {
       const { producer } = peer;
+      console.log("creating consumer params");
       consumerParams.push(
         await createConsumer(
           router,
@@ -112,9 +113,12 @@ export const handleRecvTracksRequest: MessageHandler<
 };
 
 export const handleJoinRoom = async (data: IJoinMediaRoom) => {
+  console.log(process.env.ROLE, "handling new user join");
+
   const { roomId, user } = data;
 
   const room = rooms[roomId];
+  console.log(room);
 
   if (!room) {
     return;
@@ -135,9 +139,10 @@ export const handleJoinRoom = async (data: IJoinMediaRoom) => {
     producer: null,
     sendTransport: null,
   };
+  console.log(room.peers);
 
   if (process.env.ROLE === "CONSUMER") {
-    console.log("sending join room message", user);
+    console.log("sent join room event");
     MessageService.sendMessageToUser(user, {
       event: "joined-room",
       data: {
@@ -184,8 +189,6 @@ export const handleNewRoom: MessageHandler<
 
 export const handleConnectTransport = async (data: IConnectTransport) => {
   const { roomId, user, dtlsParameters, direction } = data;
-
-  console.log("connecting transport for", user);
 
   const room = rooms[roomId];
 
@@ -257,7 +260,19 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
       appData: { ...appData, user, transportId },
     });
 
-    VideoService.broadcastNewProducerToEgress(user, roomId, newProducer);
+    const pipeConsumer = await VideoService.createPipeConsumer(newProducer.id);
+
+    MessageService.sendNewProducer({
+      userId: user,
+      roomId,
+      id: pipeConsumer.id,
+      kind: pipeConsumer.kind,
+      rtpParameters: pipeConsumer.rtpParameters,
+      rtpCapabilities: rtpCapabilities,
+      appData: pipeConsumer.appData,
+    });
+
+    //VideoService.broadcastNewProducerToEgress(user, roomId, newProducer);
   } catch {
     return;
   }
@@ -265,6 +280,7 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
   peer.producer = newProducer;
   resultId = newProducer.id;
 
+  /*
   for (const peerId in peers) {
     if (peerId === user) {
       continue;
@@ -298,6 +314,7 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
       console.error(e);
     }
   }
+  */
 
   MessageService.sendMessageToUser(user, {
     event: `${direction}-track-created`,
@@ -352,7 +369,7 @@ export const tryConnectToIngress = async () => {
 
 export const handleNewProducer = async (data: INewProducer) => {
   console.log("received i new producer event", data);
-  const { userId, roomId } = data;
+  const { userId, roomId, rtpCapabilities } = data;
 
   const pipeProducer = await VideoService.pipeToIngress.produce({
     id: data.id,
@@ -360,9 +377,6 @@ export const handleNewProducer = async (data: INewProducer) => {
     rtpParameters: data.rtpParameters,
     appData: data.appData,
   });
-
-  console.log("EGRESS RECEVIED PIPE PRODUCER");
-  //console.log(pipeProducer);
 
   let room = rooms[roomId];
 
@@ -374,13 +388,66 @@ export const handleNewProducer = async (data: INewProducer) => {
     rooms[roomId] = room;
   }
 
-  room.peers[userId] = {
-    sendTransport: null,
-    recvTransport: null,
-    producer: pipeProducer,
-    consumers: [],
-  };
+  const { peers } = room;
 
-  console.log("egress rooms now");
-  console.log(rooms);
+  if (!peers[userId]) {
+    const recvTransport = await createTransport(
+      "recv",
+      VideoService.getPipeRouter(),
+      userId
+    );
+
+    peers[userId] = {
+      sendTransport: null,
+      recvTransport,
+      producer: pipeProducer,
+      consumers: [],
+    };
+  } else {
+    peers[userId].producer = pipeProducer;
+  }
+
+  for (const peerId in peers) {
+    console.log("peer", peerId);
+    console.log("has transport", peers[peerId].recvTransport !== null);
+    if (peerId === userId) {
+      console.log("skipping");
+      continue;
+    }
+
+    const peerRecvTransport = peers[peerId].recvTransport;
+
+    if (!peerRecvTransport) {
+      continue;
+    }
+
+    console.log("is open", pipeProducer.closed);
+    if (pipeProducer.closed) {
+      process.exit(1);
+    }
+
+    try {
+      const { consumerParameters } = await createConsumer(
+        room.router,
+        pipeProducer,
+        //VideoService.getPipeRouter().rtpCapabilities,
+        rtpCapabilities,
+        peerRecvTransport,
+        userId,
+        peers[peerId]
+      );
+
+      //console.log("sneding consumer params", consumerParameters);
+      MessageService.sendMessageToUser(peerId, {
+        event: "new-speaker-track",
+        data: {
+          user: userId,
+          consumerParameters,
+          roomId,
+        },
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
 };

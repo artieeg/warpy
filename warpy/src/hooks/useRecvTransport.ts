@@ -1,5 +1,4 @@
-import {createTransport, device, initDevice} from '@app/services';
-import {Device} from 'mediasoup-client';
+import {createTransport, recvDevice, initRecvDevice} from '@app/services';
 import {Transport} from 'mediasoup-client/lib/Transport';
 import {useCallback, useEffect, useState} from 'react';
 
@@ -19,11 +18,11 @@ export const useRecvTransport = (params: IRecvTransportHookParams) => {
       return;
     }
 
-    await initDevice(routerRtpCapabilities);
+    await initRecvDevice(routerRtpCapabilities);
 
     const newTransport = await createTransport({
       roomId: stream,
-      device,
+      device: recvDevice,
       direction: 'recv',
       options: {recvTransportOptions},
       isProducer: false,

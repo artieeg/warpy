@@ -92,6 +92,7 @@ export interface INewProducer {
   id: string;
   kind: MediaKind;
   rtpParameters: RtpParameters;
+  rtpCapabilities: RtpCapabilities;
   appData: any;
   roomId: string;
   userId: string;
