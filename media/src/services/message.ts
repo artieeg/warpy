@@ -1,4 +1,5 @@
 import { IConnectTransport, IMessage } from "@video/models";
+import { role } from "@video/role";
 import { ServiceRole } from "@video/types";
 import {
   IConnectMediaServer,
@@ -43,8 +44,6 @@ const initConsumerFunctions = () => {
 
 export const init = async () => {
   nc = await connect({ servers: [NATS] });
-
-  const role = process.env.ROLE as ServiceRole;
 
   initCommonFunctions();
 

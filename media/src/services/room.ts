@@ -404,10 +404,6 @@ export const handleNewProducer = async (data: INewProducer) => {
       continue;
     }
 
-    if (pipeProducer.closed) {
-      process.exit(1);
-    }
-
     try {
       const { consumerParameters } = await createConsumer(
         room.router,

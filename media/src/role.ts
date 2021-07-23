@@ -1,4 +1,4 @@
-import { ServiceRole } from "./types";
+import { MediaServiceRole } from "@warpy/lib";
 
-export const role: ServiceRole =
+export const role: MediaServiceRole =
   process.env.ROLE === "PRODUCER" ? "PRODUCER" : "CONSUMER";
