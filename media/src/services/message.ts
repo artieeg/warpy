@@ -212,3 +212,8 @@ export const handleNewProducerFromIngress = async () => {
     eventEmitter.emit("new-producer", newProducer);
   }
 };
+
+export const sendNodeIsOnlineMessage = async (nodeParams: any) => {
+  const data = jc.encode(nodeParams);
+  nc.publish(subjects.media.node.isOnline, data);
+};

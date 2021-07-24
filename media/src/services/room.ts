@@ -337,22 +337,6 @@ export const handleNewEgress: MessageHandler<
   });
 };
 
-export const tryConnectToIngress = async () => {
-  const transport = await VideoService.createPipeTransport(0);
-
-  VideoService.pipeToIngress = transport;
-
-  const remoteParams = await MessageService.tryConnectToIngress({
-    ip: transport.tuple.localIp,
-    port: transport.tuple.localPort,
-    srtp: transport.srtpParameters,
-  });
-
-  const { ip, port, srtp } = remoteParams;
-
-  await transport.connect({ ip, port, srtpParameters: srtp });
-};
-
 export const handleNewProducer = async (data: INewProducer) => {
   console.log("received i new producer event", data);
   const { userId, roomId, rtpCapabilities } = data;

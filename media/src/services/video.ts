@@ -13,6 +13,9 @@ import {
 import { config } from "@media/config";
 import { ITransportOptions } from "@warpy/lib";
 import { MessageService } from ".";
+import EventEmitter from "events";
+
+export const observer = new EventEmitter();
 
 let latestUsedWorkerIdx = -1;
 export const workers: IWorker[] = [];
@@ -176,4 +179,22 @@ export const broadcastNewProducerToEgress = async (
   } catch (e) {
     console.error(e);
   }
+};
+
+export const tryConnectToIngress = async () => {
+  const transport = await createPipeTransport(0);
+
+  pipeToIngress = transport;
+
+  const remoteParams = await MessageService.tryConnectToIngress({
+    ip: transport.tuple.localIp,
+    port: transport.tuple.localPort,
+    srtp: transport.srtpParameters,
+  });
+
+  const { ip, port, srtp } = remoteParams;
+
+  await transport.connect({ ip, port, srtpParameters: srtp });
+
+  observer.emit("pipe-is-ready", remoteParams);
 };

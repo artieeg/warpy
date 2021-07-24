@@ -23,13 +23,17 @@ const main = async () => {
   console.log("Media node info", NodeInfo);
 
   if (role === "PRODUCER") {
-    return;
-  }
+    MessageService.sendNodeIsOnlineMessage(NodeInfo);
+  } else if (role === "CONSUMER") {
+    VideoService.observer.on("pipe-is-ready", () => {
+      MessageService.sendNodeIsOnlineMessage(NodeInfo);
+    });
 
-  //timeout for dev purposes
-  setTimeout(async () => {
-    RoomService.tryConnectToIngress();
-  }, 1000);
+    // timeout for dev purposes
+    setTimeout(async () => {
+      VideoService.tryConnectToIngress();
+    }, 1000);
+  }
 };
 
 main();
