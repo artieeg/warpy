@@ -3,8 +3,9 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-import { MessageService, RoomService, VideoService } from "@video/services";
-import { role } from "@video/role";
+import { MessageService, RoomService, VideoService } from "@media/services";
+import { role } from "@media/role";
+import { NodeInfo } from "@media/nodeinfo";
 
 const main = async () => {
   await Promise.all([MessageService.init(), VideoService.startWorkers()]);
@@ -19,6 +20,7 @@ const main = async () => {
   MessageService.on("new-producer", RoomService.handleNewProducer);
 
   console.log("Media service has started with role", process.env.ROLE);
+  console.log("Media node info", NodeInfo);
 
   if (role === "PRODUCER") {
     return;

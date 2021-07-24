@@ -1,6 +1,5 @@
-import { IConnectTransport, IMessage } from "@video/models";
-import { role } from "@video/role";
-import { ServiceRole } from "@video/types";
+import { IConnectTransport, IMessage } from "@media/models";
+import { role } from "@media/role";
 import {
   IConnectMediaServer,
   IConnectNewSpeakerMedia,

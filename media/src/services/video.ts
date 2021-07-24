@@ -1,7 +1,7 @@
 import os from "os";
 import { createWorker } from "mediasoup";
-import { Consumer, IPeer, IWorker } from "@video/models";
-import { MediaDirection } from "@video/types";
+import { Consumer, IPeer, IWorker } from "@media/models";
+import { MediaDirection } from "@media/types";
 import {
   PipeTransport,
   Producer,
@@ -10,7 +10,7 @@ import {
   Transport,
   WebRtcTransport,
 } from "mediasoup/lib/types";
-import { config } from "@video/config";
+import { config } from "@media/config";
 import { ITransportOptions } from "@warpy/lib";
 import { MessageService } from ".";
 

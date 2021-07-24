@@ -1,4 +1,4 @@
-import { IConnectTransport, IRoom, Rooms } from "@video/models";
+import { IConnectTransport, IRoom, Rooms } from "@media/models";
 import { Producer } from "mediasoup/lib/Producer";
 import { MessageService, VideoService } from ".";
 import {
@@ -19,7 +19,7 @@ import {
   IRecvTracksResponse,
   MessageHandler,
 } from "@warpy/lib";
-import { role } from "@video/role";
+import { role } from "@media/role";
 
 const rooms: Rooms = {};
 

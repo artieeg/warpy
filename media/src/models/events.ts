@@ -1,4 +1,4 @@
-import { MediaDirection } from "@video/types";
+import { MediaDirection } from "@media/types";
 import { RtpCapabilities } from "mediasoup/lib/RtpParameters";
 import { DtlsParameters } from "mediasoup/lib/WebRtcTransport";
 
