@@ -7,6 +7,7 @@ import {
   IStream,
 } from "@conv/models";
 import {
+  IConnectMediaTransport,
   IConnectNewSpeakerMedia,
   ICreateMediaRoom,
   IJoinMediaRoom,
@@ -42,6 +43,7 @@ export const init = async () => {
   handleRaisedHand();
   handleNewTrack();
   handleRecvTracksRequest();
+  handleConnectTransport();
 };
 
 type Events =
@@ -52,11 +54,32 @@ type Events =
   | "speaker-allow"
   | "raise-hand"
   | "new-track"
+  | "connect-transport"
   | "new-media-node"
   | "participant-leave";
 
 export const on = (event: Events, handler: MessageHandler<any, any>) => {
   eventEmitter.on(event, handler);
+};
+
+const handleConnectTransport = async () => {
+  const sub = nc.subscribe(subjects.conversations.transport.try_connect);
+
+  for await (const msg of sub) {
+    const { transportId, dtlsParameters, direction, roomId, user } = jc.decode(
+      msg.data
+    ) as any;
+
+    const data: IConnectMediaTransport = {
+      transportId,
+      dtlsParameters,
+      direction,
+      roomId,
+      user,
+    };
+
+    eventEmitter.emit("connect-transport", data);
+  }
 };
 
 const handleNewTrack = async () => {
@@ -229,6 +252,19 @@ export const connectSpeakerMedia = async (
   });
 
   return jc.decode(reply.data) as INewSpeakerMediaResponse;
+};
+
+export const sendConnectTransport = async (
+  node: string,
+  data: IConnectMediaTransport
+) => {
+  console.log("connecting transport");
+  nc.publish(
+    data.direction === "send"
+      ? subjects.media.transport.connect_producer
+      : `${subjects.media.transport.connect_consumer}.${node}`,
+    jc.encode(data)
+  );
 };
 
 export const sendNewTrack = async (data: INewMediaTrack) => {

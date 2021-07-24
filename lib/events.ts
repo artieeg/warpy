@@ -60,6 +60,7 @@ export interface IConnectMediaTransport {
   dtlsParameters: DtlsParameters;
   direction: MediaDirection;
   roomId: string;
+  user: string;
 }
 
 export interface INewMediaTrack {

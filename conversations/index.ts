@@ -39,6 +39,10 @@ const main = async () => {
     ConversationService.handleRecvTracksRequest
   );
   MessageService.on("new-media-node", MediaService.handleNewOnlineNode);
+  MessageService.on(
+    "connect-transport",
+    ConversationService.handleConnectTransport
+  );
 
   console.log("Conversations Service started");
 };

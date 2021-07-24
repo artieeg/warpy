@@ -17,5 +17,5 @@ export const onConnectTransport: Handler = (data, context?) => {
   const { isProducer } = data;
   console.log("is producer", isProducer);
 
-  MessageService.sendTransportConnect(eventData, isProducer);
+  MessageService.sendTransportConnect(eventData);
 };

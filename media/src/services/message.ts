@@ -134,8 +134,8 @@ export const handleJoinRoom = async () => {
 export const handleConnectTransport = async () => {
   const subject =
     process.env.ROLE === "PRODUCER"
-      ? subjects.media.transport.connect_producer
-      : subjects.media.transport.connect_consumer; //+ "." + NodeInfo.id;
+      ? subjects.media.transport.connect_producer + ".*"
+      : subjects.media.transport.connect_consumer + "." + NodeInfo.id;
 
   const sub = nc.subscribe(subject);
 

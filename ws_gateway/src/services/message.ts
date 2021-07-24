@@ -13,13 +13,8 @@ export const init = async () => {
   nc = await connect({ servers: [NATS] });
 };
 
-export const sendTransportConnect = (data: any, isProducer: boolean) => {
-  nc.publish(
-    isProducer
-      ? subjects.media.transport.connect_producer
-      : subjects.media.transport.connect_consumer,
-    jc.encode(data)
-  );
+export const sendTransportConnect = (data: any) => {
+  nc.publish(subjects.conversations.transport.try_connect, jc.encode(data));
 };
 
 export const sendNewTrackEvent = (data: any) => {

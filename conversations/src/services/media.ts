@@ -89,3 +89,16 @@ export const assignUserToNode = async (user: string, node: string) => {
 export const assignRoomToNode = async (room: string, node: string) => {
   client.set(`room_${room}`, node);
 };
+
+export const getConsumerNodeFor = async (user: string) => {
+  return new Promise<string | null>((resolve, _reject) => {
+    client.get(`user_${user}`, (err, node) => {
+      if (err) {
+        console.error(err);
+        return resolve(null);
+      }
+
+      resolve(node);
+    });
+  });
+};

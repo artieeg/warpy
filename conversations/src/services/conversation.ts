@@ -4,7 +4,11 @@ import {
   IRequestGetTracks,
   IStream,
 } from "@conv/models";
-import { INewMediaTrack, MessageHandler } from "@warpy/lib";
+import {
+  IConnectMediaTransport,
+  INewMediaTrack,
+  MessageHandler,
+} from "@warpy/lib";
 import { MediaService, MessageService, ParticipantService } from ".";
 
 /**
@@ -165,6 +169,27 @@ export const handleAllowSpeaker = async (data: IAllowSpeakerPayload) => {
       stream,
     },
   });
+};
+
+export const handleConnectTransport = async (data: IConnectMediaTransport) => {
+  const { user } = data;
+  const stream = await ParticipantService.getCurrentStreamFor(user);
+
+  console.log("connecting transport for", user);
+  console.log("stream", stream);
+
+  if (!stream) {
+    return;
+  }
+
+  //const role = await ParticipantService.getRoleFor(user, stream);
+  const node = await MediaService.getConsumerNodeFor(user);
+
+  if (!node) {
+    return;
+  }
+
+  MessageService.sendConnectTransport(node, data);
 };
 
 export const handleNewTrack = async (data: INewMediaTrack) => {
