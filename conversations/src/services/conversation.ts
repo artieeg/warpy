@@ -26,7 +26,6 @@ export const handleNewConversation: MessageHandler<IStream> = async (
   };
 
   const recvMediaNode = await MediaService.getConsumerNodeId();
-  console.log("recvNodeId", recvMediaNode);
 
   if (!recvMediaNode) {
     return; // TODO: error

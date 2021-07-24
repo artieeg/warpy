@@ -5,7 +5,8 @@
     "user",
     "media",
     "conversations",
-    "ws_gateway"
+    "ws_gateway",
+    "warpykit-sdk-node"
   ],
   "nohoist": [
     "**"
@@ -14,7 +15,8 @@
     "@user": "./user/src",
     "@media": "./media/src",
     "@conv": "./conversations/src",
-    "@ws_gateway": "./ws_gateway/src"
+    "@ws_gateway": "./ws_gateway/src",
+    "@warpykit": "./warpykit-sdk-node/src"
   },
   "dependencies": {
     "cross-env": "^7.0.3",
