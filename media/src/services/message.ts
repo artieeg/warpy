@@ -1,4 +1,5 @@
 import { IConnectTransport, IMessage } from "@media/models";
+import { NodeInfo } from "@media/nodeinfo";
 import { role } from "@media/role";
 import {
   IConnectMediaServer,
@@ -111,9 +112,12 @@ export const handleRecvTracksRequest = async () => {
 };
 
 export const handleJoinRoom = async () => {
-  const sub = nc.subscribe(subjects.media.peer.join, {
-    queue: process.env.ROLE,
-  });
+  const subject =
+    role === "PRODUCER"
+      ? `${subjects.media.peer.join}.*`
+      : `${subjects.media.peer.join}.${NodeInfo.id}`;
+
+  const sub = nc.subscribe(subject);
 
   for await (const msg of sub) {
     const data = jc.decode(msg.data) as any;
@@ -131,7 +135,7 @@ export const handleConnectTransport = async () => {
   const subject =
     process.env.ROLE === "PRODUCER"
       ? subjects.media.transport.connect_producer
-      : subjects.media.transport.connect_consumer;
+      : subjects.media.transport.connect_consumer; //+ "." + NodeInfo.id;
 
   const sub = nc.subscribe(subject);
 
