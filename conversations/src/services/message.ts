@@ -231,11 +231,12 @@ export const createMediaRoom = async (
 };
 
 export const getRecvTracks = async (
+  node: string,
   data: IRecvTracksRequest
 ): Promise<IRecvTracksResponse> => {
   const m = jc.encode(data);
 
-  const reply = await nc.request(subjects.media.track.getRecv, m, {
+  const reply = await nc.request(`${subjects.media.track.getRecv}.${node}`, m, {
     timeout: 1000,
   });
 

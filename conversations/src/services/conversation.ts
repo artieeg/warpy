@@ -215,9 +215,13 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
 export const handleRecvTracksRequest = async (data: IRequestGetTracks) => {
   const { user, stream, rtpCapabilities } = data;
 
-  //TODO: check if user is in the room
+  const recvNodeId = await MediaService.getConsumerNodeFor(user);
 
-  const { consumerParams } = await MessageService.getRecvTracks({
+  if (!recvNodeId) {
+    return;
+  }
+
+  const { consumerParams } = await MessageService.getRecvTracks(recvNodeId, {
     roomId: stream,
     user,
     rtpCapabilities,
