@@ -92,7 +92,7 @@ export const handleNewSpeaker = async () => {
 };
 
 export const handleRecvTracksRequest = async () => {
-  const sub = nc.subscribe(subjects.media.track.getRecv);
+  const sub = nc.subscribe(`${subjects.media.track.getRecv}.${NodeInfo.id}`);
 
   for await (const msg of sub) {
     const data = jc.decode(msg.data) as any;
