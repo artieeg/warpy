@@ -16,11 +16,6 @@ export interface IAllowSpeakerPayload {
   user: string;
 }
 
-export interface INewTrackPayload {
-  user: string;
-  track: string;
-}
-
 export interface IRequestGetTracks {
   user: string;
   stream: string;

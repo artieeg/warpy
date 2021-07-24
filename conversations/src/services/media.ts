@@ -28,7 +28,6 @@ export const handleNewOnlineNode = async (data: INewMediaNode) => {
 
   const setOfNodes = getSetNameFromRole(role);
 
-  console.log(`adding ${id} to ${setOfNodes}`);
   client.sadd(setOfNodes, id);
 };
 
@@ -68,8 +67,9 @@ export const getProducerNodeId = async (): Promise<NodeID> => {
  */
 export const getConsumerNodeId = async () => {
   try {
-    const producerIds = await getNodeIdsWithRole("CONSUMER");
-    return producerIds[Math.floor(Math.random() * producerIds.length)];
+    const consumerIds = await getNodeIdsWithRole("CONSUMER");
+    console.log("consumer node ids", consumerIds);
+    return consumerIds[Math.floor(Math.random() * consumerIds.length)];
   } catch (e) {
     console.error(e);
     return null;

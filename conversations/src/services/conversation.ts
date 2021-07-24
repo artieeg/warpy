@@ -1,12 +1,11 @@
 import {
   IAllowSpeakerPayload,
-  INewTrackPayload,
   IParticipant,
   IRequestGetTracks,
   IStream,
 } from "@conv/models";
 import { INewMediaTrack, MessageHandler } from "@warpy/lib";
-import { MessageService, ParticipantService } from ".";
+import { MediaService, MessageService, ParticipantService } from ".";
 
 /**
  * Create a new conversation for a new stream
@@ -22,6 +21,13 @@ export const handleNewConversation: MessageHandler<IStream> = async (
     role: "streamer",
   };
 
+  const recvMediaNode = await MediaService.getConsumerNodeId();
+  console.log("recvNodeId");
+
+  if (!recvMediaNode) {
+    return; // TODO: error
+  }
+
   const media = await MessageService.createMediaRoom({
     host: owner,
     roomId: id,
@@ -32,7 +38,9 @@ export const handleNewConversation: MessageHandler<IStream> = async (
     ParticipantService.setCurrentStreamFor(participant),
   ]);
 
-  await MessageService.joinMediaRoom({
+  await MediaService.assignUserToNode(owner, recvMediaNode);
+
+  await MessageService.joinMediaRoom(recvMediaNode, {
     user: owner,
     roomId: id,
   });
@@ -81,12 +89,18 @@ export const handleParticipantJoin = async (participant: IParticipant) => {
 
   const participants = await ParticipantService.getStreamParticipants(stream);
 
+  const recvNodeId = await MediaService.getConsumerNodeId();
+
+  if (!recvNodeId) {
+    return; // TODO ERROR
+  }
+
   await Promise.all([
     ParticipantService.addParticipant(participant),
     ParticipantService.setCurrentStreamFor(participant),
   ]);
 
-  await MessageService.joinMediaRoom({
+  await MessageService.joinMediaRoom(recvNodeId, {
     user: id,
     roomId: stream,
   });

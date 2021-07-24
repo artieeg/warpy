@@ -2,7 +2,6 @@ import { EventEmitter } from "events";
 import { connect, JSONCodec, NatsConnection } from "nats";
 import {
   IAllowSpeakerPayload,
-  INewTrackPayload,
   IParticipant,
   IRequestGetTracks,
   IStream,
@@ -239,10 +238,11 @@ export const sendNewTrack = async (data: INewMediaTrack) => {
   nc.publish(subjects.media.track.send, m);
 };
 
-export const joinMediaRoom = async (data: IJoinMediaRoom) => {
+export const joinMediaRoom = async (node: string, data: IJoinMediaRoom) => {
+  console.log("joining node", node);
   const m = jc.encode(data);
 
-  nc.publish(subjects.media.peer.join, m);
+  nc.publish(`${subjects.media.peer.join}.${node}`, m);
 };
 
 export const handleRecvTracksRequest = async () => {
