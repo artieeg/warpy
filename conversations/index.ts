@@ -38,6 +38,7 @@ const main = async () => {
     "recv-tracks-request",
     ConversationService.handleRecvTracksRequest
   );
+  MessageService.on("new-media-node", MediaService.handleNewOnlineNode);
 
   console.log("Conversations Service started");
 };

@@ -11,6 +11,7 @@ import {
   IConnectNewSpeakerMedia,
   ICreateMediaRoom,
   IJoinMediaRoom,
+  INewMediaNode,
   INewMediaRoomData,
   INewMediaTrack,
   INewSpeakerMediaResponse,
@@ -33,6 +34,7 @@ const jc = JSONCodec();
 export const init = async () => {
   nc = await connect({ servers: [NATS] });
 
+  handleNewMediaNode();
   handleNewStream();
   handleStreamEnd();
   handleStreamJoin();
@@ -51,6 +53,7 @@ type Events =
   | "speaker-allow"
   | "raise-hand"
   | "new-track"
+  | "new-media-node"
   | "participant-leave";
 
 export const on = (event: Events, handler: MessageHandler<any, any>) => {
@@ -144,6 +147,23 @@ const handleStreamEnd = async () => {
     const { id } = jc.decode(msg.data) as any;
 
     eventEmitter.emit("conversation-end", id);
+  }
+};
+
+const handleNewMediaNode = async () => {
+  const sub = nc.subscribe(subjects.media.node.isOnline, {
+    queue: "conversations",
+  });
+
+  for await (const msg of sub) {
+    const message = jc.decode(msg.data) as any;
+
+    const newStream: INewMediaNode = {
+      id: message.id,
+      role: message.role,
+    };
+
+    eventEmitter.emit("new-media-node", newStream);
   }
 };
 

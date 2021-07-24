@@ -28,6 +28,7 @@ export const handleNewOnlineNode = async (data: INewMediaNode) => {
 
   const setOfNodes = getSetNameFromRole(role);
 
+  console.log(`adding ${id} to ${setOfNodes}`);
   client.sadd(setOfNodes, id);
 };
 

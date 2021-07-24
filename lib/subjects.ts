@@ -9,6 +9,9 @@ export const subjects = {
     },
   },
   media: {
+    node: {
+      isOnline: "media.node.is-online",
+    },
     egress: {
       tryConnect: "media.egress.try-connect",
       pipeIsReady: "media.egress.pipe-is-ready",
