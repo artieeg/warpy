@@ -85,6 +85,7 @@ export interface IRecvTracksResponse {
 }
 
 export interface IConnectMediaServer {
+  node: string;
   ip: string;
   port: number;
   srtp?: SrtpParameters;

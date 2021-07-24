@@ -1,11 +1,6 @@
 import { IConnectTransport, IRoom, Rooms } from "@media/models";
-import { Producer } from "mediasoup/lib/Producer";
-import { MessageService, VideoService } from ".";
-import {
-  createConsumer,
-  createTransport,
-  getOptionsFromTransport,
-} from "./video";
+import { NodeInfo } from "@media/nodeinfo";
+import { role } from "@media/role";
 import {
   IConnectMediaServer,
   IConnectNewSpeakerMedia,
@@ -19,7 +14,14 @@ import {
   IRecvTracksResponse,
   MessageHandler,
 } from "@warpy/lib";
-import { role } from "@media/role";
+import { Producer } from "mediasoup/lib/Producer";
+import util from "util";
+import { MessageService, VideoService } from ".";
+import {
+  createConsumer,
+  createTransport,
+  getOptionsFromTransport,
+} from "./video";
 
 const rooms: Rooms = {};
 
@@ -61,6 +63,8 @@ export const handleRecvTracksRequest: MessageHandler<
   IRecvTracksResponse
 > = async (data, respond) => {
   const { roomId, user, rtpCapabilities } = data;
+
+  console.log("tracks are requested here");
 
   const room = rooms[roomId];
 
@@ -208,8 +212,6 @@ export const handleNewRoom: MessageHandler<
 export const handleConnectTransport = async (data: IConnectTransport) => {
   const { roomId, user, dtlsParameters, direction } = data;
 
-  console.log("connecting transport");
-  console.log(data);
   const room = rooms[roomId];
 
   if (!room) {
@@ -219,9 +221,6 @@ export const handleConnectTransport = async (data: IConnectTransport) => {
   const peer = room.peers[user];
   const transport =
     direction === "send" ? peer.sendTransport : peer.recvTransport;
-
-  console.log("server role", role);
-  console.log("peer", peer);
 
   if (!transport) {
     return;
@@ -274,7 +273,6 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
 
   let resultId = null;
 
-  console.log("producing", kind, rtpParameters);
   let newProducer: Producer;
   try {
     newProducer = await transport.produce({
@@ -283,17 +281,22 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
       appData: { ...appData, user, transportId },
     });
 
-    const pipeConsumer = await VideoService.createPipeConsumer(newProducer.id);
+    const pipeConsumers = await VideoService.createPipeConsumers(
+      newProducer.id
+    );
 
-    MessageService.sendNewProducer({
-      userId: user,
-      roomId,
-      id: pipeConsumer.id,
-      kind: pipeConsumer.kind,
-      rtpParameters: pipeConsumer.rtpParameters,
-      rtpCapabilities: rtpCapabilities,
-      appData: pipeConsumer.appData,
-    });
+    for (const [node, pipeConsumer] of Object.entries(pipeConsumers)) {
+      console.log("sending new producer of", pipeConsumer.kind, "to", node);
+      MessageService.sendNewProducer(node, {
+        userId: user,
+        roomId,
+        id: pipeConsumer.id,
+        kind: pipeConsumer.kind,
+        rtpParameters: pipeConsumer.rtpParameters,
+        rtpCapabilities: rtpCapabilities,
+        appData: pipeConsumer.appData,
+      });
+    }
   } catch (e) {
     console.error(e);
     process.exit(1);
@@ -314,7 +317,7 @@ export const handleNewEgress: MessageHandler<
   IConnectMediaServer,
   IConnectMediaServer
 > = async (data, respond) => {
-  const { ip, port, srtp } = data;
+  const { ip, port, srtp, node } = data;
 
   const localPipeTransport = await VideoService.createPipeTransport(0);
   await localPipeTransport.connect({ ip, port, srtpParameters: srtp });
@@ -326,9 +329,13 @@ export const handleNewEgress: MessageHandler<
   console.log("INGRESS PIPE TRANSPORT TUPLE");
   console.log(localPipeTransport.tuple);
 
-  VideoService.pipeToEgress = localPipeTransport;
+  VideoService.egressPipes[node] = localPipeTransport;
+
+  console.log("current pipes");
+  console.log(util.inspect(VideoService.egressPipes, { depth: 0 }));
 
   respond!({
+    node: NodeInfo.id,
     ip: localIp!,
     port: localPort!,
     //ip: remoteIp!,
@@ -338,7 +345,7 @@ export const handleNewEgress: MessageHandler<
 };
 
 export const handleNewProducer = async (data: INewProducer) => {
-  console.log("received i new producer event", data);
+  console.log("received new producer event");
   const { userId, roomId, rtpCapabilities } = data;
 
   const pipeProducer = await VideoService.pipeToIngress.produce({
@@ -377,6 +384,8 @@ export const handleNewProducer = async (data: INewProducer) => {
     peers[userId].producer = pipeProducer;
   }
 
+  console.log("room peers to send a consumer", Object.keys(peers));
+
   for (const peerId in peers) {
     if (peerId === userId) {
       continue;
@@ -398,6 +407,8 @@ export const handleNewProducer = async (data: INewProducer) => {
         userId,
         peers[peerId]
       );
+
+      console.log("created consumer", peerId);
 
       //console.log("sneding consumer params", consumerParameters);
       MessageService.sendMessageToUser(peerId, {

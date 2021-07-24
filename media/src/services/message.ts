@@ -63,6 +63,7 @@ export const handleNewEgress = async () => {
     const data = jc.decode(msg.data) as any;
 
     const event: IConnectMediaServer = {
+      node: data.node,
       ip: data.ip,
       port: data.port,
       srtp: data.srtp,
@@ -204,12 +205,17 @@ export const tryConnectToIngress = async (
   return jc.decode(response.data) as IConnectMediaServer;
 };
 
-export const sendNewProducer = (producer: INewProducer) => {
-  nc.publish(subjects.media.egress.newProducer, jc.encode(producer));
+export const sendNewProducer = (node: string, producer: INewProducer) => {
+  nc.publish(
+    `${subjects.media.egress.newProducer}.${node}`,
+    jc.encode(producer)
+  );
 };
 
 export const handleNewProducerFromIngress = async () => {
-  const sub = nc.subscribe(subjects.media.egress.newProducer);
+  const sub = nc.subscribe(
+    `${subjects.media.egress.newProducer}.${NodeInfo.id}`
+  );
 
   for await (const msg of sub) {
     const newProducer: INewProducer = jc.decode(msg.data) as any;

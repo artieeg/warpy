@@ -1,7 +1,7 @@
 import os from "os";
 import { createWorker } from "mediasoup";
 import { Consumer, IPeer, IWorker } from "@media/models";
-import { MediaDirection } from "@media/types";
+import { EgressTransports, MediaDirection, PipeConsumers } from "@media/types";
 import {
   PipeTransport,
   Producer,
@@ -14,6 +14,7 @@ import { config } from "@media/config";
 import { ITransportOptions } from "@warpy/lib";
 import { MessageService } from ".";
 import EventEmitter from "events";
+import { NodeInfo } from "@media/nodeinfo";
 
 export const observer = new EventEmitter();
 
@@ -21,7 +22,9 @@ let latestUsedWorkerIdx = -1;
 export const workers: IWorker[] = [];
 
 //DEBUG
-export let pipeToEgress: PipeTransport;
+//export let pipeToEgress: PipeTransport;
+export const egressPipes: EgressTransports = {};
+
 export let pipeToIngress: PipeTransport;
 
 export const startWorkers = async () => {
@@ -141,14 +144,19 @@ export const createPipeTransport = async (id: number) => {
   return transport;
 };
 
-export const createPipeConsumer = async (producerId: string) => {
-  const pipeConsumer = await pipeToEgress!.consume({
-    producerId,
-  });
+export const createPipeConsumers = async (producerId: string) => {
+  const pipeConsumers: PipeConsumers = {};
 
-  return pipeConsumer;
+  for (const [node, pipe] of Object.entries(egressPipes)) {
+    pipeConsumers[node] = await pipe.consume({
+      producerId,
+    });
+  }
+
+  return pipeConsumers;
 };
 
+/*
 export const broadcastNewProducerToEgress = async (
   user: string,
   room: string,
@@ -180,6 +188,7 @@ export const broadcastNewProducerToEgress = async (
     console.error(e);
   }
 };
+*/
 
 export const tryConnectToIngress = async () => {
   const transport = await createPipeTransport(0);
@@ -187,6 +196,7 @@ export const tryConnectToIngress = async () => {
   pipeToIngress = transport;
 
   const remoteParams = await MessageService.tryConnectToIngress({
+    node: NodeInfo.id,
     ip: transport.tuple.localIp,
     port: transport.tuple.localPort,
     srtp: transport.srtpParameters,
