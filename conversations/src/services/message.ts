@@ -258,7 +258,8 @@ export const sendConnectTransport = async (
   node: string,
   data: IConnectMediaTransport
 ) => {
-  console.log("connecting transport");
+  console.log("connecting transport", data.direction);
+  console.log("node", node);
   nc.publish(
     data.direction === "send"
       ? subjects.media.transport.connect_producer

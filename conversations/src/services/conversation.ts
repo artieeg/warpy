@@ -26,7 +26,7 @@ export const handleNewConversation: MessageHandler<IStream> = async (
   };
 
   const recvMediaNode = await MediaService.getConsumerNodeId();
-  console.log("recvNodeId");
+  console.log("recvNodeId", recvMediaNode);
 
   if (!recvMediaNode) {
     return; // TODO: error
@@ -100,6 +100,7 @@ export const handleParticipantJoin = async (participant: IParticipant) => {
   }
 
   await Promise.all([
+    MediaService.assignUserToNode(id, recvNodeId),
     ParticipantService.addParticipant(participant),
     ParticipantService.setCurrentStreamFor(participant),
   ]);
@@ -185,6 +186,7 @@ export const handleConnectTransport = async (data: IConnectMediaTransport) => {
   //const role = await ParticipantService.getRoleFor(user, stream);
   const node = await MediaService.getConsumerNodeFor(user);
 
+  console.log("consumer node", node);
   if (!node) {
     return;
   }
