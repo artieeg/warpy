@@ -1,4 +1,4 @@
-import { User, RefreshToken, IUser } from "@app/models";
+import { UserModel, RefreshToken, BaseUser } from "@app/models";
 import { jwt } from "@app/utils";
 
 /*
@@ -7,7 +7,7 @@ import { jwt } from "@app/utils";
 export const createDevUser = async (data: any) => {
   const { username, last_name, first_name, email } = data;
 
-  const user = new User({
+  const user = new UserModel({
     username,
     last_name,
     first_name,
@@ -32,9 +32,13 @@ export const createDevUser = async (data: any) => {
   };
 };
 
-export const getUserById = async (userId: string): Promise<IUser> => {
-  const result = await User.findOne({ _id: userId });
-  const user = result.toJSON();
+export const getUserById = async (userId: string): Promise<BaseUser> => {
+  const result = await UserModel.findOne({ _id: userId });
+  return BaseUser.fromJSON(result.toJSON());
+};
 
-  return user;
+export const getUsersByIds = async (users: string[]): Promise<BaseUser[]> => {
+  const result = await UserModel.find({ _id: { $in: users } });
+
+  return result.map((item: any) => BaseUser.fromJSON(item.toJSON()));
 };

@@ -81,10 +81,7 @@ export const handleParticipantLeave = async (user: string) => {
     return;
   }
 
-  await ParticipantService.removeParticipant({
-    id: user,
-    stream,
-  });
+  await ParticipantService.removeParticipant(user, stream);
 
   const users = await ParticipantService.getStreamParticipants(stream);
 
@@ -116,7 +113,7 @@ export const handleParticipantJoin = async (participant: IBaseParticipant) => {
   });
 
   await MessageService.sendMessageBroadcast(participants, {
-    event: "@app/new-participant",
+    event: "new-participant",
     data: {
       stream,
       participant: {
@@ -128,6 +125,8 @@ export const handleParticipantJoin = async (participant: IBaseParticipant) => {
       } as IParticipant,
     },
   });
+
+  ParticipantService.handleParticipantsRequest(id, stream, 0);
 };
 
 export const handleRaisedHand = async (user: string) => {

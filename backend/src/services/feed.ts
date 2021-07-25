@@ -1,4 +1,9 @@
-import { Candidate, Participant, IParticipant, IStream } from "@app/models";
+import {
+  Candidate,
+  ParticipantModel,
+  IParticipant,
+  IStream,
+} from "@app/models";
 import { FeedsCacheService, UserService, CandidateStatsService } from ".";
 import mongoose from "mongoose";
 
@@ -26,7 +31,7 @@ export const getFeed = async (params: IGetFeed) => {
 
   const [candidates, participants] = await Promise.all([
     Candidate.find({ _id: { $in: candidateIds } }),
-    Participant.find({ stream: { $in: candidateIds } }),
+    ParticipantModel.find({ stream: { $in: candidateIds } }),
   ]);
 
   console.log(candidates);
@@ -68,7 +73,7 @@ export const onNewCandidate = async (data: IStream) => {
     owner: ownerId,
   });
 
-  const participant = new Participant({
+  const participant = new ParticipantModel({
     ...owner,
     stream: id,
     role: "streamer",
@@ -82,7 +87,7 @@ export const onNewCandidate = async (data: IStream) => {
 export const onRemoveCandidate = async (id: string) => {
   await Promise.all([
     Candidate.deleteOne({ _id: id }),
-    Participant.deleteMany({ stream: mongoose.Types.ObjectId(id) }),
+    ParticipantModel.deleteMany({ stream: mongoose.Types.ObjectId(id) }),
   ]);
 
   await CandidateStatsService.deleteStats(id);

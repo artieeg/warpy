@@ -153,12 +153,10 @@ const handleStreamJoin = async () => {
   for await (const msg of sub) {
     const { user, stream } = jc.decode(msg.data) as any;
 
-    const participant: IBaseParticipant = {
+    eventEmitter.emit("participant-new", {
       id: user,
       stream,
-    };
-
-    eventEmitter.emit("participant-new", participant);
+    });
   }
 };
 

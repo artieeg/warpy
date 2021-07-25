@@ -1,6 +1,7 @@
-import { IBaseParticipant } from "@app/models";
+import { IBaseParticipant, IParticipant, Participant } from "@app/models";
 import { Roles } from "@app/types";
 import redis from "redis";
+import { MessageService, UserService } from ".";
 
 const URL = process.env.PARTICIPANTS_CACHE || "redis://127.0.0.1:6375/5";
 
@@ -60,10 +61,7 @@ export const setParticipantRole = async (
   });
 };
 
-export const removeParticipant = async (participant: IBaseParticipant) => {
-  const user = participant.id;
-  const stream = participant.stream;
-
+export const removeParticipant = async (user: string, stream: string) => {
   const userKey = `user_${user}`;
   const streamKey = `stream_${stream}`;
 
@@ -89,6 +87,20 @@ export const removeParticipant = async (participant: IBaseParticipant) => {
   });
 
   await Promise.all([removeParticipantPromise, removeCurrentStreamPromise]);
+};
+
+export const getStreamParticipantsWithRoles = async (streamId: string) => {
+  const streamKey = `stream_${streamId}`;
+
+  return new Promise<Record<string, string>>((resolve, reject) => {
+    client.hgetall(streamKey, (err, data) => {
+      if (err) {
+        return reject(err);
+      }
+
+      resolve(data);
+    });
+  });
 };
 
 export const getStreamParticipants = async (streamId: string) => {
@@ -176,5 +188,45 @@ export const getRoleFor = async (
 
       resolve(role as Roles);
     });
+  });
+};
+
+const PARTICIPANTS_PER_PAGE = 50;
+export const handleParticipantsRequest = async (
+  user: string,
+  stream: string,
+  page: number
+) => {
+  const allStreamParticipants = await getStreamParticipantsWithRoles(stream);
+  const allParticipantIds = Object.keys(allStreamParticipants);
+
+  const participantIds = [];
+
+  const start = page * PARTICIPANTS_PER_PAGE;
+  const end =
+    allParticipantIds.length > start + PARTICIPANTS_PER_PAGE
+      ? start + PARTICIPANTS_PER_PAGE
+      : allParticipantIds.length;
+
+  for (let i = start; i < end; i++) {
+    const id = allParticipantIds[i];
+
+    if (id !== user) {
+      participantIds.push(id);
+    }
+  }
+
+  const users = await UserService.getUsersByIds(participantIds);
+
+  const participants: IParticipant[] = users.map((user) =>
+    Participant.fromUser(user, allStreamParticipants[user.id] as Roles, stream)
+  );
+
+  MessageService.sendMessage(user, {
+    event: "participants-page",
+    body: {
+      page,
+      participants,
+    },
   });
 };
