@@ -1,5 +1,4 @@
 import { Stream } from "@app/models";
-import * as MessageService from "./message";
 import mongoose from "mongoose";
 import EventEmitter from "events";
 
