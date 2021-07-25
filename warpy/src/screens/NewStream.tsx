@@ -49,9 +49,15 @@ export const NewStream = () => {
       setRecvRoomData(data);
     });
 
-    ws.on('raise-hand', (data: any) => {
+    const onRaiseHand = (data: any) => {
       setUserSpeakRequest(data.user);
-    });
+    };
+
+    ws.on('raise-hand', onRaiseHand);
+
+    return () => {
+      ws.off('raise-hand', onRaiseHand);
+    };
   }, [streamId, ws]);
 
   useEffect(() => {
@@ -59,13 +65,19 @@ export const NewStream = () => {
       return;
     }
 
-    ws.on('@media/new-track', (data: any) => {
+    const onNewTrack = (data: any) => {
       media.consumeRemoteStream(
         data.consumerParameters,
         data.user,
         recvTransport,
       );
-    });
+    };
+
+    ws.on('@media/new-track', onNewTrack);
+
+    return () => {
+      ws.off('@media/new-track', onNewTrack);
+    };
   }, [recvTransport, media, ws]);
 
   useEffect(() => {

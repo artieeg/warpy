@@ -46,7 +46,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   }, [recvTransport, roomData, userId, id, media]);
 
   useEffect(() => {
-    ws.on('@media/recv-connect-params', async (data: any) => {
+    ws.once('@media/recv-connect-params', async (data: any) => {
       setRoomData(data);
     });
 
@@ -54,10 +54,16 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   }, [userId, id, ws]);
 
   useEffect(() => {
-    ws.on('speaking-allowed', async (options: any) => {
+    const onSpeakingAllowed = async (options: any) => {
       await media.initSendDevice(options.media.rtpCapabilities);
       media.sendMediaStream(audioStream!, id, options.media, 'audio');
-    });
+    };
+
+    ws.on('speaking-allowed', onSpeakingAllowed);
+
+    return () => {
+      ws.off('speaking-allowed', onSpeakingAllowed);
+    };
   }, [id, audioStream, ws, media]);
 
   const {width, height} = useWindowDimensions();
