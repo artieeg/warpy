@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { jwt } from "@user/utils";
+import { jwt } from "@app/utils";
 
 export const auth: RequestHandler = async (req, res, next) => {
   const token = req.headers["authorization"];

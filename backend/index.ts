@@ -1,8 +1,8 @@
 import "module-alias/register";
 
 import express from "express";
-import routes from "@user/routes";
-import { DatabaseService, MessageService } from "@user/services";
+import routes from "@app/routes";
+import { DatabaseService, MessageService } from "@app/services";
 
 const app = express();
 app.use(express.json());
@@ -18,7 +18,7 @@ const main = async () => {
   await MessageService.init();
 
   app.listen(Number.parseInt(PORT), `0.0.0.0`, () => {
-    console.log(`Started user service on port ${PORT}`);
+    console.log(`Started on port ${PORT}`);
   });
 };
 
