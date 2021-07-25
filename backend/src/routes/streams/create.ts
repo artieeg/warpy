@@ -12,11 +12,15 @@ const handler: RequestHandler = async (req, res) => {
   const owner = res.locals.id;
   const { title, hub } = req.body;
 
+  console.log("creating stream", owner, req.body);
+
   const streamId = await StreamService.createNewStream({
     owner,
     title,
     hub,
   });
+
+  console.log("created new stream", streamId);
 
   res.send({
     stream_id: streamId,

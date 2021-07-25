@@ -64,8 +64,6 @@ export const handleRecvTracksRequest: MessageHandler<
 > = async (data, respond) => {
   const { roomId, user, rtpCapabilities } = data;
 
-  console.log("tracks are requested here");
-
   const room = rooms[roomId];
 
   if (!room) {
@@ -97,7 +95,6 @@ export const handleRecvTracksRequest: MessageHandler<
 
     try {
       const { producer } = peer;
-      console.log("creating consumer params");
       consumerParams.push(
         await createConsumer(
           router,
@@ -124,7 +121,6 @@ export const handleJoinRoom = async (data: IJoinMediaRoom) => {
   const { roomId, user } = data;
 
   const room = rooms[roomId];
-  console.log(room);
 
   if (!room) {
     return;
@@ -145,7 +141,6 @@ export const handleJoinRoom = async (data: IJoinMediaRoom) => {
       sendTransport: null, //todo this
     };
   }
-  console.log(room.peers);
 
   if (role === "CONSUMER") {
     MessageService.sendMessageToUser(user, {
@@ -230,7 +225,6 @@ export const handleConnectTransport = async (data: IConnectTransport) => {
     await transport.connect({ dtlsParameters });
   } catch (e) {
     console.log("e", e, e.message);
-    //TODO
     return;
   }
 
@@ -275,15 +269,19 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
 
   let newProducer: Producer;
   try {
+    console.log("trying to produce", kind);
     newProducer = await transport.produce({
       kind,
       rtpParameters,
       appData: { ...appData, user, transportId },
     });
+    console.log("producing", kind);
 
     const pipeConsumers = await VideoService.createPipeConsumers(
       newProducer.id
     );
+
+    console.log("created pipe consumers");
 
     for (const [node, pipeConsumer] of Object.entries(pipeConsumers)) {
       console.log("sending new producer of", pipeConsumer.kind, "to", node);
@@ -298,8 +296,9 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
       });
     }
   } catch (e) {
-    console.error(e);
-    process.exit(1);
+    console.error("error:", e);
+    console.error("error:", e.message);
+    return;
   }
 
   peer.producer = newProducer;
@@ -384,8 +383,6 @@ export const handleNewProducer = async (data: INewProducer) => {
     peers[userId].producer = pipeProducer;
   }
 
-  console.log("room peers to send a consumer", Object.keys(peers));
-
   for (const peerId in peers) {
     if (peerId === userId) {
       continue;
@@ -407,8 +404,6 @@ export const handleNewProducer = async (data: INewProducer) => {
         userId,
         peers[peerId]
       );
-
-      console.log("created consumer", peerId);
 
       //console.log("sneding consumer params", consumerParameters);
       MessageService.sendMessageToUser(peerId, {
