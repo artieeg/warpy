@@ -1,14 +1,6 @@
-import { Roles } from "@conv/types";
-
-export interface IStream {
+export interface IRoom {
   id: string;
   owner: string;
-}
-
-export interface IParticipant {
-  id: string;
-  stream: string;
-  role?: Roles;
 }
 
 export interface IAllowSpeakerPayload {

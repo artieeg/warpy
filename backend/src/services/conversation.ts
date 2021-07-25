@@ -1,9 +1,9 @@
 import {
+  IRoomParticipant,
+  IRoom,
   IAllowSpeakerPayload,
-  IParticipant,
   IRequestGetTracks,
-  IStream,
-} from "@conv/models";
+} from "@app/models";
 import {
   IConnectMediaTransport,
   INewMediaTrack,
@@ -14,12 +14,10 @@ import { MediaService, MessageService, ParticipantService } from ".";
 /**
  * Create a new conversation for a new stream
  */
-export const handleNewConversation: MessageHandler<IStream> = async (
-  stream
-) => {
+export const handleNewConversation: MessageHandler<IRoom> = async (stream) => {
   const { id, owner } = stream;
 
-  const participant: IParticipant = {
+  const participant: IRoomParticipant = {
     stream: id,
     id: owner,
     role: "streamer",
@@ -87,7 +85,7 @@ export const handleParticipantLeave = async (user: string) => {
   await MessageService.sendMessageBroadcast(users, {}); //TODO
 };
 
-export const handleParticipantJoin = async (participant: IParticipant) => {
+export const handleParticipantJoin = async (participant: IRoomParticipant) => {
   const { stream, id } = participant;
 
   const participants = await ParticipantService.getStreamParticipants(stream);

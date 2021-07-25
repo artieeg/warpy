@@ -1,5 +1,5 @@
-import { IParticipant } from "@conv/models";
-import { Roles } from "@conv/types";
+import { IRoomParticipant } from "@app/models";
+import { Roles } from "@app/types";
 import redis from "redis";
 
 const URL = process.env.PARTICIPANTS_CACHE || "redis://127.0.0.1:6375/5";
@@ -10,7 +10,7 @@ const client = redis.createClient({
 
 export const init = async () => {};
 
-export const addParticipant = async (participant: IParticipant) => {
+export const addParticipant = async (participant: IRoomParticipant) => {
   const user = participant.id;
   const stream = participant.stream;
 
@@ -60,7 +60,7 @@ export const setParticipantRole = async (
   });
 };
 
-export const removeParticipant = async (participant: IParticipant) => {
+export const removeParticipant = async (participant: IRoomParticipant) => {
   const user = participant.id;
   const stream = participant.stream;
 
@@ -146,7 +146,7 @@ export const getCurrentStreamFor = async (user: string) => {
   });
 };
 
-export const setCurrentStreamFor = async (participant: IParticipant) => {
+export const setCurrentStreamFor = async (participant: IRoomParticipant) => {
   const { id, stream } = participant;
 
   const userKey = `user_${id}`;
