@@ -1,12 +1,15 @@
 import { Stream } from "@app/models";
 import * as MessageService from "./message";
 import mongoose from "mongoose";
+import EventEmitter from "events";
 
 interface INewStream {
   owner: string;
   title: string;
   hub: string;
 }
+
+export const observer = new EventEmitter();
 
 export const createNewStream = async (params: INewStream) => {
   const { owner, title, hub } = params;
@@ -19,7 +22,7 @@ export const createNewStream = async (params: INewStream) => {
   });
 
   await stream.save();
-  await MessageService.sendNewStreamEvent(stream);
+  observer.emit("stream-new", stream);
 
   return stream.id;
 };
@@ -31,7 +34,7 @@ export const stopStream = async (id: string, owner: string) => {
   );
 
   if (result.nModified === 1) {
-    await MessageService.sendStreamEndedEvent(id);
+    observer.emit("stream-ended", id);
   }
 };
 

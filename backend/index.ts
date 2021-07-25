@@ -2,7 +2,7 @@ import "module-alias/register";
 
 import express from "express";
 import routes from "@app/routes";
-import { DatabaseService, MessageService } from "@app/services";
+import { DatabaseService } from "@app/services";
 
 const app = express();
 app.use(express.json());
@@ -15,7 +15,6 @@ if (!PORT) {
 }
 const main = async () => {
   await DatabaseService.connect();
-  await MessageService.init();
 
   app.listen(Number.parseInt(PORT), `0.0.0.0`, () => {
     console.log(`Started on port ${PORT}`);
