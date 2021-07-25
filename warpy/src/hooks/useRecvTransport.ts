@@ -1,4 +1,5 @@
-import {createTransport, recvDevice, initRecvDevice} from '@app/services';
+//import {createTransport, recvDevice, initRecvDevice} from '@app/services';
+import {useMediaStreamingContext} from '@app/components';
 import {Transport} from 'mediasoup-client/lib/Transport';
 import {useCallback, useEffect, useState} from 'react';
 
@@ -11,6 +12,8 @@ interface IRecvTransportHookParams {
 export const useRecvTransport = (params: IRecvTransportHookParams) => {
   const {stream, recvTransportOptions, routerRtpCapabilities} = params;
 
+  const media = useMediaStreamingContext();
+
   const [transport, setTransport] = useState<Transport>();
 
   const createRecvTransport = useCallback(async () => {
@@ -18,18 +21,18 @@ export const useRecvTransport = (params: IRecvTransportHookParams) => {
       return;
     }
 
-    await initRecvDevice(routerRtpCapabilities);
+    await media.initRecvDevice(routerRtpCapabilities);
 
-    const newTransport = await createTransport({
+    const newTransport = await media.createTransport({
       roomId: stream,
-      device: recvDevice,
+      device: media.recvDevice,
       direction: 'recv',
       options: {recvTransportOptions},
       isProducer: false,
     });
 
     setTransport(newTransport);
-  }, [stream, recvTransportOptions, routerRtpCapabilities]);
+  }, [stream, recvTransportOptions, routerRtpCapabilities, media]);
 
   useEffect(() => {
     createRecvTransport();

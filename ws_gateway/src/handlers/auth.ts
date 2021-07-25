@@ -8,6 +8,8 @@ export const onAuth: Handler = async (data, context) => {
 
   context!.user = user;
 
+  console.log("authed new user", user);
+
   await MessageService.subscribeForEvents(user, (message: any) => {
     const { event, data } = message;
     context!.ws.send(JSON.stringify({ event, data }));

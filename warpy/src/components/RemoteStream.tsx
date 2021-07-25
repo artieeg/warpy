@@ -1,12 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {Stream} from '@app/models';
-import {onWebSocketEvent, sendJoinStream, sendRaiseHand} from '@app/services';
-import {
-  consumeRemoteStreams,
-  initSendDevice,
-  sendMediaStream,
-} from '@app/services/video';
 import {useAppUser, useLocalStream} from '@app/hooks';
 import {MediaStream, RTCView} from 'react-native-webrtc';
 import {Speakers} from './Speakers';
@@ -14,6 +8,9 @@ import {ClapButton} from './ClapsButton';
 import {WarpButton} from './WarpButton';
 import {RaiseHandButton} from './RaiseHandButton';
 import {useRecvTransport} from '@app/hooks/useRecvTransport';
+import {useMediaStreamingContext} from './MediaStreamingContext';
+import {useWebSocketContext} from './WebSocketContext';
+import {Consumer} from 'mediasoup-client/lib/types';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -27,6 +24,8 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const audioStream = useLocalStream('audio');
   const [roomData, setRoomData] = useState<any>(null);
   const id = stream.id;
+  const ws = useWebSocketContext();
+  const media = useMediaStreamingContext();
 
   const recvTransport = useRecvTransport({
     stream: id,
@@ -36,34 +35,36 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
 
   useEffect(() => {
     if (recvTransport) {
-      consumeRemoteStreams(userId, id, recvTransport).then(consumers => {
-        const track = consumers[0].track;
+      media
+        .consumeRemoteStreams(userId, id, recvTransport)
+        .then((consumers: Consumer[]) => {
+          const track = consumers[0].track;
 
-        setMediaStream(new MediaStream([track]));
-      });
+          setMediaStream(new MediaStream([track]));
+        });
     }
-  }, [recvTransport, roomData, userId, id]);
+  }, [recvTransport, roomData, userId, id, media]);
 
   useEffect(() => {
-    onWebSocketEvent('@media/recv-connect-params', async (data: any) => {
+    ws.on('@media/recv-connect-params', async (data: any) => {
       setRoomData(data);
     });
 
-    sendJoinStream(id);
-  }, [userId, id]);
+    ws.sendJoinStream(id);
+  }, [userId, id, ws]);
 
   useEffect(() => {
-    onWebSocketEvent('speaking-allowed', async (options: any) => {
-      await initSendDevice(options.media.rtpCapabilities);
-      sendMediaStream(audioStream!, id, options.media, 'audio');
+    ws.on('speaking-allowed', async (options: any) => {
+      await media.initSendDevice(options.media.rtpCapabilities);
+      media.sendMediaStream(audioStream!, id, options.media, 'audio');
     });
-  }, [id, audioStream]);
+  }, [id, audioStream, ws, media]);
 
   const {width, height} = useWindowDimensions();
 
   const raiseHand = useCallback(() => {
-    sendRaiseHand();
-  }, []);
+    ws.sendRaiseHand();
+  }, [ws]);
 
   const wrapperStyle = {
     ...styles.wrapper,

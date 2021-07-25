@@ -1,14 +1,21 @@
 import {useAppUser, useLocalStream} from '@app/hooks';
-import {createStream, onWebSocketEvent, sendAllowSpeaker} from '@app/services';
+import {createStream, sendAllowSpeaker} from '@app/services';
 import {RTCView} from 'react-native-webrtc';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, StyleSheet, useWindowDimensions, Alert} from 'react-native';
-import {StopStream, Button} from '@app/components';
+import {
+  StopStream,
+  Button,
+  useMediaStreamingContext,
+  useWebSocketContext,
+} from '@app/components';
+/*
 import {
   consumeRemoteStream,
   initSendDevice,
   sendMediaStream,
 } from '@app/services/video';
+ */
 import {useRecvTransport} from '@app/hooks/useRecvTransport';
 
 export const NewStream = () => {
@@ -20,6 +27,8 @@ export const NewStream = () => {
   const [sendRoomData, setSendRoomData] = useState<any>();
   const [recvRoomData, setRecvRoomData] = useState<any>();
   const [userSpeakRequest, setUserSpeakRequest] = useState<string>();
+  const ws = useWebSocketContext();
+  const media = useMediaStreamingContext();
 
   const recvTransport = useRecvTransport({
     stream: streamId,
@@ -31,46 +40,48 @@ export const NewStream = () => {
   const localStream = useLocalStream('video');
 
   useEffect(() => {
-    onWebSocketEvent('created-room', (data: any) => {
+    ws.once('created-room', (data: any) => {
+      Alert.alert('created room', JSON.stringify(data.media));
       setSendRoomData(data.media);
     });
 
-    onWebSocketEvent('@media/recv-connect-params', (data: any) => {
-      Alert.alert('joined room', JSON.stringify(data));
+    ws.once('@media/recv-connect-params', (data: any) => {
       setRecvRoomData(data);
     });
 
-    onWebSocketEvent('raise-hand', (data: any) => {
+    ws.on('raise-hand', (data: any) => {
       setUserSpeakRequest(data.user);
     });
-  }, [streamId]);
+  }, [streamId, ws]);
 
   useEffect(() => {
     if (!recvTransport) {
       return;
     }
 
-    onWebSocketEvent('@media/new-track', (data: any) => {
-      consumeRemoteStream(data.consumerParameters, data.user, recvTransport);
+    ws.on('@media/new-track', (data: any) => {
+      media.consumeRemoteStream(
+        data.consumerParameters,
+        data.user,
+        recvTransport,
+      );
     });
-  }, [recvTransport]);
+  }, [recvTransport, media, ws]);
 
   useEffect(() => {
     if (sendRoomData && streamId && localStream) {
-      initSendDevice(sendRoomData.routerRtpCapabilities).then(async () => {
-        await sendMediaStream(localStream, streamId, sendRoomData, 'video');
-
-        /*
-        await consumeRemoteStreams(
-          userId,
-          streamId,
-          sendRoomData.routerRtpCapabilities,
-          sendRoomData.recvTransportOptions,
-        );
-         */
-      });
+      media
+        .initSendDevice(sendRoomData.routerRtpCapabilities)
+        .then(async () => {
+          await media.sendMediaStream(
+            localStream,
+            streamId,
+            sendRoomData,
+            'video',
+          );
+        });
     }
-  }, [streamId, sendRoomData, localStream, userId]);
+  }, [streamId, sendRoomData, localStream, userId, media, ws]);
 
   const onStart = useCallback(async () => {
     const newStreamId = await createStream(title, hub);
