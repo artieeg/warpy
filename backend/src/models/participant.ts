@@ -1,17 +1,14 @@
+import { Roles } from "@app/types";
 import mongoose from "mongoose";
+import { IBaseUser } from "./user";
+import { IEntity } from "./entity";
 
-export interface IUser {
-  id: string;
-  last_name: string;
-  first_name: string;
-  username: string;
-  avatar: string;
+export interface IBaseParticipant extends IEntity {
+  stream: string;
+  role?: Roles;
 }
 
-export interface IParticipant extends IUser {
-  role: "speaker" | "streamer" | "viewer";
-  stream: mongoose.Types.ObjectId;
-}
+export interface IParticipant extends IBaseUser, IBaseParticipant {}
 
 const ParticipantSchema = new mongoose.Schema<IParticipant>({
   last_name: String,

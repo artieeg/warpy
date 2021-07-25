@@ -1,4 +1,4 @@
-import { User, RefreshToken } from "@app/models";
+import { User, RefreshToken, IUser } from "@app/models";
 import { jwt } from "@app/utils";
 
 /*
@@ -32,7 +32,7 @@ export const createDevUser = async (data: any) => {
   };
 };
 
-export const getUserById = async (userId: string) => {
+export const getUserById = async (userId: string): Promise<IUser> => {
   const result = await User.findOne({ _id: userId });
   const user = result.toJSON();
 

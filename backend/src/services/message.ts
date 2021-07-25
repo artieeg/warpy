@@ -2,7 +2,7 @@ import { EventEmitter } from "events";
 import { connect, JSONCodec, NatsConnection } from "nats";
 import {
   IAllowSpeakerPayload,
-  IRoomParticipant,
+  IBaseParticipant,
   IRequestGetTracks,
   IRoom,
 } from "@app/models";
@@ -153,7 +153,7 @@ const handleStreamJoin = async () => {
   for await (const msg of sub) {
     const { user, stream } = jc.decode(msg.data) as any;
 
-    const participant: IRoomParticipant = {
+    const participant: IBaseParticipant = {
       id: user,
       stream,
     };

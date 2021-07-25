@@ -1,15 +1,21 @@
 import {
-  IRoomParticipant,
+  IBaseParticipant,
   IRoom,
   IAllowSpeakerPayload,
   IRequestGetTracks,
+  IParticipant,
 } from "@app/models";
 import {
   IConnectMediaTransport,
   INewMediaTrack,
   MessageHandler,
 } from "@warpy/lib";
-import { MediaService, MessageService, ParticipantService } from ".";
+import {
+  MediaService,
+  MessageService,
+  ParticipantService,
+  UserService,
+} from ".";
 
 /**
  * Create a new conversation for a new stream
@@ -17,7 +23,7 @@ import { MediaService, MessageService, ParticipantService } from ".";
 export const handleNewConversation: MessageHandler<IRoom> = async (stream) => {
   const { id, owner } = stream;
 
-  const participant: IRoomParticipant = {
+  const participant: IBaseParticipant = {
     stream: id,
     id: owner,
     role: "streamer",
@@ -85,12 +91,14 @@ export const handleParticipantLeave = async (user: string) => {
   await MessageService.sendMessageBroadcast(users, {}); //TODO
 };
 
-export const handleParticipantJoin = async (participant: IRoomParticipant) => {
+export const handleParticipantJoin = async (participant: IBaseParticipant) => {
   const { stream, id } = participant;
 
-  const participants = await ParticipantService.getStreamParticipants(stream);
-
-  const recvNodeId = await MediaService.getConsumerNodeId();
+  const [participants, recvNodeId, userInfo] = await Promise.all([
+    ParticipantService.getStreamParticipants(stream),
+    MediaService.getConsumerNodeId(),
+    UserService.getUserById(id),
+  ]);
 
   if (!recvNodeId) {
     return; // TODO ERROR
@@ -108,10 +116,16 @@ export const handleParticipantJoin = async (participant: IRoomParticipant) => {
   });
 
   await MessageService.sendMessageBroadcast(participants, {
-    event: "user-join",
+    event: "@app/new-participant",
     data: {
       stream,
-      id,
+      participant: {
+        id: userInfo.id,
+        last_name: userInfo.last_name,
+        first_name: userInfo.first_name,
+        avatar: userInfo.avatar,
+        username: userInfo.username,
+      } as IParticipant,
     },
   });
 };

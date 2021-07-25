@@ -1,6 +1,19 @@
 import mongoose, { Schema } from "mongoose";
+import { IEntity } from "./entity";
 
-const UserSchema = new Schema({
+export interface IBaseUser extends IEntity {
+  last_name: string;
+  first_name: string;
+  username: string;
+  avatar: string;
+}
+
+export interface IUser extends IBaseUser {
+  email: String;
+  sub: String;
+}
+
+const UserSchema = new Schema<IUser>({
   username: String,
   last_name: String,
   first_name: String,

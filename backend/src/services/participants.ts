@@ -1,4 +1,4 @@
-import { IRoomParticipant } from "@app/models";
+import { IBaseParticipant } from "@app/models";
 import { Roles } from "@app/types";
 import redis from "redis";
 
@@ -10,7 +10,7 @@ const client = redis.createClient({
 
 export const init = async () => {};
 
-export const addParticipant = async (participant: IRoomParticipant) => {
+export const addParticipant = async (participant: IBaseParticipant) => {
   const user = participant.id;
   const stream = participant.stream;
 
@@ -60,7 +60,7 @@ export const setParticipantRole = async (
   });
 };
 
-export const removeParticipant = async (participant: IRoomParticipant) => {
+export const removeParticipant = async (participant: IBaseParticipant) => {
   const user = participant.id;
   const stream = participant.stream;
 
@@ -146,7 +146,7 @@ export const getCurrentStreamFor = async (user: string) => {
   });
 };
 
-export const setCurrentStreamFor = async (participant: IRoomParticipant) => {
+export const setCurrentStreamFor = async (participant: IBaseParticipant) => {
   const { id, stream } = participant;
 
   const userKey = `user_${id}`;
