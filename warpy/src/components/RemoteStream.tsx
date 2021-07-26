@@ -9,15 +9,12 @@ import {
   useParticipantsCount,
 } from '@app/hooks';
 import {MediaStream, RTCView} from 'react-native-webrtc';
-import {Speakers} from './Speakers';
-import {ClapButton} from './ClapsButton';
-import {WarpButton} from './WarpButton';
-import {RaiseHandButton} from './RaiseHandButton';
 import {useRecvTransport} from '@app/hooks/useRecvTransport';
 import {useMediaStreamingContext} from './MediaStreamingContext';
 import {useWebSocketContext} from './WebSocketContext';
 import {Consumer} from 'mediasoup-client/lib/types';
-import {ShowParticipantsButton} from './ShowParticipantsButton';
+import {RemoteStreamPanel} from './RemoteStreamPanel';
+import {ParticipantsModal} from './ParticipantsModal';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -30,6 +27,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const [mediaStream, setMediaStream] = useState<MediaStream>();
   const audioStream = useLocalStream('audio');
   const [roomData, setRoomData] = useState<any>(null);
+  const [panelVisible, setPanelVisible] = useState(true);
   const id = stream.id;
   const ws = useWebSocketContext();
   const media = useMediaStreamingContext();
@@ -104,22 +102,19 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
           streamURL={mediaStream.toURL()}
         />
       )}
-      <View style={styles.bottom}>
-        <Speakers speakers={speakers} style={styles.speakers} />
-        <View style={styles.buttons}>
-          <View style={[styles.buttonRow, styles.upperButtonRow]}>
-            <WarpButton style={styles.spaceRight} />
-            <ClapButton />
-          </View>
-          <View style={styles.buttonRow}>
-            <ShowParticipantsButton
-              style={styles.spaceRight}
-              count={participantsCount}
-            />
-            <RaiseHandButton onPress={raiseHand} />
-          </View>
-        </View>
-      </View>
+      <RemoteStreamPanel
+        title={stream.title}
+        visible={panelVisible}
+        speakers={speakers}
+        participantsCount={participantsCount}
+        onRaiseHand={raiseHand}
+        onOpenParticipantsList={() => setPanelVisible(false)}
+      />
+      <ParticipantsModal
+        title={stream.title}
+        onHide={() => setPanelVisible(true)}
+        visible={!panelVisible}
+      />
     </View>
   );
 };
@@ -133,28 +128,5 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     backgroundColor: '#30ff30',
-  },
-  speakers: {
-    flex: 1,
-  },
-  bottom: {
-    flexDirection: 'row',
-    position: 'absolute',
-    bottom: 20,
-    left: 20,
-    right: 20,
-    alignItems: 'flex-end',
-  },
-  upperButtonRow: {
-    paddingBottom: 10,
-  },
-  spaceRight: {
-    marginRight: 10,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-  },
-  buttons: {
-    alignItems: 'flex-end',
   },
 });

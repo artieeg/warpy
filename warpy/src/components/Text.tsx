@@ -8,10 +8,11 @@ interface ITextProps {
   children: string;
   weight?: TextWeight;
   size?: TextSize;
+  style: any;
 }
 
 export const Text = (props: ITextProps) => {
-  const {children, weight, size} = props;
+  const {children, weight, size, style} = props;
 
   return (
     <BaseText
@@ -19,6 +20,7 @@ export const Text = (props: ITextProps) => {
         styles.text,
         styles[weight || 'regular'],
         styles[size || 'medium'],
+        style,
       ]}>
       {children}
     </BaseText>

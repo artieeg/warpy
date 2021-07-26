@@ -5,13 +5,14 @@ import {Text} from './Text';
 interface IShowParticipantsProps {
   count: number;
   style?: any;
+  onOpenParticipantsList: () => any;
 }
 
 export const ShowParticipantsButton = (props: IShowParticipantsProps) => {
-  const {style, count} = props;
+  const {style, count, onOpenParticipantsList} = props;
 
   return (
-    <RoundButton style={style}>
+    <RoundButton onPress={onOpenParticipantsList} style={style}>
       <Text weight="bold" size="small">
         {count.toString()}
       </Text>
