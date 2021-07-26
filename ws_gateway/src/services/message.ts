@@ -41,6 +41,12 @@ export const sendUserRaiseHandEvent = (user: string) => {
   nc.publish("user.raise-hand", payload);
 };
 
+export const sendViewersRequest = (data: any) => {
+  const payload = jc.encode(data);
+
+  nc.publish("viewers.get", payload);
+};
+
 export const sendRecvTracksRequest = (data: any) => {
   const payload = jc.encode(data);
 

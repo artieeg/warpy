@@ -7,6 +7,7 @@ import {
   onAllowSpeaker,
   onNewTrack,
   onRecvTracksRequest,
+  onViewersRequest,
 } from "@ws_gateway/handlers";
 import { IMessage } from "@ws_gateway/models";
 import { Context, Handlers } from "@ws_gateway/types";
@@ -30,6 +31,7 @@ const handlers: Handlers = {
   "new-track": onNewTrack,
   "connect-transport": onConnectTransport,
   "recv-tracks-request": onRecvTracksRequest,
+  "request-viewers": onViewersRequest,
 };
 
 const main = async () => {
