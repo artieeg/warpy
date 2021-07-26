@@ -1,10 +1,12 @@
 import {Participant} from '@app/models';
 import {useWebSocketContext} from '@app/components';
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 
-export const useStreamViewers = (stream: string) => {
+export const useStreamViewers = (
+  stream: string,
+): [Participant[], () => any] => {
   const [viewers, setViewers] = useState<Participant[]>([]);
-  const [page, setPage] = useState(0);
+  const page = useRef(-1);
 
   const ws = useWebSocketContext();
 
@@ -15,16 +17,21 @@ export const useStreamViewers = (stream: string) => {
       Participant.fromJSON(json),
     );
 
-    setPage(newPage);
-
-    console.log('received viewers', receivedViewers);
+    page.current = newPage;
 
     setViewers(prev => [...prev, ...receivedViewers]);
   }, []);
 
   const fetchViewers = useCallback(() => {
-    ws.requestViewers(stream, page);
-  }, [page, ws, stream]);
+    ws.requestViewers(stream, page.current + 1);
+  }, [ws, stream]);
+
+  //Fetch first viewers after joining the room
+  useEffect(() => {
+    ws.once('room-info', () => {
+      fetchViewers();
+    });
+  }, [ws, fetchViewers]);
 
   useEffect(() => {
     ws.on('viewers', onViewersPage);

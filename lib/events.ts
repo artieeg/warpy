@@ -105,3 +105,9 @@ export interface INewMediaNode {
   id: string;
   role: MediaServiceRole;
 }
+
+export interface IRequestViewers {
+  user: string;
+  stream: string;
+  page: number;
+}

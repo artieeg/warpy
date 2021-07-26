@@ -2,6 +2,7 @@ import { IBaseParticipant, IParticipant, Participant } from "@app/models";
 import { Roles } from "@app/types";
 import redis from "redis";
 import { MessageService, UserService } from ".";
+import { IRequestViewers } from "@warpy/lib";
 
 const URL = process.env.PARTICIPANTS_CACHE || "redis://127.0.0.1:6375/5";
 
@@ -191,14 +192,14 @@ export const getRoleFor = async (
   });
 };
 
-export const getSpeakerIds = async (stream: string) => {
+export const getSpeakersWithRoles = async (stream: string) => {
   const participants = await getStreamParticipantsWithRoles(stream);
 
-  const speakers: string[] = [];
+  const speakers: Record<string, Roles> = {};
 
   for (const id in participants) {
     if (participants[id] === "speaker" || participants[id] === "streamer") {
-      speakers.push(id);
+      speakers[id] = participants[id] as Roles;
     }
   }
 
@@ -206,15 +207,15 @@ export const getSpeakerIds = async (stream: string) => {
 };
 
 const PARTICIPANTS_PER_PAGE = 50;
-export const handleViewersRequest = async (
-  user: string,
-  stream: string,
-  page: number
-) => {
+export const handleViewersRequest = async ({
+  user,
+  stream,
+  page,
+}: IRequestViewers) => {
   const allStreamParticipants = await getStreamParticipantsWithRoles(stream);
   const allParticipantIds = Object.keys(allStreamParticipants);
 
-  const participantIds = [];
+  const viewerIds = [];
 
   const start = page * PARTICIPANTS_PER_PAGE;
   const end =
@@ -226,23 +227,21 @@ export const handleViewersRequest = async (
     const id = allParticipantIds[i];
 
     if (allStreamParticipants[id] === "viewer") {
-      participantIds.push(id);
+      viewerIds.push(id);
     }
   }
 
-  const users = await UserService.getUsersByIds(participantIds);
+  const users = await UserService.getUsersByIds(viewerIds);
 
-  const participants: IParticipant[] = users.map((user) =>
+  const viewers: IParticipant[] = users.map((user) =>
     Participant.fromUser(user, allStreamParticipants[user.id] as Roles, stream)
   );
 
-  console.log("sending participnats", participants);
-
   MessageService.sendMessage(user, {
-    event: "participants",
+    event: "viewers",
     data: {
       page,
-      participants,
+      viewers,
     },
   });
 };

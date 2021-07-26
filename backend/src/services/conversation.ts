@@ -125,7 +125,9 @@ export const handleParticipantJoin = async (participant: IBaseParticipant) => {
     },
   });
 
-  const speakerIds = await ParticipantService.getSpeakerIds(stream);
+  const speakers = await ParticipantService.getSpeakersWithRoles(stream);
+  const speakerIds = Object.keys(speakers);
+
   const speakerUserInfo = await UserService.getUsersByIds(speakerIds);
   const participantsCount = await ParticipantService.getParticipantsCount(
     stream
@@ -134,7 +136,9 @@ export const handleParticipantJoin = async (participant: IBaseParticipant) => {
   MessageService.sendMessage(id, {
     event: "room-info",
     data: {
-      speakers: speakerUserInfo.map((speaker) => Participant.fromJSON(speaker)),
+      speakers: speakerUserInfo.map((speaker) =>
+        Participant.fromUser(speaker, speakers[speaker.id], stream)
+      ),
       count: participantsCount,
     },
   });

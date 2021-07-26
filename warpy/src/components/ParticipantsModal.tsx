@@ -1,23 +1,39 @@
 import {Participant} from '@app/models';
-import React, {useEffect} from 'react';
-import {Alert, StyleSheet, View} from 'react-native';
+import React, {useEffect, useMemo} from 'react';
+import {Alert, SectionList, StyleSheet, View} from 'react-native';
 import Modal from 'react-native-modal';
+import {Avatar} from './Avatar';
 import {Text} from './Text';
 
 interface IParticipanModalProps {
   visible: boolean;
   onHide: () => void;
   title: string;
+  speakers: Participant[];
   viewers: Participant[];
   onFetchMore: () => void;
 }
 
 export const ParticipantsModal = (props: IParticipanModalProps) => {
-  const {visible, onFetchMore, onHide, title} = props;
+  const {visible, onFetchMore, onHide, title, viewers, speakers} = props;
 
-  useEffect(() => {
-    onFetchMore();
-  }, [onFetchMore]);
+  console.log('refresh speakers', speakers, Date.now());
+
+  const streamer = useMemo(
+    () => speakers.find(speaker => speaker.role === 'streamer'),
+    [speakers],
+  );
+
+  const data = [
+    {
+      title: 'Speakers',
+      data: speakers,
+    },
+    {
+      title: 'Viewers',
+      data: viewers,
+    },
+  ];
 
   return (
     <Modal
@@ -32,9 +48,21 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
       style={styles.modalStyle}
       isVisible={visible}>
       <View style={styles.wrapper}>
-        <Text weight="bold" size="large">
+        <Text style={styles.title} weight="bold" size="large">
           {title}
         </Text>
+        <Text weight="bold">Stream by</Text>
+        {streamer && <Avatar user={streamer} />}
+        <SectionList
+          sections={data}
+          keyExtractor={item => item.id}
+          renderItem={({item}) => <Avatar user={item} />}
+          renderSectionHeader={({section}) => (
+            <Text weight="bold" style={styles.sectionHeader}>
+              {section.title}
+            </Text>
+          )}
+        />
       </View>
     </Modal>
   );
@@ -52,5 +80,11 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 40,
     paddingHorizontal: 40,
     paddingTop: 40,
+  },
+  sectionHeader: {
+    marginBottom: 10,
+  },
+  title: {
+    marginBottom: 20,
   },
 });

@@ -8,6 +8,7 @@ import {
   FeedService,
   MediaService,
   MessageService,
+  ParticipantService,
   StreamService,
 } from "@app/services";
 import { IStream } from "@app/models";
@@ -64,6 +65,8 @@ const main = async () => {
     "connect-transport",
     ConversationService.handleConnectTransport
   );
+
+  MessageService.on("viewers-request", ParticipantService.handleViewersRequest);
 
   app.listen(Number.parseInt(PORT), `0.0.0.0`, () => {
     console.log(`Started on port ${PORT}`);

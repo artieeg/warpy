@@ -111,6 +111,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
         onOpenParticipantsList={() => setPanelVisible(false)}
       />
       <ParticipantsModal
+        speakers={speakers}
         title={stream.title}
         onHide={() => setPanelVisible(true)}
         visible={!panelVisible}

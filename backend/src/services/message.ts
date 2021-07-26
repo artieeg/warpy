@@ -17,6 +17,7 @@ import {
   INewSpeakerMediaResponse,
   IRecvTracksRequest,
   IRecvTracksResponse,
+  IRequestViewers,
   MessageHandler,
   subjects,
 } from "@warpy/lib";
@@ -44,6 +45,7 @@ export const init = async () => {
   handleNewTrack();
   handleRecvTracksRequest();
   handleConnectTransport();
+  handleViewersRequest();
 };
 
 type Events =
@@ -56,6 +58,7 @@ type Events =
   | "new-track"
   | "connect-transport"
   | "new-media-node"
+  | "viewers-request"
   | "participant-leave";
 
 export const on = (event: Events, handler: MessageHandler<any, any>) => {
@@ -284,6 +287,24 @@ export const joinMediaRoom = async (node: string, data: IJoinMediaRoom) => {
   const m = jc.encode(data);
 
   nc.publish(`${subjects.media.peer.join}.${node}`, m);
+};
+
+export const handleViewersRequest = async () => {
+  const sub = nc.subscribe("viewers.get");
+
+  for await (const msg of sub) {
+    const data = jc.decode(msg.data) as any;
+
+    const event: IRequestViewers = {
+      user: data.user,
+      stream: data.stream,
+      page: data.page,
+    };
+
+    eventEmitter.emit("viewers-request", event, (d: any) => {
+      msg.respond(jc.encode(d));
+    });
+  }
 };
 
 export const handleRecvTracksRequest = async () => {
