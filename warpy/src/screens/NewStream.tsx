@@ -1,5 +1,5 @@
 import {useAppUser, useLocalStream} from '@app/hooks';
-import {createStream, sendAllowSpeaker} from '@app/services';
+import {createStream} from '@app/services';
 import {RTCView} from 'react-native-webrtc';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, StyleSheet, useWindowDimensions, Alert} from 'react-native';
@@ -41,7 +41,6 @@ export const NewStream = () => {
 
   useEffect(() => {
     ws.once('created-room', (data: any) => {
-      Alert.alert('created room', JSON.stringify(data.media));
       setSendRoomData(data.media);
     });
 

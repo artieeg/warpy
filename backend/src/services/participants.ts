@@ -191,8 +191,22 @@ export const getRoleFor = async (
   });
 };
 
+export const getSpeakerIds = async (stream: string) => {
+  const participants = await getStreamParticipantsWithRoles(stream);
+
+  const speakers: string[] = [];
+
+  for (const id in participants) {
+    if (participants[id] === "speaker" || participants[id] === "streamer") {
+      speakers.push(id);
+    }
+  }
+
+  return speakers;
+};
+
 const PARTICIPANTS_PER_PAGE = 50;
-export const handleParticipantsRequest = async (
+export const handleViewersRequest = async (
   user: string,
   stream: string,
   page: number
@@ -211,7 +225,7 @@ export const handleParticipantsRequest = async (
   for (let i = start; i < end; i++) {
     const id = allParticipantIds[i];
 
-    if (id !== user) {
+    if (allStreamParticipants[id] === "viewer") {
       participantIds.push(id);
     }
   }
@@ -222,11 +236,19 @@ export const handleParticipantsRequest = async (
     Participant.fromUser(user, allStreamParticipants[user.id] as Roles, stream)
   );
 
+  console.log("sending participnats", participants);
+
   MessageService.sendMessage(user, {
-    event: "participants-page",
-    body: {
+    event: "participants",
+    data: {
       page,
       participants,
     },
   });
+};
+
+export const getParticipantsCount = async (stream: string) => {
+  const participants = await getStreamParticipants(stream);
+
+  return participants.length;
 };

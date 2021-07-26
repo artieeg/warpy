@@ -10,3 +10,4 @@ export * from './WarpButton';
 export * from './RaiseHandButton';
 export * from './WebSocketContext';
 export * from './MediaStreamingContext';
+export * from './ShowParticipantsButton';

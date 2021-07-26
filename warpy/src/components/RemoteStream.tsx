@@ -1,7 +1,13 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {Stream} from '@app/models';
-import {useAppUser, useLocalStream} from '@app/hooks';
+import {
+  useAppUser,
+  useLocalStream,
+  useStreamSpeakers,
+  useStreamViewers,
+  useParticipantsCount,
+} from '@app/hooks';
 import {MediaStream, RTCView} from 'react-native-webrtc';
 import {Speakers} from './Speakers';
 import {ClapButton} from './ClapsButton';
@@ -11,6 +17,7 @@ import {useRecvTransport} from '@app/hooks/useRecvTransport';
 import {useMediaStreamingContext} from './MediaStreamingContext';
 import {useWebSocketContext} from './WebSocketContext';
 import {Consumer} from 'mediasoup-client/lib/types';
+import {ShowParticipantsButton} from './ShowParticipantsButton';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -32,6 +39,10 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
     recvTransportOptions: roomData?.recvTransportOptions,
     routerRtpCapabilities: roomData?.routerRtpCapabilities,
   });
+
+  const participantsCount = useParticipantsCount();
+  const speakers = useStreamSpeakers(stream.id);
+  const [viewers] = useStreamViewers(stream.id);
 
   useEffect(() => {
     if (recvTransport) {
@@ -94,13 +105,17 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
         />
       )}
       <View style={styles.bottom}>
-        <Speakers speakers={stream.participants} style={styles.speakers} />
+        <Speakers speakers={speakers} style={styles.speakers} />
         <View style={styles.buttons}>
           <View style={[styles.buttonRow, styles.upperButtonRow]}>
             <WarpButton style={styles.spaceRight} />
             <ClapButton />
           </View>
           <View style={styles.buttonRow}>
+            <ShowParticipantsButton
+              style={styles.spaceRight}
+              count={participantsCount}
+            />
             <RaiseHandButton onPress={raiseHand} />
           </View>
         </View>

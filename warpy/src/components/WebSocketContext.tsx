@@ -3,9 +3,11 @@ import {EventEmitter} from 'events';
 import config from '@app/config';
 
 type WebSocketEvent =
-  | 'user-join'
+  | 'new-participant'
   | 'raise-hand'
   | 'allow-speaker'
+  | 'viewers'
+  | 'room-info'
   | 'created-room'
   | 'speaking-allowed'
   | '@media/recv-connect-params'
@@ -32,8 +34,9 @@ class ProvidedWebSocket {
       }
 
       this.socket.onerror = e => {
-        console.log(e);
+        console.log('error', e);
       };
+
       this.socket.onopen = () => {
         this.listen();
         resolve();
@@ -90,6 +93,7 @@ class ProvidedWebSocket {
   };
 
   sendJoinStream = (stream: string) => {
+    console.log('joining stream', stream);
     this.socket.send(
       JSON.stringify({
         event: 'join-stream',

@@ -153,6 +153,11 @@ const handleStreamJoin = async () => {
   for await (const msg of sub) {
     const { user, stream } = jc.decode(msg.data) as any;
 
+    console.log("joined", {
+      user,
+      stream,
+    });
+
     eventEmitter.emit("participant-new", {
       id: user,
       stream,

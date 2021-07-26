@@ -13,7 +13,9 @@ export const Speakers = (props: ISpeakersProps) => {
 
   return (
     <View style={[styles.container, style]}>
-      <Speaker user={speakers[0]} />
+      {speakers.map(speaker => (
+        <Speaker key={speaker.id} user={speaker} />
+      ))}
     </View>
   );
 };

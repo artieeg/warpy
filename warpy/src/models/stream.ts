@@ -25,7 +25,7 @@ export class Stream implements IStream {
       id: json.id,
       title: json.title,
       hub: json.hub,
-      participants: json.participants.map((p: any) => Participant.fromJSON(p)),
+      participants: json.participants,
     });
   }
 }

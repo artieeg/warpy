@@ -1,11 +1,9 @@
+import { Candidate, IStream } from "@app/models";
 import {
-  Candidate,
-  ParticipantModel,
-  IParticipant,
-  IStream,
-} from "@app/models";
-import { FeedsCacheService, UserService, CandidateStatsService } from ".";
-import mongoose from "mongoose";
+  FeedsCacheService,
+  ParticipantService,
+  CandidateStatsService,
+} from ".";
 
 interface IGetFeed {
   user: string;
@@ -29,42 +27,34 @@ export const getFeed = async (params: IGetFeed) => {
     }
   }
 
-  const [candidates, participants] = await Promise.all([
-    Candidate.find({ _id: { $in: candidateIds } }),
-    ParticipantModel.find({ stream: { $in: candidateIds } }),
-  ]);
+  const candidates = await Candidate.find({ _id: { $in: candidateIds } });
 
-  console.log(candidates);
+  const feed = await Promise.all(
+    candidateIds
+      .map(async (id) => {
+        const candidate = candidates.find((c: any) => c.id == id);
 
-  //TODO: too ugly, change later
-  const feed = candidateIds
-    .map((id) => {
-      const candidate = candidates.find((c: any) => c.id == id);
+        if (!candidate) {
+          return null;
+        }
 
-      if (!candidate) {
-        return null;
-      }
-
-      const currentParticipants = participants.filter(
-        (p: IParticipant) => p.stream.toString() == id
-      );
-
-      return {
-        ...candidate.toJSON(),
-        participants: currentParticipants,
-      };
-    })
-    .filter((candidate) => candidate !== null);
+        return {
+          ...candidate.toJSON(),
+          participants: await ParticipantService.getParticipantsCount(id),
+        };
+      })
+      .filter((candidate) => candidate !== null)
+  );
 
   await FeedsCacheService.addServedStreams(user, candidateIds);
+
+  console.log("served feed", feed);
 
   return feed;
 };
 
 export const onNewCandidate = async (data: IStream) => {
   const { id, title, hub, owner: ownerId } = data;
-
-  const owner = await UserService.getUserById(ownerId.toString());
 
   const candidate = new Candidate({
     _id: id,
@@ -73,22 +63,12 @@ export const onNewCandidate = async (data: IStream) => {
     owner: ownerId,
   });
 
-  const participant = new ParticipantModel({
-    ...owner,
-    stream: id,
-    role: "streamer",
-  });
-
-  await Promise.all([candidate.save(), participant.save()]);
+  await candidate.save();
 
   await CandidateStatsService.createStats(candidate.id);
 };
 
 export const onRemoveCandidate = async (id: string) => {
-  await Promise.all([
-    Candidate.deleteOne({ _id: id }),
-    ParticipantModel.deleteMany({ stream: mongoose.Types.ObjectId(id) }),
-  ]);
-
+  await Candidate.deleteOne({ _id: id });
   await CandidateStatsService.deleteStats(id);
 };

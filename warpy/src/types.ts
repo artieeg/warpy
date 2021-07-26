@@ -1,2 +1,2 @@
 export type MediaDirection = 'send' | 'recv';
-export type ParticipantRole = 'streamer' | 'viewer';
+export type ParticipantRole = 'streamer' | 'speaker' | 'viewer';

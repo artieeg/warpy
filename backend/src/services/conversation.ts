@@ -4,6 +4,7 @@ import {
   IAllowSpeakerPayload,
   IRequestGetTracks,
   IParticipant,
+  Participant,
 } from "@app/models";
 import {
   IConnectMediaTransport,
@@ -97,6 +98,10 @@ export const handleParticipantJoin = async (participant: IBaseParticipant) => {
     UserService.getUserById(id),
   ]);
 
+  if (!userInfo) {
+    return;
+  }
+
   if (!recvNodeId) {
     return; // TODO ERROR
   }
@@ -116,17 +121,23 @@ export const handleParticipantJoin = async (participant: IBaseParticipant) => {
     event: "new-participant",
     data: {
       stream,
-      participant: {
-        id: userInfo.id,
-        last_name: userInfo.last_name,
-        first_name: userInfo.first_name,
-        avatar: userInfo.avatar,
-        username: userInfo.username,
-      } as IParticipant,
+      participant: Participant.fromJSON(userInfo),
     },
   });
 
-  ParticipantService.handleParticipantsRequest(id, stream, 0);
+  const speakerIds = await ParticipantService.getSpeakerIds(stream);
+  const speakerUserInfo = await UserService.getUsersByIds(speakerIds);
+  const participantsCount = await ParticipantService.getParticipantsCount(
+    stream
+  );
+
+  MessageService.sendMessage(id, {
+    event: "room-info",
+    data: {
+      speakers: speakerUserInfo.map((speaker) => Participant.fromJSON(speaker)),
+      count: participantsCount,
+    },
+  });
 };
 
 export const handleRaisedHand = async (user: string) => {

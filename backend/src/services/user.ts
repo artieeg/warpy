@@ -32,8 +32,13 @@ export const createDevUser = async (data: any) => {
   };
 };
 
-export const getUserById = async (userId: string): Promise<BaseUser> => {
+export const getUserById = async (userId: string): Promise<BaseUser | null> => {
   const result = await UserModel.findOne({ _id: userId });
+
+  if (!result) {
+    return null;
+  }
+
   return BaseUser.fromJSON(result.toJSON());
 };
 
