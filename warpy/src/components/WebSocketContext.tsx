@@ -22,6 +22,7 @@ type WebSocketEvent =
 class ProvidedWebSocket {
   observer = new EventEmitter();
   socket = new WebSocket(config.WS);
+  accessToken: string | null = null;
 
   constructor() {
     this.connect();
@@ -35,6 +36,10 @@ class ProvidedWebSocket {
 
       this.socket.onerror = e => {
         console.log('error', e);
+      };
+
+      this.socket.onclose = () => {
+        this.connect().then(() => this.auth(this.accessToken!));
       };
 
       this.socket.onopen = () => {
@@ -63,6 +68,8 @@ class ProvidedWebSocket {
   };
 
   auth = async (token: string) => {
+    this.accessToken = token;
+
     this.socket.send(
       JSON.stringify({
         event: 'auth',
@@ -98,6 +105,18 @@ class ProvidedWebSocket {
       JSON.stringify({
         event: 'join-stream',
         data: {stream},
+      }),
+    );
+  };
+
+  requestViewers = (stream: string, page: number) => {
+    this.socket.send(
+      JSON.stringify({
+        event: 'request-viewers',
+        data: {
+          stream,
+          page,
+        },
       }),
     );
   };

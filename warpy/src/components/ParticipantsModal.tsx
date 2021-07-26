@@ -1,4 +1,5 @@
-import React from 'react';
+import {Participant} from '@app/models';
+import React, {useEffect} from 'react';
 import {Alert, StyleSheet, View} from 'react-native';
 import Modal from 'react-native-modal';
 import {Text} from './Text';
@@ -7,10 +8,16 @@ interface IParticipanModalProps {
   visible: boolean;
   onHide: () => void;
   title: string;
+  viewers: Participant[];
+  onFetchMore: () => void;
 }
 
 export const ParticipantsModal = (props: IParticipanModalProps) => {
-  const {visible, onHide, title} = props;
+  const {visible, onFetchMore, onHide, title} = props;
+
+  useEffect(() => {
+    onFetchMore();
+  }, [onFetchMore]);
 
   return (
     <Modal

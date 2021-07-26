@@ -40,7 +40,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
 
   const participantsCount = useParticipantsCount();
   const speakers = useStreamSpeakers(stream.id);
-  const [viewers] = useStreamViewers(stream.id);
+  const [viewers, fetchViewers] = useStreamViewers(stream.id);
 
   useEffect(() => {
     if (recvTransport) {
@@ -114,6 +114,8 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
         title={stream.title}
         onHide={() => setPanelVisible(true)}
         visible={!panelVisible}
+        viewers={viewers}
+        onFetchMore={fetchViewers}
       />
     </View>
   );

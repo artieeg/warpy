@@ -8,7 +8,7 @@ interface ITextProps {
   children: string;
   weight?: TextWeight;
   size?: TextSize;
-  style: any;
+  style?: any;
 }
 
 export const Text = (props: ITextProps) => {
