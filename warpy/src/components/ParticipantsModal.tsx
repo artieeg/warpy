@@ -1,8 +1,8 @@
 import {Participant} from '@app/models';
-import React, {useEffect, useMemo} from 'react';
-import {Alert, SectionList, StyleSheet, View} from 'react-native';
+import React, {useMemo, useState} from 'react';
+import {SectionList, StyleSheet, View} from 'react-native';
 import Modal from 'react-native-modal';
-import {Avatar} from './Avatar';
+import {ParticipantDisplay} from './Participant';
 import {Text} from './Text';
 
 interface IParticipanModalProps {
@@ -16,8 +16,7 @@ interface IParticipanModalProps {
 
 export const ParticipantsModal = (props: IParticipanModalProps) => {
   const {visible, onFetchMore, onHide, title, viewers, speakers} = props;
-
-  console.log('refresh speakers', speakers, Date.now());
+  const [scrollOffset, setScrollOffset] = useState(0);
 
   const streamer = useMemo(
     () => speakers.find(speaker => speaker.role === 'streamer'),
@@ -25,6 +24,10 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
   );
 
   const data = [
+    {
+      title: 'Stream by',
+      data: [streamer!],
+    },
     {
       title: 'Speakers',
       data: speakers,
@@ -37,13 +40,15 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
 
   return (
     <Modal
-      swipeDirection={['down']}
-      swipeThreshold={0.3}
-      animationIn="slideInUp"
-      animationOut="slideInDown"
+      scrollOffset={scrollOffset}
+      propagateSwipe
       onSwipeComplete={() => {
         onHide();
       }}
+      swipeDirection={['down']}
+      swipeThreshold={100}
+      animationIn="slideInUp"
+      animationOut="slideInDown"
       hasBackdrop={false}
       style={styles.modalStyle}
       isVisible={visible}>
@@ -51,12 +56,14 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
         <Text style={styles.title} weight="bold" size="large">
           {title}
         </Text>
-        <Text weight="bold">Stream by</Text>
-        {streamer && <Avatar user={streamer} />}
         <SectionList
           sections={data}
+          onScroll={e => {
+            setScrollOffset(e.nativeEvent.contentOffset.y);
+          }}
           keyExtractor={item => item.id}
-          renderItem={({item}) => <Avatar user={item} />}
+          renderItem={({item}) => <ParticipantDisplay data={item} />}
+          onEndReached={onFetchMore}
           renderSectionHeader={({section}) => (
             <Text weight="bold" style={styles.sectionHeader}>
               {section.title}
@@ -83,6 +90,7 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     marginBottom: 10,
+    marginTop: 20,
   },
   title: {
     marginBottom: 20,

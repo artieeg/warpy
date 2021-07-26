@@ -1,14 +1,14 @@
 import React from 'react';
+import {TextProps} from 'react-native';
 import {StyleSheet, Text as BaseText} from 'react-native';
 
 type TextWeight = 'regular' | 'bold' | 'light';
 type TextSize = 'small' | 'medium' | 'large';
 
-interface ITextProps {
-  children: string;
+interface ITextProps extends TextProps {
   weight?: TextWeight;
   size?: TextSize;
-  style?: any;
+  children: string;
 }
 
 export const Text = (props: ITextProps) => {
