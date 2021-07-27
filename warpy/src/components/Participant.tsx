@@ -11,7 +11,7 @@ interface IParticipantProps {
 export const ParticipantDisplay = (props: IParticipantProps) => {
   const {data} = props;
 
-  const name = `${data.lastName} ${data.firstName}`;
+  const name = `${data.last_name} ${data.first_name}`;
 
   return (
     <View style={styles.wrapper}>

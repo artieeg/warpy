@@ -22,6 +22,12 @@ export const useStreamViewers = (
     setViewers(prev => [...prev, ...receivedViewers]);
   }, []);
 
+  const onNewViewer = useCallback((data: any) => {
+    const {viewer} = data;
+
+    setViewers(prev => [...prev, Participant.fromJSON(viewer)]);
+  }, []);
+
   const fetchViewers = useCallback(() => {
     ws.requestViewers(stream, page.current + 1);
   }, [ws, stream]);
@@ -33,13 +39,16 @@ export const useStreamViewers = (
     });
   }, [ws, fetchViewers]);
 
+  //Set up viewer-related event listeners
   useEffect(() => {
     ws.on('viewers', onViewersPage);
+    ws.on('new-viewer', onNewViewer);
 
     return () => {
       ws.off('viewers', onViewersPage);
+      ws.off('new-viewer', onNewViewer);
     };
-  }, [ws, onViewersPage]);
+  }, [ws, onViewersPage, onNewViewer]);
 
   return [viewers, fetchViewers];
 };

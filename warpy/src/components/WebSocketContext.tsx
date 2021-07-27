@@ -1,9 +1,10 @@
 import React, {createContext, useContext} from 'react';
 import {EventEmitter} from 'events';
 import config from '@app/config';
+import WebSocketConn from '@app/ws';
 
 type WebSocketEvent =
-  | 'new-participant'
+  | 'new-viewer'
   | 'raise-hand'
   | 'allow-speaker'
   | 'viewers'
@@ -19,9 +20,9 @@ type WebSocketEvent =
   | 'speaker-send-transport'
   | 'recv-tracks-response';
 
-class ProvidedWebSocket {
+export class ProvidedWebSocket {
   observer = new EventEmitter();
-  socket = new WebSocket(config.WS);
+  socket = new WebSocketConn();
   accessToken: string | null = null;
 
   constructor() {
@@ -30,7 +31,7 @@ class ProvidedWebSocket {
 
   connect = async () => {
     return new Promise<void>(resolve => {
-      if (this.socket.readyState === WebSocket.OPEN) {
+      if (this.socket.isOpen()) {
         return resolve();
       }
 

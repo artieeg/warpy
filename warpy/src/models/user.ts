@@ -2,23 +2,23 @@ export interface IUser {
   id: string;
   username: string;
   avatar: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
 }
 
 export class User implements IUser {
   id: string;
   username: string;
   avatar: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
 
   constructor(data: IUser) {
     this.id = data.id;
     this.username = data.username;
     this.avatar = data.avatar;
-    this.firstName = data.firstName;
-    this.lastName = data.lastName;
+    this.first_name = data.first_name;
+    this.last_name = data.last_name;
   }
 
   static fromJSON(json: any): User {
@@ -26,8 +26,8 @@ export class User implements IUser {
       id: json.id,
       username: json.username,
       avatar: json.avatar,
-      firstName: json.first_name,
-      lastName: json.last_name,
+      first_name: json.first_name,
+      last_name: json.last_name,
     });
   }
 }

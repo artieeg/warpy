@@ -118,10 +118,10 @@ export const handleParticipantJoin = async (participant: IBaseParticipant) => {
   });
 
   await MessageService.sendMessageBroadcast(participants, {
-    event: "new-participant",
+    event: "new-viewer",
     data: {
       stream,
-      participant: Participant.fromJSON(userInfo),
+      viewer: Participant.fromJSON(userInfo),
     },
   });
 
