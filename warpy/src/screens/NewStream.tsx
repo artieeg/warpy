@@ -106,8 +106,14 @@ export const NewStream = () => {
   };
 
   const onAllowSpeaking = () => {
-    sendAllowSpeaker(streamId!, userSpeakRequest!);
+    ws.sendAllowSpeaker(streamId!, userSpeakRequest!);
     setUserSpeakRequest(undefined);
+  };
+
+  const onStopStream = () => {
+    ws.sendStopStream({
+      stream: streamId,
+    });
   };
 
   return (
@@ -121,7 +127,7 @@ export const NewStream = () => {
           streamURL={localStream.toURL()}
         />
       )}
-      <StopStream />
+      <StopStream onPress={onStopStream} />
       {userSpeakRequest && (
         <View style={styles.allowSpeaking}>
           <Button

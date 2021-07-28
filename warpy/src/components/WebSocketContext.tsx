@@ -79,6 +79,15 @@ export class ProvidedWebSocket {
     );
   };
 
+  sendStopStream = (data: any) => {
+    this.socket.send(
+      JSON.stringify({
+        event: 'stream-stop',
+        data,
+      }),
+    );
+  };
+
   sendNewTrack = (data: any) => {
     this.socket.send(
       JSON.stringify({

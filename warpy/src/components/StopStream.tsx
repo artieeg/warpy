@@ -1,11 +1,11 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {Icon} from './Icon';
-import {RoundButton} from './RoundButton';
+import {RoundButton, IRoundButtonProps} from './RoundButton';
 
-export const StopStream = () => {
+export const StopStream = (props: IRoundButtonProps) => {
   return (
-    <RoundButton style={styles.stop}>
+    <RoundButton style={styles.stop} {...props}>
       <Icon color="#ffffff" size={30} name="stop" />
     </RoundButton>
   );
