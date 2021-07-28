@@ -17,8 +17,12 @@ export const ParticipantDisplay = (props: IParticipantProps) => {
     <View style={styles.wrapper}>
       <Avatar user={data} style={styles.avatar} />
       <View>
-        <Text weight="bold">{name}</Text>
-        <Text size="small">Test bio</Text>
+        <Text color="dark" weight="bold">
+          {name}
+        </Text>
+        <Text color="dark" size="small">
+          Test bio to fill space
+        </Text>
       </View>
     </View>
   );

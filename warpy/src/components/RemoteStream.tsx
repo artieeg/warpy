@@ -7,6 +7,7 @@ import {
   useStreamSpeakers,
   useStreamViewers,
   useParticipantsCount,
+  useSpeakingRequests,
 } from '@app/hooks';
 import {MediaStream, RTCView} from 'react-native-webrtc';
 import {useRecvTransport} from '@app/hooks/useRecvTransport';
@@ -43,6 +44,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const participantsCount = useParticipantsCount();
   const speakers = useStreamSpeakers(stream.id);
   const [viewers, fetchViewers] = useStreamViewers(stream.id);
+  const usersRaisingHand = useSpeakingRequests(stream.id);
 
   useEffect(() => {
     if (recvTransport) {
@@ -113,6 +115,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
         onOpenParticipantsList={() => setPanelVisible(false)}
       />
       <ParticipantsModal
+        raisingHands={usersRaisingHand}
         speakers={speakers}
         title={stream.title}
         onHide={() => setPanelVisible(true)}

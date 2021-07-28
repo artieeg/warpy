@@ -2,6 +2,7 @@ import {
   useAppUser,
   useLocalStream,
   useParticipantsCount,
+  useSpeakingRequests,
   useStreamSpeakers,
   useStreamViewers,
 } from '@app/hooks';
@@ -129,6 +130,7 @@ export const NewStream = () => {
   const speakers = useStreamSpeakers(streamId!);
   const [viewers, fetchViewers] = useStreamViewers(streamId!);
   const [panelVisible, setPanelVisible] = useState(true);
+  const usersRaisingHand = useSpeakingRequests(streamId!);
 
   return (
     <View>
@@ -151,6 +153,7 @@ export const NewStream = () => {
       )}
       <ParticipantsModal
         speakers={speakers}
+        raisingHands={usersRaisingHand}
         title={title}
         onHide={() => setPanelVisible(true)}
         visible={!panelVisible}

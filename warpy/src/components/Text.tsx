@@ -8,16 +8,17 @@ type TextSize = 'small' | 'medium' | 'large';
 interface ITextProps extends TextProps {
   weight?: TextWeight;
   size?: TextSize;
+  color?: 'dark' | 'bright';
   children: string;
 }
 
 export const Text = (props: ITextProps) => {
-  const {children, weight, size, style} = props;
+  const {children, color, weight, size, style} = props;
 
   return (
     <BaseText
       style={[
-        styles.text,
+        styles[color || 'bright'],
         styles[weight || 'regular'],
         styles[size || 'medium'],
         style,
@@ -28,20 +29,23 @@ export const Text = (props: ITextProps) => {
 };
 
 const styles = StyleSheet.create({
-  text: {
+  dark: {
+    color: '#2A2A58',
+  },
+  bright: {
     color: '#fff',
   },
   regular: {
-    fontFamily: 'Dosis-Regular',
+    fontFamily: 'Nunito-Regular',
   },
   bold: {
-    fontFamily: 'Dosis-Bold',
+    fontFamily: 'Nunito-Bold',
   },
   light: {
-    fontFamily: 'Dosis-Light',
+    fontFamily: 'Nunito-Light',
   },
   small: {
-    fontSize: 20,
+    fontSize: 18,
   },
   medium: {
     fontSize: 24,

@@ -11,11 +11,13 @@ interface IParticipanModalProps {
   title: string;
   speakers: Participant[];
   viewers: Participant[];
+  raisingHands: Participant[];
   onFetchMore: () => void;
 }
 
 export const ParticipantsModal = (props: IParticipanModalProps) => {
-  const {visible, onFetchMore, onHide, title, viewers, speakers} = props;
+  const {visible, onFetchMore, onHide, title, viewers, speakers, raisingHands} =
+    props;
   const [scrollOffset, setScrollOffset] = useState(0);
 
   const streamer = useMemo(
@@ -27,6 +29,10 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
     {
       title: 'Stream by',
       data: [streamer!],
+    },
+    {
+      title: 'Raising hands',
+      data: raisingHands,
     },
     {
       title: 'Speakers',
@@ -53,14 +59,16 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
       style={styles.modalStyle}
       isVisible={visible}>
       <View style={styles.wrapper}>
+        <View style={styles.handler} />
+
         <Text
-          style={[styles.title, styles.horizontalPadding]}
+          color="dark"
           weight="bold"
-          size="large">
+          style={[styles.title, styles.horizontalPadding]}>
           {title}
         </Text>
         <SectionList
-          style={[styles.horizontalPadding]}
+          style={[styles.list, styles.horizontalPadding]}
           sections={data}
           onScroll={e => {
             setScrollOffset(e.nativeEvent.contentOffset.y);
@@ -74,7 +82,7 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
           onEndReached={onFetchMore}
           renderSectionHeader={({section}) => (
             <TouchableOpacity>
-              <Text weight="bold" style={styles.sectionHeader}>
+              <Text size="small" color="dark" style={styles.sectionHeader}>
                 {section.title}
               </Text>
             </TouchableOpacity>
@@ -89,19 +97,23 @@ const styles = StyleSheet.create({
   modalStyle: {
     margin: 0,
   },
+  list: {
+    borderTopWidth: 1,
+    borderColor: '#e0e0e0',
+  },
   wrapper: {
-    backgroundColor: '#011A287A',
+    backgroundColor: '#FFFFFF',
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
     height: '70%',
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
     paddingTop: 40,
   },
   horizontalPadding: {
-    paddingHorizontal: 40,
+    paddingHorizontal: 30,
   },
   sectionHeader: {
     marginBottom: 10,
@@ -109,5 +121,14 @@ const styles = StyleSheet.create({
   },
   title: {
     marginBottom: 20,
+  },
+  handler: {
+    position: 'absolute',
+    alignSelf: 'center',
+    width: 80,
+    height: 8,
+    top: 10,
+    borderRadius: 12,
+    backgroundColor: '#e0e0e0',
   },
 });

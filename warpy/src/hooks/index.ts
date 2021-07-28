@@ -6,3 +6,4 @@ export * from './useStreamViewers';
 export * from './useStreamSpeakers';
 export * from './useParticipantsCount';
 export * from './useSpeakingRequests';
+export * from './useSpeakingRequests';
