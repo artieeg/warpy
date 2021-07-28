@@ -7,7 +7,7 @@ export const useStreamSpeakers = (_stream: string) => {
 
   const ws = useWebSocketContext();
 
-  const onSpeakers = useCallback((data: any) => {
+  const onRoomInfo = useCallback((data: any) => {
     const {speakers: speakersData} = data;
 
     const receivedSpeakers: Participant[] = speakersData.map((json: any) =>
@@ -15,6 +15,10 @@ export const useStreamSpeakers = (_stream: string) => {
     );
 
     setSpeakers(prev => [...prev, ...receivedSpeakers]);
+  }, []);
+
+  const onRoomCreated = useCallback((data: any) => {
+    setSpeakers(prev => [...prev, ...data.speakers.map(Participant.fromJSON)]);
   }, []);
 
   const onNewSpeaker = useCallback((data: any) => {
@@ -25,13 +29,14 @@ export const useStreamSpeakers = (_stream: string) => {
   }, []);
 
   useEffect(() => {
-    ws.once('room-info', onSpeakers);
+    ws.once('room-info', onRoomInfo);
+    ws.once('created-room', onRoomCreated);
     ws.on('new-speaker', onNewSpeaker);
 
     return () => {
       ws.off('new-speaker', onNewSpeaker);
     };
-  }, [ws, onSpeakers, onNewSpeaker]);
+  }, [ws, onRoomInfo, onNewSpeaker, onRoomCreated]);
 
   return speakers;
 };

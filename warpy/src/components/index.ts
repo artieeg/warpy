@@ -11,6 +11,5 @@ export * from './RaiseHandButton';
 export * from './WebSocketContext';
 export * from './MediaStreamingContext';
 export * from './ShowParticipantsButton';
-export * from './RemoteStreamPanel';
 export * from './ParticipantsModal';
 export * from './Participant';

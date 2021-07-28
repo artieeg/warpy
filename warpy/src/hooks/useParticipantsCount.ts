@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {useWebSocketContext} from '@app/components';
 
 export const useParticipantsCount = () => {
@@ -6,12 +6,24 @@ export const useParticipantsCount = () => {
 
   const ws = useWebSocketContext();
 
+  const onNewViewer = useCallback(() => {
+    setCount(prev => prev + 1);
+  }, []);
+
   useEffect(() => {
     ws.once('room-info', (data: any) => {
-      const {count: participantsCount} = data;
-
-      setCount(participantsCount);
+      setCount(data.count);
     });
+
+    ws.on('new-viewer', onNewViewer);
+
+    ws.once('created-room', (data: any) => {
+      setCount(data.count);
+    });
+
+    return () => {
+      ws.off('new-viewer', onNewViewer);
+    };
   }, [ws]);
 
   return count;

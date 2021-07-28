@@ -1,6 +1,6 @@
 import {Participant} from '@app/models';
 import React, {useMemo, useState} from 'react';
-import {SectionList, StyleSheet, View} from 'react-native';
+import {SectionList, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Modal from 'react-native-modal';
 import {ParticipantDisplay} from './Participant';
 import {Text} from './Text';
@@ -40,8 +40,8 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
 
   return (
     <Modal
-      scrollOffset={scrollOffset}
-      propagateSwipe
+      removeClippedSubviews={false}
+      propagateSwipe={true}
       onSwipeComplete={() => {
         onHide();
       }}
@@ -53,21 +53,31 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
       style={styles.modalStyle}
       isVisible={visible}>
       <View style={styles.wrapper}>
-        <Text style={styles.title} weight="bold" size="large">
+        <Text
+          style={[styles.title, styles.horizontalPadding]}
+          weight="bold"
+          size="large">
           {title}
         </Text>
         <SectionList
+          style={[styles.horizontalPadding]}
           sections={data}
           onScroll={e => {
             setScrollOffset(e.nativeEvent.contentOffset.y);
           }}
           keyExtractor={item => item.id}
-          renderItem={({item}) => <ParticipantDisplay data={item} />}
+          renderItem={({item}) => (
+            <TouchableOpacity>
+              <ParticipantDisplay data={item} />
+            </TouchableOpacity>
+          )}
           onEndReached={onFetchMore}
           renderSectionHeader={({section}) => (
-            <Text weight="bold" style={styles.sectionHeader}>
-              {section.title}
-            </Text>
+            <TouchableOpacity>
+              <Text weight="bold" style={styles.sectionHeader}>
+                {section.title}
+              </Text>
+            </TouchableOpacity>
           )}
         />
       </View>
@@ -78,15 +88,20 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
 const styles = StyleSheet.create({
   modalStyle: {
     margin: 0,
-    justifyContent: 'flex-end',
   },
   wrapper: {
     backgroundColor: '#011A287A',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
     height: '70%',
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-    paddingHorizontal: 40,
     paddingTop: 40,
+  },
+  horizontalPadding: {
+    paddingHorizontal: 40,
   },
   sectionHeader: {
     marginBottom: 10,

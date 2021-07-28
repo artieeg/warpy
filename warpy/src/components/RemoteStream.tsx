@@ -15,6 +15,8 @@ import {useWebSocketContext} from './WebSocketContext';
 import {Consumer} from 'mediasoup-client/lib/types';
 import {RemoteStreamPanel} from './RemoteStreamPanel';
 import {ParticipantsModal} from './ParticipantsModal';
+import {Text} from './Text';
+import {ViewerStreamPanel} from './ViewerStreamPanel';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -102,7 +104,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
           streamURL={mediaStream.toURL()}
         />
       )}
-      <RemoteStreamPanel
+      <ViewerStreamPanel
         title={stream.title}
         visible={panelVisible}
         speakers={speakers}

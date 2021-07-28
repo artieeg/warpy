@@ -1,13 +1,21 @@
-import {useAppUser, useLocalStream} from '@app/hooks';
+import {
+  useAppUser,
+  useLocalStream,
+  useParticipantsCount,
+  useStreamSpeakers,
+  useStreamViewers,
+} from '@app/hooks';
 import {createStream} from '@app/services';
 import {RTCView} from 'react-native-webrtc';
 import React, {useCallback, useEffect, useState} from 'react';
-import {View, StyleSheet, useWindowDimensions, Alert} from 'react-native';
+import {View, StyleSheet, useWindowDimensions} from 'react-native';
 import {
   StopStream,
   Button,
   useMediaStreamingContext,
   useWebSocketContext,
+  ParticipantsModal,
+  Text,
 } from '@app/components';
 /*
 import {
@@ -17,6 +25,7 @@ import {
 } from '@app/services/video';
  */
 import {useRecvTransport} from '@app/hooks/useRecvTransport';
+import {StreamerPanel} from '@app/components/StreamerPanel';
 
 export const NewStream = () => {
   const [streamId, setStreamId] = useState<string>();
@@ -116,10 +125,13 @@ export const NewStream = () => {
     });
   };
 
+  const participantsCount = useParticipantsCount();
+  const speakers = useStreamSpeakers(streamId!);
+  const [viewers, fetchViewers] = useStreamViewers(streamId!);
+  const [panelVisible, setPanelVisible] = useState(true);
+
   return (
     <View>
-      <Button onPress={onStart} title="Start" />
-
       {localStream && (
         <RTCView
           objectFit="cover"
@@ -127,13 +139,28 @@ export const NewStream = () => {
           streamURL={localStream.toURL()}
         />
       )}
-      <StopStream onPress={onStopStream} />
-      {userSpeakRequest && (
-        <View style={styles.allowSpeaking}>
-          <Button
-            title={`allow ${userSpeakRequest} to speak`}
-            onPress={onAllowSpeaking}
-          />
+      {streamId && <StopStream onPress={onStopStream} />}
+      {streamId && (
+        <StreamerPanel
+          title={title}
+          visible={panelVisible}
+          speakers={speakers}
+          participantsCount={participantsCount}
+          onOpenParticipantsList={() => setPanelVisible(false)}
+        />
+      )}
+      <ParticipantsModal
+        speakers={speakers}
+        title={title}
+        onHide={() => setPanelVisible(true)}
+        visible={!panelVisible}
+        viewers={viewers}
+        onFetchMore={fetchViewers}
+      />
+
+      {!streamId && (
+        <View style={styles.startStreamButton}>
+          <Button onPress={onStart} title="Start" />
         </View>
       )}
     </View>
@@ -149,5 +176,12 @@ const styles = StyleSheet.create({
     bottom: 90,
     left: 0,
     right: 0,
+  },
+  startStreamButton: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    right: 20,
+    height: 70,
   },
 });

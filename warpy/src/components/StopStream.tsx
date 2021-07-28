@@ -15,6 +15,6 @@ const styles = StyleSheet.create({
   stop: {
     position: 'absolute',
     right: 20,
-    top: 20,
+    top: 30,
   },
 });
