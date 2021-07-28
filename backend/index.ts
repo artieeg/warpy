@@ -37,15 +37,15 @@ const main = async () => {
     });
   });
 
-  StreamService.observer.on("stream-ended", (id: string) => {
+  StreamService.observer.on("stream-stop", (id: string) => {
     FeedService.onRemoveCandidate(id);
   });
 
-  StreamService.observer.on("stream-ended", (id: string) => {
+  StreamService.observer.on("stream-stop", (id: string) => {
     ConversationService.handleConversationEnd(id);
   });
 
-  StreamService.observer.on("stream-ended", (id: string) => {
+  StreamService.observer.on("stream-stop", (id: string) => {
     ParticipantService.removeAllParticipants(id);
   });
 

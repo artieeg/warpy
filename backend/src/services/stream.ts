@@ -40,7 +40,7 @@ export const stopStream = async (data: any) => {
   );
 
   if (result.nModified === 1) {
-    observer.emit("stream-ended", stream);
+    observer.emit("stream-stop", stream);
   }
 };
 
