@@ -33,7 +33,38 @@ describe('useStreamViewers hook', () => {
     expect(hook.result.current).toEqual([viewer]);
   });
 
-  it('gets speaking requests on join', () => {
+  it('removes users from the list once they become speakers', () => {
+    const hook = renderHook(() => useSpeakingRequests(stream), {wrapper});
+    const raisingHands = [
+      createParticipantFixture({id: 'speaker'}),
+      createParticipantFixture(),
+      createParticipantFixture(),
+      createParticipantFixture(),
+    ];
+
+    const newSpeaker = createParticipantFixture({
+      id: 'speaker',
+      role: 'speaker',
+    });
+
+    act(() => {
+      context.observer.emit('room-info', {
+        raisingHands,
+      });
+    });
+
+    act(() => {
+      context.observer.emit('new-speaker', {
+        speaker: newSpeaker,
+      });
+    });
+
+    expect(hook.result.current.find(user => user.id === 'speaker')).toBeFalsy();
+  });
+
+  it.todo('removes users if their speaking requests were denied');
+
+  it('gets speaking requests on join', async () => {
     const hook = renderHook(() => useSpeakingRequests(stream), {wrapper});
     const raisingHands = [
       createParticipantFixture(),
@@ -48,6 +79,6 @@ describe('useStreamViewers hook', () => {
       });
     });
 
-    expect(hook.result).toEqual(raisingHands);
+    expect(hook.result.current).toEqual(raisingHands);
   });
 });
