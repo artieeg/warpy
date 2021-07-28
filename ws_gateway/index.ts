@@ -8,6 +8,7 @@ import {
   onNewTrack,
   onRecvTracksRequest,
   onViewersRequest,
+  onStreamStop,
 } from "@ws_gateway/handlers";
 import { IMessage } from "@ws_gateway/models";
 import { Context, Handlers } from "@ws_gateway/types";
@@ -32,6 +33,7 @@ const handlers: Handlers = {
   "connect-transport": onConnectTransport,
   "recv-tracks-request": onRecvTracksRequest,
   "request-viewers": onViewersRequest,
+  "stream-stop": onStreamStop,
 };
 
 const main = async () => {
