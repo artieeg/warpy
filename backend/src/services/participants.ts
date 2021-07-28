@@ -12,6 +12,20 @@ const client = redis.createClient({
 
 export const init = async () => {};
 
+export const getUsersWithRaisedHands = (stream: string) => {
+  const key = `raised_hands_${stream}`;
+
+  return new Promise<string[]>((resolve, reject) => {
+    client.smembers(key, (err, ids) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(ids);
+      }
+    });
+  });
+};
+
 export const unsetRaiseHand = (user: string, stream: string) => {
   const key = `raised_hands_${stream}`;
 

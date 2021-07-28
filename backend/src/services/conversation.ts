@@ -125,21 +125,32 @@ export const handleParticipantJoin = async (participant: IBaseParticipant) => {
     },
   });
 
-  const speakers = await ParticipantService.getSpeakersWithRoles(stream);
-  const speakerIds = Object.keys(speakers);
+  const [speakersWithRoles, userWithRaisedHandIds] = await Promise.all([
+    ParticipantService.getSpeakersWithRoles(stream),
+    ParticipantService.getUsersWithRaisedHands(stream),
+  ]);
+  const speakerIds = Object.keys(speakersWithRoles);
 
-  const speakerUserInfo = await UserService.getUsersByIds(speakerIds);
-  const participantsCount = await ParticipantService.getParticipantsCount(
-    stream
-  );
+  const [
+    speakerUserInfo,
+    usersWithRaisedHand,
+    participantCount,
+  ] = await Promise.all([
+    UserService.getUsersByIds(speakerIds),
+    UserService.getUsersByIds(userWithRaisedHandIds),
+    ParticipantService.getParticipantsCount(stream),
+  ]);
 
   MessageService.sendMessage(id, {
     event: "room-info",
     data: {
       speakers: speakerUserInfo.map((speaker) =>
-        Participant.fromUser(speaker, speakers[speaker.id], stream)
+        Participant.fromUser(speaker, speakersWithRoles[speaker.id], stream)
       ),
-      count: participantsCount,
+      raisedHands: usersWithRaisedHand.map((userWithRaisedHand) =>
+        Participant.fromUser(userWithRaisedHand, "viewer", stream)
+      ),
+      count: participantCount,
     },
   });
 };
