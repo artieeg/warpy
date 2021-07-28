@@ -45,6 +45,10 @@ const main = async () => {
     ConversationService.handleConversationEnd(id);
   });
 
+  StreamService.observer.on("stream-ended", (id: string) => {
+    ParticipantService.removeAllParticipants(id);
+  });
+
   MessageService.on(
     "participant-new",
     ConversationService.handleParticipantJoin
@@ -67,6 +71,7 @@ const main = async () => {
   );
 
   MessageService.on("viewers-request", ParticipantService.handleViewersRequest);
+  MessageService.on("stream-stop", StreamService.stopStream);
 
   app.listen(Number.parseInt(PORT), `0.0.0.0`, () => {
     console.log(`Started on port ${PORT}`);

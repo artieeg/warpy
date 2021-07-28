@@ -32,8 +32,33 @@ if (!NATS) {
 let nc: NatsConnection;
 const jc = JSONCodec();
 
+const SubjectEventMap = {
+  "stream.stop": "stream-stop",
+};
+
+type Subject = keyof typeof SubjectEventMap;
+
+const subscribeTo = async (subject: Subject) => {
+  console.log("subbing to", subject);
+  const sub = nc.subscribe(subject);
+
+  for await (const msg of sub) {
+    const message = jc.decode(msg.data) as any;
+    console.log("recevied", message);
+    eventEmitter.emit(SubjectEventMap[subject], message);
+  }
+};
+
+export const handleMessages = () => {
+  Object.keys(SubjectEventMap).forEach((key) => {
+    subscribeTo(key as Subject);
+  });
+};
+
 export const init = async () => {
   nc = await connect({ servers: [NATS] });
+
+  handleMessages();
 
   handleNewMediaNode();
   handleNewStream();
@@ -59,7 +84,8 @@ type Events =
   | "connect-transport"
   | "new-media-node"
   | "viewers-request"
-  | "participant-leave";
+  | "participant-leave"
+  | typeof SubjectEventMap[Subject];
 
 export const on = (event: Events, handler: MessageHandler<any, any>) => {
   eventEmitter.on(event, handler);

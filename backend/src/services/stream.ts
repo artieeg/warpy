@@ -26,14 +26,21 @@ export const createNewStream = async (params: INewStream) => {
   return stream.id;
 };
 
-export const stopStream = async (id: string, owner: string) => {
+export const stopStream = async (data: any) => {
+  const { stream, user } = data;
+
+  console.log("removing stream", stream, user);
+
   const result = await Stream.updateOne(
-    { _id: mongoose.Types.ObjectId(id), owner: mongoose.Types.ObjectId(owner) },
+    {
+      _id: mongoose.Types.ObjectId(stream),
+      owner: mongoose.Types.ObjectId(user),
+    },
     { $set: { live: false } }
   );
 
   if (result.nModified === 1) {
-    observer.emit("stream-ended", id);
+    observer.emit("stream-ended", stream);
   }
 };
 
