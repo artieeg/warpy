@@ -12,6 +12,34 @@ const client = redis.createClient({
 
 export const init = async () => {};
 
+export const unsetRaiseHand = (user: string, stream: string) => {
+  const key = `raised_hands_${stream}`;
+
+  return new Promise<void>((resolve, reject) => {
+    client.srem(key, user, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+};
+
+export const setRaiseHand = (user: string, stream: string) => {
+  const key = `raised_hands_${stream}`;
+
+  return new Promise<void>((resolve, reject) => {
+    client.sadd(key, user, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+};
+
 export const addParticipant = async (participant: IBaseParticipant) => {
   const user = participant.id;
   const stream = participant.stream;

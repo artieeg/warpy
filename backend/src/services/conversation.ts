@@ -144,32 +144,48 @@ export const handleParticipantJoin = async (participant: IBaseParticipant) => {
   });
 };
 
-export const handleRaisedHand = async (user: string) => {
-  const stream = await ParticipantService.getCurrentStreamFor(user);
+export const handleRaisedHand = async (viewerId: string) => {
+  const stream = await ParticipantService.getCurrentStreamFor(viewerId);
 
-  if (!stream) {
+  const userData = await UserService.getUserById(viewerId);
+
+  if (!stream || !userData) {
     return;
   }
 
   const participants = await ParticipantService.getStreamParticipants(stream);
 
-  MessageService.sendMessageBroadcast(participants, {
-    event: "raise-hand",
-    data: {
-      user,
-      stream,
-    },
-  });
+  try {
+    await ParticipantService.setRaiseHand(viewerId, stream);
+    MessageService.sendMessageBroadcast(participants, {
+      event: "raise-hand",
+      data: {
+        viewer: Participant.fromUser(userData, "viewer", stream),
+        stream,
+      },
+    });
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 export const handleAllowSpeaker = async (data: IAllowSpeakerPayload) => {
   const { speaker, user } = data;
-  const stream = await ParticipantService.getCurrentStreamFor(user);
+  const [stream, userData] = await Promise.all([
+    ParticipantService.getCurrentStreamFor(user),
+    UserService.getUserById(speaker),
+  ]);
 
-  if (!stream) {
+  if (!userData || !stream) {
     return;
   }
 
+  try {
+    await ParticipantService.unsetRaiseHand(user, stream);
+  } catch (e) {
+    console.error(e);
+    return;
+  }
   const media = await MessageService.connectSpeakerMedia({
     speaker,
     roomId: stream,
@@ -178,7 +194,9 @@ export const handleAllowSpeaker = async (data: IAllowSpeakerPayload) => {
   await ParticipantService.setParticipantRole(stream, speaker, "speaker");
 
   const participants = await ParticipantService.getStreamParticipants(stream);
-  const participantsToBroadcast = participants.filter((p) => p !== speaker);
+  //const participantsToBroadcast = participants.filter((p) => p !== speaker);
+
+  const speakerData = Participant.fromUser(userData, "speaker", stream);
 
   MessageService.sendMessage(speaker, {
     event: "speaking-allowed",
@@ -188,10 +206,10 @@ export const handleAllowSpeaker = async (data: IAllowSpeakerPayload) => {
     },
   });
 
-  MessageService.sendMessageBroadcast(participantsToBroadcast, {
-    event: "allow-speaker",
+  MessageService.sendMessageBroadcast(participants, {
+    event: "new-speaker",
     data: {
-      speaker,
+      speaker: speakerData,
       stream,
     },
   });
