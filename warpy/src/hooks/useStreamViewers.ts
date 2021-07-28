@@ -22,6 +22,16 @@ export const useStreamViewers = (
     setViewers(prev => [...prev, ...receivedViewers]);
   }, []);
 
+  const onRaiseHand = useCallback((data: any) => {
+    const {viewer: viewerData} = data;
+
+    const viewerRaisingHand = Participant.fromJSON(viewerData);
+
+    setViewers(prev =>
+      prev.filter(viewer => viewer.id !== viewerRaisingHand.id),
+    );
+  }, []);
+
   const onNewViewer = useCallback((data: any) => {
     const {viewer} = data;
 
@@ -34,21 +44,21 @@ export const useStreamViewers = (
 
   //Fetch first viewers after joining the room
   useEffect(() => {
-    ws.once('room-info', () => {
-      fetchViewers();
-    });
+    ws.once('room-info', fetchViewers);
   }, [ws, fetchViewers]);
 
   //Set up viewer-related event listeners
   useEffect(() => {
     ws.on('viewers', onViewersPage);
     ws.on('new-viewer', onNewViewer);
+    ws.on('raise-hand', onRaiseHand);
 
     return () => {
+      ws.off('raise-hand', onRaiseHand);
       ws.off('viewers', onViewersPage);
       ws.off('new-viewer', onNewViewer);
     };
-  }, [ws, onViewersPage, onNewViewer]);
+  }, [ws, onViewersPage, onNewViewer, onRaiseHand]);
 
   return [viewers, fetchViewers];
 };

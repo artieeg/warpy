@@ -61,4 +61,26 @@ describe('useStreamViewers hook', () => {
 
     expect(hook.result.current[0]).toEqual([newViewer]);
   });
+
+  it('removes a user from viewers once they raise hand', () => {
+    const hook = renderHook(() => useStreamViewers(stream), {wrapper});
+    const userRaisingHand = createParticipantFixture();
+
+    act(() => {
+      context.observer.emit('new-viewer', {
+        viewer: userRaisingHand,
+      });
+    });
+
+    act(() => {
+      context.observer.emit('raise-hand', {
+        viewer: userRaisingHand,
+      });
+    });
+
+    expect(hook.result.current[0]).toEqual([]);
+  });
+
+  it.todo('removes viewers once they leave');
+  it.todo('removes viewers when they become speakers');
 });

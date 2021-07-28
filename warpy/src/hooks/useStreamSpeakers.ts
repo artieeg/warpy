@@ -14,14 +14,24 @@ export const useStreamSpeakers = (_stream: string) => {
       Participant.fromJSON(json),
     );
 
-    console.log('received speakes', receivedSpeakers);
-
     setSpeakers(prev => [...prev, ...receivedSpeakers]);
+  }, []);
+
+  const onNewSpeaker = useCallback((data: any) => {
+    const {speaker: speakerData} = data;
+    const speaker = Participant.fromJSON(speakerData);
+
+    setSpeakers(prev => [...prev, speaker]);
   }, []);
 
   useEffect(() => {
     ws.once('room-info', onSpeakers);
-  }, [ws, onSpeakers]);
+    ws.on('new-speaker', onNewSpeaker);
+
+    return () => {
+      ws.off('new-speaker', onNewSpeaker);
+    };
+  }, [ws, onSpeakers, onNewSpeaker]);
 
   return speakers;
 };
