@@ -5,6 +5,7 @@ import routes from "@app/routes";
 import {
   ConversationService,
   DatabaseService,
+  FeedsCacheService,
   FeedService,
   MediaService,
   MessageService,
@@ -27,6 +28,7 @@ const main = async () => {
   await MessageService.init();
 
   ConversationService.init();
+  FeedsCacheService.init();
 
   StreamService.observer.on("stream-new", (stream: IStream) => {
     FeedService.onNewCandidate(stream);

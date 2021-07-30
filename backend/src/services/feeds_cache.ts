@@ -1,5 +1,6 @@
 import redis from "redis";
 import { promisify } from "util";
+import { MessageService } from ".";
 
 const URL = process.env.FEEDS_CACHE || "redis://127.0.0.1:6375/1";
 
@@ -10,7 +11,13 @@ const client = redis.createClient({
 //const sadd = promisify(client.sadd).bind(client);
 const smembers = promisify(client.smembers).bind(client);
 
-export const connect = () => {};
+export const init = () => {
+  MessageService.on("user-disconnected", (data: any) => {
+    const { user } = data;
+
+    removeServedStreams(user);
+  });
+};
 
 export const getServedStreams = async (user: string): Promise<string[]> => {
   try {
