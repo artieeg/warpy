@@ -5,4 +5,4 @@ export type MessageRespondCallback<T> = (d: T) => void;
 export type MessageHandler<Payload, Response = undefined> = (
   data: Payload,
   respond?: MessageRespondCallback<Response>
-) => Promise<void>;
+) => Promise<void> | void;

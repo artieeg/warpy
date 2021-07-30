@@ -26,6 +26,8 @@ const main = async () => {
   await DatabaseService.connect();
   await MessageService.init();
 
+  ConversationService.init();
+
   StreamService.observer.on("stream-new", (stream: IStream) => {
     FeedService.onNewCandidate(stream);
   });
@@ -53,6 +55,7 @@ const main = async () => {
     "participant-new",
     ConversationService.handleParticipantJoin
   );
+
   MessageService.on(
     "participant-leave",
     ConversationService.handleParticipantLeave
@@ -69,7 +72,6 @@ const main = async () => {
     "connect-transport",
     ConversationService.handleConnectTransport
   );
-
   MessageService.on("viewers-request", ParticipantService.handleViewersRequest);
   MessageService.on("stream-stop", StreamService.stopStream);
 

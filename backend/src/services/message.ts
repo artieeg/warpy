@@ -34,17 +34,16 @@ const jc = JSONCodec();
 
 const SubjectEventMap = {
   "stream.stop": "stream-stop",
+  "user.disconnected": "user-disconnected",
 };
 
 type Subject = keyof typeof SubjectEventMap;
 
 const subscribeTo = async (subject: Subject) => {
-  console.log("subbing to", subject);
   const sub = nc.subscribe(subject);
 
   for await (const msg of sub) {
     const message = jc.decode(msg.data) as any;
-    console.log("recevied", message);
     eventEmitter.emit(SubjectEventMap[subject], message);
   }
 };

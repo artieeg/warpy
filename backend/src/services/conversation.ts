@@ -18,6 +18,14 @@ import {
   UserService,
 } from ".";
 
+export const init = () => {
+  MessageService.on("user-disconnected", (data: any) => {
+    const { user } = data;
+
+    handleParticipantLeave(user);
+  });
+};
+
 /**
  * Create a new conversation for a new stream
  */
@@ -90,7 +98,13 @@ export const handleParticipantLeave = async (user: string) => {
 
   const users = await ParticipantService.getStreamParticipants(stream);
 
-  await MessageService.sendMessageBroadcast(users, {}); //TODO
+  await MessageService.sendMessageBroadcast(users, {
+    event: "user-left",
+    body: {
+      user,
+      stream,
+    },
+  });
 };
 
 export const handleParticipantJoin = async (participant: IBaseParticipant) => {
