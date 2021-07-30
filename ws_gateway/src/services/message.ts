@@ -8,13 +8,12 @@ if (!NATS) {
 
 export const BackendEvents = {
   "stream-stop": "stream.stop",
+  "user-disconnected": "user.disconnected",
 };
 
 type EventAlias = keyof typeof BackendEvents;
 
 export const sendBackendMessage = (event: EventAlias, data: any) => {
-  console.log("sending event to", BackendEvents[event]);
-  console.log("data", data);
   nc.publish(BackendEvents[event], jc.encode(data));
 };
 

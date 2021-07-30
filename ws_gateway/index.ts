@@ -38,11 +38,19 @@ const handlers: Handlers = {
 
 const main = async () => {
   await MessageService.init();
+  PingPongService.run();
 
   console.log("Started ws gateway service");
 
+  PingPongService.observer.on("user-disconnected", (user) => {
+    console.log("user disconnected", user);
+    MessageService.sendBackendMessage("user-disconnected", { user });
+  });
+
   server.on("connection", (ws) => {
     const context: Context = { ws };
+
+    ws.ping();
 
     ws.on("message", (msg) => {
       const message: IMessage = JSON.parse(msg.toString());
@@ -53,11 +61,14 @@ const main = async () => {
     });
 
     ws.on("pong", () => {
+      console.log("received ping");
       if (context.user) {
         PingPongService.updatePing(context.user);
       }
 
-      ws.pong();
+      setTimeout(() => {
+        ws.ping();
+      }, 1000);
     });
   });
 };

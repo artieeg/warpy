@@ -1,3 +1,5 @@
+import EventEmitter from "events";
+
 type PingPong = {
   [key: string]: {
     missedPings: number;
@@ -14,20 +16,24 @@ export const updatePing = (user: string) => {
   };
 };
 
-export const runPingPong = (interval: number) => {
+export const observer = new EventEmitter();
+
+export const run = () => {
   setInterval(() => {
     const currentTime = Date.now();
 
-    Object.keys(registry).forEach((key) => {
-      const diff = currentTime - registry[key].lastPing;
+    Object.keys(registry).forEach((user) => {
+      const diff = currentTime - registry[user].lastPing;
 
       if (diff > 5000) {
-        registry[key].missedPings++;
+        registry[user].missedPings++;
       }
 
-      if (registry[key].missedPings >= 3) {
-        //TODO: handle user disconnect
+      if (registry[user].missedPings >= 3) {
+        observer.emit("user-disconnected", user);
+
+        delete registry[user];
       }
     });
-  }, interval);
+  }, 5000);
 };
