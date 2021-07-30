@@ -13,3 +13,4 @@ export * from './MediaStreamingContext';
 export * from './ShowParticipantsButton';
 export * from './ParticipantsModal';
 export * from './Participant';
+export * from './BaseSlideModal';
