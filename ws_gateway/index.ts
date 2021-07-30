@@ -43,7 +43,6 @@ const main = async () => {
   console.log("Started ws gateway service");
 
   PingPongService.observer.on("user-disconnected", (user) => {
-    console.log("user disconnected", user);
     MessageService.sendBackendMessage("user-disconnected", { user });
   });
 
@@ -61,7 +60,6 @@ const main = async () => {
     });
 
     ws.on("pong", () => {
-      console.log("received ping");
       if (context.user) {
         PingPongService.updatePing(context.user);
       }

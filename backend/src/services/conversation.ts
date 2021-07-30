@@ -30,9 +30,11 @@ export const handleNewConversation: MessageHandler<IRoom> = async (stream) => {
     role: "streamer",
   };
 
+  const hostData = await UserService.getUserById(owner);
+
   const recvMediaNode = await MediaService.getConsumerNodeId();
 
-  if (!recvMediaNode) {
+  if (!recvMediaNode || !hostData) {
     return; // TODO: error
   }
 
@@ -57,12 +59,14 @@ export const handleNewConversation: MessageHandler<IRoom> = async (stream) => {
     event: "created-room",
     data: {
       media,
+      speakers: [Participant.fromUser(hostData, "streamer", id)],
+      count: 1,
     },
   });
 };
 
 /**
- * Clears up participants and track ids after the end of a stream
+ * Clears up participants at the end of a stream
  */
 export const handleConversationEnd = async (streamId: string) => {
   const participants = await ParticipantService.getStreamParticipants(streamId);
