@@ -100,7 +100,7 @@ export const handleParticipantLeave = async (user: string) => {
 
   await MessageService.sendMessageBroadcast(users, {
     event: "user-left",
-    body: {
+    data: {
       user,
       stream,
     },
