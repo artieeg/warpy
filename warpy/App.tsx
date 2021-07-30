@@ -14,8 +14,8 @@ const App = () => {
   StatusBar.setBackgroundColor('transparent');
 
   return (
-    <Provider store={store}>
-      <WebSocketProvider>
+    <WebSocketProvider>
+      <Provider store={store}>
         <MediaStreamingProvider>
           <NavigationContainer>
             <Stack.Navigator headerMode="none">
@@ -26,8 +26,8 @@ const App = () => {
             </Stack.Navigator>
           </NavigationContainer>
         </MediaStreamingProvider>
-      </WebSocketProvider>
-    </Provider>
+      </Provider>
+    </WebSocketProvider>
   );
 };
 

@@ -44,6 +44,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const [viewers, fetchViewers] = useStreamViewers(stream.id);
   const usersRaisingHand = useSpeakingRequests(stream.id);
 
+  console.log('speakers, viewers', speakers, viewers);
   useEffect(() => {
     if (recvTransport) {
       media

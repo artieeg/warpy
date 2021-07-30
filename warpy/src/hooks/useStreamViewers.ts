@@ -1,72 +1,20 @@
+import {useWebSocketContext} from '@app/components/WebSocketContext';
 import {Participant} from '@app/models';
-import {useWebSocketContext} from '@app/components';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import shallow from 'zustand/shallow';
+import {useParticipantsStore} from '@app/stores';
 
 export const useStreamViewers = (
   stream: string,
 ): [Participant[], () => any] => {
-  const [viewers, setViewers] = useState<Participant[]>([]);
-  const page = useRef(-1);
-
   const ws = useWebSocketContext();
+  const [viewers, page] = useParticipantsStore(
+    state => [state.viewers, state.page],
+    shallow,
+  );
 
-  const onUserLeft = useCallback((data: any) => {
-    const {user} = data;
-
-    setViewers(prev => prev.filter(viewer => viewer.id !== user));
-  }, []);
-
-  const onViewersPage = useCallback((data: any) => {
-    const {page: newPage, viewers: viewersData} = data;
-
-    const receivedViewers: Participant[] = viewersData.map((json: any) =>
-      Participant.fromJSON(json),
-    );
-
-    page.current = newPage;
-
-    setViewers(prev => [...prev, ...receivedViewers]);
-  }, []);
-
-  const onRaiseHand = useCallback((data: any) => {
-    const {viewer: viewerData} = data;
-
-    const viewerRaisingHand = Participant.fromJSON(viewerData);
-
-    setViewers(prev =>
-      prev.filter(viewer => viewer.id !== viewerRaisingHand.id),
-    );
-  }, []);
-
-  const onNewViewer = useCallback((data: any) => {
-    const {viewer} = data;
-
-    setViewers(prev => [...prev, Participant.fromJSON(viewer)]);
-  }, []);
-
-  const fetchViewers = useCallback(() => {
-    ws.requestViewers(stream, page.current + 1);
-  }, [ws, stream]);
-
-  //Fetch first viewers after joining the room
-  useEffect(() => {
-    ws.once('room-info', fetchViewers);
-  }, [ws, fetchViewers]);
-
-  //Set up viewer-related event listeners
-  useEffect(() => {
-    ws.on('viewers', onViewersPage);
-    ws.on('new-viewer', onNewViewer);
-    ws.on('raise-hand', onRaiseHand);
-    ws.on('user-left', onUserLeft);
-
-    return () => {
-      ws.off('user-left', onUserLeft);
-      ws.off('raise-hand', onRaiseHand);
-      ws.off('viewers', onViewersPage);
-      ws.off('new-viewer', onNewViewer);
-    };
-  }, [ws, onViewersPage, onNewViewer, onRaiseHand, onUserLeft]);
+  const fetchViewers = () => {
+    ws.requestViewers(stream!, page + 1);
+  };
 
   return [viewers, fetchViewers];
 };

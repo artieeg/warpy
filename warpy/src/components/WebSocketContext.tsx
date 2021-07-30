@@ -2,6 +2,7 @@ import React, {createContext, useContext} from 'react';
 import {EventEmitter} from 'events';
 import config from '@app/config';
 import WebSocketConn from '@app/ws';
+import {useWebSocketHandler} from '@app/hooks';
 
 type WebSocketEvent =
   | 'new-viewer'
@@ -174,6 +175,8 @@ export const useWebSocketContext = () => {
 
 export const WebSocketProvider = ({children}: any) => {
   const context = providedWebSocket;
+
+  useWebSocketHandler(context);
 
   return (
     <WebSocketContext.Provider value={context}>

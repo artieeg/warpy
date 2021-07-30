@@ -31,7 +31,8 @@
     "react-native-webrtc": "^1.89.3",
     "react-redux": "^7.2.4",
     "redux": "^4.1.0",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "zustand": "^3.5.7"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
