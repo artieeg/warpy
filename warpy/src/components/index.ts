@@ -14,3 +14,4 @@ export * from './ShowParticipantsButton';
 export * from './ParticipantsModal';
 export * from './Participant';
 export * from './BaseSlideModal';
+export * from './ParticipantInfoModal';

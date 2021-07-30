@@ -16,7 +16,7 @@ import {
   useMediaStreamingContext,
   useWebSocketContext,
   ParticipantsModal,
-  Text,
+  ParticipantInfoModal,
 } from '@app/components';
 /*
 import {
@@ -160,6 +160,7 @@ export const NewStream = () => {
         viewers={viewers}
         onFetchMore={fetchViewers}
       />
+      <ParticipantInfoModal participant={'test'} />
 
       {!streamId && (
         <View style={styles.startStreamButton}>
