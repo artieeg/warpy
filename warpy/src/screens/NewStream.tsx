@@ -160,7 +160,6 @@ export const NewStream = () => {
         viewers={viewers}
         onFetchMore={fetchViewers}
       />
-      <ParticipantInfoModal participant={'test'} />
 
       {!streamId && (
         <View style={styles.startStreamButton}>

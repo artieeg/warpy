@@ -26,7 +26,7 @@ export const useWebSocketHandler = (ws: ProvidedWebSocket) => {
       const {speakers} = data;
 
       useParticipantsStore.getState().set({
-        speakers,
+        participants: [...speakers],
       });
     });
 
@@ -46,9 +46,8 @@ export const useWebSocketHandler = (ws: ProvidedWebSocket) => {
       const {speakers, raisedHands, count} = data;
 
       useParticipantsStore.getState().set({
-        speakers,
+        participants: [...speakers, ...raisedHands],
         count,
-        raisedHands,
         page: -1,
       });
     });
