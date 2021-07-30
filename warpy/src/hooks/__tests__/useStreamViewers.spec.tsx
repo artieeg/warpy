@@ -81,6 +81,23 @@ describe('useStreamViewers hook', () => {
     expect(hook.result.current[0]).toEqual([]);
   });
 
-  it.todo('removes viewers once they leave');
+  it('removes viewers once they leave', () => {
+    const hook = renderHook(() => useStreamViewers(stream), {wrapper});
+    const userThatLeft = createParticipantFixture({id: 'left'});
+    const userThatStayed = createParticipantFixture({id: 'stayed'});
+
+    const viewers = [userThatStayed, userThatLeft];
+
+    act(() => {
+      context.observer.emit('viewers', {viewers, page: 0});
+    });
+
+    act(() => {
+      context.observer.emit('user-left', {user: userThatLeft.id});
+    });
+
+    expect(hook.result.current[0]).toEqual([userThatStayed]);
+  });
+
   it.todo('removes viewers when they become speakers');
 });

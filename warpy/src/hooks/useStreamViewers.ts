@@ -10,6 +10,12 @@ export const useStreamViewers = (
 
   const ws = useWebSocketContext();
 
+  const onUserLeft = useCallback((data: any) => {
+    const {user} = data;
+
+    setViewers(prev => prev.filter(viewer => viewer.id !== user));
+  }, []);
+
   const onViewersPage = useCallback((data: any) => {
     const {page: newPage, viewers: viewersData} = data;
 
@@ -52,13 +58,15 @@ export const useStreamViewers = (
     ws.on('viewers', onViewersPage);
     ws.on('new-viewer', onNewViewer);
     ws.on('raise-hand', onRaiseHand);
+    ws.on('user-left', onUserLeft);
 
     return () => {
+      ws.off('user-left', onUserLeft);
       ws.off('raise-hand', onRaiseHand);
       ws.off('viewers', onViewersPage);
       ws.off('new-viewer', onNewViewer);
     };
-  }, [ws, onViewersPage, onNewViewer, onRaiseHand]);
+  }, [ws, onViewersPage, onNewViewer, onRaiseHand, onUserLeft]);
 
   return [viewers, fetchViewers];
 };

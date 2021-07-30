@@ -28,15 +28,23 @@ export const useStreamSpeakers = (_stream: string) => {
     setSpeakers(prev => [...prev, speaker]);
   }, []);
 
+  const onUserLeft = useCallback((data: any) => {
+    const {user} = data;
+
+    setSpeakers(prev => prev.filter(viewer => viewer.id !== user));
+  }, []);
+
   useEffect(() => {
     ws.once('room-info', onRoomInfo);
     ws.once('created-room', onRoomCreated);
     ws.on('new-speaker', onNewSpeaker);
+    ws.on('user-left', onUserLeft);
 
     return () => {
       ws.off('new-speaker', onNewSpeaker);
+      ws.off('user-left', onUserLeft);
     };
-  }, [ws, onRoomInfo, onNewSpeaker, onRoomCreated]);
+  }, [ws, onRoomInfo, onNewSpeaker, onRoomCreated, onUserLeft]);
 
   return speakers;
 };

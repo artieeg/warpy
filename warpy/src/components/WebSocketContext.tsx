@@ -6,6 +6,7 @@ import WebSocketConn from '@app/ws';
 type WebSocketEvent =
   | 'new-viewer'
   | 'raise-hand'
+  | 'user-left'
   | 'new-speaker'
   | 'viewers'
   | 'room-info'

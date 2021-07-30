@@ -14,9 +14,7 @@ import {useRecvTransport} from '@app/hooks/useRecvTransport';
 import {useMediaStreamingContext} from './MediaStreamingContext';
 import {useWebSocketContext} from './WebSocketContext';
 import {Consumer} from 'mediasoup-client/lib/types';
-import {RemoteStreamPanel} from './RemoteStreamPanel';
 import {ParticipantsModal} from './ParticipantsModal';
-import {Text} from './Text';
 import {ViewerStreamPanel} from './ViewerStreamPanel';
 
 interface IRemoteStreamProps {

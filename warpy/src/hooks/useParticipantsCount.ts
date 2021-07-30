@@ -10,12 +10,17 @@ export const useParticipantsCount = () => {
     setCount(prev => prev + 1);
   }, []);
 
+  const onUserLeave = useCallback(() => {
+    setCount(prev => prev - 1);
+  }, []);
+
   useEffect(() => {
     ws.once('room-info', (data: any) => {
       setCount(data.count);
     });
 
     ws.on('new-viewer', onNewViewer);
+    ws.on('user-left', onUserLeave);
 
     ws.once('created-room', (data: any) => {
       setCount(data.count);
@@ -23,6 +28,7 @@ export const useParticipantsCount = () => {
 
     return () => {
       ws.off('new-viewer', onNewViewer);
+      ws.off('user-left', onUserLeave);
     };
   }, [ws]);
 
