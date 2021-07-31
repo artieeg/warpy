@@ -165,9 +165,10 @@ export const handleParticipantJoin = async (participant: IBaseParticipant) => {
       speakers: speakerUserInfo.map((speaker) =>
         Participant.fromUser(speaker, speakersWithRoles[speaker.id], stream)
       ),
-      raisedHands: usersWithRaisedHand.map((userWithRaisedHand) =>
-        Participant.fromUser(userWithRaisedHand, "viewer", stream)
-      ),
+      raisedHands: usersWithRaisedHand.map((userWithRaisedHand) => {
+        const user = Participant.fromUser(userWithRaisedHand, "viewer", stream);
+        user.isRaisingHand = true;
+      }),
       count: participantCount,
     },
   });
