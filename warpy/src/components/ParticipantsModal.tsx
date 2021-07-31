@@ -11,6 +11,7 @@ import {
 import Modal from 'react-native-modal';
 import {BaseSlideModal} from './BaseSlideModal';
 import {ParticipantDisplay} from './Participant';
+import {StreamerInfo} from './StreamerInfo';
 import {Text} from './Text';
 
 interface IParticipanModalProps {
@@ -78,11 +79,7 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
           const {kind} = section;
 
           if (kind === 'streamer') {
-            return (
-              <View
-                style={{width: 100, height: 100, backgroundColor: '#ff3030'}}
-              />
-            );
+            return <StreamerInfo data={item.list[0]} />;
           }
 
           if (kind === 'raised_hands') {
