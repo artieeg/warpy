@@ -41,12 +41,12 @@ export const StreamPanelBase = (props: IStreamPanelBaseProps) => {
       Animated.timing(opacity.current, {
         useNativeDriver: true,
         toValue: visible ? 1 : 0.0,
-        duration: 100,
+        duration: 300,
       }),
       Animated.timing(scale.current, {
         useNativeDriver: true,
         toValue: visible ? 1 : 0.9,
-        duration: 100,
+        duration: 300,
       }),
     ]).start();
     //opacity.value = visible ? 1 : 0.0;

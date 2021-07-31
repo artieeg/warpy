@@ -31,7 +31,7 @@ export const Text = (props: ITextProps) => {
 
 const styles = StyleSheet.create({
   dark: {
-    color: '#2A2A58',
+    color: '#110E11',
   },
   bright: {
     color: '#EEE5E9',

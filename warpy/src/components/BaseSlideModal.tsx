@@ -17,6 +17,7 @@ export const BaseSlideModal = (props: IParticipanModalProps) => {
     <Modal
       removeClippedSubviews={false}
       propagateSwipe={true}
+      useNativeDriver
       onSwipeComplete={() => {
         onHide();
       }}

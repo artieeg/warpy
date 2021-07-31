@@ -26,6 +26,7 @@ export const ParticipantDisplay = (props: IParticipantProps) => {
 const styles = StyleSheet.create({
   wrapper: {
     marginBottom: 10,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   avatar: {

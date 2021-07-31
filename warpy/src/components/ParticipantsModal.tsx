@@ -1,16 +1,15 @@
 import {Participant} from '@app/models';
-import React, {useMemo, useState} from 'react';
+import React, {useMemo} from 'react';
 import {
   FlatList,
   SectionList,
-  SectionListRenderItem,
   StyleSheet,
   TouchableOpacity,
-  View,
+  TouchableWithoutFeedback,
 } from 'react-native';
-import Modal from 'react-native-modal';
 import {BaseSlideModal} from './BaseSlideModal';
 import {ParticipantDisplay} from './Participant';
+import {UserWithRaisedHand} from './UserWithRaisedHand';
 import {StreamerInfo} from './StreamerInfo';
 import {Text} from './Text';
 
@@ -26,16 +25,8 @@ interface IParticipanModalProps {
 }
 
 export const ParticipantsModal = (props: IParticipanModalProps) => {
-  const {
-    visible,
-    onSelectParticipant,
-    onFetchMore,
-    onHide,
-    title,
-    viewers,
-    speakers,
-    raisingHands,
-  } = props;
+  const {onSelectParticipant, onFetchMore, viewers, speakers, raisingHands} =
+    props;
 
   const streamer = useMemo(
     () => speakers.find(speaker => speaker.role === 'streamer'),
@@ -45,27 +36,35 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
   const data = [
     {
       title: 'Stream by',
-      data: [{list: [streamer!]}],
-      kind: 'streamer',
+      data: [
+        {
+          list: [streamer!],
+          kind: 'streamer',
+        },
+      ],
     },
     {
       title: 'Raising hands',
-      data: [{list: raisingHands}],
-      kind: 'raised_hands',
+      data: [
+        {
+          list: raisingHands,
+
+          kind: 'raised_hands',
+        },
+      ],
     },
     {
       title: 'Speakers',
       data: [
         {
           list: speakers,
+          kind: 'speakers',
         },
       ],
-      kind: 'speakers',
     },
     {
       title: 'Viewers',
-      data: [{list: viewers}],
-      kind: 'viewers',
+      data: [{list: viewers, kind: 'viewers'}],
     },
   ];
 
@@ -74,9 +73,9 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
       <SectionList
         style={styles.horizontalPadding}
         sections={data}
-        keyExtractor={item => item.id}
-        renderItem={({item, section}) => {
-          const {kind} = section;
+        keyExtractor={item => item.kind}
+        renderItem={({item}) => {
+          const {kind} = item;
 
           if (kind === 'streamer') {
             return <StreamerInfo data={item.list[0]} />;
@@ -84,41 +83,60 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
 
           if (kind === 'raised_hands') {
             return (
-              <View
-                style={{width: 100, height: 100, backgroundColor: '#30ff30'}}
-              />
+              <TouchableWithoutFeedback>
+                <FlatList
+                  data={item.list}
+                  numColumns={4}
+                  renderItem={({item: flatListItem}) => (
+                    <TouchableOpacity
+                      onPress={() => {
+                        onSelectParticipant(flatListItem.id);
+                      }}>
+                      <UserWithRaisedHand data={flatListItem} />
+                    </TouchableOpacity>
+                  )}
+                />
+              </TouchableWithoutFeedback>
             );
           }
 
           if (kind === 'speakers' || kind === 'viewers') {
             return (
-              <FlatList
-                data={item.list}
-                numColumns={4}
-                renderItem={({item: flatListItem}) => (
-                  <TouchableOpacity
-                    onPress={() => {
-                      onSelectParticipant(flatListItem.id);
-                    }}>
-                    <ParticipantDisplay data={flatListItem} />
-                  </TouchableOpacity>
-                )}
-              />
+              <TouchableWithoutFeedback>
+                <FlatList
+                  data={item.list}
+                  numColumns={4}
+                  renderItem={({item: flatListItem}) => (
+                    <TouchableOpacity
+                      onPress={() => {
+                        onSelectParticipant(flatListItem.id);
+                      }}>
+                      <ParticipantDisplay data={flatListItem} />
+                    </TouchableOpacity>
+                  )}
+                />
+              </TouchableWithoutFeedback>
             );
           }
         }}
         onEndReached={onFetchMore}
-        renderSectionHeader={({section}) => (
-          <TouchableOpacity>
-            <Text
-              size="small"
-              color="info"
-              weight="bold"
-              style={styles.sectionHeader}>
-              {section.title}
-            </Text>
-          </TouchableOpacity>
-        )}
+        renderSectionHeader={({section}) => {
+          if (section.data[0].list.length === 0) {
+            return null;
+          }
+
+          return (
+            <TouchableWithoutFeedback>
+              <Text
+                size="small"
+                color="info"
+                weight="bold"
+                style={styles.sectionHeader}>
+                {section.title}
+              </Text>
+            </TouchableWithoutFeedback>
+          );
+        }}
       />
     </BaseSlideModal>
   );
