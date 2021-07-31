@@ -11,30 +11,27 @@ interface IParticipantProps {
 export const ParticipantDisplay = (props: IParticipantProps) => {
   const {data} = props;
 
-  const name = `${data.first_name} ${data.last_name}`;
+  const name = `${data.first_name}`;
 
   return (
     <View style={styles.wrapper}>
       <Avatar user={data} style={styles.avatar} />
-      <View>
-        <Text color="dark" weight="bold">
-          {name}
-        </Text>
-        <Text color="dark" size="small">
-          Test bio to fill space
-        </Text>
-      </View>
+      <Text style={styles.name} size="xsmall" weight="bold">
+        {name}
+      </Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   wrapper: {
-    flexDirection: 'row',
     marginBottom: 10,
     alignItems: 'center',
   },
   avatar: {
     marginRight: 12,
+  },
+  name: {
+    marginTop: 6,
   },
 });

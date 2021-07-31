@@ -29,10 +29,7 @@ export const BaseSlideModal = (props: IParticipanModalProps) => {
       isVisible={visible}>
       <View style={[styles.wrapper, style]}>
         <View style={styles.handler} />
-        <Text
-          color="dark"
-          weight="bold"
-          style={[styles.title, styles.horizontalPadding]}>
+        <Text weight="bold" style={[styles.title, styles.horizontalPadding]}>
           {title}
         </Text>
 
@@ -46,12 +43,8 @@ const styles = StyleSheet.create({
   modalStyle: {
     margin: 0,
   },
-  list: {
-    borderTopWidth: 1,
-    borderColor: '#e0e0e0',
-  },
   wrapper: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#110E11',
     position: 'absolute',
     bottom: 0,
     left: 0,
@@ -61,15 +54,13 @@ const styles = StyleSheet.create({
     paddingTop: 40,
   },
   horizontalPadding: {
-    paddingHorizontal: 40,
+    paddingHorizontal: 20,
   },
   sectionHeader: {
     marginBottom: 10,
     marginTop: 20,
   },
-  title: {
-    marginBottom: 20,
-  },
+  title: {},
   handler: {
     position: 'absolute',
     alignSelf: 'center',
@@ -77,6 +68,6 @@ const styles = StyleSheet.create({
     height: 5,
     top: 10,
     borderRadius: 12,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: '#7B7B7B',
   },
 });

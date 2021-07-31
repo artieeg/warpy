@@ -8,8 +8,8 @@ import {
 } from '@app/hooks';
 import {createStream} from '@app/services';
 import {RTCView} from 'react-native-webrtc';
-import React, {useCallback, useEffect, useState} from 'react';
-import {View, StyleSheet, useWindowDimensions} from 'react-native';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {View, StyleSheet, useWindowDimensions, Animated} from 'react-native';
 import {
   StopStream,
   Button,
@@ -17,6 +17,7 @@ import {
   useWebSocketContext,
   ParticipantsModal,
   ParticipantInfoModal,
+  Text,
 } from '@app/components';
 /*
 import {
@@ -27,6 +28,7 @@ import {
  */
 import {useRecvTransport} from '@app/hooks/useRecvTransport';
 import {StreamerPanel} from '@app/components/StreamerPanel';
+import MaskedView from '@react-native-community/masked-view';
 
 export const NewStream = () => {
   const [streamId, setStreamId] = useState<string>();
@@ -36,6 +38,10 @@ export const NewStream = () => {
   const userId: string = user!.id;
   const [sendRoomData, setSendRoomData] = useState<any>();
   const [recvRoomData, setRecvRoomData] = useState<any>();
+
+  //Display a participant info modal
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+
   const [userSpeakRequest, setUserSpeakRequest] = useState<string>();
   const ws = useWebSocketContext();
   const media = useMediaStreamingContext();
@@ -109,12 +115,6 @@ export const NewStream = () => {
     setStreamId(newStreamId);
   }, [title, hub]);
 
-  const localStreamStyle = {
-    ...styles.localStream,
-    width,
-    height,
-  };
-
   const onAllowSpeaking = () => {
     ws.sendAllowSpeaker(streamId!, userSpeakRequest!);
     setUserSpeakRequest(undefined);
@@ -132,12 +132,21 @@ export const NewStream = () => {
   const [panelVisible, setPanelVisible] = useState(true);
   const usersRaisingHand = useSpeakingRequests(streamId!);
 
+  const showParticipantsModal = !panelVisible && !selectedUser;
+  const showPanel = panelVisible && !selectedUser;
+
+  const localStreamStyle = {
+    ...styles.localStream,
+    width,
+    height,
+  };
+
   return (
     <View>
       {localStream && (
         <RTCView
-          objectFit="cover"
           style={localStreamStyle}
+          objectFit="cover"
           streamURL={localStream.toURL()}
         />
       )}
@@ -145,7 +154,7 @@ export const NewStream = () => {
       {streamId && (
         <StreamerPanel
           title={title}
-          visible={panelVisible}
+          visible={showPanel}
           speakers={speakers}
           participantsCount={participantsCount}
           onOpenParticipantsList={() => setPanelVisible(false)}
@@ -159,6 +168,12 @@ export const NewStream = () => {
         visible={!panelVisible}
         viewers={viewers}
         onFetchMore={fetchViewers}
+        onSelectParticipant={setSelectedUser}
+      />
+
+      <ParticipantInfoModal
+        onHide={() => setSelectedUser(null)}
+        id={selectedUser}
       />
 
       {!streamId && (

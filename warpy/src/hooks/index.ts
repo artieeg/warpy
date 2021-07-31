@@ -8,3 +8,4 @@ export * from './useParticipantsCount';
 export * from './useSpeakingRequests';
 export * from './useSpeakingRequests';
 export * from './useWebSocketHandler';
+export * from './useStreamParticipant';

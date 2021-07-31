@@ -16,6 +16,7 @@ import {useWebSocketContext} from './WebSocketContext';
 import {Consumer} from 'mediasoup-client/lib/types';
 import {ParticipantsModal} from './ParticipantsModal';
 import {ViewerStreamPanel} from './ViewerStreamPanel';
+import {ParticipantInfoModal} from './ParticipantInfoModal';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -32,6 +33,9 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const id = stream.id;
   const ws = useWebSocketContext();
   const media = useMediaStreamingContext();
+
+  //Display a participant info modal
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
 
   const recvTransport = useRecvTransport({
     stream: id,
@@ -96,6 +100,8 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
     width,
   };
 
+  const showParticipantsModal = !panelVisible && !selectedUser;
+
   return (
     <View style={wrapperStyle}>
       {mediaStream && (
@@ -113,13 +119,19 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
         onRaiseHand={raiseHand}
         onOpenParticipantsList={() => setPanelVisible(false)}
       />
+
+      <ParticipantInfoModal
+        onHide={() => setSelectedUser(null)}
+        id={selectedUser}
+      />
       <ParticipantsModal
         raisingHands={usersRaisingHand}
         speakers={speakers}
         title={stream.title}
         onHide={() => setPanelVisible(true)}
-        visible={!panelVisible}
+        visible={showParticipantsModal}
         viewers={viewers}
+        onSelectParticipant={setSelectedUser}
         onFetchMore={fetchViewers}
       />
     </View>

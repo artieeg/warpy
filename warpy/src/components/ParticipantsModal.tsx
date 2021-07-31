@@ -1,6 +1,13 @@
 import {Participant} from '@app/models';
 import React, {useMemo, useState} from 'react';
-import {SectionList, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  FlatList,
+  SectionList,
+  SectionListRenderItem,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Modal from 'react-native-modal';
 import {BaseSlideModal} from './BaseSlideModal';
 import {ParticipantDisplay} from './Participant';
@@ -14,11 +21,20 @@ interface IParticipanModalProps {
   viewers: Participant[];
   raisingHands: Participant[];
   onFetchMore: () => void;
+  onSelectParticipant: (id: string) => any;
 }
 
 export const ParticipantsModal = (props: IParticipanModalProps) => {
-  const {visible, onFetchMore, onHide, title, viewers, speakers, raisingHands} =
-    props;
+  const {
+    visible,
+    onSelectParticipant,
+    onFetchMore,
+    onHide,
+    title,
+    viewers,
+    speakers,
+    raisingHands,
+  } = props;
 
   const streamer = useMemo(
     () => speakers.find(speaker => speaker.role === 'streamer'),
@@ -28,37 +44,80 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
   const data = [
     {
       title: 'Stream by',
-      data: [streamer!],
+      data: [{list: [streamer!]}],
+      kind: 'streamer',
     },
     {
       title: 'Raising hands',
-      data: raisingHands,
+      data: [{list: raisingHands}],
+      kind: 'raised_hands',
     },
     {
       title: 'Speakers',
-      data: speakers,
+      data: [
+        {
+          list: speakers,
+        },
+      ],
+      kind: 'speakers',
     },
     {
       title: 'Viewers',
-      data: viewers,
+      data: [{list: viewers}],
+      kind: 'viewers',
     },
   ];
 
   return (
     <BaseSlideModal {...props} style={styles.modal}>
       <SectionList
-        style={[styles.list, styles.horizontalPadding]}
+        style={styles.horizontalPadding}
         sections={data}
         keyExtractor={item => item.id}
-        renderItem={({item}) => (
-          <TouchableOpacity>
-            <ParticipantDisplay data={item} />
-          </TouchableOpacity>
-        )}
+        renderItem={({item, section}) => {
+          const {kind} = section;
+
+          if (kind === 'streamer') {
+            return (
+              <View
+                style={{width: 100, height: 100, backgroundColor: '#ff3030'}}
+              />
+            );
+          }
+
+          if (kind === 'raised_hands') {
+            return (
+              <View
+                style={{width: 100, height: 100, backgroundColor: '#30ff30'}}
+              />
+            );
+          }
+
+          if (kind === 'speakers' || kind === 'viewers') {
+            return (
+              <FlatList
+                data={item.list}
+                numColumns={4}
+                renderItem={({item: flatListItem}) => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      onSelectParticipant(flatListItem.id);
+                    }}>
+                    <ParticipantDisplay data={flatListItem} />
+                  </TouchableOpacity>
+                )}
+              />
+            );
+          }
+        }}
         onEndReached={onFetchMore}
         renderSectionHeader={({section}) => (
           <TouchableOpacity>
-            <Text size="small" color="dark" style={styles.sectionHeader}>
+            <Text
+              size="small"
+              color="info"
+              weight="bold"
+              style={styles.sectionHeader}>
               {section.title}
             </Text>
           </TouchableOpacity>
@@ -72,15 +131,11 @@ const styles = StyleSheet.create({
   modalStyle: {
     margin: 0,
   },
-  list: {
-    borderTopWidth: 1,
-    borderColor: '#e0e0e0',
-  },
   modal: {
     height: '70%',
   },
   horizontalPadding: {
-    paddingHorizontal: 40,
+    paddingHorizontal: 20,
   },
   sectionHeader: {
     marginBottom: 10,

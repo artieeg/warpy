@@ -3,12 +3,13 @@ import {TextProps} from 'react-native';
 import {StyleSheet, Text as BaseText} from 'react-native';
 
 type TextWeight = 'regular' | 'bold' | 'light';
-type TextSize = 'small' | 'medium' | 'large';
+type TextColor = 'dark' | 'bright' | 'info';
+type TextSize = 'small' | 'medium' | 'large' | 'xsmall';
 
 interface ITextProps extends TextProps {
   weight?: TextWeight;
   size?: TextSize;
-  color?: 'dark' | 'bright';
+  color?: TextColor;
   children: string;
 }
 
@@ -33,7 +34,10 @@ const styles = StyleSheet.create({
     color: '#2A2A58',
   },
   bright: {
-    color: '#fff',
+    color: '#EEE5E9',
+  },
+  info: {
+    color: '#7B7B7B',
   },
   regular: {
     fontFamily: 'Nunito-Regular',
@@ -43,6 +47,9 @@ const styles = StyleSheet.create({
   },
   light: {
     fontFamily: 'Nunito-Light',
+  },
+  xsmall: {
+    fontSize: 16,
   },
   small: {
     fontSize: 18,
