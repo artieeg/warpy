@@ -1,4 +1,5 @@
 import {ProvidedWebSocket} from '@app/components';
+import {Participant} from '@app/models';
 import {useParticipantsStore} from '@app/stores';
 import {useEffect} from 'react';
 
@@ -6,8 +7,6 @@ export const useWebSocketHandler = (ws: ProvidedWebSocket) => {
   useEffect(() => {
     ws.on('viewers', (data: any) => {
       const {page, viewers} = data;
-
-      console.log('received data', data);
 
       useParticipantsStore.getState().addViewers(viewers, page);
     });
@@ -17,7 +16,10 @@ export const useWebSocketHandler = (ws: ProvidedWebSocket) => {
     });
 
     ws.on('raise-hand', (data: any) => {
-      useParticipantsStore.getState().raiseHand(data.viewer);
+      const participant = Participant.fromJSON(data.viewer);
+      participant.isRaisingHand = true;
+
+      useParticipantsStore.getState().raiseHand(participant);
     });
 
     ws.on('user-left', (data: any) => {
@@ -53,5 +55,9 @@ export const useWebSocketHandler = (ws: ProvidedWebSocket) => {
         page: -1,
       });
     });
+
+    return () => {
+      ws.removeAllListeners();
+    };
   }, [ws]);
 };

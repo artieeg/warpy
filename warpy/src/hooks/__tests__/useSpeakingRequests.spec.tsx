@@ -6,23 +6,27 @@ import {
   WebSocketContext,
 } from '@app/components/WebSocketContext';
 import {createParticipantFixture} from '@app/__fixtures__/user';
+import {useWebSocketHandler} from '../useWebSocketHandler';
 
 jest.mock('@app/ws');
 
-describe('useStreamViewers hook', () => {
-  const stream = 'test stream';
+describe('useStreamRequests hook', () => {
   const context = new ProvidedWebSocket();
 
-  const wrapper = ({children}: any) => (
-    <WebSocketContext.Provider value={context}>
-      {children}
-    </WebSocketContext.Provider>
-  );
+  const wrapper = ({children}: any) => {
+    useWebSocketHandler(context);
+
+    return (
+      <WebSocketContext.Provider value={context}>
+        {children}
+      </WebSocketContext.Provider>
+    );
+  };
 
   it('adds new speaking requests', () => {
-    const hook = renderHook(() => useSpeakingRequests(stream), {wrapper});
+    const hook = renderHook(() => useSpeakingRequests(), {wrapper});
 
-    const viewer = createParticipantFixture();
+    const viewer = createParticipantFixture({isRaisingHand: true});
 
     act(() => {
       context.observer.emit('raise-hand', {
@@ -34,8 +38,8 @@ describe('useStreamViewers hook', () => {
   });
 
   it('removes users from the list once they become speakers', () => {
-    const hook = renderHook(() => useSpeakingRequests(stream), {wrapper});
-    const raisingHands = [
+    const hook = renderHook(() => useSpeakingRequests(), {wrapper});
+    const raisedHands = [
       createParticipantFixture({id: 'speaker'}),
       createParticipantFixture(),
       createParticipantFixture(),
@@ -49,7 +53,8 @@ describe('useStreamViewers hook', () => {
 
     act(() => {
       context.observer.emit('room-info', {
-        raisingHands,
+        raisedHands,
+        speakers: [],
       });
     });
 
@@ -65,20 +70,21 @@ describe('useStreamViewers hook', () => {
   it.todo('removes users if their speaking requests were denied');
 
   it('gets speaking requests on join', async () => {
-    const hook = renderHook(() => useSpeakingRequests(stream), {wrapper});
-    const raisingHands = [
-      createParticipantFixture(),
-      createParticipantFixture(),
-      createParticipantFixture(),
-      createParticipantFixture(),
+    const hook = renderHook(() => useSpeakingRequests(), {wrapper});
+    const raisedHands = [
+      createParticipantFixture({isRaisingHand: true}),
+      createParticipantFixture({isRaisingHand: true}),
+      createParticipantFixture({isRaisingHand: true}),
+      createParticipantFixture({isRaisingHand: true}),
     ];
 
     act(() => {
       context.observer.emit('room-info', {
-        raisingHands,
+        raisedHands,
+        speakers: [],
       });
     });
 
-    expect(hook.result.current).toEqual(raisingHands);
+    expect(hook.result.current).toEqual(raisedHands);
   });
 });

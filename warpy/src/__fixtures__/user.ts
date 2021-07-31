@@ -17,6 +17,7 @@ export const createParticipantFixture = (
   return {
     ...createUserFixture(),
     role: 'viewer',
+    isRaisingHand: false,
     ...data,
   };
 };

@@ -6,18 +6,29 @@ import {
   WebSocketContext,
 } from '@app/components/WebSocketContext';
 import {createParticipantFixture} from '@app/__fixtures__/user';
+import {useWebSocketHandler} from '../useWebSocketHandler';
+import {useParticipantsStore} from '@app/stores';
 
 jest.mock('@app/ws');
+const initialStore = useParticipantsStore.getState();
 
 describe('useStreamViewers hook', () => {
   const stream = 'test stream';
   const context = new ProvidedWebSocket();
 
-  const wrapper = ({children}: any) => (
-    <WebSocketContext.Provider value={context}>
-      {children}
-    </WebSocketContext.Provider>
-  );
+  const wrapper = ({children}: any) => {
+    useWebSocketHandler(context);
+
+    return (
+      <WebSocketContext.Provider value={context}>
+        {children}
+      </WebSocketContext.Provider>
+    );
+  };
+
+  beforeEach(() => {
+    useParticipantsStore.setState(initialStore, true);
+  });
 
   it('requests viewers once joined the room', () => {
     context.requestViewers = jest.fn();
@@ -25,7 +36,10 @@ describe('useStreamViewers hook', () => {
     renderHook(() => useStreamViewers(stream), {wrapper});
 
     act(() => {
-      context.observer.emit('room-info');
+      context.observer.emit('room-info', {
+        speakers: [],
+        raisedHands: [],
+      });
     });
 
     expect(context.requestViewers).toBeCalled();
@@ -81,7 +95,7 @@ describe('useStreamViewers hook', () => {
     expect(hook.result.current[0]).toEqual([]);
   });
 
-  it('removes viewers once they leave', () => {
+  it('removes viewers once they leave', async () => {
     const hook = renderHook(() => useStreamViewers(stream), {wrapper});
     const userThatLeft = createParticipantFixture({id: 'left'});
     const userThatStayed = createParticipantFixture({id: 'stayed'});

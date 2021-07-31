@@ -6,6 +6,7 @@ import {
 } from '@app/components/WebSocketContext';
 import {createParticipantFixture} from '@app/__fixtures__/user';
 import {useStreamSpeakers} from '../useStreamSpeakers';
+import {useWebSocketHandler} from '../useWebSocketHandler';
 
 jest.mock('@app/ws');
 
@@ -13,11 +14,15 @@ describe('useStreamSpeakers hook', () => {
   const stream = 'test stream';
   const context = new ProvidedWebSocket();
 
-  const wrapper = ({children}: any) => (
-    <WebSocketContext.Provider value={context}>
-      {children}
-    </WebSocketContext.Provider>
-  );
+  const wrapper = ({children}: any) => {
+    useWebSocketHandler(context);
+
+    return (
+      <WebSocketContext.Provider value={context}>
+        {children}
+      </WebSocketContext.Provider>
+    );
+  };
 
   it('gets speakers from room-info event', () => {
     const hook = renderHook(() => useStreamSpeakers(stream), {wrapper});
@@ -27,6 +32,7 @@ describe('useStreamSpeakers hook', () => {
     act(() => {
       context.observer.emit('room-info', {
         speakers,
+        raisedHands: [],
       });
     });
 

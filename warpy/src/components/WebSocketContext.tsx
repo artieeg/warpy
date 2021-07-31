@@ -61,6 +61,11 @@ export class ProvidedWebSocket {
   on = (event: WebSocketEvent, handler: any) =>
     this.observer.on(event, handler);
 
+  removeAllListeners = () =>
+    this.observer
+      .eventNames()
+      .forEach(event => this.observer.removeAllListeners(event));
+
   listen = () => {
     this.socket.onmessage = payload => {
       const message = JSON.parse(payload.data);
