@@ -151,12 +151,11 @@ export class ProvidedWebSocket {
     );
   };
 
-  sendAllowSpeaker = (stream: string, speaker: string) => {
+  sendAllowSpeaker = (speaker: string) => {
     this.socket.send(
       JSON.stringify({
         event: 'speaker-allow',
         data: {
-          stream,
           speaker,
         },
       }),

@@ -11,7 +11,7 @@ export const Speaker = (props: ISpeakerProps) => {
   const {user} = props;
 
   return (
-    <View style={[styles.wrapper, styles.isSpeaking]}>
+    <View style={[styles.wrapper]}>
       <Avatar user={user} />
     </View>
   );

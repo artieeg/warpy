@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {Participant} from '@app/models';
 import {Avatar} from './Avatar';
 import {StyleSheet, View} from 'react-native';
 import {Text} from './Text';
 import {SmallTextButton} from './SmallTextButton';
+import {useWebSocketContext} from './WebSocketContext';
 
 interface IRaisedHandInfo {
   data: Participant;
@@ -11,6 +12,12 @@ interface IRaisedHandInfo {
 
 export const UserWithRaisedHand = (props: IRaisedHandInfo) => {
   const {data} = props;
+
+  const ws = useWebSocketContext();
+
+  const onAllow = useCallback(() => {
+    ws.sendAllowSpeaker(data.id);
+  }, [ws, data.id]);
 
   const name = `${data.first_name} ${data.last_name}`;
   return (
@@ -20,7 +27,7 @@ export const UserWithRaisedHand = (props: IRaisedHandInfo) => {
         <Text weight="bold" style={styles.name} size="small">
           {name}
         </Text>
-        <SmallTextButton title="Accept" />
+        <SmallTextButton onPress={onAllow} title="Accept" />
       </View>
     </View>
   );
