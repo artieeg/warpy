@@ -46,7 +46,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const participantsCount = useParticipantsCount();
   const speakers = useStreamSpeakers(stream.id);
   const [viewers, fetchViewers] = useStreamViewers(stream.id);
-  const usersRaisingHand = useSpeakingRequests(stream.id);
+  const usersRaisingHand = useSpeakingRequests();
 
   console.log('speakers, viewers', speakers, viewers);
   useEffect(() => {

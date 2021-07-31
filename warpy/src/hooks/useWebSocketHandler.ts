@@ -7,6 +7,8 @@ export const useWebSocketHandler = (ws: ProvidedWebSocket) => {
     ws.on('viewers', (data: any) => {
       const {page, viewers} = data;
 
+      console.log('received data', data);
+
       useParticipantsStore.getState().addViewers(viewers, page);
     });
 
@@ -19,7 +21,7 @@ export const useWebSocketHandler = (ws: ProvidedWebSocket) => {
     });
 
     ws.on('user-left', (data: any) => {
-      useParticipantsStore.getState().removeViewer(data.user);
+      useParticipantsStore.getState().removeParticipant(data.user);
     });
 
     ws.on('created-room', (data: any) => {

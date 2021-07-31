@@ -68,57 +68,61 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
     },
   ];
 
+  const renderSection = (sectionData: any) => {
+    const {item} = sectionData;
+
+    const {kind} = item;
+
+    if (kind === 'streamer') {
+      return <StreamerInfo data={item.list[0]} />;
+    }
+
+    if (kind === 'raised_hands') {
+      return (
+        <TouchableWithoutFeedback>
+          <FlatList
+            data={item.list}
+            numColumns={4}
+            renderItem={({item: flatListItem}) => (
+              <TouchableOpacity
+                onPress={() => {
+                  onSelectParticipant(flatListItem.id);
+                }}>
+                <UserWithRaisedHand data={flatListItem} />
+              </TouchableOpacity>
+            )}
+          />
+        </TouchableWithoutFeedback>
+      );
+    }
+
+    if (kind === 'speakers' || kind === 'viewers') {
+      return (
+        <TouchableWithoutFeedback>
+          <FlatList
+            data={item.list}
+            numColumns={4}
+            renderItem={({item: flatListItem}) => (
+              <TouchableOpacity
+                onPress={() => {
+                  onSelectParticipant(flatListItem.id);
+                }}>
+                <ParticipantDisplay data={flatListItem} />
+              </TouchableOpacity>
+            )}
+          />
+        </TouchableWithoutFeedback>
+      );
+    }
+  };
+
   return (
     <BaseSlideModal {...props} style={styles.modal}>
       <SectionList
         style={styles.horizontalPadding}
         sections={data}
         keyExtractor={item => item.kind}
-        renderItem={({item}) => {
-          const {kind} = item;
-
-          if (kind === 'streamer') {
-            return <StreamerInfo data={item.list[0]} />;
-          }
-
-          if (kind === 'raised_hands') {
-            return (
-              <TouchableWithoutFeedback>
-                <FlatList
-                  data={item.list}
-                  numColumns={4}
-                  renderItem={({item: flatListItem}) => (
-                    <TouchableOpacity
-                      onPress={() => {
-                        onSelectParticipant(flatListItem.id);
-                      }}>
-                      <UserWithRaisedHand data={flatListItem} />
-                    </TouchableOpacity>
-                  )}
-                />
-              </TouchableWithoutFeedback>
-            );
-          }
-
-          if (kind === 'speakers' || kind === 'viewers') {
-            return (
-              <TouchableWithoutFeedback>
-                <FlatList
-                  data={item.list}
-                  numColumns={4}
-                  renderItem={({item: flatListItem}) => (
-                    <TouchableOpacity
-                      onPress={() => {
-                        onSelectParticipant(flatListItem.id);
-                      }}>
-                      <ParticipantDisplay data={flatListItem} />
-                    </TouchableOpacity>
-                  )}
-                />
-              </TouchableWithoutFeedback>
-            );
-          }
-        }}
+        renderItem={renderSection as any}
         onEndReached={onFetchMore}
         renderSectionHeader={({section}) => {
           if (section.data[0].list.length === 0) {

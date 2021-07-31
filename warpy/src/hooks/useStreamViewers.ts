@@ -2,7 +2,7 @@ import {useWebSocketContext} from '@app/components/WebSocketContext';
 import {Participant} from '@app/models';
 import shallow from 'zustand/shallow';
 import {useParticipantsStore} from '@app/stores';
-import {useMemo} from 'react';
+import {useEffect, useMemo} from 'react';
 
 export const useStreamViewers = (
   stream: string,
@@ -21,6 +21,12 @@ export const useStreamViewers = (
   const fetchViewers = () => {
     ws.requestViewers(stream!, page + 1);
   };
+
+  useEffect(() => {
+    ws.once('room-info', () => {
+      fetchViewers();
+    });
+  }, [ws]);
 
   return [viewers, fetchViewers];
 };

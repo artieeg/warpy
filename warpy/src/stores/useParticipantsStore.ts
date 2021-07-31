@@ -61,7 +61,6 @@ export const useParticipantsStore = create<IParticipantsStore>(set => ({
     set(state => ({
       page,
       participants: [...state.participants, ...viewers],
-      count: state.count,
     })),
   addViewer: viewer => {
     set(state => ({
