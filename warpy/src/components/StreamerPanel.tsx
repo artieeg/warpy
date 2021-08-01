@@ -1,10 +1,10 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
-import {ClapButton} from './ClapsButton';
-import {WarpButton} from './WarpButton';
 import {ShowParticipantsButton} from './ShowParticipantsButton';
 import {IStreamPanelBase, StreamPanelBase} from './StreamPanelBase';
 import {ToggleMicButton} from './ToggleMicButton';
+import {OpenStatsButton} from './OpenStatsButton';
+import {FlipCameraButton} from './FlipCameraButton';
 
 interface IStreamerPanel extends IStreamPanelBase {
   participantsCount: number;
@@ -19,8 +19,8 @@ export const StreamerPanel = (props: IStreamerPanel) => {
 
   return (
     <StreamPanelBase {...props}>
-      <WarpButton style={styles.spaceRight} />
-      <ClapButton />
+      <OpenStatsButton style={styles.spaceRight} />
+      <FlipCameraButton />
       <ShowParticipantsButton
         style={styles.spaceRight}
         count={participantsCount}
