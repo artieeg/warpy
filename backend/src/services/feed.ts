@@ -59,7 +59,8 @@ export const getFeed = async (params: IGetFeed) => {
 
   console.log("served feed", feed);
 
-  return feed;
+  //TODO: fix nulls
+  return feed.filter((item) => item !== null);
 };
 
 export const onNewCandidate = async (data: IStream) => {
