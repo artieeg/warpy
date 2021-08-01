@@ -175,23 +175,24 @@ export const handleNewRoom: MessageHandler<
     return;
   }
 
-  const sendTransport = await createTransport("send", room.router, host);
-
-  /*
-  const [sendTransport, recvTransport] = await Promise.all([
+  const [audio, video] = await Promise.all([
     createTransport("send", room.router, host),
-    createTransport("recv", room.router, host),
+    createTransport("send", room.router, host),
   ]);
-  */
 
   room.peers[host] = new Peer({
-    sendTransport,
+    sendTransport: {
+      audio,
+      video,
+    },
   });
 
   respond!({
     routerRtpCapabilities: rooms[roomId].router.rtpCapabilities,
-    //recvTransportOptions: VideoService.getOptionsFromTransport(recvTransport),
-    sendTransportOptions: VideoService.getOptionsFromTransport(sendTransport),
+    sendTransportOptions: {
+      video: VideoService.getOptionsFromTransport(video),
+      audio: VideoService.getOptionsFromTransport(audio),
+    },
   });
 };
 
