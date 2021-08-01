@@ -1,4 +1,4 @@
-import { IConnectTransport, IRoom, Rooms } from "@media/models";
+import { IConnectTransport, IRoom, Peer, Rooms } from "@media/models";
 import { NodeInfo } from "@media/nodeinfo";
 import { role } from "@media/role";
 import {
@@ -134,12 +134,9 @@ export const handleJoinRoom = async (data: IJoinMediaRoom) => {
   if (peer) {
     peer.recvTransport = recvTransport;
   } else {
-    room.peers[user] = {
+    room.peers[user] = new Peer({
       recvTransport,
-      consumers: [],
-      producer: null,
-      sendTransport: null, //todo this
-    };
+    });
   }
 
   if (role === "CONSUMER") {
@@ -171,12 +168,9 @@ export const handleNewRoom: MessageHandler<
   if (role === "CONSUMER") {
     const recvTransport = await createTransport("recv", room.router, host);
 
-    room.peers[host] = {
+    room.peers[host] = new Peer({
       recvTransport,
-      sendTransport: null,
-      consumers: [],
-      producer: null,
-    };
+    });
 
     return;
   }
@@ -190,12 +184,9 @@ export const handleNewRoom: MessageHandler<
   ]);
   */
 
-  room.peers[host] = {
-    recvTransport: null,
+  room.peers[host] = new Peer({
     sendTransport,
-    consumers: [],
-    producer: null,
-  };
+  });
 
   respond!({
     routerRtpCapabilities: rooms[roomId].router.rtpCapabilities,
@@ -344,7 +335,6 @@ export const handleNewEgress: MessageHandler<
 };
 
 export const handleNewProducer = async (data: INewProducer) => {
-  console.log("received new producer event");
   const { userId, roomId, rtpCapabilities } = data;
 
   const pipeProducer = await VideoService.pipeToIngress.produce({
@@ -373,12 +363,10 @@ export const handleNewProducer = async (data: INewProducer) => {
       userId
     );
 
-    peers[userId] = {
-      sendTransport: null,
+    peers[userId] = new Peer({
       recvTransport,
       producer: pipeProducer,
-      consumers: [],
-    };
+    });
   } else {
     peers[userId].producer = pipeProducer;
   }

@@ -1,8 +1,8 @@
 import { Router } from "mediasoup/lib/Router";
 import { Worker } from "mediasoup/lib/Worker";
-import { IPeer } from "./peer";
+import { Peer } from "./peer";
 
-type Peers = Record<string, IPeer>;
+type Peers = Record<string, Peer>;
 
 export interface IRoom {
   router: Router;
