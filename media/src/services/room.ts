@@ -45,16 +45,16 @@ export const handleNewSpeaker: MessageHandler<
   }
 
   const peer = room.peers[speaker];
-  peer.sendTransport?.close();
+  peer.sendTransport.audio?.close();
 
-  const transport = await createTransport("send", room.router, speaker);
-  peer.sendTransport = transport;
-
-  const sendTransportOptions = getOptionsFromTransport(transport);
+  const audioTransport = await createTransport("send", room.router, speaker);
+  peer.sendTransport.audio = audioTransport;
 
   respond!({
     rtpCapabilities: room.router.rtpCapabilities,
-    sendTransportOptions,
+    sendTransportOptions: {
+      audio: getOptionsFromTransport(audioTransport),
+    },
   });
 };
 
