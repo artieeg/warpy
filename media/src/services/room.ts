@@ -197,7 +197,7 @@ export const handleNewRoom: MessageHandler<
 };
 
 export const handleConnectTransport = async (data: IConnectTransport) => {
-  const { roomId, user, dtlsParameters, direction } = data;
+  const { roomId, user, dtlsParameters, direction, mediaKind } = data;
 
   const room = rooms[roomId];
 
@@ -205,9 +205,14 @@ export const handleConnectTransport = async (data: IConnectTransport) => {
     return; //TODO;;; send error
   }
 
+  //Need to specify media kind for "send" transports
+  if (!mediaKind && direction === "send") {
+    return;
+  }
+
   const peer = room.peers[user];
   const transport =
-    direction === "send" ? peer.sendTransport : peer.recvTransport;
+    direction === "send" ? peer.sendTransport[mediaKind!] : peer.recvTransport;
 
   if (!transport) {
     return;

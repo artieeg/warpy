@@ -1,5 +1,5 @@
 import { MediaDirection } from "@media/types";
-import { RtpCapabilities } from "mediasoup/lib/RtpParameters";
+import { MediaKind } from "mediasoup/lib/RtpParameters";
 import { DtlsParameters } from "mediasoup/lib/WebRtcTransport";
 
 export interface IConnectTransport {
@@ -7,4 +7,5 @@ export interface IConnectTransport {
   user: string;
   dtlsParameters: DtlsParameters;
   direction: MediaDirection;
+  mediaKind?: MediaKind;
 }

@@ -11,6 +11,7 @@ interface ICreateTransportParams {
   direction: MediaDirection;
   options: any;
   isProducer: boolean;
+  mediaKind?: MediaKind;
 }
 
 export const MediaStreamingContext = createContext<any>({});
@@ -26,7 +27,7 @@ export const MediaStreamingProvider = ({children}: any) => {
   const ws = useWebSocketContext();
 
   const createTransport = async (params: ICreateTransportParams) => {
-    const {roomId, device, direction, options, isProducer} = params;
+    const {roomId, device, direction, options, isProducer, mediaKind} = params;
 
     const transportOptions =
       direction === 'recv'
@@ -52,6 +53,7 @@ export const MediaStreamingProvider = ({children}: any) => {
           dtlsParameters,
           direction,
           roomId: roomId,
+          mediaKind,
         },
         isProducer,
       );
@@ -130,6 +132,7 @@ export const MediaStreamingProvider = ({children}: any) => {
       options: {
         sendTransportOptions: options.sendTransportOptions[kind],
       },
+      mediaKind: kind,
       isProducer: true,
     });
 
