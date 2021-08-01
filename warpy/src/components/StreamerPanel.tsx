@@ -2,17 +2,20 @@ import React from 'react';
 import {StyleSheet} from 'react-native';
 import {ClapButton} from './ClapsButton';
 import {WarpButton} from './WarpButton';
-import {RaiseHandButton} from './RaiseHandButton';
 import {ShowParticipantsButton} from './ShowParticipantsButton';
 import {IStreamPanelBase, StreamPanelBase} from './StreamPanelBase';
+import {ToggleMicButton} from './ToggleMicButton';
 
 interface IStreamerPanel extends IStreamPanelBase {
   participantsCount: number;
   onOpenParticipantsList: () => any;
+  micIsOn: boolean;
+  onMicToggle: (on: boolean) => any;
 }
 
 export const StreamerPanel = (props: IStreamerPanel) => {
-  const {participantsCount, onOpenParticipantsList} = props;
+  const {participantsCount, onOpenParticipantsList, onMicToggle, micIsOn} =
+    props;
 
   return (
     <StreamPanelBase {...props}>
@@ -23,7 +26,7 @@ export const StreamerPanel = (props: IStreamerPanel) => {
         count={participantsCount}
         onOpenParticipantsList={onOpenParticipantsList}
       />
-      <RaiseHandButton onPress={() => {}} />
+      <ToggleMicButton onPress={() => onMicToggle(!micIsOn)} on={micIsOn} />
     </StreamPanelBase>
   );
 };

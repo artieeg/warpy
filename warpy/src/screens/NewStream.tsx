@@ -131,6 +131,7 @@ export const NewStream = () => {
   const [viewers, fetchViewers] = useStreamViewers(streamId!);
   const [panelVisible, setPanelVisible] = useState(true);
   const usersRaisingHand = useSpeakingRequests(streamId!);
+  const [micIsOn, setMicIsOn] = useState(true);
 
   const showParticipantsModal = !panelVisible && !selectedUser;
   const showPanel = panelVisible && !selectedUser;
@@ -158,6 +159,8 @@ export const NewStream = () => {
           speakers={speakers}
           participantsCount={participantsCount}
           onOpenParticipantsList={() => setPanelVisible(false)}
+          micIsOn={micIsOn}
+          onMicToggle={setMicIsOn}
         />
       )}
       <ParticipantsModal
