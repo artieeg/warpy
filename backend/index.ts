@@ -29,6 +29,7 @@ const main = async () => {
 
   ConversationService.init();
   FeedsCacheService.init();
+  FeedService.init();
 
   StreamService.observer.on("stream-new", (stream: IStream) => {
     FeedService.onNewCandidate(stream);

@@ -3,12 +3,21 @@ import {
   FeedsCacheService,
   ParticipantService,
   CandidateStatsService,
+  MessageService,
 } from ".";
 
 interface IGetFeed {
   user: string;
   hub?: string;
 }
+
+export const init = () => {
+  MessageService.on("user-disconnected", (data: any) => {
+    const { user } = data;
+
+    onUserDisconnected(user);
+  });
+};
 
 export const getFeed = async (params: IGetFeed) => {
   const { user, hub } = params;
@@ -71,4 +80,8 @@ export const onNewCandidate = async (data: IStream) => {
 export const onRemoveCandidate = async (id: string) => {
   await Candidate.deleteOne({ _id: id });
   await CandidateStatsService.deleteStats(id);
+};
+
+export const onUserDisconnected = async (user: string) => {
+  await Candidate.deleteOne({ owner: user });
 };
