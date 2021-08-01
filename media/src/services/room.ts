@@ -254,7 +254,9 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
   const { peers } = room;
 
   const peer = peers[user];
-  const { sendTransport: transport, producer, consumers } = peer;
+  const producer = peer.producer;
+  const transport = peer.getSendTransport(kind);
+  //const { sendTransport: transport, producer } = peer;
 
   if (!transport) {
     return; //TODO: Send error

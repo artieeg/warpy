@@ -1,6 +1,7 @@
 import { Consumer } from "mediasoup/lib/Consumer";
 import { Producer } from "mediasoup/lib/Producer";
 import { Transport } from "mediasoup/lib/Transport";
+import { MediaKind } from "mediasoup/lib/types";
 
 export interface IPeer {
   sendTransport: {
@@ -29,5 +30,9 @@ export class Peer implements IPeer {
     this.recvTransport = data.recvTransport || null;
     this.producer = data.producer || null;
     this.consumers = data.consumers || [];
+  }
+
+  getSendTransport(kind: MediaKind) {
+    return this.sendTransport[kind];
   }
 }
