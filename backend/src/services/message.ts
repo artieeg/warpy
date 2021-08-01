@@ -94,9 +94,14 @@ const handleConnectTransport = async () => {
   const sub = nc.subscribe(subjects.conversations.transport.try_connect);
 
   for await (const msg of sub) {
-    const { transportId, dtlsParameters, direction, roomId, user } = jc.decode(
-      msg.data
-    ) as any;
+    const {
+      transportId,
+      dtlsParameters,
+      direction,
+      roomId,
+      user,
+      mediaKind,
+    } = jc.decode(msg.data) as any;
 
     const data: IConnectMediaTransport = {
       transportId,
@@ -104,6 +109,7 @@ const handleConnectTransport = async () => {
       direction,
       roomId,
       user,
+      mediaKind,
     };
 
     eventEmitter.emit("connect-transport", data);

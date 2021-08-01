@@ -264,6 +264,7 @@ export const handleConnectTransport = async (data: IConnectMediaTransport) => {
     return;
   }
 
+  console.log("transport data", data);
   MessageService.sendConnectTransport(node, data);
 };
 

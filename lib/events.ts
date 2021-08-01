@@ -64,6 +64,7 @@ export interface IConnectMediaTransport {
   transportId: string;
   dtlsParameters: DtlsParameters;
   direction: MediaDirection;
+  mediaKind?: MediaKind;
   roomId: string;
   user: string;
 }

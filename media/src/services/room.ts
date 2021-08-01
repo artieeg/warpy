@@ -205,6 +205,8 @@ export const handleConnectTransport = async (data: IConnectTransport) => {
     return; //TODO;;; send error
   }
 
+  console.log("direction/mediakind", direction, mediaKind);
+
   //Need to specify media kind for "send" transports
   if (!mediaKind && direction === "send") {
     return;
@@ -254,14 +256,15 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
   const { peers } = room;
 
   const peer = peers[user];
-  const producer = peer.producer;
   const transport = peer.getSendTransport(kind);
   //const { sendTransport: transport, producer } = peer;
 
   if (!transport) {
     return; //TODO: Send error
   }
+  console.log("transport is here");
 
+  //const producer = peer.producer;
   //TODO: Close previous producer if there's one
 
   let resultId = null;
