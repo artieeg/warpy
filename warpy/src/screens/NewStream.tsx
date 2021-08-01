@@ -53,7 +53,8 @@ export const NewStream = () => {
   });
 
   const {width, height} = useWindowDimensions();
-  const localStream = useLocalStream('video');
+  const localVideoStream = useLocalStream('video');
+  const localAudioStream = useLocalStream('audio');
 
   useEffect(() => {
     ws.once('created-room', (data: any) => {
@@ -96,19 +97,37 @@ export const NewStream = () => {
   }, [recvTransport, media, ws]);
 
   useEffect(() => {
-    if (sendRoomData && streamId && localStream) {
+    if (sendRoomData && streamId && localVideoStream && localAudioStream) {
       media
         .initSendDevice(sendRoomData.routerRtpCapabilities)
         .then(async () => {
           await media.sendMediaStream(
-            localStream,
+            localVideoStream,
             streamId,
             sendRoomData,
             'video',
           );
+
+          setTimeout(async () => {
+            console.log('sending audio stream');
+            await media.sendMediaStream(
+              localAudioStream,
+              streamId,
+              sendRoomData,
+              'audio',
+            );
+          }, 2000);
         });
     }
-  }, [streamId, sendRoomData, localStream, userId, media, ws]);
+  }, [
+    streamId,
+    localAudioStream,
+    sendRoomData,
+    localVideoStream,
+    userId,
+    media,
+    ws,
+  ]);
 
   const onStart = useCallback(async () => {
     const newStreamId = await createStream(title, hub);
@@ -144,11 +163,11 @@ export const NewStream = () => {
 
   return (
     <View>
-      {localStream && (
+      {localVideoStream && (
         <RTCView
           style={localStreamStyle}
           objectFit="cover"
-          streamURL={localStream.toURL()}
+          streamURL={localVideoStream.toURL()}
         />
       )}
       {streamId && <StopStream onPress={onStopStream} />}

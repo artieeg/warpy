@@ -128,7 +128,7 @@ export const MediaStreamingProvider = ({children}: any) => {
       device: sendDevice,
       direction: 'send',
       options: {
-        sendTransportOptions: options.sendTransportOptions,
+        sendTransportOptions: options.sendTransportOptions[kind],
       },
       isProducer: true,
     });

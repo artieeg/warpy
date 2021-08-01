@@ -9,7 +9,7 @@ import {
 export const useLocalStream = (kind: MediaKind) => {
   const [localStream, setLocalStream] = useState<MediaStream>();
 
-  const getVideoSource = useCallback(async () => {
+  const getMediaSource = useCallback(async () => {
     const videoContstraints: MediaTrackConstraints = {
       facingMode: 'user',
       mandatory: {
@@ -35,8 +35,8 @@ export const useLocalStream = (kind: MediaKind) => {
   }, [kind]);
 
   useEffect(() => {
-    getVideoSource();
-  }, [getVideoSource]);
+    getMediaSource();
+  }, [getMediaSource]);
 
   return localStream;
 };
