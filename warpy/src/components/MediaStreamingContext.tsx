@@ -176,21 +176,17 @@ export const MediaStreamingProvider = ({children}: any) => {
       ws.once('recv-tracks-response', async (data: any) => {
         const {consumerParams} = data;
 
-        const consumersPromises: Promise<any>[] = [];
-
-        consumerParams.forEach(async (params: any) => {
-          const {consumerParameters} = params;
-          const promise = transport.consume({
-            ...consumerParameters,
-            appData: {
-              user,
-              producerId: consumerParameters.producerId,
-              mediaTag: 'video-' + Math.random(),
-            },
-          });
-
-          consumersPromises.push(promise);
-        });
+        const consumersPromises: Promise<Consumer>[] = consumerParams.map(
+          (params: any) =>
+            transport.consume({
+              ...params.consumerParameters,
+              appData: {
+                user,
+                producerId: params.consumerParameters.producerId,
+                mediaTag: 'media-' + Math.random(),
+              },
+            }),
+        );
 
         const consumers = await Promise.all(consumersPromises);
 
