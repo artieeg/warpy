@@ -141,6 +141,11 @@ export const MediaStreamingProvider = ({children}: any) => {
         ? localStream.getVideoTracks()[0]
         : localStream.getAudioTracks()[0];
 
+    if (kind === 'audio') {
+      console.log('audio track info');
+      console.log(localStream.getAudioTracks());
+    }
+
     await sendTransport.produce({
       track,
       appData: {mediaTag: 'media'},

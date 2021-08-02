@@ -17,6 +17,7 @@ import {Consumer} from 'mediasoup-client/lib/types';
 import {ParticipantsModal} from './ParticipantsModal';
 import {ViewerStreamPanel} from './ViewerStreamPanel';
 import {ParticipantInfoModal} from './ParticipantInfoModal';
+import {SpeakerStreamPanel} from './SpeakerStreamPanel';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -33,6 +34,8 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const id = stream.id;
   const ws = useWebSocketContext();
   const media = useMediaStreamingContext();
+  const [isSpeaker, setIsSpeaker] = useState(false);
+  const [micIsOn, setMicIsOn] = useState(true);
 
   //Display a participant info modal
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
@@ -48,7 +51,6 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const [viewers, fetchViewers] = useStreamViewers(stream.id);
   const usersRaisingHand = useSpeakingRequests();
 
-  console.log('speakers, viewers', speakers, viewers);
   useEffect(() => {
     if (recvTransport) {
       media
@@ -71,6 +73,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
 
   useEffect(() => {
     const onSpeakingAllowed = async (options: any) => {
+      setIsSpeaker(true);
       await media.initSendDevice(options.media.rtpCapabilities);
       media.sendMediaStream(audioStream!, id, options.media, 'audio');
     };
@@ -111,14 +114,29 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
           streamURL={mediaStream.toURL()}
         />
       )}
-      <ViewerStreamPanel
-        title={stream.title}
-        visible={panelVisible}
-        speakers={speakers}
-        participantsCount={participantsCount}
-        onRaiseHand={raiseHand}
-        onOpenParticipantsList={() => setPanelVisible(false)}
-      />
+
+      {isSpeaker && (
+        <SpeakerStreamPanel
+          title={stream.title}
+          visible={panelVisible}
+          speakers={speakers}
+          participantsCount={participantsCount}
+          onOpenParticipantsList={() => setPanelVisible(false)}
+          micIsOn={micIsOn}
+          onMicToggle={() => setMicIsOn(prev => !prev)}
+        />
+      )}
+
+      {!isSpeaker && (
+        <ViewerStreamPanel
+          title={stream.title}
+          visible={panelVisible}
+          speakers={speakers}
+          participantsCount={participantsCount}
+          onRaiseHand={raiseHand}
+          onOpenParticipantsList={() => setPanelVisible(false)}
+        />
+      )}
 
       <ParticipantInfoModal
         onHide={() => setSelectedUser(null)}
