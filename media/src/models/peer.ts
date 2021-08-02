@@ -9,7 +9,10 @@ export interface IPeer {
     audio: Transport | null;
   };
   recvTransport: Transport | null;
-  producer: Producer | null;
+  producer: {
+    audio: Producer | null;
+    video: Producer | null;
+  };
   consumers: Consumer[];
 }
 
@@ -19,7 +22,10 @@ export class Peer implements IPeer {
     audio: Transport | null;
   };
   recvTransport: Transport | null;
-  producer: Producer | null;
+  producer: {
+    audio: Producer | null;
+    video: Producer | null;
+  };
   consumers: Consumer[];
 
   constructor(data: Partial<IPeer>) {
@@ -28,7 +34,10 @@ export class Peer implements IPeer {
       audio: null,
     };
     this.recvTransport = data.recvTransport || null;
-    this.producer = data.producer || null;
+    this.producer = data.producer || {
+      video: null,
+      audio: null,
+    };
     this.consumers = data.consumers || [];
   }
 

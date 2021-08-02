@@ -94,17 +94,37 @@ export const handleRecvTracksRequest: MessageHandler<
     }
 
     try {
-      const { producer } = peer;
-      consumerParams.push(
-        await createConsumer(
-          router,
-          producer,
-          rtpCapabilities,
-          transport,
-          user,
-          peers[peerId]
-        )
-      );
+      //const { producer } = peer;
+      const [audioProducer, videoProducer] = [
+        peer.producer.audio,
+        peer.producer.video,
+      ];
+
+      if (videoProducer) {
+        consumerParams.push(
+          await createConsumer(
+            router,
+            videoProducer,
+            rtpCapabilities,
+            transport,
+            user,
+            peers[peerId]
+          )
+        );
+      }
+
+      if (audioProducer) {
+        consumerParams.push(
+          await createConsumer(
+            router,
+            audioProducer,
+            rtpCapabilities,
+            transport,
+            user,
+            peers[peerId]
+          )
+        );
+      }
     } catch (e) {
       continue;
     }
@@ -303,7 +323,7 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
     return;
   }
 
-  peer.producer = newProducer;
+  peer.producer[kind] = newProducer;
   resultId = newProducer.id;
 
   MessageService.sendMessageToUser(user, {
@@ -346,7 +366,7 @@ export const handleNewEgress: MessageHandler<
 };
 
 export const handleNewProducer = async (data: INewProducer) => {
-  const { userId, roomId, rtpCapabilities } = data;
+  const { userId, roomId, rtpCapabilities, kind } = data;
 
   const pipeProducer = await VideoService.pipeToIngress.produce({
     id: data.id,
@@ -376,10 +396,13 @@ export const handleNewProducer = async (data: INewProducer) => {
 
     peers[userId] = new Peer({
       recvTransport,
-      producer: pipeProducer,
+      producer: {
+        audio: kind === "audio" ? pipeProducer : null,
+        video: kind === "video" ? pipeProducer : null,
+      },
     });
   } else {
-    peers[userId].producer = pipeProducer;
+    peers[userId].producer[kind] = pipeProducer;
   }
 
   for (const peerId in peers) {
