@@ -8,8 +8,8 @@ import {
 } from '@app/hooks';
 import {createStream} from '@app/services';
 import {RTCView} from 'react-native-webrtc';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, StyleSheet, useWindowDimensions, Animated} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {View, StyleSheet, useWindowDimensions} from 'react-native';
 import {
   StopStream,
   Button,
@@ -17,18 +17,9 @@ import {
   useWebSocketContext,
   ParticipantsModal,
   ParticipantInfoModal,
-  Text,
 } from '@app/components';
-/*
-import {
-  consumeRemoteStream,
-  initSendDevice,
-  sendMediaStream,
-} from '@app/services/video';
- */
 import {useRecvTransport} from '@app/hooks/useRecvTransport';
 import {StreamerPanel} from '@app/components/StreamerPanel';
-import MaskedView from '@react-native-community/masked-view';
 
 export const NewStream = () => {
   const [streamId, setStreamId] = useState<string>();
@@ -42,7 +33,6 @@ export const NewStream = () => {
   //Display a participant info modal
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
 
-  const [userSpeakRequest, setUserSpeakRequest] = useState<string>();
   const ws = useWebSocketContext();
   const media = useMediaStreamingContext();
 
@@ -53,8 +43,7 @@ export const NewStream = () => {
   });
 
   const {width, height} = useWindowDimensions();
-  const localVideoStream = useLocalStream('video');
-  const localAudioStream = useLocalStream('audio');
+  const localMediaStream = useLocalStream('video');
 
   useEffect(() => {
     ws.once('created-room', (data: any) => {
@@ -64,16 +53,6 @@ export const NewStream = () => {
     ws.once('@media/recv-connect-params', (data: any) => {
       setRecvRoomData(data);
     });
-
-    const onRaiseHand = (data: any) => {
-      setUserSpeakRequest(data.user);
-    };
-
-    ws.on('raise-hand', onRaiseHand);
-
-    return () => {
-      ws.off('raise-hand', onRaiseHand);
-    };
   }, [streamId, ws]);
 
   useEffect(() => {
@@ -97,47 +76,33 @@ export const NewStream = () => {
   }, [recvTransport, media, ws]);
 
   useEffect(() => {
-    if (sendRoomData && streamId && localVideoStream && localAudioStream) {
+    if (sendRoomData && streamId && localMediaStream) {
       media
         .initSendDevice(sendRoomData.routerRtpCapabilities)
         .then(async () => {
-          await media.sendMediaStream(
-            localVideoStream,
-            streamId,
-            sendRoomData,
-            'video',
-          );
+          await Promise.all([
+            media.sendMediaStream(
+              localMediaStream,
+              streamId,
+              sendRoomData,
+              'video',
+            ),
 
-          setTimeout(async () => {
-            console.log('sending audio stream');
-            await media.sendMediaStream(
-              localAudioStream,
+            media.sendMediaStream(
+              localMediaStream,
               streamId,
               sendRoomData,
               'audio',
-            );
-          }, 2000);
+            ),
+          ]);
         });
     }
-  }, [
-    streamId,
-    localAudioStream,
-    sendRoomData,
-    localVideoStream,
-    userId,
-    media,
-    ws,
-  ]);
+  }, [streamId, sendRoomData, localMediaStream, userId, media, ws]);
 
   const onStart = useCallback(async () => {
     const newStreamId = await createStream(title, hub);
     setStreamId(newStreamId);
   }, [title, hub]);
-
-  const onAllowSpeaking = () => {
-    ws.sendAllowSpeaker(streamId!, userSpeakRequest!);
-    setUserSpeakRequest(undefined);
-  };
 
   const onStopStream = () => {
     ws.sendStopStream({
@@ -149,10 +114,9 @@ export const NewStream = () => {
   const speakers = useStreamSpeakers(streamId!);
   const [viewers, fetchViewers] = useStreamViewers(streamId!);
   const [panelVisible, setPanelVisible] = useState(true);
-  const usersRaisingHand = useSpeakingRequests(streamId!);
+  const usersRaisingHand = useSpeakingRequests();
   const [micIsOn, setMicIsOn] = useState(true);
 
-  const showParticipantsModal = !panelVisible && !selectedUser;
   const showPanel = panelVisible && !selectedUser;
 
   const localStreamStyle = {
@@ -163,11 +127,11 @@ export const NewStream = () => {
 
   return (
     <View>
-      {localVideoStream && (
+      {localMediaStream && (
         <RTCView
           style={localStreamStyle}
           objectFit="cover"
-          streamURL={localVideoStream.toURL()}
+          streamURL={localMediaStream.toURL()}
         />
       )}
       {streamId && <StopStream onPress={onStopStream} />}

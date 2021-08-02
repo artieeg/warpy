@@ -22,7 +22,9 @@ export const useLocalStream = (kind: MediaKind) => {
 
     //Why in the world getUserMedia returns boolean | MediaStream type??
     const mediaStream = await mediaDevices.getUserMedia({
-      audio: true,
+      audio: {
+        sampleRate: 48000,
+      } as any,
       video: kind === 'video' ? videoContstraints : false,
     });
 
