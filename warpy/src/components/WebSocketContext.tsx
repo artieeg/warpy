@@ -8,6 +8,7 @@ type WebSocketEvent =
   | 'new-viewer'
   | 'raise-hand'
   | 'user-left'
+  | 'whoami'
   | 'new-speaker'
   | 'viewers'
   | 'room-info'
@@ -82,6 +83,15 @@ export class ProvidedWebSocket {
       JSON.stringify({
         event: 'auth',
         data: {token},
+      }),
+    );
+  };
+
+  whoami = () => {
+    this.socket.send(
+      JSON.stringify({
+        event: 'whoami',
+        data: {},
       }),
     );
   };

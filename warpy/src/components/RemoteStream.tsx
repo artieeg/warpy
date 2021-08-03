@@ -25,7 +25,7 @@ interface IRemoteStreamProps {
 
 export const RemoteStream = (props: IRemoteStreamProps) => {
   const {stream} = props;
-  const [user] = useAppUser();
+  const user = useAppUser();
   const userId = user!.id;
   const [mediaStream, setMediaStream] = useState<MediaStream>();
   const audioStream = useLocalStream('audio');

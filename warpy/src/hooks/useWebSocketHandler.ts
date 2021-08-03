@@ -1,6 +1,6 @@
 import {ProvidedWebSocket} from '@app/components';
-import {Participant} from '@app/models';
-import {useParticipantsStore} from '@app/stores';
+import {Participant, User} from '@app/models';
+import {useParticipantsStore, useUserStore} from '@app/stores';
 import {useEffect} from 'react';
 
 export const useWebSocketHandler = (ws: ProvidedWebSocket) => {
@@ -53,6 +53,15 @@ export const useWebSocketHandler = (ws: ProvidedWebSocket) => {
         participants: [...speakers, ...raisedHands],
         count,
         page: -1,
+      });
+    });
+
+    ws.on('whoami', (data: any) => {
+      const {user} = data;
+      console.log('received user info', user);
+
+      useUserStore.getState().set({
+        user: User.fromJSON(user),
       });
     });
 

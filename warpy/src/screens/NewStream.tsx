@@ -25,7 +25,7 @@ export const NewStream = () => {
   const [streamId, setStreamId] = useState<string>();
   const [title, setTitle] = useState('test stream');
   const [hub, setHub] = useState('60ec569668b42c003304630b');
-  const [user] = useAppUser();
+  const user = useAppUser();
   const userId: string = user!.id;
   const [sendRoomData, setSendRoomData] = useState<any>();
   const [recvRoomData, setRecvRoomData] = useState<any>();

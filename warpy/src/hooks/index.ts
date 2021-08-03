@@ -1,4 +1,3 @@
-export * from './user';
 export * from './feed';
 export * from './useLocalStream';
 export * from './useRecvTransport';
@@ -9,3 +8,4 @@ export * from './useSpeakingRequests';
 export * from './useSpeakingRequests';
 export * from './useWebSocketHandler';
 export * from './useStreamParticipant';
+export * from './useAppUser';

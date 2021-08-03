@@ -24,7 +24,7 @@ export const ParticipantInfoModal = (props: IParticipantInfoModal) => {
     }
   }, [id]);
 
-  const [appUser] = useAppUser();
+  const appUser = useAppUser();
   const appUserId = appUser!.id;
 
   const participant = useStreamParticipant(id!);

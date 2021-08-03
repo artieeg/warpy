@@ -11,21 +11,19 @@ export const Splash = () => {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
 
-  const [user, error] = useAppUser();
+  const user = useAppUser();
   const ws = useContext(WebSocketContext);
 
   useEffect(() => {
     if (user) {
       navigation.navigate('Feed');
     }
-  }, [user, error, navigation]);
+  }, [user, navigation]);
 
   useEffect(() => {
     loadTokens()
       .then(() => {
-        //authSocket(accessToken);
         ws?.auth(accessToken);
-        dispatch(getCurrentUser());
       })
       .catch(() => navigation.navigate('DevSignUp'));
   }, [navigation, dispatch, ws]);
