@@ -52,6 +52,10 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const usersRaisingHand = useSpeakingRequests();
 
   useEffect(() => {
+    audioStream?.getAudioTracks().forEach(audio => (audio.enabled = micIsOn));
+  }, [audioStream, micIsOn]);
+
+  useEffect(() => {
     if (recvTransport) {
       media
         .consumeRemoteStreams(userId, id, recvTransport)
