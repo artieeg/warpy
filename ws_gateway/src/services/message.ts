@@ -9,6 +9,7 @@ if (!NATS) {
 export const BackendEvents = {
   "stream-stop": "stream.stop",
   "user-disconnected": "user.disconnected",
+  "whoami-request": "user.whoami-request",
 };
 
 type EventAlias = keyof typeof BackendEvents;

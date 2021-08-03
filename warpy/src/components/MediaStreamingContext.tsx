@@ -7,7 +7,7 @@ import {
   Transport,
 } from 'mediasoup-client/lib/types';
 import React, {createContext, useContext, useState} from 'react';
-import {MediaStream, MediaStreamTrack} from 'react-native-webrtc';
+import {MediaStream} from 'react-native-webrtc';
 import {useWebSocketContext} from './WebSocketContext';
 
 interface ICreateTransportParams {
@@ -30,8 +30,6 @@ let sendDevice = new Device({handlerName: 'ReactNative'});
 
 export const MediaStreamingProvider = ({children}: any) => {
   const ws = useWebSocketContext();
-
-  const [producers, setProducers] = useState<Producer[]>([]);
 
   const createTransport = async (params: ICreateTransportParams) => {
     const {roomId, device, direction, options, isProducer, mediaKind} = params;
@@ -157,8 +155,6 @@ export const MediaStreamingProvider = ({children}: any) => {
       track,
       appData: {kind},
     });
-
-    setProducers(prev => [...prev, newProducer]);
   };
 
   const consumeRemoteStream = async (

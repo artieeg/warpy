@@ -15,6 +15,7 @@ import { Context, Handlers } from "@ws_gateway/types";
 import ws from "ws";
 import { MessageService, PingPongService } from "@ws_gateway/services";
 import { onConnectTransport } from "@ws_gateway/handlers/connect_transport";
+import { onWhoAmI } from "@ws_gateway/handlers/onWhoAmI";
 
 const PORT = Number.parseInt(process.env.PORT || "10000");
 
@@ -34,6 +35,7 @@ const handlers: Handlers = {
   "recv-tracks-request": onRecvTracksRequest,
   "request-viewers": onViewersRequest,
   "stream-stop": onStreamStop,
+  whoami: onWhoAmI,
 };
 
 const main = async () => {
