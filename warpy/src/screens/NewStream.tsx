@@ -125,6 +125,12 @@ export const NewStream = () => {
     height,
   };
 
+  useEffect(() => {
+    localMediaStream
+      ?.getAudioTracks()
+      .forEach(audio => (audio.enabled = micIsOn));
+  }, [micIsOn, localMediaStream]);
+
   return (
     <View>
       {localMediaStream && (
