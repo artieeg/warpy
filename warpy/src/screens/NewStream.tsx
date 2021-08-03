@@ -29,6 +29,7 @@ export const NewStream = () => {
   const userId: string = user!.id;
   const [sendRoomData, setSendRoomData] = useState<any>();
   const [recvRoomData, setRecvRoomData] = useState<any>();
+  const [userFacingMode, setUserFacingMode] = useState(true);
 
   //Display a participant info modal
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
@@ -44,6 +45,13 @@ export const NewStream = () => {
 
   const {width, height} = useWindowDimensions();
   const localMediaStream = useLocalStream('video');
+
+  useEffect(() => {
+    const videoTrack = localMediaStream?.getVideoTracks()[0];
+    if (videoTrack) {
+      (videoTrack as any)._switchCamera();
+    }
+  }, [userFacingMode, localMediaStream]);
 
   useEffect(() => {
     ws.once('created-room', (data: any) => {
@@ -150,6 +158,7 @@ export const NewStream = () => {
           onOpenParticipantsList={() => setPanelVisible(false)}
           micIsOn={micIsOn}
           onMicToggle={setMicIsOn}
+          onFlipCamera={() => setUserFacingMode(prev => !prev)}
         />
       )}
       <ParticipantsModal

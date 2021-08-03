@@ -11,16 +11,22 @@ interface IStreamerPanel extends IStreamPanelBase {
   onOpenParticipantsList: () => any;
   micIsOn: boolean;
   onMicToggle: (on: boolean) => any;
+  onFlipCamera: () => any;
 }
 
 export const StreamerPanel = (props: IStreamerPanel) => {
-  const {participantsCount, onOpenParticipantsList, onMicToggle, micIsOn} =
-    props;
+  const {
+    participantsCount,
+    onOpenParticipantsList,
+    onFlipCamera,
+    onMicToggle,
+    micIsOn,
+  } = props;
 
   return (
     <StreamPanelBase {...props}>
       <OpenStatsButton style={styles.spaceRight} />
-      <FlipCameraButton />
+      <FlipCameraButton onPress={onFlipCamera} />
       <ShowParticipantsButton
         style={styles.spaceRight}
         count={participantsCount}

@@ -1,8 +1,13 @@
 import {MediaDirection} from '@app/types';
 import {Device} from 'mediasoup-client';
-import {Consumer, MediaKind, Transport} from 'mediasoup-client/lib/types';
-import React, {createContext, useContext} from 'react';
-import {MediaStream} from 'react-native-webrtc';
+import {
+  Consumer,
+  MediaKind,
+  Producer,
+  Transport,
+} from 'mediasoup-client/lib/types';
+import React, {createContext, useContext, useState} from 'react';
+import {MediaStream, MediaStreamTrack} from 'react-native-webrtc';
 import {useWebSocketContext} from './WebSocketContext';
 
 interface ICreateTransportParams {
@@ -25,6 +30,8 @@ let sendDevice = new Device({handlerName: 'ReactNative'});
 
 export const MediaStreamingProvider = ({children}: any) => {
   const ws = useWebSocketContext();
+
+  const [producers, setProducers] = useState<Producer[]>([]);
 
   const createTransport = async (params: ICreateTransportParams) => {
     const {roomId, device, direction, options, isProducer, mediaKind} = params;
@@ -146,10 +153,12 @@ export const MediaStreamingProvider = ({children}: any) => {
       console.log(localStream.getAudioTracks());
     }
 
-    await sendTransport.produce({
+    const newProducer = await sendTransport.produce({
       track,
-      appData: {mediaTag: 'media'},
+      appData: {kind},
     });
+
+    setProducers(prev => [...prev, newProducer]);
   };
 
   const consumeRemoteStream = async (
@@ -165,9 +174,6 @@ export const MediaStreamingProvider = ({children}: any) => {
         mediaTag: 'remote-media',
       },
     });
-
-    console.log('data', consumerParameters);
-    console.log('remote stream', consumer);
 
     return consumer;
   };
@@ -204,6 +210,7 @@ export const MediaStreamingProvider = ({children}: any) => {
       });
     });
   };
+
   return (
     <MediaStreamingContext.Provider
       value={{
