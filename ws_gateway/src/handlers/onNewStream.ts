@@ -1,7 +1,7 @@
 import { MessageService } from "@ws_gateway/services";
 import { Handler } from "@ws_gateway/types";
 
-export const onNewStream: Handler = (data, context) => {
+export const onNewStream: Handler = async (data, context) => {
   if (!context) {
     return;
   }

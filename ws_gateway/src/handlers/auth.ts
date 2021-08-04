@@ -2,7 +2,7 @@ import { MessageService } from "@ws_gateway/services";
 import { Handler } from "@ws_gateway/types";
 import { jwt } from "@ws_gateway/utils";
 
-export const onAuth: Handler = async (data, context) => {
+export const onAuth: Handler = async (data, context, rid) => {
   const { token } = data;
   const user = jwt.verifyAccessToken(token);
 
@@ -18,9 +18,19 @@ export const onAuth: Handler = async (data, context) => {
     }
   );
 
-  MessageService.sendBackendMessage("whoami-request", {
+  const response = await MessageService.sendBackendRequest("whoami-request", {
     user,
   });
+
+  context!.ws.send(
+    JSON.stringify({
+      rid,
+      event: "response",
+      data: {
+        user: response.user,
+      },
+    })
+  );
 
   listen();
 };

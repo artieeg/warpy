@@ -1,7 +1,7 @@
 import { MessageService } from "@ws_gateway/services";
 import { Handler } from "@ws_gateway/types";
 
-export const onRecvTracksRequest: Handler = (data, context?) => {
+export const onRecvTracksRequest: Handler = async (data, context?) => {
   const user = context?.user;
 
   if (!user) {

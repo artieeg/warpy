@@ -20,6 +20,15 @@ export const sendBackendMessage = (event: EventAlias, data: any) => {
   nc.publish(BackendEvents[event], jc.encode(data));
 };
 
+export const sendBackendRequest = async (
+  event: EventAlias,
+  data: any
+): Promise<any> => {
+  const response = await nc.request(BackendEvents[event], jc.encode(data));
+
+  return jc.decode(response.data) as any;
+};
+
 let nc: NatsConnection;
 const jc = JSONCodec();
 

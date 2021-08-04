@@ -60,9 +60,9 @@ const main = async () => {
     ws.on("message", (msg) => {
       const message: IMessage = JSON.parse(msg.toString());
 
-      const { event, data } = message;
+      const { event, data, rid } = message;
 
-      handlers[event](data, context);
+      handlers[event](data, context, rid);
     });
 
     ws.on("pong", () => {
