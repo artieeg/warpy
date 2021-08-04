@@ -1,6 +1,6 @@
 import React, {createContext, useContext} from 'react';
 import {EventEmitter} from 'events';
-import WebSocketConn from '@app/ws';
+import {WebSocketConn} from '@app/api_client';
 import {useWebSocketHandler} from '@app/hooks';
 
 type WebSocketEvent =
