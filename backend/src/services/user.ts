@@ -34,17 +34,15 @@ export const createDevUser = async (data: any) => {
   };
 };
 
-export const onWhoAmIRequest: MessageHandler<IWhoAmIRequest> = async (data) => {
+export const onWhoAmIRequest: MessageHandler<IWhoAmIRequest, any> = async (
+  data,
+  respond
+) => {
   const { user } = data;
 
   const userData = await getUserById(user);
 
-  MessageService.sendMessage(user, {
-    event: "whoami",
-    data: {
-      user: userData,
-    },
-  });
+  respond!({ user: userData });
 };
 
 export const getUserById = async (userId: string): Promise<BaseUser | null> => {

@@ -47,7 +47,9 @@ const subscribeTo = async (subject: Subject) => {
 
   for await (const msg of sub) {
     const message = jc.decode(msg.data) as any;
-    eventEmitter.emit(SubjectEventMap[subject], message);
+    eventEmitter.emit(SubjectEventMap[subject], message, (response: any) => {
+      msg.respond(jc.encode(response));
+    });
   }
 };
 
