@@ -6,6 +6,7 @@ import {useWebSocketHandler} from '@app/hooks';
 
 type WebSocketEvent =
   | 'new-viewer'
+  | 'stream-created'
   | 'raise-hand'
   | 'user-left'
   | 'whoami'
@@ -87,11 +88,14 @@ export class ProvidedWebSocket {
     );
   };
 
-  whoami = () => {
+  createNewStream = (title: string, hub: string) => {
     this.socket.send(
       JSON.stringify({
-        event: 'whoami',
-        data: {},
+        event: 'stream-new',
+        data: {
+          title,
+          hub,
+        },
       }),
     );
   };

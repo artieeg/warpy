@@ -108,9 +108,12 @@ export const NewStream = () => {
   }, [streamId, sendRoomData, localMediaStream, userId, media, ws]);
 
   const onStart = useCallback(async () => {
-    const newStreamId = await createStream(title, hub);
-    setStreamId(newStreamId);
-  }, [title, hub]);
+    ws.once('stream-created', (data: any) => {
+      setStreamId(data.stream);
+    });
+
+    ws.createNewStream(title, hub);
+  }, [title, hub, ws]);
 
   const onStopStream = () => {
     ws.sendStopStream({
