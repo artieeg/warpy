@@ -9,13 +9,13 @@ import {
   onRecvTracksRequest,
   onViewersRequest,
   onStreamStop,
+  onNewStream,
 } from "@ws_gateway/handlers";
 import { IMessage } from "@ws_gateway/models";
 import { Context, Handlers } from "@ws_gateway/types";
 import ws from "ws";
 import { MessageService, PingPongService } from "@ws_gateway/services";
 import { onConnectTransport } from "@ws_gateway/handlers/connect_transport";
-import { onWhoAmI } from "@ws_gateway/handlers/onWhoAmI";
 
 const PORT = Number.parseInt(process.env.PORT || "10000");
 
@@ -35,7 +35,7 @@ const handlers: Handlers = {
   "recv-tracks-request": onRecvTracksRequest,
   "request-viewers": onViewersRequest,
   "stream-stop": onStreamStop,
-  whoami: onWhoAmI,
+  "stream-new": onNewStream,
 };
 
 const main = async () => {

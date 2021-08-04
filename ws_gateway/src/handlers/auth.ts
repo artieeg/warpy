@@ -10,8 +10,17 @@ export const onAuth: Handler = async (data, context) => {
 
   console.log("authed new user", user);
 
-  await MessageService.subscribeForEvents(user, (message: any) => {
-    const { event, data } = message;
-    context!.ws.send(JSON.stringify({ event, data }));
+  const [sub, listen] = MessageService.subscribeForEvents(
+    user,
+    (message: any) => {
+      const { event, data } = message;
+      context!.ws.send(JSON.stringify({ event, data }));
+    }
+  );
+
+  MessageService.sendBackendMessage("whoami-request", {
+    user,
   });
+
+  listen();
 };

@@ -1,4 +1,4 @@
-import { connect, JSONCodec, NatsConnection } from "nats";
+import { connect, JSONCodec, NatsConnection, Subscription } from "nats";
 import { subjects } from "@warpy/lib";
 
 const NATS = process.env.NATS_ADDR;
@@ -9,6 +9,7 @@ if (!NATS) {
 export const BackendEvents = {
   "stream-stop": "stream.stop",
   "user-disconnected": "user.disconnected",
+  "stream-new": "stream.create",
   "whoami-request": "user.whoami-request",
 };
 
@@ -65,20 +66,21 @@ export const sendRecvTracksRequest = (data: any) => {
   nc.publish(subjects.conversations.track.try_get, payload);
 };
 
-export const subscribeForEvents = async (user: string, callback: any) => {
+export const subscribeForEvents = (
+  user: string,
+  callback: any
+): [Subscription, () => Promise<any>] => {
   console.log(`subbign for reply.user.${user}`);
 
   const sub = nc.subscribe(`reply.user.${user}`);
 
-  //const listen = new Promise<void>(async (resolve) => {
-  for await (const msg of sub) {
-    const data = jc.decode(msg.data) as any;
-    console.log("received a reply", data);
-    callback(data);
-  }
+  const listen = async () => {
+    for await (const msg of sub) {
+      const data = jc.decode(msg.data) as any;
+      console.log("received a reply", data);
+      callback(data);
+    }
+  };
 
-  //resolve();
-  //});
-
-  //return [sub, listen];
+  return [sub, listen];
 };
