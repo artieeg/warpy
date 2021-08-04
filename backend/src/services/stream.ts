@@ -1,7 +1,7 @@
 import { Stream } from "@app/models";
 import mongoose from "mongoose";
 import EventEmitter from "events";
-import { MessageService } from ".";
+import { MessageHandler } from "@warpy/lib";
 
 interface INewStream {
   owner: string;
@@ -11,7 +11,10 @@ interface INewStream {
 
 export const observer = new EventEmitter();
 
-export const onCreateNewStream = async (params: INewStream) => {
+export const onCreateNewStream: MessageHandler<INewStream, any> = async (
+  params,
+  respond
+) => {
   const { owner, title, hub } = params;
 
   const stream = new Stream({
@@ -24,11 +27,8 @@ export const onCreateNewStream = async (params: INewStream) => {
   await stream.save();
   observer.emit("stream-new", stream);
 
-  MessageService.sendMessage(owner, {
-    event: "stream-created",
-    data: {
-      stream: stream.id,
-    },
+  respond!({
+    stream: stream.id,
   });
 };
 
