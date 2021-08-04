@@ -1,9 +1,11 @@
 import config from '@app/config';
+import {EventEmitter} from 'events';
 import {nanoid} from 'nanoid';
 
 export class WebSocketConn {
+  observer = new EventEmitter();
   socket = new WebSocket(config.WS);
-  onmessage?: (message: any) => any;
+  //onmessage?: (message: any) => any;
   onopen?: () => any;
   onclose?: () => any;
   onerror?: (e: any) => any;
@@ -19,7 +21,10 @@ export class WebSocketConn {
       this.onerror && this.onerror(error);
     };
     this.socket.onmessage = (message: any) => {
-      this.onmessage && this.onmessage(message);
+      const {event, data} = message;
+
+      observer.emit(event, data);
+      //this.onmessage && this.onmessage(message);
     };
   }
 
@@ -50,5 +55,9 @@ export class WebSocketConn {
     };
 
     this.socket.send(JSON.stringify(payload));
+
+    return new Promise(resolve => {
+      this.observer.on(rid, response => resolve(response));
+    });
   }
 }
