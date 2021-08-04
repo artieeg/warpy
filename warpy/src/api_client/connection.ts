@@ -21,13 +21,9 @@ export class WebSocketConn {
       this.onerror && this.onerror(error);
     };
     this.socket.onmessage = (message: any) => {
-      const {event, rid, data} = message;
+      const {event, rid, data} = JSON.parse(message.data);
 
-      console.log('received message', message);
-      console.log('rid', rid);
-
-      this.observer.emit(rid ? event : rid, data);
-      //this.onmessage && this.onmessage(message);
+      this.observer.emit(rid ? rid : event, data);
     };
   }
 
@@ -57,10 +53,9 @@ export class WebSocketConn {
       data,
     };
 
-    this.socket.send(JSON.stringify(payload));
-
     return new Promise(resolve => {
-      this.observer.on(rid, response => resolve(response));
+      this.observer.once(rid, response => resolve(response));
+      this.socket.send(JSON.stringify(payload));
     });
   }
 }

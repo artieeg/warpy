@@ -1,6 +1,8 @@
 import {WebSocketContext} from '@app/components';
 import {useAppUser} from '@app/hooks';
+import {User} from '@app/models';
 import {accessToken, loadTokens} from '@app/services';
+import {useUserStore} from '@app/stores';
 import {useNavigation} from '@react-navigation/native';
 import React, {useContext, useEffect} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
@@ -20,8 +22,8 @@ export const Splash = () => {
   useEffect(() => {
     loadTokens()
       .then(async () => {
-        const user = await ws.user.auth(accessToken);
-        console.log('user', user);
+        const userData = await ws.user.auth(accessToken);
+        useUserStore.getState().set({user: User.fromJSON(userData)});
       })
       .catch(() => navigation.navigate('DevSignUp'));
   }, [navigation, ws]);
