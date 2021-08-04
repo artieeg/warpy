@@ -31,6 +31,15 @@ export class WebSocketConn {
     this.socket.send(message);
   }
 
+  publish(event: string, data: any) {
+    const payload = {
+      event,
+      data,
+    };
+
+    this.socket.send(JSON.stringify(payload));
+  }
+
   request(event: string, data: any) {
     const rid = nanoid();
 
