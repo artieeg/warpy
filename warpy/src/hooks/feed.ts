@@ -7,7 +7,6 @@ export const useFeed = () => {
 
   const ws = useWebSocketContext();
 
-  console.log(feed);
   useEffect(() => {
     ws.feed.get().then((data: any) => {
       setFeed(prev => [...prev, ...data.feed]);

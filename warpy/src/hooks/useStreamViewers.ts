@@ -19,11 +19,11 @@ export const useStreamViewers = (
   );
 
   const fetchViewers = () => {
-    ws.requestViewers(stream!, page + 1);
+    ws.stream.getViewers(stream!, page + 1);
   };
 
   useEffect(() => {
-    ws.once('room-info', () => {
+    ws.observer.once('room-info', () => {
       fetchViewers();
     });
   }, [ws]);

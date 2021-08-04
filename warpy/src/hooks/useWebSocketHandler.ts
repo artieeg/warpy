@@ -5,7 +5,6 @@ import {useEffect} from 'react';
 
 export const useWebSocketHandler = (api: APIClient) => {
   useEffect(() => {
-    console.log('api', api);
     api.observer.on('viewers', (data: any) => {
       const {page, viewers} = data;
 

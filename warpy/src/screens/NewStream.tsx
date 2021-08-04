@@ -54,11 +54,11 @@ export const NewStream = () => {
   }, [userFacingMode, localMediaStream]);
 
   useEffect(() => {
-    ws.once('created-room', (data: any) => {
+    ws.observer.once('created-room', (data: any) => {
       setSendRoomData(data.media);
     });
 
-    ws.once('@media/recv-connect-params', (data: any) => {
+    ws.observer.once('@media/recv-connect-params', (data: any) => {
       setRecvRoomData(data);
     });
   }, [streamId, ws]);
@@ -76,10 +76,10 @@ export const NewStream = () => {
       );
     };
 
-    ws.on('@media/new-track', onNewTrack);
+    ws.observer.on('@media/new-track', onNewTrack);
 
     return () => {
-      ws.off('@media/new-track', onNewTrack);
+      ws.observer.off('@media/new-track', onNewTrack);
     };
   }, [recvTransport, media, ws]);
 
@@ -108,11 +108,9 @@ export const NewStream = () => {
   }, [streamId, sendRoomData, localMediaStream, userId, media, ws]);
 
   const onStart = useCallback(async () => {
-    ws.once('stream-created', (data: any) => {
-      setStreamId(data.stream);
-    });
+    const {stream} = await ws.stream.create(title, hub);
 
-    ws.createNewStream(title, hub);
+    setStreamId(stream);
   }, [title, hub, ws]);
 
   const onStopStream = () => {

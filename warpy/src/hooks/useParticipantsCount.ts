@@ -15,20 +15,20 @@ export const useParticipantsCount = () => {
   }, []);
 
   useEffect(() => {
-    ws.once('room-info', (data: any) => {
+    ws.observer.once('room-info', (data: any) => {
       setCount(data.count);
     });
 
-    ws.on('new-viewer', onNewViewer);
-    ws.on('user-left', onUserLeave);
+    ws.observer.on('new-viewer', onNewViewer);
+    ws.observer.on('user-left', onUserLeave);
 
-    ws.once('created-room', (data: any) => {
+    ws.observer.once('created-room', (data: any) => {
       setCount(data.count);
     });
 
     return () => {
-      ws.off('new-viewer', onNewViewer);
-      ws.off('user-left', onUserLeave);
+      ws.observer.off('new-viewer', onNewViewer);
+      ws.observer.off('user-left', onUserLeave);
     };
   }, [ws]);
 

@@ -48,7 +48,7 @@ export const MediaStreamingProvider = ({children}: any) => {
     //Transport is about to establish the ICE+DTLS connection and
     //needs to exchange information with the associated server side transport.
     transport.on('connect', ({dtlsParameters}, callback, _errback) => {
-      ws.once(`@media/${direction}-transport-connected`, () => {
+      ws.observer.once(`@media/${direction}-transport-connected`, () => {
         callback();
       });
 
@@ -72,7 +72,7 @@ export const MediaStreamingProvider = ({children}: any) => {
       transport.on('produce', (produceParams, callback, errback) => {
         const {kind, rtpParameters, appData} = produceParams;
 
-        ws.once('@media/send-track-created', (data: any) => {
+        ws.observer.once('@media/send-track-created', (data: any) => {
           const id = data.id;
 
           if (id !== null) {
@@ -180,7 +180,7 @@ export const MediaStreamingProvider = ({children}: any) => {
     transport: Transport,
   ): Promise<Consumer[]> => {
     return new Promise(async resolve => {
-      ws.once('recv-tracks-response', async (data: any) => {
+      ws.observer.once('recv-tracks-response', async (data: any) => {
         const {consumerParams} = data;
 
         const consumersPromises: Promise<Consumer>[] = consumerParams.map(
