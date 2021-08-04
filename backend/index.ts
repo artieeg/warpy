@@ -80,6 +80,7 @@ const main = async () => {
   MessageService.on("stream-stop", StreamService.stopStream);
   MessageService.on("stream-new", StreamService.onCreateNewStream);
   MessageService.on("whoami-request", UserService.onWhoAmIRequest);
+  MessageService.on("feed-request", FeedService.onFeedRequest);
 
   app.listen(Number.parseInt(PORT), `0.0.0.0`, () => {
     console.log(`Started on port ${PORT}`);

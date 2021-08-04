@@ -19,7 +19,7 @@ export const init = () => {
   });
 };
 
-export const getFeed = async (params: IGetFeed) => {
+export const onFeedRequest = async (params: IGetFeed) => {
   const { user, hub } = params;
 
   const servedStreams = await FeedsCacheService.getServedStreams(user);
@@ -60,7 +60,12 @@ export const getFeed = async (params: IGetFeed) => {
   console.log("served feed", feed);
 
   //TODO: fix nulls
-  return feed.filter((item) => item !== null);
+  MessageService.sendMessage(user, {
+    event: "feed",
+    data: {
+      feed: feed.filter((item) => item !== null),
+    },
+  });
 };
 
 export const onNewCandidate = async (data: IStream) => {
