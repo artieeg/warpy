@@ -7,12 +7,10 @@ import {APIObserver} from './api_observer';
 
 export const APIClient = (socket: WebSocketConn) => ({
   observer: APIObserver(socket),
-  removeAllListeners: () =>
-    socket.observer
-      .eventNames()
-      .forEach(event => socket.observer.removeAllListeners(event)),
   user: UserAPI(socket),
   stream: StreamAPI(socket),
   feed: FeedAPI(socket),
   media: MediaAPI(socket),
 });
+
+export type APIClient = ReturnType<typeof APIClient>;

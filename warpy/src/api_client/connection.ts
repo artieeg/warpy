@@ -21,9 +21,12 @@ export class WebSocketConn {
       this.onerror && this.onerror(error);
     };
     this.socket.onmessage = (message: any) => {
-      const {event, data} = message;
+      const {event, rid, data} = message;
 
-      observer.emit(event, data);
+      console.log('received message', message);
+      console.log('rid', rid);
+
+      this.observer.emit(rid ? event : rid, data);
       //this.onmessage && this.onmessage(message);
     };
   }

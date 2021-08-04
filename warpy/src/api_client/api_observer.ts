@@ -7,6 +7,10 @@ export const APIObserver: APIModule = socket => ({
     socket.observer.off(event, handler),
   once: (event: WebSocketEvent, handler: any) =>
     socket.observer.once(event, handler),
+  removeAllListeners: () =>
+    socket.observer
+      .eventNames()
+      .forEach((event: any) => socket.observer.removeAllListeners(event)),
 });
 
 type WebSocketEvent =

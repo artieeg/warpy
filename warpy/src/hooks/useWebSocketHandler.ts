@@ -1,32 +1,33 @@
-import {ProvidedWebSocket} from '@app/components';
+import {APIClient} from '@app/api_client';
 import {Participant, Stream, User} from '@app/models';
 import {useFeedStore, useParticipantsStore, useUserStore} from '@app/stores';
 import {useEffect} from 'react';
 
-export const useWebSocketHandler = (ws: ProvidedWebSocket) => {
+export const useWebSocketHandler = (api: APIClient) => {
   useEffect(() => {
-    ws.on('viewers', (data: any) => {
+    console.log('api', api);
+    api.observer.on('viewers', (data: any) => {
       const {page, viewers} = data;
 
       useParticipantsStore.getState().addViewers(viewers, page);
     });
 
-    ws.on('new-viewer', (data: any) => {
+    api.observer.on('new-viewer', (data: any) => {
       useParticipantsStore.getState().addViewer(data.viewer);
     });
 
-    ws.on('raise-hand', (data: any) => {
+    api.observer.on('raise-hand', (data: any) => {
       const participant = Participant.fromJSON(data.viewer);
       participant.isRaisingHand = true;
 
       useParticipantsStore.getState().raiseHand(participant);
     });
 
-    ws.on('user-left', (data: any) => {
+    api.observer.on('user-left', (data: any) => {
       useParticipantsStore.getState().removeParticipant(data.user);
     });
 
-    ws.on('created-room', (data: any) => {
+    api.observer.on('created-room', (data: any) => {
       const {speakers} = data;
 
       useParticipantsStore.getState().set({
@@ -34,19 +35,19 @@ export const useWebSocketHandler = (ws: ProvidedWebSocket) => {
       });
     });
 
-    ws.on('new-speaker', (data: any) => {
+    api.observer.on('new-speaker', (data: any) => {
       const {speaker} = data;
 
       useParticipantsStore.getState().addSpeaker(speaker);
     });
 
-    ws.on('user-left', (data: any) => {
+    api.observer.on('user-left', (data: any) => {
       const {user} = data;
 
       useParticipantsStore.getState().removeParticipant(user);
     });
 
-    ws.on('room-info', (data: any) => {
+    api.observer.on('room-info', (data: any) => {
       const {speakers, raisedHands, count} = data;
 
       useParticipantsStore.getState().set({
@@ -56,7 +57,7 @@ export const useWebSocketHandler = (ws: ProvidedWebSocket) => {
       });
     });
 
-    ws.on('whoami', (data: any) => {
+    api.observer.on('whoami', (data: any) => {
       const {user} = data;
       console.log('received user info', user);
 
@@ -65,7 +66,7 @@ export const useWebSocketHandler = (ws: ProvidedWebSocket) => {
       });
     });
 
-    ws.on('feed', (data: any) => {
+    api.observer.on('feed', (data: any) => {
       const {feed} = data;
 
       console.log('feed', feed);
@@ -76,7 +77,7 @@ export const useWebSocketHandler = (ws: ProvidedWebSocket) => {
     });
 
     return () => {
-      ws.removeAllListeners();
+      api.observer.removeAllListeners();
     };
-  }, [ws]);
+  }, [api]);
 };

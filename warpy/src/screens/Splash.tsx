@@ -19,8 +19,9 @@ export const Splash = () => {
 
   useEffect(() => {
     loadTokens()
-      .then(() => {
-        ws?.auth(accessToken);
+      .then(async () => {
+        const user = await ws.user.auth(accessToken);
+        console.log('user', user);
       })
       .catch(() => navigation.navigate('DevSignUp'));
   }, [navigation, ws]);
