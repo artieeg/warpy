@@ -11,6 +11,7 @@ export const BackendEvents = {
   "user-disconnected": "user.disconnected",
   "stream-new": "stream.create",
   "whoami-request": "user.whoami-request",
+  "feed-request": "feeds.get",
 };
 
 type EventAlias = keyof typeof BackendEvents;

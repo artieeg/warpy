@@ -10,6 +10,7 @@ import {
   onViewersRequest,
   onStreamStop,
   onNewStream,
+  onFeedRequest,
 } from "@ws_gateway/handlers";
 import { IMessage } from "@ws_gateway/models";
 import { Context, Handlers } from "@ws_gateway/types";
@@ -36,6 +37,7 @@ const handlers: Handlers = {
   "request-viewers": onViewersRequest,
   "stream-stop": onStreamStop,
   "stream-new": onNewStream,
+  "request-feed": onFeedRequest,
 };
 
 const main = async () => {

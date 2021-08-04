@@ -7,3 +7,4 @@ export * from "./recv_tracks_request";
 export * from "./viewers_request";
 export * from "./onStreamStop";
 export * from "./onNewStream";
+export * from "./onFeedRequest";
