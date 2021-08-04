@@ -5,6 +5,7 @@ import {
   CandidateStatsService,
   MessageService,
 } from ".";
+import { MessageHandler } from "@warpy/lib";
 
 interface IGetFeed {
   user: string;
@@ -19,7 +20,10 @@ export const init = () => {
   });
 };
 
-export const onFeedRequest = async (params: IGetFeed) => {
+export const onFeedRequest: MessageHandler<IGetFeed, any> = async (
+  params: IGetFeed,
+  respond
+) => {
   const { user, hub } = params;
 
   const servedStreams = await FeedsCacheService.getServedStreams(user);
@@ -59,12 +63,8 @@ export const onFeedRequest = async (params: IGetFeed) => {
 
   console.log("served feed", feed);
 
-  //TODO: fix nulls
-  MessageService.sendMessage(user, {
-    event: "feed",
-    data: {
-      feed: feed.filter((item) => item !== null),
-    },
+  respond!({
+    feed: feed.filter((item) => item !== null),
   });
 };
 

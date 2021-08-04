@@ -1,14 +1,17 @@
 import {useWebSocketContext} from '@app/components';
-import {useFeedStore} from '@app/stores';
-import {useEffect} from 'react';
+import {Stream} from '@app/models';
+import {useEffect, useState} from 'react';
 
 export const useFeed = () => {
-  const feed = useFeedStore(store => store.feed);
+  const [feed, setFeed] = useState<Stream[]>([]);
 
   const ws = useWebSocketContext();
 
+  console.log(feed);
   useEffect(() => {
-    ws.getFeed();
+    ws.feed.get().then((data: any) => {
+      setFeed(prev => [...prev, ...data.feed]);
+    });
   }, [ws]);
 
   return feed;
