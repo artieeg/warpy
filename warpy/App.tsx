@@ -15,18 +15,16 @@ const App = () => {
 
   return (
     <WebSocketProvider>
-      <Provider store={store}>
-        <MediaStreamingProvider>
-          <NavigationContainer>
-            <Stack.Navigator headerMode="none">
-              <Stack.Screen name="Splash" component={Splash} />
-              <Stack.Screen name="DevSignUp" component={DevSignUp} />
-              <Stack.Screen name="Feed" component={Feed} />
-              <Stack.Screen name="NewStream" component={NewStream} />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </MediaStreamingProvider>
-      </Provider>
+      <MediaStreamingProvider>
+        <NavigationContainer>
+          <Stack.Navigator headerMode="none">
+            <Stack.Screen name="Splash" component={Splash} />
+            <Stack.Screen name="DevSignUp" component={DevSignUp} />
+            <Stack.Screen name="Feed" component={Feed} />
+            <Stack.Screen name="NewStream" component={NewStream} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </MediaStreamingProvider>
     </WebSocketProvider>
   );
 };
