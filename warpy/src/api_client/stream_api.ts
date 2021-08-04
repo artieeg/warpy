@@ -1,6 +1,15 @@
 import {APIModule} from './types';
 
-export const StreamAPI: APIModule = socket => ({
+export interface IStreamAPI {
+  create: (title: string, hub: string) => any;
+  stop: (stream_id: string) => any;
+  join: (stream_id: string) => any;
+  getViewers: (stream_id: string) => any;
+  raiseHand: () => any;
+  allowSpeaker: (speaker: string) => any;
+}
+
+export const StreamAPI: APIModule<IStreamAPI> = socket => ({
   create: (title: string, hub: string) =>
     socket.request('stream-new', {
       title,

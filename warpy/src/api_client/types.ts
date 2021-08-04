@@ -1,1 +1,3 @@
-export type APIModule = (socket: WebSocketConn) => any;
+import {WebSocketConn} from './connection';
+
+export type APIModule<T = any> = (socket: WebSocketConn) => T;
