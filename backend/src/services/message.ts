@@ -35,6 +35,8 @@ const jc = JSONCodec();
 const SubjectEventMap = {
   "stream.stop": "stream-stop",
   "user.disconnected": "user-disconnected",
+  "stream.create": "stream-new",
+  "user.whoami-request": "whoami-request",
 };
 
 type Subject = keyof typeof SubjectEventMap;

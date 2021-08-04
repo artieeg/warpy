@@ -1,8 +1,10 @@
 import { UserModel, RefreshToken, BaseUser } from "@app/models";
 import { jwt } from "@app/utils";
+import { MessageService } from "@app/services";
+import { MessageHandler, IWhoAmIRequest } from "@warpy/lib";
 
 /*
- * Create a dev account. Should be disabled in production
+ * Creates a dev account. Should be disabled in production
  * */
 export const createDevUser = async (data: any) => {
   const { username, last_name, first_name, email } = data;
@@ -30,6 +32,19 @@ export const createDevUser = async (data: any) => {
     access: accessToken,
     refresh: refreshToken,
   };
+};
+
+export const onWhoAmIRequest: MessageHandler<IWhoAmIRequest> = async (data) => {
+  const { user } = data;
+
+  const userData = await getUserById(user);
+
+  MessageService.sendMessage(user, {
+    event: "whoami",
+    data: {
+      user: userData,
+    },
+  });
 };
 
 export const getUserById = async (userId: string): Promise<BaseUser | null> => {

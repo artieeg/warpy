@@ -11,6 +11,7 @@ import {
   MessageService,
   ParticipantService,
   StreamService,
+  UserService,
 } from "@app/services";
 import { IStream } from "@app/models";
 
@@ -77,6 +78,8 @@ const main = async () => {
   );
   MessageService.on("viewers-request", ParticipantService.handleViewersRequest);
   MessageService.on("stream-stop", StreamService.stopStream);
+  MessageService.on("stream-new", StreamService.onCreateNewStream);
+  MessageService.on("whoami-request", UserService.onWhoAmIRequest);
 
   app.listen(Number.parseInt(PORT), `0.0.0.0`, () => {
     console.log(`Started on port ${PORT}`);

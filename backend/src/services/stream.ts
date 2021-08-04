@@ -1,6 +1,7 @@
 import { Stream } from "@app/models";
 import mongoose from "mongoose";
 import EventEmitter from "events";
+import { MessageService } from ".";
 
 interface INewStream {
   owner: string;
@@ -10,7 +11,7 @@ interface INewStream {
 
 export const observer = new EventEmitter();
 
-export const createNewStream = async (params: INewStream) => {
+export const onCreateNewStream = async (params: INewStream) => {
   const { owner, title, hub } = params;
 
   const stream = new Stream({
@@ -23,13 +24,16 @@ export const createNewStream = async (params: INewStream) => {
   await stream.save();
   observer.emit("stream-new", stream);
 
-  return stream.id;
+  MessageService.sendMessage(owner, {
+    event: "stream-created",
+    data: {
+      stream: stream.id,
+    },
+  });
 };
 
 export const stopStream = async (data: any) => {
   const { stream, user } = data;
-
-  console.log("removing stream", stream, user);
 
   const result = await Stream.updateOne(
     {

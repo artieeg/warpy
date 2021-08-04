@@ -117,3 +117,7 @@ export interface IRequestViewers {
   stream: string;
   page: number;
 }
+
+export interface IWhoAmIRequest {
+  user: string;
+}
