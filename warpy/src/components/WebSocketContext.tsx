@@ -1,6 +1,5 @@
 import React, {createContext, useContext} from 'react';
 import {EventEmitter} from 'events';
-import config from '@app/config';
 import WebSocketConn from '@app/ws';
 import {useWebSocketHandler} from '@app/hooks';
 
@@ -9,6 +8,7 @@ type WebSocketEvent =
   | 'stream-created'
   | 'raise-hand'
   | 'user-left'
+  | 'feed'
   | 'whoami'
   | 'new-speaker'
   | 'viewers'
@@ -96,6 +96,15 @@ export class ProvidedWebSocket {
           title,
           hub,
         },
+      }),
+    );
+  };
+
+  getFeed = () => {
+    this.socket.send(
+      JSON.stringify({
+        event: 'request-feed',
+        data: {},
       }),
     );
   };

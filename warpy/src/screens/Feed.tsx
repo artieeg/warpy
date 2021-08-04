@@ -11,8 +11,8 @@ export const Feed = () => {
 
   return (
     <View>
-      {feed.feed[0] ? (
-        <RemoteStream stream={feed.feed[0]} />
+      {feed[0] ? (
+        <RemoteStream stream={feed[0]} />
       ) : (
         <Button
           title="Start new stream"

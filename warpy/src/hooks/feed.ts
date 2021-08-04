@@ -1,14 +1,15 @@
-import {fetchFeed} from '@app/actions/feed';
-import {useAppDispatch, useAppSelector} from '@app/store';
+import {useWebSocketContext} from '@app/components';
+import {useFeedStore} from '@app/stores';
 import {useEffect} from 'react';
 
 export const useFeed = () => {
-  const feed = useAppSelector(state => state.feed);
-  const dispatch = useAppDispatch();
+  const feed = useFeedStore(store => store.feed);
+
+  const ws = useWebSocketContext();
 
   useEffect(() => {
-    dispatch(fetchFeed());
-  }, [dispatch]);
+    ws.getFeed();
+  }, [ws]);
 
   return feed;
 };

@@ -1,6 +1,6 @@
 import {ProvidedWebSocket} from '@app/components';
-import {Participant, User} from '@app/models';
-import {useParticipantsStore, useUserStore} from '@app/stores';
+import {Participant, Stream, User} from '@app/models';
+import {useFeedStore, useParticipantsStore, useUserStore} from '@app/stores';
 import {useEffect} from 'react';
 
 export const useWebSocketHandler = (ws: ProvidedWebSocket) => {
@@ -63,6 +63,16 @@ export const useWebSocketHandler = (ws: ProvidedWebSocket) => {
       useUserStore.getState().set({
         user: User.fromJSON(user),
       });
+    });
+
+    ws.on('feed', (data: any) => {
+      const {feed} = data;
+
+      console.log('feed', feed);
+
+      useFeedStore
+        .getState()
+        .addStreams(feed.map((stream: any) => Stream.fromJSON(stream)));
     });
 
     return () => {
