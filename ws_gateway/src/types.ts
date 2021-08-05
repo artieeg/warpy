@@ -3,7 +3,7 @@ import WebSocket from "ws";
 
 export type Handler = (
   data: any,
-  context?: Context,
+  context: Context,
   rid?: string
 ) => Promise<any>;
 

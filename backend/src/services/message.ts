@@ -39,6 +39,7 @@ const SubjectEventMap = {
   "user.whoami-request": "whoami-request",
   "feeds.get": "feed-request",
   "viewers.get": "viewers-request",
+  "stream.join": "participant-new",
 };
 
 type Subject = keyof typeof SubjectEventMap;

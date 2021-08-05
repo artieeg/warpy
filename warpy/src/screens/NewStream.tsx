@@ -6,7 +6,6 @@ import {
   useStreamSpeakers,
   useStreamViewers,
 } from '@app/hooks';
-import {createStream} from '@app/services';
 import {RTCView} from 'react-native-webrtc';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, StyleSheet, useWindowDimensions} from 'react-native';
@@ -114,9 +113,7 @@ export const NewStream = () => {
   }, [title, hub, ws]);
 
   const onStopStream = () => {
-    ws.sendStopStream({
-      stream: streamId,
-    });
+    ws.stream.stop(streamId!);
   };
 
   const participantsCount = useParticipantsCount();

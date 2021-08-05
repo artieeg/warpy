@@ -13,6 +13,7 @@ export const BackendEvents = {
   "whoami-request": "user.whoami-request",
   "feed-request": "feeds.get",
   "request-viewers": "viewers.get",
+  "join-stream": "stream.join",
 };
 
 type EventAlias = keyof typeof BackendEvents;

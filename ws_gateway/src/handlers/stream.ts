@@ -1,10 +1,17 @@
 import { MessageService } from "@ws_gateway/services";
-import { Context, Handler } from "@ws_gateway/types";
+import { Handler } from "@ws_gateway/types";
 
-export const onJoinStream: Handler = async (data: any, context?: Context) => {
+export const onJoinStream: Handler = async (data, context, rid) => {
   const { stream } = data;
 
-  console.log("joining new stream", stream, context!.user);
+  const response = await MessageService.sendBackendRequest("join-stream", {
+    stream,
+    user: context!.user,
+  });
 
-  MessageService.sendUserJoinEvent({ stream, user: context!.user });
+  context!.ws.send({
+    event: "@api/response",
+    data: response,
+    rid,
+  });
 };

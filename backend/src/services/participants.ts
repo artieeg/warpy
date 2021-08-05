@@ -54,14 +54,13 @@ export const setRaiseHand = (user: string, stream: string) => {
   });
 };
 
-export const addParticipant = async (participant: IBaseParticipant) => {
-  const user = participant.id;
-  const stream = participant.stream;
-
+export const addParticipant = async (
+  user: string,
+  stream: string,
+  role: Roles = "viewer"
+) => {
   const streamKey = `stream_${stream}`;
   const participantKey = `user_${user}`;
-
-  const role = participant.role || "viewer";
 
   const addUserPromise = new Promise<void>((resolve, reject) => {
     client.hset(streamKey, user, role, (err) => {
@@ -201,9 +200,7 @@ export const getCurrentStreamFor = async (user: string) => {
   });
 };
 
-export const setCurrentStreamFor = async (participant: IBaseParticipant) => {
-  const { id, stream } = participant;
-
+export const setCurrentStreamFor = async (id: string, stream: string) => {
   const userKey = `user_${id}`;
 
   return new Promise<void>((resolve, reject) => {

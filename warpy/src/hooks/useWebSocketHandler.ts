@@ -20,14 +20,6 @@ export const useWebSocketHandler = (api: APIClient) => {
       useParticipantsStore.getState().removeParticipant(data.user);
     });
 
-    api.observer.on('created-room', (data: any) => {
-      const {speakers} = data;
-
-      useParticipantsStore.getState().set({
-        participants: [...speakers],
-      });
-    });
-
     api.stream.onNewSpeaker(data => {
       const {speaker} = data;
 
@@ -38,16 +30,6 @@ export const useWebSocketHandler = (api: APIClient) => {
       const {user} = data;
 
       useParticipantsStore.getState().removeParticipant(user);
-    });
-
-    api.observer.on('room-info', (data: any) => {
-      const {speakers, raisedHands, count} = data;
-
-      useParticipantsStore.getState().set({
-        participants: [...speakers, ...raisedHands],
-        count,
-        page: -1,
-      });
     });
 
     return () => {

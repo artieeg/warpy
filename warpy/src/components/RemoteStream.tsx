@@ -18,6 +18,7 @@ import {ParticipantsModal} from './ParticipantsModal';
 import {ViewerStreamPanel} from './ViewerStreamPanel';
 import {ParticipantInfoModal} from './ParticipantInfoModal';
 import {SpeakerStreamPanel} from './SpeakerStreamPanel';
+import {useParticipantsStore} from '@app/stores';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -72,7 +73,13 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
       setRoomData(data);
     });
 
-    ws.stream.join(id);
+    ws.stream.join(id).then((data: any) => {
+      useParticipantsStore.getState().set({
+        participants: [...data.speakers, ...data.raisedHands],
+        count: data.count,
+        page: -1,
+      });
+    });
   }, [userId, id, ws]);
 
   useEffect(() => {

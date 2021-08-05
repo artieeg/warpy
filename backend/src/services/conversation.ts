@@ -52,8 +52,12 @@ export const handleNewConversation: MessageHandler<IRoom> = async (stream) => {
   });
 
   await Promise.all([
-    ParticipantService.addParticipant(participant),
-    ParticipantService.setCurrentStreamFor(participant),
+    ParticipantService.addParticipant(
+      participant.id,
+      participant.stream,
+      "streamer"
+    ),
+    ParticipantService.setCurrentStreamFor(participant.id, participant.stream),
   ]);
 
   await MediaService.assignUserToNode(owner, recvMediaNode);
@@ -107,15 +111,19 @@ export const handleParticipantLeave = async (user: string) => {
   });
 };
 
-export const handleParticipantJoin = async (participant: IBaseParticipant) => {
-  const { stream, id } = participant;
+export const handleParticipantJoin: MessageHandler<any, any> = async (
+  data,
+  respond
+) => {
+  const { stream, user } = data;
 
   const [participants, recvNodeId, userInfo] = await Promise.all([
     ParticipantService.getStreamParticipants(stream),
     MediaService.getConsumerNodeId(),
-    UserService.getUserById(id),
+    UserService.getUserById(user),
   ]);
 
+  console.log(userInfo, recvNodeId);
   if (!userInfo) {
     return;
   }
@@ -125,13 +133,13 @@ export const handleParticipantJoin = async (participant: IBaseParticipant) => {
   }
 
   await Promise.all([
-    MediaService.assignUserToNode(id, recvNodeId),
-    ParticipantService.addParticipant(participant),
-    ParticipantService.setCurrentStreamFor(participant),
+    MediaService.assignUserToNode(user, recvNodeId),
+    ParticipantService.addParticipant(user, stream),
+    ParticipantService.setCurrentStreamFor(user, stream),
   ]);
 
   await MessageService.joinMediaRoom(recvNodeId, {
-    user: id,
+    user,
     roomId: stream,
   });
 
@@ -159,18 +167,17 @@ export const handleParticipantJoin = async (participant: IBaseParticipant) => {
     ParticipantService.getParticipantsCount(stream),
   ]);
 
-  MessageService.sendMessage(id, {
-    event: "room-info",
-    data: {
-      speakers: speakerUserInfo.map((speaker) =>
-        Participant.fromUser(speaker, speakersWithRoles[speaker.id], stream)
-      ),
-      raisedHands: usersWithRaisedHand.map((userWithRaisedHand) => {
-        const user = Participant.fromUser(userWithRaisedHand, "viewer", stream);
-        user.isRaisingHand = true;
-      }),
-      count: participantCount,
-    },
+  console.log("joining!");
+
+  respond!({
+    speakers: speakerUserInfo.map((speaker) =>
+      Participant.fromUser(speaker, speakersWithRoles[speaker.id], stream)
+    ),
+    raisedHands: usersWithRaisedHand.map((userWithRaisedHand) => {
+      const user = Participant.fromUser(userWithRaisedHand, "viewer", stream);
+      user.isRaisingHand = true;
+    }),
+    count: participantCount,
   });
 };
 

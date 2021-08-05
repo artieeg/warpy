@@ -19,8 +19,8 @@ export const StreamAPI: APIModule<IStreamAPI> = socket => ({
       title,
       hub,
     }),
-  stop: stream => socket.request('stream-stop', {stream}),
-  join: stream => socket.publish('join-stream', {stream}),
+  stop: stream => socket.publish('stream-stop', {stream}),
+  join: stream => socket.request('join-stream', {stream}),
   getViewers: (stream, page) =>
     socket.request('request-viewers', {stream, page}),
   raiseHand: () => socket.publish('raise-hand', {}),
