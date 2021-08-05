@@ -85,14 +85,14 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
     ws.observer.on('speaking-allowed', onSpeakingAllowed);
 
     return () => {
-      ws.off('speaking-allowed', onSpeakingAllowed);
+      ws.observer.off('speaking-allowed', onSpeakingAllowed);
     };
   }, [id, audioStream, ws, media]);
 
   const {width, height} = useWindowDimensions();
 
   const raiseHand = useCallback(() => {
-    ws.sendRaiseHand();
+    ws.stream.raiseHand();
   }, [ws]);
 
   const wrapperStyle = {

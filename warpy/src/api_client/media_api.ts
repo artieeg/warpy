@@ -7,7 +7,7 @@ export interface IMediaAPI {
 }
 
 export const MediaAPI: APIModule = (socket): IMediaAPI => ({
-  newTrack: (data: any) => socket.publish('track_new', data),
+  newTrack: (data: any) => socket.publish('new-track', data),
   connectTransport: (data: any, isProducer: boolean = false) =>
     socket.publish('connect-transport', {...data, isProducer}),
   getRecvTracks: (data: any) => socket.request('recv-tracks-request', data),

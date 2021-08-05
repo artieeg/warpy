@@ -16,7 +16,7 @@ export const UserWithRaisedHand = (props: IRaisedHandInfo) => {
   const ws = useWebSocketContext();
 
   const onAllow = useCallback(() => {
-    ws.sendAllowSpeaker(data.id);
+    ws.stream.allowSpeaker(data.id);
   }, [ws, data.id]);
 
   const name = `${data.first_name} ${data.last_name}`;

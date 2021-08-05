@@ -52,7 +52,7 @@ export const MediaStreamingProvider = ({children}: any) => {
         callback();
       });
 
-      ws.sendConnectTransport(
+      ws.media.connectTransport(
         {
           transportId: transportOptions.id,
           dtlsParameters,
@@ -84,7 +84,7 @@ export const MediaStreamingProvider = ({children}: any) => {
 
         console.log('sending new track');
 
-        ws.sendNewTrack({
+        ws.media.newTrack({
           transportId: transportOptions.id,
           kind,
           rtpParameters,
@@ -151,7 +151,7 @@ export const MediaStreamingProvider = ({children}: any) => {
       console.log(localStream.getAudioTracks());
     }
 
-    const newProducer = await sendTransport.produce({
+    await sendTransport.produce({
       track,
       appData: {kind},
     });
@@ -200,7 +200,7 @@ export const MediaStreamingProvider = ({children}: any) => {
         resolve(consumers);
       });
 
-      ws.sendRecvTracksRequest({
+      ws.media.getRecvTracks({
         rtpCapabilities: recvDevice.rtpCapabilities,
         stream,
       });
