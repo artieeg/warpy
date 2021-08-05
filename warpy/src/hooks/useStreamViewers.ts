@@ -18,8 +18,13 @@ export const useStreamViewers = (
     [participants],
   );
 
-  const fetchViewers = () => {
-    ws.stream.getViewers(stream!, page + 1);
+  const fetchViewers = async () => {
+    const {viewers: fetchedViewers} = await ws.stream.getViewers(
+      stream!,
+      page + 1,
+    );
+
+    useParticipantsStore.getState().addViewers(fetchedViewers, page + 1);
   };
 
   useEffect(() => {

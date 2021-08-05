@@ -9,7 +9,5 @@ export const useStreamParticipant = (id: string): Participant | undefined => {
     shallow,
   );
 
-  console.log('particiapnts', participants);
-
   return useMemo(() => participants.find(p => p.id === id), [participants, id]);
 };

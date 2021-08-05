@@ -12,6 +12,7 @@ export const BackendEvents = {
   "stream-new": "stream.create",
   "whoami-request": "user.whoami-request",
   "feed-request": "feeds.get",
+  "request-viewers": "viewers.get",
 };
 
 type EventAlias = keyof typeof BackendEvents;

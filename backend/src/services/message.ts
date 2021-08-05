@@ -38,6 +38,7 @@ const SubjectEventMap = {
   "stream.create": "stream-new",
   "user.whoami-request": "whoami-request",
   "feeds.get": "feed-request",
+  "viewers.get": "viewers-request",
 };
 
 type Subject = keyof typeof SubjectEventMap;
@@ -87,7 +88,6 @@ type Events =
   | "new-track"
   | "connect-transport"
   | "new-media-node"
-  | "viewers-request"
   | "participant-leave"
   | typeof SubjectEventMap[Subject];
 

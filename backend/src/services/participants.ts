@@ -2,7 +2,7 @@ import { IBaseParticipant, IParticipant, Participant } from "@app/models";
 import { Roles } from "@app/types";
 import redis from "redis";
 import { MessageService, UserService } from ".";
-import { IRequestViewers } from "@warpy/lib";
+import { IRequestViewers, MessageHandler } from "@warpy/lib";
 
 const URL = process.env.PARTICIPANTS_CACHE || "redis://127.0.0.1:6375/5";
 
@@ -249,11 +249,10 @@ export const getSpeakersWithRoles = async (stream: string) => {
 };
 
 const PARTICIPANTS_PER_PAGE = 50;
-export const handleViewersRequest = async ({
-  user,
-  stream,
-  page,
-}: IRequestViewers) => {
+export const handleViewersRequest: MessageHandler<
+  IRequestViewers,
+  any
+> = async ({ stream, page }, respond) => {
   const allStreamParticipants = await getStreamParticipantsWithRoles(stream);
   const allParticipantIds = Object.keys(allStreamParticipants);
 
@@ -279,12 +278,8 @@ export const handleViewersRequest = async ({
     Participant.fromUser(user, allStreamParticipants[user.id] as Roles, stream)
   );
 
-  MessageService.sendMessage(user, {
-    event: "viewers",
-    data: {
-      page,
-      viewers,
-    },
+  respond!({
+    viewers,
   });
 };
 

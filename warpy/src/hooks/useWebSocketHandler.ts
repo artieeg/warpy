@@ -5,24 +5,18 @@ import {useEffect} from 'react';
 
 export const useWebSocketHandler = (api: APIClient) => {
   useEffect(() => {
-    api.observer.on('viewers', (data: any) => {
-      const {page, viewers} = data;
-
-      useParticipantsStore.getState().addViewers(viewers, page);
-    });
-
-    api.observer.on('new-viewer', (data: any) => {
+    api.stream.onNewViewer(data => {
       useParticipantsStore.getState().addViewer(data.viewer);
     });
 
-    api.observer.on('raise-hand', (data: any) => {
+    api.stream.onNewRaisedHand(data => {
       const participant = Participant.fromJSON(data.viewer);
       participant.isRaisingHand = true;
 
       useParticipantsStore.getState().raiseHand(participant);
     });
 
-    api.observer.on('user-left', (data: any) => {
+    api.stream.onUserLeft(data => {
       useParticipantsStore.getState().removeParticipant(data.user);
     });
 
@@ -34,13 +28,13 @@ export const useWebSocketHandler = (api: APIClient) => {
       });
     });
 
-    api.observer.on('new-speaker', (data: any) => {
+    api.stream.onNewSpeaker(data => {
       const {speaker} = data;
 
       useParticipantsStore.getState().addSpeaker(speaker);
     });
 
-    api.observer.on('user-left', (data: any) => {
+    api.stream.onUserLeft(data => {
       const {user} = data;
 
       useParticipantsStore.getState().removeParticipant(user);
@@ -54,25 +48,6 @@ export const useWebSocketHandler = (api: APIClient) => {
         count,
         page: -1,
       });
-    });
-
-    api.observer.on('whoami', (data: any) => {
-      const {user} = data;
-      console.log('received user info', user);
-
-      useUserStore.getState().set({
-        user: User.fromJSON(user),
-      });
-    });
-
-    api.observer.on('feed', (data: any) => {
-      const {feed} = data;
-
-      console.log('feed', feed);
-
-      useFeedStore
-        .getState()
-        .addStreams(feed.map((stream: any) => Stream.fromJSON(stream)));
     });
 
     return () => {
