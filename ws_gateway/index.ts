@@ -57,12 +57,18 @@ const main = async () => {
 
     ws.ping();
 
-    ws.on("message", (msg) => {
+    ws.on("message", async (msg) => {
       const message: IMessage = JSON.parse(msg.toString());
 
       const { event, data, rid } = message;
 
-      handlers[event](data, context, rid);
+      try {
+        await handlers[event](data, context, rid);
+      } catch (e) {
+        console.log("failed to process", event);
+
+        console.error(e);
+      }
     });
 
     ws.on("pong", () => {
