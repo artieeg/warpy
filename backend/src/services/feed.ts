@@ -68,7 +68,7 @@ export const onFeedRequest: MessageHandler<IGetFeed, any> = async (
   });
 };
 
-export const onNewCandidate = async (data: IStream) => {
+export const addNewCandidate = async (data: IStream) => {
   const { id, title, hub, owner: ownerId } = data;
 
   const candidate = new Candidate({

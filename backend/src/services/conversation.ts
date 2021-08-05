@@ -29,9 +29,7 @@ export const init = () => {
 /**
  * Create a new conversation for a new stream
  */
-export const handleNewConversation: MessageHandler<IRoom> = async (stream) => {
-  const { id, owner } = stream;
-
+export const createNewConversation = async (id: string, owner: string) => {
   const participant: IBaseParticipant = {
     stream: id,
     id: owner,
@@ -40,16 +38,18 @@ export const handleNewConversation: MessageHandler<IRoom> = async (stream) => {
 
   const hostData = await UserService.getUserById(owner);
 
-  const recvMediaNode = await MediaService.getConsumerNodeId();
+  //const recvMediaNode = await MediaService.getConsumerNodeId();
 
-  if (!recvMediaNode || !hostData) {
-    return; // TODO: error
+  if (!hostData) {
+    throw new Error();
   }
 
+  /*
   const media = await MessageService.createMediaRoom({
     host: owner,
     roomId: id,
   });
+  */
 
   await Promise.all([
     ParticipantService.addParticipant(
@@ -60,13 +60,18 @@ export const handleNewConversation: MessageHandler<IRoom> = async (stream) => {
     ParticipantService.setCurrentStreamFor(participant.id, participant.stream),
   ]);
 
-  await MediaService.assignUserToNode(owner, recvMediaNode);
+  //await MediaService.assignUserToNode(owner, recvMediaNode);
 
+  /*
   await MessageService.joinMediaRoom(recvMediaNode, {
     user: owner,
     roomId: id,
   });
+  */
 
+  //return media;
+
+  /*
   MessageService.sendMessage(owner, {
     event: "created-room",
     data: {
@@ -75,6 +80,12 @@ export const handleNewConversation: MessageHandler<IRoom> = async (stream) => {
       count: 1,
     },
   });
+  */
+
+  return {
+    speakers: [Participant.fromUser(hostData, "streamer", id)],
+    count: 1,
+  };
 };
 
 /**

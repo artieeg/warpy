@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 export interface IStream {
-  id: mongoose.Types.ObjectId;
+  id: string;
   title: string;
   owner: mongoose.Types.ObjectId;
   hub: mongoose.Types.ObjectId;

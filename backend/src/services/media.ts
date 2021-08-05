@@ -6,6 +6,7 @@
 
 import redis from "redis";
 import { INewMediaNode, MediaServiceRole } from "@warpy/lib";
+import { MessageService } from ".";
 
 const URL = process.env.MEDIA_SERVER_IDS || "redis://127.0.0.1:6375/6";
 
@@ -90,6 +91,9 @@ export const assignRoomToNode = async (room: string, node: string) => {
   client.set(`room_${room}`, node);
 };
 
+/**
+ * Get assigned consumer node for the user
+ */
 export const getConsumerNodeFor = async (user: string) => {
   return new Promise<string | null>((resolve, _reject) => {
     client.get(`user_${user}`, (err, node) => {
@@ -100,5 +104,25 @@ export const getConsumerNodeFor = async (user: string) => {
 
       resolve(node);
     });
+  });
+};
+
+export const createRoom = async (host: string, roomId: string) => {
+  const media = await MessageService.createMediaRoom({
+    host: host,
+    roomId,
+  });
+
+  return media;
+};
+
+export const joinRoom = async (
+  nodeId: string,
+  user: string,
+  roomId: string
+) => {
+  await MessageService.joinMediaRoom(nodeId, {
+    user,
+    roomId,
   });
 };

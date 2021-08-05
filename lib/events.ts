@@ -121,3 +121,9 @@ export interface IRequestViewers {
 export interface IWhoAmIRequest {
   user: string;
 }
+
+export interface INewStream {
+  owner: string;
+  title: string;
+  hub: string;
+}

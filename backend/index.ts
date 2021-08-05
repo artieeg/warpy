@@ -14,6 +14,7 @@ import {
   UserService,
 } from "@app/services";
 import { IStream } from "@app/models";
+import { onNewStream } from "@app/handlers";
 
 const app = express();
 app.use(express.json());
@@ -31,17 +32,6 @@ const main = async () => {
   ConversationService.init();
   FeedsCacheService.init();
   FeedService.init();
-
-  StreamService.observer.on("stream-new", (stream: IStream) => {
-    FeedService.onNewCandidate(stream);
-  });
-
-  StreamService.observer.on("stream-new", (stream: IStream) => {
-    ConversationService.handleNewConversation({
-      id: stream.id.toString(),
-      owner: stream.owner.toString(),
-    });
-  });
 
   StreamService.observer.on("stream-stop", (id: string) => {
     FeedService.onRemoveCandidate(id);
@@ -78,7 +68,7 @@ const main = async () => {
   );
   MessageService.on("viewers-request", ParticipantService.handleViewersRequest);
   MessageService.on("stream-stop", StreamService.stopStream);
-  MessageService.on("stream-new", StreamService.onCreateNewStream);
+  MessageService.on("stream-new", onNewStream);
   MessageService.on("whoami-request", UserService.onWhoAmIRequest);
   MessageService.on("feed-request", FeedService.onFeedRequest);
 
