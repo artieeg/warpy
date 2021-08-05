@@ -1,12 +1,16 @@
 import {APIModule} from './types';
 
-export const APIObserver: APIModule = socket => ({
-  on: (event: WebSocketEvent, handler: any) =>
-    socket.observer.on(event, handler),
-  off: (event: WebSocketEvent, handler?: any) =>
-    socket.observer.off(event, handler),
-  once: (event: WebSocketEvent, handler: any) =>
-    socket.observer.once(event, handler),
+export interface IAPIObserver {
+  on: (event: WebSocketEvent, handler: any) => any;
+  off: (event: WebSocketEvent, handler?: any) => any;
+  once: (event: WebSocketEvent, handler: any) => any;
+  removeAllListeners: () => any;
+}
+
+export const APIObserver: APIModule<IAPIObserver> = socket => ({
+  on: (event, handler) => socket.observer.on(event, handler),
+  off: (event, handler) => socket.observer.off(event, handler),
+  once: (event, handler) => socket.observer.once(event, handler),
   removeAllListeners: () =>
     socket.observer
       .eventNames()

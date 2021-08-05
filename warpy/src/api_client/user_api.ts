@@ -1,6 +1,11 @@
 import {WebSocketConn} from './connection';
 
-export const UserAPI = (socket: WebSocketConn) => ({
+export interface IUserAPI {
+  create: () => any;
+  auth: (token: string) => any;
+}
+
+export const UserAPI = (socket: WebSocketConn): IUserAPI => ({
   create: () => {},
-  auth: (token: string) => socket.request('auth', {token}),
+  auth: token => socket.request('auth', {token}),
 });

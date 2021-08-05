@@ -10,15 +10,14 @@ export interface IStreamAPI {
 }
 
 export const StreamAPI: APIModule<IStreamAPI> = socket => ({
-  create: (title: string, hub: string) =>
+  create: (title, hub) =>
     socket.request('stream-new', {
       title,
       hub,
     }),
-  stop: (stream_id: string) => socket.request('stream-stop', {stream_id}),
-  join: (stream_id: string) => socket.publish('join-stream', {stream_id}),
-  getViewers: (stream_id: string) =>
-    socket.request('stream_viewers', {stream_id}),
+  stop: stream_id => socket.request('stream-stop', {stream_id}),
+  join: stream_id => socket.publish('join-stream', {stream_id}),
+  getViewers: stream_id => socket.request('stream_viewers', {stream_id}),
   raiseHand: () => socket.publish('raise-hand', {}),
-  allowSpeaker: (speaker: string) => socket.publish('speaker-allow', {speaker}),
+  allowSpeaker: speaker => socket.publish('speaker-allow', {speaker}),
 });

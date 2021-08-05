@@ -1,16 +1,16 @@
 import {WebSocketConn} from './connection';
-import {FeedAPI} from './feed_api';
+import {FeedAPI, IFeedAPI} from './feed_api';
 import {IStreamAPI, StreamAPI} from './stream_api';
-import {MediaAPI} from './media_api';
-import {UserAPI} from './user_api';
-import {APIObserver} from './api_observer';
+import {IMediaAPI, MediaAPI} from './media_api';
+import {IUserAPI, UserAPI} from './user_api';
+import {APIObserver, IAPIObserver} from './api_observer';
 
 interface IAPIClient {
-  observer: ReturnType<typeof APIObserver>;
-  user: ReturnType<typeof UserAPI>;
+  observer: IAPIObserver;
+  user: IUserAPI;
   stream: IStreamAPI;
-  feed: ReturnType<typeof FeedAPI>;
-  media: ReturnType<typeof MediaAPI>;
+  feed: IFeedAPI;
+  media: IMediaAPI;
 }
 
 export const APIClient = (socket: WebSocketConn): IAPIClient => ({

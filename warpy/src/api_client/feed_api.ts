@@ -1,5 +1,9 @@
 import {APIModule} from './types';
 
-export const FeedAPI: APIModule = socket => ({
-  get: (page: number = 0) => socket.request('request-feed', {page}),
+export interface IFeedAPI {
+  get: (page: number) => any;
+}
+
+export const FeedAPI: APIModule = (socket): IFeedAPI => ({
+  get: (page = 0) => socket.request('request-feed', {page}),
 });
