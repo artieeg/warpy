@@ -1,6 +1,6 @@
 import {APIClient} from '@app/api_client';
-import {Participant, Stream, User} from '@app/models';
-import {useFeedStore, useParticipantsStore, useUserStore} from '@app/stores';
+import {Participant} from '@app/models';
+import {useParticipantsStore} from '@app/stores';
 import {useEffect} from 'react';
 
 export const useWebSocketHandler = (api: APIClient) => {

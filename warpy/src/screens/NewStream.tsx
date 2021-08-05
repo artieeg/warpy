@@ -19,6 +19,7 @@ import {
 } from '@app/components';
 import {useRecvTransport} from '@app/hooks/useRecvTransport';
 import {StreamerPanel} from '@app/components/StreamerPanel';
+import {useParticipantsStore} from '@app/stores';
 
 export const NewStream = () => {
   const [streamId, setStreamId] = useState<string>();
@@ -107,9 +108,18 @@ export const NewStream = () => {
   }, [streamId, sendRoomData, localMediaStream, userId, media, ws]);
 
   const onStart = useCallback(async () => {
-    const {stream} = await ws.stream.create(title, hub);
+    const {
+      stream,
+      media: mediaData,
+      speakers: receivedSpeakers,
+    } = await ws.stream.create(title, hub);
+
+    useParticipantsStore.getState().set({
+      participants: receivedSpeakers,
+    });
 
     setStreamId(stream);
+    setSendRoomData(mediaData);
   }, [title, hub, ws]);
 
   const onStopStream = () => {
