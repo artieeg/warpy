@@ -2,9 +2,9 @@
   "private": true,
   "workspaces": [
     "lib",
-    "user",
+    "backend",
+    "warpy",
     "media",
-    "conversations",
     "ws_gateway",
     "warpykit-sdk-node"
   ],
@@ -12,10 +12,10 @@
     "**"
   ],
   "_moduleAliases": {
-    "@user": "./user/src",
-    "@media": "./media/src",
-    "@conv": "./conversations/src",
+    "@app": "./warpy/src",
+    "@backend": "./backend/src",
     "@ws_gateway": "./ws_gateway/src",
+    "@media": "./media/src",
     "@warpykit": "./warpykit-sdk-node/src"
   },
   "dependencies": {
