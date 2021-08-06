@@ -8,11 +8,14 @@ export const onViewersRequest: Handler = async (data, context, rid) => {
     return;
   }
 
-  const viewers = await MessageService.sendBackendRequest("request-viewers", {
-    page,
-    stream,
-    user: context.user,
-  });
+  const { viewers } = await MessageService.sendBackendRequest(
+    "request-viewers",
+    {
+      page,
+      stream,
+      user: context.user,
+    }
+  );
 
   context.ws.send(
     JSON.stringify({
