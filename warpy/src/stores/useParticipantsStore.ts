@@ -6,6 +6,9 @@ interface IParticipantsStore {
   stream: string | null;
   page: number;
   count: number;
+  setCount: (newCount: number) => any;
+  incrementCount: () => any;
+  decrementCount: () => any;
   participants: Participant[];
   set: SetState<IParticipantsStore>;
   addViewers: (viewers: Participant[], page: number) => void;
@@ -21,9 +24,13 @@ export const useParticipantsStore = create<IParticipantsStore>(set => ({
   count: 0,
   participants: [],
   set,
+  setCount: newCount => set(() => ({count: newCount})),
+  incrementCount: () => set(state => ({count: state.count + 1})),
+  decrementCount: () => set(state => ({count: state.count - 1})),
   removeParticipant: user => {
     set(state => ({
       participants: state.participants.filter(v => v.id !== user),
+      count: state.count - 1,
     }));
   },
   addSpeaker: user => {

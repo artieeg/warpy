@@ -19,13 +19,10 @@ export const useStreamViewers = (
   );
 
   const fetchViewers = useCallback(async () => {
-    console.log('fetching viewers...');
     const {viewers: fetchedViewers} = await ws.stream.getViewers(
       stream!,
       page + 1,
     );
-
-    console.log('fetched viewers', viewers);
 
     useParticipantsStore.getState().addViewers(fetchedViewers, page + 1);
   }, [stream]);

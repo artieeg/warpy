@@ -112,10 +112,12 @@ export const NewStream = () => {
       stream,
       media: mediaData,
       speakers: receivedSpeakers,
+      count,
     } = await ws.stream.create(title, hub);
 
     useParticipantsStore.getState().set({
       participants: receivedSpeakers,
+      count,
     });
 
     setStreamId(stream);

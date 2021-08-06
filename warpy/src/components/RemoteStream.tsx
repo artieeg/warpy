@@ -76,6 +76,8 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
     ws.stream.join(id).then((data: any) => {
       fetchViewers();
 
+      console.log('stream data', data);
+
       useParticipantsStore.getState().set({
         participants: [...data.speakers, ...data.raisedHands],
         count: data.count,

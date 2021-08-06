@@ -16,10 +16,6 @@ export const useWebSocketHandler = (api: APIClient) => {
       useParticipantsStore.getState().raiseHand(participant);
     });
 
-    api.stream.onUserLeft(data => {
-      useParticipantsStore.getState().removeParticipant(data.user);
-    });
-
     api.stream.onNewSpeaker(data => {
       const {speaker} = data;
 
