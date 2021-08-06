@@ -3,12 +3,12 @@ import {ParticipantRole} from '@app/types';
 
 export interface IParticipant extends IUser {
   role: ParticipantRole;
-  isRaisingHand: boolean;
+  isRaisingHand?: boolean;
 }
 
 export class Participant extends User implements IParticipant {
   role: ParticipantRole;
-  isRaisingHand: boolean;
+  isRaisingHand?: boolean;
 
   constructor(data: IParticipant) {
     super(data);

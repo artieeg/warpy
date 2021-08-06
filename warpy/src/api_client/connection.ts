@@ -53,7 +53,7 @@ export class WebSocketConn {
       data,
     };
 
-    return new Promise(resolve => {
+    return new Promise<any>(resolve => {
       this.observer.once(rid, response => resolve(response));
       this.socket.send(JSON.stringify(payload));
     });

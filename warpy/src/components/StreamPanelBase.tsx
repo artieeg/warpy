@@ -2,13 +2,6 @@ import React, {useEffect, useRef} from 'react';
 import {View, StyleSheet, Animated} from 'react-native';
 import {Speakers} from './Speakers';
 import {Participant} from '@app/models';
-/*
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from 'react-native-reanimated';
- */
 import {Text} from './Text';
 
 export interface IStreamPanelBase {
