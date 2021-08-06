@@ -1,6 +1,7 @@
-import { UserModel, RefreshToken, BaseUser } from "@app/models";
-import { jwt } from "@app/utils";
-import { MessageService } from "@app/services";
+import { UserModel, RefreshToken } from "@backend/models";
+import { BaseUser } from "@warpy/lib";
+import { jwt } from "@backend/utils";
+import { MessageService } from "@backend/services";
 import { MessageHandler, IWhoAmIRequest } from "@warpy/lib";
 
 /*

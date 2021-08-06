@@ -1,7 +1,7 @@
 import "module-alias/register";
 
 import express from "express";
-import routes from "@app/routes";
+import routes from "@backend/routes";
 import {
   ConversationService,
   DatabaseService,
@@ -12,9 +12,8 @@ import {
   ParticipantService,
   StreamService,
   UserService,
-} from "@app/services";
-import { IStream } from "@app/models";
-import { onNewStream } from "@app/handlers";
+} from "@backend/services";
+import { onNewStream, onJoinStream } from "@backend/handlers";
 
 const app = express();
 app.use(express.json());
@@ -45,10 +44,7 @@ const main = async () => {
     ParticipantService.removeAllParticipants(id);
   });
 
-  MessageService.on(
-    "participant-new",
-    ConversationService.handleParticipantJoin
-  );
+  MessageService.on("user-joins-stream", onJoinStream);
 
   MessageService.on(
     "participant-leave",

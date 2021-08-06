@@ -1,4 +1,4 @@
-import { Candidate, IStream } from "@app/models";
+import { Candidate, IStream } from "@backend/models";
 import {
   FeedsCacheService,
   ParticipantService,

@@ -1,4 +1,4 @@
-import { IStream, Stream } from "@app/models";
+import { IStream, Stream } from "@backend/models";
 import mongoose from "mongoose";
 import EventEmitter from "events";
 

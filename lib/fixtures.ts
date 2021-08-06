@@ -1,9 +1,6 @@
-import { RtpCapabilities, WebRtcTransportOptions } from "mediasoup/lib/types";
-import { INewMediaTrack, ITransportOptions } from "./events";
+import { INewMediaTrack, ITransportOptions } from "./requests";
 
-export const createRtpCapabilitiesFixture = (
-  params: Partial<RtpCapabilities>
-): RtpCapabilities => {
+export const createRtpCapabilitiesFixture = (params: any): any => {
   return {
     codecs: [],
     headerExtensions: [],
@@ -43,7 +40,6 @@ export const createNewTrackFixture = (
     rtpCapabilities: createRtpCapabilitiesFixture({}),
     transportId: "test transport id",
     appData: {},
-    paused: false,
     ...params,
   };
 };

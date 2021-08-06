@@ -1,4 +1,4 @@
-import { IStats } from "@app/models";
+import { IStats } from "@backend/models";
 import redis from "redis";
 
 const URL = process.env.STATS_CACHE || "redis://127.0.0.1:6379/2";

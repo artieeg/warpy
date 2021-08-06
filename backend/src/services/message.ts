@@ -2,10 +2,9 @@ import { EventEmitter } from "events";
 import { connect, JSONCodec, NatsConnection } from "nats";
 import {
   IAllowSpeakerPayload,
-  IBaseParticipant,
   IRequestGetTracks,
   IRoom,
-} from "@app/models";
+} from "@backend/models";
 import {
   IConnectMediaTransport,
   IConnectNewSpeakerMedia,
@@ -39,7 +38,7 @@ const SubjectEventMap = {
   "user.whoami-request": "whoami-request",
   "feeds.get": "feed-request",
   "viewers.get": "viewers-request",
-  "stream.join": "participant-new",
+  "stream.join": "user-joins-stream",
 };
 
 type Subject = keyof typeof SubjectEventMap;
@@ -100,14 +99,8 @@ const handleConnectTransport = async () => {
   const sub = nc.subscribe(subjects.conversations.transport.try_connect);
 
   for await (const msg of sub) {
-    const {
-      transportId,
-      dtlsParameters,
-      direction,
-      roomId,
-      user,
-      mediaKind,
-    } = jc.decode(msg.data) as any;
+    const { transportId, dtlsParameters, direction, roomId, user, mediaKind } =
+      jc.decode(msg.data) as any;
 
     const data: IConnectMediaTransport = {
       transportId,

@@ -1,15 +1,15 @@
-import { MessageHandler, INewStream } from "@warpy/lib";
+import { MessageHandler, INewStream, INewStreamResponse } from "@warpy/lib";
 import {
   StreamService,
   FeedService,
   ConversationService,
   MediaService,
-} from "@app/services";
+} from "@backend/services";
 
-export const onNewStream: MessageHandler<INewStream, any> = async (
-  params,
-  respond
-) => {
+export const onNewStream: MessageHandler<
+  INewStream,
+  INewStreamResponse
+> = async (params, respond) => {
   const { owner, title, hub } = params;
 
   const recvMediaNode = await MediaService.getConsumerNodeId();

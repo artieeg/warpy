@@ -1,7 +1,7 @@
 import express, { RequestHandler } from "express";
-import { createDevUserSchema } from "@app/schemas";
-import { validator } from "@app/middlewares";
-import { UserService } from "@app/services";
+import { createDevUserSchema } from "@backend/schemas";
+import { validator } from "@backend/middlewares";
+import { UserService } from "@backend/services";
 
 const router = express.Router();
 

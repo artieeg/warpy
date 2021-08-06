@@ -1,11 +1,11 @@
-import { Stream } from "@app/models/stream";
+import { Stream } from "@backend/models/stream";
 import * as StreamService from "../stream";
-import * as nats from "@app/nats";
-import { createStreamFixture } from "@app/__fixtures__/";
-import { AccessDeniedError } from "@app/errors";
+import * as nats from "@backend/nats";
+import { createStreamFixture } from "@backend/__fixtures__/";
+import { AccessDeniedError } from "@backend/errors";
 
-jest.mock("@app/models/stream");
-jest.mock("@app/nats");
+jest.mock("@backend/models/stream");
+jest.mock("@backend/nats");
 
 describe("streams service", () => {
   const streamData = {
