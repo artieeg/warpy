@@ -123,3 +123,8 @@ export interface IJoinStream {
   stream: string;
   user: string;
 }
+
+export interface IStopStream {
+  stream: string;
+  user: string;
+}

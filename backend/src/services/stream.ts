@@ -20,7 +20,7 @@ export const createNewStream = async (
   return stream;
 };
 
-export const stopStream = async (data: any) => {
+export const stopStream = async (stream: string, user: string) => {
   const { stream, user } = data;
 
   const result = await Stream.updateOne(
@@ -31,8 +31,8 @@ export const stopStream = async (data: any) => {
     { $set: { live: false } }
   );
 
-  if (result.nModified === 1) {
-    observer.emit("stream-stop", stream);
+  if (result.nModified === 0) {
+    throw new Error();
   }
 };
 

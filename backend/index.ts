@@ -13,7 +13,7 @@ import {
   StreamService,
   UserService,
 } from "@backend/services";
-import { onNewStream, onJoinStream } from "@backend/handlers";
+import { onNewStream, onJoinStream, onStreamStop } from "@backend/handlers";
 
 const app = express();
 app.use(express.json());
@@ -31,18 +31,6 @@ const main = async () => {
   ConversationService.init();
   FeedsCacheService.init();
   FeedService.init();
-
-  StreamService.observer.on("stream-stop", (id: string) => {
-    FeedService.onRemoveCandidate(id);
-  });
-
-  StreamService.observer.on("stream-stop", (id: string) => {
-    ConversationService.handleConversationEnd(id);
-  });
-
-  StreamService.observer.on("stream-stop", (id: string) => {
-    ParticipantService.removeAllParticipants(id);
-  });
 
   MessageService.on("user-joins-stream", onJoinStream);
 
@@ -63,7 +51,7 @@ const main = async () => {
     ConversationService.handleConnectTransport
   );
   MessageService.on("viewers-request", ParticipantService.handleViewersRequest);
-  MessageService.on("stream-stop", StreamService.stopStream);
+  MessageService.on("stream-stop", onStreamStop);
   MessageService.on("stream-new", onNewStream);
   MessageService.on("whoami-request", UserService.onWhoAmIRequest);
   MessageService.on("feed-request", FeedService.onFeedRequest);

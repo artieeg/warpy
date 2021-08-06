@@ -83,7 +83,7 @@ export const addNewCandidate = async (data: IStream) => {
   await CandidateStatsService.createStats(candidate.id);
 };
 
-export const onRemoveCandidate = async (id: string) => {
+export const removeCandidate = async (id: string) => {
   await Candidate.deleteOne({ _id: id });
   await CandidateStatsService.deleteStats(id);
 };
