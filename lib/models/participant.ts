@@ -1,6 +1,6 @@
-import { Roles } from "@app/types";
-import { IBaseUser, BaseUser } from "./user";
+import { Roles } from "../types";
 import { IEntity } from "./entity";
+import { IBaseUser, BaseUser } from "./user";
 
 export interface IBaseParticipant extends IEntity {
   stream: string;

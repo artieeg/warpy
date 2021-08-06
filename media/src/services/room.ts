@@ -225,8 +225,6 @@ export const handleConnectTransport = async (data: IConnectTransport) => {
     return; //TODO;;; send error
   }
 
-  console.log("direction/mediakind", direction, mediaKind);
-
   //Need to specify media kind for "send" transports
   if (!mediaKind && direction === "send") {
     return;

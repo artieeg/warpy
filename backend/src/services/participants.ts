@@ -1,5 +1,4 @@
-import { IBaseParticipant, IParticipant, Participant } from "@app/models";
-import { Roles } from "@app/types";
+import { Roles, IParticipant, Participant, IBaseUser } from "@warpy/lib";
 import redis from "redis";
 import { MessageService, UserService } from ".";
 import { IRequestViewers, MessageHandler } from "@warpy/lib";
@@ -12,7 +11,7 @@ const client = redis.createClient({
 
 export const init = async () => {};
 
-export const getUsersWithRaisedHands = (stream: string) => {
+export const getUserWithRaisedHandsIds = (stream: string) => {
   const key = `raised_hands_${stream}`;
 
   return new Promise<string[]>((resolve, reject) => {
@@ -246,42 +245,77 @@ export const getSpeakersWithRoles = async (stream: string) => {
 };
 
 const PARTICIPANTS_PER_PAGE = 50;
-export const handleViewersRequest: MessageHandler<
-  IRequestViewers,
-  any
-> = async ({ stream, page }, respond) => {
-  const allStreamParticipants = await getStreamParticipantsWithRoles(stream);
-  const allParticipantIds = Object.keys(allStreamParticipants);
+export const handleViewersRequest: MessageHandler<IRequestViewers, any> =
+  async ({ stream, page }, respond) => {
+    const allStreamParticipants = await getStreamParticipantsWithRoles(stream);
+    const allParticipantIds = Object.keys(allStreamParticipants);
 
-  const viewerIds = [];
+    const viewerIds = [];
 
-  const start = page * PARTICIPANTS_PER_PAGE;
-  const end =
-    allParticipantIds.length > start + PARTICIPANTS_PER_PAGE
-      ? start + PARTICIPANTS_PER_PAGE
-      : allParticipantIds.length;
+    const start = page * PARTICIPANTS_PER_PAGE;
+    const end =
+      allParticipantIds.length > start + PARTICIPANTS_PER_PAGE
+        ? start + PARTICIPANTS_PER_PAGE
+        : allParticipantIds.length;
 
-  for (let i = start; i < end; i++) {
-    const id = allParticipantIds[i];
+    for (let i = start; i < end; i++) {
+      const id = allParticipantIds[i];
 
-    if (allStreamParticipants[id] === "viewer") {
-      viewerIds.push(id);
+      if (allStreamParticipants[id] === "viewer") {
+        viewerIds.push(id);
+      }
     }
-  }
 
-  const users = await UserService.getUsersByIds(viewerIds);
+    const users = await UserService.getUsersByIds(viewerIds);
 
-  const viewers: IParticipant[] = users.map((user) =>
-    Participant.fromUser(user, allStreamParticipants[user.id] as Roles, stream)
-  );
+    const viewers: IParticipant[] = users.map((user) =>
+      Participant.fromUser(
+        user,
+        allStreamParticipants[user.id] as Roles,
+        stream
+      )
+    );
 
-  respond!({
-    viewers,
-  });
-};
+    respond!({
+      viewers,
+    });
+  };
 
 export const getParticipantsCount = async (stream: string) => {
   const participants = await getStreamParticipants(stream);
 
   return participants.length;
+};
+
+export const broadcastNewViewer = async (viewer: IBaseUser, stream: string) => {
+  const participants = await getStreamParticipants(stream);
+
+  await MessageService.sendMessageBroadcast(participants, {
+    event: "new-viewer",
+    data: {
+      stream,
+      viewer: Participant.fromJSON(viewer),
+    },
+  });
+};
+
+export const getUsersWithRaisedHands = async (
+  stream: string
+): Promise<IParticipant[]> => {
+  const ids = await getUserWithRaisedHandsIds(stream);
+
+  const users = await UserService.getUsersByIds(ids);
+
+  return users.map((data) => Participant.fromUser(data, "viewer", stream));
+};
+
+export const getSpeakers = async (stream: string): Promise<IParticipant[]> => {
+  const speakersWithRoles = await getSpeakersWithRoles(stream);
+  const speakerIds = Object.keys(speakersWithRoles);
+
+  const speakersInfo = await UserService.getUsersByIds(speakerIds);
+
+  return speakersInfo.map((data) =>
+    Participant.fromUser(data, speakersWithRoles[data.id], stream)
+  );
 };
