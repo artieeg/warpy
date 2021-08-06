@@ -25,8 +25,8 @@ export const StreamAPI: APIModule<IStreamAPI> = socket => ({
     socket.request('request-viewers', {stream, page}),
   raiseHand: () => socket.publish('raise-hand', {}),
   allowSpeaker: speaker => socket.publish('speaker-allow', {speaker}),
-  onNewViewer: handler => socket.observer.on('new-viewer', handler),
-  onNewRaisedHand: handler => socket.observer.on('raise-hand', handler),
-  onUserLeft: handler => socket.observer.on('user-left', handler),
-  onNewSpeaker: handler => socket.observer.on('new-speaker', handler),
+  onNewViewer: handler => socket.on('new-viewer', handler),
+  onNewRaisedHand: handler => socket.on('raise-hand', handler),
+  onUserLeft: handler => socket.on('user-left', handler),
+  onNewSpeaker: handler => socket.on('new-speaker', handler),
 });

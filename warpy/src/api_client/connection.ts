@@ -58,4 +58,13 @@ export class WebSocketConn {
       this.socket.send(JSON.stringify(payload));
     });
   }
+
+  /**
+   * Subscribes for events, return unsub function
+   */
+  on(event: string, handler: any) {
+    this.observer.on(event, handler);
+
+    return () => this.observer.off(event, handler);
+  }
 }
