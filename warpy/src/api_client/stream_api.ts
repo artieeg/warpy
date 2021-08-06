@@ -11,6 +11,7 @@ export interface IStreamAPI {
   onNewRaisedHand: EventHandler;
   onUserLeft: EventHandler;
   onNewSpeaker: EventHandler;
+  onSpeakingAllowed: EventHandler;
 }
 
 export const StreamAPI: APIModule<IStreamAPI> = socket => ({
@@ -29,4 +30,5 @@ export const StreamAPI: APIModule<IStreamAPI> = socket => ({
   onNewRaisedHand: handler => socket.on('raise-hand', handler),
   onUserLeft: handler => socket.on('user-left', handler),
   onNewSpeaker: handler => socket.on('new-speaker', handler),
+  onSpeakingAllowed: handler => socket.on('speaking-allowed', handler),
 });

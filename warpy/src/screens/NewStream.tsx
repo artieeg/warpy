@@ -54,11 +54,7 @@ export const NewStream = () => {
   }, [userFacingMode, localMediaStream]);
 
   useEffect(() => {
-    ws.observer.once('created-room', (data: any) => {
-      setSendRoomData(data.media);
-    });
-
-    ws.observer.once('@media/recv-connect-params', (data: any) => {
+    ws.media.onceRecvConnectParams(data => {
       setRecvRoomData(data);
     });
   }, [streamId, ws]);
@@ -68,18 +64,16 @@ export const NewStream = () => {
       return;
     }
 
-    const onNewTrack = (data: any) => {
+    const newTrackUnsub = ws.media.onNewTrack(data => {
       media.consumeRemoteStream(
         data.consumerParameters,
         data.user,
         recvTransport,
       );
-    };
-
-    ws.observer.on('@media/new-track', onNewTrack);
+    });
 
     return () => {
-      ws.observer.off('@media/new-track', onNewTrack);
+      newTrackUnsub();
     };
   }, [recvTransport, media, ws]);
 

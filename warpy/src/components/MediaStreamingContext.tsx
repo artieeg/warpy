@@ -7,6 +7,7 @@ import {
   Transport,
 } from 'mediasoup-client/lib/types';
 import React, {createContext, useContext, useState} from 'react';
+import {Alert} from 'react-native';
 import {MediaStream} from 'react-native-webrtc';
 import {useWebSocketContext} from './WebSocketContext';
 
@@ -48,9 +49,11 @@ export const MediaStreamingProvider = ({children}: any) => {
     //Transport is about to establish the ICE+DTLS connection and
     //needs to exchange information with the associated server side transport.
     transport.on('connect', ({dtlsParameters}, callback, _errback) => {
-      ws.observer.once(`@media/${direction}-transport-connected`, () => {
-        callback();
-      });
+      if (direction === 'send') {
+        ws.media.onceSendTransportConnected(callback);
+      } else {
+        ws.media.onceRecvTransportConnected(callback);
+      }
 
       ws.media.connectTransport(
         {

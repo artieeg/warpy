@@ -69,7 +69,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   }, [recvTransport, roomData, userId, id, media]);
 
   useEffect(() => {
-    ws.observer.once('@media/recv-connect-params', async (data: any) => {
+    ws.media.onceRecvConnectParams(data => {
       setRoomData(data);
     });
 
@@ -93,10 +93,10 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
       media.sendMediaStream(audioStream!, id, options.media, 'audio');
     };
 
-    ws.observer.on('speaking-allowed', onSpeakingAllowed);
+    const unsub = ws.stream.onSpeakingAllowed(onSpeakingAllowed);
 
     return () => {
-      ws.observer.off('speaking-allowed', onSpeakingAllowed);
+      unsub();
     };
   }, [id, audioStream, ws, media]);
 

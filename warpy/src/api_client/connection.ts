@@ -67,4 +67,11 @@ export class WebSocketConn {
 
     return () => this.observer.off(event, handler);
   }
+
+  /**
+   * Subscribes for events, fires once
+   */
+  once(event: string, handler: any) {
+    this.observer.once(event, handler);
+  }
 }
