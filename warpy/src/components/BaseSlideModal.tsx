@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   wrapper: {
-    backgroundColor: '#110E11',
+    backgroundColor: '#2F2F3A',
     position: 'absolute',
     bottom: 0,
     left: 0,
