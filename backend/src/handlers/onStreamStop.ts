@@ -1,5 +1,9 @@
 import { MessageHandler, IStopStream } from "@warpy/lib";
-import { StreamService, ParticipantService } from "@backend/services";
+import {
+  StreamService,
+  ParticipantService,
+  FeedService,
+} from "@backend/services";
 
 export const onStreamStop: MessageHandler<IStopStream> = async (data) => {
   const { stream, user } = data;
