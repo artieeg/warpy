@@ -9,9 +9,12 @@ export const onJoinStream: Handler = async (data, context, rid) => {
     user: context!.user,
   });
 
-  context!.ws.send({
-    event: "@api/response",
-    data: response,
-    rid,
-  });
+  console.log("sending api reqsponse", response);
+  context!.ws.send(
+    JSON.stringify({
+      event: "@api/response",
+      data: response,
+      rid,
+    })
+  );
 };

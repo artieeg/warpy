@@ -74,13 +74,15 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
     });
 
     ws.stream.join(id).then((data: any) => {
+      fetchViewers();
+
       useParticipantsStore.getState().set({
         participants: [...data.speakers, ...data.raisedHands],
         count: data.count,
         page: -1,
       });
     });
-  }, [userId, id, ws]);
+  }, [userId, id, ws, fetchViewers]);
 
   useEffect(() => {
     const onSpeakingAllowed = async (options: any) => {

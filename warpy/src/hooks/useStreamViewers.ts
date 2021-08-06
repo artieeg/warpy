@@ -2,7 +2,7 @@ import {useWebSocketContext} from '@app/components/WebSocketContext';
 import {Participant} from '@app/models';
 import shallow from 'zustand/shallow';
 import {useParticipantsStore} from '@app/stores';
-import {useEffect, useMemo} from 'react';
+import {useCallback, useMemo} from 'react';
 
 export const useStreamViewers = (
   stream: string,
@@ -18,20 +18,17 @@ export const useStreamViewers = (
     [participants],
   );
 
-  const fetchViewers = async () => {
+  const fetchViewers = useCallback(async () => {
+    console.log('fetching viewers...');
     const {viewers: fetchedViewers} = await ws.stream.getViewers(
       stream!,
       page + 1,
     );
 
-    useParticipantsStore.getState().addViewers(fetchedViewers, page + 1);
-  };
+    console.log('fetched viewers', viewers);
 
-  useEffect(() => {
-    ws.observer.once('room-info', () => {
-      fetchViewers();
-    });
-  }, [ws]);
+    useParticipantsStore.getState().addViewers(fetchedViewers, page + 1);
+  }, [stream]);
 
   return [viewers, fetchViewers];
 };
