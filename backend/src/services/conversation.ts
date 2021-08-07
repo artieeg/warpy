@@ -6,9 +6,6 @@ export const handleConnectTransport = async (data: IConnectMediaTransport) => {
   const { user } = data;
   const stream = await ParticipantService.getCurrentStreamFor(user);
 
-  console.log("connecting transport for", user);
-  console.log("stream", stream);
-
   if (!stream) {
     return;
   }
@@ -16,12 +13,10 @@ export const handleConnectTransport = async (data: IConnectMediaTransport) => {
   //const role = await ParticipantService.getRoleFor(user, stream);
   const node = await MediaService.getConsumerNodeFor(user);
 
-  console.log("consumer node", node);
   if (!node) {
     return;
   }
 
-  console.log("transport data", data);
   MessageService.sendConnectTransport(node, data);
 };
 

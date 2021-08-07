@@ -306,7 +306,6 @@ export const getSpeakers = async (stream: string): Promise<IParticipant[]> => {
 
 export const broadcastNewSpeaker = async (speaker: IParticipant) => {
   const { stream } = speaker;
-  console.log("broadcasting new speake", speaker);
 
   const users = await getStreamParticipants(stream);
 

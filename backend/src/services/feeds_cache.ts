@@ -41,6 +41,5 @@ export const addServedStreams = async (
 };
 
 export const removeServedStreams = async (user: string) => {
-  console.log("removing server streams for", user);
   client.del(user);
 };

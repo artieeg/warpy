@@ -100,8 +100,6 @@ const handleConnectTransport = async () => {
       mediaKind,
     };
 
-    console.log("connecting transport", data);
-
     eventEmitter.emit("connect-transport", data);
   }
 };
@@ -131,8 +129,6 @@ const handleNewTrack = async () => {
       appData,
       direction,
     };
-
-    console.log("new track", data);
 
     eventEmitter.emit("new-track", data);
   }
@@ -210,8 +206,6 @@ export const sendConnectTransport = async (
   node: string,
   data: IConnectMediaTransport
 ) => {
-  console.log("connecting transport", data.direction);
-  console.log("node", node);
   nc.publish(
     data.direction === "send"
       ? subjects.media.transport.connect_producer
@@ -223,12 +217,10 @@ export const sendConnectTransport = async (
 export const sendNewTrack = async (data: INewMediaTrack) => {
   const m = jc.encode(data);
 
-  console.log("sending new track");
   nc.publish(subjects.media.track.send, m);
 };
 
 export const joinMediaRoom = async (node: string, data: IJoinMediaRoom) => {
-  console.log("joining node", node);
   const m = jc.encode(data);
 
   nc.publish(`${subjects.media.peer.join}.${node}`, m);
