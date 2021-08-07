@@ -25,7 +25,7 @@ export const useStreamViewers = (
     );
 
     useParticipantsStore.getState().addViewers(fetchedViewers, page + 1);
-  }, [stream]);
+  }, [stream, ws, page]);
 
   return [viewers, fetchViewers];
 };

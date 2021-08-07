@@ -1,41 +1,51 @@
-import { MessageHandler, INewStream, INewStreamResponse } from "@warpy/lib";
+import {
+  MessageHandler,
+  Participant,
+  INewStream,
+  INewStreamResponse,
+} from "@warpy/lib";
 import {
   StreamService,
   FeedService,
-  ConversationService,
   MediaService,
+  UserService,
+  ParticipantService,
 } from "@backend/services";
 
-export const onNewStream: MessageHandler<
-  INewStream,
-  INewStreamResponse
-> = async (params, respond) => {
-  const { owner, title, hub } = params;
+export const onNewStream: MessageHandler<INewStream, INewStreamResponse> =
+  async (params, respond) => {
+    const { owner, title, hub } = params;
+    const userData = await UserService.getUserById(owner);
 
-  const recvMediaNode = await MediaService.getConsumerNodeId();
+    const recvMediaNode = await MediaService.getConsumerNodeId();
 
-  if (!recvMediaNode) {
-    return;
-  }
+    if (!recvMediaNode || !userData) {
+      return;
+    }
 
-  const stream = await StreamService.createNewStream(owner, title, hub);
-  await FeedService.addNewCandidate(stream);
-  const { speakers, count } = await ConversationService.createNewConversation(
-    stream.id.toString(),
-    stream.owner.toString()
-  );
+    const stream = await StreamService.createNewStream(owner, title, hub);
+    await FeedService.addNewCandidate(stream);
 
-  const streamId = stream.id;
+    const speakers = [
+      Participant.fromUser(userData, "streamer", stream.id.toString()),
+    ];
 
-  const media = await MediaService.createRoom(owner, streamId);
+    const streamId = stream.id;
 
-  await MediaService.assignUserToNode(owner, recvMediaNode);
-  await MediaService.joinRoom(recvMediaNode, owner, streamId);
+    await Promise.all([
+      ParticipantService.addParticipant(owner, streamId, "streamer"),
+      ParticipantService.setCurrentStreamFor(owner, streamId),
+    ]);
 
-  respond({
-    stream: stream.id,
-    media,
-    speakers,
-    count,
-  });
-};
+    const media = await MediaService.createRoom(owner, streamId);
+
+    await MediaService.assignUserToNode(owner, recvMediaNode);
+    await MediaService.joinRoom(recvMediaNode, owner, streamId);
+
+    respond({
+      stream: stream.id,
+      media,
+      speakers,
+      count: 1,
+    });
+  };

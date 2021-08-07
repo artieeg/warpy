@@ -11,14 +11,6 @@ const client = redis.createClient({
 //const sadd = promisify(client.sadd).bind(client);
 const smembers = promisify(client.smembers).bind(client);
 
-export const init = () => {
-  MessageService.on("user-disconnected", (data: any) => {
-    const { user } = data;
-
-    removeServedStreams(user);
-  });
-};
-
 export const getServedStreams = async (user: string): Promise<string[]> => {
   try {
     return await smembers(user);
@@ -49,5 +41,6 @@ export const addServedStreams = async (
 };
 
 export const removeServedStreams = async (user: string) => {
+  console.log("removing server streams for", user);
   client.del(user);
 };

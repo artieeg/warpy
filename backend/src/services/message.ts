@@ -69,7 +69,6 @@ export const init = async () => {
   handleNewStream();
   handleStreamEnd();
   handleStreamJoin();
-  handleStreamLeave();
   handleAllowSpeaker();
   handleRaisedHand();
   handleNewTrack();
@@ -88,7 +87,6 @@ type Events =
   | "new-track"
   | "connect-transport"
   | "new-media-node"
-  | "participant-leave"
   | typeof SubjectEventMap[Subject];
 
 export const on = (event: Events, handler: MessageHandler<any, any>) => {
@@ -111,6 +109,8 @@ const handleConnectTransport = async () => {
       mediaKind,
     };
 
+    console.log("connecting transport", data);
+
     eventEmitter.emit("connect-transport", data);
   }
 };
@@ -125,7 +125,6 @@ const handleNewTrack = async () => {
       kind,
       rtpParameters,
       rtpCapabilities,
-      paused,
       roomId,
       appData,
       direction,
@@ -137,11 +136,12 @@ const handleNewTrack = async () => {
       kind,
       rtpParameters,
       rtpCapabilities,
-      paused,
       roomId,
       appData,
       direction,
     };
+
+    console.log("new track", data);
 
     eventEmitter.emit("new-track", data);
   }
@@ -154,16 +154,6 @@ const handleRaisedHand = async () => {
     const { id } = jc.decode(msg.data) as any;
 
     eventEmitter.emit("raise-hand", id);
-  }
-};
-
-const handleStreamLeave = async () => {
-  const sub = nc.subscribe("stream.user.leave");
-
-  for await (const msg of sub) {
-    const { id } = jc.decode(msg.data) as any;
-
-    eventEmitter.emit("participant-leave", id);
   }
 };
 

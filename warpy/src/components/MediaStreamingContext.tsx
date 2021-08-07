@@ -50,11 +50,15 @@ export const MediaStreamingProvider = ({children}: any) => {
     //needs to exchange information with the associated server side transport.
     transport.on('connect', ({dtlsParameters}, callback, _errback) => {
       if (direction === 'send') {
-        ws.media.onceSendTransportConnected(callback);
+        ws.media.onceSendTransportConnected(() => {
+          console.log('connected send transport');
+          callback();
+        });
       } else {
         ws.media.onceRecvTransportConnected(callback);
       }
 
+      console.log('connecting transport', transportOptions.id);
       ws.media.connectTransport(
         {
           transportId: transportOptions.id,
@@ -149,10 +153,7 @@ export const MediaStreamingProvider = ({children}: any) => {
         ? localStream.getVideoTracks()[0]
         : localStream.getAudioTracks()[0];
 
-    if (kind === 'audio') {
-      console.log('audio track info');
-      console.log(localStream.getAudioTracks());
-    }
+    console.log('producing', kind);
 
     await sendTransport.produce({
       track,

@@ -12,14 +12,6 @@ interface IGetFeed {
   hub?: string;
 }
 
-export const init = () => {
-  MessageService.on("user-disconnected", (data: any) => {
-    const { user } = data;
-
-    onUserDisconnected(user);
-  });
-};
-
 export const onFeedRequest: MessageHandler<IGetFeed, any> = async (
   params: IGetFeed,
   respond
@@ -88,6 +80,6 @@ export const removeCandidate = async (id: string) => {
   await CandidateStatsService.deleteStats(id);
 };
 
-export const onUserDisconnected = async (user: string) => {
+export const removeCandidateByOwner = async (user: string) => {
   await Candidate.deleteOne({ owner: user });
 };

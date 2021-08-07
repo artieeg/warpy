@@ -245,41 +245,37 @@ export const getSpeakersWithRoles = async (stream: string) => {
 };
 
 const PARTICIPANTS_PER_PAGE = 50;
-export const handleViewersRequest: MessageHandler<IRequestViewers, any> =
-  async ({ stream, page }, respond) => {
-    const allStreamParticipants = await getStreamParticipantsWithRoles(stream);
-    const allParticipantIds = Object.keys(allStreamParticipants);
+export const getViewersPage = async (
+  stream: string,
+  page: number
+): Promise<Participant[]> => {
+  const allStreamParticipants = await getStreamParticipantsWithRoles(stream);
+  const allParticipantIds = Object.keys(allStreamParticipants);
 
-    const viewerIds = [];
+  const viewerIds = [];
 
-    const start = page * PARTICIPANTS_PER_PAGE;
-    const end =
-      allParticipantIds.length > start + PARTICIPANTS_PER_PAGE
-        ? start + PARTICIPANTS_PER_PAGE
-        : allParticipantIds.length;
+  const start = page * PARTICIPANTS_PER_PAGE;
+  const end =
+    allParticipantIds.length > start + PARTICIPANTS_PER_PAGE
+      ? start + PARTICIPANTS_PER_PAGE
+      : allParticipantIds.length;
 
-    for (let i = start; i < end; i++) {
-      const id = allParticipantIds[i];
+  for (let i = start; i < end; i++) {
+    const id = allParticipantIds[i];
 
-      if (allStreamParticipants[id] === "viewer") {
-        viewerIds.push(id);
-      }
+    if (allStreamParticipants[id] === "viewer") {
+      viewerIds.push(id);
     }
+  }
 
-    const users = await UserService.getUsersByIds(viewerIds);
+  const users = await UserService.getUsersByIds(viewerIds);
 
-    const viewers: IParticipant[] = users.map((user) =>
-      Participant.fromUser(
-        user,
-        allStreamParticipants[user.id] as Roles,
-        stream
-      )
-    );
+  const viewers: IParticipant[] = users.map((user) =>
+    Participant.fromUser(user, allStreamParticipants[user.id] as Roles, stream)
+  );
 
-    respond!({
-      viewers,
-    });
-  };
+  return viewers;
+};
 
 export const getParticipantsCount = async (stream: string) => {
   const participants = await getStreamParticipants(stream);
@@ -318,4 +314,25 @@ export const getSpeakers = async (stream: string): Promise<IParticipant[]> => {
   return speakersInfo.map((data) =>
     Participant.fromUser(data, speakersWithRoles[data.id], stream)
   );
+};
+
+export const broadcastParticipantLeft = async (user: string) => {
+  const stream = await getCurrentStreamFor(user);
+
+  //If user is not in any stream
+  if (!stream) {
+    return;
+  }
+
+  await removeParticipant(user, stream);
+
+  const users = await getStreamParticipants(stream);
+
+  await MessageService.sendMessageBroadcast(users, {
+    event: "user-left",
+    data: {
+      user,
+      stream,
+    },
+  });
 };

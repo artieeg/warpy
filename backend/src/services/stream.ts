@@ -21,8 +21,6 @@ export const createNewStream = async (
 };
 
 export const stopStream = async (stream: string, user: string) => {
-  const { stream, user } = data;
-
   const result = await Stream.updateOne(
     {
       _id: mongoose.Types.ObjectId(stream),

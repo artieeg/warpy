@@ -12,3 +12,7 @@ export interface IJoinStreamResponse {
   raisedHands: IParticipant[];
   count: number;
 }
+
+export interface IRequestViewersResponse {
+  viewers: IParticipant[];
+}

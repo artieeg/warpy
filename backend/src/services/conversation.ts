@@ -14,38 +14,6 @@ import {
   UserService,
 } from ".";
 
-export const init = () => {
-  MessageService.on("user-disconnected", (data: any) => {
-    const { user } = data;
-
-    handleParticipantLeave(user);
-  });
-};
-
-/**
- * Removes user from participants list & removes their track ids
- */
-export const handleParticipantLeave = async (user: string) => {
-  const stream = await ParticipantService.getCurrentStreamFor(user);
-
-  //If user is not in any stream
-  if (!stream) {
-    return;
-  }
-
-  await ParticipantService.removeParticipant(user, stream);
-
-  const users = await ParticipantService.getStreamParticipants(stream);
-
-  await MessageService.sendMessageBroadcast(users, {
-    event: "user-left",
-    data: {
-      user,
-      stream,
-    },
-  });
-};
-
 export const handleRaisedHand = async (viewerId: string) => {
   const stream = await ParticipantService.getCurrentStreamFor(viewerId);
 

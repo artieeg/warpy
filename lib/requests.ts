@@ -128,3 +128,7 @@ export interface IStopStream {
   stream: string;
   user: string;
 }
+
+export interface IUserDisconnected {
+  user: string;
+}

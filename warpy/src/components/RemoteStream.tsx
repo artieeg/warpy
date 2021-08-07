@@ -8,6 +8,7 @@ import {
   useStreamViewers,
   useParticipantsCount,
   useSpeakingRequests,
+  useEffectOnce,
 } from '@app/hooks';
 import {MediaStream, RTCView} from 'react-native-webrtc';
 import {useRecvTransport} from '@app/hooks/useRecvTransport';
@@ -68,7 +69,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
     }
   }, [recvTransport, roomData, userId, id, media]);
 
-  useEffect(() => {
+  useEffectOnce(() => {
     ws.media.onceRecvConnectParams(data => {
       setRoomData(data);
     });
@@ -84,7 +85,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
         page: -1,
       });
     });
-  }, [userId, id, ws, fetchViewers]);
+  });
 
   useEffect(() => {
     const onSpeakingAllowed = async (options: any) => {

@@ -10,10 +10,15 @@ import {
   MediaService,
   MessageService,
   ParticipantService,
-  StreamService,
   UserService,
 } from "@backend/services";
-import { onNewStream, onJoinStream, onStreamStop } from "@backend/handlers";
+import {
+  onNewStream,
+  onJoinStream,
+  onStreamStop,
+  onUserDisconnect,
+  onViewersRequest,
+} from "@backend/handlers";
 
 const app = express();
 app.use(express.json());
@@ -28,16 +33,12 @@ const main = async () => {
   await DatabaseService.connect();
   await MessageService.init();
 
-  ConversationService.init();
-  FeedsCacheService.init();
-  FeedService.init();
-
   MessageService.on("user-joins-stream", onJoinStream);
+  MessageService.on("stream-stop", onStreamStop);
+  MessageService.on("stream-new", onNewStream);
+  MessageService.on("user-disconnected", onUserDisconnect);
+  MessageService.on("viewers-request", onViewersRequest);
 
-  MessageService.on(
-    "participant-leave",
-    ConversationService.handleParticipantLeave
-  );
   MessageService.on("new-track", ConversationService.handleNewTrack);
   MessageService.on("raise-hand", ConversationService.handleRaisedHand);
   MessageService.on("speaker-allow", ConversationService.handleAllowSpeaker);
@@ -50,9 +51,6 @@ const main = async () => {
     "connect-transport",
     ConversationService.handleConnectTransport
   );
-  MessageService.on("viewers-request", ParticipantService.handleViewersRequest);
-  MessageService.on("stream-stop", onStreamStop);
-  MessageService.on("stream-new", onNewStream);
   MessageService.on("whoami-request", UserService.onWhoAmIRequest);
   MessageService.on("feed-request", FeedService.onFeedRequest);
 
