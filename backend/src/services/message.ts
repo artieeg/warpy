@@ -39,6 +39,7 @@ const SubjectEventMap = {
   "feeds.get": "feed-request",
   "viewers.get": "viewers-request",
   "stream.join": "user-joins-stream",
+  "user.raise-hand": "raise-hand",
 };
 
 type Subject = keyof typeof SubjectEventMap;
@@ -70,7 +71,6 @@ export const init = async () => {
   handleStreamEnd();
   handleStreamJoin();
   handleAllowSpeaker();
-  handleRaisedHand();
   handleNewTrack();
   handleRecvTracksRequest();
   handleConnectTransport();
@@ -144,16 +144,6 @@ const handleNewTrack = async () => {
     console.log("new track", data);
 
     eventEmitter.emit("new-track", data);
-  }
-};
-
-const handleRaisedHand = async () => {
-  const sub = nc.subscribe("user.raise-hand");
-
-  for await (const msg of sub) {
-    const { id } = jc.decode(msg.data) as any;
-
-    eventEmitter.emit("raise-hand", id);
   }
 };
 

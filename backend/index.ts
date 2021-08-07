@@ -18,6 +18,7 @@ import {
   onStreamStop,
   onUserDisconnect,
   onViewersRequest,
+  onRaiseHand,
 } from "@backend/handlers";
 
 const app = express();
@@ -38,9 +39,9 @@ const main = async () => {
   MessageService.on("stream-new", onNewStream);
   MessageService.on("user-disconnected", onUserDisconnect);
   MessageService.on("viewers-request", onViewersRequest);
+  MessageService.on("raise-hand", onRaiseHand);
 
   MessageService.on("new-track", ConversationService.handleNewTrack);
-  MessageService.on("raise-hand", ConversationService.handleRaisedHand);
   MessageService.on("speaker-allow", ConversationService.handleAllowSpeaker);
   MessageService.on(
     "recv-tracks-request",

@@ -9,8 +9,6 @@ export const onViewersRequest: MessageHandler<IRequestViewers, any> = async (
 
   const viewers = await ParticipantService.getViewersPage(stream, page);
 
-  console.log("requested page", page);
-  console.log("returning #", viewers.length);
   respond({
     viewers,
   });

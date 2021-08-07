@@ -132,3 +132,7 @@ export interface IStopStream {
 export interface IUserDisconnected {
   user: string;
 }
+
+export interface IRaiseHand {
+  user: string;
+}

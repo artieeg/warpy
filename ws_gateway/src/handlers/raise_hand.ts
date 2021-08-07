@@ -6,7 +6,7 @@ export const onRaiseHand: Handler = async (_data, context?) => {
     return;
   }
 
-  console.log("sending raise hand event");
-
-  MessageService.sendUserRaiseHandEvent(context.user);
+  MessageService.sendBackendMessage("raise-hand", {
+    user: context.user,
+  });
 };

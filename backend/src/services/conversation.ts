@@ -14,31 +14,6 @@ import {
   UserService,
 } from ".";
 
-export const handleRaisedHand = async (viewerId: string) => {
-  const stream = await ParticipantService.getCurrentStreamFor(viewerId);
-
-  const userData = await UserService.getUserById(viewerId);
-
-  if (!stream || !userData) {
-    return;
-  }
-
-  const participants = await ParticipantService.getStreamParticipants(stream);
-
-  try {
-    await ParticipantService.setRaiseHand(viewerId, stream);
-    MessageService.sendMessageBroadcast(participants, {
-      event: "raise-hand",
-      data: {
-        viewer: Participant.fromUser(userData, "viewer", stream),
-        stream,
-      },
-    });
-  } catch (e) {
-    console.error(e);
-  }
-};
-
 export const handleAllowSpeaker = async (data: IAllowSpeakerPayload) => {
   const { speaker, user } = data;
   const [stream, userData] = await Promise.all([

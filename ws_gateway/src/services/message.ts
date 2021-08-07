@@ -14,6 +14,7 @@ export const BackendEvents = {
   "feed-request": "feeds.get",
   "request-viewers": "viewers.get",
   "join-stream": "stream.join",
+  "raise-hand": "user.raise-hand",
 };
 
 type EventAlias = keyof typeof BackendEvents;

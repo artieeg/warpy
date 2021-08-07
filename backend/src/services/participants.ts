@@ -283,18 +283,6 @@ export const getParticipantsCount = async (stream: string) => {
   return participants.length;
 };
 
-export const broadcastNewViewer = async (viewer: IBaseUser, stream: string) => {
-  const participants = await getStreamParticipants(stream);
-
-  await MessageService.sendMessageBroadcast(participants, {
-    event: "new-viewer",
-    data: {
-      stream,
-      viewer: Participant.fromJSON(viewer),
-    },
-  });
-};
-
 export const getUsersWithRaisedHands = async (
   stream: string
 ): Promise<IParticipant[]> => {
@@ -316,6 +304,24 @@ export const getSpeakers = async (stream: string): Promise<IParticipant[]> => {
   );
 };
 
+export const broadcastRaiseHand = async (viewer: IParticipant) => {
+  const stream = await getCurrentStreamFor(viewer.id);
+
+  if (!stream) {
+    return;
+  }
+
+  const users = await getStreamParticipants(stream);
+
+  await MessageService.sendMessageBroadcast(users, {
+    event: "raise-hand",
+    data: {
+      viewer,
+      stream,
+    },
+  });
+};
+
 export const broadcastParticipantLeft = async (user: string) => {
   const stream = await getCurrentStreamFor(user);
 
@@ -324,8 +330,6 @@ export const broadcastParticipantLeft = async (user: string) => {
     return;
   }
 
-  await removeParticipant(user, stream);
-
   const users = await getStreamParticipants(stream);
 
   await MessageService.sendMessageBroadcast(users, {
@@ -333,6 +337,18 @@ export const broadcastParticipantLeft = async (user: string) => {
     data: {
       user,
       stream,
+    },
+  });
+};
+
+export const broadcastNewViewer = async (viewer: IBaseUser, stream: string) => {
+  const participants = await getStreamParticipants(stream);
+
+  await MessageService.sendMessageBroadcast(participants, {
+    event: "new-viewer",
+    data: {
+      stream,
+      viewer: Participant.fromJSON(viewer),
     },
   });
 };
