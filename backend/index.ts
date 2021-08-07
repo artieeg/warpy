@@ -5,7 +5,6 @@ import routes from "@backend/routes";
 import {
   ConversationService,
   DatabaseService,
-  FeedService,
   MediaService,
   MessageService,
   UserService,
@@ -18,6 +17,8 @@ import {
   onViewersRequest,
   onRaiseHand,
   onAllowSpeaker,
+  onFeedRequest,
+  onWhoAmIRequest,
 } from "@backend/handlers";
 
 const app = express();
@@ -40,19 +41,24 @@ const main = async () => {
   MessageService.on("viewers-request", onViewersRequest);
   MessageService.on("raise-hand", onRaiseHand);
   MessageService.on("speaker-allow", onAllowSpeaker);
+  MessageService.on("feed-request", onFeedRequest);
+  MessageService.on("whoami-request", onWhoAmIRequest);
 
+  MessageService.on("new-media-node", MediaService.handleNewOnlineNode);
+
+  /**
+   * The handlers down below will be removed when JWT auth for media is implemented.
+   * Hence, no refactoring/updates here
+   */
   MessageService.on("new-track", ConversationService.handleNewTrack);
   MessageService.on(
     "recv-tracks-request",
     ConversationService.handleRecvTracksRequest
   );
-  MessageService.on("new-media-node", MediaService.handleNewOnlineNode);
   MessageService.on(
     "connect-transport",
     ConversationService.handleConnectTransport
   );
-  MessageService.on("whoami-request", UserService.onWhoAmIRequest);
-  MessageService.on("feed-request", FeedService.onFeedRequest);
 
   app.listen(Number.parseInt(PORT), `0.0.0.0`, () => {
     console.log(`Started on port ${PORT}`);

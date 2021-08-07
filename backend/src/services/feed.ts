@@ -3,21 +3,13 @@ import {
   FeedsCacheService,
   ParticipantService,
   CandidateStatsService,
-  MessageService,
 } from ".";
-import { MessageHandler } from "@warpy/lib";
+import { ICandidate } from "@warpy/lib";
 
-interface IGetFeed {
-  user: string;
-  hub?: string;
-}
-
-export const onFeedRequest: MessageHandler<IGetFeed, any> = async (
-  params: IGetFeed,
-  respond
-) => {
-  const { user, hub } = params;
-
+export const getFeed = async (
+  user: string,
+  hub?: string
+): Promise<ICandidate[]> => {
   const servedStreams = await FeedsCacheService.getServedStreams(user);
   const streamIds = await CandidateStatsService.getSortedStreamIds(hub);
 
@@ -55,9 +47,7 @@ export const onFeedRequest: MessageHandler<IGetFeed, any> = async (
 
   console.log("served feed", feed);
 
-  respond!({
-    feed: feed.filter((item) => item !== null),
-  });
+  return feed.filter((item) => item !== null);
 };
 
 export const addNewCandidate = async (data: IStream) => {

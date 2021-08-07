@@ -1,14 +1,6 @@
 import { IRequestGetTracks } from "@backend/models";
-
-import { Participant } from "@warpy/lib";
-
 import { IConnectMediaTransport, INewMediaTrack } from "@warpy/lib";
-import {
-  MediaService,
-  MessageService,
-  ParticipantService,
-  UserService,
-} from ".";
+import { MediaService, MessageService, ParticipantService } from ".";
 
 export const handleConnectTransport = async (data: IConnectMediaTransport) => {
   const { user } = data;

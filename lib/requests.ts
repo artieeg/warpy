@@ -136,3 +136,8 @@ export interface IUserDisconnected {
 export interface IRaiseHand {
   user: string;
 }
+
+export interface IRequestFeed {
+  user: string;
+  hub?: string;
+}

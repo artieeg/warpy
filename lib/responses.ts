@@ -1,4 +1,4 @@
-import { IParticipant } from "./models";
+import { IParticipant, ICandidate, IBaseUser } from "./models";
 
 export interface INewStreamResponse {
   stream: string;
@@ -20,4 +20,12 @@ export interface IRequestViewersResponse {
 export interface IAllowSpeakerPayload {
   speaker: string;
   user: string;
+}
+
+export interface IFeedResponse {
+  feed: ICandidate[];
+}
+
+export interface IWhoAmIResponse {
+  user: IBaseUser | null;
 }

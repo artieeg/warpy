@@ -5,3 +5,5 @@ export * from "./onUserDisconnect";
 export * from "./onViewersRequest";
 export * from "./onRaiseHand";
 export * from "./onAllowSpeaker";
+export * from "./onFeedRequest";
+export * from "./onWhoAmIRequest";
