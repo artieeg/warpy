@@ -337,14 +337,10 @@ export const broadcastRaiseHand = async (viewer: IParticipant) => {
   });
 };
 
-export const broadcastParticipantLeft = async (user: string) => {
-  const stream = await getCurrentStreamFor(user);
-
-  //If user is not in any stream
-  if (!stream) {
-    return;
-  }
-
+export const broadcastParticipantLeft = async (
+  user: string,
+  stream: string
+) => {
   const users = await getStreamParticipants(stream);
 
   await MessageService.sendMessageBroadcast(users, {

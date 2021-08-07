@@ -20,6 +20,6 @@ export const onUserDisconnect: MessageHandler<IUserDisconnected> = async (
     FeedsCacheService.removeServedStreams(user),
     FeedService.removeCandidateByOwner(user),
     ParticipantService.removeParticipant(user, stream),
-    ParticipantService.broadcastParticipantLeft(user),
+    ParticipantService.broadcastParticipantLeft(user, stream),
   ]);
 };
