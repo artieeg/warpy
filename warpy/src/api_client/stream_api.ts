@@ -1,10 +1,14 @@
 import {APIModule, EventHandler} from './types';
-import {INewStreamResponse, IRequestViewersResponse} from '@warpy/lib';
+import {
+  IJoinStreamResponse,
+  INewStreamResponse,
+  IRequestViewersResponse,
+} from '@warpy/lib';
 
 export interface IStreamAPI {
   create: (title: string, hub: string) => Promise<INewStreamResponse>;
+  join: (stream: string) => Promise<IJoinStreamResponse>;
   stop: (stream: string) => any;
-  join: (stream: string) => any;
   getViewers: (
     stream: string,
     page: number,

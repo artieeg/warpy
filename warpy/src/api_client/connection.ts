@@ -59,9 +59,6 @@ export class WebSocketConn {
     });
   }
 
-  /**
-   * Subscribes for events, return unsub function
-   */
   on(event: string, handler: any) {
     this.observer.on(event, handler);
 
@@ -69,7 +66,7 @@ export class WebSocketConn {
   }
 
   /**
-   * Subscribes for events, fires once
+   * Subscribe to the event, fires once
    */
   once(event: string, handler: any) {
     this.observer.once(event, handler);

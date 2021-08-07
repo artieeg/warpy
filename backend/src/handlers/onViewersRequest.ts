@@ -1,10 +1,14 @@
 import { ParticipantService } from "@backend/services";
-import { MessageHandler, IRequestViewers } from "@warpy/lib";
+import {
+  MessageHandler,
+  IRequestViewers,
+  IRequestViewersResponse,
+} from "@warpy/lib";
 
-export const onViewersRequest: MessageHandler<IRequestViewers, any> = async (
-  data,
-  respond
-) => {
+export const onViewersRequest: MessageHandler<
+  IRequestViewers,
+  IRequestViewersResponse
+> = async (data, respond) => {
   const { stream, page } = data;
 
   const viewers = await ParticipantService.getViewersPage(stream, page);

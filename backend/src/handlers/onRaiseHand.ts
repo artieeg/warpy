@@ -3,7 +3,6 @@ import { IRaiseHand, MessageHandler, Participant } from "@warpy/lib";
 
 export const onRaiseHand: MessageHandler<IRaiseHand> = async (data) => {
   const { user } = data;
-  console.log("user raising hand: ", user);
   const stream = await ParticipantService.getCurrentStreamFor(user);
   const userData = await UserService.getUserById(user);
 
