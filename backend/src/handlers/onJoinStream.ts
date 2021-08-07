@@ -3,18 +3,23 @@ import {
   ParticipantService,
   UserService,
 } from "@backend/services";
-import { IJoinStreamResponse, IJoinStream, MessageHandler } from "@warpy/lib";
+import {
+  IJoinStreamResponse,
+  IJoinStream,
+  MessageHandler,
+  Participant,
+} from "@warpy/lib";
 
 export const onJoinStream: MessageHandler<IJoinStream, IJoinStreamResponse> =
   async (data, respond) => {
     const { stream, user } = data;
 
-    const [userInfo, recvNodeId] = await Promise.all([
+    const [userData, recvNodeId] = await Promise.all([
       UserService.getUserById(user),
       MediaService.getConsumerNodeId(),
     ]);
 
-    if (!userInfo || !recvNodeId) {
+    if (!userData || !recvNodeId) {
       return;
     }
 
@@ -25,7 +30,9 @@ export const onJoinStream: MessageHandler<IJoinStream, IJoinStreamResponse> =
     ]);
 
     await Promise.all([
-      ParticipantService.broadcastNewViewer(userInfo, stream),
+      ParticipantService.broadcastNewViewer(
+        Participant.fromUser(userData, "viewer", stream)
+      ),
       MediaService.joinRoom(recvNodeId, user, stream),
     ]);
 

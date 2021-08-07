@@ -116,6 +116,15 @@ export const createRoom = async (host: string, roomId: string) => {
   return media;
 };
 
+export const connectSpeakerMedia = async (speaker: string, stream: string) => {
+  const media = await MessageService.connectSpeakerMedia({
+    speaker,
+    roomId: stream,
+  });
+
+  return media;
+};
+
 export const joinRoom = async (
   nodeId: string,
   user: string,

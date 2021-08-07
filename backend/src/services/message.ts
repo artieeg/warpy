@@ -1,10 +1,6 @@
 import { EventEmitter } from "events";
 import { connect, JSONCodec, NatsConnection } from "nats";
-import {
-  IAllowSpeakerPayload,
-  IRequestGetTracks,
-  IRoom,
-} from "@backend/models";
+import { IRequestGetTracks } from "@backend/models";
 import {
   IConnectMediaTransport,
   IConnectNewSpeakerMedia,
@@ -16,7 +12,6 @@ import {
   INewSpeakerMediaResponse,
   IRecvTracksRequest,
   IRecvTracksResponse,
-  IRequestViewers,
   MessageHandler,
   subjects,
 } from "@warpy/lib";
@@ -40,6 +35,7 @@ const SubjectEventMap = {
   "viewers.get": "viewers-request",
   "stream.join": "user-joins-stream",
   "user.raise-hand": "raise-hand",
+  "speaker.allow": "speaker-allow",
 };
 
 type Subject = keyof typeof SubjectEventMap;
@@ -67,14 +63,9 @@ export const init = async () => {
   handleMessages();
 
   handleNewMediaNode();
-  handleNewStream();
-  handleStreamEnd();
-  handleStreamJoin();
-  handleAllowSpeaker();
   handleNewTrack();
   handleRecvTracksRequest();
   handleConnectTransport();
-  handleViewersRequest();
 };
 
 type Events =
@@ -147,47 +138,6 @@ const handleNewTrack = async () => {
   }
 };
 
-const handleAllowSpeaker = async () => {
-  const sub = nc.subscribe("speaker.allow", { queue: "conversations" });
-
-  for await (const msg of sub) {
-    const { speaker, user } = jc.decode(msg.data) as any;
-
-    eventEmitter.emit("speaker-allow", {
-      speaker,
-      user,
-    } as IAllowSpeakerPayload);
-  }
-};
-
-const handleStreamJoin = async () => {
-  const sub = nc.subscribe("stream.user.join");
-
-  for await (const msg of sub) {
-    const { user, stream } = jc.decode(msg.data) as any;
-
-    console.log("joined", {
-      user,
-      stream,
-    });
-
-    eventEmitter.emit("participant-new", {
-      id: user,
-      stream,
-    });
-  }
-};
-
-const handleStreamEnd = async () => {
-  const sub = nc.subscribe("stream.ended", { queue: "conversations" });
-
-  for await (const msg of sub) {
-    const { id } = jc.decode(msg.data) as any;
-
-    eventEmitter.emit("conversation-end", id);
-  }
-};
-
 const handleNewMediaNode = async () => {
   const sub = nc.subscribe(subjects.media.node.isOnline, {
     queue: "conversations",
@@ -202,21 +152,6 @@ const handleNewMediaNode = async () => {
     };
 
     eventEmitter.emit("new-media-node", newStream);
-  }
-};
-
-const handleNewStream = async () => {
-  const sub = nc.subscribe("stream.created", { queue: "conversations" });
-
-  for await (const msg of sub) {
-    const message = jc.decode(msg.data) as any;
-
-    const newStream: IRoom = {
-      id: message.id,
-      owner: message.owner,
-    };
-
-    eventEmitter.emit("conversation-new", newStream);
   }
 };
 
@@ -297,24 +232,6 @@ export const joinMediaRoom = async (node: string, data: IJoinMediaRoom) => {
   const m = jc.encode(data);
 
   nc.publish(`${subjects.media.peer.join}.${node}`, m);
-};
-
-export const handleViewersRequest = async () => {
-  const sub = nc.subscribe("viewers.get");
-
-  for await (const msg of sub) {
-    const data = jc.decode(msg.data) as any;
-
-    const event: IRequestViewers = {
-      user: data.user,
-      stream: data.stream,
-      page: data.page,
-    };
-
-    eventEmitter.emit("viewers-request", event, (d: any) => {
-      msg.respond(jc.encode(d));
-    });
-  }
 };
 
 export const handleRecvTracksRequest = async () => {

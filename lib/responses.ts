@@ -16,3 +16,8 @@ export interface IJoinStreamResponse {
 export interface IRequestViewersResponse {
   viewers: IParticipant[];
 }
+
+export interface IAllowSpeakerPayload {
+  speaker: string;
+  user: string;
+}

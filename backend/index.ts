@@ -5,11 +5,9 @@ import routes from "@backend/routes";
 import {
   ConversationService,
   DatabaseService,
-  FeedsCacheService,
   FeedService,
   MediaService,
   MessageService,
-  ParticipantService,
   UserService,
 } from "@backend/services";
 import {
@@ -19,6 +17,7 @@ import {
   onUserDisconnect,
   onViewersRequest,
   onRaiseHand,
+  onAllowSpeaker,
 } from "@backend/handlers";
 
 const app = express();
@@ -40,9 +39,9 @@ const main = async () => {
   MessageService.on("user-disconnected", onUserDisconnect);
   MessageService.on("viewers-request", onViewersRequest);
   MessageService.on("raise-hand", onRaiseHand);
+  MessageService.on("speaker-allow", onAllowSpeaker);
 
   MessageService.on("new-track", ConversationService.handleNewTrack);
-  MessageService.on("speaker-allow", ConversationService.handleAllowSpeaker);
   MessageService.on(
     "recv-tracks-request",
     ConversationService.handleRecvTracksRequest
