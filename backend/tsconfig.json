@@ -5,14 +5,17 @@
     "rootDir": "./",
     "outDir": "./build",
     "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "isolatedModules": true,
     "lib": ["es6"],
     "strict": true,
     "baseUrl": "./",
-    "paths" : {
-      "@backend/*" : ["src/*"]
+    "paths": {
+      "@backend/*": ["src/*"]
     }
   }
 }

@@ -1,8 +1,6 @@
-import { UserModel, RefreshToken } from "@backend/models";
+import { User, RefreshToken } from "@backend/models";
 import { BaseUser } from "@warpy/lib";
 import { jwt } from "@backend/utils";
-import { MessageService } from "@backend/services";
-import { MessageHandler, IWhoAmIRequest } from "@warpy/lib";
 
 /*
  * Creates a dev account. Should be disabled in production
@@ -10,13 +8,13 @@ import { MessageHandler, IWhoAmIRequest } from "@warpy/lib";
 export const createDevUser = async (data: any) => {
   const { username, last_name, first_name, email } = data;
 
-  const user = new UserModel({
+  const user = User.fromJSON({
     username,
     last_name,
     first_name,
     email,
     sub: "DEV_ACCOUNT",
-    avatar: "test-avatar",
+    avatar: "https://media.giphy.com/media/nDSlfqf0gn5g4/giphy.gif",
   });
 
   const accessToken = jwt.createToken(user.id, "1d");
@@ -36,17 +34,17 @@ export const createDevUser = async (data: any) => {
 };
 
 export const getUserById = async (userId: string): Promise<BaseUser | null> => {
-  const result = await UserModel.findOne({ _id: userId });
+  const result = await User.findOne(userId);
 
   if (!result) {
     return null;
   }
 
-  return BaseUser.fromJSON(result.toJSON());
+  return result;
 };
 
 export const getUsersByIds = async (users: string[]): Promise<BaseUser[]> => {
-  const result = await UserModel.find({ _id: { $in: users } });
+  const result = await User.findByIds(users);
 
   return result.map((item: any) => BaseUser.fromJSON(item.toJSON()));
 };

@@ -1,25 +1,61 @@
-import mongoose, { Schema } from "mongoose";
+import { nanoid } from "nanoid";
 import { IBaseUser } from "@warpy/lib";
+import {
+  BaseEntity,
+  BeforeInsert,
+  Column,
+  PrimaryColumn,
+  In,
+  Entity,
+} from "typeorm";
 
 export interface IUser extends IBaseUser {
-  email: String;
-  sub: String;
+  email: string;
+  sub: string;
 }
 
-const UserSchema = new Schema<IUser>({
-  username: String,
-  last_name: String,
-  first_name: String,
-  email: String,
-  sub: String,
-  avatar: String,
-});
+@Entity()
+export class User extends BaseEntity implements IUser {
+  @PrimaryColumn()
+  id: string;
 
-UserSchema.index({ username: 1 }, { unique: true });
-UserSchema.index({ email: 1 }, { unique: true });
+  @Column()
+  username: string;
 
-UserSchema.set("toJSON", {
-  virtuals: true,
-});
+  @Column()
+  first_name: string;
 
-export const UserModel = mongoose.model("User", UserSchema);
+  @Column()
+  last_name: string;
+
+  @Column()
+  avatar: string;
+
+  @Column({ select: false })
+  email: string;
+
+  @Column({ select: false })
+  sub: string;
+
+  static fromJSON(data: Omit<IUser, "id">) {
+    const user = new User();
+
+    user.username = data.username;
+    user.last_name = data.last_name;
+    user.first_name = data.first_name;
+    user.avatar = data.avatar;
+    user.email = data.email;
+    user.sub = data.sub;
+
+    return user;
+  }
+
+  static findByIds(ids: string[]) {
+    return this.find({ where: { id: In(ids) } });
+  }
+
+  @BeforeInsert()
+  private beforeInsert() {
+    this.id = nanoid();
+  }
+}

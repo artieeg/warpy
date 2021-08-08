@@ -6,6 +6,7 @@ export const onWhoAmIRequest: MessageHandler<IWhoAmIRequest, IWhoAmIResponse> =
     const { user } = data;
 
     const userData = await UserService.getUserById(user);
+    console.log("user", userData);
 
     respond!({ user: userData });
   };

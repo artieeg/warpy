@@ -34,6 +34,16 @@ services:
     working_dir: /warpy/backend
     command: yarn start:dev
 
+  postgres:
+    image: postgres:13-alpine
+    ports:
+    - 5432:5432
+
+    environment:
+      POSTGRES_USER: warpy
+      POSTGRES_PASSWORD: warpy222
+      POSTGRES_DB: warpy
+
   ranker:
     image: node:16.0.0-alpine
     env_file:
