@@ -24,11 +24,13 @@ export const Splash = () => {
       .then(async () => {
         const userData = await ws.user.auth(accessToken);
 
+        console.log('authed', userData);
+
         if (!userData) {
           throw new Error();
         }
 
-        useUserStore.getState().set({user: User.fromJSON(userData)});
+        useUserStore.getState().set({user: User.fromJSON(userData.user)});
       })
       .catch(() => navigation.navigate('DevSignUp'));
   }, [navigation, ws]);

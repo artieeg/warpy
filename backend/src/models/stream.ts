@@ -1,24 +1,59 @@
 import mongoose from "mongoose";
+import { nanoid } from "nanoid";
+import {
+  BaseEntity,
+  Entity,
+  BeforeInsert,
+  Column,
+  PrimaryColumn,
+} from "typeorm";
 
 export interface IStream {
   id: string;
   title: string;
-  owner: mongoose.Types.ObjectId;
-  hub: mongoose.Types.ObjectId;
+  owner: string;
+  hub: string;
   live: boolean;
 }
 
-const StreamSchema = new mongoose.Schema<IStream>({
-  title: String,
-  owner: mongoose.Schema.Types.ObjectId,
-  hub: mongoose.Schema.Types.ObjectId,
-  live: Boolean,
-});
+@Entity()
+export class Stream extends BaseEntity implements IStream {
+  @PrimaryColumn()
+  id: string;
 
-StreamSchema.index({ owner: 1, live: true }, { unique: true });
+  @Column()
+  title: string;
 
-StreamSchema.set("toJSON", {
-  virtuals: true,
-});
+  @Column()
+  owner: string;
 
-export const Stream = mongoose.model<IStream>("Stream", StreamSchema);
+  @Column()
+  hub: string;
+
+  @Column()
+  live: boolean;
+
+  static fromJSON(data: Omit<IStream, "id">) {
+    const stream = new Stream();
+
+    stream.title = data.title;
+    stream.owner = data.owner;
+    stream.hub = data.hub;
+    stream.live = data.live;
+
+    return stream;
+  }
+
+  static async stopStream(owner: string) {
+    const result = await this.update({ owner }, { live: false });
+
+    if (result.affected! === 0) {
+      throw new Error();
+    }
+  }
+
+  @BeforeInsert()
+  private beforeInsert() {
+    this.id = nanoid();
+  }
+}

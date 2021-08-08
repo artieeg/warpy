@@ -17,6 +17,8 @@ export const createDevUser = async (data: any) => {
     avatar: "https://media.giphy.com/media/nDSlfqf0gn5g4/giphy.gif",
   });
 
+  await user.save();
+
   const accessToken = jwt.createToken(user.id, "1d");
   const refreshToken = jwt.createToken(user.id, "1y");
 
@@ -24,7 +26,7 @@ export const createDevUser = async (data: any) => {
     token: refreshToken,
   });
 
-  await Promise.all([user.save(), token.save()]);
+  token.save();
 
   return {
     id: user.id,

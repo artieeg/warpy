@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { User } from "@backend/models";
+import { User, Stream } from "@backend/models";
 import { createConnection } from "typeorm";
 
 export const connect = async () => {
@@ -14,7 +14,7 @@ export const connect = async () => {
     username: "warpy",
     password: "warpy222",
     database: "warpy",
-    entities: [User],
+    entities: [User, Stream],
     synchronize: true,
   });
 

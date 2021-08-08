@@ -9,37 +9,18 @@ export const createNewStream = async (
   title: string,
   hub: string
 ): Promise<IStream> => {
-  const stream = new Stream({
+  const stream = Stream.fromJSON({
     owner,
     title,
     hub,
     live: true,
   });
 
+  console.log("creating stream");
+
   await stream.save();
+
+  console.log("stream id", stream.id);
+
   return stream;
-};
-
-export const stopStream = async (stream: string, user: string) => {
-  const result = await Stream.updateOne(
-    {
-      _id: mongoose.Types.ObjectId(stream),
-      owner: mongoose.Types.ObjectId(user),
-    },
-    { $set: { live: false } }
-  );
-
-  if (result.nModified === 0) {
-    throw new Error();
-  }
-};
-
-interface IChangeStreamTitle {
-  id: string;
-  user: string;
-  title: string;
-}
-
-export const changeStreamTitle = async (params: IChangeStreamTitle) => {
-  //TODO: implement
 };
