@@ -15,12 +15,9 @@ import {
 export const onNewStream: MessageHandler<INewStream, INewStreamResponse> =
   async (params, respond) => {
     const { owner, title, hub } = params;
-    console.log("new stream params", params);
     const userData = await UserService.getUserById(owner);
 
     const recvMediaNode = await MediaService.getConsumerNodeId();
-
-    console.log("user data", userData, owner);
 
     if (!recvMediaNode || !userData) {
       return;

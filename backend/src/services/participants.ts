@@ -2,6 +2,7 @@ import { Roles, IParticipant, Participant, IBaseUser } from "@warpy/lib";
 import redis from "redis";
 import { MessageService, UserService } from ".";
 import { IRequestViewers, MessageHandler } from "@warpy/lib";
+import { User } from "@backend/models";
 
 const URL = process.env.PARTICIPANTS_CACHE || "redis://127.0.0.1:6375/5";
 
@@ -268,7 +269,7 @@ export const getViewersPage = async (
     }
   }
 
-  const users = await UserService.getUsersByIds(viewerIds);
+  const users = await User.findByIds(viewerIds);
 
   const viewers: IParticipant[] = users.map((user) =>
     Participant.fromUser(user, allStreamParticipants[user.id] as Roles, stream)
@@ -288,7 +289,7 @@ export const getUsersWithRaisedHands = async (
 ): Promise<IParticipant[]> => {
   const ids = await getUserWithRaisedHandsIds(stream);
 
-  const users = await UserService.getUsersByIds(ids);
+  const users = await User.findByIds(ids);
 
   return users.map((data) => Participant.fromUser(data, "viewer", stream));
 };
@@ -297,7 +298,7 @@ export const getSpeakers = async (stream: string): Promise<IParticipant[]> => {
   const speakersWithRoles = await getSpeakersWithRoles(stream);
   const speakerIds = Object.keys(speakersWithRoles);
 
-  const speakersInfo = await UserService.getUsersByIds(speakerIds);
+  const speakersInfo = await User.findByIds(speakerIds);
 
   return speakersInfo.map((data) =>
     Participant.fromUser(data, speakersWithRoles[data.id], stream)

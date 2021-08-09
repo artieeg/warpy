@@ -24,7 +24,7 @@ export const getFeed = async (
     }
   }
 
-  const candidates = await Candidate.find({ _id: { $in: candidateIds } });
+  const candidates = await Candidate.findByIds(candidateIds);
 
   const feed = await Promise.all(
     candidateIds
@@ -36,7 +36,7 @@ export const getFeed = async (
         }
 
         return {
-          ...candidate.toJSON(),
+          ...candidate,
           participants: await ParticipantService.getParticipantsCount(id),
         };
       })
@@ -53,8 +53,8 @@ export const getFeed = async (
 export const addNewCandidate = async (data: IStream) => {
   const { id, title, hub, owner: ownerId } = data;
 
-  const candidate = new Candidate({
-    _id: id,
+  const candidate = Candidate.fromJSON({
+    id,
     title,
     hub,
     owner: ownerId,
@@ -66,10 +66,10 @@ export const addNewCandidate = async (data: IStream) => {
 };
 
 export const removeCandidate = async (id: string) => {
-  await Candidate.deleteOne({ _id: id });
+  await Candidate.delete(id);
   await CandidateStatsService.deleteStats(id);
 };
 
 export const removeCandidateByOwner = async (user: string) => {
-  await Candidate.deleteOne({ owner: user });
+  await Candidate.deleteByOwner(user);
 };

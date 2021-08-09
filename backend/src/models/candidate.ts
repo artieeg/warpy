@@ -1,15 +1,32 @@
-import mongoose from "mongoose";
-
 import { ICandidate } from "@warpy/lib";
+import { BaseEntity, Column, Entity, PrimaryColumn } from "typeorm";
 
-const CandidateSchema = new mongoose.Schema<ICandidate>({
-  owner: mongoose.Schema.Types.ObjectId,
-  hub: mongoose.Schema.Types.ObjectId,
-  title: String,
-});
+@Entity()
+export class Candidate extends BaseEntity implements ICandidate {
+  @PrimaryColumn()
+  id: string;
 
-CandidateSchema.set("toJSON", {
-  virtuals: true,
-});
+  @Column()
+  owner: string;
 
-export const Candidate = mongoose.model("Candidate", CandidateSchema);
+  @Column()
+  title: string;
+
+  @Column()
+  hub: string;
+
+  static fromJSON(data: ICandidate) {
+    const candidate = new Candidate();
+
+    candidate.id = data.id;
+    candidate.hub = data.hub;
+    candidate.title = data.title;
+    candidate.owner = data.owner;
+
+    return candidate;
+  }
+
+  static deleteByOwner(owner: string) {
+    return this.delete({ owner });
+  }
+}
