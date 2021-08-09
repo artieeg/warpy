@@ -22,10 +22,8 @@ export const createDevUser = async (data: any) => {
   const accessToken = jwt.createToken(user.id, "1d");
   const refreshToken = jwt.createToken(user.id, "1y");
 
-  const token = new RefreshToken({
-    token: refreshToken,
-  });
-
+  const token = new RefreshToken();
+  token.token = refreshToken;
   token.save();
 
   return {

@@ -1,7 +1,7 @@
-import mongoose, { Schema } from "mongoose";
+import { BaseEntity, Entity, PrimaryColumn } from "typeorm";
 
-const RefreshTokenSchema = new Schema({
-  token: String,
-});
-
-export const RefreshToken = mongoose.model("Token", RefreshTokenSchema);
+@Entity()
+export class RefreshToken extends BaseEntity {
+  @PrimaryColumn()
+  token: string;
+}

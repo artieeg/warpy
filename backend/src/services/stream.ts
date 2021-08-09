@@ -1,5 +1,4 @@
 import { IStream, Stream } from "@backend/models";
-import mongoose from "mongoose";
 import EventEmitter from "events";
 
 export const observer = new EventEmitter();
