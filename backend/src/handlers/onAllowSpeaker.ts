@@ -32,7 +32,7 @@ export const onAllowSpeaker: MessageHandler<IAllowSpeakerPayload> = async (
   const media = await MediaService.connectSpeakerMedia(speaker, stream);
 
   await Promise.all([
-    ParticipantService.unsetRaiseHand(speaker, stream),
+    ParticipantService.unsetRaiseHand(speaker),
     ParticipantService.setParticipantRole(stream, speaker, "speaker"),
   ]);
 

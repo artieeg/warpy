@@ -33,7 +33,7 @@ export const onNewStream: MessageHandler<INewStream, INewStreamResponse> =
     const streamId = stream.id;
 
     await Promise.all([
-      ParticipantService.addParticipant(owner, streamId, "streamer"),
+      ParticipantService.addParticipant(userData, streamId, "streamer"),
       ParticipantService.setCurrentStreamFor(owner, streamId),
     ]);
 

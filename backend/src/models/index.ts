@@ -5,3 +5,4 @@ export * from "./stats";
 export * from "./candidate";
 export * from "./room";
 export * from "./entity";
+export * from "./participant";

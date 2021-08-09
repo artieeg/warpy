@@ -12,8 +12,12 @@ export const onViewersRequest: MessageHandler<
   const { stream, page } = data;
 
   const viewers = await ParticipantService.getViewersPage(stream, page);
+  console.log(
+    "viewres",
+    viewers.map((i) => i.toJSON())
+  );
 
   respond({
-    viewers,
+    viewers: viewers.map((i) => i.toJSON()),
   });
 };

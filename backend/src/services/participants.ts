@@ -1,8 +1,7 @@
-import { Roles, IParticipant, Participant, IBaseUser } from "@warpy/lib";
+import { Roles, IParticipant } from "@warpy/lib";
 import redis from "redis";
-import { MessageService, UserService } from ".";
-import { IRequestViewers, MessageHandler } from "@warpy/lib";
-import { User } from "@backend/models";
+import { MessageService } from ".";
+import { User, Participant } from "@backend/models";
 
 const URL = process.env.PARTICIPANTS_CACHE || "redis://127.0.0.1:6375/5";
 
@@ -12,77 +11,31 @@ const client = redis.createClient({
 
 export const init = async () => {};
 
-export const getUserWithRaisedHandsIds = (stream: string) => {
-  const key = `raised_hands_${stream}`;
+export const unsetRaiseHand = async (user: string) => {
+  const participant = await Participant.findOne(user);
 
-  return new Promise<string[]>((resolve, reject) => {
-    client.smembers(key, (err, ids) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(ids);
-      }
-    });
-  });
+  participant?.setRaiseHand(true);
 };
 
-export const unsetRaiseHand = (user: string, stream: string) => {
-  const key = `raised_hands_${stream}`;
+export const setRaiseHand = async (user: string) => {
+  const participant = await Participant.findOne(user);
 
-  return new Promise<void>((resolve, reject) => {
-    client.srem(key, user, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
-};
-
-export const setRaiseHand = (user: string, stream: string) => {
-  const key = `raised_hands_${stream}`;
-
-  return new Promise<void>((resolve, reject) => {
-    client.sadd(key, user, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
+  participant?.setRaiseHand(false);
 };
 
 export const addParticipant = async (
-  user: string,
+  user: User,
   stream: string,
   role: Roles = "viewer"
 ) => {
-  const streamKey = `stream_${stream}`;
-  const participantKey = `user_${user}`;
-
-  const addUserPromise = new Promise<void>((resolve, reject) => {
-    client.hset(streamKey, user, role, (err) => {
-      if (err) {
-        return reject(err);
-      }
-
-      resolve();
-    });
+  const participant = Participant.fromUser(user, {
+    stream,
+    role,
   });
 
-  const setCurrentStreamPromise = new Promise<void>((resolve, reject) => {
-    client.set(participantKey, stream, (err) => {
-      if (err) {
-        return reject(err);
-      }
+  await participant.save();
 
-      resolve();
-    });
-  });
-
-  await Promise.all([addUserPromise, setCurrentStreamPromise]);
+  return participant.toJSON();
 };
 
 export const setParticipantRole = async (
@@ -90,45 +43,21 @@ export const setParticipantRole = async (
   user: string,
   role: Roles
 ) => {
-  const streamKey = `stream_${stream}`;
+  const participant = await Participant.findOne(user);
 
-  return new Promise<void>((resolve, reject) => {
-    client.hset(streamKey, user, role, (err) => {
-      if (err) {
-        return reject(err);
-      }
+  if (participant?.stream !== stream) {
+    return;
+  }
 
-      resolve();
-    });
-  });
+  await participant.setRole(role);
 };
 
-export const removeParticipant = async (user: string, stream: string) => {
-  const userKey = `user_${user}`;
-  const streamKey = `stream_${stream}`;
+export const removeParticipant = async (user: string) => {
+  const participant = await Participant.findOne({ user: { id: user } });
 
-  //Remove user from stream participants hashmap
-  const removeParticipantPromise = new Promise<void>((resolve, reject) => {
-    client.hdel(streamKey, user, (err) => {
-      if (err) {
-        return reject(err);
-      }
+  console.log("found participant", participant);
 
-      resolve();
-    });
-  });
-
-  //Remove user's current stream record
-  const removeCurrentStreamPromise = new Promise<void>((resolve, reject) => {
-    client.del(userKey, (err) => {
-      if (err) {
-        return reject(err);
-      }
-      resolve();
-    });
-  });
-
-  await Promise.all([removeParticipantPromise, removeCurrentStreamPromise]);
+  return participant?.remove();
 };
 
 export const getStreamParticipantsWithRoles = async (streamId: string) => {
@@ -146,163 +75,57 @@ export const getStreamParticipantsWithRoles = async (streamId: string) => {
 };
 
 export const getStreamParticipants = async (streamId: string) => {
-  const streamKey = `stream_${streamId}`;
-
-  return new Promise<string[]>((resolve, reject) => {
-    client.hkeys(streamKey, (err, ids) => {
-      if (err) {
-        return reject(err);
-      }
-      resolve(ids);
-    });
-  });
+  return Participant.getByStream(streamId);
 };
 
 export const removeAllParticipants = async (streamId: string) => {
-  const streamKey = `stream_${streamId}`;
-
-  const users = await getStreamParticipants(streamId);
-
-  const removeParticipantsPromise = new Promise<void>((resolve, reject) => {
-    client.del(streamKey, (err) => {
-      if (err) {
-        return reject(err);
-      }
-
-      resolve();
-    });
-  });
-
-  const removeCurrentStreamPromises: Promise<void>[] = users.map(
-    (user) =>
-      new Promise<void>((resolve) => {
-        const userKey = `user_${user}`;
-        client.del(userKey, () => {
-          resolve();
-        });
-      })
-  );
-
-  Promise.all([removeParticipantsPromise, ...removeCurrentStreamPromises]);
+  return Participant.deleteAllByStream(streamId);
 };
 
 export const getCurrentStreamFor = async (user: string) => {
-  const userKey = `user_${user}`;
+  const participant = await Participant.findOne(user);
 
-  return new Promise<string | null>((resolve, reject) => {
-    client.get(userKey, (err, stream) => {
-      if (err) {
-        return reject(err);
-      }
-
-      resolve(stream);
-    });
-  });
+  return participant?.stream;
 };
 
 export const setCurrentStreamFor = async (id: string, stream: string) => {
-  const userKey = `user_${id}`;
+  const participant = await Participant.findOne(id);
 
-  return new Promise<void>((resolve, reject) => {
-    client.set(userKey, stream, (err) => {
-      if (err) {
-        return reject(err);
-      }
-
-      resolve();
-    });
-  });
+  await participant?.setStream(stream);
 };
 
 export const getRoleFor = async (
   user: string,
   stream: string
-): Promise<Roles> => {
-  const streamKey = `stream_${stream}`;
+): Promise<Roles | undefined> => {
+  const participant = await Participant.findOne(user);
 
-  return new Promise((resolve, reject) => {
-    client.hget(streamKey, user, (err, role) => {
-      if (err) {
-        return reject(err);
-      }
-
-      resolve(role as Roles);
-    });
-  });
+  return participant?.role;
 };
 
-export const getSpeakersWithRoles = async (stream: string) => {
-  const participants = await getStreamParticipantsWithRoles(stream);
-
-  const speakers: Record<string, Roles> = {};
-
-  for (const id in participants) {
-    if (participants[id] === "speaker" || participants[id] === "streamer") {
-      speakers[id] = participants[id] as Roles;
-    }
-  }
-
-  return speakers;
+export const getSpeakers = async (stream: string): Promise<Participant[]> => {
+  return Participant.getSpeakers(stream);
 };
 
-const PARTICIPANTS_PER_PAGE = 50;
 export const getViewersPage = async (
   stream: string,
   page: number
 ): Promise<Participant[]> => {
-  const allStreamParticipants = await getStreamParticipantsWithRoles(stream);
-  const allParticipantIds = Object.keys(allStreamParticipants);
-
-  const viewerIds = [];
-
-  const start = page * PARTICIPANTS_PER_PAGE;
-  const end =
-    allParticipantIds.length > start + PARTICIPANTS_PER_PAGE
-      ? start + PARTICIPANTS_PER_PAGE
-      : allParticipantIds.length;
-
-  for (let i = start; i < end; i++) {
-    const id = allParticipantIds[i];
-
-    if (allStreamParticipants[id] === "viewer") {
-      viewerIds.push(id);
-    }
-  }
-
-  const users = await User.findByIds(viewerIds);
-
-  const viewers: IParticipant[] = users.map((user) =>
-    Participant.fromUser(user, allStreamParticipants[user.id] as Roles, stream)
-  );
-
-  return viewers;
+  return Participant.getViewers(stream, page);
 };
 
-export const getParticipantsCount = async (stream: string) => {
-  const participants = await getStreamParticipants(stream);
-
-  return participants.length;
+export const getParticipantsCount = (stream: string) => {
+  return Participant.count({ stream });
 };
 
 export const getUsersWithRaisedHands = async (
   stream: string
-): Promise<IParticipant[]> => {
-  const ids = await getUserWithRaisedHandsIds(stream);
-
-  const users = await User.findByIds(ids);
-
-  return users.map((data) => Participant.fromUser(data, "viewer", stream));
+): Promise<Participant[]> => {
+  return Participant.getViewersWithRaisedHands(stream);
 };
 
-export const getSpeakers = async (stream: string): Promise<IParticipant[]> => {
-  const speakersWithRoles = await getSpeakersWithRoles(stream);
-  const speakerIds = Object.keys(speakersWithRoles);
-
-  const speakersInfo = await User.findByIds(speakerIds);
-
-  return speakersInfo.map((data) =>
-    Participant.fromUser(data, speakersWithRoles[data.id], stream)
-  );
+const getParticipantIds = (participants: Participant[]) => {
+  return participants.map((p) => p.user.id);
 };
 
 export const broadcastNewSpeaker = async (speaker: IParticipant) => {
@@ -310,7 +133,7 @@ export const broadcastNewSpeaker = async (speaker: IParticipant) => {
 
   const users = await getStreamParticipants(stream);
 
-  await MessageService.sendMessageBroadcast(users, {
+  await MessageService.sendMessageBroadcast(getParticipantIds(users), {
     event: "new-speaker",
     data: {
       speaker,
@@ -328,7 +151,7 @@ export const broadcastRaiseHand = async (viewer: IParticipant) => {
 
   const users = await getStreamParticipants(stream);
 
-  await MessageService.sendMessageBroadcast(users, {
+  await MessageService.sendMessageBroadcast(getParticipantIds(users), {
     event: "raise-hand",
     data: {
       viewer,
@@ -343,7 +166,7 @@ export const broadcastParticipantLeft = async (
 ) => {
   const users = await getStreamParticipants(stream);
 
-  await MessageService.sendMessageBroadcast(users, {
+  await MessageService.sendMessageBroadcast(getParticipantIds(users), {
     event: "user-left",
     data: {
       user,
@@ -354,9 +177,11 @@ export const broadcastParticipantLeft = async (
 
 export const broadcastNewViewer = async (viewer: IParticipant) => {
   const { stream } = viewer;
-  const participants = await getStreamParticipants(stream);
+  console.log("viewerw", viewer);
+  const users = await getStreamParticipants(stream);
+  console.log("other users", users);
 
-  await MessageService.sendMessageBroadcast(participants, {
+  await MessageService.sendMessageBroadcast(getParticipantIds(users), {
     event: "new-viewer",
     data: {
       stream,

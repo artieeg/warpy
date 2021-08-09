@@ -29,4 +29,13 @@ export class Candidate extends BaseEntity implements ICandidate {
   static deleteByOwner(owner: string) {
     return this.delete({ owner });
   }
+
+  toJSON = (): ICandidate => {
+    return {
+      id: this.id,
+      hub: this.hub,
+      title: this.title,
+      owner: this.owner,
+    };
+  };
 }

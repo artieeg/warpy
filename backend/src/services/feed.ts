@@ -10,44 +10,23 @@ export const getFeed = async (
   user: string,
   hub?: string
 ): Promise<ICandidate[]> => {
-  const servedStreams = await FeedsCacheService.getServedStreams(user);
-  const streamIds = await CandidateStatsService.getSortedStreamIds(hub);
+  const candidates = await Candidate.find();
 
-  const candidateIds = [];
-  for (const id of streamIds) {
-    if (!servedStreams.includes(id)) {
-      candidateIds.push(id);
-    }
+  console.log("candidates", candidates);
 
-    if (candidateIds.length === 3) {
-      break;
-    }
-  }
-
-  const candidates = await Candidate.findByIds(candidateIds);
-
-  const feed = await Promise.all(
-    candidateIds
-      .map(async (id) => {
-        const candidate = candidates.find((c: any) => c.id == id);
-
-        if (!candidate) {
-          return null;
-        }
-
-        return {
-          ...candidate,
-          participants: await ParticipantService.getParticipantsCount(id),
-        };
-      })
-      .filter((candidate) => candidate !== null)
+  const feed = Promise.all(
+    candidates.map(async (candidate) => ({
+      ...candidate,
+      participants: await ParticipantService.getParticipantsCount(candidate.id),
+    }))
   );
 
-  await FeedsCacheService.addServedStreams(user, candidateIds);
+  await FeedsCacheService.addServedStreams(
+    user,
+    candidates.map((i) => i.id)
+  );
 
-  console.log("served feed", feed);
-
-  return feed.filter((item) => item !== null);
+  return feed;
 };
 
 export const addNewCandidate = async (data: IStream) => {

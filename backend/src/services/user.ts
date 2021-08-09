@@ -35,7 +35,7 @@ export const createDevUser = async (data: any) => {
   };
 };
 
-export const getUserById = async (userId: string): Promise<BaseUser | null> => {
+export const getUserById = async (userId: string): Promise<User | null> => {
   const result = await User.findOne(userId);
 
   if (!result) {

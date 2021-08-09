@@ -14,7 +14,7 @@ export interface IUser extends IBaseUser {
   sub: string;
 }
 
-@Entity()
+@Entity("users")
 export class User extends BaseEntity implements IUser {
   @PrimaryColumn()
   id: string;
@@ -48,6 +48,16 @@ export class User extends BaseEntity implements IUser {
     user.sub = data.sub;
 
     return user;
+  }
+
+  toJSON(): IBaseUser {
+    return {
+      id: this.id,
+      username: this.username,
+      last_name: this.last_name,
+      first_name: this.first_name,
+      avatar: this.avatar,
+    };
   }
 
   static findByIds(ids: string[]) {

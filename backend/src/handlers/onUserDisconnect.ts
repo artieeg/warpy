@@ -1,3 +1,4 @@
+import { Stream } from "@backend/models";
 import {
   FeedsCacheService,
   FeedService,
@@ -12,14 +13,14 @@ export const onUserDisconnect: MessageHandler<IUserDisconnected> = async (
 
   const stream = await ParticipantService.getCurrentStreamFor(user);
 
-  if (!stream) {
-    return;
-  }
-
   await Promise.all([
     FeedsCacheService.removeServedStreams(user),
     FeedService.removeCandidateByOwner(user),
-    ParticipantService.removeParticipant(user, stream),
-    ParticipantService.broadcastParticipantLeft(user, stream),
+    ParticipantService.removeParticipant(user),
+    Stream.stopStream(user),
   ]);
+
+  if (stream) {
+    await ParticipantService.broadcastParticipantLeft(user, stream);
+  }
 };

@@ -11,7 +11,7 @@ export const onRaiseHand: MessageHandler<IRaiseHand> = async (data) => {
   }
 
   await Promise.all([
-    ParticipantService.setRaiseHand(user, stream),
+    ParticipantService.setRaiseHand(user),
     ParticipantService.broadcastRaiseHand(
       Participant.fromUser(userData, "viewer", stream)
     ),

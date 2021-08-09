@@ -3,12 +3,7 @@ import {
   ParticipantService,
   UserService,
 } from "@backend/services";
-import {
-  IJoinStreamResponse,
-  IJoinStream,
-  MessageHandler,
-  Participant,
-} from "@warpy/lib";
+import { IJoinStreamResponse, IJoinStream, MessageHandler } from "@warpy/lib";
 
 export const onJoinStream: MessageHandler<IJoinStream, IJoinStreamResponse> =
   async (data, respond) => {
@@ -23,16 +18,18 @@ export const onJoinStream: MessageHandler<IJoinStream, IJoinStreamResponse> =
       return;
     }
 
+    const participant = await ParticipantService.addParticipant(
+      userData,
+      stream
+    );
+
     await Promise.all([
       MediaService.assignUserToNode(user, recvNodeId),
-      ParticipantService.addParticipant(user, stream),
       ParticipantService.setCurrentStreamFor(user, stream),
     ]);
 
     await Promise.all([
-      ParticipantService.broadcastNewViewer(
-        Participant.fromUser(userData, "viewer", stream)
-      ),
+      ParticipantService.broadcastNewViewer(participant),
       MediaService.joinRoom(recvNodeId, user, stream),
     ]);
 
@@ -42,9 +39,14 @@ export const onJoinStream: MessageHandler<IJoinStream, IJoinStreamResponse> =
       ParticipantService.getParticipantsCount(stream),
     ]);
 
+    console.log(
+      "speakares",
+      speakers.map((i) => i.toJSON())
+    );
+
     respond({
-      speakers,
-      raisedHands,
+      speakers: speakers.map((i) => i.toJSON()),
+      raisedHands: raisedHands.map((i) => i.toJSON()),
       count,
     });
   };
