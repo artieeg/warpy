@@ -3,6 +3,7 @@ import {
   IJoinStreamResponse,
   INewStreamResponse,
   IRequestViewersResponse,
+  ISpeakingAllowedEvent,
 } from '@warpy/lib';
 
 export interface IStreamAPI {
@@ -19,7 +20,7 @@ export interface IStreamAPI {
   onNewRaisedHand: EventHandler;
   onUserLeft: EventHandler;
   onNewSpeaker: EventHandler;
-  onSpeakingAllowed: EventHandler;
+  onSpeakingAllowed: EventHandler<ISpeakingAllowedEvent>;
 }
 
 export const StreamAPI: APIModule<IStreamAPI> = socket => ({

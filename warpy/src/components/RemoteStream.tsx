@@ -88,13 +88,11 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   });
 
   useEffect(() => {
-    const onSpeakingAllowed = async (options: any) => {
+    const unsub = ws.stream.onSpeakingAllowed(async options => {
       setIsSpeaker(true);
       await media.initSendDevice(options.media.rtpCapabilities);
       media.sendMediaStream(audioStream!, id, options.media, 'audio');
-    };
-
-    const unsub = ws.stream.onSpeakingAllowed(onSpeakingAllowed);
+    });
 
     return () => {
       unsub();
