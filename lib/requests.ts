@@ -149,3 +149,8 @@ export interface INewUser {
   email: string;
   kind: "dev" | "apple" | "google" | "twitter" | "facebook";
 }
+
+export interface IAllowSpeakerPayload {
+  speaker: string;
+  user: string;
+}

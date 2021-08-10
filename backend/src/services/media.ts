@@ -5,8 +5,9 @@
  */
 
 import redis from "redis";
-import { INewMediaNode, MediaServiceRole } from "@warpy/lib";
+import { IMediaPermissions, INewMediaNode, MediaServiceRole } from "@warpy/lib";
 import { MessageService } from ".";
+import jwt from "jsonwebtoken";
 
 const URL = process.env.MEDIA_SERVER_IDS || "redis://127.0.0.1:6375/6";
 
@@ -18,6 +19,16 @@ export const init = async () => {};
 
 const getSetNameFromRole = (role: MediaServiceRole) => {
   return role === "CONSUMER" ? "consumers" : "producers";
+};
+
+export const createPermissionsToken = (permissions: IMediaPermissions) => {
+  const secret = process.env.JWT_SECRET;
+
+  if (!secret) {
+    throw new Error();
+  }
+
+  return jwt.sign(JSON.stringify(permissions), secret, { expiresIn: "1m" });
 };
 
 /**

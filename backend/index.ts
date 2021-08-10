@@ -25,6 +25,7 @@ const PORT = process.env.PORT;
 if (!PORT) {
   throw new Error("No port specified");
 }
+
 const main = async () => {
   await DatabaseService.connect();
   await MessageService.init();

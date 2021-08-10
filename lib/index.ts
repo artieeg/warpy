@@ -4,3 +4,4 @@ export * from "./fixtures";
 export * from "./subjects";
 export * from "./models";
 export * from "./responses";
+export * from "./events";

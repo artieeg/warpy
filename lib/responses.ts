@@ -17,11 +17,6 @@ export interface IRequestViewersResponse {
   viewers: IParticipant[];
 }
 
-export interface IAllowSpeakerPayload {
-  speaker: string;
-  user: string;
-}
-
 export interface IFeedResponse {
   feed: ICandidate[];
 }
