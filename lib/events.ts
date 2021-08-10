@@ -1,4 +1,4 @@
-import { IMediaPermissions } from "@lib/models";
+import { IMediaPermissions } from "./models";
 
 export interface ISpeakingAllowedEvent {
   stream: string;

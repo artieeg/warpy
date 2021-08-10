@@ -13,13 +13,13 @@
     "@ws_gateway": "./src"
   },
   "dependencies": {
+    "@warpy/lib": "1.0.0",
     "bufferutil": "^4.0.3",
     "jsonwebtoken": "^8.5.1",
     "module-alias": "^2.2.2",
     "nats": "^2.1.0",
     "utf-8-validate": "^5.0.5",
-    "ws": "^7.5.2",
-    "@warpy/lib": "1.0.0"
+    "ws": "^7.5.2"
   },
   "devDependencies": {
     "@types/jest": "^26.0.24",

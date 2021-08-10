@@ -107,13 +107,17 @@ export const NewStream = () => {
       media: mediaData,
       speakers: receivedSpeakers,
       count,
+      mediaPermissionsToken,
     } = await ws.stream.create(title, hub);
+
+    console.log('permissions token', mediaPermissionsToken);
 
     useParticipantsStore.getState().set({
       participants: receivedSpeakers,
       count,
     });
 
+    media.setPermissionsToken(mediaPermissionsToken);
     setStreamId(stream);
     setSendRoomData(mediaData);
   }, [title, hub, ws]);

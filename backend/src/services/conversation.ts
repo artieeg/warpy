@@ -6,6 +6,9 @@ export const handleConnectTransport = async (data: IConnectMediaTransport) => {
   const { user } = data;
   const stream = await ParticipantService.getCurrentStreamFor(user);
 
+  console.log("conn transpot", user);
+  console.log("stream", stream, "user", user);
+
   if (!stream) {
     return;
   }

@@ -56,6 +56,8 @@ const main = async () => {
     "connect-transport",
     ConversationService.handleConnectTransport
   );
+
+  console.log(":>");
 };
 
 main();

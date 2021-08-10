@@ -31,6 +31,7 @@ let sendDevice = new Device({handlerName: 'ReactNative'});
 
 export const MediaStreamingProvider = ({children}: any) => {
   const ws = useWebSocketContext();
+  const [permissionsToken, setPermissionsToken] = useState<string | null>(null);
 
   const createTransport = async (params: ICreateTransportParams) => {
     const {roomId, device, direction, options, isProducer, mediaKind} = params;
@@ -51,14 +52,12 @@ export const MediaStreamingProvider = ({children}: any) => {
     transport.on('connect', ({dtlsParameters}, callback, _errback) => {
       if (direction === 'send') {
         ws.media.onceSendTransportConnected(() => {
-          console.log('connected send transport');
           callback();
         });
       } else {
         ws.media.onceRecvTransportConnected(callback);
       }
 
-      console.log('connecting transport', transportOptions.id);
       ws.media.connectTransport(
         {
           transportId: transportOptions.id,
@@ -89,8 +88,6 @@ export const MediaStreamingProvider = ({children}: any) => {
           }
         });
 
-        console.log('sending new track');
-
         ws.media.newTrack({
           transportId: transportOptions.id,
           kind,
@@ -100,6 +97,7 @@ export const MediaStreamingProvider = ({children}: any) => {
           roomId: roomId,
           appData,
           direction,
+          mediaPermissionsToken: permissionsToken,
         });
       });
     }
@@ -152,8 +150,6 @@ export const MediaStreamingProvider = ({children}: any) => {
       kind === 'video'
         ? localStream.getVideoTracks()[0]
         : localStream.getAudioTracks()[0];
-
-    console.log('producing', kind);
 
     await sendTransport.produce({
       track,
@@ -222,6 +218,7 @@ export const MediaStreamingProvider = ({children}: any) => {
         initRecvDevice,
         initSendDevice,
         createTransport,
+        setPermissionsToken,
       }}>
       {children}
     </MediaStreamingContext.Provider>

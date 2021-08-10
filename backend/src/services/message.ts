@@ -64,7 +64,7 @@ export const init = async () => {
   handleMessages();
 
   handleNewMediaNode();
-  handleNewTrack();
+  //handleNewTrack();
   handleRecvTracksRequest();
   handleConnectTransport();
 };
@@ -118,6 +118,7 @@ const handleNewTrack = async () => {
       roomId,
       appData,
       direction,
+      mediaPermissionsToken,
     } = jc.decode(msg.data) as any;
 
     const data: INewMediaTrack = {
@@ -129,6 +130,7 @@ const handleNewTrack = async () => {
       roomId,
       appData,
       direction,
+      mediaPermissionsToken,
     };
 
     eventEmitter.emit("new-track", data);
