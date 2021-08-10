@@ -1,4 +1,10 @@
-import { User, Stream, Candidate, Participant } from "@backend/models";
+import {
+  User,
+  Stream,
+  Candidate,
+  Participant,
+  RefreshToken,
+} from "@backend/models";
 import { createConnection } from "typeorm";
 
 export const connect = async () => {
@@ -9,7 +15,7 @@ export const connect = async () => {
     username: "warpy",
     password: "warpy222",
     database: "warpy",
-    entities: [User, Stream, Candidate, Participant],
+    entities: [User, Stream, Candidate, Participant, RefreshToken],
     synchronize: true,
   });
 };

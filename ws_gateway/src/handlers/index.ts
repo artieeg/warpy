@@ -8,3 +8,5 @@ export * from "./viewers_request";
 export * from "./onStreamStop";
 export * from "./onNewStream";
 export * from "./onFeedRequest";
+export * from "./onNewStream";
+export * from "./onNewUser";

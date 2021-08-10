@@ -36,6 +36,7 @@ const SubjectEventMap = {
   "stream.join": "user-joins-stream",
   "user.raise-hand": "raise-hand",
   "speaker.allow": "speaker-allow",
+  "user.create": "new-user",
 };
 
 type Subject = keyof typeof SubjectEventMap;

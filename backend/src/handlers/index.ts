@@ -7,3 +7,4 @@ export * from "./onRaiseHand";
 export * from "./onAllowSpeaker";
 export * from "./onFeedRequest";
 export * from "./onWhoAmIRequest";
+export * from "./onNewUser";

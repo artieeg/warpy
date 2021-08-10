@@ -1,14 +1,11 @@
 import "reflect-metadata";
 import "module-alias/register";
 
-import express from "express";
-import routes from "@backend/routes";
 import {
   ConversationService,
   DatabaseService,
   MediaService,
   MessageService,
-  UserService,
 } from "@backend/services";
 import {
   onNewStream,
@@ -20,11 +17,8 @@ import {
   onAllowSpeaker,
   onFeedRequest,
   onWhoAmIRequest,
+  onNewUser,
 } from "@backend/handlers";
-
-const app = express();
-app.use(express.json());
-app.use(routes);
 
 const PORT = process.env.PORT;
 
@@ -44,6 +38,7 @@ const main = async () => {
   MessageService.on("speaker-allow", onAllowSpeaker);
   MessageService.on("feed-request", onFeedRequest);
   MessageService.on("whoami-request", onWhoAmIRequest);
+  MessageService.on("new-user", onNewUser);
 
   MessageService.on("new-media-node", MediaService.handleNewOnlineNode);
 
@@ -60,10 +55,6 @@ const main = async () => {
     "connect-transport",
     ConversationService.handleConnectTransport
   );
-
-  app.listen(Number.parseInt(PORT), `0.0.0.0`, () => {
-    console.log(`Started on port ${PORT}`);
-  });
 };
 
 main();

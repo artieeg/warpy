@@ -11,6 +11,7 @@ import {
   onStreamStop,
   onNewStream,
   onFeedRequest,
+  onNewUser,
 } from "@ws_gateway/handlers";
 import { IMessage } from "@ws_gateway/models";
 import { Context, Handlers } from "@ws_gateway/types";
@@ -38,6 +39,7 @@ const handlers: Handlers = {
   "stream-stop": onStreamStop,
   "stream-new": onNewStream,
   "request-feed": onFeedRequest,
+  "new-user": onNewUser,
 };
 
 const main = async () => {
