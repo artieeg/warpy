@@ -141,3 +141,11 @@ export interface IRequestFeed {
   user: string;
   hub?: string;
 }
+
+export interface INewUser {
+  username: string;
+  last_name: string;
+  first_name: string;
+  email: string;
+  kind: "dev" | "apple" | "google" | "twitter" | "facebook";
+}

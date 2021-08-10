@@ -29,3 +29,9 @@ export interface IFeedResponse {
 export interface IWhoAmIResponse {
   user: IBaseUser | null;
 }
+
+export interface INewUserResponse {
+  id: string;
+  access: string;
+  refresh: string;
+}
