@@ -16,6 +16,7 @@ export const BackendEvents = {
   "join-stream": "stream.join",
   "raise-hand": "user.raise-hand",
   "new-user": "user.create",
+  "new-track": "media.track.send",
 };
 
 type EventAlias = keyof typeof BackendEvents;

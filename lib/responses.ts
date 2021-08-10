@@ -5,6 +5,7 @@ export interface INewStreamResponse {
   media: any;
   speakers: IParticipant[];
   count: number;
+  mediaPermissionsToken: string;
 }
 
 export interface IJoinStreamResponse {

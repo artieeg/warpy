@@ -30,6 +30,7 @@ export interface INewMediaTrack {
   rtpCapabilities: any;
   transportId: string;
   appData: any;
+  mediaPermissionsToken: any;
 }
 
 export interface IJoinMediaRoom {

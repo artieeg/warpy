@@ -83,7 +83,7 @@ export const removeAllParticipants = async (streamId: string) => {
 };
 
 export const getCurrentStreamFor = async (user: string) => {
-  const participant = await Participant.findOne(user);
+  const participant = await Participant.findOne({ user: { id: user } });
 
   return participant?.stream;
 };

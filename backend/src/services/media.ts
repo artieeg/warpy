@@ -5,8 +5,9 @@
  */
 
 import redis from "redis";
-import { INewMediaNode, MediaServiceRole } from "@warpy/lib";
+import { INewMediaNode, IMediaPermissions, MediaServiceRole } from "@warpy/lib";
 import { MessageService } from ".";
+import jwt from "jsonwebtoken";
 
 const URL = process.env.MEDIA_SERVER_IDS || "redis://127.0.0.1:6375/6";
 
@@ -18,6 +19,12 @@ export const init = async () => {};
 
 const getSetNameFromRole = (role: MediaServiceRole) => {
   return role === "CONSUMER" ? "consumers" : "producers";
+};
+
+export const createPermissionsToken = (permissions: IMediaPermissions) => {
+  return jwt.sign(permissions, process.env.MEDIA_JWT_SECRET!, {
+    expiresIn: 60,
+  });
 };
 
 /**
@@ -52,14 +59,14 @@ type NodeID = string | null;
  * Returns a producer node id.
  * Currently random
  */
-export const getProducerNodeId = async (): Promise<NodeID> => {
-  try {
-    const producerIds = await getNodeIdsWithRole("PRODUCER");
-    return producerIds[Math.floor(Math.random() * producerIds.length)];
-  } catch (e) {
-    console.error(e);
-    return null;
+export const getProducerNodeId = async () => {
+  const producerIds = await getNodeIdsWithRole("PRODUCER");
+
+  if (producerIds.length === 0) {
+    throw new Error();
   }
+
+  return producerIds[Math.floor(Math.random() * producerIds.length)];
 };
 
 /**
@@ -67,14 +74,13 @@ export const getProducerNodeId = async (): Promise<NodeID> => {
  * Currently random
  */
 export const getConsumerNodeId = async () => {
-  try {
-    const consumerIds = await getNodeIdsWithRole("CONSUMER");
-    console.log("consumer node ids", consumerIds);
-    return consumerIds[Math.floor(Math.random() * consumerIds.length)];
-  } catch (e) {
-    console.error(e);
-    return null;
+  const consumerIds = await getNodeIdsWithRole("CONSUMER");
+
+  if (consumerIds.length === 0) {
+    throw new Error();
   }
+
+  return consumerIds[Math.floor(Math.random() * consumerIds.length)];
 };
 
 /**

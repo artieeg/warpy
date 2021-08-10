@@ -17,7 +17,10 @@ export const onNewStream: MessageHandler<INewStream, INewStreamResponse> =
     const { owner, title, hub } = params;
     const userData = await UserService.getUserById(owner);
 
-    const recvMediaNode = await MediaService.getConsumerNodeId();
+    const [recvMediaNode, sendMediaNode] = await Promise.all([
+      MediaService.getConsumerNodeId(),
+      MediaService.getProducerNodeId(),
+    ]);
 
     if (!recvMediaNode || !userData) {
       return;
@@ -42,10 +45,30 @@ export const onNewStream: MessageHandler<INewStream, INewStreamResponse> =
     await MediaService.assignUserToNode(owner, recvMediaNode);
     await MediaService.joinRoom(recvMediaNode, owner, streamId);
 
+    console.log("send media node", sendMediaNode);
+    console.log("recv media node", recvMediaNode);
+    const mediaPermissionsToken = MediaService.createPermissionsToken({
+      room: streamId,
+      audio: true,
+      video: true,
+      sendNodeId: sendMediaNode,
+      recvNodeId: recvMediaNode,
+    });
+    console.log("token", mediaPermissionsToken);
+
+    console.log("response", {
+      stream: stream.id,
+      media,
+      speakers,
+      count: 1,
+      mediaPermissionsToken,
+    });
+
     respond({
       stream: stream.id,
       media,
       speakers,
       count: 1,
+      mediaPermissionsToken,
     });
   };

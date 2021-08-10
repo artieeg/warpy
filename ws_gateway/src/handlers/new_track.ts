@@ -4,6 +4,8 @@ import { Handler } from "@ws_gateway/types";
 export const onNewTrack: Handler = async (data, context?) => {
   const user = context?.user;
 
+  console.log("user", user);
+
   if (!user) {
     return;
   }
@@ -13,5 +15,6 @@ export const onNewTrack: Handler = async (data, context?) => {
     user,
   };
 
-  MessageService.sendNewTrackEvent(eventData);
+  console.log("new track", data);
+  MessageService.sendBackendMessage("new-track", eventData);
 };

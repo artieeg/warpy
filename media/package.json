@@ -19,9 +19,11 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
+    "@types/jsonwebtoken": "^8.5.4",
     "@types/nanoid": "^3.0.0",
     "@warpy/lib": "1.0.0",
     "dotenv": "^10.0.0",
+    "jsonwebtoken": "^8.5.1",
     "mediasoup": "3",
     "module-alias": "^2.2.2",
     "nanoid": "^3.1.23",

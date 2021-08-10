@@ -41,5 +41,6 @@ export const createNewTrackFixture = (
     transportId: "test transport id",
     appData: {},
     ...params,
+    mediaPermissionsToken: "test",
   };
 };

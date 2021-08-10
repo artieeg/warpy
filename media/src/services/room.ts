@@ -2,6 +2,11 @@ import { IConnectTransport, IRoom, Peer, Rooms } from "@media/models";
 import { NodeInfo } from "@media/nodeinfo";
 import { role } from "@media/role";
 import {
+  getMediaPermissions,
+  isAudioAllowed,
+  isVideoAllowed,
+} from "@media/utils";
+import {
   IConnectMediaServer,
   IConnectNewSpeakerMedia,
   ICreateMediaRoom,
@@ -218,6 +223,7 @@ export const handleNewRoom: MessageHandler<
 
 export const handleConnectTransport = async (data: IConnectTransport) => {
   const { roomId, user, dtlsParameters, direction, mediaKind } = data;
+  console.log("connect transport request", data);
 
   const room = rooms[roomId];
 
@@ -263,10 +269,21 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
     rtpCapabilities,
     appData,
     transportId,
+    mediaPermissionsToken,
   } = data;
 
+  const permissions = getMediaPermissions(mediaPermissionsToken);
+
+  console.log(permissions);
+  if (kind === "audio" && isAudioAllowed(permissions) === false) {
+    return;
+  }
+
+  if (kind === "video" && isVideoAllowed(permissions) === false) {
+    return;
+  }
+
   const room = rooms[roomId];
-  /*  */
   if (!room) {
     return; //TODO: Send error
   }
@@ -275,12 +292,10 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
 
   const peer = peers[user];
   const transport = peer.getSendTransport(kind);
-  //const { sendTransport: transport, producer } = peer;
 
   if (!transport) {
     return; //TODO: Send error
   }
-  console.log("transport is here");
 
   //const producer = peer.producer;
   //TODO: Close previous producer if there's one

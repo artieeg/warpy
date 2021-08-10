@@ -150,8 +150,8 @@ export const handleNewTrack = async () => {
   const sub = nc.subscribe(subjects.media.track.send);
 
   for await (const msg of sub) {
-    console.log("recevied new track");
     const newTrack: INewMediaTrack = jc.decode(msg.data) as any;
+    console.log("new trac", newTrack);
     eventEmitter.emit("new-track", newTrack);
   }
 };

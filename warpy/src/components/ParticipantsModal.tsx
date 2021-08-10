@@ -33,9 +33,6 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
     [speakers],
   );
 
-  console.log('speakers', speakers);
-  console.log('streamer', streamer);
-
   const data = [
     {
       title: 'Stream by',

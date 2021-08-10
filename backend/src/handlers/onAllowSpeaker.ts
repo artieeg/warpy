@@ -36,11 +36,20 @@ export const onAllowSpeaker: MessageHandler<IAllowSpeakerPayload> = async (
     ParticipantService.setParticipantRole(stream, speaker, "speaker"),
   ]);
 
+  /*
+  const mediaPermissionToken = MediaService.createPermissionsToken({
+    room: stream,
+    video: true,
+    audio: true,
+  });
+  */
+
   MessageService.sendMessage(speaker, {
     event: "speaking-allowed",
     data: {
       stream,
       media,
+      //mediaPermissionToken,
     },
   });
 
