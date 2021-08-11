@@ -96,17 +96,9 @@ export const handleRecvTracksRequest = async () => {
   const sub = nc.subscribe(`${subjects.media.track.getRecv}.${NodeInfo.id}`);
 
   for await (const msg of sub) {
-    const data = jc.decode(msg.data) as any;
+    const data = jc.decode(msg.data) as IRecvTracksRequest;
 
-    const event: IRecvTracksRequest = {
-      user: data.user,
-      roomId: data.roomId,
-      rtpCapabilities: data.rtpCapabilities,
-    };
-
-    eventEmitter.emit("recv-tracks-request", event, (d: any) => {
-      console.log("recv tracks reqeust response");
-      console.log(d.consumerParams);
+    eventEmitter.emit("recv-tracks-request", data, (d: any) => {
       msg.respond(jc.encode(d));
     });
   }

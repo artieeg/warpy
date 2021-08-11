@@ -49,10 +49,6 @@ const main = async () => {
    */
   MessageService.on("new-track", ConversationService.handleNewTrack);
   MessageService.on(
-    "recv-tracks-request",
-    ConversationService.handleRecvTracksRequest
-  );
-  MessageService.on(
     "connect-transport",
     ConversationService.handleConnectTransport
   );

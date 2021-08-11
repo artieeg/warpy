@@ -44,9 +44,17 @@ export const onJoinStream: MessageHandler<IJoinStream, IJoinStreamResponse> =
       speakers.map((i) => i.toJSON())
     );
 
+    const mediaPermissionsToken = MediaService.createPermissionsToken({
+      room: stream,
+      audio: false,
+      video: false,
+      recvNodeId,
+    });
+
     respond({
       speakers: speakers.map((i) => i.toJSON()),
       raisedHands: raisedHands.map((i) => i.toJSON()),
       count,
+      mediaPermissionsToken,
     });
   };

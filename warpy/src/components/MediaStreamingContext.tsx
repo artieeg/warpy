@@ -36,6 +36,10 @@ export const MediaStreamingProvider = ({children}: any) => {
   const createTransport = async (params: ICreateTransportParams) => {
     const {roomId, device, direction, options, isProducer, mediaKind} = params;
 
+    if (direction === 'send') {
+      Alert.alert('creating send transport');
+    }
+
     const transportOptions =
       direction === 'recv'
         ? options.recvTransportOptions
@@ -52,12 +56,14 @@ export const MediaStreamingProvider = ({children}: any) => {
     transport.on('connect', ({dtlsParameters}, callback, _errback) => {
       if (direction === 'send') {
         ws.media.onceSendTransportConnected(() => {
+          Alert.alert('send transport connected');
           callback();
         });
       } else {
         ws.media.onceRecvTransportConnected(callback);
       }
 
+      console.log('sending connect transport request', roomId);
       ws.media.connectTransport(
         {
           transportId: transportOptions.id,
@@ -65,6 +71,7 @@ export const MediaStreamingProvider = ({children}: any) => {
           direction,
           roomId: roomId,
           mediaKind,
+          mediaPermissionsToken: permissionsToken,
         },
         isProducer,
       );
@@ -135,6 +142,7 @@ export const MediaStreamingProvider = ({children}: any) => {
     options: any,
     kind: MediaKind,
   ) => {
+    console.log('jwt token', permissionsToken);
     const sendTransport = await createTransport({
       roomId: stream,
       device: sendDevice,
@@ -174,38 +182,35 @@ export const MediaStreamingProvider = ({children}: any) => {
     return consumer;
   };
 
-  const consumeRemoteStreams = (
+  const consumeRemoteStreams = async (
     user: string,
     stream: string,
     transport: Transport,
   ): Promise<Consumer[]> => {
-    return new Promise(async resolve => {
-      ws.observer.once('recv-tracks-response', async (data: any) => {
-        const {consumerParams} = data;
-
-        const consumersPromises: Promise<Consumer>[] = consumerParams.map(
-          (params: any) =>
-            transport.consume({
-              ...params.consumerParameters,
-              appData: {
-                user,
-                producerId: params.consumerParameters.producerId,
-                mediaTag: 'media-' + Math.random(),
-              },
-            }),
-        );
-
-        const consumers = await Promise.all(consumersPromises);
-
-        resolve(consumers);
-      });
-
-      ws.media.getRecvTracks({
-        rtpCapabilities: recvDevice.rtpCapabilities,
-        stream,
-      });
+    const {consumerParams} = await ws.media.getRecvTracks({
+      rtpCapabilities: recvDevice.rtpCapabilities,
+      stream,
+      mediaPermissionsToken: permissionsToken,
     });
+
+    const consumersPromises: Promise<Consumer>[] = consumerParams.map(
+      (params: any) =>
+        transport.consume({
+          ...params.consumerParameters,
+          appData: {
+            user,
+            producerId: params.consumerParameters.producerId,
+            mediaTag: 'media-' + Math.random(),
+          },
+        }),
+    );
+
+    const consumers = await Promise.all(consumersPromises);
+
+    return consumers;
   };
+
+  console.log('permissions tkoen', permissionsToken);
 
   return (
     <MediaStreamingContext.Provider
@@ -218,7 +223,8 @@ export const MediaStreamingProvider = ({children}: any) => {
         initRecvDevice,
         initSendDevice,
         createTransport,
-        setPermissionsToken,
+        permissionsToken,
+        setPermissionsToken: (token: string) => setPermissionsToken(token),
       }}>
       {children}
     </MediaStreamingContext.Provider>

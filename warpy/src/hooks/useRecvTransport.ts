@@ -17,7 +17,12 @@ export const useRecvTransport = (params: IRecvTransportHookParams) => {
   const [transport, setTransport] = useState<Transport>();
 
   const createRecvTransport = useCallback(async () => {
-    if (!recvTransportOptions || !routerRtpCapabilities || !stream) {
+    if (
+      !recvTransportOptions ||
+      !routerRtpCapabilities ||
+      !stream ||
+      !media.permissionsToken
+    ) {
       return;
     }
 
@@ -32,7 +37,13 @@ export const useRecvTransport = (params: IRecvTransportHookParams) => {
     });
 
     setTransport(newTransport);
-  }, [stream, recvTransportOptions, routerRtpCapabilities, media]);
+  }, [
+    stream,
+    recvTransportOptions,
+    routerRtpCapabilities,
+    media,
+    media.permissionsToken,
+  ]);
 
   useEffect(() => {
     createRecvTransport();

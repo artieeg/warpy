@@ -73,9 +73,10 @@ export interface INewMediaTrack {
 */
 
 export interface IRecvTracksRequest {
-  roomId: string;
+  stream: string;
   user: string;
   rtpCapabilities: any;
+  mediaPermissionsToken: string;
 }
 
 export interface IRecvTracksResponse {

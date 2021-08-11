@@ -94,11 +94,8 @@ export const setCurrentStreamFor = async (id: string, stream: string) => {
   await participant?.setStream(stream);
 };
 
-export const getRoleFor = async (
-  user: string,
-  stream: string
-): Promise<Roles | undefined> => {
-  const participant = await Participant.findOne(user);
+export const getRoleFor = async (user: string): Promise<Roles | undefined> => {
+  const participant = await Participant.findOne({ user: { id: user } });
 
   return participant?.role;
 };

@@ -31,7 +31,8 @@ services:
     image: postgres:13-alpine
     ports:
     - 5432:5432
-
+    volumes:
+      - /data/warpy-pg/:/var/lib/postgresql
     environment:
       POSTGRES_USER: warpy
       POSTGRES_PASSWORD: warpy222

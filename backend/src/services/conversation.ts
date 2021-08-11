@@ -6,9 +6,6 @@ export const handleConnectTransport = async (data: IConnectMediaTransport) => {
   const { user } = data;
   const stream = await ParticipantService.getCurrentStreamFor(user);
 
-  console.log("conn transpot", user);
-  console.log("stream", stream, "user", user);
-
   if (!stream) {
     return;
   }
@@ -32,34 +29,11 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
     return;
   }
 
-  const role = await ParticipantService.getRoleFor(user, stream);
+  const role = await ParticipantService.getRoleFor(user);
 
   if (role === "viewer") {
     return;
   }
 
   MessageService.sendNewTrack(data);
-};
-
-export const handleRecvTracksRequest = async (data: IRequestGetTracks) => {
-  const { user, stream, rtpCapabilities } = data;
-
-  const recvNodeId = await MediaService.getConsumerNodeFor(user);
-
-  if (!recvNodeId) {
-    return;
-  }
-
-  const { consumerParams } = await MessageService.getRecvTracks(recvNodeId, {
-    roomId: stream,
-    user,
-    rtpCapabilities,
-  });
-
-  MessageService.sendMessage(user, {
-    event: "recv-tracks-response",
-    data: {
-      consumerParams,
-    },
-  });
 };

@@ -43,12 +43,8 @@ export class Stream extends BaseEntity implements IStream {
     return stream;
   }
 
-  static async stopStream(owner: string) {
-    const result = await this.update({ owner }, { live: false });
-
-    if (result.affected! === 0) {
-      throw new Error();
-    }
+  static stopStream(owner: string) {
+    return this.update({ owner }, { live: false });
   }
 
   @BeforeInsert()

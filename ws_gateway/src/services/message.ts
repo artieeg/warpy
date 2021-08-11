@@ -1,5 +1,5 @@
 import { connect, JSONCodec, NatsConnection, Subscription } from "nats";
-import { subjects } from "@warpy/lib";
+import { IRecvTracksResponse, subjects } from "@warpy/lib";
 
 const NATS = process.env.NATS_ADDR;
 if (!NATS) {
@@ -41,8 +41,19 @@ export const init = async () => {
   nc = await connect({ servers: [NATS] });
 };
 
-export const sendTransportConnect = (data: any) => {
-  nc.publish(subjects.conversations.transport.try_connect, jc.encode(data));
+export const sendTransportConnect = (
+  node: string,
+  direction: string,
+  data: any
+) => {
+  if (direction === "send") {
+    nc.publish(subjects.media.transport.connect_producer, jc.encode(data));
+  } else {
+    nc.publish(
+      `${subjects.media.transport.connect_consumer}.${node}`,
+      jc.encode(data)
+    );
+  }
 };
 
 export const sendNewTrackEvent = (data: any) => {
@@ -75,10 +86,14 @@ export const sendViewersRequest = (data: any) => {
   nc.publish("viewers.get", payload);
 };
 
-export const sendRecvTracksRequest = (data: any) => {
-  const payload = jc.encode(data);
+export const sendRecvTracksRequest = async (node: string, data: any) => {
+  const m = jc.encode(data);
 
-  nc.publish(subjects.conversations.track.try_get, payload);
+  const reply = await nc.request(`${subjects.media.track.getRecv}.${node}`, m, {
+    timeout: 1000,
+  });
+
+  return jc.decode(reply.data) as IRecvTracksResponse;
 };
 
 export const subscribeForEvents = (

@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {StyleSheet, useWindowDimensions, View} from 'react-native';
+import {Alert, StyleSheet, useWindowDimensions, View} from 'react-native';
 import {Stream} from '@app/models';
 import {
   useAppUser,
@@ -58,7 +58,16 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   }, [audioStream, micIsOn]);
 
   useEffect(() => {
-    if (recvTransport) {
+    console.log(
+      'params',
+      `recv transport: ${!!recvTransport}, permission token: ${!!media.permissionsToken}`,
+    );
+
+    if (mediaStream) {
+      return;
+    }
+
+    if (recvTransport && media.permissionsToken) {
       media
         .consumeRemoteStreams(userId, id, recvTransport)
         .then((consumers: Consumer[]) => {
@@ -67,17 +76,27 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
           setMediaStream(new MediaStream([track]));
         });
     }
-  }, [recvTransport, roomData, userId, id, media]);
+  }, [
+    recvTransport,
+    roomData,
+    userId,
+    id,
+    media,
+    media.permissionsToken,
+    mediaStream,
+  ]);
 
   useEffectOnce(() => {
     ws.media.onceRecvConnectParams(data => {
+      console.log('recv params recieved');
       setRoomData(data);
     });
 
-    ws.stream.join(id).then((data: any) => {
+    ws.stream.join(id).then(data => {
       fetchViewers();
 
-      console.log('stream data', data);
+      media.setPermissionsToken(data.mediaPermissionsToken);
+      console.log('media token set');
 
       useParticipantsStore.getState().set({
         participants: [...data.speakers, ...data.raisedHands],
@@ -89,8 +108,11 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
 
   useEffect(() => {
     const unsub = ws.stream.onSpeakingAllowed(async options => {
-      setIsSpeaker(true);
       await media.initSendDevice(options.media.rtpCapabilities);
+      media.setPermissionsToken(options.mediaPermissionToken);
+      setIsSpeaker(true);
+
+      //TODO: this uses an old permission token, so it cant connect audio
       media.sendMediaStream(audioStream!, id, options.media, 'audio');
     });
 

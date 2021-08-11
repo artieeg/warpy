@@ -67,9 +67,9 @@ export const handleRecvTracksRequest: MessageHandler<
   IRecvTracksRequest,
   IRecvTracksResponse
 > = async (data, respond) => {
-  const { roomId, user, rtpCapabilities } = data;
+  const { stream, user, rtpCapabilities } = data;
 
-  const room = rooms[roomId];
+  const room = rooms[stream];
 
   if (!room) {
     return;
@@ -79,11 +79,14 @@ export const handleRecvTracksRequest: MessageHandler<
 
   const peer = peers[user];
 
+  console.log("peer", !!peer);
   if (!peer) {
     return;
   }
 
   const transport = peer.recvTransport;
+
+  console.log("transport", !!transport);
 
   if (!transport) {
     return;
@@ -183,6 +186,9 @@ export const handleNewRoom: MessageHandler<
 > = async (data, respond) => {
   const { roomId, host } = data;
 
+  console.log("role");
+  console.log("new room", data);
+
   if (rooms[roomId]) {
     return;
   }
@@ -222,8 +228,27 @@ export const handleNewRoom: MessageHandler<
 };
 
 export const handleConnectTransport = async (data: IConnectTransport) => {
-  const { roomId, user, dtlsParameters, direction, mediaKind } = data;
+  const {
+    roomId,
+    user,
+    dtlsParameters,
+    direction,
+    mediaKind,
+    mediaPermissionsToken,
+  } = data;
   console.log("connect transport request", data);
+
+  const permissions = getMediaPermissions(mediaPermissionsToken);
+
+  if (direction === "send") {
+    if (mediaKind === "audio" && !isAudioAllowed(permissions)) {
+      return;
+    }
+
+    if (mediaKind === "video" && !isVideoAllowed(permissions)) {
+      return;
+    }
+  }
 
   const room = rooms[roomId];
 
@@ -251,6 +276,7 @@ export const handleConnectTransport = async (data: IConnectTransport) => {
     return;
   }
 
+  console.log("connected transport for", user);
   MessageService.sendMessageToUser(user, {
     event: `@media/${direction}-transport-connected`,
     data: {
@@ -273,6 +299,8 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
   } = data;
 
   const permissions = getMediaPermissions(mediaPermissionsToken);
+
+  console.log("new track", kind, "from", user);
 
   console.log(permissions);
   if (kind === "audio" && isAudioAllowed(permissions) === false) {

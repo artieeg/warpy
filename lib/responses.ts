@@ -12,6 +12,7 @@ export interface IJoinStreamResponse {
   speakers: IParticipant[];
   raisedHands: IParticipant[];
   count: number;
+  mediaPermissionsToken: string;
 }
 
 export interface IRequestViewersResponse {
