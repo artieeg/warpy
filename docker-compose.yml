@@ -34,7 +34,7 @@ services:
     ports:
     - 5432:5432
     volumes:
-      - /data/warpy-pg/:/var/lib/postgresql
+      - /data/warpy-pg/:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: warpy
       POSTGRES_PASSWORD: warpy222
