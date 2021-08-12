@@ -38,6 +38,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const media = useMediaStreamingContext();
   const [isSpeaker, setIsSpeaker] = useState(false);
   const [micIsOn, setMicIsOn] = useState(true);
+  const [speakerOptions, setSpeakerOptions] = useState<any>();
 
   //Display a participant info modal
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
@@ -111,15 +112,19 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
       await media.initSendDevice(options.media.rtpCapabilities);
       media.setPermissionsToken(options.mediaPermissionToken);
       setIsSpeaker(true);
-
-      //TODO: this uses an old permission token, so it cant connect audio
-      media.sendMediaStream(audioStream!, id, options.media, 'audio');
+      setSpeakerOptions(options);
     });
 
     return () => {
       unsub();
     };
   }, [id, audioStream, ws, media]);
+
+  useEffect(() => {
+    if (speakerOptions && audioStream) {
+      media.sendMediaStream(audioStream, id, speakerOptions.media, 'audio');
+    }
+  }, [media, speakerOptions, id, audioStream]);
 
   const {width, height} = useWindowDimensions();
 
