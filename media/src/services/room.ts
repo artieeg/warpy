@@ -429,6 +429,7 @@ export const handleNewProducer = async (data: INewProducer) => {
     room = {
       router: VideoService.getPipeRouter(),
       peers: {},
+      audioLevelObserver: VideoService.getAudioLevelObserver(),
     };
     rooms[roomId] = room;
   }
