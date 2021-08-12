@@ -29,7 +29,9 @@ export const sendBackendRequest = async (
   event: EventAlias,
   data: any
 ): Promise<any> => {
-  const response = await nc.request(BackendEvents[event], jc.encode(data));
+  const response = await nc.request(BackendEvents[event], jc.encode(data), {
+    timeout: 240000, //for debug purposes
+  });
 
   return jc.decode(response.data) as any;
 };

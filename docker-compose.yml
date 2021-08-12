@@ -20,6 +20,8 @@ services:
 
   backend:
     image: node:16.0.0-alpine
+    ports:
+      - 9229:9229
     env_file:
       dev_env/backend.env
     volumes:

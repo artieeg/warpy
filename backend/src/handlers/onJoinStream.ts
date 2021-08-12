@@ -45,6 +45,7 @@ export const onJoinStream: MessageHandler<IJoinStream, IJoinStreamResponse> =
     );
 
     const mediaPermissionsToken = MediaService.createPermissionsToken({
+      user: user,
       room: stream,
       audio: false,
       video: false,

@@ -49,6 +49,7 @@ export const onNewStream: MessageHandler<INewStream, INewStreamResponse> =
     console.log("recv media node", recvMediaNode);
     const mediaPermissionsToken = MediaService.createPermissionsToken({
       room: streamId,
+      user: owner,
       audio: true,
       video: true,
       sendNodeId: sendMediaNode,

@@ -13,22 +13,18 @@ export const onAllowSpeaker: MessageHandler<IAllowSpeakerPayload> = async (
 
   const stream = await ParticipantService.getCurrentStreamFor(user);
 
-  console.log("allowing speaker", data);
-  console.log("stream", stream);
   if (!stream) {
     return;
   }
 
   const role = await ParticipantService.getRoleFor(user);
 
-  console.log("role", role);
   if (role !== "streamer") {
     return;
   }
 
   const speakerData = await UserService.getUserById(speaker);
 
-  console.log("data", speakerData);
   if (!speakerData) {
     return;
   }
@@ -46,6 +42,7 @@ export const onAllowSpeaker: MessageHandler<IAllowSpeakerPayload> = async (
   ]);
 
   const mediaPermissionToken = MediaService.createPermissionsToken({
+    user: speaker,
     room: stream,
     video: false,
     audio: true,
