@@ -1,12 +1,10 @@
 import { EventEmitter } from "events";
 import { connect, JSONCodec, NatsConnection } from "nats";
-import { IRequestGetTracks } from "@backend/models";
 import {
   IConnectMediaTransport,
   IConnectNewSpeakerMedia,
   ICreateMediaRoom,
   IJoinMediaRoom,
-  INewMediaNode,
   INewMediaRoomData,
   INewMediaTrack,
   INewSpeakerMediaResponse,
@@ -37,6 +35,7 @@ const SubjectEventMap = {
   "user.raise-hand": "raise-hand",
   "speaker.allow": "speaker-allow",
   "user.create": "new-user",
+  "media.node.is-online": "new-media-node",
 };
 
 type Subject = keyof typeof SubjectEventMap;
@@ -62,96 +61,12 @@ export const init = async () => {
   nc = await connect({ servers: [NATS] });
 
   handleMessages();
-
-  handleNewMediaNode();
-  //handleNewTrack();
-  handleRecvTracksRequest();
-  handleConnectTransport();
 };
 
-type Events =
-  | "conversation-new"
-  | "recv-tracks-request"
-  | "conversation-end"
-  | "participant-new"
-  | "speaker-allow"
-  | "raise-hand"
-  | "new-track"
-  | "connect-transport"
-  | "new-media-node"
-  | typeof SubjectEventMap[Subject];
+type Events = typeof SubjectEventMap[Subject];
 
 export const on = (event: Events, handler: MessageHandler<any, any>) => {
   eventEmitter.on(event, handler);
-};
-
-const handleConnectTransport = async () => {
-  const sub = nc.subscribe(subjects.conversations.transport.try_connect);
-
-  for await (const msg of sub) {
-    const { transportId, dtlsParameters, direction, roomId, user, mediaKind } =
-      jc.decode(msg.data) as any;
-
-    const data: IConnectMediaTransport = {
-      transportId,
-      dtlsParameters,
-      direction,
-      roomId,
-      user,
-      mediaKind,
-    };
-
-    eventEmitter.emit("connect-transport", data);
-  }
-};
-
-const handleNewTrack = async () => {
-  const sub = nc.subscribe(subjects.conversations.track.try_send);
-
-  for await (const msg of sub) {
-    const {
-      user,
-      transportId,
-      kind,
-      rtpParameters,
-      rtpCapabilities,
-      roomId,
-      appData,
-      direction,
-      mediaPermissionsToken,
-    } = jc.decode(msg.data) as any;
-
-    const data: INewMediaTrack = {
-      user,
-      transportId,
-      kind,
-      rtpParameters,
-      rtpCapabilities,
-      roomId,
-      appData,
-      direction,
-      mediaPermissionsToken,
-    };
-
-    eventEmitter.emit("new-track", data);
-  }
-};
-
-const handleNewMediaNode = async () => {
-  const sub = nc.subscribe(subjects.media.node.isOnline, {
-    queue: "conversations",
-  });
-
-  for await (const msg of sub) {
-    const message = jc.decode(msg.data) as any;
-
-    const newStream: INewMediaNode = {
-      id: message.id,
-      role: message.role,
-    };
-
-    eventEmitter.emit("new-media-node", newStream);
-  }
 };
 
 const _sendMessage = async (user: string, message: Uint8Array) => {
@@ -227,22 +142,4 @@ export const joinMediaRoom = async (node: string, data: IJoinMediaRoom) => {
   const m = jc.encode(data);
 
   nc.publish(`${subjects.media.peer.join}.${node}`, m);
-};
-
-export const handleRecvTracksRequest = async () => {
-  const sub = nc.subscribe(subjects.conversations.track.try_get);
-
-  for await (const msg of sub) {
-    const data = jc.decode(msg.data) as any;
-
-    const event: IRequestGetTracks = {
-      user: data.user,
-      stream: data.stream,
-      rtpCapabilities: data.rtpCapabilities,
-    };
-
-    eventEmitter.emit("recv-tracks-request", event, (d: any) => {
-      msg.respond(jc.encode(d));
-    });
-  }
 };

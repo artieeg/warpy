@@ -42,17 +42,6 @@ const main = async () => {
   MessageService.on("new-user", onNewUser);
 
   MessageService.on("new-media-node", MediaService.handleNewOnlineNode);
-
-  /**
-   * The handlers down below will be removed when JWT auth for media is implemented.
-   * Hence, no refactoring/updates here
-   */
-  MessageService.on("new-track", ConversationService.handleNewTrack);
-  MessageService.on(
-    "connect-transport",
-    ConversationService.handleConnectTransport
-  );
-
   console.log(":>");
 };
 
