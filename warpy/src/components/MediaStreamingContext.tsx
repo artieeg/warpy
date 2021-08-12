@@ -1,6 +1,4 @@
-import {MediaDirection} from '@app/types';
 import {Device} from 'mediasoup-client';
-import {MediaKind} from 'mediasoup-client/lib/types';
 import React, {createContext, useContext, useMemo, useState} from 'react';
 import {MediaAPI} from '@app/media';
 import {useWebSocketContext} from './WebSocketContext';

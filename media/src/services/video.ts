@@ -41,7 +41,12 @@ export const startWorkers = async () => {
       mediaCodecs: config.mediasoup.router.mediaCodecs,
     });
 
-    workers.push({ worker, router });
+    const audioLevelObserver = await router.createAudioLevelObserver({
+      interval: 300,
+      threshold: -10,
+    });
+
+    workers.push({ worker, router, audioLevelObserver });
   }
 
   return workers;
@@ -54,7 +59,7 @@ export const getPipeRouter = () => {
 export const getRouter = () => {
   latestUsedWorkerIdx += 1;
 
-  if (latestUsedWorkerIdx == workers.length - 1) {
+  if (latestUsedWorkerIdx == workers.length) {
     latestUsedWorkerIdx = 0;
   }
 
@@ -62,15 +67,17 @@ export const getRouter = () => {
   return workers[0].router; //TODO remove this
 };
 
+export const getAudioLevelObserver = () => {
+  return workers[0].audioLevelObserver;
+};
+
 export const createTransport = async (
   direction: MediaDirection,
   router: Router,
   peerId: string
 ) => {
-  const {
-    listenIps,
-    initialAvailableOutgoingBitrate,
-  } = config.mediasoup.webRtcTransport;
+  const { listenIps, initialAvailableOutgoingBitrate } =
+    config.mediasoup.webRtcTransport;
 
   const transport = await router.createWebRtcTransport({
     listenIps: listenIps,

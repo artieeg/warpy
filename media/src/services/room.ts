@@ -34,6 +34,7 @@ const createNewRoom = (): IRoom => {
   return {
     router: VideoService.getRouter(),
     peers: {},
+    audioLevelObserver: VideoService.getAudioLevelObserver(),
   };
 };
 
@@ -339,6 +340,12 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
       appData: { ...appData, user, transportId },
     });
     console.log("producing", kind);
+
+    if (kind === "audio") {
+      await room.audioLevelObserver.addProducer({
+        producerId: newProducer.id,
+      });
+    }
 
     const pipeConsumers = await VideoService.createPipeConsumers(
       newProducer.id
