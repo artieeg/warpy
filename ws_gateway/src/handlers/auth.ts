@@ -8,8 +8,6 @@ export const onAuth: Handler = async (data, context, rid) => {
 
   context.user = user;
 
-  console.log("authed new user", user);
-
   const [sub, listen] = MessageService.subscribeForEvents(
     user,
     (message: any) => {

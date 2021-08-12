@@ -2,11 +2,16 @@ import {APIClient} from '@app/api_client';
 import {Participant} from '@app/models';
 import {useParticipantsStore} from '@app/stores';
 import {useEffect} from 'react';
+import {Alert} from 'react-native';
 
 export const useWebSocketHandler = (api: APIClient) => {
   useEffect(() => {
     api.stream.onNewViewer(data => {
       useParticipantsStore.getState().addViewer(data.viewer);
+    });
+
+    api.stream.onActiveSpeaker(data => {
+      Alert.alert('active speaker', data.speaker.id);
     });
 
     api.stream.onNewRaisedHand(data => {

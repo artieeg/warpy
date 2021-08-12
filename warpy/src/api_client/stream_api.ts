@@ -1,5 +1,6 @@
 import {APIModule, EventHandler} from './types';
 import {
+  IActiveSpeakerEvent,
   IJoinStreamResponse,
   INewStreamResponse,
   IRequestViewersResponse,
@@ -21,6 +22,7 @@ export interface IStreamAPI {
   onUserLeft: EventHandler;
   onNewSpeaker: EventHandler;
   onSpeakingAllowed: EventHandler<ISpeakingAllowedEvent>;
+  onActiveSpeaker: EventHandler<IActiveSpeakerEvent>;
 }
 
 export const StreamAPI: APIModule<IStreamAPI> = socket => ({
@@ -39,5 +41,6 @@ export const StreamAPI: APIModule<IStreamAPI> = socket => ({
   onNewRaisedHand: handler => socket.on('raise-hand', handler),
   onUserLeft: handler => socket.on('user-left', handler),
   onNewSpeaker: handler => socket.on('new-speaker', handler),
+  onActiveSpeaker: handler => socket.on('active-speaker', handler),
   onSpeakingAllowed: handler => socket.on('speaking-allowed', handler),
 });

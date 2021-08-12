@@ -18,6 +18,7 @@ import {
   onFeedRequest,
   onWhoAmIRequest,
   onNewUser,
+  onActiveSpeakers,
 } from "@backend/handlers";
 
 const PORT = process.env.PORT;
@@ -40,6 +41,7 @@ const main = async () => {
   MessageService.on("feed-request", onFeedRequest);
   MessageService.on("whoami-request", onWhoAmIRequest);
   MessageService.on("new-user", onNewUser);
+  MessageService.on("active-speakers", onActiveSpeakers);
 
   MessageService.on("new-media-node", MediaService.handleNewOnlineNode);
   console.log(":>");

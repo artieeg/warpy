@@ -186,3 +186,18 @@ export const broadcastNewViewer = async (viewer: IParticipant) => {
     },
   });
 };
+
+export const broadcastActiveSpeaker = async (
+  speaker: IParticipant,
+  ids: string[]
+) => {
+  const { stream } = speaker;
+
+  await MessageService.sendMessageBroadcast(ids, {
+    event: "active-speaker",
+    data: {
+      stream,
+      speaker,
+    },
+  });
+};

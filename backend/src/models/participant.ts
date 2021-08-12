@@ -86,6 +86,10 @@ export class Participant extends BaseEntity {
     return this.save();
   }
 
+  static async getByIds(ids: string[]) {
+    return this.runFindQuery({ user: { id: In(ids) } });
+  }
+
   static async getByStream(stream: string) {
     return this.runFindQuery({ stream });
   }

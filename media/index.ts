@@ -23,7 +23,14 @@ const main = async () => {
   VideoService.getAudioLevelObserver().on(
     "volumes",
     (volumes: AudioLevelObserverVolume[]) => {
-      console.log(volumes);
+      console.log("volumes", volumes);
+      if (volumes.length === 0) {
+        return;
+      }
+
+      const speakers = volumes.map((volume) => volume.producer.appData.user);
+
+      MessageService.sendActiveSpeakers(speakers);
     }
   );
 

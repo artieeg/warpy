@@ -156,3 +156,7 @@ export interface IAllowSpeakerPayload {
   speaker: string;
   user: string;
 }
+
+export interface IActiveSpeakersPayload {
+  speakers: string[];
+}

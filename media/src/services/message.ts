@@ -197,6 +197,10 @@ export const tryConnectToIngress = async (
   return jc.decode(response.data) as IConnectMediaServer;
 };
 
+export const sendActiveSpeakers = (speakers: string[]) => {
+  nc.publish("stream.active-speakers", jc.encode({ speakers }));
+};
+
 export const sendNewProducer = (node: string, producer: INewProducer) => {
   nc.publish(
     `${subjects.media.egress.newProducer}.${node}`,
