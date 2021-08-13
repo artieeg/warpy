@@ -4,7 +4,7 @@ import {consumeRemoteStream} from './consumeRemoteStream';
 import {MediaAPIFactory} from './types';
 import {consumeRemoteStreamsFactory} from './consumeRemoteStreams';
 
-export const MediaAPI: MediaAPIFactory = params => {
+export const MediaClient: MediaAPIFactory = params => {
   const {recvDevice, sendDevice, api, permissionsToken} = params;
 
   const createTransport = createTransportFactory(api, permissionsToken);

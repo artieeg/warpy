@@ -1,6 +1,6 @@
 import {Device} from 'mediasoup-client';
 import React, {createContext, useContext, useMemo, useState} from 'react';
-import {MediaAPI} from '@app/media';
+import {MediaClient} from '@app/media';
 import {useWebSocketContext} from './WebSocketContext';
 
 export const MediaStreamingContext = createContext<any>({});
@@ -18,7 +18,7 @@ export const MediaStreamingProvider = ({children}: any) => {
 
   const media = useMemo(
     () =>
-      MediaAPI({
+      MediaClient({
         recvDevice,
         sendDevice,
         api: ws,
