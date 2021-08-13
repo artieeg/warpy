@@ -37,6 +37,7 @@ const SubjectEventMap = {
   "user.create": "new-user",
   "media.node.is-online": "new-media-node",
   "stream.active-speakers": "active-speakers",
+  "user.delete": "user-delete",
 };
 
 type Subject = keyof typeof SubjectEventMap;

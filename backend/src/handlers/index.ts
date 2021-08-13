@@ -9,3 +9,4 @@ export * from "./onFeedRequest";
 export * from "./onWhoAmIRequest";
 export * from "./onNewUser";
 export * from "./onActiveSpeakers";
+export * from "./onUserDelete";

@@ -160,3 +160,7 @@ export interface IAllowSpeakerPayload {
 export interface IActiveSpeakersPayload {
   speakers: string[];
 }
+
+export interface IUserDelete {
+  user: string;
+}

@@ -1,5 +1,4 @@
 import { User, RefreshToken } from "@backend/models";
-import { BaseUser } from "@warpy/lib";
 import { jwt } from "@backend/utils";
 
 /*
@@ -33,18 +32,6 @@ export const createDevUser = async (data: any) => {
   };
 };
 
-export const getUserById = async (userId: string): Promise<User | null> => {
-  const result = await User.findOne(userId);
-
-  if (!result) {
-    return null;
-  }
-
-  return result;
-};
-
-export const getUsersByIds = async (users: string[]): Promise<BaseUser[]> => {
-  const result = await User.findByIds(users);
-
-  return result.map((item: any) => BaseUser.fromJSON(item.toJSON()));
+export const deleteUser = (user: string) => {
+  return User.delete({ id: user });
 };

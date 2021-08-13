@@ -19,6 +19,7 @@ import {
   onWhoAmIRequest,
   onNewUser,
   onActiveSpeakers,
+  onUserDelete,
 } from "@backend/handlers";
 
 const PORT = process.env.PORT;
@@ -42,6 +43,7 @@ const main = async () => {
   MessageService.on("whoami-request", onWhoAmIRequest);
   MessageService.on("new-user", onNewUser);
   MessageService.on("active-speakers", onActiveSpeakers);
+  MessageService.on("user-delete", onUserDelete);
 
   MessageService.on("new-media-node", MediaService.handleNewOnlineNode);
   console.log(":>");

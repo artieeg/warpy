@@ -32,3 +32,7 @@ export interface INewUserResponse {
   access: string;
   refresh: string;
 }
+
+export interface IUserDeleteResponse {
+  status: "ok" | "error";
+}

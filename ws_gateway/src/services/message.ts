@@ -17,6 +17,7 @@ export const BackendEvents = {
   "raise-hand": "user.raise-hand",
   "new-user": "user.create",
   "new-track": "media.track.send",
+  "delete-user": "user.delete",
 };
 
 type EventAlias = keyof typeof BackendEvents;
