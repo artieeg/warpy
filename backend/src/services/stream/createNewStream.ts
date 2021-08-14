@@ -1,11 +1,8 @@
 import { User } from "@backend/models";
 import { INewStreamResponse, Participant } from "@warpy/lib";
-import {
-  FeedService,
-  MediaService,
-  ParticipantService,
-} from "@backend/services";
+import { FeedService, MediaService } from "@backend/services";
 import { StreamDAL } from "@backend/dal/stream_dal";
+import { ParticipantDAL } from "@backend/dal";
 
 export const createNewStream = async (
   owner: string,
@@ -38,8 +35,8 @@ export const createNewStream = async (
   ];
 
   await Promise.all([
-    ParticipantService.addParticipant(streamer, stream.id, "streamer"),
-    ParticipantService.setCurrentStreamFor(owner, stream.id),
+    ParticipantDAL.createNewParticipant(streamer.id, stream.id, "streamer"),
+    ParticipantDAL.setCurrentStreamFor(owner, stream.id),
   ]);
 
   const media = await MediaService.createRoom(owner, stream.id);

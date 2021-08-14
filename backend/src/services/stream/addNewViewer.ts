@@ -1,6 +1,7 @@
+import { ParticipantDAL } from "@backend/dal";
 import { User } from "@backend/models";
 import { IJoinStreamResponse } from "@warpy/lib";
-import { MediaService, ParticipantService } from "..";
+import { BroadcastService, MediaService } from "..";
 
 export const addNewViewer = async (
   stream: string,
@@ -15,22 +16,22 @@ export const addNewViewer = async (
     throw new Error();
   }
 
-  const participant = await ParticipantService.addParticipant(viewer, stream);
+  const participant = await ParticipantDAL.createNewParticipant(
+    viewer.id,
+    stream
+  );
+
+  await MediaService.assignUserToNode(viewerId, recvNodeId);
 
   await Promise.all([
-    MediaService.assignUserToNode(viewerId, recvNodeId),
-    ParticipantService.setCurrentStreamFor(viewerId, stream),
-  ]);
-
-  await Promise.all([
-    ParticipantService.broadcastNewViewer(participant),
+    BroadcastService.broadcastNewViewer(participant),
     MediaService.joinRoom(recvNodeId, viewerId, stream),
   ]);
 
   const [speakers, raisedHands, count] = await Promise.all([
-    ParticipantService.getSpeakers(stream),
-    ParticipantService.getUsersWithRaisedHands(stream),
-    ParticipantService.getParticipantsCount(stream),
+    ParticipantDAL.getSpeakers(stream),
+    ParticipantDAL.getWithRaisedHands(stream),
+    ParticipantDAL.count(stream),
   ]);
 
   const mediaPermissionsToken = MediaService.createPermissionsToken({
