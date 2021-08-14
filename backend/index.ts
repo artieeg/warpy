@@ -2,7 +2,6 @@ import "reflect-metadata";
 import "module-alias/register";
 
 import {
-  ConversationService,
   DatabaseService,
   MediaService,
   MessageService,
@@ -21,12 +20,6 @@ import {
   onActiveSpeakers,
   onUserDelete,
 } from "@backend/handlers";
-
-const PORT = process.env.PORT;
-
-if (!PORT) {
-  throw new Error("No port specified");
-}
 
 const main = async () => {
   await DatabaseService.connect();
