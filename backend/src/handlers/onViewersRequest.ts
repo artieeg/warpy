@@ -11,9 +11,7 @@ export const onViewersRequest: MessageHandler<
 > = async (data, respond) => {
   const { stream, page } = data;
 
-  const viewers = await StreamService.getViewers(stream, page);
+  const response = await StreamService.getViewers(stream, page);
 
-  respond({
-    viewers,
-  });
+  respond(response);
 };

@@ -12,7 +12,7 @@ const sendActiveSpeakers = async (stream: string, speakers: Participant[]) => {
   });
 };
 
-export const updateActiveSpeakers = async (speakers: []) => {
+export const updateActiveSpeakers = async (speakers: string[]) => {
   const participants = await Participant.getByIds(speakers);
 
   const streamSpeakersMap: Record<string, Participant[]> = {};
