@@ -1,19 +1,7 @@
-import { ParticipantService, UserService } from "@backend/services";
-import { IRaiseHand, MessageHandler, Participant } from "@warpy/lib";
+import { StreamService } from "@backend/services";
+import { IRaiseHand, MessageHandler } from "@warpy/lib";
 
 export const onRaiseHand: MessageHandler<IRaiseHand> = async (data) => {
   const { user } = data;
-  const stream = await ParticipantService.getCurrentStreamFor(user);
-  const userData = await UserService.getUserById(user);
-
-  if (!stream || !userData) {
-    return;
-  }
-
-  await Promise.all([
-    ParticipantService.setRaiseHand(user),
-    ParticipantService.broadcastRaiseHand(
-      Participant.fromUser(userData, "viewer", stream)
-    ),
-  ]);
+  StreamService.setHandRaise(user, true);
 };

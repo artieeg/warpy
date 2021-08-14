@@ -3,6 +3,7 @@ import {
   FeedsCacheService,
   FeedService,
   ParticipantService,
+  StreamService,
 } from "@backend/services";
 import { MessageHandler, IUserDisconnected } from "@warpy/lib";
 
@@ -11,16 +12,5 @@ export const onUserDisconnect: MessageHandler<IUserDisconnected> = async (
 ) => {
   const { user } = data;
 
-  const stream = await ParticipantService.getCurrentStreamFor(user);
-
-  await Promise.all([
-    FeedsCacheService.removeServedStreams(user),
-    FeedService.removeCandidateByOwner(user),
-    ParticipantService.removeParticipant(user),
-    Stream.stopStream(user),
-  ]);
-
-  if (stream) {
-    await ParticipantService.broadcastParticipantLeft(user, stream);
-  }
+  StreamService.removeUser(user);
 };

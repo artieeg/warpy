@@ -35,3 +35,13 @@ export const createDevUser = async (data: any) => {
 export const deleteUser = (user: string) => {
   return User.delete({ id: user });
 };
+
+export const whoAmI = async (user: string) => {
+  const data = await User.findOne(user);
+
+  if (!data) {
+    throw new Error();
+  }
+
+  return data;
+};

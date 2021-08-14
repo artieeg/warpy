@@ -43,6 +43,11 @@ export class Stream extends BaseEntity implements IStream {
     return stream;
   }
 
+  stop() {
+    this.live = false;
+    return this.save();
+  }
+
   static stopStream(owner: string) {
     return this.update({ owner }, { live: false });
   }

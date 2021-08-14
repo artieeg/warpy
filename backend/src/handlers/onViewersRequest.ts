@@ -1,4 +1,4 @@
-import { ParticipantService } from "@backend/services";
+import { ParticipantService, StreamService } from "@backend/services";
 import {
   MessageHandler,
   IRequestViewers,
@@ -11,13 +11,9 @@ export const onViewersRequest: MessageHandler<
 > = async (data, respond) => {
   const { stream, page } = data;
 
-  const viewers = await ParticipantService.getViewersPage(stream, page);
-  console.log(
-    "viewres",
-    viewers.map((i) => i.toJSON())
-  );
+  const viewers = await StreamService.getViewers(stream, page);
 
   respond({
-    viewers: viewers.map((i) => i.toJSON()),
+    viewers,
   });
 };

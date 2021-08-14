@@ -1,20 +1,8 @@
 import { MessageHandler, IStopStream } from "@warpy/lib";
-import { ParticipantService, FeedService } from "@backend/services";
-import { Stream } from "@backend/models";
+import { StreamService } from "@backend/services";
 
 export const onStreamStop: MessageHandler<IStopStream> = async (data) => {
-  const { stream, user } = data;
+  const { user } = data;
 
-  try {
-    await Stream.stopStream(user);
-
-    await Promise.all([
-      ParticipantService.removeAllParticipants(stream),
-      FeedService.removeCandidate(stream),
-    ]);
-  } catch (e) {
-    console.error(e);
-
-    return;
-  }
+  await StreamService.stopStream(user);
 };

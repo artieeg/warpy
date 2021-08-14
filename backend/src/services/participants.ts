@@ -1,13 +1,6 @@
 import { Roles, IParticipant } from "@warpy/lib";
-import redis from "redis";
 import { MessageService } from ".";
 import { User, Participant } from "@backend/models";
-
-const URL = process.env.PARTICIPANTS_CACHE || "redis://127.0.0.1:6375/5";
-
-const client = redis.createClient({
-  url: URL,
-});
 
 export const init = async () => {};
 
@@ -58,20 +51,6 @@ export const removeParticipant = async (user: string) => {
   console.log("found participant", participant);
 
   return participant?.remove();
-};
-
-export const getStreamParticipantsWithRoles = async (streamId: string) => {
-  const streamKey = `stream_${streamId}`;
-
-  return new Promise<Record<string, string>>((resolve, reject) => {
-    client.hgetall(streamKey, (err, data) => {
-      if (err) {
-        return reject(err);
-      }
-
-      resolve(data);
-    });
-  });
 };
 
 export const getStreamParticipants = async (streamId: string) => {

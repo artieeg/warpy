@@ -5,15 +5,9 @@ export const onUserDelete: MessageHandler<IUserDelete, IUserDeleteResponse> =
   async (data, respond) => {
     const { user } = data;
 
-    try {
-      await UserService.deleteUser(user);
+    await UserService.deleteUser(user);
 
-      respond({
-        status: "ok",
-      });
-    } catch (e) {
-      respond({
-        status: "error",
-      });
-    }
+    respond({
+      status: "ok",
+    });
   };
