@@ -1,4 +1,3 @@
-import { IRequestGetTracks } from "@backend/models";
 import { IConnectMediaTransport, INewMediaTrack } from "@warpy/lib";
 import { MediaService, MessageService, ParticipantService } from ".";
 

@@ -3,7 +3,6 @@ export * as DatabaseService from "./db";
 export * as StreamService from "./stream";
 export * as FeedService from "./feed";
 export * as FeedsCacheService from "./feeds_cache";
-export * as CandidateStatsService from "./candidate_stats";
 export * as ConversationService from "./conversation";
 export * as ParticipantService from "./participants";
 export * as MediaService from "./media";

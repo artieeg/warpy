@@ -1,5 +1,6 @@
-import { User, RefreshToken } from "@backend/models";
+import { IUser, RefreshToken } from "@backend/models";
 import { jwt } from "@backend/utils";
+import { UserDAL } from "@backend/dal";
 
 /*
  * Creates a dev account. Should be disabled in production
@@ -7,7 +8,7 @@ import { jwt } from "@backend/utils";
 export const createDevUser = async (data: any) => {
   const { username, last_name, first_name, email } = data;
 
-  const user = User.fromJSON({
+  const user = await UserDAL.createNewUser({
     username,
     last_name,
     first_name,
@@ -15,8 +16,6 @@ export const createDevUser = async (data: any) => {
     sub: "DEV_ACCOUNT",
     avatar: "https://media.giphy.com/media/nDSlfqf0gn5g4/giphy.gif",
   });
-
-  await user.save();
 
   const accessToken = jwt.createToken(user.id, "1d");
   const refreshToken = jwt.createToken(user.id, "1y");
@@ -33,14 +32,14 @@ export const createDevUser = async (data: any) => {
 };
 
 export const deleteUser = (user: string) => {
-  return User.delete({ id: user });
+  return UserDAL.deleteById(user);
 };
 
-export const whoAmI = async (user: string) => {
-  const data = await User.findOne(user);
+export const whoAmI = async (user: string): Promise<IUser | null> => {
+  const data = await UserDAL.findById(user);
 
   if (!data) {
-    throw new Error();
+    return null;
   }
 
   return data;

@@ -1,4 +1,4 @@
-import { Stream } from "@backend/models";
+import { StreamDAL } from "@backend/dal";
 import { FeedsCacheService, FeedService, ParticipantService } from "..";
 
 export const removeUser = async (user: string) => {
@@ -8,7 +8,7 @@ export const removeUser = async (user: string) => {
     FeedsCacheService.removeServedStreams(user),
     FeedService.removeCandidateByOwner(user),
     ParticipantService.removeParticipant(user),
-    Stream.stopStream(user),
+    StreamDAL.stopStream(user),
   ]);
 
   if (stream) {

@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import "module-alias/register";
+import * as dal from "./src/dal";
 
 import {
   DatabaseService,

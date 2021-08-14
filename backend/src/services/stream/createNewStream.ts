@@ -1,10 +1,11 @@
-import { Stream, User } from "@backend/models";
+import { User } from "@backend/models";
 import { INewStreamResponse, Participant } from "@warpy/lib";
 import {
   FeedService,
   MediaService,
   ParticipantService,
 } from "@backend/services";
+import { StreamDAL } from "@backend/dal/stream_dal";
 
 export const createNewStream = async (
   owner: string,
@@ -23,14 +24,12 @@ export const createNewStream = async (
     throw new Error();
   }
 
-  const stream = Stream.fromJSON({
+  const stream = await StreamDAL.createNewStream({
     owner,
     title,
     hub,
     live: true,
   });
-
-  await stream.save();
 
   await FeedService.addNewCandidate(stream);
 

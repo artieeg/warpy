@@ -1,17 +1,15 @@
-import { Stream } from "@backend/models";
+import { StreamDAL } from "@backend/dal";
 import { ParticipantService, FeedService } from "..";
 
 export const stopStream = async (user: string) => {
-  const stream = await Stream.findOne({ owner: user });
+  const stream = await StreamDAL.stopStream(user);
 
   if (!stream) {
     throw new Error();
   }
 
-  await stream.stop();
-
   await Promise.all([
-    ParticipantService.removeAllParticipants(stream.id),
-    FeedService.removeCandidate(stream.id),
+    ParticipantService.removeAllParticipants(stream),
+    FeedService.removeCandidate(stream),
   ]);
 };

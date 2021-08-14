@@ -1,9 +1,5 @@
 import { Candidate, IStream } from "@backend/models";
-import {
-  FeedsCacheService,
-  ParticipantService,
-  CandidateStatsService,
-} from ".";
+import { FeedsCacheService, ParticipantService } from ".";
 import { ICandidate } from "@warpy/lib";
 
 export const getFeed = async (
@@ -41,12 +37,12 @@ export const addNewCandidate = async (data: IStream) => {
 
   await candidate.save();
 
-  await CandidateStatsService.createStats(candidate.id);
+  //await CandidateStatsService.createStats(candidate.id);
 };
 
 export const removeCandidate = async (id: string) => {
   await Candidate.delete(id);
-  await CandidateStatsService.deleteStats(id);
+  //await CandidateStatsService.deleteStats(id);
 };
 
 export const removeCandidateByOwner = async (user: string) => {

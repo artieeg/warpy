@@ -8,6 +8,7 @@ import {
 import { createConnection } from "typeorm";
 
 export const connect = async () => {
+  /*
   await createConnection({
     type: "postgres",
     host: process.env.POSTGRES,
@@ -18,4 +19,5 @@ export const connect = async () => {
     entities: [User, Stream, Candidate, Participant, RefreshToken],
     synchronize: true,
   });
+  */
 };
