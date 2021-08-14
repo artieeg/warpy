@@ -2,11 +2,13 @@ import { ParticipantDAL } from "@backend/dal";
 import { IParticipant } from "@warpy/lib";
 import { BroadcastService } from "..";
 
-const sendActiveSpeakers = async (stream: string, speakers: IParticipant[]) => {
+const sendActiveSpeakers = async (speakers: IParticipant[]) => {
   speakers.forEach((speaker) => {
-    BroadcastService.broadcastActiveSpeakers(speaker, stream);
+    BroadcastService.broadcastActiveSpeakers(speaker);
   });
 };
+
+//TODO: too ugly
 
 export const updateActiveSpeakers = async (speakers: string[]) => {
   const participants = await ParticipantDAL.getByIds(speakers);
@@ -26,6 +28,6 @@ export const updateActiveSpeakers = async (speakers: string[]) => {
   });
 
   for (const stream in streamSpeakersMap) {
-    sendActiveSpeakers(stream, streamSpeakersMap[stream]);
+    sendActiveSpeakers(streamSpeakersMap[stream]);
   }
 };

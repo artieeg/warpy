@@ -1,14 +1,77 @@
+import { ParticipantDAL } from "@backend/dal";
 import { IParticipant } from "@warpy/lib";
+import { MessageService } from ".";
 
-export const broadcastNewViewer = (viewer: IParticipant) => {};
+const getParticipantIds = (participants: IParticipant[]) => {
+  return participants.map((p) => p.id);
+};
 
-export const broadcastParticipantLeft = (user: string, stream: string) => {};
+export const broadcastNewSpeaker = async (speaker: IParticipant) => {
+  const { stream } = speaker;
 
-export const broadcastRaiseHand = (viewer: IParticipant) => {};
+  const users = await ParticipantDAL.getParticipantsByStream(stream);
 
-export const broadcastNewSpeaker = (speaker: IParticipant) => {};
+  await MessageService.sendMessageBroadcast(getParticipantIds(users), {
+    event: "new-speaker",
+    data: {
+      speaker,
+      stream,
+    },
+  });
+};
 
-export const broadcastActiveSpeakers = (
-  speaker: IParticipant,
+export const broadcastRaiseHand = async (viewer: IParticipant) => {
+  const { stream } = viewer;
+
+  const users = await ParticipantDAL.getParticipantsByStream(stream);
+
+  await MessageService.sendMessageBroadcast(getParticipantIds(users), {
+    event: "raise-hand",
+    data: {
+      viewer,
+      stream,
+    },
+  });
+};
+
+export const broadcastParticipantLeft = async (
+  user: string,
   stream: string
-) => {};
+) => {
+  const users = await ParticipantDAL.getParticipantsByStream(stream);
+
+  await MessageService.sendMessageBroadcast(getParticipantIds(users), {
+    event: "user-left",
+    data: {
+      user,
+      stream,
+    },
+  });
+};
+
+export const broadcastNewViewer = async (viewer: IParticipant) => {
+  const { stream } = viewer;
+  console.log("viewerw", viewer);
+  const users = await ParticipantDAL.getParticipantsByStream(stream);
+  console.log("other users", users);
+
+  await MessageService.sendMessageBroadcast(getParticipantIds(users), {
+    event: "new-viewer",
+    data: {
+      stream,
+      viewer,
+    },
+  });
+};
+
+export const broadcastActiveSpeakers = async (speaker: IParticipant) => {
+  const users = await ParticipantDAL.getParticipantsByStream(speaker.stream);
+
+  await MessageService.sendMessageBroadcast(getParticipantIds(users), {
+    event: "active-speaker",
+    data: {
+      stream: speaker.stream,
+      speaker,
+    },
+  });
+};

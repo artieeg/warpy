@@ -50,6 +50,9 @@ export const ParticipantDAL = {
         isRaisingHand: false,
         role: "speaker",
       },
+      include: {
+        user: true,
+      },
     });
 
     return toParticipantDTO(speaker);
@@ -177,6 +180,9 @@ export const ParticipantDAL = {
       where: { user_id: user },
       data: {
         isRaisingHand: flag,
+      },
+      include: {
+        user: true,
       },
     });
 
