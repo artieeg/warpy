@@ -1,5 +1,5 @@
-import { StreamDAL } from "@backend/dal";
-import { ParticipantService, FeedService } from "..";
+import { ParticipantDAL, StreamDAL } from "@backend/dal";
+import { FeedService } from "..";
 
 export const stopStream = async (user: string) => {
   const stream = await StreamDAL.stopStream(user);
@@ -9,7 +9,7 @@ export const stopStream = async (user: string) => {
   }
 
   await Promise.all([
-    ParticipantService.removeAllParticipants(stream),
+    ParticipantDAL.deleteParticipantsByStream(stream),
     FeedService.removeCandidate(stream),
   ]);
 };

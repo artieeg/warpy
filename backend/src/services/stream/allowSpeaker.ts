@@ -1,32 +1,26 @@
-import { User } from "@backend/models";
-import { Participant } from "@warpy/lib";
-import { ParticipantService, MediaService, MessageService } from "..";
+import { ParticipantDAL } from "@backend/dal";
+import { BroadcastService, MediaService, MessageService } from "..";
 
 export const allowSpeaker = async (speaker: string, host: string) => {
-  const stream = await ParticipantService.getCurrentStreamFor(host);
+  const stream = await ParticipantDAL.getCurrentStreamFor(host);
 
   if (!stream) {
     return;
   }
 
-  const role = await ParticipantService.getRoleFor(host);
+  const role = await ParticipantDAL.getRoleFor(host, stream);
 
   if (role !== "streamer") {
     throw new Error();
   }
 
-  const speakerData = await User.findOne(speaker);
+  const speakerData = await ParticipantDAL.makeSpeaker(speaker);
 
   if (!speakerData) {
     throw new Error();
   }
 
   const media = await MediaService.connectSpeakerMedia(speaker, stream);
-
-  await Promise.all([
-    ParticipantService.unsetRaiseHand(speaker),
-    ParticipantService.setParticipantRole(stream, speaker, "speaker"),
-  ]);
 
   const [recvNodeId, sendNodeId] = await Promise.all([
     MediaService.getConsumerNodeId(),
@@ -51,7 +45,5 @@ export const allowSpeaker = async (speaker: string, host: string) => {
     },
   });
 
-  ParticipantService.broadcastNewSpeaker(
-    Participant.fromUser(speakerData, "speaker", stream)
-  );
+  BroadcastService.broadcastNewSpeaker(speakerData);
 };

@@ -3,13 +3,29 @@ import { prisma } from "./client";
 
 type CreateNewStream = Omit<Stream, "id">;
 
+export interface IStream {
+  id: string;
+  owner: string;
+  hub: string;
+  title: string;
+}
+
+export const toStreamDTO = (data: any): IStream => {
+  return {
+    id: data.id,
+    owner: data.owner,
+    hub: data.hub,
+    title: data.title,
+  };
+};
+
 export const StreamDAL = {
-  createNewStream: async (data: CreateNewStream): Promise<Stream> => {
+  createNewStream: async (data: CreateNewStream): Promise<IStream> => {
     const stream = await prisma.stream.create({
       data,
     });
 
-    return stream;
+    return toStreamDTO(stream);
   },
 
   /**

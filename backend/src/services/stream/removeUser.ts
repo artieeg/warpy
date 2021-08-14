@@ -1,17 +1,19 @@
-import { StreamDAL } from "@backend/dal";
-import { FeedsCacheService, FeedService, ParticipantService } from "..";
+import { ParticipantDAL, StreamDAL } from "@backend/dal";
+import { BroadcastService, FeedsCacheService, FeedService } from "..";
 
 export const removeUser = async (user: string) => {
-  const stream = await ParticipantService.getCurrentStreamFor(user);
+  const stream = await ParticipantDAL.getCurrentStreamFor(user);
 
-  await Promise.all([
-    FeedsCacheService.removeServedStreams(user),
-    FeedService.removeCandidateByOwner(user),
-    ParticipantService.removeParticipant(user),
-    StreamDAL.stopStream(user),
-  ]);
+  try {
+    await Promise.all([
+      FeedsCacheService.removeServedStreams(user),
+      FeedService.removeCandidateByOwner(user),
+      ParticipantDAL.deleteParticipant(user),
+      StreamDAL.stopStream(user),
+    ]);
+  } catch (e) {}
 
   if (stream) {
-    await ParticipantService.broadcastParticipantLeft(user, stream);
+    BroadcastService.broadcastParticipantLeft(user, stream);
   }
 };

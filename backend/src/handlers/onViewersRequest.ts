@@ -1,4 +1,4 @@
-import { ParticipantService, StreamService } from "@backend/services";
+import { StreamService } from "@backend/services";
 import {
   MessageHandler,
   IRequestViewers,

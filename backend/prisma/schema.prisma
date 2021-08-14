@@ -18,6 +18,9 @@ model User {
   sub         String
   created_at  DateTime      @default(now())
   participant Participant?
+
+
+  @@map(name: "Users")
 }
 
 model Participant {
@@ -44,7 +47,7 @@ model Stream {
 model Candidate {
   id    String @id @default(cuid())
   title String
-  owner String
+  owner String @unique
   hub   String
 }
 

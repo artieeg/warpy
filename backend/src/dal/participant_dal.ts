@@ -32,7 +32,42 @@ export const ParticipantDAL = {
     return toParticipantDTO(data);
   },
 
-  setParticipantRole: async (user: string, role: Roles) => {
+  getByIds: async (ids: string[]): Promise<IParticipant[]> => {
+    const data = await prisma.participant.findMany({
+      where: { user_id: { in: ids } },
+      include: {
+        user: true,
+      },
+    });
+
+    return data.map(toParticipantDTO);
+  },
+
+  makeSpeaker: async (user: string): Promise<IParticipant> => {
+    const speaker = await prisma.participant.update({
+      where: { user_id: user },
+      data: {
+        isRaisingHand: false,
+        role: "speaker",
+      },
+    });
+
+    return toParticipantDTO(speaker);
+  },
+
+  getById: async (user: string): Promise<IParticipant> => {
+    const participant = await prisma.participant.findUnique({
+      where: { user_id: user },
+      include: { user: true },
+    });
+
+    return toParticipantDTO(participant);
+  },
+
+  setParticipantRole: async (
+    user: string,
+    role: Roles
+  ): Promise<IParticipant> => {
     const participant = await prisma.participant.update({
       where: { id: user },
       data: {
@@ -43,15 +78,17 @@ export const ParticipantDAL = {
     return toParticipantDTO(participant);
   },
 
-  deleteParticipant: async (id: string) => {
+  deleteParticipant: async (id: string): Promise<IParticipant> => {
     const result = await prisma.participant.delete({
-      where: { id },
+      where: { user_id: id },
     });
 
     return toParticipantDTO(result);
   },
 
-  getParticipantsByStream: async (streamId: string) => {
+  getParticipantsByStream: async (
+    streamId: string
+  ): Promise<IParticipant[]> => {
     const participants = await prisma.participant.findMany({
       where: { stream: streamId },
       include: { user: true },
@@ -66,7 +103,7 @@ export const ParticipantDAL = {
     });
   },
 
-  getCurrentStreamFor: async (user: string) => {
+  getCurrentStreamFor: async (user: string): Promise<string | null> => {
     const result = await prisma.participant.findUnique({
       where: { user_id: user },
       select: { stream: true },
@@ -76,17 +113,15 @@ export const ParticipantDAL = {
   },
 
   setCurrentStreamFor: async (user: string, stream: string) => {
-    const result = await prisma.participant.update({
+    await prisma.participant.update({
       where: { user_id: user },
       data: {
         stream,
       },
     });
-
-    return result;
   },
 
-  getRoleFor: async (user: string, stream: string) => {
+  getRoleFor: async (user: string, stream: string): Promise<string | null> => {
     const result = await prisma.participant.findUnique({
       where: { stream_participant_index: { user_id: user, stream: stream } },
       select: { role: true },
@@ -95,7 +130,7 @@ export const ParticipantDAL = {
     return result?.role || null;
   },
 
-  getSpeakers: async (stream: string) => {
+  getSpeakers: async (stream: string): Promise<IParticipant[]> => {
     const participants = await prisma.participant.findMany({
       where: { stream },
       include: {
@@ -106,7 +141,10 @@ export const ParticipantDAL = {
     return participants.map(toParticipantDTO);
   },
 
-  getViewersPage: async (stream: string, page: number) => {
+  getViewersPage: async (
+    stream: string,
+    page: number
+  ): Promise<IParticipant[]> => {
     const participants = await prisma.participant.findMany({
       include: { user: true },
       where: { stream, role: "viewer" },
@@ -117,13 +155,13 @@ export const ParticipantDAL = {
     return participants.map(toParticipantDTO);
   },
 
-  count: async (stream: string) => {
+  count: async (stream: string): Promise<number> => {
     return prisma.participant.count({
       where: { stream },
     });
   },
 
-  getWithRaisedHands: async (stream: string) => {
+  getWithRaisedHands: async (stream: string): Promise<IParticipant[]> => {
     const participants = await prisma.participant.findMany({
       where: { stream, isRaisingHand: true, role: "viewer" },
       include: {
@@ -134,7 +172,7 @@ export const ParticipantDAL = {
     return participants.map(toParticipantDTO);
   },
 
-  setRaiseHand: async (user: string, flag: boolean) => {
+  setRaiseHand: async (user: string, flag: boolean): Promise<IParticipant> => {
     const participant = await prisma.participant.update({
       where: { user_id: user },
       data: {
@@ -142,6 +180,6 @@ export const ParticipantDAL = {
       },
     });
 
-    return participant;
+    return toParticipantDTO(participant);
   },
 };

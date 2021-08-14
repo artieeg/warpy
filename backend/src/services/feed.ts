@@ -1,19 +1,17 @@
-import { Candidate, IStream } from "@backend/models";
-import { FeedsCacheService, ParticipantService } from ".";
-import { ICandidate } from "@warpy/lib";
+import { FeedsCacheService } from ".";
+import { ICandidate, INewStream } from "@warpy/lib";
+import { CandidateDAL, IStream, ParticipantDAL } from "@backend/dal";
 
 export const getFeed = async (
   user: string,
   hub?: string
 ): Promise<ICandidate[]> => {
-  const candidates = await Candidate.find();
-
-  console.log("candidates", candidates);
+  const candidates = await CandidateDAL.getAll();
 
   const feed = Promise.all(
     candidates.map(async (candidate) => ({
       ...candidate,
-      participants: await ParticipantService.getParticipantsCount(candidate.id),
+      participants: await ParticipantDAL.count(candidate.id),
     }))
   );
 
@@ -28,23 +26,18 @@ export const getFeed = async (
 export const addNewCandidate = async (data: IStream) => {
   const { id, title, hub, owner: ownerId } = data;
 
-  const candidate = Candidate.fromJSON({
+  await CandidateDAL.create({
     id,
     title,
     hub,
     owner: ownerId,
   });
-
-  await candidate.save();
-
-  //await CandidateStatsService.createStats(candidate.id);
 };
 
 export const removeCandidate = async (id: string) => {
-  await Candidate.delete(id);
-  //await CandidateStatsService.deleteStats(id);
+  await CandidateDAL.deleteById(id);
 };
 
 export const removeCandidateByOwner = async (user: string) => {
-  await Candidate.deleteByOwner(user);
+  await CandidateDAL.deleteByOwner(user);
 };

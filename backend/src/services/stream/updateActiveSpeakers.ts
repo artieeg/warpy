@@ -1,23 +1,20 @@
-import { Participant } from "@backend/models";
-import { ParticipantService } from "..";
+import { ParticipantDAL } from "@backend/dal";
+import { IParticipant } from "@warpy/lib";
+import { BroadcastService } from "..";
 
-const sendActiveSpeakers = async (stream: string, speakers: Participant[]) => {
-  const participants = await Participant.getByStream(stream);
-  console.log("stream", stream);
-
-  const ids = participants.map((p) => p.user.id);
-
+const sendActiveSpeakers = async (stream: string, speakers: IParticipant[]) => {
   speakers.forEach((speaker) => {
-    ParticipantService.broadcastActiveSpeaker(speaker.toJSON(), ids);
+    BroadcastService.broadcastActiveSpeakers(speaker, stream);
   });
 };
 
 export const updateActiveSpeakers = async (speakers: string[]) => {
-  const participants = await Participant.getByIds(speakers);
+  const participants = await ParticipantDAL.getByIds(speakers);
 
-  const streamSpeakersMap: Record<string, Participant[]> = {};
+  //Split active speakers by stream id; stream-id -> [array of active speakers]
+  const streamSpeakersMap: Record<string, IParticipant[]> = {};
 
-  participants.forEach((participant: Participant) => {
+  participants.forEach((participant: IParticipant) => {
     if (streamSpeakersMap[participant.stream]) {
       streamSpeakersMap[participant.stream] = [
         ...streamSpeakersMap[participant.stream],

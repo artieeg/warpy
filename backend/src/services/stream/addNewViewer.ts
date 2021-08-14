@@ -1,5 +1,4 @@
-import { ParticipantDAL } from "@backend/dal";
-import { User } from "@backend/models";
+import { ParticipantDAL, UserDAL } from "@backend/dal";
 import { IJoinStreamResponse } from "@warpy/lib";
 import { BroadcastService, MediaService } from "..";
 
@@ -8,7 +7,7 @@ export const addNewViewer = async (
   viewerId: string
 ): Promise<IJoinStreamResponse> => {
   const [viewer, recvNodeId] = await Promise.all([
-    User.findOne(viewerId),
+    UserDAL.findById(viewerId),
     MediaService.getConsumerNodeId(),
   ]);
 
@@ -43,8 +42,8 @@ export const addNewViewer = async (
   });
 
   return {
-    speakers: speakers.map((i) => i.toJSON()),
-    raisedHands: raisedHands.map((i) => i.toJSON()),
+    speakers: speakers,
+    raisedHands: raisedHands,
     count,
     mediaPermissionsToken,
   };

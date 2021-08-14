@@ -1,12 +1,7 @@
 import "reflect-metadata";
 import "module-alias/register";
-import * as dal from "./src/dal";
 
-import {
-  DatabaseService,
-  MediaService,
-  MessageService,
-} from "@backend/services";
+import { MediaService, MessageService } from "@backend/services";
 import {
   onNewStream,
   onJoinStream,
@@ -23,7 +18,6 @@ import {
 } from "@backend/handlers";
 
 const main = async () => {
-  await DatabaseService.connect();
   await MessageService.init();
 
   MessageService.on("user-joins-stream", onJoinStream);

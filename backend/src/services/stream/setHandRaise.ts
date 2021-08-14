@@ -1,19 +1,16 @@
-import { Participant } from "@warpy/lib";
-import { ParticipantService } from "..";
-import { User } from "@backend/models";
+import { ParticipantDAL } from "@backend/dal";
+import { BroadcastService } from "..";
 
 export const setHandRaise = async (user: string, flag: boolean) => {
-  const stream = await ParticipantService.getCurrentStreamFor(user);
-  const userData = await User.findOne(user);
+  const stream = await ParticipantDAL.getCurrentStreamFor(user);
+  const participant = await ParticipantDAL.getById(user);
 
-  if (!stream || !userData) {
+  if (!stream || !participant) {
     throw new Error();
   }
 
   await Promise.all([
-    ParticipantService.setRaiseHand(user),
-    ParticipantService.broadcastRaiseHand(
-      Participant.fromUser(userData, "viewer", stream)
-    ),
+    ParticipantDAL.setRaiseHand(user, flag),
+    BroadcastService.broadcastRaiseHand(participant),
   ]);
 };
