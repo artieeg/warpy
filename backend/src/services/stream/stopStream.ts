@@ -2,14 +2,16 @@ import { ParticipantDAL, StreamDAL } from "@backend/dal";
 import { FeedService } from "..";
 
 export const stopStream = async (user: string) => {
-  const stream = await StreamDAL.stopStream(user);
+  const stream = await StreamDAL.findByOwnerIdLive(user);
 
   if (!stream) {
     throw new Error();
   }
 
+  await StreamDAL.stopStream(stream.id);
+
   await Promise.all([
-    ParticipantDAL.deleteParticipantsByStream(stream),
-    FeedService.removeCandidate(stream),
+    ParticipantDAL.deleteParticipantsByStream(stream.id),
+    FeedService.removeCandidate(stream.id),
   ]);
 };

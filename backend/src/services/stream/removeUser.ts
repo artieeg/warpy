@@ -5,15 +5,17 @@ export const removeUser = async (user: string) => {
   const stream = await ParticipantDAL.getCurrentStreamFor(user);
 
   try {
+    if (stream) {
+      //Stops the stream if the user is host
+      StreamDAL.stopStream(stream);
+
+      BroadcastService.broadcastParticipantLeft(user, stream);
+    }
+
     await Promise.all([
       FeedsCacheService.removeServedStreams(user),
       FeedService.removeCandidateByOwner(user),
       ParticipantDAL.deleteParticipant(user),
-      StreamDAL.stopStream(user),
     ]);
   } catch (e) {}
-
-  if (stream) {
-    BroadcastService.broadcastParticipantLeft(user, stream);
-  }
 };

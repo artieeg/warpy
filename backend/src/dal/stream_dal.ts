@@ -28,12 +28,23 @@ export const StreamDAL = {
     return toStreamDTO(stream);
   },
 
+  findByOwnerIdLive: async (owner: string): Promise<IStream | null> => {
+    const stream = await prisma.stream.findFirst({
+      where: {
+        owner,
+        live: true,
+      },
+    });
+
+    return stream ? toStreamDTO(stream) : null;
+  },
+
   /**
    * Stops the stream, throws an error if no stream was updated
    */
-  stopStream: async (owner: string): Promise<void> => {
+  stopStream: async (id: string): Promise<void> => {
     const result = await prisma.stream.updateMany({
-      where: { owner, live: true },
+      where: { id, live: true },
       data: { live: false },
     });
 
