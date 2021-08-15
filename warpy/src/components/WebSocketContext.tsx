@@ -1,5 +1,5 @@
 import React, {createContext, useContext} from 'react';
-import {APIClient, WebSocketConn} from '@app/api_client';
+import {APIClient, WebSocketConn} from '@warpy/api';
 import {useWebSocketHandler} from '@app/hooks';
 
 const socket = new WebSocketConn();

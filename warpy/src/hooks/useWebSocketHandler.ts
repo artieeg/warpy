@@ -1,4 +1,4 @@
-import {APIClient} from '@app/api_client';
+import {APIClient} from '@warpy/api';
 import {Participant} from '@app/models';
 import {useParticipantsStore} from '@app/stores';
 import {useEffect} from 'react';

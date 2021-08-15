@@ -2,6 +2,7 @@
   "private": true,
   "workspaces": [
     "lib",
+    "api_client",
     "backend",
     "warpy",
     "media",
