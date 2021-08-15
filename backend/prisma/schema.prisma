@@ -40,8 +40,6 @@ model Stream {
   owner String
   hub   String
   live  Boolean
-
-  @@unique([owner, live], name: "live_index")
 }
 
 model Candidate {

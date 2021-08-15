@@ -29,15 +29,16 @@ export const StreamDAL = {
   },
 
   /**
-   * Stops the stream, returns stopped stream id
+   * Stops the stream, throws an error if no stream was updated
    */
-  stopStream: async (owner: string): Promise<string> => {
-    const { id } = await prisma.stream.update({
-      where: { live_index: { owner, live: true } },
+  stopStream: async (owner: string): Promise<void> => {
+    const result = await prisma.stream.updateMany({
+      where: { owner, live: true },
       data: { live: false },
-      select: { id: true },
     });
 
-    return id;
+    if (result.count === 0) {
+      throw new Error();
+    }
   },
 };
