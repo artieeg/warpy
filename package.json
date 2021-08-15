@@ -3,6 +3,7 @@
   "workspaces": [
     "lib",
     "api_client",
+    "warpykit-sdk-client",
     "backend",
     "warpy",
     "media",

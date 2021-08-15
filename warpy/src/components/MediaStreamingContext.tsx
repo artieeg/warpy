@@ -1,6 +1,6 @@
 import {Device} from 'mediasoup-client';
 import React, {createContext, useContext, useMemo, useState} from 'react';
-import {MediaClient} from '@app/media';
+import {MediaClient} from '@warpykit-sdk/client';
 import {useWebSocketContext} from './WebSocketContext';
 
 export const MediaStreamingContext = createContext<any>({});
