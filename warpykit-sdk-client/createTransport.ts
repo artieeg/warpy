@@ -1,23 +1,24 @@
-import {CreateTransport} from './types';
-import {APIClient} from '@app/api_client';
+import { CreateTransport } from "./types";
+import { APIClient } from "@warpy/api";
 
 export const createTransportFactory =
   (api: APIClient, permissionsToken: string | null): CreateTransport =>
-  async params => {
-    const {roomId, device, direction, options, isProducer, mediaKind} = params;
+  async (params) => {
+    const { roomId, device, direction, options, isProducer, mediaKind } =
+      params;
 
     const transportOptions =
-      direction === 'recv'
+      direction === "recv"
         ? options.recvTransportOptions
         : options.sendTransportOptions;
 
     const transport =
-      direction === 'recv'
+      direction === "recv"
         ? device.createRecvTransport(transportOptions)
         : device.createSendTransport(transportOptions);
 
-    transport.on('connect', ({dtlsParameters}, callback, _errback) => {
-      if (direction === 'send') {
+    transport.on("connect", ({ dtlsParameters }, callback, _errback) => {
+      if (direction === "send") {
         api.media.onceSendTransportConnected(() => {
           callback();
         });
@@ -34,19 +35,19 @@ export const createTransportFactory =
           mediaKind,
           mediaPermissionsToken: permissionsToken,
         },
-        isProducer,
+        isProducer
       );
     });
 
-    if (direction === 'send') {
-      transport.on('produce', (produceParams, callback, errback) => {
-        const {kind, rtpParameters, appData} = produceParams;
+    if (direction === "send") {
+      transport.on("produce", (produceParams, callback, errback) => {
+        const { kind, rtpParameters, appData } = produceParams;
 
-        api.observer.once('@media/send-track-created', (data: any) => {
+        api.observer.once("@media/send-track-created", (data: any) => {
           const id = data.id;
 
           if (id !== null) {
-            callback({id});
+            callback({ id });
           } else {
             errback();
           }
@@ -66,7 +67,7 @@ export const createTransportFactory =
       });
     }
 
-    transport.on('connectionstatechange', _state => {
+    transport.on("connectionstatechange", (_state) => {
       //TODO
     });
 

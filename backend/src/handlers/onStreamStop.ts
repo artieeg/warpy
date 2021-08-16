@@ -4,5 +4,7 @@ import { StreamService } from "@backend/services";
 export const onStreamStop: MessageHandler<IStopStream> = async (data) => {
   const { user } = data;
 
-  await StreamService.stopStream(user);
+  try {
+    await StreamService.stopStream(user);
+  } catch (e) {}
 };

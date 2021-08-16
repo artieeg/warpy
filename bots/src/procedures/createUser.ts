@@ -5,6 +5,7 @@ import {
   animals,
   uniqueNamesGenerator,
 } from "unique-names-generator";
+import { createDevice } from "../media";
 
 export const createUser = async (): Promise<UserRecord> => {
   const api = await createAPIClient("ws://127.0.0.1:9999/ws");
@@ -28,5 +29,5 @@ export const createUser = async (): Promise<UserRecord> => {
     throw new Error("User is null");
   }
 
-  return { user, api };
+  return { user, api, recvDevice: createDevice(), sendDevice: createDevice() };
 };

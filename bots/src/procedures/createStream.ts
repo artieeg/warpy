@@ -1,3 +1,5 @@
+import { MediaClient } from "../../../warpykit-sdk-client";
+import { getMediaStream } from "../media";
 import { UserRecord } from "../types";
 
 export const createStream = async (record: UserRecord) => {
@@ -8,7 +10,25 @@ export const createStream = async (record: UserRecord) => {
 
   const response = await api.stream.create(title, hub);
 
-  console.log("created stream id", response.stream);
+  const { stream, media, mediaPermissionsToken } = response;
+  const { routerRtpCapabilities } = media;
+
+  record.media = MediaClient({
+    api,
+    recvDevice: record.recvDevice,
+    sendDevice: record.sendDevice,
+    permissionsToken: mediaPermissionsToken,
+  } as any);
+
+  await record.sendDevice.load({
+    routerRtpCapabilities,
+  });
+  const localMediaStream = await getMediaStream();
+
+  await Promise.all([
+    record.media.sendMediaStream(localMediaStream, stream, media, "video"),
+    record.media.sendMediaStream(localMediaStream, stream, media, "audio"),
+  ]);
 
   record.stream = response.stream;
   record.role = "streamer";

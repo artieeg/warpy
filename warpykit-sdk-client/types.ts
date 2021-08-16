@@ -3,10 +3,11 @@ import { Device } from "mediasoup-client";
 import { Transport, TransportOptions } from "mediasoup-client/lib/Transport";
 import { Consumer, ConsumerOptions } from "mediasoup-client/lib/types";
 import { MediaStream } from "react-native-webrtc";
+import { AiortcMediaStream } from "mediasoup-client-aiortc";
 import { APIClient } from "@warpy/api";
 
 //TODO: create a union type over MediaStream and AiortcMediaStream
-export type MediaAPIStream = MediaStream;
+export type MediaAPIStream = MediaStream | AiortcMediaStream;
 
 export type SendMediaStreamOptions = {
   sendTransportOptions: {

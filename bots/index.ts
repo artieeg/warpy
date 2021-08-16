@@ -1,29 +1,22 @@
-import { IBaseUser } from "@warpy/lib";
-import { APIClient } from "@warpy/api";
 import { createStream, createUser, stopStream } from "./src/procedures";
-
-type UserRecord = {
-  user: IBaseUser;
-  api: APIClient;
-};
-
-let users: UserRecord[] = [];
-const N = 100;
+import { initMediasoupWorker } from "./src/media";
+import * as path from "path";
 
 const main = async () => {
-  const clientRecord = await createUser();
+  await initMediasoupWorker();
 
-  console.log("created record", clientRecord);
+  setTimeout(async () => {
+    const clientRecord = await createUser();
+    await createStream(clientRecord);
 
-  await createStream(clientRecord);
+    console.log("sending media");
+    setTimeout(async () => {
+      await stopStream(clientRecord);
+      await clientRecord.api.user.delete();
 
-  console.log("record after creating new stream", clientRecord);
-
-  await stopStream(clientRecord);
-  console.log("record after stopping a stream", clientRecord);
-
-  await clientRecord.api.user.delete();
-  clientRecord.api.close();
+      clientRecord.api.close();
+    }, 60000);
+  }, 1000);
 };
 
 main();

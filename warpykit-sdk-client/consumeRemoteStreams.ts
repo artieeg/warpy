@@ -1,16 +1,16 @@
-import {Device} from 'mediasoup-client';
-import {Consumer} from 'mediasoup-client/lib/types';
-import {ConsumeRemoteStreams} from './types';
-import {APIClient} from '@app/api_client';
+import { Device } from "mediasoup-client";
+import { Consumer } from "mediasoup-client/lib/types";
+import { ConsumeRemoteStreams } from "./types";
+import { APIClient } from "@warpy/api";
 
 export const consumeRemoteStreamsFactory =
   (
     api: APIClient,
     recvDevice: Device,
-    permissionsToken: string | null,
+    permissionsToken: string | null
   ): ConsumeRemoteStreams =>
   async (user, stream, transport) => {
-    const {consumerParams} = await api.media.getRecvTracks({
+    const { consumerParams } = await api.media.getRecvTracks({
       rtpCapabilities: recvDevice.rtpCapabilities,
       stream,
       mediaPermissionsToken: permissionsToken,
@@ -23,9 +23,9 @@ export const consumeRemoteStreamsFactory =
           appData: {
             user,
             producerId: params.consumerParameters.producerId,
-            mediaTag: 'media-' + Math.random(),
+            mediaTag: "media-" + Math.random(),
           },
-        }),
+        })
     );
 
     const consumers = await Promise.all(consumersPromises);

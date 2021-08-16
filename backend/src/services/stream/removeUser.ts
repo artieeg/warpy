@@ -7,7 +7,9 @@ export const removeUser = async (user: string) => {
   try {
     if (stream) {
       //Stops the stream if the user is host
-      StreamDAL.stopStream(stream);
+      try {
+        await StreamDAL.stopStream(stream);
+      } catch {}
 
       BroadcastService.broadcastParticipantLeft(user, stream);
     }
