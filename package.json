@@ -3,6 +3,7 @@
   "workspaces": [
     "lib",
     "api_client",
+    "bots",
     "warpykit-sdk-client",
     "backend",
     "warpy",

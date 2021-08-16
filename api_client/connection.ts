@@ -1,34 +1,33 @@
-import config from '@app/config';
-import {EventEmitter} from 'events';
-import {nanoid} from 'nanoid';
+import { EventEmitter } from "events";
+import { nanoid } from "nanoid";
 
 export class WebSocketConn {
   observer = new EventEmitter();
-  socket = new WebSocket(config.WS);
+  socket: any;
   //onmessage?: (message: any) => any;
   onopen?: () => any;
   onclose?: () => any;
   onerror?: (e: any) => any;
 
-  constructor() {
+  constructor(socket: any) {
+    this.socket = socket;
+
     this.socket.onopen = () => {
       this.onopen && this.onopen();
     };
     this.socket.onclose = () => {
+      console.log("closed");
       this.onclose && this.onclose();
     };
     this.socket.onerror = (error: any) => {
+      console.error("Socket Error:", error);
       this.onerror && this.onerror(error);
     };
     this.socket.onmessage = (message: any) => {
-      const {event, rid, data} = JSON.parse(message.data);
+      const { event, rid, data } = JSON.parse(message.data);
 
       this.observer.emit(rid ? rid : event, data);
     };
-  }
-
-  isOpen() {
-    return this.socket.readyState === WebSocket.OPEN;
   }
 
   send(message: any) {
@@ -53,8 +52,8 @@ export class WebSocketConn {
       data,
     };
 
-    return new Promise<any>(resolve => {
-      this.observer.once(rid, response => resolve(response));
+    return new Promise<any>((resolve) => {
+      this.observer.once(rid, (response) => resolve(response));
       this.socket.send(JSON.stringify(payload));
     });
   }

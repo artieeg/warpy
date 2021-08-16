@@ -1,0 +1,16 @@
+{
+  "name": "bots",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "npx nodemon -x ts-node index.ts"
+  },
+  "dependencies": {
+    "@warpy/api": "1.0.0",
+    "@warpy/lib": "1.0.0",
+    "@warpykit-sdk/client": "1.0.0",
+    "unique-names-generator": "^4.6.0",
+    "ws": "^8.1.0"
+  }
+}
