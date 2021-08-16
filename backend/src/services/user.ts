@@ -1,5 +1,5 @@
 import { jwt } from "@backend/utils";
-import { IUser, RefreshTokenDAL, UserDAL } from "@backend/dal";
+import { IUser, ParticipantDAL, RefreshTokenDAL, UserDAL } from "@backend/dal";
 
 /*
  * Creates a dev account. Should be disabled in production
@@ -28,8 +28,9 @@ export const createDevUser = async (data: any) => {
   };
 };
 
-export const deleteUser = (user: string) => {
-  return UserDAL.deleteById(user);
+export const deleteUser = async (user: string) => {
+  await ParticipantDAL.deleteParticipant(user);
+  await UserDAL.deleteById(user);
 };
 
 export const whoAmI = async (user: string): Promise<IUser | null> => {

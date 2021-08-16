@@ -84,6 +84,9 @@ export const ParticipantDAL = {
   deleteParticipant: async (id: string): Promise<IParticipant> => {
     const result = await prisma.participant.delete({
       where: { user_id: id },
+      include: {
+        user: true,
+      },
     });
 
     return toParticipantDTO(result);
