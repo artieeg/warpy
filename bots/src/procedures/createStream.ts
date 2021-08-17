@@ -32,4 +32,13 @@ export const createStream = async (record: UserRecord) => {
 
   record.stream = response.stream;
   record.role = "streamer";
+
+  //Allow speaking after 5 seconds;
+  api.stream.onNewRaisedHand((data) => {
+    const { viewer } = data;
+
+    setTimeout(() => {
+      api.stream.allowSpeaker(viewer);
+    }, 5000);
+  });
 };
