@@ -47,6 +47,7 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
     record,
   });
 
+  /*
   const consumers = await record.media.consumeRemoteStreams(
     record.user.id,
     streamId,
@@ -54,4 +55,8 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
   );
 
   console.log("consumers", consumers);
+  */
+
+  record.stream = streamId;
+  record.role = "viewer";
 };

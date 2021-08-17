@@ -29,8 +29,8 @@ export const createDevUser = async (data: any) => {
 };
 
 export const deleteUser = async (user: string) => {
-  await ParticipantDAL.deleteParticipant(user);
   await UserDAL.deleteById(user);
+  await ParticipantDAL.deleteParticipant(user);
 };
 
 export const whoAmI = async (user: string): Promise<IUser | null> => {

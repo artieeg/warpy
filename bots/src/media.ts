@@ -16,9 +16,35 @@ export const createDevice = () => {
 };
 
 const files = fs.readdirSync(path.resolve(__dirname, "../test-media"));
+const videos = files.filter((file) => file.includes("webm"));
+const audio = files.filter((file) => file.includes("ogg"));
+
+if (videos.length === 0) {
+  throw new Error("No .webm (VP8) files in test-media directory");
+}
+
+if (audio.length === 0) {
+  throw new Error("No .ogg (OPUS) files in test-media directory");
+}
+
+export const getAudioStream = async () => {
+  const filename = audio[Math.floor(Math.random() * audio.length)];
+
+  const file = `file:/${path.resolve(__dirname, "../test-media")}/${filename}`;
+
+  const stream = await worker.getUserMedia({
+    audio: {
+      source: "file",
+      file,
+    },
+    video: false,
+  });
+
+  return stream;
+};
 
 export const getMediaStream = async () => {
-  const filename = files[Math.floor(Math.random() * files.length)];
+  const filename = videos[Math.floor(Math.random() * videos.length)];
 
   const file = `file:/${path.resolve(__dirname, "../test-media")}/${filename}`;
 
