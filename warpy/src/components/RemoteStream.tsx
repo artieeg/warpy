@@ -88,16 +88,12 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   ]);
 
   useEffectOnce(() => {
-    ws.media.onceRecvConnectParams(data => {
-      console.log('recv params recieved');
-      setRoomData(data);
-    });
-
     ws.stream.join(id).then(data => {
       fetchViewers();
 
       media.setPermissionsToken(data.mediaPermissionsToken);
       console.log('media token set');
+      setRoomData(data.recvMediaParams);
 
       useParticipantsStore.getState().set({
         participants: [...data.speakers, ...data.raisedHands],

@@ -54,12 +54,6 @@ export const NewStream = () => {
   }, [userFacingMode, localMediaStream]);
 
   useEffect(() => {
-    ws.media.onceRecvConnectParams(data => {
-      setRecvRoomData(data);
-    });
-  }, [streamId, ws]);
-
-  useEffect(() => {
     if (!recvTransport) {
       return;
     }
@@ -108,6 +102,7 @@ export const NewStream = () => {
       speakers: receivedSpeakers,
       count,
       mediaPermissionsToken,
+      recvMediaParams,
     } = await ws.stream.create(title, hub);
 
     console.log('permissions token', mediaPermissionsToken);
@@ -119,6 +114,7 @@ export const NewStream = () => {
 
     media.setPermissionsToken(mediaPermissionsToken);
     setStreamId(stream);
+    setRecvRoomData(recvMediaParams);
     setSendRoomData(mediaData);
   }, [title, hub, ws]);
 
