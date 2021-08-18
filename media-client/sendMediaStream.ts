@@ -1,5 +1,5 @@
-import {Device} from 'mediasoup-client';
-import {CreateTransport, SendMediaStream} from './types';
+import { Device } from "mediasoup-client";
+import { CreateTransport, SendMediaStream } from "./types";
 
 export const sendMediaStreamFactory =
   (sendDevice: Device, createTransport: CreateTransport): SendMediaStream =>
@@ -7,7 +7,7 @@ export const sendMediaStreamFactory =
     const sendTransport = await createTransport({
       roomId: stream,
       device: sendDevice,
-      direction: 'send',
+      direction: "send",
       options: {
         sendTransportOptions: options.sendTransportOptions[kind],
       },
@@ -16,10 +16,12 @@ export const sendMediaStreamFactory =
     });
 
     const track =
-      kind === 'video' ? media.getVideoTracks()[0] : media.getAudioTracks()[0];
+      kind === "video" ? media.getVideoTracks()[0] : media.getAudioTracks()[0];
 
-    await sendTransport.produce({
-      track,
-      appData: {kind},
+    const producer = await sendTransport.produce({
+      track: track as any,
+      appData: { kind },
     });
+
+    return producer;
   };

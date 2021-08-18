@@ -5986,12 +5986,12 @@ mediasoup-client-aiortc@^3.6.3:
     sdp-transform "^2.14.0"
     uuid "^7.0.3"
 
-mediasoup-client@^3.6.36:
-  version "3.6.36"
-  resolved "https://registry.yarnpkg.com/mediasoup-client/-/mediasoup-client-3.6.36.tgz#b5f68a573ac0cc6901284142a8dc9e2cff2fd8de"
-  integrity sha512-EDYLxdLj2RvXXL3M07I471FND4ALEwMDYdNNjNth1w2bnyq7IVx3LGUytRKKzxh0APSZB93eG/4me5kq1wa1Sg==
+mediasoup-client@^3.6.2:
+  version "3.6.37"
+  resolved "https://registry.yarnpkg.com/mediasoup-client/-/mediasoup-client-3.6.37.tgz#3b6481deb1fff79de7d0c950206f72a273c9ca45"
+  integrity sha512-mGP2FNphHLwZApxUMSdWvLYlq6RICQssLFdvcUFIOVmO32++1ZW7eZNBv2oRtpnUY+4t4mPr7K3pOgTxxPyl/A==
   dependencies:
-    "@types/debug" "^4.1.6"
+    "@types/debug" "^4.1.7"
     "@types/events" "^3.0.0"
     awaitqueue "^2.3.3"
     bowser "^2.11.0"
@@ -6002,12 +6002,12 @@ mediasoup-client@^3.6.36:
     sdp-transform "^2.14.1"
     supports-color "^8.1.1"
 
-mediasoup-client@^3.6.37:
-  version "3.6.37"
-  resolved "https://registry.yarnpkg.com/mediasoup-client/-/mediasoup-client-3.6.37.tgz#3b6481deb1fff79de7d0c950206f72a273c9ca45"
-  integrity sha512-mGP2FNphHLwZApxUMSdWvLYlq6RICQssLFdvcUFIOVmO32++1ZW7eZNBv2oRtpnUY+4t4mPr7K3pOgTxxPyl/A==
+mediasoup-client@^3.6.36:
+  version "3.6.36"
+  resolved "https://registry.yarnpkg.com/mediasoup-client/-/mediasoup-client-3.6.36.tgz#b5f68a573ac0cc6901284142a8dc9e2cff2fd8de"
+  integrity sha512-EDYLxdLj2RvXXL3M07I471FND4ALEwMDYdNNjNth1w2bnyq7IVx3LGUytRKKzxh0APSZB93eG/4me5kq1wa1Sg==
   dependencies:
-    "@types/debug" "^4.1.7"
+    "@types/debug" "^4.1.6"
     "@types/events" "^3.0.0"
     awaitqueue "^2.3.3"
     bowser "^2.11.0"

@@ -38,6 +38,14 @@ export const config = {
             "x-google-start-bitrate": 1000,
           },
         },
+        {
+          kind: "video",
+          mimeType: "video/H264",
+          clockRate: 90000,
+          parameters: {
+            "x-google-start-bitrate": 1000,
+          },
+        },
       ] as RtpCodecCapability[],
     },
 

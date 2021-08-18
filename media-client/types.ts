@@ -34,7 +34,7 @@ export type SendMediaStream = (
   stream: string,
   options: SendMediaStreamOptions,
   kind: MediaKind
-) => Promise<void>;
+) => Promise<Producer>;
 
 export type ConsumeRemoteStream = (
   consumerParameters: any,

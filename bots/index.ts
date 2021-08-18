@@ -3,61 +3,67 @@ import {
   createUser,
   joinStream,
   speak,
-  stopStream,
+  stopBot,
 } from "./src/procedures";
 import { initMediasoupWorker } from "./src/media";
+import { UserRecord } from "./src/types";
+import { config } from "./config";
+import { getStreamIdFromFeed } from "./src/utils";
+
+const users: UserRecord[] = [];
 
 const runStreamer = async () => {
   const record = await createUser();
   await createStream(record);
 
-  setTimeout(async () => {
-    await stopStream(record);
-    await record.api.user.delete();
-
-    record.api.close();
-  }, 60000);
+  return record;
 };
 
-const runViewer = async () => {
+const runViewer = async (stream?: string) => {
   const record = await createUser();
 
-  const { feed } = await record.api.feed.get(0);
-
-  if (feed.length === 0) {
-    console.log("No streams in feed, exiting");
-    await record.api.user.delete();
-
-    return;
-  }
-
-  const streamToWatch = feed[0];
-
-  console.log(`joining stream ${streamToWatch.id}`);
-  await joinStream(streamToWatch.id, record);
+  const streamToWatch = stream || (await getStreamIdFromFeed(record));
+  await joinStream(streamToWatch, record);
 
   return record;
 };
 
-const runSpeaker = async () => {
-  const record = await runViewer();
-
-  if (!record) {
-    return;
-  }
-
+const runSpeaker = async (stream?: string) => {
+  const record = await runViewer(stream);
   speak(record);
+
+  return record;
 };
 
 const main = async () => {
   await initMediasoupWorker();
 
-  runStreamer();
+  for (let i = 0; i < config.streams; i++) {
+    const streamer = await runStreamer();
+    users.push(streamer);
+
+    const stream = streamer.stream;
+
+    setTimeout(async () => {
+      for (let a = 0; a < config.speakersPerStream; a++) {
+        const speaker = await runSpeaker(stream);
+
+        users.push(speaker);
+      }
+    }, 2000);
+
+    setTimeout(async () => {
+      for (let a = 0; a < config.viewersPerStream; a++) {
+        const viewer = await runViewer(stream);
+
+        users.push(viewer);
+      }
+    }, 5000);
+  }
 
   setTimeout(() => {
-    runViewer();
-    runSpeaker();
-  }, 2000);
+    users.forEach((user) => stopBot(user));
+  }, config.duration);
 };
 
 main();

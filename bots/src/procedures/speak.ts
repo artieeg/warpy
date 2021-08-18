@@ -23,6 +23,13 @@ export const speak = (record: UserRecord) => {
 
     await record.sendDevice.load({ routerRtpCapabilities: rtpCapabilities });
 
-    record.media.sendMediaStream(audio, stream!, media, "audio");
+    const producer = await record.media.sendMediaStream(
+      audio,
+      stream!,
+      media,
+      "audio"
+    );
+
+    record.producers = [producer];
   });
 };

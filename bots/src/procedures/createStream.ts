@@ -1,4 +1,4 @@
-import { MediaClient } from "../../../warpykit-sdk-client";
+import { MediaClient } from "@warpykit-sdk/client";
 import { getMediaStream } from "../media";
 import { UserRecord } from "../types";
 
@@ -34,11 +34,12 @@ export const createStream = async (record: UserRecord) => {
   });
   const localMediaStream = await getMediaStream();
 
-  await Promise.all([
+  const producers = await Promise.all([
     record.media.sendMediaStream(localMediaStream, stream, media, "video"),
     record.media.sendMediaStream(localMediaStream, stream, media, "audio"),
   ]);
 
+  record.producers = producers;
   record.stream = response.stream;
   record.role = "streamer";
 };

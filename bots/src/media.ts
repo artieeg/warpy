@@ -6,7 +6,9 @@ import * as path from "path";
 let worker: Worker;
 
 export const initMediasoupWorker = async () => {
-  worker = await createWorker();
+  worker = await createWorker({
+    logLevel: "debug",
+  });
 };
 
 export const createDevice = () => {
@@ -16,7 +18,7 @@ export const createDevice = () => {
 };
 
 const files = fs.readdirSync(path.resolve(__dirname, "../test-media"));
-const videos = files.filter((file) => file.includes("webm"));
+const videos = files.filter((file) => file.includes("mp4"));
 const audio = files.filter((file) => file.includes("ogg"));
 
 if (videos.length === 0) {

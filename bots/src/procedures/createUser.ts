@@ -37,8 +37,8 @@ export const createUser = async (): Promise<UserRecord> => {
     sendDevice: createDevice(),
     media: MediaClient({
       permissionsToken: "",
-      recvDevice: createDevice(),
-      sendDevice: createDevice(),
+      recvDevice: createDevice() as any,
+      sendDevice: createDevice() as any,
       api,
     }),
   };

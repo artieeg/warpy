@@ -32,11 +32,21 @@ export const createRecvTransport = async (params: NewRecvTransportParams) => {
 
   const newTransport = await record.media.createTransport({
     roomId: stream,
-    device: record.recvDevice,
+    device: record.recvDevice as any,
     direction: "recv",
     options: { recvTransportOptions },
     isProducer: false,
   });
 
   return newTransport;
+};
+
+export const getStreamIdFromFeed = async (record: UserRecord) => {
+  const { feed } = await record.api.feed.get(0);
+
+  if (feed.length === 0) {
+    throw new Error("No streams in feed");
+  }
+
+  return feed[Math.floor(Math.random() * feed.length)].id;
 };

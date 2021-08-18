@@ -47,16 +47,14 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
     record,
   });
 
-  /*
+  //TODO: consuming remote streams causes memory leak apparently
   const consumers = await record.media.consumeRemoteStreams(
     record.user.id,
     streamId,
     transport
   );
 
-  console.log("consumers", consumers);
-  */
-
+  record.consumers = consumers;
   record.stream = streamId;
   record.role = "viewer";
 };
