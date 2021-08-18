@@ -5,7 +5,12 @@
  */
 
 import redis from "redis";
-import { INewMediaNode, IMediaPermissions, MediaServiceRole } from "@warpy/lib";
+import {
+  INewMediaNode,
+  IMediaPermissions,
+  MediaServiceRole,
+  IConnectRecvTransportParams,
+} from "@warpy/lib";
 import { MessageService } from ".";
 import jwt from "jsonwebtoken";
 
@@ -135,9 +140,11 @@ export const joinRoom = async (
   nodeId: string,
   user: string,
   roomId: string
-) => {
-  await MessageService.joinMediaRoom(nodeId, {
+): Promise<IConnectRecvTransportParams> => {
+  const mediaRecvParams = await MessageService.joinMediaRoom(nodeId, {
     user,
     roomId,
   });
+
+  return mediaRecvParams as any;
 };

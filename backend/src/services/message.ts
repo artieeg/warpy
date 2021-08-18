@@ -143,5 +143,6 @@ export const sendNewTrack = async (data: INewMediaTrack) => {
 export const joinMediaRoom = async (node: string, data: IJoinMediaRoom) => {
   const m = jc.encode(data);
 
-  nc.publish(`${subjects.media.peer.join}.${node}`, m);
+  const response = await nc.request(`${subjects.media.peer.join}.${node}`, m);
+  return jc.decode(response.data);
 };

@@ -21,11 +21,13 @@ export const addNewViewer = async (
   );
 
   await MediaService.assignUserToNode(viewerId, recvNodeId);
+  const recvMediaParams = await MediaService.joinRoom(
+    recvNodeId,
+    viewerId,
+    stream
+  );
 
-  await Promise.all([
-    BroadcastService.broadcastNewViewer(participant),
-    MediaService.joinRoom(recvNodeId, viewerId, stream),
-  ]);
+  await Promise.all([BroadcastService.broadcastNewViewer(participant)]);
 
   const [speakers, raisedHands, count] = await Promise.all([
     ParticipantDAL.getSpeakers(stream),
@@ -46,5 +48,6 @@ export const addNewViewer = async (
     raisedHands: raisedHands,
     count,
     mediaPermissionsToken,
+    recvMediaParams,
   };
 };

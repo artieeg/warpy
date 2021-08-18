@@ -41,7 +41,11 @@ export const createNewStream = async (
   const media = await MediaService.createRoom(owner, stream.id);
 
   await MediaService.assignUserToNode(owner, recvMediaNode);
-  await MediaService.joinRoom(recvMediaNode, owner, stream.id);
+  const recvMediaParams = await MediaService.joinRoom(
+    recvMediaNode,
+    owner,
+    stream.id
+  );
 
   //Allow sending audio and video
   const mediaPermissionsToken = MediaService.createPermissionsToken({
@@ -59,5 +63,6 @@ export const createNewStream = async (
     speakers,
     count: 1,
     mediaPermissionsToken,
+    recvMediaParams,
   };
 };
