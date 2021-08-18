@@ -6,6 +6,7 @@ export interface INewStreamResponse {
   speakers: IParticipant[];
   count: number;
   mediaPermissionsToken: string;
+  recvMediaParams: IConnectRecvTransportParams;
 }
 
 export interface IJoinStreamResponse {
@@ -13,6 +14,7 @@ export interface IJoinStreamResponse {
   raisedHands: IParticipant[];
   count: number;
   mediaPermissionsToken: string;
+  recvMediaParams: IConnectRecvTransportParams;
 }
 
 export interface IRequestViewersResponse {
@@ -35,4 +37,11 @@ export interface INewUserResponse {
 
 export interface IUserDeleteResponse {
   status: "ok" | "error";
+}
+
+export interface IConnectRecvTransportParams {
+  roomId: string;
+  user: string;
+  routerRtpCapabilities: any;
+  recvTransportOptions: any;
 }

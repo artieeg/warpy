@@ -23,13 +23,15 @@ const waitForRoomParams = (api: APIClient) => {
 export const joinStream = async (streamId: string, record: UserRecord) => {
   const { api, recvDevice, sendDevice } = record;
 
-  const [
-    { routerRtpCapabilities, recvTransportOptions },
-    { speakers, count, raisedHands, mediaPermissionsToken },
-  ] = await Promise.all([
-    waitForRoomParams(api),
-    record.api.stream.join(streamId),
-  ]);
+  const {
+    speakers,
+    count,
+    raisedHands,
+    mediaPermissionsToken,
+    recvMediaParams,
+  } = await record.api.stream.join(streamId);
+
+  const { routerRtpCapabilities, recvTransportOptions } = recvMediaParams;
 
   console.log(`joined room with ${count} viewers`);
 
@@ -60,7 +62,7 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
 
   //Listen to new media tracks
   api.media.onNewTrack((data) => {
-    record.media.consumeRemoteStream(
+    record.media?.consumeRemoteStream(
       data.consumerParameters,
       data.user,
       transport
