@@ -144,7 +144,7 @@ export const handleRecvTracksRequest: MessageHandler<
   });
 };
 
-export const handleJoinRoom = async (data: IJoinMediaRoom) => {
+export const handleJoinRoom = async (data: IJoinMediaRoom, respond: any) => {
   console.log(role, "handling new user join");
 
   const { roomId, user } = data;
@@ -169,14 +169,18 @@ export const handleJoinRoom = async (data: IJoinMediaRoom) => {
   }
 
   if (role === "CONSUMER") {
+    /*
     MessageService.sendMessageToUser(user, {
       event: "@media/recv-connect-params",
       data: {
-        roomId,
-        user,
-        routerRtpCapabilities: router.rtpCapabilities,
-        recvTransportOptions: getOptionsFromTransport(recvTransport),
       },
+    });
+    */
+    respond({
+      roomId,
+      user,
+      routerRtpCapabilities: router.rtpCapabilities,
+      recvTransportOptions: getOptionsFromTransport(recvTransport),
     });
   }
 };

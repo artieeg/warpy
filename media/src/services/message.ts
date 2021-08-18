@@ -120,7 +120,9 @@ export const handleJoinRoom = async () => {
       roomId: data.roomId,
     };
 
-    eventEmitter.emit("join-room", event);
+    eventEmitter.emit("join-room", event, (d: any) => {
+      msg.respond(jc.encode(d));
+    });
   }
 };
 
