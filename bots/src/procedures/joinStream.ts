@@ -47,7 +47,7 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
     record,
   });
 
-  //TODO: consuming remote streams causes memory leak apparently
+  //TODO: Consuming VP8 streams causes memory leak in aiortc apparently
   const consumers = await record.media.consumeRemoteStreams(
     record.user.id,
     streamId,
@@ -57,4 +57,13 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
   record.consumers = consumers;
   record.stream = streamId;
   record.role = "viewer";
+
+  //Listen to new media tracks
+  api.media.onNewTrack((data) => {
+    record.media.consumeRemoteStream(
+      data.consumerParameters,
+      data.user,
+      transport
+    );
+  });
 };
