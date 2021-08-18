@@ -8,18 +8,6 @@ type RoomParams = {
   recvTransportOptions: any;
 };
 
-const waitForRoomParams = (api: APIClient) => {
-  return new Promise<RoomParams>((resolve) => {
-    api.media.onceRecvConnectParams(async (data) => {
-      console.log("recv connect params", data);
-      resolve({
-        routerRtpCapabilities: data.routerRtpCapabilities,
-        recvTransportOptions: data.recvTransportOptions,
-      });
-    });
-  });
-};
-
 export const joinStream = async (streamId: string, record: UserRecord) => {
   const { api, recvDevice, sendDevice } = record;
 
