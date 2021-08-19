@@ -3,13 +3,13 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-import { MessageService, RoomService, VideoService } from "@media/services";
+import { MessageService, RoomService, SFUService } from "@media/services";
 import { role } from "@media/role";
 import { NodeInfo } from "@media/nodeinfo";
 import { AudioLevelObserverVolume } from "mediasoup/lib/AudioLevelObserver";
 
 const main = async () => {
-  await Promise.all([MessageService.init(), VideoService.startWorkers()]);
+  await Promise.all([MessageService.init(), SFUService.startWorkers()]);
 
   MessageService.on("create-room", RoomService.handleNewRoom);
   MessageService.on("new-track", RoomService.handleNewTrack);
@@ -20,7 +20,7 @@ const main = async () => {
   MessageService.on("new-egress", RoomService.handleNewEgress);
   MessageService.on("new-producer", RoomService.handleNewProducer);
 
-  VideoService.getAudioLevelObserver().on(
+  SFUService.getAudioLevelObserver().on(
     "volumes",
     (volumes: AudioLevelObserverVolume[]) => {
       console.log("volumes", volumes);
@@ -40,13 +40,13 @@ const main = async () => {
   if (role === "PRODUCER") {
     MessageService.sendNodeIsOnlineMessage(NodeInfo);
   } else if (role === "CONSUMER") {
-    VideoService.observer.on("pipe-is-ready", () => {
+    SFUService.observer.on("pipe-is-ready", () => {
       MessageService.sendNodeIsOnlineMessage(NodeInfo);
     });
 
     // timeout for dev purposes
     setTimeout(async () => {
-      VideoService.tryConnectToIngress();
+      SFUService.tryConnectToIngress();
     }, 1000);
   }
 };

@@ -22,16 +22,15 @@ import {
 } from "@warpy/lib";
 import { Producer } from "mediasoup/lib/Producer";
 import util from "util";
-import { MessageService, VideoService } from ".";
-import { createConsumer, createTransport } from "./video";
+import { MessageService, SFUService } from ".";
 
 const rooms: Rooms = {};
 
 const createNewRoom = (): IRoom => {
   return {
-    router: VideoService.getRouter(),
+    router: SFUService.getRouter(),
     peers: {},
-    audioLevelObserver: VideoService.getAudioLevelObserver(),
+    audioLevelObserver: SFUService.getAudioLevelObserver(),
   };
 };
 
@@ -50,7 +49,11 @@ export const handleNewSpeaker: MessageHandler<
   const peer = room.peers[speaker];
   peer.sendTransport.audio?.close();
 
-  const audioTransport = await createTransport("send", room.router, speaker);
+  const audioTransport = await SFUService.createTransport(
+    "send",
+    room.router,
+    speaker
+  );
   peer.sendTransport.audio = audioTransport;
 
   respond!({
@@ -108,7 +111,7 @@ export const handleRecvTracksRequest: MessageHandler<
 
       if (videoProducer) {
         consumerParams.push(
-          await createConsumer(
+          await SFUService.createConsumer(
             router,
             videoProducer,
             rtpCapabilities,
@@ -121,7 +124,7 @@ export const handleRecvTracksRequest: MessageHandler<
 
       if (audioProducer) {
         consumerParams.push(
-          await createConsumer(
+          await SFUService.createConsumer(
             router,
             audioProducer,
             rtpCapabilities,
@@ -155,7 +158,7 @@ export const handleJoinRoom = async (data: IJoinMediaRoom, respond: any) => {
   const peer = room.peers[user];
   const { router } = room;
 
-  const recvTransport = await createTransport("recv", router, user);
+  const recvTransport = await SFUService.createTransport("recv", router, user);
 
   if (peer) {
     peer.recvTransport = recvTransport;
@@ -199,7 +202,11 @@ export const handleNewRoom: MessageHandler<
   rooms[roomId] = room;
 
   if (role === "CONSUMER") {
-    const recvTransport = await createTransport("recv", room.router, host);
+    const recvTransport = await SFUService.createTransport(
+      "recv",
+      room.router,
+      host
+    );
 
     room.peers[host] = new Peer({
       recvTransport,
@@ -209,8 +216,8 @@ export const handleNewRoom: MessageHandler<
   }
 
   const [audio, video] = await Promise.all([
-    createTransport("send", room.router, host),
-    createTransport("send", room.router, host),
+    SFUService.createTransport("send", room.router, host),
+    SFUService.createTransport("send", room.router, host),
   ]);
 
   room.peers[host] = new Peer({
@@ -345,9 +352,7 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
       });
     }
 
-    const pipeConsumers = await VideoService.createPipeConsumers(
-      newProducer.id
-    );
+    const pipeConsumers = await SFUService.createPipeConsumers(newProducer.id);
 
     console.log("created pipe consumers");
 
@@ -386,7 +391,7 @@ export const handleNewEgress: MessageHandler<
 > = async (data, respond) => {
   const { ip, port, srtp, node } = data;
 
-  const localPipeTransport = await VideoService.createPipeTransport(0);
+  const localPipeTransport = await SFUService.createPipeTransport(0);
   await localPipeTransport.connect({ ip, port, srtpParameters: srtp });
 
   const { localIp, localPort } = localPipeTransport.tuple;
@@ -395,10 +400,10 @@ export const handleNewEgress: MessageHandler<
   console.log("INGRESS PIPE TRANSPORT TUPLE");
   console.log(localPipeTransport.tuple);
 
-  VideoService.egressPipes[node] = localPipeTransport;
+  SFUService.egressPipes[node] = localPipeTransport;
 
   console.log("current pipes");
-  console.log(util.inspect(VideoService.egressPipes, { depth: 0 }));
+  console.log(util.inspect(SFUService.egressPipes, { depth: 0 }));
 
   respond!({
     node: NodeInfo.id,
@@ -411,7 +416,7 @@ export const handleNewEgress: MessageHandler<
 export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
   const { userId, roomId, rtpCapabilities, kind } = data;
 
-  const pipeProducer = await VideoService.pipeToIngress.produce({
+  const pipeProducer = await SFUService.pipeToIngress.produce({
     id: data.id,
     kind: data.kind,
     rtpParameters: data.rtpParameters,
@@ -422,9 +427,9 @@ export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
 
   if (!room) {
     room = {
-      router: VideoService.getPipeRouter(),
+      router: SFUService.getPipeRouter(),
       peers: {},
-      audioLevelObserver: VideoService.getAudioLevelObserver(),
+      audioLevelObserver: SFUService.getAudioLevelObserver(),
     };
     rooms[roomId] = room;
   }
@@ -432,9 +437,9 @@ export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
   const { peers } = room;
 
   if (!peers[userId]) {
-    const recvTransport = await createTransport(
+    const recvTransport = await SFUService.createTransport(
       "recv",
-      VideoService.getPipeRouter(),
+      SFUService.getPipeRouter(),
       userId
     );
 
@@ -461,7 +466,7 @@ export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
     }
 
     try {
-      const { consumerParameters } = await createConsumer(
+      const { consumerParameters } = await SFUService.createConsumer(
         room.router,
         pipeProducer,
         rtpCapabilities,
