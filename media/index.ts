@@ -6,7 +6,6 @@ dotenv.config();
 import { MessageService, RoomService, SFUService } from "@media/services";
 import { role } from "@media/role";
 import { NodeInfo } from "@media/nodeinfo";
-import { AudioLevelObserverVolume } from "mediasoup/lib/AudioLevelObserver";
 
 const main = async () => {
   await Promise.all([MessageService.init(), SFUService.startWorkers()]);
@@ -20,19 +19,7 @@ const main = async () => {
   MessageService.on("new-egress", RoomService.handleNewEgress);
   MessageService.on("new-producer", RoomService.handleNewProducer);
 
-  SFUService.getAudioLevelObserver().on(
-    "volumes",
-    (volumes: AudioLevelObserverVolume[]) => {
-      console.log("volumes", volumes);
-      if (volumes.length === 0) {
-        return;
-      }
-
-      const speakers = volumes.map((volume) => volume.producer.appData.user);
-
-      MessageService.sendActiveSpeakers(speakers);
-    }
-  );
+  SFUService.onActiveSpeakers(MessageService.sendActiveSpeakers);
 
   console.log("Media service has started with role", process.env.ROLE);
   console.log("Media node info", NodeInfo);

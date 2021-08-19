@@ -3,6 +3,7 @@ import { createWorker } from "mediasoup";
 import { Consumer, IPeer, IWorker } from "@media/models";
 import { EgressTransports, MediaDirection, PipeConsumers } from "@media/types";
 import {
+  AudioLevelObserverVolume,
   PipeTransport,
   Producer,
   Router,
@@ -205,4 +206,19 @@ export const tryConnectToIngress = async () => {
   await transport.connect({ ip, port, srtpParameters: srtp });
 
   observer.emit("pipe-is-ready", remoteParams);
+};
+
+export const onActiveSpeakers = (cb: any) => {
+  getAudioLevelObserver().on(
+    "volumes",
+    (volumes: AudioLevelObserverVolume[]) => {
+      if (volumes.length === 0) {
+        return;
+      }
+
+      const speakers = volumes.map((volume) => volume.producer.appData.user);
+
+      cb(speakers);
+    }
+  );
 };
