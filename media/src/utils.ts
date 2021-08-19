@@ -6,12 +6,19 @@ export const getMediaPermissions = (token: string) => {
   return jwt.verify(token, process.env.MEDIA_JWT_SECRET!) as IMediaPermissions;
 };
 
-export const isAudioAllowed = (permissions: IMediaPermissions) => {
-  return permissions.audio;
-};
+export const verifyMediaPermissions = (
+  token: string,
+  fieldsToCheck: Partial<IMediaPermissions>
+) => {
+  const permissions: any = getMediaPermissions(token);
 
-export const isVideoAllowed = (permissions: IMediaPermissions) => {
-  return permissions.video;
+  Object.entries(fieldsToCheck).forEach(([field, value]) => {
+    if (permissions[field] !== value) {
+      throw new Error();
+    }
+  });
+
+  return permissions;
 };
 
 export const getOptionsFromTransport = (

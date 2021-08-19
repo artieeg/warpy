@@ -1,12 +1,7 @@
 import { IConnectTransport, IRoom, Peer, Rooms } from "@media/models";
 import { NodeInfo } from "@media/nodeinfo";
 import { role } from "@media/role";
-import {
-  getMediaPermissions,
-  isAudioAllowed,
-  isVideoAllowed,
-  getOptionsFromTransport,
-} from "@media/utils";
+import { getOptionsFromTransport, verifyMediaPermissions } from "@media/utils";
 import {
   IConnectMediaServer,
   IConnectNewSpeakerMedia,
@@ -247,16 +242,11 @@ export const handleConnectTransport = async (data: IConnectTransport) => {
   } = data;
   console.log("connect transport request", data);
 
-  const permissions = getMediaPermissions(mediaPermissionsToken);
-
   if (direction === "send") {
-    if (mediaKind === "audio" && !isAudioAllowed(permissions)) {
-      return;
-    }
-
-    if (mediaKind === "video" && !isVideoAllowed(permissions)) {
-      return;
-    }
+    verifyMediaPermissions(mediaPermissionsToken, {
+      audio: mediaKind === "audio",
+      video: mediaKind === "video",
+    });
   }
 
   const room = rooms[roomId];
@@ -307,15 +297,10 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
     mediaPermissionsToken,
   } = data;
 
-  const permissions = getMediaPermissions(mediaPermissionsToken);
-
-  if (kind === "audio" && isAudioAllowed(permissions) === false) {
-    return;
-  }
-
-  if (kind === "video" && isVideoAllowed(permissions) === false) {
-    return;
-  }
+  verifyMediaPermissions(mediaPermissionsToken, {
+    audio: kind === "audio",
+    video: kind === "video",
+  });
 
   const room = rooms[roomId];
   if (!room) {
