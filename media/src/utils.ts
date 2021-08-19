@@ -12,9 +12,11 @@ export const verifyMediaPermissions = (
 ) => {
   const permissions: any = getMediaPermissions(token);
 
+  console.log(Object.entries(fieldsToCheck));
   Object.entries(fieldsToCheck).forEach(([field, value]) => {
-    if (permissions[field] !== value) {
-      throw new Error();
+    console.log(value, permissions[field]);
+    if (permissions[field] !== value && permissions[field] !== true) {
+      throw new Error("Permission value doesn't match");
     }
   });
 

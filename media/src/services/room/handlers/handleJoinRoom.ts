@@ -16,20 +16,18 @@ export const handleJoinRoom = async (data: IJoinMediaRoom, respond: any) => {
     return;
   }
 
-  const peer = room.peers[user];
-  const { router } = room;
-
-  const recvTransport = await SFUService.createTransport("recv", router, user);
-
-  if (peer) {
-    peer.recvTransport = recvTransport;
-  } else {
-    room.peers[user] = new Peer({
-      recvTransport,
-    });
-  }
-
   if (role === "CONSUMER") {
+    const peer = new Peer({});
+    room.peers[user] = peer;
+
+    const { router } = room;
+    const recvTransport = await SFUService.createTransport(
+      "recv",
+      router,
+      user
+    );
+    peer.recvTransport = recvTransport;
+
     respond({
       roomId,
       user,

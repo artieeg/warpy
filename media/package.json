@@ -6,7 +6,8 @@
   "scripts": {
     "build": "npx tsc -p ./tsconfig.json",
     "start": "node build/index.js",
-    "start:dev": "npx nodemon index.ts"
+    "start:dev": "npx nodemon index.ts",
+    "start:debug": "npx nodemon --exec node --inspect=0.0.0.0:9228 -r ts-node/register index.ts"
   },
   "_moduleAliases": {
     "@media": "./src"

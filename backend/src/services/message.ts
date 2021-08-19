@@ -91,7 +91,7 @@ export const createMediaRoom = async (
   const m = jc.encode(data);
 
   const reply = await nc.request(subjects.media.room.create, m, {
-    timeout: 1000,
+    timeout: 60000,
   });
 
   return jc.decode(reply.data) as INewMediaRoomData;
@@ -104,7 +104,7 @@ export const getRecvTracks = async (
   const m = jc.encode(data);
 
   const reply = await nc.request(`${subjects.media.track.getRecv}.${node}`, m, {
-    timeout: 1000,
+    timeout: 60000,
   });
 
   return jc.decode(reply.data) as IRecvTracksResponse;
@@ -116,7 +116,7 @@ export const connectSpeakerMedia = async (
   const m = jc.encode(data);
 
   const reply = await nc.request(subjects.media.peer.makeSpeaker, m, {
-    timeout: 1000,
+    timeout: 60000,
   });
 
   return jc.decode(reply.data) as INewSpeakerMediaResponse;
@@ -143,6 +143,8 @@ export const sendNewTrack = async (data: INewMediaTrack) => {
 export const joinMediaRoom = async (node: string, data: IJoinMediaRoom) => {
   const m = jc.encode(data);
 
-  const response = await nc.request(`${subjects.media.peer.join}.${node}`, m);
+  const response = await nc.request(`${subjects.media.peer.join}.${node}`, m, {
+    timeout: 60000,
+  });
   return jc.decode(response.data);
 };
