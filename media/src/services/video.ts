@@ -90,15 +90,6 @@ export const createTransport = async (
   return transport;
 };
 
-export const getOptionsFromTransport = (
-  transport: WebRtcTransport
-): ITransportOptions => ({
-  id: transport.id,
-  iceParameters: transport.iceParameters,
-  iceCandidates: transport.iceCandidates,
-  dtlsParameters: transport.dtlsParameters,
-});
-
 export const createConsumer = async (
   router: Router,
   producer: Producer,

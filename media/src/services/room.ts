@@ -5,6 +5,7 @@ import {
   getMediaPermissions,
   isAudioAllowed,
   isVideoAllowed,
+  getOptionsFromTransport,
 } from "@media/utils";
 import {
   IConnectMediaServer,
@@ -22,11 +23,7 @@ import {
 import { Producer } from "mediasoup/lib/Producer";
 import util from "util";
 import { MessageService, VideoService } from ".";
-import {
-  createConsumer,
-  createTransport,
-  getOptionsFromTransport,
-} from "./video";
+import { createConsumer, createTransport } from "./video";
 
 const rooms: Rooms = {};
 
@@ -226,8 +223,8 @@ export const handleNewRoom: MessageHandler<
   respond!({
     routerRtpCapabilities: rooms[roomId].router.rtpCapabilities,
     sendTransportOptions: {
-      video: VideoService.getOptionsFromTransport(video),
-      audio: VideoService.getOptionsFromTransport(audio),
+      video: getOptionsFromTransport(video),
+      audio: getOptionsFromTransport(audio),
     },
   });
 };
