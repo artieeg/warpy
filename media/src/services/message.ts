@@ -25,148 +25,68 @@ if (!NATS) {
 const jc = JSONCodec();
 let nc: NatsConnection;
 
-const initProducerFunctions = () => {
-  handleNewTrack();
-  handleNewSpeaker();
-  handleNewEgress();
+const connectRecvTransportSubject = `media.transport.connect.consumer.${NodeInfo.id}`;
+const consumerJoinRoomSubject = `media.peer.join.${NodeInfo.id}`;
+const producerJoinRoomSubject = `media.peer.join.*`;
+
+const recvTracksRequestSubject = `media.track.recv.get.${NodeInfo.id}`;
+const newProducerSubject = `media.egress.new-producer.${NodeInfo.id}`;
+
+const ConsumerSubjectEventMap = {
+  "media.room.create": "create-room",
+  [connectRecvTransportSubject]: "connect-transport",
+  [consumerJoinRoomSubject]: "join-room",
+  [recvTracksRequestSubject]: "recv-tracks-request",
+  [newProducerSubject]: "new-producer",
 };
 
-const initCommonFunctions = () => {
-  handleCreateNewRoom();
-  handleConnectTransport();
-  handleJoinRoom();
+const ProducerSubjectEventMap = {
+  "media.track.send": "new-track",
+  "media.room.create": "create-room",
+  "media.peer.make-speaker": "new-speaker",
+  "media.egress.try-connect": "new-egress",
+  "media.transport.connect.producer": "connect-transport",
+  [producerJoinRoomSubject]: "join-room",
+};
+
+const SubjectEventMap = {
+  ...ConsumerSubjectEventMap,
+  ...ProducerSubjectEventMap,
+};
+
+const subscribeTo = async (subject: any) => {
+  const sub = nc.subscribe(subject);
+
+  for await (const msg of sub) {
+    const message = jc.decode(msg.data) as any;
+    const event = (SubjectEventMap as any)[subject];
+    eventEmitter.emit(event, message, (response: any) => {
+      msg.respond(jc.encode(response));
+    });
+  }
+};
+
+const initProducerFunctions = () => {
+  Object.keys(ProducerSubjectEventMap).forEach((subject) =>
+    subscribeTo(subject as any)
+  );
 };
 
 const initConsumerFunctions = () => {
-  handleRecvTracksRequest();
-  handleNewProducerFromIngress();
+  Object.keys(ConsumerSubjectEventMap).forEach((subject) =>
+    subscribeTo(subject as any)
+  );
 };
 
 export const init = async () => {
   nc = await connect({ servers: [NATS] });
 
-  initCommonFunctions();
-
-  if (role === "PRODUCER" || role === "BOTH") {
+  if (role === "PRODUCER") {
     initProducerFunctions();
   }
 
-  if (role === "CONSUMER" || role === "BOTH") {
+  if (role === "CONSUMER") {
     initConsumerFunctions();
-  }
-};
-
-export const handleNewEgress = async () => {
-  const sub = nc.subscribe(subjects.media.egress.tryConnect);
-
-  for await (const msg of sub) {
-    const data = jc.decode(msg.data) as any;
-
-    const event: IConnectMediaServer = {
-      node: data.node,
-      ip: data.ip,
-      port: data.port,
-      srtp: data.srtp,
-    };
-
-    eventEmitter.emit("new-egress", event, (response: IConnectMediaServer) => {
-      msg.respond(jc.encode(response));
-    });
-  }
-};
-
-export const handleNewSpeaker = async () => {
-  const sub = nc.subscribe(subjects.media.peer.makeSpeaker);
-
-  for await (const msg of sub) {
-    const data = jc.decode(msg.data) as any;
-
-    const event: IConnectNewSpeakerMedia = {
-      speaker: data.speaker,
-      roomId: data.roomId,
-    };
-
-    eventEmitter.emit("new-speaker", event, (response: any) => {
-      msg.respond(jc.encode(response));
-    });
-  }
-};
-
-export const handleRecvTracksRequest = async () => {
-  const sub = nc.subscribe(`${subjects.media.track.getRecv}.${NodeInfo.id}`);
-
-  for await (const msg of sub) {
-    const data = jc.decode(msg.data) as IRecvTracksRequest;
-
-    eventEmitter.emit("recv-tracks-request", data, (d: any) => {
-      msg.respond(jc.encode(d));
-    });
-  }
-};
-
-export const handleJoinRoom = async () => {
-  const subject =
-    role === "PRODUCER"
-      ? `${subjects.media.peer.join}.*`
-      : `${subjects.media.peer.join}.${NodeInfo.id}`;
-
-  const sub = nc.subscribe(subject);
-
-  for await (const msg of sub) {
-    const data = jc.decode(msg.data) as any;
-
-    const event: IJoinMediaRoom = {
-      user: data.user,
-      roomId: data.roomId,
-    };
-
-    eventEmitter.emit("join-room", event, (d: any) => {
-      msg.respond(jc.encode(d));
-    });
-  }
-};
-
-export const handleConnectTransport = async () => {
-  const subject =
-    process.env.ROLE === "PRODUCER"
-      ? subjects.media.transport.connect_producer
-      : subjects.media.transport.connect_consumer + "." + NodeInfo.id;
-
-  const sub = nc.subscribe(subject);
-
-  for await (const msg of sub) {
-    const transport: IConnectTransport = jc.decode(msg.data) as any;
-    eventEmitter.emit("connect-transport", transport);
-  }
-};
-
-export const handleNewTrack = async () => {
-  const sub = nc.subscribe(subjects.media.track.send);
-
-  for await (const msg of sub) {
-    const newTrack: INewMediaTrack = jc.decode(msg.data) as any;
-    console.log("new trac", newTrack);
-    eventEmitter.emit("new-track", newTrack);
-  }
-};
-
-export const handleCreateNewRoom = async () => {
-  const sub = nc.subscribe(subjects.media.room.create, {
-    queue: process.env.ROLE,
-  });
-
-  for await (const msg of sub) {
-    const payload = jc.decode(msg.data) as any;
-    const { host, roomId } = payload;
-
-    const data: ICreateMediaRoom = {
-      host,
-      roomId,
-    };
-
-    eventEmitter.emit("create-room", data, (d: any) => {
-      msg.respond(jc.encode(d));
-    });
   }
 };
 
@@ -208,17 +128,6 @@ export const sendNewProducer = (node: string, producer: INewProducer) => {
     `${subjects.media.egress.newProducer}.${node}`,
     jc.encode(producer)
   );
-};
-
-export const handleNewProducerFromIngress = async () => {
-  const sub = nc.subscribe(
-    `${subjects.media.egress.newProducer}.${NodeInfo.id}`
-  );
-
-  for await (const msg of sub) {
-    const newProducer: INewProducer = jc.decode(msg.data) as any;
-    eventEmitter.emit("new-producer", newProducer);
-  }
 };
 
 export const sendNodeIsOnlineMessage = async (nodeParams: any) => {
