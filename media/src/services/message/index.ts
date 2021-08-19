@@ -1,19 +1,18 @@
-import { IConnectTransport, IMessage } from "@media/models";
-import { NodeInfo } from "@media/nodeinfo";
+import { IMessage } from "@media/models";
 import { role } from "@media/role";
 import {
   IConnectMediaServer,
-  IConnectNewSpeakerMedia,
-  ICreateMediaRoom,
-  IJoinMediaRoom,
-  INewMediaTrack,
   INewProducer,
-  IRecvTracksRequest,
   MessageHandler,
   subjects,
 } from "@warpy/lib";
 import EventEmitter from "events";
 import { connect, JSONCodec, NatsConnection } from "nats";
+import {
+  SubjectEventMap,
+  ProducerSubjectEventMap,
+  ConsumerSubjectEventMap,
+} from "./subjects";
 
 const eventEmitter = new EventEmitter();
 
@@ -24,35 +23,6 @@ if (!NATS) {
 
 const jc = JSONCodec();
 let nc: NatsConnection;
-
-const connectRecvTransportSubject = `media.transport.connect.consumer.${NodeInfo.id}`;
-const consumerJoinRoomSubject = `media.peer.join.${NodeInfo.id}`;
-const producerJoinRoomSubject = `media.peer.join.*`;
-
-const recvTracksRequestSubject = `media.track.recv.get.${NodeInfo.id}`;
-const newProducerSubject = `media.egress.new-producer.${NodeInfo.id}`;
-
-const ConsumerSubjectEventMap = {
-  "media.room.create": "create-room",
-  [connectRecvTransportSubject]: "connect-transport",
-  [consumerJoinRoomSubject]: "join-room",
-  [recvTracksRequestSubject]: "recv-tracks-request",
-  [newProducerSubject]: "new-producer",
-};
-
-const ProducerSubjectEventMap = {
-  "media.track.send": "new-track",
-  "media.room.create": "create-room",
-  "media.peer.make-speaker": "new-speaker",
-  "media.egress.try-connect": "new-egress",
-  "media.transport.connect.producer": "connect-transport",
-  [producerJoinRoomSubject]: "join-room",
-};
-
-const SubjectEventMap = {
-  ...ConsumerSubjectEventMap,
-  ...ProducerSubjectEventMap,
-};
 
 const subscribeTo = async (subject: any) => {
   const sub = nc.subscribe(subject);
