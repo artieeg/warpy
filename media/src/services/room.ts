@@ -290,7 +290,7 @@ export const handleConnectTransport = async (data: IConnectTransport) => {
   });
 };
 
-export const handleNewTrack = async (data: INewMediaTrack) => {
+export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
   const {
     roomId,
     user,
@@ -305,9 +305,6 @@ export const handleNewTrack = async (data: INewMediaTrack) => {
 
   const permissions = getMediaPermissions(mediaPermissionsToken);
 
-  console.log("new track", kind, "from", user);
-
-  console.log(permissions);
   if (kind === "audio" && isAudioAllowed(permissions) === false) {
     return;
   }
@@ -395,7 +392,6 @@ export const handleNewEgress: MessageHandler<
   const localPipeTransport = await VideoService.createPipeTransport(0);
   await localPipeTransport.connect({ ip, port, srtpParameters: srtp });
 
-  //const { remoteIp, remotePort } = localPipeTransport.tuple;
   const { localIp, localPort } = localPipeTransport.tuple;
   const { srtpParameters } = localPipeTransport;
 
@@ -411,13 +407,11 @@ export const handleNewEgress: MessageHandler<
     node: NodeInfo.id,
     ip: localIp!,
     port: localPort!,
-    //ip: remoteIp!,
-    //port: remotePort!,
     srtp: srtpParameters,
   });
 };
 
-export const handleNewProducer = async (data: INewProducer) => {
+export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
   const { userId, roomId, rtpCapabilities, kind } = data;
 
   const pipeProducer = await VideoService.pipeToIngress.produce({
@@ -473,14 +467,12 @@ export const handleNewProducer = async (data: INewProducer) => {
       const { consumerParameters } = await createConsumer(
         room.router,
         pipeProducer,
-        //VideoService.getPipeRouter().rtpCapabilities,
         rtpCapabilities,
         peerRecvTransport,
         userId,
         peers[peerId]
       );
 
-      //console.log("sneding consumer params", consumerParameters);
       MessageService.sendMessageToUser(peerId, {
         event: "@media/new-track",
         data: {
