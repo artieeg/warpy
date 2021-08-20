@@ -33,10 +33,12 @@ export const handleNewRoom: MessageHandler<
   const room = createNewRoom();
   rooms[roomId] = room;
 
+  const { router } = room;
+
   if (role === "CONSUMER") {
     const recvTransport = await SFUService.createTransport(
       "recv",
-      room.router,
+      router,
       host
     );
 
@@ -48,15 +50,18 @@ export const handleNewRoom: MessageHandler<
   }
 
   const [audio, video] = await Promise.all([
-    SFUService.createTransport("send", room.router, host),
-    SFUService.createTransport("send", room.router, host),
+    SFUService.createTransport("send", router, host),
+    SFUService.createTransport("send", router, host),
   ]);
+
+  const plainTransport = await SFUService.createPlainTransport(router);
 
   room.peers[host] = new Peer({
     sendTransport: {
       audio,
       video,
     },
+    plainTransport,
   });
 
   respond!({
