@@ -138,7 +138,7 @@ export const ParticipantDAL = {
 
   getSpeakers: async (stream: string): Promise<IParticipant[]> => {
     const participants = await prisma.participant.findMany({
-      where: { stream },
+      where: { stream, role: { in: ["speaker", "streamer"] } },
       include: {
         user: true,
       },
