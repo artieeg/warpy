@@ -24,7 +24,9 @@ export const handleJoinRoom = async (data: IJoinMediaRoom, respond: any) => {
       user
     );
 
-    const peer = new Peer({ recvTransport });
+    const plainTransport = await SFUService.createPlainTransport(router);
+
+    const peer = new Peer({ recvTransport, plainTransport });
     room.peers[user] = peer;
 
     respond({

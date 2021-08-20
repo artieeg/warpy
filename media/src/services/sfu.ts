@@ -72,6 +72,10 @@ export const getAudioLevelObserver = () => {
   return workers[0].audioLevelObserver;
 };
 
+export const createPlainTransport = async (router: Router) => {
+  return await router.createPlainTransport(config.mediasoup.plainRtpTransport);
+};
+
 export const createTransport = async (
   direction: MediaDirection,
   router: Router,

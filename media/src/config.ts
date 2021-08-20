@@ -58,5 +58,14 @@ export const config = {
       ] as TransportListenIp[],
       initialAvailableOutgoingBitrate: 800000,
     },
+
+    plainRtpTransport: {
+      listenIp: {
+        ip: process.env.MEDIASOUP_IP as string,
+        announcedIp: process.env.MEDIASOUP_IP as string,
+      },
+      rtcpMux: true,
+      comedia: false,
+    },
   },
 } as const;

@@ -1,7 +1,10 @@
-import { Consumer } from "mediasoup/lib/Consumer";
-import { Producer } from "mediasoup/lib/Producer";
-import { Transport } from "mediasoup/lib/Transport";
-import { MediaKind } from "mediasoup/lib/types";
+import {
+  MediaKind,
+  PlainTransport,
+  Transport,
+  Producer,
+  Consumer,
+} from "mediasoup/lib/types";
 
 export interface IPeer {
   sendTransport: {
@@ -9,6 +12,7 @@ export interface IPeer {
     audio: Transport | null;
   };
   recvTransport: Transport | null;
+  plainTransport: PlainTransport | null;
   producer: {
     audio: Producer | null;
     video: Producer | null;
@@ -21,6 +25,7 @@ export class Peer implements IPeer {
     video: Transport | null;
     audio: Transport | null;
   };
+  plainTransport: PlainTransport | null;
   recvTransport: Transport | null;
   producer: {
     audio: Producer | null;
@@ -33,6 +38,7 @@ export class Peer implements IPeer {
       video: null,
       audio: null,
     };
+    this.plainTransport = data.plainTransport || null;
     this.recvTransport = data.recvTransport || null;
     this.producer = data.producer || {
       video: null,
