@@ -1,3 +1,4 @@
+import { config } from "@media/config";
 import { IRoom, Peer } from "@media/models";
 import { role } from "@media/role";
 import { SFUService } from "@media/services";
@@ -63,6 +64,14 @@ export const handleNewRoom: MessageHandler<
     },
     plainTransport,
   });
+
+  const remoteRtpPort = SFUService.getPortForRemoteRTP();
+  await plainTransport.connect({
+    ip: config.mediasoup.plainRtpTransport.listenIp.ip,
+    port: remoteRtpPort,
+  });
+
+  plainTransport.appData.remoteRtpPort = remoteRtpPort;
 
   respond!({
     routerRtpCapabilities: rooms[roomId].router.rtpCapabilities,

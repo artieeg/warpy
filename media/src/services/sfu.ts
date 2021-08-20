@@ -9,10 +9,8 @@ import {
   Router,
   RtpCapabilities,
   Transport,
-  WebRtcTransport,
 } from "mediasoup/lib/types";
 import { config } from "@media/config";
-import { ITransportOptions } from "@warpy/lib";
 import { MessageService } from ".";
 import EventEmitter from "events";
 import { NodeInfo } from "@media/nodeinfo";
@@ -22,11 +20,20 @@ export const observer = new EventEmitter();
 let latestUsedWorkerIdx = -1;
 export const workers: IWorker[] = [];
 
-//DEBUG
-//export let pipeToEgress: PipeTransport;
 export const egressPipes: EgressTransports = {};
 
 export let pipeToIngress: PipeTransport;
+
+//TODO: not safe, check if port is open;
+export const getPortForRemoteRTP = () => {
+  return Math.floor(
+    Math.random() *
+      (config.mediasoup.worker.rtcMaxPort -
+        config.mediasoup.worker.rtcMinPort +
+        1) +
+      config.mediasoup.worker.rtcMinPort
+  );
+};
 
 export const startWorkers = async () => {
   const cpus = os.cpus().length;

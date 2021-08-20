@@ -1,3 +1,4 @@
+import { FFmpeg } from "@media/ffmpeg";
 import {
   MediaKind,
   PlainTransport,
@@ -13,6 +14,7 @@ export interface IPeer {
   };
   recvTransport: Transport | null;
   plainTransport: PlainTransport | null;
+  ffmpegProcess: FFmpeg | null;
   producer: {
     audio: Producer | null;
     video: Producer | null;
@@ -25,6 +27,7 @@ export class Peer implements IPeer {
     video: Transport | null;
     audio: Transport | null;
   };
+  ffmpegProcess: FFmpeg | null;
   plainTransport: PlainTransport | null;
   recvTransport: Transport | null;
   producer: {
@@ -39,6 +42,7 @@ export class Peer implements IPeer {
       audio: null,
     };
     this.plainTransport = data.plainTransport || null;
+    this.ffmpegProcess = null;
     this.recvTransport = data.recvTransport || null;
     this.producer = data.producer || {
       video: null,

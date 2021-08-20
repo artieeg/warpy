@@ -1,3 +1,4 @@
+import { FFmpeg } from "@media/ffmpeg";
 import { SFUService, MessageService } from "@media/services";
 import { verifyMediaPermissions } from "@media/utils";
 import { MessageHandler, INewMediaTrack } from "@warpy/lib";
@@ -55,6 +56,52 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
       await room.audioLevelObserver.addProducer({
         producerId: newProducer.id,
       });
+    }
+
+    if (kind === "video") {
+      const codec = room.router.rtpCapabilities.codecs?.find(
+        (c) => c.mimeType.toLowerCase() === "video/vp8"
+      );
+
+      console.log("rtp codec", codec?.mimeType);
+      console.log("client rtp params", rtpParameters);
+
+      if (!codec) {
+        throw new Error("Can't find codec for video");
+      }
+
+      const recorderRtpCapabilities = {
+        codecs: [codec],
+        rtcpFeedback: [],
+      };
+
+      const rtpConsumer = await peer.plainTransport?.consume({
+        producerId: newProducer.id,
+        rtpCapabilities: recorderRtpCapabilities,
+        paused: true,
+      });
+
+      if (!rtpConsumer) {
+        throw new Error("Failed to create rtp consumer");
+      }
+
+      peer.consumers.push(rtpConsumer);
+
+      peer.ffmpegProcess = new FFmpeg({
+        video: {
+          remoteRtpPort: peer.plainTransport?.appData.remoteRtpPort,
+          //remoteRtcpPort,
+          localRtcpPort: peer.plainTransport?.rtcpTuple
+            ? peer.plainTransport.rtcpTuple?.localPort
+            : undefined,
+          rtpCapabilities: recorderRtpCapabilities,
+          rtpParameters: rtpConsumer.rtpParameters,
+        },
+      });
+
+      setTimeout(() => {
+        rtpConsumer.resume();
+      }, 1000);
     }
 
     const pipeConsumers = await SFUService.createPipeConsumers(newProducer.id);
