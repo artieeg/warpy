@@ -31,22 +31,25 @@ export const Text = (props: ITextProps) => {
 
 const styles = StyleSheet.create({
   dark: {
-    color: '#110E11',
+    color: '#000',
   },
   bright: {
-    color: '#EEE5E9',
+    color: '#BDF971',
   },
   info: {
-    color: '#7B7B7B',
+    color: '#474141',
   },
   regular: {
-    fontFamily: 'Nunito-Regular',
+    fontFamily: 'MontserratAlternates-Regular',
   },
   bold: {
-    fontFamily: 'Nunito-Bold',
+    fontFamily: 'MontserratAlternates-Bold',
+  },
+  extraBold: {
+    fontFamily: 'MontserratAlternates-ExtraBold',
   },
   light: {
-    fontFamily: 'Nunito-Light',
+    fontFamily: 'MontserratAlternates-Light',
   },
   xsmall: {
     fontSize: 16,

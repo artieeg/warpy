@@ -79,6 +79,11 @@
 		<string>Zocial.ttf</string>
 		<string>Nunito-Bold.ttf</string>
 		<string>Nunito-Regular.ttf</string>
+		<string>MontserratAlternates-Bold.ttf</string>
+		<string>MontserratAlternates-ExtraBold.ttf</string>
+		<string>MontserratAlternates-Light.ttf</string>
+		<string>MontserratAlternates-Medium.ttf</string>
+		<string>MontserratAlternates-Regular.ttf</string>
 	</array>
 </dict>
 </plist>

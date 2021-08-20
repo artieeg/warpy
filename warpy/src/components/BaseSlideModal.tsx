@@ -17,7 +17,6 @@ export const BaseSlideModal = (props: IParticipanModalProps) => {
     <Modal
       removeClippedSubviews={false}
       propagateSwipe={true}
-      useNativeDriver
       onSwipeComplete={() => {
         onHide();
       }}
@@ -45,13 +44,11 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   wrapper: {
-    backgroundColor: '#2F2F3A',
+    backgroundColor: '#000',
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
     paddingTop: 40,
   },
   horizontalPadding: {
@@ -67,8 +64,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: 50,
     height: 5,
-    top: 10,
+    top: 22,
     borderRadius: 12,
-    backgroundColor: '#7B7B7B',
+    backgroundColor: '#474141',
   },
 });
