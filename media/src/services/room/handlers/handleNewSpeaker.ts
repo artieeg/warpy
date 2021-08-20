@@ -20,7 +20,9 @@ export const handleNewSpeaker: MessageHandler<
   }
 
   const peer = room.peers[speaker];
-  peer.sendTransport.audio?.close();
+  if (peer.sendTransport.audio) {
+    peer.sendTransport.audio.close();
+  }
 
   const audioTransport = await SFUService.createTransport(
     "send",
