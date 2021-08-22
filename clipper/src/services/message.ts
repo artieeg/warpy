@@ -13,7 +13,7 @@ let nc: NatsConnection;
 const jc = JSONCodec();
 
 const SubjectEventMap = {
-  "stream.start-recording": "record-request",
+  "stream.record-request": "record-request",
 };
 
 type Subject = keyof typeof SubjectEventMap;

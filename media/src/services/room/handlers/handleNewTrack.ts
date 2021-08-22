@@ -87,7 +87,7 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
 
       peer.consumers.push(rtpConsumer);
 
-      producePreviewClips({
+      MessageService.sendRecordRequest({
         remoteRtpPort: peer.plainTransport?.appData.remoteRtpPort,
         //remoteRtcpPort,
         localRtcpPort: peer.plainTransport?.rtcpTuple

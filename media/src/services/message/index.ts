@@ -3,6 +3,7 @@ import { role } from "@media/role";
 import {
   IConnectMediaServer,
   INewProducer,
+  IRecordRequest,
   MessageHandler,
   subjects,
 } from "@warpy/lib";
@@ -103,4 +104,8 @@ export const sendNewProducer = (node: string, producer: INewProducer) => {
 export const sendNodeIsOnlineMessage = async (nodeParams: any) => {
   const data = jc.encode(nodeParams);
   nc.publish(subjects.media.node.isOnline, data);
+};
+
+export const sendRecordRequest = async (params: IRecordRequest) => {
+  nc.publish("stream.record-request", jc.encode(params));
 };
