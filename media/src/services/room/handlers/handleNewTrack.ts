@@ -1,5 +1,4 @@
 import { SFUService, MessageService } from "@media/services";
-import { producePreviewClips } from "@media/services/clipper";
 import { verifyMediaPermissions } from "@media/utils";
 import { MessageHandler, INewMediaTrack } from "@warpy/lib";
 import { Producer } from "mediasoup/lib/types";
