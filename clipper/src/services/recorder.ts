@@ -1,24 +1,77 @@
 import { spawn } from "child_process";
 import EventEmitter from "events";
-import { RtpCapabilities, RtpParameters } from "mediasoup/lib/types";
+import { IRecordRequest } from "@warpy/lib";
 import { convertStringToStream, createSdpText } from "./utils";
 
-export interface IRecorderParams {
-  remoteRtpPort: number;
-  localRtcpPort?: number;
-  rtpCapabilities: RtpCapabilities;
-  rtpParameters: RtpParameters;
-}
-
-export interface IMediaRecorder {
+export interface IClipRecorder {
   filename: string;
   directory: string;
   stop: () => void;
   onRecordingStarted: (cb: any) => void;
 }
 
-export const createRecorder = (params: IRecorderParams): IMediaRecorder => {
-  const { rtpParameters, remoteRtpPort } = params;
+export interface IRecorderParams {
+  recordParams: IRecordRequest;
+  clip: {
+    duration: number;
+    interval: number;
+  };
+}
+
+type NewClipInfo = {
+  directory: string;
+  filename: string;
+};
+
+interface ClipRecorderManager {
+  onClipReady: (cb: (params: NewClipInfo) => any) => any;
+  stop: () => void;
+}
+
+export const createClipsManager = (
+  params: IRecorderParams
+): ClipRecorderManager => {
+  const { clip } = params;
+  const observer = new EventEmitter();
+
+  const { duration, interval } = clip;
+
+  let clipDurationTimeout: any;
+  let intervalBetweenClips: any;
+
+  const recordNewClip = () => {
+    const recorder = startRecordingClip(params);
+
+    clipDurationTimeout = recorder.onRecordingStarted(() => {
+      setTimeout(() => {
+        recorder.stop();
+
+        observer.emit("clip-is-ready", {
+          directory: recorder.directory,
+          filename: recorder.filename,
+        });
+
+        intervalBetweenClips = setTimeout(() => recordNewClip(), interval);
+      }, duration);
+    });
+  };
+
+  recordNewClip();
+
+  return {
+    onClipReady: (cb: (params: NewClipInfo) => any) =>
+      observer.on("clip-is-ready", cb),
+    stop: () => {
+      clearTimeout(clipDurationTimeout);
+      clearTimeout(intervalBetweenClips);
+    },
+  };
+};
+
+export const startRecordingClip = (params: IRecorderParams): IClipRecorder => {
+  const { recordParams } = params;
+
+  const { rtpParameters, remoteRtpPort } = recordParams;
 
   const directory = "./recordings/";
   const filename = `recording_${Date.now()}.webm`;
@@ -80,7 +133,7 @@ export const createRecorder = (params: IRecorderParams): IMediaRecorder => {
     createSdpText(rtpParameters, remoteRtpPort)
   );
 
-  sdpStream.on("error", (error) => {
+  sdpStream.on("error", (_error) => {
     //console.error("ffmpeg sdp error", error);
   });
 

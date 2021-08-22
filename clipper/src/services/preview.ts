@@ -1,28 +1,42 @@
+import { EventEmitter } from "events";
+import { IRecordRequest } from "@warpy/lib";
 import { createLoopedVideo } from "./looper";
-import { createRecorder, IRecorderParams } from "./recorder";
+import { createClipsManager } from "./recorder";
 
-export const producePreviewClips = (params: IRecorderParams) => {
-  let i = 0;
+type PreviewProducer = {
+  onNewPreview: (
+    cb: (params: { filename: string; directory: string }) => any
+  ) => any;
+};
 
-  const createClip = () => {
-    if (i === 5) {
-      return;
-    }
+export const createPreviewsProducer = (
+  params: IRecordRequest
+): PreviewProducer => {
+  const clipRecordManager = createClipsManager({
+    recordParams: params,
+    clip: {
+      duration: 3000,
+      interval: 5000,
+    },
+  });
 
-    console.log("creating clip #", i);
-    const recorder = createRecorder(params);
+  const observer = new EventEmitter();
 
-    recorder.onRecordingStarted(() => {
-      setTimeout(() => {
-        recorder.stop();
+  clipRecordManager.onClipReady((clipInfo) => {
+    const loopManager = createLoopedVideo(
+      clipInfo.directory,
+      clipInfo.filename
+    );
 
-        createLoopedVideo(recorder.directory, recorder.filename);
-        setTimeout(() => createClip(), 5000);
-      }, 3000);
+    loopManager.onLoopCreated((loopInfo) => {
+      observer.emit("preview-ready", {
+        directory: loopInfo.directory,
+        filename: loopInfo.filename,
+      });
     });
+  });
 
-    i++;
+  return {
+    onNewPreview: (cb) => observer.on("preview-ready", cb),
   };
-
-  createClip();
 };
