@@ -164,3 +164,10 @@ export interface IActiveSpeakersPayload {
 export interface IUserDelete {
   user: string;
 }
+
+export interface IRecordRequest {
+  remoteRtpPort: number;
+  localRtcpPort?: number;
+  rtpCapabilities: any;
+  rtpParameters: any;
+}

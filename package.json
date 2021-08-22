@@ -6,6 +6,7 @@
     "bots",
     "media-client",
     "backend",
+    "clipper",
     "warpy",
     "media",
     "ws_gateway",
@@ -19,7 +20,8 @@
     "@backend": "./backend/src",
     "@ws_gateway": "./ws_gateway/src",
     "@media": "./media/src",
-    "@warpykit": "./warpykit-sdk-node/src"
+    "@warpykit": "./warpykit-sdk-node/src",
+    "@clipper": "./clipper/src"
   },
   "dependencies": {
     "cross-env": "^7.0.3",
