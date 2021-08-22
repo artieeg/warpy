@@ -32,6 +32,7 @@ export const createStream = async (record: UserRecord) => {
   await record.sendDevice.load({
     routerRtpCapabilities,
   });
+
   const localMediaStream = await getMediaStream();
 
   const producers = await Promise.all([

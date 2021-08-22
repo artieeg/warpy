@@ -1,5 +1,5 @@
-import { FFmpeg } from "@media/ffmpeg";
 import { SFUService, MessageService } from "@media/services";
+import { producePreviewClips } from "@media/services/clipper";
 import { verifyMediaPermissions } from "@media/utils";
 import { MessageHandler, INewMediaTrack } from "@warpy/lib";
 import { Producer } from "mediasoup/lib/types";
@@ -87,16 +87,14 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
 
       peer.consumers.push(rtpConsumer);
 
-      peer.ffmpegProcess = new FFmpeg({
-        video: {
-          remoteRtpPort: peer.plainTransport?.appData.remoteRtpPort,
-          //remoteRtcpPort,
-          localRtcpPort: peer.plainTransport?.rtcpTuple
-            ? peer.plainTransport.rtcpTuple?.localPort
-            : undefined,
-          rtpCapabilities: recorderRtpCapabilities,
-          rtpParameters: rtpConsumer.rtpParameters,
-        },
+      producePreviewClips({
+        remoteRtpPort: peer.plainTransport?.appData.remoteRtpPort,
+        //remoteRtcpPort,
+        localRtcpPort: peer.plainTransport?.rtcpTuple
+          ? peer.plainTransport.rtcpTuple?.localPort
+          : undefined,
+        rtpCapabilities: recorderRtpCapabilities,
+        rtpParameters: rtpConsumer.rtpParameters,
       });
 
       setTimeout(() => {
