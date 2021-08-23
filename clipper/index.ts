@@ -5,9 +5,11 @@ dotenv.config();
 
 import { onRecordRequest } from "@clipper/handlers";
 import { initMessageService, onMessage } from "./src/services";
+import { initPreviewsStorage } from "@clipper/services/preview_storage";
 
-const main = () => {
-  initMessageService();
+const main = async () => {
+  await initPreviewsStorage();
+  await initMessageService();
 
   onMessage("record-request", onRecordRequest);
 

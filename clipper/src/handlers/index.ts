@@ -1,4 +1,5 @@
 import { createPreviewsProducer } from "@clipper/services";
+import { uploadPreview } from "@clipper/services/preview_storage";
 import { IRecordRequest, MessageHandler } from "@warpy/lib";
 
 export const onRecordRequest: MessageHandler<IRecordRequest> = async (data) => {
@@ -9,7 +10,11 @@ export const onRecordRequest: MessageHandler<IRecordRequest> = async (data) => {
     rtpCapabilities: data.rtpCapabilities,
   });
 
-  previewProducer.onNewPreview(({ directory, filename }) => {
+  previewProducer.onNewPreview(async ({ directory, filename }) => {
     console.log("new preview is ready", directory, filename);
+
+    const previewFileName = await uploadPreview(directory + filename);
+
+    console.log(previewFileName);
   });
 };

@@ -11,14 +11,15 @@ export const createLoopedVideo = (
   directory: string,
   filename: string
 ): Looper => {
-  const loopFileName = directory + `preview_${filename}`;
+  const loopFileName = `preview_${filename}`;
+  const loopFilePath = directory + loopFileName;
 
   const process = spawn("ffmpeg", [
     "-i",
     directory + filename,
     "-filter_complex",
     "[0]reverse[r];[0][r]concat=n=2:v=1:a=0,setpts=N/55/TB",
-    loopFileName,
+    loopFilePath,
   ]);
 
   if (process.stderr) {
