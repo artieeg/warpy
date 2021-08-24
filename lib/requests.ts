@@ -170,4 +170,5 @@ export interface IRecordRequest {
   localRtcpPort?: number;
   rtpCapabilities: any;
   rtpParameters: any;
+  stream: string;
 }

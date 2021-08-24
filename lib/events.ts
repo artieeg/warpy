@@ -10,3 +10,8 @@ export interface IActiveSpeakerEvent {
   stream: string;
   speaker: IParticipant;
 }
+
+export interface INewPreviewEvent {
+  stream: string;
+  preview: string;
+}
