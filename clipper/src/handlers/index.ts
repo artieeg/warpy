@@ -1,20 +1,19 @@
-import { createPreviewsProducer } from "@clipper/services";
-import { uploadPreview } from "@clipper/services/preview_storage";
+import {
+  createPreviewsProducer,
+  uploadPreview,
+  sendNewPreview,
+} from "@clipper/services";
 import { IRecordRequest, MessageHandler } from "@warpy/lib";
 
 export const onRecordRequest: MessageHandler<IRecordRequest> = async (data) => {
-  const previewProducer = createPreviewsProducer({
-    localRtcpPort: data.localRtcpPort,
-    remoteRtpPort: data.remoteRtpPort,
-    rtpParameters: data.rtpParameters,
-    rtpCapabilities: data.rtpCapabilities,
-  });
+  const { stream } = data;
+
+  const previewProducer = createPreviewsProducer(data);
 
   previewProducer.onNewPreview(async ({ directory, filename }) => {
-    console.log("new preview is ready", directory, filename);
-
     const previewFileName = await uploadPreview(directory + filename);
 
-    console.log(previewFileName);
+    sendNewPreview(stream, previewFileName);
+    console.log("Produced new preview", previewFileName);
   });
 };

@@ -41,3 +41,13 @@ export const initMessageService = async () => {
     subscribeTo(key as Subject);
   });
 };
+
+export const sendNewPreview = async (stream: string, preview: string) => {
+  nc.publish(
+    "stream.new-preview",
+    jc.encode({
+      stream,
+      preview,
+    })
+  );
+};
