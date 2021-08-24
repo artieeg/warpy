@@ -33,7 +33,7 @@ const main = async () => {
   MessageService.on("new-user", onNewUser);
   MessageService.on("active-speakers", onActiveSpeakers);
   MessageService.on("user-delete", onUserDelete);
-  MessageService.on("stream.new_preview", onNewStreamPreview);
+  MessageService.on("new-stream-preview", onNewStreamPreview);
 
   MessageService.on("new-media-node", MediaService.handleNewOnlineNode);
   console.log(":>");

@@ -47,7 +47,7 @@ model Candidate {
   title   String
   owner   String @unique
   hub     String
-  preview String
+  preview String?
 }
 
 model RefreshToken {

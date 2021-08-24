@@ -31,6 +31,7 @@ export const addNewCandidate = async (data: IStream) => {
     title,
     hub,
     owner: ownerId,
+    preview: null,
   });
 };
 

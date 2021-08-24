@@ -15,5 +15,7 @@ export const onRecordRequest: MessageHandler<IRecordRequest> = async (data) => {
 
     sendNewPreview(stream, previewFileName);
     console.log("Produced new preview", previewFileName);
+
+    previewProducer.removePreview({ directory, filename });
   });
 };
