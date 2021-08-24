@@ -4,19 +4,19 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl"]
 }
 
 model User {
-  id          String        @id @default(cuid())
+  id          String       @id @default(cuid())
   username    String
   first_name  String
   last_name   String
   avatar      String
   email       String
   sub         String
-  created_at  DateTime      @default(now())
+  created_at  DateTime     @default(now())
   participant Participant?
 
 
@@ -43,10 +43,11 @@ model Stream {
 }
 
 model Candidate {
-  id    String @id @default(cuid())
-  title String
-  owner String @unique
-  hub   String
+  id      String @id @default(cuid())
+  title   String
+  owner   String @unique
+  hub     String
+  preview String
 }
 
 model RefreshToken {

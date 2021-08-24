@@ -38,6 +38,7 @@ const SubjectEventMap = {
   "media.node.is-online": "new-media-node",
   "stream.active-speakers": "active-speakers",
   "user.delete": "user-delete",
+  "stream.new-preview": "new-stream-preview",
 };
 
 type Subject = keyof typeof SubjectEventMap;

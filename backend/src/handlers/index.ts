@@ -10,3 +10,4 @@ export * from "./onWhoAmIRequest";
 export * from "./onNewUser";
 export * from "./onActiveSpeakers";
 export * from "./onUserDelete";
+export * from "./onNewStreamPreview";

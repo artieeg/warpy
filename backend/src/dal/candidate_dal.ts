@@ -33,4 +33,13 @@ export const CandidateDAL = {
 
     return result.map(toCandidateDAL);
   },
+
+  setPreviewClip: async (stream: string, preview: string) => {
+    const result = await prisma.candidate.update({
+      where: { id: stream },
+      data: {
+        preview,
+      },
+    });
+  },
 };
