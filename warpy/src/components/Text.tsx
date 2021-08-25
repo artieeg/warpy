@@ -2,7 +2,7 @@ import React from 'react';
 import {TextProps} from 'react-native';
 import {StyleSheet, Text as BaseText} from 'react-native';
 
-type TextWeight = 'regular' | 'bold' | 'light';
+type TextWeight = 'regular' | 'bold' | 'light' | 'extraBold';
 type TextColor = 'dark' | 'bright' | 'info';
 type TextSize = 'small' | 'medium' | 'large' | 'xsmall';
 
@@ -61,6 +61,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   large: {
-    fontSize: 28,
+    fontSize: 30,
   },
 });
