@@ -1,14 +1,16 @@
-import {Avatar, Button, RemoteStream, Text} from '@app/components';
-import {useAppUser, useFeed} from '@app/hooks';
+import {Avatar, StreamPreview, Button, Text} from '@app/components';
+import {useAppUser, useFeed, usePreviewDimensions} from '@app/hooks';
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {FlatList, StyleSheet, useWindowDimensions, View} from 'react-native';
 
 export const Feed = () => {
   const feed = useFeed();
 
   const navigation = useNavigation();
   const user = useAppUser();
+
+  const {previewHeight} = usePreviewDimensions();
 
   return (
     <View style={styles.wrapper}>
@@ -18,16 +20,25 @@ export const Feed = () => {
         </Text>
         <Avatar user={user!} />
       </View>
-      {feed[0] ? (
-        <RemoteStream stream={feed[0]} />
-      ) : (
-        <Button
-          title="Start new stream"
-          onPress={() => {
-            navigation.navigate('NewStream');
-          }}
-        />
-      )}
+      <FlatList
+        data={[1, 2, 3, 4]}
+        numColumns={2}
+        renderItem={({index}) => {
+          let style = {};
+
+          if (index === 1) {
+            style = {...style, height: previewHeight - 100};
+          } else {
+            style = {...style, height: previewHeight};
+          }
+
+          if (index % 2 && index !== 1) {
+            style = {...style, transform: [{translateY: -100}]};
+          }
+
+          return <StreamPreview style={style} />;
+        }}
+      />
     </View>
   );
 };

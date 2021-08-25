@@ -1,9 +1,15 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
 
-const StreamPreview = () => {
+interface IStreamPreviewProps {
+  style: any;
+}
+
+export const StreamPreview = (props: IStreamPreviewProps) => {
+  const {style} = props;
+
   return (
-    <View style={styles.wrapper}>
+    <View style={[styles.wrapper, style]}>
       <View />
     </View>
   );
@@ -12,9 +18,8 @@ const StreamPreview = () => {
 const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: '#ACC3FD',
-    width: 30,
-    height: 30,
+    flex: 1,
+    margin: 10,
+    borderRadius: 30,
   },
 });
-
-export default StreamPreview;

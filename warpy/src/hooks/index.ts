@@ -10,3 +10,4 @@ export * from './useWebSocketHandler';
 export * from './useStreamParticipant';
 export * from './useAppUser';
 export * from './useEffectOnce';
+export * from './usePreviewDimensions';
