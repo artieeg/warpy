@@ -18,6 +18,7 @@ export const Text = (props: ITextProps) => {
 
   return (
     <BaseText
+      {...props}
       style={[
         styles[color || 'bright'],
         styles[weight || 'regular'],
@@ -29,7 +30,7 @@ export const Text = (props: ITextProps) => {
   );
 };
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   dark: {
     color: '#000',
   },

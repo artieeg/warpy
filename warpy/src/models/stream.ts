@@ -6,6 +6,7 @@ export interface IStream {
   hub: string;
   preview: string;
   speakers: IParticipant[];
+  participants: number;
 }
 
 export class Stream implements IStream {
@@ -14,6 +15,7 @@ export class Stream implements IStream {
   hub: string;
   speakers: Participant[];
   preview: string;
+  participants: number;
 
   constructor(data: IStream) {
     this.id = data.id;
@@ -21,6 +23,7 @@ export class Stream implements IStream {
     this.hub = data.hub;
     this.speakers = data.speakers;
     this.preview = data.preview;
+    this.participants = data.participants;
   }
 
   static fromJSON(json: any): Stream {
@@ -30,6 +33,7 @@ export class Stream implements IStream {
       hub: json.hub,
       speakers: json.speakers,
       preview: json.preview,
+      participants: json.participants,
     });
   }
 }

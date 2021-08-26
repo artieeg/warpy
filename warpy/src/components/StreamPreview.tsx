@@ -3,6 +3,9 @@ import React from 'react';
 import Video from 'react-native-video';
 import {View, StyleSheet} from 'react-native';
 import {Avatar} from './Avatar';
+import {ViewersCountPreview} from './ViewersCountPreview';
+import {Text} from './Text';
+import {StreamPreviewTitle} from './StreamPreviewTitle';
 
 interface IStreamPreviewProps {
   stream: Stream;
@@ -12,8 +15,6 @@ interface IStreamPreviewProps {
 export const StreamPreview = (props: IStreamPreviewProps) => {
   const {style, stream} = props;
   const {preview} = stream;
-
-  console.log('speakers', stream.speakers);
 
   return (
     <View style={[styles.wrapper, style]}>
@@ -25,16 +26,23 @@ export const StreamPreview = (props: IStreamPreviewProps) => {
         source={{uri: preview}}
         style={styles.video}
       />
-      <View style={styles.participants}>
-        {stream.speakers.slice(0, 3).map((participant, index) => {
-          const userAvatarStyle = {
-            transform: [{translateX: -index * 5}],
-          };
+      <View style={styles.info}>
+        <StreamPreviewTitle>{stream.title}</StreamPreviewTitle>
+        <View style={styles.participants}>
+          {stream.speakers.slice(0, 3).map((participant, index) => {
+            const userAvatarStyle = {
+              transform: [{translateX: -index * 3}],
+            };
 
-          return (
-            <Avatar size="small" style={userAvatarStyle} user={participant} />
-          );
-        })}
+            return (
+              <Avatar size="small" style={userAvatarStyle} user={participant} />
+            );
+          })}
+          <ViewersCountPreview
+            count={stream.participants}
+            style={styles.viewersCount}
+          />
+        </View>
       </View>
     </View>
   );
@@ -42,11 +50,11 @@ export const StreamPreview = (props: IStreamPreviewProps) => {
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: '#ACC3FD',
+    //backgroundColor: '#ACC3FD',
     flex: 1,
     overflow: 'hidden',
     margin: 10,
-    borderRadius: 30,
+    borderRadius: 20,
   },
   video: {
     flex: 1,
@@ -54,10 +62,16 @@ const styles = StyleSheet.create({
   },
   participants: {
     flexDirection: 'row',
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+  },
+  info: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    padding: 10,
+  },
+  viewersCount: {
+    transform: [{translateX: -8}],
   },
 });

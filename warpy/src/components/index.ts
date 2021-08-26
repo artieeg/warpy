@@ -17,3 +17,5 @@ export * from './BaseSlideModal';
 export * from './ParticipantInfoModal';
 export * from './StreamPreview';
 export * from './StartNewStreamButton';
+export * from './ViewersCountPreview';
+export * from './StreamPreviewTitle';
