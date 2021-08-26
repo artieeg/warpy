@@ -2,13 +2,15 @@ import { Candidate } from "@prisma/client";
 import { ICandidate } from "@warpy/lib";
 import { prisma } from "./client";
 
-export const toCandidateDAL = (data: any): ICandidate => {
+export const toCandidateDTO = (data: any): ICandidate => {
   return {
     id: data.id,
     owner: data.owner,
     title: data.title,
     hub: data.hub,
     preview: data.preview,
+    participants: 0,
+    speakers: [],
   };
 };
 
@@ -18,7 +20,7 @@ export const CandidateDAL = {
       data,
     });
 
-    return toCandidateDAL(candidate);
+    return toCandidateDTO(candidate);
   },
 
   deleteById: async (id: string) => {
@@ -30,9 +32,11 @@ export const CandidateDAL = {
   },
 
   getAll: async (): Promise<ICandidate[]> => {
-    const result = await prisma.candidate.findMany();
+    const result = await prisma.candidate.findMany({
+      where: { preview: { not: null } },
+    });
 
-    return result.map(toCandidateDAL);
+    return result.map(toCandidateDTO);
   },
 
   setPreviewClip: async (stream: string, preview: string) => {

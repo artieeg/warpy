@@ -1,17 +1,18 @@
 import { FeedsCacheService } from ".";
-import { ICandidate, INewStream } from "@warpy/lib";
+import { ICandidate } from "@warpy/lib";
 import { CandidateDAL, IStream, ParticipantDAL } from "@backend/dal";
 
 export const getFeed = async (
   user: string,
   hub?: string
 ): Promise<ICandidate[]> => {
-  const candidates = await CandidateDAL.getAll();
+  const candidates: ICandidate[] = await CandidateDAL.getAll();
 
   const feed = Promise.all(
     candidates.map(async (candidate) => ({
       ...candidate,
       participants: await ParticipantDAL.count(candidate.id),
+      speakers: await ParticipantDAL.getSpeakers(candidate.id),
     }))
   );
 

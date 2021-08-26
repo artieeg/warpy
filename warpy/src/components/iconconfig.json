@@ -173,6 +173,20 @@
       "search": [
         "hello"
       ]
+    },
+    {
+      "uid": "9987ab2af84598e3610ee072200fabce",
+      "css": "plus",
+      "code": 59404,
+      "src": "custom_icons",
+      "selected": true,
+      "svg": {
+        "path": "M833.3 583.3H583.3V833.3H416.7V583.3H166.7V416.7H416.7V166.7H583.3V416.7H833.3V583.3Z",
+        "width": 1000
+      },
+      "search": [
+        "plus"
+      ]
     }
   ]
 }

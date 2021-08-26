@@ -5,13 +5,19 @@ import {Image, StyleSheet} from 'react-native';
 interface IAvatarProps {
   user: IUser;
   style?: any;
+  size?: 'small' | 'medium';
 }
 
 export const Avatar = (props: IAvatarProps) => {
-  const {user, style} = props;
+  const {user, size, style} = props;
   const {avatar} = user;
 
-  return <Image style={[styles.avatar, style]} source={{uri: avatar}} />;
+  return (
+    <Image
+      style={[styles.avatar, styles[size || 'medium'], style]}
+      source={{uri: avatar}}
+    />
+  );
 };
 
 const styles = StyleSheet.create({
@@ -19,6 +25,12 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderRadius: 30,
     backgroundColor: '#303030',
+  },
+  small: {
+    width: 30,
+    height: 30,
+  },
+  medium: {
     width: 50,
     height: 50,
   },

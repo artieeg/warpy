@@ -5,21 +5,21 @@ export interface IStream {
   title: string;
   hub: string;
   preview: string;
-  participants: IParticipant[];
+  speakers: IParticipant[];
 }
 
 export class Stream implements IStream {
   id: string;
   title: string;
   hub: string;
-  participants: Participant[];
+  speakers: Participant[];
   preview: string;
 
   constructor(data: IStream) {
     this.id = data.id;
     this.title = data.title;
     this.hub = data.hub;
-    this.participants = data.participants;
+    this.speakers = data.speakers;
     this.preview = data.preview;
   }
 
@@ -28,7 +28,7 @@ export class Stream implements IStream {
       id: json.id,
       title: json.title,
       hub: json.hub,
-      participants: json.participants,
+      speakers: json.speakers,
       preview: json.preview,
     });
   }

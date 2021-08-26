@@ -27,11 +27,12 @@ model Participant {
   id            String  @id @default(cuid())
   user_id       String  @unique
   user          User    @relation(fields: [user_id], references: [id])
-  stream        String
+  stream_id     String 
+  stream        Candidate  @relation(fields: [stream_id], references: [id])
   role          String
   isRaisingHand Boolean
 
-  @@unique([user_id, stream], name: "stream_participant_index")
+  @@unique([user_id, stream_id], name: "stream_participant_index")
 }
 
 model Stream {
@@ -48,6 +49,8 @@ model Candidate {
   owner   String @unique
   hub     String
   preview String?
+
+  speakers Participant[]
 }
 
 model RefreshToken {

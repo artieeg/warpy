@@ -13,9 +13,9 @@ export const useLocalStream = (kind: MediaKind) => {
     const videoContstraints: MediaTrackConstraints = {
       facingMode: 'user',
       mandatory: {
-        minWidth: 640,
-        minHeight: 480,
-        minFrameRate: 24,
+        minWidth: 720,
+        minHeight: 1080,
+        minFrameRate: 30,
       },
       optional: [],
     };

@@ -5,7 +5,7 @@ import { toUserDTO } from "./user_dal";
 export const toParticipantDTO = (data: any): IParticipant => {
   return {
     ...toUserDTO(data.user, false),
-    stream: data.stream,
+    stream: data.stream_id,
     role: data.role as Roles,
     isRaisingHand: data.isRaisingHand,
   };
@@ -19,7 +19,7 @@ export const ParticipantDAL = {
   ): Promise<IParticipant> => {
     const data = await prisma.participant.create({
       data: {
-        stream,
+        stream_id: stream,
         role,
         isRaisingHand: false,
         user_id: user_id,
@@ -96,7 +96,7 @@ export const ParticipantDAL = {
     streamId: string
   ): Promise<IParticipant[]> => {
     const participants = await prisma.participant.findMany({
-      where: { stream: streamId },
+      where: { stream_id: streamId },
       include: { user: true },
     });
 
@@ -105,31 +105,31 @@ export const ParticipantDAL = {
 
   deleteParticipantsByStream: async (stream: string) => {
     prisma.participant.deleteMany({
-      where: { stream },
+      where: { stream_id: stream },
     });
   },
 
   getCurrentStreamFor: async (user: string): Promise<string | null> => {
     const result = await prisma.participant.findUnique({
       where: { user_id: user },
-      select: { stream: true },
+      select: { stream_id: true },
     });
 
-    return result?.stream || null;
+    return result?.stream_id || null;
   },
 
   setCurrentStreamFor: async (user: string, stream: string) => {
     await prisma.participant.update({
       where: { user_id: user },
       data: {
-        stream,
+        stream_id: stream,
       },
     });
   },
 
   getRoleFor: async (user: string, stream: string): Promise<string | null> => {
     const result = await prisma.participant.findUnique({
-      where: { stream_participant_index: { user_id: user, stream: stream } },
+      where: { stream_participant_index: { user_id: user, stream_id: stream } },
       select: { role: true },
     });
 
@@ -138,7 +138,7 @@ export const ParticipantDAL = {
 
   getSpeakers: async (stream: string): Promise<IParticipant[]> => {
     const participants = await prisma.participant.findMany({
-      where: { stream, role: { in: ["speaker", "streamer"] } },
+      where: { stream_id: stream, role: { in: ["speaker", "streamer"] } },
       include: {
         user: true,
       },
@@ -153,7 +153,7 @@ export const ParticipantDAL = {
   ): Promise<IParticipant[]> => {
     const participants = await prisma.participant.findMany({
       include: { user: true },
-      where: { stream, role: "viewer" },
+      where: { stream_id: stream, role: "viewer" },
       skip: 50 * page,
       take: 50,
     });
@@ -163,13 +163,13 @@ export const ParticipantDAL = {
 
   count: async (stream: string): Promise<number> => {
     return prisma.participant.count({
-      where: { stream },
+      where: { stream_id: stream },
     });
   },
 
   getWithRaisedHands: async (stream: string): Promise<IParticipant[]> => {
     const participants = await prisma.participant.findMany({
-      where: { stream, isRaisingHand: true, role: "viewer" },
+      where: { stream_id: stream, isRaisingHand: true, role: "viewer" },
       include: {
         user: true,
       },

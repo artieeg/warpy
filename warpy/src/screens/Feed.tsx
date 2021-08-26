@@ -1,4 +1,10 @@
-import {Avatar, StreamPreview, Button, Text} from '@app/components';
+import {
+  Avatar,
+  StreamPreview,
+  Button,
+  Text,
+  StartNewStreamButton,
+} from '@app/components';
 import {useAppUser, useFeed, usePreviewDimensions} from '@app/hooks';
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
@@ -11,13 +17,25 @@ export const Feed = () => {
 
   const {previewHeight, previewWidth} = usePreviewDimensions();
 
+  const navigation = useNavigation();
+
+  const onStartStream = () => {
+    navigation.navigate('NewStream');
+  };
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.header}>
         <Text size="large" weight="extraBold">
           /feed
         </Text>
-        <Avatar user={user!} />
+        <View style={styles.row}>
+          <StartNewStreamButton
+            style={styles.headerButton}
+            onPress={onStartStream}
+          />
+          <Avatar user={user!} />
+        </View>
       </View>
       <FlatList
         data={feed}
@@ -59,5 +77,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerButton: {
+    marginRight: 10,
   },
 });
