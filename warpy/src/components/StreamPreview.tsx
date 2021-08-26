@@ -1,50 +1,56 @@
 import {Stream} from '@app/models';
 import React from 'react';
 import Video from 'react-native-video';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Avatar} from './Avatar';
 import {ViewersCountPreview} from './ViewersCountPreview';
-import {Text} from './Text';
 import {StreamPreviewTitle} from './StreamPreviewTitle';
 
 interface IStreamPreviewProps {
   stream: Stream;
+  onPress: () => any;
   style: any;
 }
 
 export const StreamPreview = (props: IStreamPreviewProps) => {
-  const {style, stream} = props;
+  const {style, stream, onPress} = props;
   const {preview} = stream;
 
   return (
-    <View style={[styles.wrapper, style]}>
-      <Video
-        repeat
-        muted
-        paused={false}
-        resizeMode="cover"
-        source={{uri: preview}}
-        style={styles.video}
-      />
-      <View style={styles.info}>
-        <StreamPreviewTitle>{stream.title}</StreamPreviewTitle>
-        <View style={styles.participants}>
-          {stream.speakers.slice(0, 3).map((participant, index) => {
-            const userAvatarStyle = {
-              transform: [{translateX: -index * 3}],
-            };
+    <TouchableOpacity onPress={onPress}>
+      <View style={[styles.wrapper, style]}>
+        <Video
+          repeat
+          muted
+          paused={false}
+          resizeMode="cover"
+          source={{uri: preview}}
+          style={styles.video}
+        />
+        <View style={styles.info}>
+          <StreamPreviewTitle>{stream.title}</StreamPreviewTitle>
+          <View style={styles.participants}>
+            {stream.speakers.slice(0, 3).map((participant, index) => {
+              const userAvatarStyle = {
+                transform: [{translateX: -index * 3}],
+              };
 
-            return (
-              <Avatar size="small" style={userAvatarStyle} user={participant} />
-            );
-          })}
-          <ViewersCountPreview
-            count={stream.participants}
-            style={styles.viewersCount}
-          />
+              return (
+                <Avatar
+                  size="small"
+                  style={userAvatarStyle}
+                  user={participant}
+                />
+              );
+            })}
+            <ViewersCountPreview
+              count={stream.participants}
+              style={styles.viewersCount}
+            />
+          </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

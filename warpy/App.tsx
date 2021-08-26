@@ -1,7 +1,7 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {DevSignUp, Feed, NewStream, Splash} from './src/screens';
+import {DevSignUp, Feed, NewStream, Splash, Stream} from './src/screens';
 import {Provider} from 'react-redux';
 import {store} from '@app/store';
 import {StatusBar} from 'react-native';
@@ -22,6 +22,7 @@ const App = () => {
             <Stack.Screen name="DevSignUp" component={DevSignUp} />
             <Stack.Screen name="Feed" component={Feed} />
             <Stack.Screen name="NewStream" component={NewStream} />
+            <Stack.Screen name="Stream" component={Stream} />
           </Stack.Navigator>
         </NavigationContainer>
       </MediaStreamingProvider>

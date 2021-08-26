@@ -18,7 +18,7 @@ export const createPreviewsProducer = (
     recordParams: params,
     clip: {
       duration: 3000,
-      interval: 5000,
+      interval: 30000,
     },
   });
 
