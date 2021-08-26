@@ -7,10 +7,9 @@ import {FlatList, StyleSheet, useWindowDimensions, View} from 'react-native';
 export const Feed = () => {
   const feed = useFeed();
 
-  const navigation = useNavigation();
   const user = useAppUser();
 
-  const {previewHeight} = usePreviewDimensions();
+  const {previewHeight, previewWidth} = usePreviewDimensions();
 
   return (
     <View style={styles.wrapper}>
@@ -21,22 +20,28 @@ export const Feed = () => {
         <Avatar user={user!} />
       </View>
       <FlatList
-        data={[1, 2, 3, 4]}
+        data={feed}
         numColumns={2}
-        renderItem={({index}) => {
-          let style = {};
+        renderItem={({index, item}) => {
+          let style: any = {
+            maxWidth: previewWidth,
+            width: previewWidth,
+          };
 
           if (index === 1) {
-            style = {...style, height: previewHeight - 100};
+            style = {
+              ...style,
+              height: previewHeight - 100,
+            };
           } else {
-            style = {...style, height: previewHeight};
+            style = {...style, width: previewWidth, height: previewHeight};
           }
 
           if (index % 2 && index !== 1) {
             style = {...style, transform: [{translateY: -100}]};
           }
 
-          return <StreamPreview style={style} />;
+          return <StreamPreview stream={item} style={style} />;
         }}
       />
     </View>

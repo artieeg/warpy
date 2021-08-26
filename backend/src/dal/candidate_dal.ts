@@ -8,6 +8,7 @@ export const toCandidateDAL = (data: any): ICandidate => {
     owner: data.owner,
     title: data.title,
     hub: data.hub,
+    preview: data.preview,
   };
 };
 

@@ -15,7 +15,7 @@ const client = new S3({
 });
 
 const getUrlForObject = (filename: string) =>
-  `https://${bucket}.${region}.amazonaws.com/${filename}`;
+  `https://${bucket}.s3.${region}.amazonaws.com/${filename}`;
 
 const createPreviewsBucket = async () => {
   const buckets = await client.listBuckets({});
