@@ -1,12 +1,6 @@
-import { APIClient } from "@warpy/api";
 import { MediaClient } from "@warpykit-sdk/client";
 import { UserRecord } from "../types";
 import { createRecvTransport } from "../utils";
-
-type RoomParams = {
-  routerRtpCapabilities: any;
-  recvTransportOptions: any;
-};
 
 export const joinStream = async (streamId: string, record: UserRecord) => {
   const { api, recvDevice, sendDevice } = record;
@@ -37,14 +31,17 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
     record,
   });
 
-  //TODO: Consuming VP8 streams causes memory leak in aiortc apparently
-  const consumers = await record.media.consumeRemoteStreams(
-    record.user.id,
-    streamId,
-    transport
-  );
+  if (process.env.MODE === "LOADTEST") {
+    //TODO: Consuming VP8 streams causes memory leak in aiortc apparently
+    const consumers = await record.media.consumeRemoteStreams(
+      record.user.id,
+      streamId,
+      transport
+    );
 
-  record.consumers = consumers;
+    record.consumers = consumers;
+  }
+
   record.stream = streamId;
   record.role = "viewer";
 

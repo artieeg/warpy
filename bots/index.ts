@@ -36,6 +36,10 @@ const runSpeaker = async (stream?: string) => {
 };
 
 const main = async () => {
+  console.log(
+    `Running bots in loadtest mode = ${process.env.MODE === "loadtest"}`
+  );
+
   await initMediasoupWorker();
 
   for (let i = 0; i < config.streams; i++) {
