@@ -1,5 +1,4 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
 import {ClapButton} from './ClapsButton';
 import {WarpButton} from './WarpButton';
 import {RaiseHandButton} from './RaiseHandButton';
@@ -17,10 +16,9 @@ export const ViewerStreamPanel = (props: IRemoteStreamPanel) => {
 
   return (
     <StreamPanelBase {...props}>
-      <WarpButton style={styles.spaceRight} />
+      <WarpButton />
       <ClapButton />
       <ShowParticipantsButton
-        style={styles.spaceRight}
         count={participantsCount}
         onOpenParticipantsList={onOpenParticipantsList}
       />
@@ -28,9 +26,3 @@ export const ViewerStreamPanel = (props: IRemoteStreamPanel) => {
     </StreamPanelBase>
   );
 };
-
-const styles = StyleSheet.create({
-  spaceRight: {
-    marginRight: 10,
-  },
-});

@@ -3,7 +3,9 @@ import TextTicker from 'react-native-text-ticker';
 import {styles} from './Text';
 
 interface IPreviewTitleProps {
+  size?: 'xsmall' | 'medium';
   children: string;
+  style?: any;
 }
 
 const style = {
@@ -14,7 +16,12 @@ const style = {
 export const StreamPreviewTitle = (props: IPreviewTitleProps) => {
   return (
     <TextTicker
-      style={[styles.xsmall, styles.bold, styles.bright, style]}
+      style={[
+        styles[props.size || 'xsmall'],
+        styles.bold,
+        styles.bright,
+        style,
+      ]}
       duration={props.children.length * 200}
       loop
       bounce

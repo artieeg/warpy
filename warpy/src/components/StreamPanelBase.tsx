@@ -1,11 +1,11 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, Animated} from 'react-native';
 import {Speakers} from './Speakers';
 import {Participant} from '@app/models';
-import {Text} from './Text';
+import {ToggleControls} from './ToggleControls';
+import {PanelButtonsHolder} from './PanelButtonsHolder';
 
 export interface IStreamPanelBase {
-  title: string;
   visible: boolean;
   speakers: Participant[];
 }
@@ -15,7 +15,9 @@ interface IStreamPanelBaseProps extends IStreamPanelBase {
 }
 
 export const StreamPanelBase = (props: IStreamPanelBaseProps) => {
-  const {title, visible, speakers, children} = props;
+  const {visible, speakers, children} = props;
+
+  const [showPanelItems, setShowPanelItems] = useState(true);
 
   const opacity = useRef(new Animated.Value(1));
   const scale = useRef(new Animated.Value(1));
@@ -42,29 +44,30 @@ export const StreamPanelBase = (props: IStreamPanelBaseProps) => {
         duration: 300,
       }),
     ]).start();
-    //opacity.value = visible ? 1 : 0.0;
-    //scale.value = visible ? 1 : 0.9;
   }, [visible]);
 
   return (
     <Animated.View style={[styles.bottom, animatedStyle]}>
-      <View style={styles.speakersAndTitle}>
-        <Text style={styles.title} size="large" weight="bold">
-          {title}
-        </Text>
-        <View>
-          <Speakers speakers={speakers} style={styles.speakers} />
-        </View>
-      </View>
+      <PanelButtonsHolder
+        hideDirection="left"
+        visible={showPanelItems}
+        style={styles.participants}>
+        <Speakers speakers={speakers} style={styles.speakers} />
+        {children[2]}
+      </PanelButtonsHolder>
       <View style={styles.buttons}>
-        <View style={[styles.buttonRow, styles.upperButtonRow]}>
+        <PanelButtonsHolder hideDirection="bottom" visible={showPanelItems}>
           {children[0]}
+          <View style={styles.space} />
           {children[1]}
-        </View>
-        <View style={styles.buttonRow}>
-          {children[2]}
+          <View style={styles.space} />
           {children[3]}
-        </View>
+          <View style={styles.space} />
+        </PanelButtonsHolder>
+        <ToggleControls
+          show={showPanelItems}
+          onPress={() => setShowPanelItems(prev => !prev)}
+        />
       </View>
     </Animated.View>
   );
@@ -94,8 +97,14 @@ const styles = StyleSheet.create({
   buttons: {
     alignItems: 'flex-end',
   },
-  speakersAndTitle: {
+  participants: {
     flex: 1,
+    alignItems: 'flex-end',
+    paddingRight: 10,
+    flexDirection: 'row',
   },
   title: {flex: 1},
+  space: {
+    height: 10,
+  },
 });
