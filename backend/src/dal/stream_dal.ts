@@ -10,7 +10,7 @@ export interface IStream {
   title: string;
 }
 
-export const toStreamDTO = (data: any): IStream => {
+export const toStreamDTO = (data: Stream): IStream => {
   return {
     id: data.id,
     owner: data.owner,

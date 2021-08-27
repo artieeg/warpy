@@ -6,5 +6,7 @@ export const onStreamStop: MessageHandler<IStopStream> = async (data) => {
 
   try {
     await StreamService.stopStream(user);
-  } catch (e) {}
+  } catch (e) {
+    console.error(e);
+  }
 };

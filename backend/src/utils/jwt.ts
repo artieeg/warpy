@@ -6,14 +6,14 @@ if (!secret) {
   throw new Error("no jwt secret");
 }
 
-export const createToken = (sub: string, expiresIn: string) => {
+export const createToken = (sub: string, expiresIn: string): string => {
   return jsonwebtoken.sign({ sub }, secret, { expiresIn });
 };
 
-export const verifyAccessToken = (token: string) => {
+export const verifyAccessToken = (token: string): string => {
   const { sub } = jsonwebtoken.verify(token, secret, {
     ignoreExpiration: true, //TODO: Remove
-  }) as any;
+  });
 
-  return sub;
+  return sub as string;
 };

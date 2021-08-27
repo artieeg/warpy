@@ -10,6 +10,8 @@ import {
   IMediaPermissions,
   MediaServiceRole,
   IConnectRecvTransportParams,
+  INewMediaRoomData,
+  INewSpeakerMediaResponse,
 } from "@warpy/lib";
 import { MessageService } from ".";
 import jwt from "jsonwebtoken";
@@ -20,14 +22,18 @@ const client = redis.createClient({
   url: URL,
 });
 
-export const init = async () => {};
-
 const getSetNameFromRole = (role: MediaServiceRole) => {
   return role === "CONSUMER" ? "consumers" : "producers";
 };
 
-export const createPermissionsToken = (permissions: IMediaPermissions) => {
-  return jwt.sign(permissions, process.env.MEDIA_JWT_SECRET!, {
+export const createPermissionsToken = (
+  permissions: IMediaPermissions
+): string => {
+  if (!process.env.MEDIA_JWT_SECRET) {
+    throw new Error("MEDIA_JWT_SECRET is not set");
+  }
+
+  return jwt.sign(permissions, process.env.MEDIA_JWT_SECRET, {
     expiresIn: 60,
   });
 };
@@ -36,7 +42,9 @@ export const createPermissionsToken = (permissions: IMediaPermissions) => {
  * When a new media server node goes online,
  * add it to a corresponding PRODUCER/CONSUMER list
  */
-export const handleNewOnlineNode = async (data: INewMediaNode) => {
+export const handleNewOnlineNode = async (
+  data: INewMediaNode
+): Promise<void> => {
   const { id, role } = data;
 
   const setOfNodes = getSetNameFromRole(role);
@@ -58,13 +66,11 @@ const getNodeIdsWithRole = (role: MediaServiceRole) => {
   });
 };
 
-type NodeID = string | null;
-
 /**
  * Returns a producer node id.
  * Currently random
  */
-export const getProducerNodeId = async () => {
+export const getProducerNodeId = async (): Promise<string> => {
   const producerIds = await getNodeIdsWithRole("PRODUCER");
 
   if (producerIds.length === 0) {
@@ -78,7 +84,7 @@ export const getProducerNodeId = async () => {
  * Returns a consumer node id.
  * Currently random
  */
-export const getConsumerNodeId = async () => {
+export const getConsumerNodeId = async (): Promise<string> => {
   const consumerIds = await getNodeIdsWithRole("CONSUMER");
 
   if (consumerIds.length === 0) {
@@ -91,22 +97,30 @@ export const getConsumerNodeId = async () => {
 /**
  * Remember which consumer node the user is connected to.
  */
-export const assignUserToNode = async (user: string, node: string) => {
+export const assignUserToNode = async (
+  user: string,
+  node: string
+): Promise<void> => {
   client.set(`user_${user}`, node);
 };
 
 /**
  * Remember which producer node hosts the room
  */
-export const assignRoomToNode = async (room: string, node: string) => {
+export const assignRoomToNode = async (
+  room: string,
+  node: string
+): Promise<void> => {
   client.set(`room_${room}`, node);
 };
 
 /**
  * Get assigned consumer node for the user
  */
-export const getConsumerNodeFor = async (user: string) => {
-  return new Promise<string | null>((resolve, _reject) => {
+export const getConsumerNodeFor = async (
+  user: string
+): Promise<string | null> => {
+  return new Promise((resolve) => {
     client.get(`user_${user}`, (err, node) => {
       if (err) {
         console.error(err);
@@ -118,7 +132,10 @@ export const getConsumerNodeFor = async (user: string) => {
   });
 };
 
-export const createRoom = async (host: string, roomId: string) => {
+export const createRoom = async (
+  host: string,
+  roomId: string
+): Promise<INewMediaRoomData> => {
   const media = await MessageService.createMediaRoom({
     host: host,
     roomId,
@@ -127,7 +144,10 @@ export const createRoom = async (host: string, roomId: string) => {
   return media;
 };
 
-export const connectSpeakerMedia = async (speaker: string, stream: string) => {
+export const connectSpeakerMedia = async (
+  speaker: string,
+  stream: string
+): Promise<INewSpeakerMediaResponse> => {
   const media = await MessageService.connectSpeakerMedia({
     speaker,
     roomId: stream,
@@ -146,5 +166,5 @@ export const joinRoom = async (
     roomId,
   });
 
-  return mediaRecvParams as any;
+  return mediaRecvParams as IConnectRecvTransportParams;
 };

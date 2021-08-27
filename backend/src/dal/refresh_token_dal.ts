@@ -1,7 +1,7 @@
 import { prisma } from "./client";
 
 export const RefreshTokenDAL = {
-  create: async (token: string) => {
+  async create(token: string): Promise<void> {
     await prisma.refreshToken.create({
       data: {
         token,

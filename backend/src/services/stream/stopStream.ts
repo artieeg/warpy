@@ -1,7 +1,7 @@
 import { ParticipantDAL, StreamDAL } from "@backend/dal";
 import { FeedService } from "..";
 
-export const stopStream = async (user: string) => {
+export const stopStream = async (user: string): Promise<void> => {
   const stream = await StreamDAL.findByOwnerIdLive(user);
 
   if (!stream) {

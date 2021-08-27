@@ -2,7 +2,7 @@ import { Candidate } from "@prisma/client";
 import { ICandidate } from "@warpy/lib";
 import { prisma } from "./client";
 
-export const toCandidateDTO = (data: any): ICandidate => {
+export const toCandidateDTO = (data: Candidate): ICandidate => {
   return {
     id: data.id,
     owner: data.owner,
@@ -23,15 +23,15 @@ export const CandidateDAL = {
     return toCandidateDTO(candidate);
   },
 
-  deleteById: async (id: string) => {
+  async deleteById(id: string): Promise<void> {
     await prisma.candidate.delete({ where: { id } });
   },
 
-  deleteByOwner: async (owner: string) => {
+  async deleteByOwner(owner: string): Promise<void> {
     await prisma.candidate.delete({ where: { owner } });
   },
 
-  getAll: async (): Promise<ICandidate[]> => {
+  async getAll(): Promise<ICandidate[]> {
     const result = await prisma.candidate.findMany({
       where: { preview: { not: null } },
     });
@@ -39,8 +39,8 @@ export const CandidateDAL = {
     return result.map(toCandidateDTO);
   },
 
-  setPreviewClip: async (stream: string, preview: string) => {
-    const result = await prisma.candidate.update({
+  async setPreviewClip(stream: string, preview: string): Promise<void> {
+    await prisma.candidate.update({
       where: { id: stream },
       data: {
         preview,

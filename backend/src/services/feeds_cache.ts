@@ -1,6 +1,5 @@
 import redis from "redis";
 import { promisify } from "util";
-import { MessageService } from ".";
 
 const URL = process.env.FEEDS_CACHE || "redis://127.0.0.1:6375/1";
 
@@ -34,12 +33,12 @@ const addServedStream = async (user: string, streamId: string) => {
 export const addServedStreams = async (
   user: string,
   servedStreams: string[]
-) => {
+): Promise<void> => {
   const promises = servedStreams.map((id) => addServedStream(user, id));
 
   await Promise.all(promises);
 };
 
-export const removeServedStreams = async (user: string) => {
+export const removeServedStreams = async (user: string): Promise<void> => {
   client.del(user);
 };

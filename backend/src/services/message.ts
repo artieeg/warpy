@@ -10,7 +10,6 @@ import {
   INewSpeakerMediaResponse,
   IRecvTracksRequest,
   IRecvTracksResponse,
-  MessageHandler,
   subjects,
 } from "@warpy/lib";
 
@@ -47,40 +46,46 @@ const subscribeTo = async (subject: Subject) => {
   const sub = nc.subscribe(subject);
 
   for await (const msg of sub) {
-    const message = jc.decode(msg.data) as any;
-    eventEmitter.emit(SubjectEventMap[subject], message, (response: any) => {
-      msg.respond(jc.encode(response));
-    });
+    const message = jc.decode(msg.data);
+    eventEmitter.emit(
+      SubjectEventMap[subject],
+      message,
+      (response: unknown) => {
+        msg.respond(jc.encode(response));
+      }
+    );
   }
 };
 
-export const handleMessages = () => {
+export const handleMessages = (): void => {
   Object.keys(SubjectEventMap).forEach((key) => {
     subscribeTo(key as Subject);
   });
 };
 
-export const init = async () => {
+export const init = async (): Promise<void> => {
   nc = await connect({ servers: [NATS] });
 
   handleMessages();
 };
 
-type Events = typeof SubjectEventMap[Subject];
-
-export const on = (event: Events, handler: MessageHandler<any, any>) => {
-  eventEmitter.on(event, handler);
-};
+export const on = eventEmitter.on;
 
 const _sendMessage = async (user: string, message: Uint8Array) => {
   nc.publish(`reply.user.${user}`, message);
 };
 
-export const sendMessage = async (user: string, message: any) => {
+export const sendMessage = async (
+  user: string,
+  message: unknown
+): Promise<void> => {
   _sendMessage(user, jc.encode(message));
 };
 
-export const sendMessageBroadcast = async (users: string[], message: any) => {
+export const sendMessageBroadcast = async (
+  users: string[],
+  message: unknown
+): Promise<void> => {
   const encodedMessage = jc.encode(message);
 
   users.forEach((user) => _sendMessage(user, encodedMessage));
@@ -126,7 +131,7 @@ export const connectSpeakerMedia = async (
 export const sendConnectTransport = async (
   node: string,
   data: IConnectMediaTransport
-) => {
+): Promise<void> => {
   nc.publish(
     data.direction === "send"
       ? subjects.media.transport.connect_producer
@@ -135,13 +140,16 @@ export const sendConnectTransport = async (
   );
 };
 
-export const sendNewTrack = async (data: INewMediaTrack) => {
+export const sendNewTrack = async (data: INewMediaTrack): Promise<void> => {
   const m = jc.encode(data);
 
   nc.publish(subjects.media.track.send, m);
 };
 
-export const joinMediaRoom = async (node: string, data: IJoinMediaRoom) => {
+export const joinMediaRoom = async (
+  node: string,
+  data: IJoinMediaRoom
+): Promise<unknown> => {
   const m = jc.encode(data);
 
   const response = await nc.request(`${subjects.media.peer.join}.${node}`, m, {

@@ -1,7 +1,7 @@
 import { ParticipantDAL, StreamDAL } from "@backend/dal";
 import { BroadcastService, FeedsCacheService, FeedService } from "..";
 
-export const removeUser = async (user: string) => {
+export const removeUser = async (user: string): Promise<void> => {
   const stream = await ParticipantDAL.getCurrentStreamFor(user);
 
   try {
@@ -9,7 +9,9 @@ export const removeUser = async (user: string) => {
       //Stops the stream if the user is host
       try {
         await StreamDAL.stopStream(stream);
-      } catch {}
+      } catch (e) {
+        console.error(e);
+      }
 
       BroadcastService.broadcastParticipantLeft(user, stream);
     }
@@ -19,5 +21,7 @@ export const removeUser = async (user: string) => {
       FeedService.removeCandidateByOwner(user),
       ParticipantDAL.deleteParticipant(user),
     ]);
-  } catch (e) {}
+  } catch (e) {
+    console.error(e);
+  }
 };

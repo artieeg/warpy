@@ -3,8 +3,8 @@ import { ICandidate } from "@warpy/lib";
 import { CandidateDAL, IStream, ParticipantDAL } from "@backend/dal";
 
 export const getFeed = async (
-  user: string,
-  hub?: string
+  user: string
+  //hub?: string
 ): Promise<ICandidate[]> => {
   const candidates: ICandidate[] = await CandidateDAL.getAll();
 
@@ -24,7 +24,7 @@ export const getFeed = async (
   return feed;
 };
 
-export const addNewCandidate = async (data: IStream) => {
+export const addNewCandidate = async (data: IStream): Promise<void> => {
   const { id, title, hub, owner: ownerId } = data;
 
   await CandidateDAL.create({
@@ -36,10 +36,10 @@ export const addNewCandidate = async (data: IStream) => {
   });
 };
 
-export const removeCandidate = async (id: string) => {
+export const removeCandidate = async (id: string): Promise<void> => {
   await CandidateDAL.deleteById(id);
 };
 
-export const removeCandidateByOwner = async (user: string) => {
+export const removeCandidateByOwner = async (user: string): Promise<void> => {
   await CandidateDAL.deleteByOwner(user);
 };

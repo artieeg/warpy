@@ -1,7 +1,10 @@
 import { ParticipantDAL } from "@backend/dal";
 import { BroadcastService, MediaService, MessageService } from "..";
 
-export const allowSpeaker = async (speaker: string, host: string) => {
+export const allowSpeaker = async (
+  speaker: string,
+  host: string
+): Promise<void> => {
   const stream = await ParticipantDAL.getCurrentStreamFor(host);
 
   if (!stream) {

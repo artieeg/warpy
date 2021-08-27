@@ -23,24 +23,23 @@ export const toUserDTO = (data: User, includeDetails: boolean): IUser => {
 };
 
 export const UserDAL = {
-  createNewUser: async (data: NewUserParams): Promise<User> => {
+  async createNewUser(data: NewUserParams): Promise<User> {
     const user = await prisma.user.create({
       data,
     });
 
     return user;
   },
-  findById: async (
-    id: string,
-    details: boolean = false
-  ): Promise<IUser | null> => {
+
+  async findById(id: string, details = false): Promise<IUser | null> {
     const user = await prisma.user.findUnique({
       where: { id },
     });
 
     return user ? toUserDTO(user, details) : null;
   },
-  deleteById: (id: string): Promise<User> => {
+
+  async deleteById(id: string): Promise<User> {
     return prisma.user.delete({ where: { id } });
   },
 };

@@ -1,8 +1,19 @@
 import { IParticipant, Roles } from "@warpy/lib";
 import { prisma } from "./client";
+import { Participant, User } from "@prisma/client";
 import { toUserDTO } from "./user_dal";
 
-export const toParticipantDTO = (data: any): IParticipant => {
+export const toParticipantDTO = (
+  data: (Participant & { user?: User }) | null
+): IParticipant => {
+  if (!data) {
+    throw new Error("Participant is null");
+  }
+
+  if (!data.user) {
+    throw new Error("Participant's user data is null");
+  }
+
   return {
     ...toUserDTO(data.user, false),
     stream: data.stream_id,
@@ -67,20 +78,6 @@ export const ParticipantDAL = {
     return toParticipantDTO(participant);
   },
 
-  setParticipantRole: async (
-    user: string,
-    role: Roles
-  ): Promise<IParticipant> => {
-    const participant = await prisma.participant.update({
-      where: { id: user },
-      data: {
-        role,
-      },
-    });
-
-    return toParticipantDTO(participant);
-  },
-
   deleteParticipant: async (id: string): Promise<IParticipant> => {
     const result = await prisma.participant.delete({
       where: { user_id: id },
@@ -103,13 +100,13 @@ export const ParticipantDAL = {
     return participants.map(toParticipantDTO);
   },
 
-  deleteParticipantsByStream: async (stream: string) => {
+  async deleteParticipantsByStream(stream: string): Promise<void> {
     prisma.participant.deleteMany({
       where: { stream_id: stream },
     });
   },
 
-  getCurrentStreamFor: async (user: string): Promise<string | null> => {
+  async getCurrentStreamFor(user: string): Promise<string | null> {
     const result = await prisma.participant.findUnique({
       where: { user_id: user },
       select: { stream_id: true },
@@ -118,7 +115,7 @@ export const ParticipantDAL = {
     return result?.stream_id || null;
   },
 
-  setCurrentStreamFor: async (user: string, stream: string) => {
+  async setCurrentStreamFor(user: string, stream: string): Promise<void> {
     await prisma.participant.update({
       where: { user_id: user },
       data: {
@@ -127,7 +124,7 @@ export const ParticipantDAL = {
     });
   },
 
-  getRoleFor: async (user: string, stream: string): Promise<string | null> => {
+  async getRoleFor(user: string, stream: string): Promise<string | null> {
     const result = await prisma.participant.findUnique({
       where: { stream_participant_index: { user_id: user, stream_id: stream } },
       select: { role: true },

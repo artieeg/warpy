@@ -5,7 +5,7 @@ export interface ICandidate {
   owner: string;
   title: string;
   hub: string;
-  preview: string;
+  preview: string | null;
   participants: number;
   speakers: Participant[];
 }

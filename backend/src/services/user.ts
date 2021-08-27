@@ -1,10 +1,19 @@
 import { jwt } from "@backend/utils";
 import { IUser, ParticipantDAL, RefreshTokenDAL, UserDAL } from "@backend/dal";
+import { INewUser } from "@warpy/lib";
+
+type NewUserResponse = {
+  id: string;
+  access: string;
+  refresh: string;
+};
 
 /*
  * Creates a dev account. Should be disabled in production
  * */
-export const createDevUser = async (data: any) => {
+export const createDevUser = async (
+  data: INewUser
+): Promise<NewUserResponse> => {
   const { username, last_name, first_name, email } = data;
 
   const user = await UserDAL.createNewUser({
@@ -28,7 +37,7 @@ export const createDevUser = async (data: any) => {
   };
 };
 
-export const deleteUser = async (user: string) => {
+export const deleteUser = async (user: string): Promise<void> => {
   await ParticipantDAL.deleteParticipant(user);
   await UserDAL.deleteById(user);
 };

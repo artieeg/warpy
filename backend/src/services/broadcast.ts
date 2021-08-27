@@ -6,7 +6,9 @@ const getParticipantIds = (participants: IParticipant[]) => {
   return participants.map((p) => p.id);
 };
 
-export const broadcastNewSpeaker = async (speaker: IParticipant) => {
+export const broadcastNewSpeaker = async (
+  speaker: IParticipant
+): Promise<void> => {
   const { stream } = speaker;
 
   const users = await ParticipantDAL.getParticipantsByStream(stream);
@@ -20,7 +22,9 @@ export const broadcastNewSpeaker = async (speaker: IParticipant) => {
   });
 };
 
-export const broadcastRaiseHand = async (viewer: IParticipant) => {
+export const broadcastRaiseHand = async (
+  viewer: IParticipant
+): Promise<void> => {
   const { stream } = viewer;
 
   const users = await ParticipantDAL.getParticipantsByStream(stream);
@@ -37,7 +41,7 @@ export const broadcastRaiseHand = async (viewer: IParticipant) => {
 export const broadcastParticipantLeft = async (
   user: string,
   stream: string
-) => {
+): Promise<void> => {
   const users = await ParticipantDAL.getParticipantsByStream(stream);
 
   await MessageService.sendMessageBroadcast(getParticipantIds(users), {
@@ -49,7 +53,9 @@ export const broadcastParticipantLeft = async (
   });
 };
 
-export const broadcastNewViewer = async (viewer: IParticipant) => {
+export const broadcastNewViewer = async (
+  viewer: IParticipant
+): Promise<void> => {
   const { stream } = viewer;
   console.log("viewerw", viewer);
   const users = await ParticipantDAL.getParticipantsByStream(stream);
@@ -64,7 +70,9 @@ export const broadcastNewViewer = async (viewer: IParticipant) => {
   });
 };
 
-export const broadcastActiveSpeakers = async (speaker: IParticipant) => {
+export const broadcastActiveSpeakers = async (
+  speaker: IParticipant
+): Promise<void> => {
   const users = await ParticipantDAL.getParticipantsByStream(speaker.stream);
 
   await MessageService.sendMessageBroadcast(getParticipantIds(users), {
