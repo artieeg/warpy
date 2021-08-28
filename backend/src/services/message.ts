@@ -63,97 +63,96 @@ export const handleMessages = (): void => {
   });
 };
 
-export const init = async (): Promise<void> => {
-  nc = await connect({ servers: [NATS] });
-
-  handleMessages();
-};
-
-export const on = eventEmitter.on;
-
 const _sendMessage = async (user: string, message: Uint8Array) => {
   nc.publish(`reply.user.${user}`, message);
 };
 
-export const sendMessage = async (
-  user: string,
-  message: unknown
-): Promise<void> => {
-  _sendMessage(user, jc.encode(message));
-};
+export const MessageService = {
+  async init(): Promise<void> {
+    nc = await connect({ servers: [NATS] });
 
-export const sendMessageBroadcast = async (
-  users: string[],
-  message: unknown
-): Promise<void> => {
-  const encodedMessage = jc.encode(message);
+    handleMessages();
+  },
 
-  users.forEach((user) => _sendMessage(user, encodedMessage));
-};
+  on: eventEmitter.on,
 
-export const createMediaRoom = async (
-  data: ICreateMediaRoom
-): Promise<INewMediaRoomData> => {
-  const m = jc.encode(data);
+  async sendMessage(user: string, message: unknown): Promise<void> {
+    _sendMessage(user, jc.encode(message));
+  },
 
-  const reply = await nc.request(subjects.media.room.create, m, {
-    timeout: 60000,
-  });
+  async sendMessageBroadcast(users: string[], message: unknown): Promise<void> {
+    const encodedMessage = jc.encode(message);
 
-  return jc.decode(reply.data) as INewMediaRoomData;
-};
+    users.forEach((user) => _sendMessage(user, encodedMessage));
+  },
 
-export const getRecvTracks = async (
-  node: string,
-  data: IRecvTracksRequest
-): Promise<IRecvTracksResponse> => {
-  const m = jc.encode(data);
+  async createMediaRoom(data: ICreateMediaRoom): Promise<INewMediaRoomData> {
+    const m = jc.encode(data);
 
-  const reply = await nc.request(`${subjects.media.track.getRecv}.${node}`, m, {
-    timeout: 60000,
-  });
+    const reply = await nc.request(subjects.media.room.create, m, {
+      timeout: 60000,
+    });
 
-  return jc.decode(reply.data) as IRecvTracksResponse;
-};
+    return jc.decode(reply.data) as INewMediaRoomData;
+  },
 
-export const connectSpeakerMedia = async (
-  data: IConnectNewSpeakerMedia
-): Promise<INewSpeakerMediaResponse> => {
-  const m = jc.encode(data);
+  async getRecvTracks(
+    node: string,
+    data: IRecvTracksRequest
+  ): Promise<IRecvTracksResponse> {
+    const m = jc.encode(data);
 
-  const reply = await nc.request(subjects.media.peer.makeSpeaker, m, {
-    timeout: 60000,
-  });
+    const reply = await nc.request(
+      `${subjects.media.track.getRecv}.${node}`,
+      m,
+      {
+        timeout: 60000,
+      }
+    );
 
-  return jc.decode(reply.data) as INewSpeakerMediaResponse;
-};
+    return jc.decode(reply.data) as IRecvTracksResponse;
+  },
 
-export const sendConnectTransport = async (
-  node: string,
-  data: IConnectMediaTransport
-): Promise<void> => {
-  nc.publish(
-    data.direction === "send"
-      ? subjects.media.transport.connect_producer
-      : `${subjects.media.transport.connect_consumer}.${node}`,
-    jc.encode(data)
-  );
-};
+  async connectSpeakerMedia(
+    data: IConnectNewSpeakerMedia
+  ): Promise<INewSpeakerMediaResponse> {
+    const m = jc.encode(data);
 
-export const sendNewTrack = async (data: INewMediaTrack): Promise<void> => {
-  const m = jc.encode(data);
+    const reply = await nc.request(subjects.media.peer.makeSpeaker, m, {
+      timeout: 60000,
+    });
 
-  nc.publish(subjects.media.track.send, m);
-};
+    return jc.decode(reply.data) as INewSpeakerMediaResponse;
+  },
 
-export const joinMediaRoom = async (
-  node: string,
-  data: IJoinMediaRoom
-): Promise<unknown> => {
-  const m = jc.encode(data);
+  async sendConnectTransport(
+    node: string,
+    data: IConnectMediaTransport
+  ): Promise<void> {
+    nc.publish(
+      data.direction === "send"
+        ? subjects.media.transport.connect_producer
+        : `${subjects.media.transport.connect_consumer}.${node}`,
+      jc.encode(data)
+    );
+  },
 
-  const response = await nc.request(`${subjects.media.peer.join}.${node}`, m, {
-    timeout: 60000,
-  });
-  return jc.decode(response.data);
+  async sendNewTrack(data: INewMediaTrack): Promise<void> {
+    const m = jc.encode(data);
+
+    nc.publish(subjects.media.track.send, m);
+  },
+
+  async joinMediaRoom(node: string, data: IJoinMediaRoom): Promise<unknown> {
+    const m = jc.encode(data);
+
+    const response = await nc.request(
+      `${subjects.media.peer.join}.${node}`,
+      m,
+      {
+        timeout: 60000,
+      }
+    );
+    return jc.decode(response.data);
+  },
 };

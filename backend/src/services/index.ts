@@ -1,7 +1,7 @@
-export * as UserService from "./user";
-export * as StreamService from "./stream";
-export * as FeedService from "./feed";
-export * as FeedsCacheService from "./feeds_cache";
-export * as MediaService from "./media";
-export * as MessageService from "./message";
-export * as BroadcastService from "./broadcast";
+export * from "./stream";
+export * from "./user";
+export * from "./feed";
+export * from "./broadcast";
+export * from "./feed_cache";
+export * from "./media";
+export * from "./message";

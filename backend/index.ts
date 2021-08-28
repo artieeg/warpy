@@ -16,6 +16,7 @@ import {
   onActiveSpeakers,
   onUserDelete,
   onNewStreamPreview,
+  onNewOnlineNode,
 } from "@backend/handlers";
 
 const main = async () => {
@@ -35,7 +36,7 @@ const main = async () => {
   MessageService.on("user-delete", onUserDelete);
   MessageService.on("new-stream-preview", onNewStreamPreview);
 
-  MessageService.on("new-media-node", MediaService.handleNewOnlineNode);
+  MessageService.on("new-media-node", onNewOnlineNode);
   console.log(":>");
 };
 

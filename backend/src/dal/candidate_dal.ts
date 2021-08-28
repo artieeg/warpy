@@ -31,9 +31,9 @@ export const CandidateDAL = {
     await prisma.candidate.delete({ where: { owner } });
   },
 
-  async getAll(): Promise<ICandidate[]> {
+  async getAll(hub?: string): Promise<ICandidate[]> {
     const result = await prisma.candidate.findMany({
-      where: { preview: { not: null } },
+      where: { preview: { not: null }, hub },
     });
 
     return result.map(toCandidateDTO);

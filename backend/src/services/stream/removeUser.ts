@@ -1,5 +1,5 @@
 import { ParticipantDAL, StreamDAL } from "@backend/dal";
-import { BroadcastService, FeedsCacheService, FeedService } from "..";
+import { BroadcastService, FeedCacheService, FeedService } from "..";
 
 export const removeUser = async (user: string): Promise<void> => {
   const stream = await ParticipantDAL.getCurrentStreamFor(user);
@@ -17,7 +17,7 @@ export const removeUser = async (user: string): Promise<void> => {
     }
 
     await Promise.all([
-      FeedsCacheService.removeServedStreams(user),
+      FeedCacheService.removeServedStreams(user),
       FeedService.removeCandidateByOwner(user),
       ParticipantDAL.deleteParticipant(user),
     ]);
