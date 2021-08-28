@@ -16,7 +16,7 @@ export const createNewStream = async (
     MediaService.getProducerNodeId(),
   ]);
 
-  if (!recvMediaNode || !streamer || !sendMediaNode) {
+  if (!streamer) {
     throw new Error();
   }
 
@@ -33,10 +33,7 @@ export const createNewStream = async (
     Participant.fromUser(streamer, "streamer", stream.id.toString()),
   ];
 
-  await Promise.all([
-    ParticipantDAL.createNewParticipant(streamer.id, stream.id, "streamer"),
-    ParticipantDAL.setCurrentStreamFor(owner, stream.id),
-  ]);
+  await ParticipantDAL.createNewParticipant(streamer.id, stream.id, "streamer");
 
   const media = await MediaService.createRoom(owner, stream.id);
 

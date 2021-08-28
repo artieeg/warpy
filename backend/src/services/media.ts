@@ -20,17 +20,15 @@ const getSetNameFromRole = (role: MediaServiceRole) => {
   return role === "CONSUMER" ? "consumers" : "producers";
 };
 
+const secret = process.env.MEDIA_JWT_SECRET || "test-secret";
+
 /**
  * Keeps track of online producer & consumer media nodes
  * Assigns participants to random producer and consumer nodes
  */
 export const MediaService = {
   createPermissionsToken(permissions: IMediaPermissions): string {
-    if (!process.env.MEDIA_JWT_SECRET) {
-      throw new Error("MEDIA_JWT_SECRET is not set");
-    }
-
-    return jwt.sign(permissions, process.env.MEDIA_JWT_SECRET, {
+    return jwt.sign(permissions, secret, {
       expiresIn: 60,
     });
   },
