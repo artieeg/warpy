@@ -1,6 +1,5 @@
 import redis from "redis";
 import {
-  INewMediaNode,
   IMediaPermissions,
   MediaServiceRole,
   IConnectRecvTransportParams,

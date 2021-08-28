@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import "module-alias/register";
 
-import { MediaService, MessageService } from "@backend/services";
+import { MessageService } from "@backend/services";
 import {
   onNewStream,
   onJoinStream,
