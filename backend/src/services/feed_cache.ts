@@ -14,7 +14,8 @@ export const FeedCacheService = {
   async getServedStreams(user: string): Promise<string[]> {
     try {
       return await smembers(user);
-    } catch {
+    } catch (e) {
+      console.error(e);
       return [];
     }
   },

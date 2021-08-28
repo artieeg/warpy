@@ -1,5 +1,4 @@
-import { Roles, IParticipant } from "@warpy/lib";
-import { MessageService } from ".";
+import { Roles } from "@warpy/lib";
 import { User, Participant } from "@backend/models";
 
 export const unsetRaiseHand = async (user: string): Promise<void> => {
@@ -105,8 +104,4 @@ export const getUsersWithRaisedHands = async (
   stream: string
 ): Promise<Participant[]> => {
   return Participant.getViewersWithRaisedHands(stream);
-};
-
-const getParticipantIds = (participants: Participant[]) => {
-  return participants.map((p) => p.user.id);
 };

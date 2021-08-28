@@ -1,4 +1,5 @@
 import { IStream, IUser } from "@backend/dal";
+import { IConnectRecvTransportParams, IParticipant } from "@warpy/lib";
 
 export const createStreamFixture = (data: Partial<IStream>): IStream => {
   return {
@@ -22,3 +23,27 @@ export const createUserFixture = (data: Partial<IUser>): IUser => {
     ...data,
   };
 };
+
+export const createParticipantFixture = (
+  data: Partial<IParticipant>
+): IParticipant => ({
+  ...createUserFixture(data),
+  stream: "test-stream-id",
+  role: "viewer",
+  isRaisingHand: false,
+  ...data,
+});
+
+export const createRecvTransportParamsFixture = (
+  data: Partial<IConnectRecvTransportParams>
+): IConnectRecvTransportParams => ({
+  roomId: "test-room-id",
+  user: "test-user-id",
+  routerRtpCapabilities: {
+    test: true,
+  },
+  recvTransportOptions: {
+    test: true,
+  },
+  ...data,
+});

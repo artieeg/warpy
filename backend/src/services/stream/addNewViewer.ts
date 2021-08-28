@@ -11,7 +11,7 @@ export const addNewViewer = async (
     MediaService.getConsumerNodeId(),
   ]);
 
-  if (!viewer || !recvNodeId) {
+  if (!viewer) {
     throw new Error();
   }
 
@@ -27,7 +27,7 @@ export const addNewViewer = async (
     stream
   );
 
-  await Promise.all([BroadcastService.broadcastNewViewer(participant)]);
+  await BroadcastService.broadcastNewViewer(participant);
 
   const [speakers, raisedHands, count] = await Promise.all([
     ParticipantDAL.getSpeakers(stream),

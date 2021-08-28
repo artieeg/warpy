@@ -1,12 +1,8 @@
 import { ParticipantDAL, StreamDAL, UserDAL } from "@backend/dal";
 import { MediaService } from "@backend/services";
 import { createStreamFixture, createUserFixture } from "@backend/__fixtures__";
+import { mocked } from "ts-jest/utils";
 import { StreamService } from "../index";
-
-jest.mock("@backend/services/media");
-jest.mock("@backend/services/feed");
-jest.mock("@backend/dal/stream_dal");
-jest.mock("@backend/dal/participant_dal");
 
 describe("StreamService.createNewStream", () => {
   const owner = "test-owner-id";
@@ -19,6 +15,7 @@ describe("StreamService.createNewStream", () => {
   const streamer = createUserFixture({
     id: owner,
   });
+
   const stream = createStreamFixture({
     owner,
     hub,
@@ -29,21 +26,19 @@ describe("StreamService.createNewStream", () => {
     jest.clearAllMocks();
   });
 
+  const mockedMediaService = mocked(MediaService);
+  const mockedUserDAL = mocked(UserDAL);
+  const mockedStreamDAL = mocked(StreamDAL);
+
   beforeAll(() => {
-    jest
-      .spyOn(MediaService, "getConsumerNodeId")
-      .mockResolvedValue(consumerNodeId);
-
-    jest
-      .spyOn(MediaService, "getProducerNodeId")
-      .mockResolvedValue(producerNodeId);
-
-    jest.spyOn(UserDAL, "findById").mockResolvedValue(streamer);
-    jest.spyOn(StreamDAL, "createNewStream").mockResolvedValue(stream);
+    mockedMediaService.getConsumerNodeId.mockResolvedValue(consumerNodeId);
+    mockedMediaService.getProducerNodeId.mockResolvedValue(producerNodeId);
+    mockedUserDAL.findById.mockResolvedValue(streamer);
+    mockedStreamDAL.createNewStream.mockResolvedValue(stream);
   });
 
   it("throws if user does not exist", () => {
-    jest.spyOn(UserDAL, "findById").mockResolvedValueOnce(null);
+    mockedUserDAL.findById.mockResolvedValueOnce(null);
 
     expect(
       StreamService.createNewStream(owner, title, hub)
@@ -51,9 +46,7 @@ describe("StreamService.createNewStream", () => {
   });
 
   it("throws if there are no consumer/producer nodes", () => {
-    jest
-      .spyOn(MediaService, "getConsumerNodeId")
-      .mockRejectedValueOnce(new Error());
+    mockedMediaService.getConsumerNodeId.mockRejectedValueOnce(new Error());
 
     expect(
       StreamService.createNewStream(owner, title, hub)
