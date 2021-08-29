@@ -8,19 +8,19 @@ export const allowSpeaker = async (
   const stream = await ParticipantDAL.getCurrentStreamFor(host);
 
   if (!stream) {
-    return;
+    throw new Error();
   }
 
   const role = await ParticipantDAL.getRoleFor(host, stream);
 
   if (role !== "streamer") {
-    throw new Error();
+    throw new Error("This user can't allow speaking");
   }
 
   const speakerData = await ParticipantDAL.makeSpeaker(speaker);
 
   if (!speakerData) {
-    throw new Error();
+    throw new Error("The speaker does not exist");
   }
 
   const media = await MediaService.connectSpeakerMedia(speaker, stream);

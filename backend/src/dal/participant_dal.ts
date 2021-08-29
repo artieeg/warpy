@@ -54,7 +54,7 @@ export const ParticipantDAL = {
     return data.map(toParticipantDTO);
   },
 
-  makeSpeaker: async (user: string): Promise<IParticipant> => {
+  makeSpeaker: async (user: string): Promise<IParticipant | null> => {
     const speaker = await prisma.participant.update({
       where: { user_id: user },
       data: {
@@ -65,6 +65,10 @@ export const ParticipantDAL = {
         user: true,
       },
     });
+
+    if (!speaker) {
+      return null;
+    }
 
     return toParticipantDTO(speaker);
   },
