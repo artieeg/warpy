@@ -5,15 +5,6 @@ export const setHandRaise = async (
   user: string,
   flag: boolean
 ): Promise<void> => {
-  const stream = await ParticipantDAL.getCurrentStreamFor(user);
-  const participant = await ParticipantDAL.getById(user);
-
-  if (!stream || !participant) {
-    throw new Error();
-  }
-
-  await Promise.all([
-    ParticipantDAL.setRaiseHand(user, flag),
-    BroadcastService.broadcastRaiseHand(participant),
-  ]);
+  const participant = await ParticipantDAL.setRaiseHand(user, flag);
+  BroadcastService.broadcastRaiseHand(participant);
 };

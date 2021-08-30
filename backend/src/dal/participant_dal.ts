@@ -73,11 +73,15 @@ export const ParticipantDAL = {
     return toParticipantDTO(speaker);
   },
 
-  getById: async (user: string): Promise<IParticipant> => {
+  getById: async (user: string): Promise<IParticipant | null> => {
     const participant = await prisma.participant.findUnique({
       where: { user_id: user },
       include: { user: true },
     });
+
+    if (!participant) {
+      return null;
+    }
 
     return toParticipantDTO(participant);
   },
