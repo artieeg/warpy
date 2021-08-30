@@ -43,13 +43,13 @@ export const StreamDAL = {
    * Stops the stream, throws an error if no stream was updated
    */
   stopStream: async (id: string): Promise<void> => {
-    const result = await prisma.stream.updateMany({
+    await prisma.stream.updateMany({
       where: { id, live: true },
       data: { live: false },
     });
+  },
 
-    if (result.count === 0) {
-      throw new Error();
-    }
+  removeStreams: async (user: string): Promise<void> => {
+    throw new Error("Unimplemented");
   },
 };
