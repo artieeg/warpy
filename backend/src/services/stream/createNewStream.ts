@@ -31,6 +31,7 @@ export const createNewStream = async (
     hub,
     live: true,
     preview: null,
+    claps: 0,
   });
 
   await ParticipantDAL.setStream(participant.id, stream.id);

@@ -39,6 +39,19 @@ export const StreamDAL = {
     return stream ? toStreamDTO(stream) : null;
   },
 
+  async incClapsCount(id: string, amount = 0): Promise<void> {
+    await prisma.stream.update({
+      where: {
+        id,
+      },
+      data: {
+        claps: {
+          increment: amount,
+        },
+      },
+    });
+  },
+
   async delete(id: string): Promise<number> {
     const { count } = await prisma.stream.deleteMany({
       where: { id },

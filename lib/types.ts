@@ -8,3 +8,11 @@ export type MessageHandler<Payload, Response = undefined> = (
   data: Payload,
   respond: MessageRespondCallback<Response>
 ) => Promise<void> | void;
+
+export interface Message {
+  [key: string]: string | number | object;
+}
+
+export interface Response {
+  [key: string]: string | number | object;
+}

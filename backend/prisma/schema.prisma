@@ -20,7 +20,6 @@ model User {
   created_at  DateTime     @default(now())
   participant Participant?
 
-
   //Stream Stream[]
   @@map(name: "Users")
 }
@@ -47,6 +46,7 @@ model Stream {
   live         Boolean
   preview      String?
   participants Participant[] @relation(name: "participant")
+  claps        Int
 }
 
 model RefreshToken {

@@ -3,7 +3,7 @@ import { IEntity } from "./entity";
 import { IBaseUser, BaseUser } from "./user";
 
 export interface IBaseParticipant extends IEntity {
-  stream: string;
+  stream: string | null;
   role: Roles;
   isRaisingHand?: boolean;
 }
@@ -12,7 +12,7 @@ export interface IParticipant extends IBaseUser, IBaseParticipant {}
 
 export class Participant extends BaseUser implements IParticipant {
   role: Roles;
-  stream: string;
+  stream: string | null;
   isRaisingHand?: boolean;
 
   constructor(data: IParticipant) {

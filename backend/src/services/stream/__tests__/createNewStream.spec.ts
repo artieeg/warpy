@@ -83,9 +83,10 @@ describe("StreamService.createNewStream", () => {
     expect(StreamDAL.create).toBeCalledWith({
       owner_id: owner,
       preview: null,
+      live: true,
+      claps: 0,
       title,
       hub,
-      live: true,
     });
   });
 });
