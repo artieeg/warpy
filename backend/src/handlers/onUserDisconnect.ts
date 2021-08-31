@@ -6,5 +6,5 @@ export const onUserDisconnect: MessageHandler<IUserDisconnected> = async (
 ) => {
   const { user } = data;
 
-  StreamService.removeUser(user);
+  StreamService.removeUserFromStreams(user);
 };

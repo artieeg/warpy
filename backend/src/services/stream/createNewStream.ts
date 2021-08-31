@@ -20,19 +20,24 @@ export const createNewStream = async (
     throw new Error();
   }
 
+  const participant = await ParticipantDAL.create({
+    user_id: streamer.id,
+    role: "streamer",
+  });
+
   const stream = await StreamDAL.create({
-    owner_id: owner,
+    owner_id: participant.id,
     title,
     hub,
     live: true,
     preview: null,
   });
 
+  await ParticipantDAL.setStream(participant.id, stream.id);
+
   const speakers = [
     Participant.fromUser(streamer, "streamer", stream.id.toString()),
   ];
-
-  await ParticipantDAL.createNewParticipant(streamer.id, stream.id, "streamer");
 
   const media = await MediaService.createRoom(owner, stream.id);
 

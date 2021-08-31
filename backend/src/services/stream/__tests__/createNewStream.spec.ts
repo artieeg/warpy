@@ -1,6 +1,10 @@
 import { ParticipantDAL, StreamDAL, UserDAL } from "@backend/dal";
 import { MediaService } from "@backend/services";
-import { createStreamFixture, createUserFixture } from "@backend/__fixtures__";
+import {
+  createParticipantFixture,
+  createStreamFixture,
+  createUserFixture,
+} from "@backend/__fixtures__";
 import { mocked } from "ts-jest/utils";
 import { StreamService } from "../index";
 
@@ -12,14 +16,20 @@ describe("StreamService.createNewStream", () => {
   const consumerNodeId = "test-consumer-node-id";
   const producerNodeId = "test-producer-node-id";
 
-  const streamer = createUserFixture({
-    id: owner,
-  });
-
   const stream = createStreamFixture({
     owner,
     hub,
     title,
+  });
+
+  const streamer = createUserFixture({
+    id: owner,
+  });
+
+  const streamerParticipantObject = createParticipantFixture({
+    id: streamer.id,
+    role: "streamer",
+    stream: stream.id,
   });
 
   beforeEach(() => {
@@ -29,12 +39,14 @@ describe("StreamService.createNewStream", () => {
   const mockedMediaService = mocked(MediaService);
   const mockedUserDAL = mocked(UserDAL);
   const mockedStreamDAL = mocked(StreamDAL);
+  const mockedParticipantDAL = mocked(ParticipantDAL);
 
   beforeAll(() => {
     mockedMediaService.getConsumerNodeId.mockResolvedValue(consumerNodeId);
     mockedMediaService.getProducerNodeId.mockResolvedValue(producerNodeId);
     mockedUserDAL.findById.mockResolvedValue(streamer);
     mockedStreamDAL.create.mockResolvedValue(stream);
+    mockedParticipantDAL.create.mockResolvedValue(streamerParticipantObject);
   });
 
   it("throws if user does not exist", () => {
@@ -63,11 +75,10 @@ describe("StreamService.createNewStream", () => {
       stream.id
     );
 
-    expect(ParticipantDAL.createNewParticipant).toBeCalledWith(
-      owner,
-      response.stream,
-      "streamer"
-    );
+    expect(ParticipantDAL.create).toBeCalledWith({
+      user_id: owner,
+      role: "streamer",
+    });
 
     expect(StreamDAL.create).toBeCalledWith({
       owner_id: owner,

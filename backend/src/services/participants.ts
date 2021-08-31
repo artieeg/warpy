@@ -59,7 +59,7 @@ export const getStreamParticipants = async (
 export const removeAllParticipants = async (
   streamId: string
 ): Promise<void> => {
-  return Participant.deleteAllByStream(streamId);
+  return Participant.deleteByUser(streamId);
 };
 
 export const getCurrentStreamFor = async (

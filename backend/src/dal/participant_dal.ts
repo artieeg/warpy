@@ -3,6 +3,12 @@ import { prisma } from "./client";
 import { Participant, User } from "@prisma/client";
 import { toUserDTO } from "./user_dal";
 
+type CreateNewParticipant = {
+  user_id: string;
+  role?: Roles;
+  stream?: string;
+};
+
 export const toParticipantDTO = (
   data: (Participant & { user?: User }) | null
 ): IParticipant => {
@@ -23,17 +29,18 @@ export const toParticipantDTO = (
 };
 
 export const ParticipantDAL = {
-  createNewParticipant: async (
-    user_id: string,
-    stream: string,
-    role: Roles = "viewer"
-  ): Promise<IParticipant> => {
+  create: async ({
+    user_id,
+    role,
+    stream,
+  }: CreateNewParticipant): Promise<IParticipant> => {
     const data = await prisma.participant.create({
       data: {
         stream_id: stream,
-        role,
+        role: role || "viewer",
         isRaisingHand: false,
         user_id: user_id,
+        id: user_id,
       },
       include: {
         user: true,
@@ -41,6 +48,19 @@ export const ParticipantDAL = {
     });
 
     return toParticipantDTO(data);
+  },
+
+  async setStream(user_id: string, stream: string): Promise<void> {
+    await prisma.participant.update({
+      where: { user_id },
+      data: {
+        stream: {
+          connect: {
+            id: stream,
+          },
+        },
+      },
+    });
   },
 
   getByIds: async (ids: string[]): Promise<IParticipant[]> => {
@@ -86,15 +106,10 @@ export const ParticipantDAL = {
     return toParticipantDTO(participant);
   },
 
-  deleteParticipant: async (id: string): Promise<IParticipant> => {
-    const result = await prisma.participant.delete({
+  deleteParticipant: async (id: string): Promise<void> => {
+    await prisma.participant.delete({
       where: { user_id: id },
-      include: {
-        user: true,
-      },
     });
-
-    return toParticipantDTO(result);
   },
 
   getParticipantsByStream: async (

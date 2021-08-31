@@ -19,6 +19,10 @@ export const updateActiveSpeakers = async (
   const streamSpeakersMap: Record<string, IParticipant[]> = {};
 
   participants.forEach((participant: IParticipant) => {
+    if (!participant.stream) {
+      return;
+    }
+
     if (streamSpeakersMap[participant.stream]) {
       streamSpeakersMap[participant.stream] = [
         ...streamSpeakersMap[participant.stream],

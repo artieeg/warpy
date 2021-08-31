@@ -1,5 +1,5 @@
-import { Stream } from "@prisma/client";
 import { prisma } from "./client";
+import { Stream } from "@prisma/client";
 
 type CreateNewStream = Omit<Stream, "id">;
 
@@ -47,7 +47,7 @@ export const StreamDAL = {
     return count;
   },
 
-  async deleteAllByUser(user: string): Promise<number> {
+  async deleteByUser(user: string): Promise<number> {
     const result = await prisma.stream.deleteMany({
       where: { owner_id: user },
     });

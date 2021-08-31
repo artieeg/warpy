@@ -15,10 +15,11 @@ export const addNewViewer = async (
     throw new Error();
   }
 
-  const participant = await ParticipantDAL.createNewParticipant(
-    viewer.id,
-    stream
-  );
+  const participant = await ParticipantDAL.create({
+    user_id: viewer.id,
+    role: "viewer",
+    stream,
+  });
 
   await MediaService.assignUserToNode(viewerId, recvNodeId);
   const recvMediaParams = await MediaService.joinRoom(

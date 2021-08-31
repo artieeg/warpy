@@ -33,7 +33,7 @@ describe("StreamService.addNewViewer", () => {
       mediaPermissionsToken
     );
 
-    mockedParticipantDAL.createNewParticipant.mockResolvedValue(participant);
+    mockedParticipantDAL.create.mockResolvedValue(participant);
 
     mockedMediaService.joinRoom.mockResolvedValue(recvTransportParams);
     mockedParticipantDAL.count.mockResolvedValue(streamViewerCount);

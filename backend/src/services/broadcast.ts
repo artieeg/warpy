@@ -10,6 +10,10 @@ export const BroadcastService = {
   async broadcastNewSpeaker(speaker: IParticipant): Promise<void> {
     const { stream } = speaker;
 
+    if (!stream) {
+      return;
+    }
+
     const users = await ParticipantDAL.getParticipantsByStream(stream);
 
     await MessageService.sendMessageBroadcast(
@@ -26,6 +30,10 @@ export const BroadcastService = {
 
   async broadcastRaiseHand(viewer: IParticipant): Promise<void> {
     const { stream } = viewer;
+
+    if (!stream) {
+      return;
+    }
 
     const users = await ParticipantDAL.getParticipantsByStream(stream);
 
@@ -58,9 +66,12 @@ export const BroadcastService = {
 
   async broadcastNewViewer(viewer: IParticipant): Promise<void> {
     const { stream } = viewer;
-    console.log("viewerw", viewer);
+
+    if (!stream) {
+      return;
+    }
+
     const users = await ParticipantDAL.getParticipantsByStream(stream);
-    console.log("other users", users);
 
     await MessageService.sendMessageBroadcast(
       BroadcastService.getParticipantIds(users),
@@ -75,7 +86,13 @@ export const BroadcastService = {
   },
 
   async broadcastActiveSpeakers(speaker: IParticipant): Promise<void> {
-    const users = await ParticipantDAL.getParticipantsByStream(speaker.stream);
+    const { stream } = speaker;
+
+    if (!stream) {
+      return;
+    }
+
+    const users = await ParticipantDAL.getParticipantsByStream(stream);
 
     await MessageService.sendMessageBroadcast(
       BroadcastService.getParticipantIds(users),

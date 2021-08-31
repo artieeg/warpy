@@ -1,7 +1,7 @@
 import { createNewStream } from "./createNewStream";
 import { addNewViewer } from "./addNewViewer";
 import { stopStream } from "./stopStream";
-import { removeUser } from "./removeUser";
+import { removeUserFromStreams } from "./removeUserFromStreams";
 import { getViewers } from "./getViewers";
 import { setHandRaise } from "./setHandRaise";
 import { allowSpeaker } from "./allowSpeaker";
@@ -11,7 +11,7 @@ export const StreamService = {
   createNewStream,
   addNewViewer,
   stopStream,
-  removeUser,
+  removeUserFromStreams,
   getViewers,
   setHandRaise,
   allowSpeaker,

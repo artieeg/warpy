@@ -21,31 +21,32 @@ model User {
   participant Participant?
 
 
+  //Stream Stream[]
   @@map(name: "Users")
-  Stream Stream[]
 }
 
 model Participant {
   id            String  @id @default(cuid())
   user_id       String  @unique
   user          User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  stream_id     String
-  stream        Stream  @relation(fields: [stream_id], references: [id], onDelete: Cascade)
+  stream_id     String?
+  stream        Stream?  @relation(name: "participant", fields: [stream_id], references: [id])
   role          String
   isRaisingHand Boolean
 
   @@unique([user_id, stream_id], name: "stream_participant_index")
+  Stream Stream[] @relation("owner")
 }
 
 model Stream {
   id           String        @id @default(cuid())
   title        String
-  owner        User          @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+  owner        Participant   @relation(name: "owner", fields: [owner_id], references: [user_id], onDelete: Cascade)
   owner_id     String
   hub          String
   live         Boolean
   preview      String?
-  participants Participant[]
+  participants Participant[] @relation(name: "participant")
 }
 
 model RefreshToken {

@@ -7,5 +7,7 @@ export const onWhoAmIRequest: MessageHandler<IWhoAmIRequest, IWhoAmIResponse> =
 
     const userData = await UserService.whoAmI(user);
 
+    console.log(userData);
+
     respond({ user: userData });
   };
