@@ -34,10 +34,12 @@ const withRateLimit = (
 
     record.count++;
 
-    clearTimeout(record.timeout);
-    record.timeout = setTimeout(() => {
-      record.count = 0;
-    }, delay);
+    if (!record.timeout) {
+      record.timeout = setTimeout(() => {
+        record.count = 0;
+        record.timeout = undefined;
+      }, delay);
+    }
 
     fn();
   };

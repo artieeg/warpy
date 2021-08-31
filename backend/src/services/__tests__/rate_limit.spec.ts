@@ -18,4 +18,6 @@ describe("RateLimit", () => {
 
     expect(fn).toBeCalledTimes(expectedCallsCount);
   });
+
+  it.todo("runs function again after delay");
 });
