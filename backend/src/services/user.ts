@@ -37,8 +37,7 @@ export const UserService = {
   },
 
   async deleteUser(user: string): Promise<void> {
-    await ParticipantDAL.deleteParticipant(user);
-    await UserDAL.deleteById(user);
+    await UserDAL.delete(user);
   },
 
   async whoAmI(user: string): Promise<IUser | null> {

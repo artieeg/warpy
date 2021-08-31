@@ -34,7 +34,7 @@ describe("StreamService.createNewStream", () => {
     mockedMediaService.getConsumerNodeId.mockResolvedValue(consumerNodeId);
     mockedMediaService.getProducerNodeId.mockResolvedValue(producerNodeId);
     mockedUserDAL.findById.mockResolvedValue(streamer);
-    mockedStreamDAL.createNewStream.mockResolvedValue(stream);
+    mockedStreamDAL.create.mockResolvedValue(stream);
   });
 
   it("throws if user does not exist", () => {
@@ -69,8 +69,9 @@ describe("StreamService.createNewStream", () => {
       "streamer"
     );
 
-    expect(StreamDAL.createNewStream).toBeCalledWith({
-      owner,
+    expect(StreamDAL.create).toBeCalledWith({
+      owner_id: owner,
+      preview: null,
       title,
       hub,
       live: true,

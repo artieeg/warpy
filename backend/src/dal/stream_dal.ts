@@ -13,14 +13,14 @@ export interface IStream {
 export const toStreamDTO = (data: Stream): IStream => {
   return {
     id: data.id,
-    owner: data.owner,
+    owner: data.owner_id,
     hub: data.hub,
     title: data.title,
   };
 };
 
 export const StreamDAL = {
-  createNewStream: async (data: CreateNewStream): Promise<IStream> => {
+  create: async (data: CreateNewStream): Promise<IStream> => {
     const stream = await prisma.stream.create({
       data,
     });
@@ -28,10 +28,10 @@ export const StreamDAL = {
     return toStreamDTO(stream);
   },
 
-  findByOwnerIdLive: async (owner: string): Promise<IStream | null> => {
+  async findByOwnerIdLive(owner: string): Promise<IStream | null> {
     const stream = await prisma.stream.findFirst({
       where: {
-        owner,
+        owner_id: owner,
         live: true,
       },
     });
@@ -39,17 +39,34 @@ export const StreamDAL = {
     return stream ? toStreamDTO(stream) : null;
   },
 
-  /**
-   * Stops the stream, throws an error if no stream was updated
-   */
-  stopStream: async (id: string): Promise<void> => {
-    await prisma.stream.updateMany({
-      where: { id, live: true },
-      data: { live: false },
+  async delete(id: string): Promise<number> {
+    const { count } = await prisma.stream.deleteMany({
+      where: { id },
     });
+
+    return count;
   },
 
-  removeStreams: async (user: string): Promise<void> => {
-    throw new Error("Unimplemented");
+  async deleteAllByUser(user: string): Promise<number> {
+    const result = await prisma.stream.deleteMany({
+      where: { owner_id: user },
+    });
+
+    return result.count;
+  },
+
+  async getAll(): Promise<IStream[]> {
+    const streams = await prisma.stream.findMany();
+
+    return streams.map(toStreamDTO);
+  },
+
+  async setPreviewClip(stream: string, preview: string): Promise<IStream> {
+    const updated = await prisma.stream.update({
+      where: { id: stream },
+      data: { preview },
+    });
+
+    return toStreamDTO(updated);
   },
 };

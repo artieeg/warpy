@@ -9,23 +9,7 @@ describe("StreamService.removeUser", () => {
   const mockedBroadcastService = mocked(BroadcastService);
   const user = "user-id";
 
-  it("stops the stream if it exists", async () => {
-    const stream = "test-stream";
-    mockedParticipantDAL.getCurrentStreamFor.mockResolvedValue(stream);
-
-    await StreamService.removeUser(user);
-
-    expect(mockedStreamDAL.stopStream).toBeCalledWith(stream);
-  });
-
-  it("removes user's streams", async () => {
-    const stream = "test-stream";
-    mockedParticipantDAL.getCurrentStreamFor.mockResolvedValue(stream);
-
-    await StreamService.removeUser(user);
-
-    expect(StreamDAL.removeStreams).toBeCalledWith(user);
-  });
+  it.todo("deletes the user");
 
   it("broadcasts user leave event", async () => {
     const stream = "test-stream";

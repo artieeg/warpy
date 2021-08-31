@@ -39,7 +39,7 @@ export const UserDAL = {
     return user ? toUserDTO(user, details) : null;
   },
 
-  async deleteById(id: string): Promise<User> {
+  async delete(id: string): Promise<User> {
     return prisma.user.delete({ where: { id } });
   },
 };

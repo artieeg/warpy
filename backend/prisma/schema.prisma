@@ -4,8 +4,9 @@ datasource db {
 }
 
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl"]
+  provider        = "prisma-client-js"
+  binaryTargets   = ["native", "linux-musl"]
+  previewFeatures = ["referentialActions"]
 }
 
 model User {
@@ -21,14 +22,15 @@ model User {
 
 
   @@map(name: "Users")
+  Stream Stream[]
 }
 
 model Participant {
   id            String  @id @default(cuid())
   user_id       String  @unique
-  user          User    @relation(fields: [user_id], references: [id])
-  stream_id     String 
-  stream        Candidate  @relation(fields: [stream_id], references: [id])
+  user          User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  stream_id     String
+  stream        Stream  @relation(fields: [stream_id], references: [id], onDelete: Cascade)
   role          String
   isRaisingHand Boolean
 
@@ -36,21 +38,14 @@ model Participant {
 }
 
 model Stream {
-  id    String  @id @default(cuid())
-  title String
-  owner String
-  hub   String
-  live  Boolean
-}
-
-model Candidate {
-  id      String @id @default(cuid())
-  title   String
-  owner   String @unique
-  hub     String
-  preview String?
-
-  speakers Participant[]
+  id           String        @id @default(cuid())
+  title        String
+  owner        User          @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+  owner_id     String
+  hub          String
+  live         Boolean
+  preview      String?
+  participants Participant[]
 }
 
 model RefreshToken {

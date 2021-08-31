@@ -1,5 +1,5 @@
 import { INewStreamResponse, Participant } from "@warpy/lib";
-import { FeedService, MediaService } from "@backend/services";
+import { MediaService } from "@backend/services";
 import { StreamDAL } from "@backend/dal/stream_dal";
 import { ParticipantDAL, UserDAL } from "@backend/dal";
 
@@ -20,14 +20,13 @@ export const createNewStream = async (
     throw new Error();
   }
 
-  const stream = await StreamDAL.createNewStream({
-    owner,
+  const stream = await StreamDAL.create({
+    owner_id: owner,
     title,
     hub,
     live: true,
+    preview: null,
   });
-
-  await FeedService.addNewCandidate(stream);
 
   const speakers = [
     Participant.fromUser(streamer, "streamer", stream.id.toString()),
