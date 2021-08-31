@@ -10,8 +10,6 @@ import {
   INewSpeakerMediaResponse,
   IRecvTracksRequest,
   IRecvTracksResponse,
-  Message,
-  Response,
   MessageHandler,
   subjects,
 } from "@warpy/lib";
@@ -79,7 +77,13 @@ export const MessageService = {
 
   //eslint-disable-next-line  @typescript-eslint/no-explicit-any
   on(event: string, handler: MessageHandler<any, any>): void {
-    eventEmitter.on(event, handler);
+    eventEmitter.on(event, (data: any, respond: any) => {
+      try {
+        handler(data, respond);
+      } catch (e) {
+        console.error(e);
+      }
+    });
   },
 
   async sendMessage(user: string, message: unknown): Promise<void> {
