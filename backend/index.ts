@@ -1,7 +1,11 @@
 import "reflect-metadata";
 import "module-alias/register";
 
-import { MessageService } from "@backend/services";
+import {
+  BroadcastService,
+  MessageService,
+  StreamService,
+} from "@backend/services";
 import {
   onNewStream,
   onJoinStream,
@@ -37,8 +41,9 @@ const main = async () => {
   MessageService.on("user-delete", onUserDelete);
   MessageService.on("new-stream-preview", onNewStreamPreview);
   MessageService.on("clap", onClap);
-
   MessageService.on("new-media-node", onNewOnlineNode);
+
+  StreamService.onClapsUpdate(BroadcastService.broadcastClapCount);
   console.log(":>");
 };
 

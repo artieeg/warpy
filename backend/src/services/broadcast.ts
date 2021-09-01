@@ -105,4 +105,21 @@ export const BroadcastService = {
       }
     );
   },
+  async broadcastClapCount(params: {
+    stream: string;
+    claps: number;
+  }): Promise<void> {
+    const { stream, claps } = params;
+
+    const users = await ParticipantDAL.getParticipantsByStream(stream);
+    const ids = BroadcastService.getParticipantIds(users);
+
+    await MessageService.sendMessageBroadcast(ids, {
+      event: "claps-update",
+      data: {
+        stream,
+        claps,
+      },
+    });
+  },
 };

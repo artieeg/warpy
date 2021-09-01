@@ -15,3 +15,8 @@ export interface INewPreviewEvent {
   stream: string;
   preview: string;
 }
+
+export interface IClapsUpdate {
+  stream: string;
+  claps: number;
+}
