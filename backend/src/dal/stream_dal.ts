@@ -44,7 +44,7 @@ export const StreamDAL = {
     amount = 0
   ): Promise<{
     id: string;
-    claps: number;
+    reactions: number;
   }> {
     const { claps } = await prisma.stream.update({
       where: {
@@ -60,7 +60,7 @@ export const StreamDAL = {
       },
     });
 
-    return { id, claps };
+    return { id, reactions: claps };
   },
 
   async delete(id: string): Promise<number> {

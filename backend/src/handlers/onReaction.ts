@@ -1,11 +1,13 @@
 import { IClap, MessageHandler } from "@warpy/lib";
 import { RateLimit, StreamService } from "@backend/services";
 
-export const onClap: MessageHandler<IClap> = async (data): Promise<void> => {
+export const onReaction: MessageHandler<IClap> = async (
+  data
+): Promise<void> => {
   const fn = RateLimit.withRateLimit(StreamService.countNewClap, {
-    prefix: "claps",
+    prefix: "reactions",
     user: data.user,
-    delay: 1000,
+    delay: 50 * 300,
     limit: 50,
   });
 

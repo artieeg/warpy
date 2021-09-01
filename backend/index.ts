@@ -6,6 +6,7 @@ import {
   MessageService,
   StreamService,
 } from "@backend/services";
+
 import {
   onNewStream,
   onJoinStream,
@@ -21,12 +22,12 @@ import {
   onUserDelete,
   onNewStreamPreview,
   onNewOnlineNode,
-  onClap,
+  onReaction,
 } from "@backend/handlers";
 
 const main = async () => {
   await MessageService.init();
-  StreamService.runClapsSync();
+  StreamService.runReactionSync();
 
   MessageService.on("user-joins-stream", onJoinStream);
   MessageService.on("stream-stop", onStreamStop);
@@ -41,10 +42,10 @@ const main = async () => {
   MessageService.on("active-speakers", onActiveSpeakers);
   MessageService.on("user-delete", onUserDelete);
   MessageService.on("new-stream-preview", onNewStreamPreview);
-  MessageService.on("clap", onClap);
+  MessageService.on("clap", onReaction);
   MessageService.on("new-media-node", onNewOnlineNode);
 
-  StreamService.onClapsUpdate(BroadcastService.broadcastClapCount);
+  StreamService.onReactionUpdate(BroadcastService.broadcastReactions);
   console.log(":>");
 };
 

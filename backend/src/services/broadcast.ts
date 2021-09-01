@@ -1,5 +1,5 @@
 import { ParticipantDAL } from "@backend/dal";
-import { IParticipant } from "@warpy/lib";
+import { IParticipant, Reaction } from "@warpy/lib";
 import { MessageService } from "./message";
 
 export const BroadcastService = {
@@ -105,20 +105,20 @@ export const BroadcastService = {
       }
     );
   },
-  async broadcastClapCount(params: {
+  async broadcastReactions(params: {
     stream: string;
-    claps: number;
+    reactions: Reaction[];
   }): Promise<void> {
-    const { stream, claps } = params;
+    const { stream, reactions } = params;
 
     const users = await ParticipantDAL.getParticipantsByStream(stream);
     const ids = BroadcastService.getParticipantIds(users);
 
-    await MessageService.sendMessageBroadcast(ids, {
-      event: "claps-update",
+    MessageService.sendMessageBroadcast(ids, {
+      event: "reactions-update",
       data: {
         stream,
-        claps,
+        reactions,
       },
     });
   },
