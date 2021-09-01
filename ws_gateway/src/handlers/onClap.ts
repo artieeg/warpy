@@ -6,7 +6,7 @@ export const onClap: Handler = async (data, context) => {
     return;
   }
 
-  MessageService.sendBackendMessage("raise-hand", {
+  MessageService.sendBackendMessage("clap", {
     stream: data.stream,
     user: context.user,
   });
