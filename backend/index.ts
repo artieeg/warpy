@@ -26,6 +26,7 @@ import {
 
 const main = async () => {
   await MessageService.init();
+  StreamService.runClapsSync();
 
   MessageService.on("user-joins-stream", onJoinStream);
   MessageService.on("stream-stop", onStreamStop);
