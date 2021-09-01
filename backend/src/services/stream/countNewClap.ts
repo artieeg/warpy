@@ -6,6 +6,12 @@ import { observer } from "./observer";
  */
 export const batchedClapUpdates: Record<string, number> = {};
 
+const reset = () => {
+  Object.keys(batchedClapUpdates).forEach((key) => {
+    delete batchedClapUpdates[key];
+  });
+};
+
 export const syncClaps = async (): Promise<void> => {
   const promises: Promise<{
     id: string;
@@ -19,6 +25,8 @@ export const syncClaps = async (): Promise<void> => {
   const results = await Promise.all(promises);
 
   results.forEach((result) => observer.emit("claps-update", result));
+
+  reset();
 };
 
 export const runClapsSync = (): void => {
@@ -29,5 +37,9 @@ export const countNewClap = async (
   _user: string,
   stream: string
 ): Promise<void> => {
-  await StreamDAL.incClapsCount(stream, 1);
+  if (!batchedClapUpdates[stream]) {
+    batchedClapUpdates[stream] = 1;
+  } else {
+    batchedClapUpdates[stream]++;
+  }
 };

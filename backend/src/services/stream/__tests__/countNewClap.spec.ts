@@ -1,13 +1,14 @@
-import { syncClaps } from "../countNewClap";
+import { countNewClap, syncClaps } from "../countNewClap";
 import { batchedClapUpdates } from "../countNewClap";
 import { mocked } from "ts-jest/utils";
 import { StreamDAL } from "@backend/dal";
 import { onClapsUpdate } from "../observer";
 
-describe("StreamService.syncClaps", () => {
-  const stream = "test-stream";
-  const claps = 5;
+const user = "test-user";
+const stream = "test-stream";
+const claps = 5;
 
+describe("syncClaps", () => {
   const mockedStreamDAL = mocked(StreamDAL);
 
   beforeAll(() => {
@@ -18,6 +19,15 @@ describe("StreamService.syncClaps", () => {
     Object.keys(batchedClapUpdates).forEach((key) => {
       delete batchedClapUpdates[key];
     });
+  });
+
+  it("cleans up the cached values after sync", async () => {
+    batchedClapUpdates[stream] = claps;
+    await syncClaps();
+
+    jest.runOnlyPendingTimers();
+
+    expect(batchedClapUpdates).toEqual({});
   });
 
   it("updates the db", async () => {
@@ -39,5 +49,28 @@ describe("StreamService.syncClaps", () => {
 
     expect(cb).toBeCalled();
     expect(cb).toBeCalledWith({ id: stream, claps });
+  });
+});
+
+describe("StreamService.countNewClap", () => {
+  beforeEach(() => {
+    Object.keys(batchedClapUpdates).forEach((key) => {
+      delete batchedClapUpdates[key];
+    });
+  });
+
+  it("creates a new entry", () => {
+    countNewClap(user, stream);
+
+    expect(batchedClapUpdates).toHaveProperty(stream);
+    expect(batchedClapUpdates[stream]).toEqual(1);
+  });
+
+  it("updates existing entry", () => {
+    batchedClapUpdates[stream] = 4;
+
+    countNewClap(user, stream);
+
+    expect(batchedClapUpdates[stream]).toEqual(5);
   });
 });
