@@ -42,6 +42,14 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
     record.consumers = consumers;
   }
 
+  api.stream.onClapsUpdate((data) => {
+    console.log("claps update", data);
+  });
+
+  setInterval(() => {
+    api.stream.clap(streamId);
+  }, 1000);
+
   record.stream = streamId;
   record.role = "viewer";
 
