@@ -13,6 +13,7 @@ import {
   onFeedRequest,
   onNewUser,
   onUserDelete,
+  onClap,
 } from "@ws_gateway/handlers";
 import { IMessage } from "@ws_gateway/models";
 import { Context, Handlers } from "@ws_gateway/types";
@@ -42,6 +43,7 @@ const handlers: Handlers = {
   "request-feed": onFeedRequest,
   "new-user": onNewUser,
   "delete-user": onUserDelete,
+  clap: onClap,
 };
 
 const main = async () => {

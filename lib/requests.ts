@@ -7,6 +7,10 @@ export interface ITransportOptions {
   dtlsParameters: any;
 }
 
+export interface IClap {
+  stream: string;
+}
+
 export interface ICreateMediaRoom {
   host: string;
   roomId: string;
