@@ -7,6 +7,8 @@ import { setHandRaise } from "./setHandRaise";
 import { allowSpeaker } from "./allowSpeaker";
 import { updateActiveSpeakers } from "./updateActiveSpeakers";
 import { countNewClap } from "./countNewClap";
+import { onClapsUpdate } from "./observer";
+import { runClapsSync } from "./countNewClap";
 
 export const StreamService = {
   createNewStream,
@@ -18,4 +20,6 @@ export const StreamService = {
   allowSpeaker,
   updateActiveSpeakers,
   countNewClap,
+  onClapsUpdate,
+  runClapsSync,
 };
