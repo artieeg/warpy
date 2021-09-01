@@ -122,6 +122,10 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
     }
   }, [media, speakerOptions, id, audioStream]);
 
+  const onClap = () => {
+    ws.stream.clap(id);
+  };
+
   const {width, height} = useWindowDimensions();
 
   const raiseHand = useCallback(() => {
@@ -171,6 +175,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
           speakers={speakers}
           participantsCount={participantsCount}
           onRaiseHand={raiseHand}
+          onClap={onClap}
           onOpenParticipantsList={() => setPanelVisible(false)}
         />
       )}

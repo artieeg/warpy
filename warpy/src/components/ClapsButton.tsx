@@ -1,16 +1,10 @@
 import React from 'react';
 import {Icon} from './Icon';
-import {RoundButton} from './RoundButton';
+import {IRoundButtonProps, RoundButton} from './RoundButton';
 
-interface IClapButtonProps {
-  style?: any;
-}
-
-export const ClapButton = (props: IClapButtonProps) => {
-  const {style} = props;
-
+export const ClapButton = (props: IRoundButtonProps) => {
   return (
-    <RoundButton style={style}>
+    <RoundButton {...props}>
       <Icon name="claps" size={30} color="#fff" />
     </RoundButton>
   );
