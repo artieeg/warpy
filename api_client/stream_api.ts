@@ -11,6 +11,7 @@ import {
 export interface IStreamAPI {
   create: (title: string, hub: string) => Promise<INewStreamResponse>;
   join: (stream: string) => Promise<IJoinStreamResponse>;
+  clap: (stream: string) => void;
   stop: (stream: string) => any;
   getViewers: (
     stream: string,
@@ -34,6 +35,7 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
       hub,
     }),
   stop: (stream) => socket.publish("stream-stop", { stream }),
+  clap: (stream) => socket.publish("clap", { stream }),
   join: (stream) => socket.request("join-stream", { stream }),
   getViewers: (stream, page) =>
     socket.request("request-viewers", { stream, page }),
