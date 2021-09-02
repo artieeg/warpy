@@ -31,7 +31,7 @@ export const Reactions = (props: IReactionsProps) => {
     <BaseSlideModal
       onHide={onHide}
       visible={visible}
-      title="Pick current reaction">
+      title="pick your reaction">
       <FlatList
         style={styles.list}
         numColumns={5}
