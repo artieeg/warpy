@@ -16,7 +16,7 @@ export interface INewPreviewEvent {
   preview: string;
 }
 
-export interface IClapsUpdate {
+export interface IReactionsUpdate {
   stream: string;
-  claps: number;
+  reactions: number;
 }

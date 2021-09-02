@@ -179,5 +179,6 @@ export interface IRecordRequest {
 
 export interface IClap {
   user: string;
+  emoji: string;
   stream: string;
 }

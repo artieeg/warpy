@@ -16,3 +16,8 @@ export interface Message {
 export interface Response {
   [key: string]: string | number | object;
 }
+
+export type Reaction = {
+  user: string;
+  emoji: string;
+};
