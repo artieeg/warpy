@@ -18,7 +18,7 @@ export const BackendEvents = {
   "new-user": "user.create",
   "new-track": "media.track.send",
   "delete-user": "user.delete",
-  clap: "stream.clap",
+  reaction: "stream.reaction",
 };
 
 type EventAlias = keyof typeof BackendEvents;

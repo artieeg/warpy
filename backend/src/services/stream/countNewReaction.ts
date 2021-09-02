@@ -1,5 +1,5 @@
 import { StreamDAL } from "@backend/dal";
-import { Reaction } from "@warpy/lib";
+import { Reaction, ALLOWED_EMOJI } from "@warpy/lib";
 import { observer } from "./observer";
 
 /**
@@ -25,8 +25,6 @@ export const syncReactions = async (): Promise<void> => {
 export const runReactionSync = (): void => {
   setInterval(syncReactions, 1000);
 };
-
-const ALLOWED_EMOJI = ["1f47e"];
 
 export const countNewReaction = async (
   user: string,

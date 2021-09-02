@@ -1,7 +1,7 @@
 import { APIModule, EventHandler } from "./types";
 import {
   IActiveSpeakerEvent,
-  IClapsUpdate,
+  IReactionsUpdate,
   IJoinStreamResponse,
   INewStreamResponse,
   IRequestViewersResponse,
@@ -11,7 +11,7 @@ import {
 export interface IStreamAPI {
   create: (title: string, hub: string) => Promise<INewStreamResponse>;
   join: (stream: string) => Promise<IJoinStreamResponse>;
-  clap: (stream: string) => void;
+  react: (stream: string, emoji: string) => void;
   stop: (stream: string) => any;
   getViewers: (
     stream: string,
@@ -19,7 +19,7 @@ export interface IStreamAPI {
   ) => Promise<IRequestViewersResponse>;
   raiseHand: () => any;
   allowSpeaker: (speaker: string) => any;
-  onClapsUpdate: EventHandler<IClapsUpdate>;
+  onReactionsUpdate: EventHandler<IReactionsUpdate>;
   onNewViewer: EventHandler;
   onNewRaisedHand: EventHandler;
   onUserLeft: EventHandler;
@@ -35,7 +35,7 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
       hub,
     }),
   stop: (stream) => socket.publish("stream-stop", { stream }),
-  clap: (stream) => socket.publish("clap", { stream }),
+  react: (stream, emoji) => socket.publish("reaction", { stream, emoji }),
   join: (stream) => socket.request("join-stream", { stream }),
   getViewers: (stream, page) =>
     socket.request("request-viewers", { stream, page }),
@@ -47,5 +47,5 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
   onNewSpeaker: (handler) => socket.on("new-speaker", handler),
   onActiveSpeaker: (handler) => socket.on("active-speaker", handler),
   onSpeakingAllowed: (handler) => socket.on("speaking-allowed", handler),
-  onClapsUpdate: (handler) => socket.on("claps-update", handler),
+  onReactionsUpdate: (handler) => socket.on("claps-update", handler),
 });

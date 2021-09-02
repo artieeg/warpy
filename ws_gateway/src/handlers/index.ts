@@ -11,4 +11,4 @@ export * from "./onFeedRequest";
 export * from "./onNewStream";
 export * from "./onNewUser";
 export * from "./onUserDelete";
-export * from "./onClap";
+export * from "./onReaction";

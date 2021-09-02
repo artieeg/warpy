@@ -39,7 +39,7 @@ const SubjectEventMap = {
   "stream.active-speakers": "active-speakers",
   "user.delete": "user-delete",
   "stream.new-preview": "new-stream-preview",
-  "stream.clap": "clap",
+  "stream.reaction": "reaction",
 };
 
 type Subject = keyof typeof SubjectEventMap;

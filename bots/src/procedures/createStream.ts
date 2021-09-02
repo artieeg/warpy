@@ -37,7 +37,7 @@ export const createStream = async (record: UserRecord) => {
 
   const producers = await Promise.all([
     record.media.sendMediaStream(localMediaStream, stream, media, "video"),
-    record.media.sendMediaStream(localMediaStream, stream, media, "audio"),
+    //record.media.sendMediaStream(localMediaStream, stream, media, "audio"),
   ]);
 
   record.producers = producers;

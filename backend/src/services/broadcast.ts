@@ -105,6 +105,7 @@ export const BroadcastService = {
       }
     );
   },
+
   async broadcastReactions(params: {
     stream: string;
     reactions: Reaction[];
