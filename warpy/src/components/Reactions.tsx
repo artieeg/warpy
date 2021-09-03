@@ -4,11 +4,6 @@ import {FlatList, StyleSheet, useWindowDimensions, View} from 'react-native';
 import {ReactionButton} from './ReactionButton';
 import {reactionCodes} from './Reaction';
 
-interface IReactionsProps {
-  visible: boolean;
-  onHide: () => void;
-}
-
 const ReactionContainer = (props: any) => {
   const {width} = useWindowDimensions();
 
@@ -24,8 +19,14 @@ const ReactionContainer = (props: any) => {
   return <View {...props} style={style} />;
 };
 
+interface IReactionsProps {
+  visible: boolean;
+  onHide: () => void;
+  onPickReaction: (reaction: string) => void;
+}
+
 export const Reactions = (props: IReactionsProps) => {
-  const {visible, onHide} = props;
+  const {visible, onHide, onPickReaction} = props;
 
   return (
     <BaseSlideModal
@@ -38,7 +39,13 @@ export const Reactions = (props: IReactionsProps) => {
         data={reactionCodes}
         renderItem={({item}) => (
           <ReactionContainer>
-            <ReactionButton onPress={() => {}} code={item} />
+            <ReactionButton
+              onPress={() => {
+                onPickReaction(item);
+                onHide();
+              }}
+              code={item}
+            />
           </ReactionContainer>
         )}
       />

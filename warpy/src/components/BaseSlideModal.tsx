@@ -16,6 +16,9 @@ export const BaseSlideModal = (props: IParticipanModalProps) => {
   return (
     <Modal
       removeClippedSubviews={false}
+      hideModalContentWhileAnimating
+      useNativeDriver
+      useNativeDriverForBackdrop
       propagateSwipe={true}
       onSwipeComplete={() => {
         onHide();
@@ -23,7 +26,7 @@ export const BaseSlideModal = (props: IParticipanModalProps) => {
       swipeDirection={['down']}
       swipeThreshold={100}
       animationIn="slideInUp"
-      animationOut="slideInDown"
+      animationOut="slideOutDown"
       hasBackdrop={false}
       style={styles.modalStyle}
       isVisible={visible}>

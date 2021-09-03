@@ -1,11 +1,17 @@
 import React from 'react';
-import {Icon} from './Icon';
+import {Reaction} from './Reaction';
 import {IRoundButtonProps, RoundButton} from './RoundButton';
 
-export const ClapButton = (props: IRoundButtonProps) => {
+interface IClapButtonProps extends IRoundButtonProps {
+  reaction: string;
+}
+
+export const ClapButton = (props: IClapButtonProps) => {
+  const {reaction} = props;
+
   return (
     <RoundButton {...props}>
-      <Icon name="claps" size={30} color="#fff" />
+      <Reaction code={reaction} />
     </RoundButton>
   );
 };

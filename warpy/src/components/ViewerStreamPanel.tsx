@@ -10,6 +10,7 @@ interface IRemoteStreamPanel extends IStreamPanelBase {
   onRaiseHand: () => any;
   onOpenReactions: () => any;
   onOpenParticipantsList: () => any;
+  reaction: string;
 }
 
 export const ViewerStreamPanel = (props: IRemoteStreamPanel) => {
@@ -18,12 +19,13 @@ export const ViewerStreamPanel = (props: IRemoteStreamPanel) => {
     onOpenReactions,
     onRaiseHand,
     onOpenParticipantsList,
+    reaction,
   } = props;
 
   return (
     <StreamPanelBase {...props}>
       <WarpButton />
-      <ClapButton onPress={onOpenReactions} />
+      <ClapButton reaction={reaction} onPress={onOpenReactions} />
       <ShowParticipantsButton
         count={participantsCount}
         onOpenParticipantsList={onOpenParticipantsList}

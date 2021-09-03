@@ -21,6 +21,7 @@ import {ParticipantInfoModal} from './ParticipantInfoModal';
 import {SpeakerStreamPanel} from './SpeakerStreamPanel';
 import {useParticipantsStore} from '@app/stores';
 import {Reactions} from './Reactions';
+import {reactionCodes} from './Reaction';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -41,6 +42,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const [micIsOn, setMicIsOn] = useState(true);
   const [speakerOptions, setSpeakerOptions] = useState<any>();
   const [showReactions, setReactionsVisible] = useState(false);
+  const [currentReaction, setCurrentReaction] = useState(reactionCodes[0]);
 
   //Display a participant info modal
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
@@ -160,7 +162,6 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
 
       {isSpeaker && (
         <SpeakerStreamPanel
-          title={stream.title}
           visible={panelVisible}
           speakers={speakers}
           participantsCount={participantsCount}
@@ -172,8 +173,8 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
 
       {!isSpeaker && (
         <ViewerStreamPanel
-          title={stream.title}
           visible={panelVisible}
+          reaction={currentReaction}
           speakers={speakers}
           participantsCount={participantsCount}
           onRaiseHand={raiseHand}
@@ -198,6 +199,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
       />
 
       <Reactions
+        onPickReaction={setCurrentReaction}
         visible={showReactions}
         onHide={() => setReactionsVisible(false)}
       />
