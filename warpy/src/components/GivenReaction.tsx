@@ -13,25 +13,27 @@ export interface IGivenReaction {
 
 export const GivenReaction = (props: IGivenReaction) => {
   const scale = useRef(new Animated.Value(2.5));
-  const opacity = useRef(new Animated.Value(0.2));
+  const opacity = useRef(new Animated.Value(1));
 
   const size = 90;
 
   useEffect(() => {
     Animated.sequence([
       Animated.parallel([
+        /*
         Animated.timing(opacity.current, {
           toValue: 1,
-          duration: 200,
+          duration: 100,
           useNativeDriver: true,
         }),
+         */
         Animated.timing(scale.current, {
           toValue: 1,
-          duration: 200,
+          duration: 100,
           useNativeDriver: true,
         }),
       ]),
-      Animated.delay(400),
+      //Animated.delay(300),
       Animated.timing(opacity.current, {
         toValue: 0,
         duration: 100,
