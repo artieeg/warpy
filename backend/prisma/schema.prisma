@@ -29,7 +29,7 @@ model Participant {
   user_id       String  @unique
   user          User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   stream_id     String?
-  stream        Stream?  @relation(name: "participant", fields: [stream_id], references: [id])
+  stream        Stream?  @relation(name: "participant", fields: [stream_id], references: [id], onDelete: Cascade)
   role          String
   isRaisingHand Boolean
 
@@ -46,7 +46,7 @@ model Stream {
   live         Boolean
   preview      String?
   participants Participant[] @relation(name: "participant")
-  claps        Int
+  reactions        Int
 }
 
 model RefreshToken {

@@ -17,7 +17,7 @@ describe("syncReactions", () => {
   const mockedStreamDAL = mocked(StreamDAL);
 
   beforeAll(() => {
-    mockedStreamDAL.incClapsCount.mockResolvedValue({
+    mockedStreamDAL.incReactionsCount.mockResolvedValue({
       id: stream,
       reactions: 5,
     });
@@ -44,7 +44,7 @@ describe("syncReactions", () => {
 
     jest.runOnlyPendingTimers();
 
-    expect(mockedStreamDAL.incClapsCount).toBeCalledWith(
+    expect(mockedStreamDAL.incReactionsCount).toBeCalledWith(
       stream,
       reactions.length
     );

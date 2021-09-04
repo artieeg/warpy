@@ -84,7 +84,7 @@ describe("StreamService.createNewStream", () => {
       owner_id: owner,
       preview: null,
       live: true,
-      claps: 0,
+      reactions: 0,
       title,
       hub,
     });

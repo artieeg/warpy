@@ -39,28 +39,28 @@ export const StreamDAL = {
     return stream ? toStreamDTO(stream) : null;
   },
 
-  async incClapsCount(
+  async incReactionsCount(
     id: string,
     amount = 0
   ): Promise<{
     id: string;
     reactions: number;
   }> {
-    const { claps } = await prisma.stream.update({
+    const { reactions } = await prisma.stream.update({
       where: {
         id,
       },
       data: {
-        claps: {
+        reactions: {
           increment: amount,
         },
       },
       select: {
-        claps: true,
+        reactions: true,
       },
     });
 
-    return { id, reactions: claps };
+    return { id, reactions };
   },
 
   async delete(id: string): Promise<number> {
