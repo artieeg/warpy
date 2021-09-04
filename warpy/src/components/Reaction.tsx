@@ -51,9 +51,9 @@ export interface IReactionProps {
   size?: number;
 }
 
-export const Reaction = (props: IReactionProps) => {
+export const Reaction = React.memo((props: IReactionProps) => {
   const {code, size} = props;
   const ReactionComponent = (reactions as any)[code];
 
   return ReactionComponent({height: size || 30, width: size || 30});
-};
+});

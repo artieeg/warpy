@@ -12,48 +12,53 @@ interface IEmittedReactionProps {
   reaction: string;
 }
 
-const EmittedReaction = (props: IEmittedReactionProps) => {
+const EmittedReaction = React.memo((props: IEmittedReactionProps) => {
   const scale = useRef(new Animated.Value(0));
   const opacity = useRef(new Animated.Value(0));
   const translateX = useRef(new Animated.Value(0));
   const translateY = useRef(new Animated.Value(0));
 
   useEffect(() => {
-    Animated.parallel([
-      Animated.sequence([
-        Animated.parallel([
+    const translateDuration = 1800 + Math.random() * 400;
+
+    Animated.sequence([
+      Animated.delay(Math.random() * 800),
+      Animated.parallel([
+        Animated.sequence([
+          Animated.parallel([
+            Animated.timing(scale.current, {
+              toValue: 1.2,
+              duration: 200,
+              useNativeDriver: true,
+            }),
+            Animated.timing(opacity.current, {
+              toValue: 1,
+              duration: 200,
+              useNativeDriver: true,
+            }),
+          ]),
           Animated.timing(scale.current, {
-            toValue: 1.2,
-            duration: 200,
+            toValue: 1,
+            duration: 100,
             useNativeDriver: true,
           }),
           Animated.timing(opacity.current, {
-            toValue: 1,
-            duration: 200,
+            toValue: 0,
+            duration: translateDuration * 0.6,
             useNativeDriver: true,
           }),
         ]),
-        Animated.timing(scale.current, {
-          toValue: 1,
-          duration: 100,
+        Animated.timing(translateY.current, {
+          toValue: -200,
+          duration: translateDuration,
           useNativeDriver: true,
         }),
-        Animated.timing(opacity.current, {
-          toValue: 0,
-          duration: 400,
+        Animated.timing(translateX.current, {
+          toValue: Math.random() * 90 - 45,
+          duration: translateDuration / 1.3,
           useNativeDriver: true,
         }),
       ]),
-      Animated.timing(translateY.current, {
-        toValue: -300,
-        duration: 800,
-        useNativeDriver: true,
-      }),
-      Animated.timing(translateX.current, {
-        toValue: Math.random() * 90 - 45,
-        duration: 800,
-        useNativeDriver: true,
-      }),
     ]).start();
   }, []);
 
@@ -67,11 +72,13 @@ const EmittedReaction = (props: IEmittedReactionProps) => {
   };
 
   return (
-    <Animated.View style={style}>
-      <Reaction code={props.reaction} />
-    </Animated.View>
+    <View style={{position: 'absolute', bottom: 0}}>
+      <Animated.View style={style}>
+        <Reaction code={props.reaction} />
+      </Animated.View>
+    </View>
   );
-};
+});
 
 export const ReactionEmitter = () => {
   const ws = useWebSocketContext();
@@ -91,7 +98,7 @@ export const ReactionEmitter = () => {
 
     const interval = setInterval(() => {
       setReactions(prev => prev.slice(10));
-    }, 10000);
+    }, 5000);
 
     return () => {
       unsub();

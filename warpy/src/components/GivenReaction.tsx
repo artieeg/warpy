@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import {Animated, StyleProp, View, ViewStyle} from 'react-native';
+import {Animated, StyleProp} from 'react-native';
 import {Reaction} from './Reaction';
 
 export interface IGivenReaction {
@@ -11,7 +11,7 @@ export interface IGivenReaction {
   reaction: string;
 }
 
-export const GivenReaction = (props: IGivenReaction) => {
+export const GivenReaction = React.memo((props: IGivenReaction) => {
   const scale = useRef(new Animated.Value(2.5));
   const opacity = useRef(new Animated.Value(1));
 
@@ -64,4 +64,4 @@ export const GivenReaction = (props: IGivenReaction) => {
       <Reaction size={size} code={props.reaction} />
     </Animated.View>
   );
-};
+});

@@ -121,14 +121,6 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   }, [id, audioStream, ws, media]);
 
   useEffect(() => {
-    const unsub = ws.stream.onReactionsUpdate(data => {
-      console.log('received reactions', data.reactions);
-    });
-
-    return unsub;
-  }, []);
-
-  useEffect(() => {
     if (speakerOptions && audioStream) {
       media.sendMediaStream(audioStream, id, speakerOptions.media, 'audio');
     }
