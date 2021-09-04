@@ -11,5 +11,5 @@ export const onReaction: MessageHandler<IClap> = async (
     limit: 50,
   });
 
-  fn(data.user, data.stream);
+  fn(data.user, data.emoji, data.stream);
 };

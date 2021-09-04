@@ -47,5 +47,5 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
   onNewSpeaker: (handler) => socket.on("new-speaker", handler),
   onActiveSpeaker: (handler) => socket.on("active-speaker", handler),
   onSpeakingAllowed: (handler) => socket.on("speaking-allowed", handler),
-  onReactionsUpdate: (handler) => socket.on("claps-update", handler),
+  onReactionsUpdate: (handler) => socket.on("reactions-update", handler),
 });

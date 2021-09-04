@@ -1,3 +1,4 @@
+import { ALLOWED_EMOJI } from "@warpy/lib";
 import { MediaClient } from "@warpykit-sdk/client";
 import { UserRecord } from "../types";
 import { createRecvTransport } from "../utils";
@@ -46,11 +47,12 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
     console.log("reactions update", data);
   });
 
-  /*
   setInterval(() => {
-    api.stream.react(streamId, '');
-  }, 1000);
-  */
+    api.stream.react(
+      streamId,
+      ALLOWED_EMOJI[Math.floor(Math.random() * ALLOWED_EMOJI.length)]
+    );
+  }, 300);
 
   record.stream = streamId;
   record.role = "viewer";

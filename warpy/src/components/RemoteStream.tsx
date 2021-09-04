@@ -23,6 +23,7 @@ import {useParticipantsStore} from '@app/stores';
 import {Reactions} from './Reactions';
 import {reactionCodes} from './Reaction';
 import {ReactionCanvas} from './ReactionCanvas';
+import {ReactionEmitter} from './ReactionEmitter';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -116,10 +117,16 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
       setSpeakerOptions(options);
     });
 
-    return () => {
-      unsub();
-    };
+    return unsub;
   }, [id, audioStream, ws, media]);
+
+  useEffect(() => {
+    const unsub = ws.stream.onReactionsUpdate(data => {
+      console.log('received reactions', data.reactions);
+    });
+
+    return unsub;
+  }, []);
 
   useEffect(() => {
     if (speakerOptions && audioStream) {
@@ -161,7 +168,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
         />
       )}
 
-      <ReactionCanvas reaction={currentReaction} />
+      <ReactionCanvas stream={id} reaction={currentReaction} />
 
       {isSpeaker && (
         <SpeakerStreamPanel
@@ -206,6 +213,8 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
         visible={showReactions}
         onHide={() => setReactionsVisible(false)}
       />
+
+      <ReactionEmitter />
     </View>
   );
 };

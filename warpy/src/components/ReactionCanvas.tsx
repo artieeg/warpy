@@ -1,13 +1,16 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {GivenReaction, IGivenReaction} from './GivenReaction';
+import {useWebSocketContext} from './WebSocketContext';
 
 interface IReactionCanvasProps {
   reaction: string;
+  stream: string;
 }
 
 export const ReactionCanvas = (props: IReactionCanvasProps) => {
-  const {reaction} = props;
+  const {reaction, stream} = props;
+  const ws = useWebSocketContext();
 
   const [reactions, setReactions] = useState<IGivenReaction[]>([]);
 
@@ -19,12 +22,11 @@ export const ReactionCanvas = (props: IReactionCanvasProps) => {
     }, 10000);
   }, []);
 
-  console.log('reactions', reactions);
-
   const onTouchStart = useCallback(
     ({nativeEvent}: any) => {
       const maxAngle = 50;
 
+      ws.stream.react(stream, reaction);
       setReactions(prev => [
         ...prev,
         {
@@ -37,7 +39,7 @@ export const ReactionCanvas = (props: IReactionCanvasProps) => {
         },
       ]);
     },
-    [reaction],
+    [reaction, ws, stream],
   );
 
   return (

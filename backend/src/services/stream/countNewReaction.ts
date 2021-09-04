@@ -14,6 +14,8 @@ const reset = () => {
 };
 
 export const syncReactions = async (): Promise<void> => {
+  console.log("entries", Object.entries(batchedReactionUpdates));
+
   Object.entries(batchedReactionUpdates).forEach(([stream, reactions]) => {
     StreamDAL.incClapsCount(stream, reactions.length);
     observer.emit("reactions-update", { stream, reactions });

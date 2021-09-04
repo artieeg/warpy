@@ -18,5 +18,8 @@ export interface INewPreviewEvent {
 
 export interface IReactionsUpdate {
   stream: string;
-  reactions: number;
+  reactions: {
+    emoji: string;
+    user: string;
+  }[];
 }

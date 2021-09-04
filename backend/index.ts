@@ -42,7 +42,7 @@ const main = async () => {
   MessageService.on("active-speakers", onActiveSpeakers);
   MessageService.on("user-delete", onUserDelete);
   MessageService.on("new-stream-preview", onNewStreamPreview);
-  MessageService.on("clap", onReaction);
+  MessageService.on("reaction", onReaction);
   MessageService.on("new-media-node", onNewOnlineNode);
 
   StreamService.onReactionUpdate(BroadcastService.broadcastReactions);
