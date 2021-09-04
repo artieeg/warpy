@@ -4,6 +4,7 @@ import {Speakers} from './Speakers';
 import {Participant} from '@app/models';
 import {ToggleControls} from './ToggleControls';
 import {PanelButtonsHolder} from './PanelButtonsHolder';
+import {ReactionEmitter} from './ReactionEmitter';
 
 export interface IStreamPanelBase {
   visible: boolean;
@@ -52,6 +53,7 @@ export const StreamPanelBase = (props: IStreamPanelBaseProps) => {
         hideDirection="left"
         visible={showPanelItems}
         style={styles.participants}>
+        <ReactionEmitter />
         <Speakers speakers={speakers} style={styles.speakers} />
         {children[2]}
       </PanelButtonsHolder>

@@ -205,8 +205,6 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
         visible={showReactions}
         onHide={() => setReactionsVisible(false)}
       />
-
-      <ReactionEmitter />
     </View>
   );
 };

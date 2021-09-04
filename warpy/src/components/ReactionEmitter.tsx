@@ -122,6 +122,5 @@ const styles = StyleSheet.create({
     bottom: 80,
     width: 30,
     height: 5,
-    backgroundColor: '#ff3030',
   },
 });
