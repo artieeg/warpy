@@ -24,13 +24,12 @@ export const ViewerStreamPanel = (props: IRemoteStreamPanel) => {
 
   return (
     <StreamPanelBase {...props}>
-      <WarpButton />
       <ClapButton reaction={reaction} onPress={onOpenReactions} />
+      <RaiseHandButton onPress={onRaiseHand} />
       <ShowParticipantsButton
         count={participantsCount}
         onOpenParticipantsList={onOpenParticipantsList}
       />
-      <RaiseHandButton onPress={onRaiseHand} />
     </StreamPanelBase>
   );
 };

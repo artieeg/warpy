@@ -61,8 +61,6 @@ export const StreamPanelBase = (props: IStreamPanelBaseProps) => {
           <View style={styles.space} />
           {children[1]}
           <View style={styles.space} />
-          {children[3]}
-          <View style={styles.space} />
         </PanelButtonsHolder>
         <ToggleControls
           show={showPanelItems}

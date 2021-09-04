@@ -37,6 +37,7 @@ export const Reactions = (props: IReactionsProps) => {
         style={styles.list}
         numColumns={5}
         data={reactionCodes}
+        keyExtractor={item => item}
         renderItem={({item}) => (
           <ReactionContainer>
             <ReactionButton

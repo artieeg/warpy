@@ -22,6 +22,7 @@ import {SpeakerStreamPanel} from './SpeakerStreamPanel';
 import {useParticipantsStore} from '@app/stores';
 import {Reactions} from './Reactions';
 import {reactionCodes} from './Reaction';
+import {ReactionCanvas} from './ReactionCanvas';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -159,6 +160,8 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
           streamURL={mediaStream.toURL()}
         />
       )}
+
+      <ReactionCanvas reaction={currentReaction} />
 
       {isSpeaker && (
         <SpeakerStreamPanel
