@@ -4,10 +4,10 @@ import Modal from 'react-native-modal';
 import {Text} from './Text';
 
 interface IParticipanModalProps extends ViewProps {
-  title: string;
+  title?: string;
   visible: boolean;
   onHide: () => void;
-  children: React.ReactChild;
+  children: React.ReactNode;
 }
 
 export const BaseSlideModal = (props: IParticipanModalProps) => {
@@ -32,9 +32,11 @@ export const BaseSlideModal = (props: IParticipanModalProps) => {
       isVisible={visible}>
       <View style={[styles.wrapper, style]}>
         <View style={styles.handler} />
-        <Text weight="bold" style={[styles.title, styles.horizontalPadding]}>
-          {title}
-        </Text>
+        {title && (
+          <Text weight="bold" style={[styles.title, styles.horizontalPadding]}>
+            {title}
+          </Text>
+        )}
 
         {children}
       </View>

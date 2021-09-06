@@ -6,14 +6,15 @@ interface IButtonProps {
   title: string;
   onPress?: any;
   style?: any;
+  color?: keyof typeof colorStyles;
 }
 
 export const SmallTextButton = (props: IButtonProps) => {
-  const {onPress, style, title} = props;
+  const {onPress, style, title, color} = props;
 
   return (
     <TouchableWithoutFeedback onPress={onPress}>
-      <View style={[styles.button, style]}>
+      <View style={[styles.button, colorStyles[color || 'main'], style]}>
         <Text weight="bold" color="dark" size="xsmall">
           {title}
         </Text>
@@ -22,13 +23,21 @@ export const SmallTextButton = (props: IButtonProps) => {
   );
 };
 
+const colorStyles = StyleSheet.create({
+  main: {
+    backgroundColor: '#F9F871',
+  },
+  important: {
+    backgroundColor: '#F97971',
+  },
+});
+
 const styles = StyleSheet.create({
   button: {
     alignSelf: 'baseline',
     paddingHorizontal: 25,
     paddingVertical: 6,
     borderRadius: 35,
-    backgroundColor: '#F9F871',
     alignItems: 'center',
     justifyContent: 'center',
   },

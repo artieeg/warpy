@@ -27,8 +27,8 @@ const EmittedReaction = React.memo((props: IEmittedReactionProps) => {
         Animated.sequence([
           Animated.parallel([
             Animated.timing(scale.current, {
-              toValue: 1.2,
-              duration: 200,
+              toValue: 1.4,
+              duration: 300,
               useNativeDriver: true,
             }),
             Animated.timing(opacity.current, {
@@ -39,7 +39,7 @@ const EmittedReaction = React.memo((props: IEmittedReactionProps) => {
           ]),
           Animated.timing(scale.current, {
             toValue: 1,
-            duration: 100,
+            duration: 300,
             useNativeDriver: true,
           }),
           Animated.timing(opacity.current, {
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   wrapper: {
     position: 'absolute',
     left: 20,
-    bottom: 80,
+    bottom: 60,
     width: 30,
     height: 5,
   },

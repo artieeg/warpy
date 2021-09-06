@@ -2,8 +2,6 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {DevSignUp, Feed, NewStream, Splash, Stream} from './src/screens';
-import {Provider} from 'react-redux';
-import {store} from '@app/store';
 import {StatusBar} from 'react-native';
 import {MediaStreamingProvider, WebSocketProvider} from '@app/components';
 

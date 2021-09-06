@@ -5,7 +5,7 @@ import {Image, StyleSheet} from 'react-native';
 interface IAvatarProps {
   user: IUser;
   style?: any;
-  size?: 'small' | 'medium';
+  size?: 'small' | 'medium' | 'large';
 }
 
 export const Avatar = (props: IAvatarProps) => {
@@ -23,7 +23,7 @@ export const Avatar = (props: IAvatarProps) => {
 const styles = StyleSheet.create({
   avatar: {
     overflow: 'hidden',
-    borderRadius: 30,
+    borderRadius: 40,
     backgroundColor: '#303030',
   },
   small: {
@@ -33,5 +33,9 @@ const styles = StyleSheet.create({
   medium: {
     width: 50,
     height: 50,
+  },
+  large: {
+    width: 80,
+    height: 80,
   },
 });

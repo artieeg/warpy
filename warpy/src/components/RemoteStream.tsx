@@ -189,6 +189,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
         onHide={() => setSelectedUser(null)}
         id={selectedUser}
       />
+
       <ParticipantsModal
         raisingHands={usersRaisingHand}
         speakers={speakers}
