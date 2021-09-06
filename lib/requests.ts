@@ -182,3 +182,13 @@ export interface IClap {
   emoji: string;
   stream: string;
 }
+
+export interface IFollowRequest {
+  user: string;
+  userToFollow: string;
+}
+
+export interface IUnfollowRequest {
+  user: string;
+  userToUnfollow: string;
+}

@@ -45,3 +45,11 @@ export interface IConnectRecvTransportParams {
   routerRtpCapabilities: any;
   recvTransportOptions: any;
 }
+
+export interface IFollowResponse {
+  followedUser: any;
+}
+
+export interface IUnfollowResponse {
+  unfollowedUser: any;
+}

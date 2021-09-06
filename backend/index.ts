@@ -23,6 +23,8 @@ import {
   onNewStreamPreview,
   onNewOnlineNode,
   onReaction,
+  onUnfollow,
+  onFollow,
 } from "@backend/handlers";
 
 const main = async () => {
@@ -44,6 +46,10 @@ const main = async () => {
   MessageService.on("new-stream-preview", onNewStreamPreview);
   MessageService.on("reaction", onReaction);
   MessageService.on("new-media-node", onNewOnlineNode);
+  MessageService.on("new-media-node", onNewOnlineNode);
+
+  MessageService.on("user-follow", onFollow);
+  MessageService.on("user-unfollow", onUnfollow);
 
   StreamService.onReactionUpdate(BroadcastService.broadcastReactions);
   console.log(":>");

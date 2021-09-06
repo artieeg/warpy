@@ -6,3 +6,4 @@ export * from "./feed_cache";
 export * from "./media";
 export * from "./message";
 export * from "./rate_limit";
+export * from "./follow";

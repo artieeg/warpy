@@ -12,3 +12,5 @@ export * from "./onNewStream";
 export * from "./onNewUser";
 export * from "./onUserDelete";
 export * from "./onReaction";
+export * from "./onFollow";
+export * from "./onUnfollow";

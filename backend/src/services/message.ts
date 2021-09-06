@@ -40,6 +40,8 @@ const SubjectEventMap = {
   "user.delete": "user-delete",
   "stream.new-preview": "new-stream-preview",
   "stream.reaction": "reaction",
+  "user.follow": "user-follow",
+  "user.unfollow": "user-unfollow",
 };
 
 type Subject = keyof typeof SubjectEventMap;

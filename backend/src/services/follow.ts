@@ -8,13 +8,18 @@ type FollowDeletedCallback = FollowCreatedCallback;
 const observer = new EventEmitter();
 
 export const FollowService = {
-  async createNewFollow(follower: string, userToFollow: string): Promise<void> {
+  async createNewFollow(
+    follower: string,
+    userToFollow: string
+  ): Promise<IFollow> {
     const follow = await FollowRecordDAL.createNewFollow(
       follower,
       userToFollow
     );
 
     observer.emit("follow-created", follow);
+
+    return follow;
   },
 
   async deleteFollow(follower: string, userToUnfollow: string): Promise<void> {
