@@ -19,8 +19,8 @@ export const syncReactions = async (): Promise<void> => {
   Object.entries(batchedReactionUpdates).forEach(
     async ([stream, reactions]) => {
       try {
-        await StreamDAL.incReactionsCount(stream, reactions.length);
         observer.emit("reactions-update", { stream, reactions });
+        await StreamDAL.incReactionsCount(stream, reactions.length);
       } catch (e) {
         console.error(e);
       }

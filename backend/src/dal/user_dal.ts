@@ -10,7 +10,7 @@ export interface IUser extends IBaseUser {
 
 type NewUserParams = Omit<Omit<User, "id">, "created_at">;
 
-export const toUserDTO = (data: User, includeDetails: boolean): IUser => {
+export const toUserDTO = (data: User, includeDetails = false): IUser => {
   return {
     id: data.id,
     last_name: data.last_name,
