@@ -20,6 +20,9 @@ model User {
   created_at  DateTime     @default(now())
   participant Participant?
 
+  followers FollowRecord[] @relation(name: "follower")
+  followed  FollowRecord[] @relation(name: "followed")
+
   //Stream Stream[]
   @@map(name: "Users")
 }
@@ -29,12 +32,12 @@ model Participant {
   user_id       String  @unique
   user          User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   stream_id     String?
-  stream        Stream?  @relation(name: "participant", fields: [stream_id], references: [id], onDelete: Cascade)
+  stream        Stream? @relation(name: "participant", fields: [stream_id], references: [id], onDelete: Cascade)
   role          String
   isRaisingHand Boolean
 
-  @@unique([user_id, stream_id], name: "stream_participant_index")
   Stream Stream[] @relation("owner")
+  @@unique([user_id, stream_id], name: "stream_participant_index")
 }
 
 model Stream {
@@ -46,10 +49,21 @@ model Stream {
   live         Boolean
   preview      String?
   participants Participant[] @relation(name: "participant")
-  reactions        Int
+  reactions    Int
 }
 
 model RefreshToken {
   id    String @id @default(cuid())
   token String
+}
+
+model FollowRecord {
+  id          String @id @default(cuid())
+  follower_id String
+  followed_id String
+
+  follower User @relation(name: "follower", fields: [follower_id], references: [id], onDelete: Cascade)
+  followed User @relation(name: "followed", fields: [followed_id], references: [id], onDelete: Cascade)
+
+  @@unique([follower_id, followed_id], name: "unique_follow_index")
 }
