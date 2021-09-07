@@ -5,9 +5,7 @@ export const onWhoAmIRequest: MessageHandler<IWhoAmIRequest, IWhoAmIResponse> =
   async (data, respond) => {
     const { user } = data;
 
-    const userData = await UserService.whoAmI(user);
+    const reply = await UserService.whoAmI(user);
 
-    console.log(userData);
-
-    respond({ user: userData });
+    respond(reply);
   };

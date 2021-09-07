@@ -1,6 +1,12 @@
 import { jwt } from "@backend/utils";
-import { IUser, ParticipantDAL, RefreshTokenDAL, UserDAL } from "@backend/dal";
-import { INewUser } from "@warpy/lib";
+import {
+  FollowRecordDAL,
+  IUser,
+  ParticipantDAL,
+  RefreshTokenDAL,
+  UserDAL,
+} from "@backend/dal";
+import { INewUser, IWhoAmIResponse } from "@warpy/lib";
 
 type NewUserResponse = {
   id: string;
@@ -40,7 +46,15 @@ export const UserService = {
     await UserDAL.delete(user);
   },
 
-  async whoAmI(user: string): Promise<IUser | null> {
-    return UserDAL.findById(user);
+  async whoAmI(id: string): Promise<IWhoAmIResponse> {
+    const [user, following] = await Promise.all([
+      UserDAL.findById(id),
+      FollowRecordDAL.getFollowedUserIds(id),
+    ]);
+
+    return {
+      user,
+      following,
+    };
   },
 };

@@ -52,4 +52,17 @@ export const FollowRecordDAL = {
 
     return toFollowDTO(follow);
   },
+
+  async getFollowedUserIds(user: string): Promise<string[]> {
+    const followed = await prisma.followRecord.findMany({
+      where: {
+        follower_id: user,
+      },
+      select: {
+        followed_id: true,
+      },
+    });
+
+    return followed.map((data) => data.followed_id);
+  },
 };

@@ -11,15 +11,19 @@ export const FollowService = {
   async createNewFollow(
     follower: string,
     userToFollow: string
-  ): Promise<IFollow> {
-    const follow = await FollowRecordDAL.createNewFollow(
-      follower,
-      userToFollow
-    );
+  ): Promise<IFollow | null> {
+    try {
+      const follow = await FollowRecordDAL.createNewFollow(
+        follower,
+        userToFollow
+      );
 
-    observer.emit("follow-created", follow);
+      observer.emit("follow-created", follow);
 
-    return follow;
+      return follow;
+    } catch (e) {
+      return null;
+    }
   },
 
   async deleteFollow(follower: string, userToUnfollow: string): Promise<void> {

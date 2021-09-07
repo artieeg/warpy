@@ -27,6 +27,7 @@ export interface IFeedResponse {
 
 export interface IWhoAmIResponse {
   user: IBaseUser | null;
+  following: string[] | null;
 }
 
 export interface INewUserResponse {
