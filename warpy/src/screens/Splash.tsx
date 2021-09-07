@@ -1,17 +1,21 @@
-import {WebSocketContext} from '@app/components';
-import {useNullableAppUser} from '@app/hooks';
-import {User} from '@app/models';
+import {useWebSocketHandler} from '@app/hooks';
 import {accessToken, loadTokens} from '@app/services';
-import {useFollowingStore, useUserStore} from '@app/stores';
+import {useUserStore} from '@app/stores';
+import {useAPIStore} from '@app/stores/useAPIStore';
 import {useNavigation} from '@react-navigation/native';
-import React, {useContext, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 
 export const Splash = () => {
   const navigation = useNavigation();
 
-  const user = useNullableAppUser();
-  const ws = useContext(WebSocketContext);
+  const {api} = useAPIStore();
+  useWebSocketHandler(api);
+
+  const [user, loadUserData] = useUserStore(state => [
+    state.user,
+    state.loadUserData,
+  ]);
 
   useEffect(() => {
     if (user) {
@@ -22,19 +26,10 @@ export const Splash = () => {
   useEffect(() => {
     loadTokens()
       .then(async () => {
-        const userData = await ws.user.auth(accessToken);
-
-        console.log('authed', userData);
-
-        if (!userData) {
-          throw new Error();
-        }
-
-        useUserStore.getState().set({user: User.fromJSON(userData.user)});
-        useFollowingStore.getState().set({following: userData.following});
+        loadUserData(accessToken);
       })
       .catch(() => navigation.navigate('DevSignUp'));
-  }, [navigation, ws]);
+  }, [navigation, api]);
 
   return (
     <View style={styles.screen}>

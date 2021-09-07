@@ -1,18 +1,16 @@
-import {useWebSocketContext} from '@app/components';
-import {Stream} from '@app/models';
-import {useEffect, useState} from 'react';
+import {useFeedStore} from '@app/stores';
+import {useEffect} from 'react';
+import shallow from 'zustand/shallow';
 
 export const useFeed = () => {
-  const [feed, setFeed] = useState<Stream[]>([]);
-
-  const ws = useWebSocketContext();
+  const [feed, fetchNextPage] = useFeedStore(
+    state => [state.feed, state.fetchNextPage],
+    shallow,
+  );
 
   useEffect(() => {
-    ws.feed.get(0).then((data: any) => {
-      console.log('fetched feed', data);
-      setFeed(prev => [...prev, ...data.feed]);
-    });
-  }, [ws]);
+    fetchNextPage();
+  }, []);
 
   return feed;
 };
