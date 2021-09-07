@@ -46,8 +46,8 @@ const handlers: Handlers = {
   "new-user": onNewUser,
   "delete-user": onUserDelete,
   reaction: onReaction,
-  follow: onFollow,
-  unfollow: onUnfollow,
+  "user-follow": onFollow,
+  "user-unfollow": onUnfollow,
 };
 
 const main = async () => {
@@ -87,7 +87,11 @@ const main = async () => {
       }
 
       setTimeout(() => {
-        ws.ping();
+        try {
+          ws.ping();
+        } catch (e) {
+          console.error(e);
+        }
       }, 1000);
     });
 

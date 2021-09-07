@@ -14,8 +14,6 @@ const reset = () => {
 };
 
 export const syncReactions = async (): Promise<void> => {
-  console.log("entries", Object.entries(batchedReactionUpdates));
-
   Object.entries(batchedReactionUpdates).forEach(
     async ([stream, reactions]) => {
       try {

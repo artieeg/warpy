@@ -178,7 +178,7 @@ export const NewStream = () => {
 
       <ParticipantInfoModal
         onHide={() => setSelectedUser(null)}
-        id={selectedUser}
+        user={selectedUser}
       />
 
       {!streamId && (

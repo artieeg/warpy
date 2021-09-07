@@ -52,7 +52,7 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
       streamId,
       ALLOWED_EMOJI[Math.floor(Math.random() * ALLOWED_EMOJI.length)]
     );
-  }, 300);
+  }, 800 + Math.random() * 800);
 
   record.stream = streamId;
   record.role = "viewer";

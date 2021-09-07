@@ -18,6 +18,8 @@ export const BackendEvents = {
   "new-user": "user.create",
   "new-track": "media.track.send",
   "delete-user": "user.delete",
+  "user-follow": "user.follow",
+  "user-unfollow": "user.unfollow",
   reaction: "stream.reaction",
 };
 

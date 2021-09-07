@@ -1,38 +1,49 @@
 import {useAppUser, useStreamParticipant} from '@app/hooks';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text} from './Text';
 import {Avatar} from './Avatar';
 import {BaseSlideModal} from './BaseSlideModal';
 import {SmallTextButton} from './SmallTextButton';
+import {useFollowingStore} from '@app/stores';
 
 interface IParticipantInfoModal {
-  id: string | null;
+  user: string | null;
   onHide: () => any;
 }
 
 export const ParticipantInfoModal = (props: IParticipantInfoModal) => {
-  const {id, onHide} = props;
+  const {user, onHide} = props;
 
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (id) {
+    if (user) {
       setTimeout(() => {
         setVisible(true);
       }, 300);
     } else {
       setVisible(false);
     }
-  }, [id]);
+  }, [user]);
 
-  //const appUser = useAppUser();
-  //const appUserId = appUser!.id;
-  //const appUserParticipantData = useStreamParticipant(appUserId);
+  const followingStore = useFollowingStore();
 
-  const participant = useStreamParticipant(id!);
+  const isFollowing = followingStore.has(user!);
+
+  console.log('user', user);
+  const participant = useStreamParticipant(user!);
 
   const userFullName = `${participant?.first_name} ${participant?.last_name}`;
+
+  const onToggleFollow = () => {
+    console.log('following', useFollowingStore.getState().following);
+    if (useFollowingStore.getState().has(user!)) {
+      followingStore.remove(user!);
+    } else {
+      followingStore.add(user!);
+    }
+  };
 
   const renderParticipantInfo = () => {
     if (!participant) {
@@ -51,7 +62,11 @@ export const ParticipantInfoModal = (props: IParticipantInfoModal) => {
           </View>
         </View>
         <View style={styles.actions}>
-          <SmallTextButton style={styles.followButton} title="follow" />
+          <SmallTextButton
+            onPress={onToggleFollow}
+            style={styles.followButton}
+            title={isFollowing ? 'unfollow' : 'follow'}
+          />
           <SmallTextButton color="important" title="report" />
         </View>
       </View>

@@ -3,7 +3,7 @@ import {TextProps} from 'react-native';
 import {StyleSheet, Text as BaseText} from 'react-native';
 
 type TextWeight = 'regular' | 'bold' | 'light' | 'extraBold';
-type TextColor = 'dark' | 'bright' | 'info';
+type TextColor = 'dark' | 'bright' | 'info' | 'button';
 type TextSize = 'small' | 'medium' | 'large' | 'xsmall';
 
 interface ITextProps extends TextProps {
@@ -36,6 +36,9 @@ export const styles = StyleSheet.create({
   },
   bright: {
     color: '#BDF971',
+  },
+  button: {
+    color: '#F9F871',
   },
   info: {
     color: '#474141',

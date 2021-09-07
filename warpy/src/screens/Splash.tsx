@@ -1,5 +1,5 @@
 import {WebSocketContext} from '@app/components';
-import {useAppUser} from '@app/hooks';
+import {useNullableAppUser} from '@app/hooks';
 import {User} from '@app/models';
 import {accessToken, loadTokens} from '@app/services';
 import {useUserStore} from '@app/stores';
@@ -10,7 +10,7 @@ import {View, Text, StyleSheet} from 'react-native';
 export const Splash = () => {
   const navigation = useNavigation();
 
-  const user = useAppUser();
+  const user = useNullableAppUser();
   const ws = useContext(WebSocketContext);
 
   useEffect(() => {
