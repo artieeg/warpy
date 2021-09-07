@@ -2,7 +2,7 @@ import {WebSocketContext} from '@app/components';
 import {useNullableAppUser} from '@app/hooks';
 import {User} from '@app/models';
 import {accessToken, loadTokens} from '@app/services';
-import {useUserStore} from '@app/stores';
+import {useFollowingStore, useUserStore} from '@app/stores';
 import {useNavigation} from '@react-navigation/native';
 import React, {useContext, useEffect} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
@@ -31,6 +31,7 @@ export const Splash = () => {
         }
 
         useUserStore.getState().set({user: User.fromJSON(userData.user)});
+        useFollowingStore.getState().set({following: userData.following});
       })
       .catch(() => navigation.navigate('DevSignUp'));
   }, [navigation, ws]);

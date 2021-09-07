@@ -6,6 +6,7 @@ import {Avatar} from './Avatar';
 import {BaseSlideModal} from './BaseSlideModal';
 import {SmallTextButton} from './SmallTextButton';
 import {useFollowingStore} from '@app/stores';
+import {useWebSocketContext} from './WebSocketContext';
 
 interface IParticipantInfoModal {
   user: string | null;
@@ -14,6 +15,8 @@ interface IParticipantInfoModal {
 
 export const ParticipantInfoModal = (props: IParticipantInfoModal) => {
   const {user, onHide} = props;
+
+  const api = useWebSocketContext();
 
   const [visible, setVisible] = useState(false);
 
@@ -31,17 +34,23 @@ export const ParticipantInfoModal = (props: IParticipantInfoModal) => {
 
   const isFollowing = followingStore.has(user!);
 
-  console.log('user', user);
   const participant = useStreamParticipant(user!);
 
   const userFullName = `${participant?.first_name} ${participant?.last_name}`;
 
-  const onToggleFollow = () => {
-    console.log('following', useFollowingStore.getState().following);
-    if (useFollowingStore.getState().has(user!)) {
-      followingStore.remove(user!);
+  const onToggleFollow = async () => {
+    if (!user) {
+      return;
+    }
+
+    if (useFollowingStore.getState().has(user)) {
+      await api.user.unfollow(user);
+
+      followingStore.remove(user);
     } else {
-      followingStore.add(user!);
+      await api.user.follow(user);
+
+      followingStore.add(user);
     }
   };
 
