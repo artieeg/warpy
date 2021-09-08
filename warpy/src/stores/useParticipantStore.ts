@@ -2,6 +2,7 @@ import {Participant} from '@app/models';
 import create, {SetState} from 'zustand';
 import produce from 'immer';
 import {useAPIStore} from './useAPIStore';
+import {Alert} from 'react-native';
 
 interface IParticipantsStore {
   stream: string | null;
@@ -17,11 +18,12 @@ interface IParticipantsStore {
   addViewers: (viewers: Participant[], page: number) => void;
   addViewer: (viewer: Participant) => void;
   addSpeaker: (speaker: Participant) => void;
+  setActiveSpeaker: (speaker: Participant, isSpeaking: boolean) => void;
   raiseHand: (user: Participant) => void;
   removeParticipant: (user: string) => void;
 }
 
-export const useParticipantsStore = create<IParticipantsStore>((set, get) => ({
+export const useParticipantStore = create<IParticipantsStore>((set, get) => ({
   stream: null,
   page: -1,
   loading: false,
@@ -54,11 +56,10 @@ export const useParticipantsStore = create<IParticipantsStore>((set, get) => ({
       store.addViewer(data.viewer);
     });
 
-    /*
     api.stream.onActiveSpeaker(data => {
-      Alert.alert('active speaker', data.speaker.id);
+      Alert.alert('new active speaker', JSON.stringify(data));
+      store.setActiveSpeaker(data.speaker, true);
     });
-    */
 
     api.stream.onNewRaisedHand(data => {
       const participant = Participant.fromJSON(data.viewer);
@@ -85,6 +86,21 @@ export const useParticipantsStore = create<IParticipantsStore>((set, get) => ({
       participants: state.participants.filter(v => v.id !== user),
       count: state.count - 1,
     }));
+  },
+  setActiveSpeaker: (user, isSpeaking) => {
+    set(
+      produce(state => {
+        const participant = state.participants.find(
+          (p: Participant) => p.id === user.id,
+        );
+
+        if (!participant) {
+          state.participants.push(user);
+        } else {
+          participant.isSpeaking = isSpeaking;
+        }
+      }),
+    );
   },
   addSpeaker: user => {
     set(

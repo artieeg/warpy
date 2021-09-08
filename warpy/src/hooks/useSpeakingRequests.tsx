@@ -1,10 +1,10 @@
 import {Participant} from '@app/models/participant';
-import {useParticipantsStore} from '@app/stores';
+import {useParticipantStore} from '@app/stores';
 import {useMemo} from 'react';
 import shallow from 'zustand/shallow';
 
 export const useSpeakingRequests = (): Participant[] => {
-  const participants = useParticipantsStore(
+  const participants = useParticipantStore(
     state => state.participants,
     shallow,
   );

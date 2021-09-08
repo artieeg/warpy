@@ -18,7 +18,7 @@ import {
 } from '@app/components';
 import {useRecvTransport} from '@app/hooks/useRecvTransport';
 import {StreamerPanel} from '@app/components/StreamerPanel';
-import {useParticipantsStore} from '@app/stores';
+import {useParticipantStore} from '@app/stores';
 import {useAPIStore} from '@app/stores/useAPIStore';
 
 export const NewStream = () => {
@@ -107,7 +107,7 @@ export const NewStream = () => {
 
     console.log('permissions token', mediaPermissionsToken);
 
-    useParticipantsStore.getState().set({
+    useParticipantStore.getState().set({
       participants: receivedSpeakers,
       count,
     });

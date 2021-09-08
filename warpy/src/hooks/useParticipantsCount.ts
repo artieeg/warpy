@@ -1,5 +1,5 @@
-import {useParticipantsStore} from '@app/stores';
+import {useParticipantStore} from '@app/stores';
 
 export const useParticipantsCount = () => {
-  return useParticipantsStore(store => store.count);
+  return useParticipantStore(store => store.count);
 };

@@ -1,5 +1,5 @@
 import {accessToken, loadTokens} from '@app/services';
-import {useParticipantsStore, useUserStore} from '@app/stores';
+import {useParticipantStore, useUserStore} from '@app/stores';
 import {useAPIStore} from '@app/stores/useAPIStore';
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect} from 'react';
@@ -10,7 +10,7 @@ export const Splash = () => {
 
   const {api} = useAPIStore();
 
-  const participantStore = useParticipantsStore();
+  const participantStore = useParticipantStore();
 
   useEffect(() => {
     participantStore.setupAPIListeners();

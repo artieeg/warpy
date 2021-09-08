@@ -1,9 +1,9 @@
-import {useParticipantsStore} from '@app/stores';
+import {useParticipantStore} from '@app/stores';
 import {useMemo} from 'react';
 import shallow from 'zustand/shallow';
 
 export const useStreamSpeakers = (_stream: string) => {
-  const participants = useParticipantsStore(
+  const participants = useParticipantStore(
     state => state.participants,
     shallow,
   );

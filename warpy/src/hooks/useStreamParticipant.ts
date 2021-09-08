@@ -1,10 +1,10 @@
 import {useMemo} from 'react';
 import {Participant} from '@app/models';
-import {useParticipantsStore} from '@app/stores';
+import {useParticipantStore} from '@app/stores';
 import shallow from 'zustand/shallow';
 
 export const useStreamParticipant = (id: string): Participant | undefined => {
-  const participants = useParticipantsStore(
+  const participants = useParticipantStore(
     state => state.participants,
     shallow,
   );

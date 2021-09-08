@@ -18,7 +18,7 @@ import {ParticipantsModal} from './ParticipantsModal';
 import {ViewerStreamPanel} from './ViewerStreamPanel';
 import {ParticipantInfoModal} from './ParticipantInfoModal';
 import {SpeakerStreamPanel} from './SpeakerStreamPanel';
-import {useParticipantsStore} from '@app/stores';
+import {useParticipantStore} from '@app/stores';
 import {Reactions} from './Reactions';
 import {reactionCodes} from './Reaction';
 import {ReactionCanvas} from './ReactionCanvas';
@@ -100,7 +100,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
       console.log('media token set');
       setRoomData(data.recvMediaParams);
 
-      useParticipantsStore.getState().set({
+      useParticipantStore.getState().set({
         participants: [...data.speakers, ...data.raisedHands],
         count: data.count,
         page: -1,
