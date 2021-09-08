@@ -51,7 +51,7 @@ export const startWorkers = async () => {
 
     const audioLevelObserver = await router.createAudioLevelObserver({
       interval: 300,
-      threshold: 0,
+      threshold: -50,
     });
 
     workers.push({ worker, router, audioLevelObserver });
@@ -220,9 +220,14 @@ export const tryConnectToIngress = async () => {
 };
 
 export const onActiveSpeakers = (cb: any) => {
+  getAudioLevelObserver().on("silence", () => {
+    console.log("is silent");
+  });
+
   getAudioLevelObserver().on(
     "volumes",
     (volumes: AudioLevelObserverVolume[]) => {
+      console.log("volumes", volumes);
       if (volumes.length === 0) {
         return;
       }

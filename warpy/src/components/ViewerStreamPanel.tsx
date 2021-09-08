@@ -8,8 +8,8 @@ import {IStreamPanelBase, StreamPanelBase} from './StreamPanelBase';
 interface IRemoteStreamPanel extends IStreamPanelBase {
   participantsCount: number;
   onRaiseHand: () => any;
-  onOpenReactions: () => any;
   onOpenParticipantsList: () => any;
+  onOpenReactions: () => any;
   reaction: string;
 }
 

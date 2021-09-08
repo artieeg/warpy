@@ -55,8 +55,8 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   });
 
   const participantsCount = useParticipantsCount();
-  const speakers = useStreamSpeakers(stream.id);
-  const [viewers, fetchViewers] = useStreamViewers(stream.id);
+  const speakers = useStreamSpeakers();
+  const [viewers, fetchViewers] = useStreamViewers();
   const usersRaisingHand = useSpeakingRequests();
 
   useEffect(() => {
@@ -164,10 +164,11 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
       {isSpeaker && (
         <SpeakerStreamPanel
           visible={panelVisible}
-          speakers={speakers}
           participantsCount={participantsCount}
           onOpenParticipantsList={() => setPanelVisible(false)}
+          onOpenReactions={onOpenReactions}
           micIsOn={micIsOn}
+          reaction={currentReaction}
           onMicToggle={() => setMicIsOn(prev => !prev)}
         />
       )}
@@ -176,7 +177,6 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
         <ViewerStreamPanel
           visible={panelVisible}
           reaction={currentReaction}
-          speakers={speakers}
           participantsCount={participantsCount}
           onRaiseHand={raiseHand}
           onOpenReactions={onOpenReactions}

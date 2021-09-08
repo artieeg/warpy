@@ -2,8 +2,7 @@ import { StreamDAL } from "@backend/dal";
 import { Reaction, ALLOWED_EMOJI } from "@warpy/lib";
 import { observer } from "./observer";
 
-/**
- * Stores pending reaction updates;
+/** Stores pending reaction updates;
  */
 export const batchedReactionUpdates: Record<string, Reaction[]> = {};
 
@@ -17,6 +16,10 @@ export const syncReactions = async (): Promise<void> => {
   Object.entries(batchedReactionUpdates).forEach(
     async ([stream, reactions]) => {
       try {
+        if (reactions.length === 0) {
+          return;
+        }
+
         observer.emit("reactions-update", { stream, reactions });
         await StreamDAL.incReactionsCount(stream, reactions.length);
       } catch (e) {

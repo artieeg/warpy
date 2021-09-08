@@ -3,4 +3,5 @@ target
 node_modules
 .vim
 *.webm
+*.ogg
 *.mp4

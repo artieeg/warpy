@@ -1,20 +1,27 @@
 import React from 'react';
-import {User} from '@app/models';
+import {Participant} from '@app/models';
 import {Speaker} from './Speaker';
 import {StyleSheet, View} from 'react-native';
 
 interface ISpeakersProps {
-  speakers: User[];
+  speakers: Participant[];
   style?: any;
 }
 
 export const Speakers = (props: ISpeakersProps) => {
   const {speakers, style} = props;
 
+  console.log('active speakers', speakers);
+
   return (
     <View style={[styles.container, style]}>
       {speakers.map(speaker => (
-        <Speaker key={speaker.id} user={speaker} />
+        <Speaker
+          volume={speaker.volume}
+          isSpeaking={speaker.isSpeaking}
+          key={speaker.id}
+          user={speaker}
+        />
       ))}
     </View>
   );

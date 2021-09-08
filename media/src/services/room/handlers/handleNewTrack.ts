@@ -55,6 +55,7 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
       await room.audioLevelObserver.addProducer({
         producerId: newProducer.id,
       });
+      console.log("added producer to the audio observer");
     }
 
     if (kind === "video") {

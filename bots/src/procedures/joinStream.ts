@@ -44,7 +44,7 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
   }
 
   api.stream.onReactionsUpdate((data) => {
-    console.log("reactions update", data);
+    //console.log("reactions update", data);
   });
 
   setInterval(() => {

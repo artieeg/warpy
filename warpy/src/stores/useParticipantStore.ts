@@ -2,7 +2,6 @@ import {Participant} from '@app/models';
 import create, {SetState} from 'zustand';
 import produce from 'immer';
 import {useAPIStore} from './useAPIStore';
-import {Alert} from 'react-native';
 
 interface IParticipantsStore {
   stream: string | null;
@@ -10,6 +9,7 @@ interface IParticipantsStore {
   count: number;
   loading: boolean;
   participants: Participant[];
+  speakers: Record<string, Participant>;
 
   setupAPIListeners: () => void;
   setCount: (newCount: number) => any;
@@ -29,6 +29,8 @@ export const useParticipantStore = create<IParticipantsStore>((set, get) => ({
   loading: false,
   count: 0,
   participants: [],
+  speakers: {},
+
   set,
   fetchMoreViewers: async () => {
     set({loading: true});
@@ -57,7 +59,6 @@ export const useParticipantStore = create<IParticipantsStore>((set, get) => ({
     });
 
     api.stream.onActiveSpeaker(data => {
-      Alert.alert('new active speaker', JSON.stringify(data));
       store.setActiveSpeaker(data.speaker, true);
     });
 
@@ -88,6 +89,7 @@ export const useParticipantStore = create<IParticipantsStore>((set, get) => ({
     }));
   },
   setActiveSpeaker: (user, isSpeaking) => {
+    /*
     set(
       produce(state => {
         const participant = state.participants.find(
@@ -101,8 +103,29 @@ export const useParticipantStore = create<IParticipantsStore>((set, get) => ({
         }
       }),
     );
+    */
+
+    set(state => ({
+      speakers: {
+        [user.id]: {
+          ...user,
+          isSpeaking: false,
+          volume: Math.random() * 70,
+        },
+      },
+    }));
   },
   addSpeaker: user => {
+    set(state => ({
+      participants: state.participants.filter(user => user.id !== user.id),
+      speakers: {
+        [user.id]: {
+          ...user,
+          volume: 0,
+        },
+      },
+    }));
+    /*
     set(
       produce(state => {
         const participant = state.participants.find(
@@ -117,6 +140,7 @@ export const useParticipantStore = create<IParticipantsStore>((set, get) => ({
         }
       }),
     );
+    */
   },
   raiseHand: user => {
     set(

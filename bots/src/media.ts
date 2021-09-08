@@ -32,6 +32,8 @@ if (audio.length === 0) {
 export const getAudioStream = async () => {
   const filename = audio[Math.floor(Math.random() * audio.length)];
 
+  console.log("audio filename", filename);
+
   const file = `file:/${path.resolve(__dirname, "../test-media")}/${filename}`;
 
   const stream = await worker.getUserMedia({

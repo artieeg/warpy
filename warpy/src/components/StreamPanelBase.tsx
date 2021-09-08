@@ -1,14 +1,13 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, Animated} from 'react-native';
 import {Speakers} from './Speakers';
-import {Participant} from '@app/models';
 import {ToggleControls} from './ToggleControls';
 import {PanelButtonsHolder} from './PanelButtonsHolder';
 import {ReactionEmitter} from './ReactionEmitter';
+import {useStreamSpeakers} from '@app/hooks';
 
 export interface IStreamPanelBase {
   visible: boolean;
-  speakers: Participant[];
 }
 
 interface IStreamPanelBaseProps extends IStreamPanelBase {
@@ -16,10 +15,11 @@ interface IStreamPanelBaseProps extends IStreamPanelBase {
 }
 
 export const StreamPanelBase = (props: IStreamPanelBaseProps) => {
-  const {visible, speakers, children} = props;
+  const {visible, children} = props;
 
   const [showPanelItems, setShowPanelItems] = useState(true);
 
+  const speakers = useStreamSpeakers();
   const opacity = useRef(new Animated.Value(1));
   const scale = useRef(new Animated.Value(1));
 
