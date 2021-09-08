@@ -4,7 +4,7 @@ import {Avatar} from './Avatar';
 import {StyleSheet, View} from 'react-native';
 import {Text} from './Text';
 import {SmallTextButton} from './SmallTextButton';
-import {useWebSocketContext} from './WebSocketContext';
+import {useAPIStore} from '@app/stores/useAPIStore';
 
 interface IRaisedHandInfo {
   data: Participant;
@@ -13,11 +13,11 @@ interface IRaisedHandInfo {
 export const UserWithRaisedHand = (props: IRaisedHandInfo) => {
   const {data} = props;
 
-  const ws = useWebSocketContext();
+  const {api} = useAPIStore();
 
   const onAllow = useCallback(() => {
-    ws.stream.allowSpeaker(data.id);
-  }, [ws, data.id]);
+    api.stream.allowSpeaker(data.id);
+  }, [api, data.id]);
 
   const name = `${data.first_name} ${data.last_name}`;
   return (

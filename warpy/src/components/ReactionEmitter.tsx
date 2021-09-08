@@ -1,7 +1,7 @@
+import {useAPIStore} from '@app/stores/useAPIStore';
 import React, {useEffect, useRef, useState} from 'react';
 import {Animated, StyleSheet, View} from 'react-native';
 import {Reaction} from './Reaction';
-import {useWebSocketContext} from './WebSocketContext';
 
 interface IReaction {
   reaction: string;
@@ -81,12 +81,12 @@ const EmittedReaction = React.memo((props: IEmittedReactionProps) => {
 });
 
 export const ReactionEmitter = () => {
-  const ws = useWebSocketContext();
+  const {api} = useAPIStore();
 
   const [reactions, setReactions] = useState<IReaction[]>([]);
 
   useEffect(() => {
-    const unsub = ws.stream.onReactionsUpdate(data => {
+    const unsub = api.stream.onReactionsUpdate(data => {
       setReactions(prev => [
         ...prev,
         ...data.reactions.map(reaction => ({
@@ -104,7 +104,7 @@ export const ReactionEmitter = () => {
       unsub();
       clearInterval(interval);
     };
-  }, [ws]);
+  }, [api]);
 
   return (
     <View style={styles.wrapper}>

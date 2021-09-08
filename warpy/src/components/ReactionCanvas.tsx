@@ -1,7 +1,7 @@
+import {useAPIStore} from '@app/stores/useAPIStore';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {GivenReaction, IGivenReaction} from './GivenReaction';
-import {useWebSocketContext} from './WebSocketContext';
 
 interface IReactionCanvasProps {
   reaction: string;
@@ -10,7 +10,7 @@ interface IReactionCanvasProps {
 
 export const ReactionCanvas = (props: IReactionCanvasProps) => {
   const {reaction, stream} = props;
-  const ws = useWebSocketContext();
+  const {api} = useAPIStore();
 
   const [reactions, setReactions] = useState<IGivenReaction[]>([]);
 
@@ -26,7 +26,7 @@ export const ReactionCanvas = (props: IReactionCanvasProps) => {
     ({nativeEvent}: any) => {
       const maxAngle = 50;
 
-      ws.stream.react(stream, reaction);
+      api.stream.react(stream, reaction);
       setReactions(prev => [
         ...prev,
         {
@@ -39,7 +39,7 @@ export const ReactionCanvas = (props: IReactionCanvasProps) => {
         },
       ]);
     },
-    [reaction, ws, stream],
+    [reaction, api, stream],
   );
 
   return (

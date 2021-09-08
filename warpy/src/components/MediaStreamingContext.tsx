@@ -1,7 +1,7 @@
 import {Device} from 'mediasoup-client';
 import React, {createContext, useContext, useMemo, useState} from 'react';
 import {MediaClient} from '@warpykit-sdk/client';
-import {useWebSocketContext} from './WebSocketContext';
+import {useAPIStore} from '@app/stores/useAPIStore';
 
 export const MediaStreamingContext = createContext<any>({});
 
@@ -13,7 +13,7 @@ let recvDevice = new Device({handlerName: 'ReactNative'});
 let sendDevice = new Device({handlerName: 'ReactNative'});
 
 export const MediaStreamingProvider = ({children}: any) => {
-  const ws = useWebSocketContext();
+  const {api} = useAPIStore();
   const [permissionsToken, setPermissionsToken] = useState<string | null>(null);
 
   const media = useMemo(
@@ -21,10 +21,10 @@ export const MediaStreamingProvider = ({children}: any) => {
       MediaClient({
         recvDevice,
         sendDevice,
-        api: ws,
+        api,
         permissionsToken,
       }),
-    [ws, permissionsToken],
+    [api, permissionsToken],
   );
 
   const initSendDevice = async (routerRtpCapabilities: any) => {
@@ -46,8 +46,6 @@ export const MediaStreamingProvider = ({children}: any) => {
       await recvDevice.load({routerRtpCapabilities});
     }
   };
-
-  console.log('permissions tkoen', permissionsToken);
 
   return (
     <MediaStreamingContext.Provider

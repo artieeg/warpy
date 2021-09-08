@@ -113,8 +113,11 @@ export const subscribeForEvents = (
   const listen = async () => {
     for await (const msg of sub) {
       const data = jc.decode(msg.data) as any;
-      console.log("received a reply", data);
-      callback(data);
+      try {
+        callback(data);
+      } catch (e) {
+        console.error(e);
+      }
     }
   };
 

@@ -1,16 +1,19 @@
 import {Participant} from '@app/models';
 import create, {SetState} from 'zustand';
 import produce from 'immer';
+import {useAPIStore} from './useAPIStore';
 
 interface IParticipantsStore {
   stream: string | null;
   page: number;
   count: number;
-  setCount: (newCount: number) => any;
-  incrementCount: () => any;
-  decrementCount: () => any;
+  loading: boolean;
   participants: Participant[];
+
+  setupAPIListeners: () => void;
+  setCount: (newCount: number) => any;
   set: SetState<IParticipantsStore>;
+  fetchMoreViewers: () => Promise<void>;
   addViewers: (viewers: Participant[], page: number) => void;
   addViewer: (viewer: Participant) => void;
   addSpeaker: (speaker: Participant) => void;
@@ -18,15 +21,65 @@ interface IParticipantsStore {
   removeParticipant: (user: string) => void;
 }
 
-export const useParticipantsStore = create<IParticipantsStore>(set => ({
+export const useParticipantsStore = create<IParticipantsStore>((set, get) => ({
   stream: null,
   page: -1,
+  loading: false,
   count: 0,
   participants: [],
   set,
+  fetchMoreViewers: async () => {
+    set({loading: true});
+
+    const {api} = useAPIStore.getState();
+    const {page, stream} = get();
+
+    if (!stream) {
+      return;
+    }
+
+    const {viewers} = await api.stream.getViewers(stream, page + 1);
+
+    set(state => ({
+      participants: [...state.participants, ...viewers],
+      loading: false,
+    }));
+  },
+  setupAPIListeners: () => {
+    const {api} = useAPIStore.getState();
+
+    const store = get();
+
+    api.stream.onNewViewer(data => {
+      store.addViewer(data.viewer);
+    });
+
+    /*
+    api.stream.onActiveSpeaker(data => {
+      Alert.alert('active speaker', data.speaker.id);
+    });
+    */
+
+    api.stream.onNewRaisedHand(data => {
+      const participant = Participant.fromJSON(data.viewer);
+      participant.isRaisingHand = true;
+
+      store.raiseHand(participant);
+    });
+
+    api.stream.onNewSpeaker(data => {
+      const {speaker} = data;
+
+      store.addSpeaker(speaker);
+    });
+
+    api.stream.onUserLeft(data => {
+      const {user} = data;
+
+      store.removeParticipant(user);
+    });
+  },
   setCount: newCount => set(() => ({count: newCount})),
-  incrementCount: () => set(state => ({count: state.count + 1})),
-  decrementCount: () => set(state => ({count: state.count - 1})),
   removeParticipant: user => {
     set(state => ({
       participants: state.participants.filter(v => v.id !== user),
