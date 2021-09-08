@@ -51,7 +51,7 @@ export const startWorkers = async () => {
 
     const audioLevelObserver = await router.createAudioLevelObserver({
       interval: 300,
-      threshold: -10,
+      threshold: 0,
     });
 
     workers.push({ worker, router, audioLevelObserver });

@@ -1,3 +1,4 @@
+import { Peer } from "@media/models";
 import { SFUService } from "@media/services";
 import { getOptionsFromTransport } from "@media/utils";
 import {
@@ -19,17 +20,18 @@ export const handleNewSpeaker: MessageHandler<
     return;
   }
 
-  const peer = room.peers[speaker];
-  if (peer.sendTransport.audio) {
-    peer.sendTransport.audio.close();
-  }
-
   const audioTransport = await SFUService.createTransport(
     "send",
     room.router,
     speaker
   );
-  peer.sendTransport.audio = audioTransport;
+
+  room.peers[speaker] = new Peer({
+    sendTransport: {
+      audio: audioTransport,
+      video: null,
+    },
+  });
 
   respond!({
     rtpCapabilities: room.router.rtpCapabilities,
