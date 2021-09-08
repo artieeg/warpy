@@ -1,12 +1,12 @@
-import {useAppUser, useStreamParticipant} from '@app/hooks';
-import React, {useEffect, useMemo, useState} from 'react';
+import {useStreamParticipant} from '@app/hooks';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text} from './Text';
 import {Avatar} from './Avatar';
 import {BaseSlideModal} from './BaseSlideModal';
 import {SmallTextButton} from './SmallTextButton';
 import {useFollowingStore} from '@app/stores';
-import {useWebSocketContext} from './WebSocketContext';
+import {useAPIStore} from '@app/stores/useAPIStore';
 
 interface IParticipantInfoModal {
   user: string | null;
@@ -16,7 +16,7 @@ interface IParticipantInfoModal {
 export const ParticipantInfoModal = (props: IParticipantInfoModal) => {
   const {user, onHide} = props;
 
-  const api = useWebSocketContext();
+  const {api} = useAPIStore();
 
   const [visible, setVisible] = useState(false);
 

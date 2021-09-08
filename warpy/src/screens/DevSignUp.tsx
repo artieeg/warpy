@@ -1,8 +1,8 @@
-import {setToken, signUpWithDev} from '@app/services';
+import {setToken} from '@app/services';
 import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useState} from 'react';
 import {View, TextInput, Button, StyleSheet} from 'react-native';
-import {useWebSocketContext} from '@app/components';
+import {useAPIStore} from '@app/stores/useAPIStore';
 
 export const DevSignUp = () => {
   const [username, setUsername] = useState('');
@@ -12,10 +12,10 @@ export const DevSignUp = () => {
 
   const navigation = useNavigation();
 
-  const ws = useWebSocketContext();
+  const {api} = useAPIStore();
 
   const onSignUp = useCallback(async () => {
-    const {refresh, access} = await ws.user.create({
+    const {refresh, access} = await api.user.create({
       username,
       last_name: lastName,
       first_name: firstName,
@@ -30,7 +30,7 @@ export const DevSignUp = () => {
       index: 0,
       routes: [{name: 'Splash'}],
     });
-  }, [username, ws, lastName, navigation, firstName, email]);
+  }, [username, api, lastName, navigation, firstName, email]);
 
   return (
     <View style={styles.wrapper}>

@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Alert, StyleSheet, useWindowDimensions, View} from 'react-native';
+import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {Stream} from '@app/models';
 import {
   useAppUser,
@@ -13,7 +13,6 @@ import {
 import {MediaStream, RTCView} from 'react-native-webrtc';
 import {useRecvTransport} from '@app/hooks/useRecvTransport';
 import {useMediaStreamingContext} from './MediaStreamingContext';
-import {useWebSocketContext} from './WebSocketContext';
 import {Consumer} from 'mediasoup-client/lib/types';
 import {ParticipantsModal} from './ParticipantsModal';
 import {ViewerStreamPanel} from './ViewerStreamPanel';
@@ -23,7 +22,7 @@ import {useParticipantsStore} from '@app/stores';
 import {Reactions} from './Reactions';
 import {reactionCodes} from './Reaction';
 import {ReactionCanvas} from './ReactionCanvas';
-import {ReactionEmitter} from './ReactionEmitter';
+import {useAPIStore} from '@app/stores/useAPIStore';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -38,7 +37,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const [roomData, setRoomData] = useState<any>(null);
   const [panelVisible, setPanelVisible] = useState(true);
   const id = stream.id;
-  const ws = useWebSocketContext();
+  const {api} = useAPIStore();
   const media = useMediaStreamingContext();
   const [isSpeaker, setIsSpeaker] = useState(false);
   const [micIsOn, setMicIsOn] = useState(true);
@@ -94,7 +93,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   ]);
 
   useEffectOnce(() => {
-    ws.stream.join(id).then(data => {
+    api.stream.join(id).then(data => {
       fetchViewers();
 
       media.setPermissionsToken(data.mediaPermissionsToken);
@@ -110,7 +109,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   });
 
   useEffect(() => {
-    const unsub = ws.stream.onSpeakingAllowed(async options => {
+    const unsub = api.stream.onSpeakingAllowed(async options => {
       await media.initSendDevice(options.media.rtpCapabilities);
       media.setPermissionsToken(options.mediaPermissionToken);
       setIsSpeaker(true);
@@ -118,7 +117,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
     });
 
     return unsub;
-  }, [id, audioStream, ws, media]);
+  }, [id, audioStream, api, media]);
 
   useEffect(() => {
     if (speakerOptions && audioStream) {
@@ -133,8 +132,8 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const {width, height} = useWindowDimensions();
 
   const raiseHand = useCallback(() => {
-    ws.stream.raiseHand();
-  }, [ws]);
+    api.stream.raiseHand();
+  }, [api]);
 
   const wrapperStyle = {
     ...styles.wrapper,

@@ -1,6 +1,5 @@
-import {useWebSocketHandler} from '@app/hooks';
 import {accessToken, loadTokens} from '@app/services';
-import {useUserStore} from '@app/stores';
+import {useParticipantsStore, useUserStore} from '@app/stores';
 import {useAPIStore} from '@app/stores/useAPIStore';
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect} from 'react';
@@ -10,12 +9,18 @@ export const Splash = () => {
   const navigation = useNavigation();
 
   const {api} = useAPIStore();
-  useWebSocketHandler(api);
 
-  const [user, loadUserData] = useUserStore(state => [
-    state.user,
-    state.loadUserData,
-  ]);
+  const participantStore = useParticipantsStore();
+
+  useEffect(() => {
+    participantStore.setupAPIListeners();
+
+    return () => {
+      api.observer.removeAllListeners();
+    };
+  }, []);
+
+  const {user, loadUserData} = useUserStore();
 
   useEffect(() => {
     if (user) {

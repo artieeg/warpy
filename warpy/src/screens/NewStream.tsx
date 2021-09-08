@@ -13,13 +13,13 @@ import {
   StopStream,
   Button,
   useMediaStreamingContext,
-  useWebSocketContext,
   ParticipantsModal,
   ParticipantInfoModal,
 } from '@app/components';
 import {useRecvTransport} from '@app/hooks/useRecvTransport';
 import {StreamerPanel} from '@app/components/StreamerPanel';
 import {useParticipantsStore} from '@app/stores';
+import {useAPIStore} from '@app/stores/useAPIStore';
 
 export const NewStream = () => {
   const [streamId, setStreamId] = useState<string>();
@@ -34,7 +34,7 @@ export const NewStream = () => {
   //Display a participant info modal
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
 
-  const ws = useWebSocketContext();
+  const {api} = useAPIStore();
   const media = useMediaStreamingContext();
 
   const recvTransport = useRecvTransport({
@@ -58,7 +58,7 @@ export const NewStream = () => {
       return;
     }
 
-    const newTrackUnsub = ws.media.onNewTrack(data => {
+    const newTrackUnsub = api.media.onNewTrack(data => {
       media.consumeRemoteStream(
         data.consumerParameters,
         data.user,
@@ -69,7 +69,7 @@ export const NewStream = () => {
     return () => {
       newTrackUnsub();
     };
-  }, [recvTransport, media, ws]);
+  }, [recvTransport, media, api]);
 
   useEffect(() => {
     if (sendRoomData && streamId && localMediaStream) {
@@ -93,7 +93,7 @@ export const NewStream = () => {
           ]);
         });
     }
-  }, [streamId, sendRoomData, localMediaStream, userId, media, ws]);
+  }, [streamId, sendRoomData, localMediaStream, userId, media, api]);
 
   const onStart = useCallback(async () => {
     const {
@@ -103,7 +103,7 @@ export const NewStream = () => {
       count,
       mediaPermissionsToken,
       recvMediaParams,
-    } = await ws.stream.create(title, hub);
+    } = await api.stream.create(title, hub);
 
     console.log('permissions token', mediaPermissionsToken);
 
@@ -116,10 +116,10 @@ export const NewStream = () => {
     setStreamId(stream);
     setRecvRoomData(recvMediaParams);
     setSendRoomData(mediaData);
-  }, [title, hub, ws]);
+  }, [title, hub, api]);
 
   const onStopStream = () => {
-    ws.stream.stop(streamId!);
+    api.stream.stop(streamId!);
   };
 
   const participantsCount = useParticipantsCount();

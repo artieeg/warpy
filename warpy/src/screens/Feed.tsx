@@ -4,7 +4,6 @@ import {
   Text,
   StartNewStreamButton,
 } from '@app/components';
-import {Reaction} from '@app/components/Reaction';
 import {useAppUser, useFeed, usePreviewDimensions} from '@app/hooks';
 import {Stream} from '@app/models';
 import {useNavigation} from '@react-navigation/native';
