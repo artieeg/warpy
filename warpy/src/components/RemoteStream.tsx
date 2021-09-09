@@ -97,7 +97,6 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
       fetchViewers();
 
       media.setPermissionsToken(data.mediaPermissionsToken);
-      console.log('media token set');
       setRoomData(data.recvMediaParams);
 
       const fetchedSpeakers: Record<string, IParticipant> = {};
@@ -105,8 +104,13 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
         fetchedSpeakers[speaker.id] = Participant.fromJSON(speaker);
       });
 
+      const fetchedRaisedHands: Record<string, IParticipant> = {};
+      data.raisedHands.forEach(viewer => {
+        fetchedRaisedHands[viewer.id] = Participant.fromJSON(viewer);
+      });
+
       useParticipantStore.getState().set({
-        participants: [...data.raisedHands.map(Participant.fromJSON)],
+        viewersWithRaisedHands: fetchedRaisedHands,
         speakers: fetchedSpeakers,
         count: data.count,
         page: -1,
