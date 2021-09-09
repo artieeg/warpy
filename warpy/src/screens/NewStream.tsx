@@ -20,6 +20,7 @@ import {useRecvTransport} from '@app/hooks/useRecvTransport';
 import {StreamerPanel} from '@app/components/StreamerPanel';
 import {useParticipantStore} from '@app/stores';
 import {useAPIStore} from '@app/stores/useAPIStore';
+import {Participant} from '@app/models';
 
 export const NewStream = () => {
   const [streamId, setStreamId] = useState<string>();
@@ -107,10 +108,10 @@ export const NewStream = () => {
 
     console.log('permissions token', mediaPermissionsToken);
 
-    useParticipantStore.getState().set({
-      participants: receivedSpeakers,
-      count,
-    });
+    const participantStore = useParticipantStore.getState();
+
+    participantStore.addSpeakers(receivedSpeakers.map(Participant.fromJSON));
+    participantStore.setCount(count);
 
     media.setPermissionsToken(mediaPermissionsToken);
     setStreamId(stream);
@@ -123,8 +124,8 @@ export const NewStream = () => {
   };
 
   const participantsCount = useParticipantsCount();
-  const speakers = useStreamSpeakers(streamId!);
-  const [viewers, fetchViewers] = useStreamViewers(streamId!);
+  const speakers = useStreamSpeakers();
+  const [viewers, fetchViewers] = useStreamViewers();
   const [panelVisible, setPanelVisible] = useState(true);
   const usersRaisingHand = useSpeakingRequests();
   const [micIsOn, setMicIsOn] = useState(true);
@@ -155,9 +156,7 @@ export const NewStream = () => {
       {streamId && <StopStream onPress={onStopStream} />}
       {streamId && (
         <StreamerPanel
-          title={title}
           visible={showPanel}
-          speakers={speakers}
           participantsCount={participantsCount}
           onOpenParticipantsList={() => setPanelVisible(false)}
           micIsOn={micIsOn}

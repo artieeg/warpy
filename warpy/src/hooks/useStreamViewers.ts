@@ -4,15 +4,12 @@ import {useParticipantStore} from '@app/stores';
 import {useMemo} from 'react';
 
 export const useStreamViewers = (): [Participant[], () => any] => {
-  const [participants, fetchMoreViewers] = useParticipantStore(
-    state => [state.participants, state.fetchMoreViewers],
+  const [viewers, fetchMoreViewers] = useParticipantStore(
+    state => [state.viewers, state.fetchMoreViewers],
     shallow,
   );
 
-  const viewers = useMemo(
-    () => participants.filter(p => p.role === 'viewer' && !p.isRaisingHand),
-    [participants],
-  );
+  const viewersArray = useMemo(() => Object.values(viewers), [viewers]);
 
-  return [viewers, fetchMoreViewers];
+  return [viewersArray, fetchMoreViewers];
 };

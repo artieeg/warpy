@@ -3,32 +3,36 @@ import create, {SetState} from 'zustand';
 import produce from 'immer';
 import {useAPIStore} from './useAPIStore';
 
-interface IParticipantsStore {
+interface IParticipantStore {
   stream: string | null;
   page: number;
   count: number;
   loading: boolean;
-  participants: Participant[];
+
+  viewers: Record<string, Participant>;
+  viewersWithRaisedHands: Record<string, Participant>;
   speakers: Record<string, Participant>;
 
   setupAPIListeners: () => void;
   setCount: (newCount: number) => any;
-  set: SetState<IParticipantsStore>;
+  set: SetState<IParticipantStore>;
   fetchMoreViewers: () => Promise<void>;
   addViewers: (viewers: Participant[], page: number) => void;
   addViewer: (viewer: Participant) => void;
   addSpeaker: (speaker: Participant) => void;
+  addSpeakers: (speakers: Participant[]) => void;
   setActiveSpeaker: (speaker: Participant, isSpeaking: boolean) => void;
   raiseHand: (user: Participant) => void;
   removeParticipant: (user: string) => void;
 }
 
-export const useParticipantStore = create<IParticipantsStore>((set, get) => ({
+export const useParticipantStore = create<IParticipantStore>((set, get) => ({
   stream: null,
   page: -1,
   loading: false,
   count: 0,
-  participants: [],
+  viewers: {},
+  viewersWithRaisedHands: {},
   speakers: {},
 
   set,
@@ -44,10 +48,14 @@ export const useParticipantStore = create<IParticipantsStore>((set, get) => ({
 
     const {viewers} = await api.stream.getViewers(stream, page + 1);
 
-    set(state => ({
-      participants: [...state.participants, ...viewers],
-      loading: false,
-    }));
+    set(
+      produce<IParticipantStore>(state => {
+        state.loading = false;
+        viewers.forEach(
+          viewer => (state.viewers[viewer.id] = Participant.fromJSON(viewer)),
+        );
+      }),
+    );
   },
   setupAPIListeners: () => {
     const {api} = useAPIStore.getState();
@@ -59,7 +67,7 @@ export const useParticipantStore = create<IParticipantsStore>((set, get) => ({
     });
 
     api.stream.onActiveSpeaker(data => {
-      store.setActiveSpeaker(data.speaker, true);
+      store.setActiveSpeaker(Participant.fromJSON(data.speaker), true);
     });
 
     api.stream.onNewRaisedHand(data => {
@@ -83,92 +91,68 @@ export const useParticipantStore = create<IParticipantsStore>((set, get) => ({
   },
   setCount: newCount => set(() => ({count: newCount})),
   removeParticipant: user => {
-    set(state => ({
-      participants: state.participants.filter(v => v.id !== user),
-      count: state.count - 1,
-    }));
-  },
-  setActiveSpeaker: (user, isSpeaking) => {
-    /*
     set(
-      produce(state => {
-        const participant = state.participants.find(
-          (p: Participant) => p.id === user.id,
-        );
+      produce<IParticipantStore>(state => {
+        state.count--;
 
-        if (!participant) {
-          state.participants.push(user);
-        } else {
-          participant.isSpeaking = isSpeaking;
+        delete state.viewers[user];
+        delete state.viewersWithRaisedHands[user];
+        delete state.speakers[user];
+      }),
+    );
+  },
+  setActiveSpeaker: user => {
+    set(
+      produce<IParticipantStore>(state => {
+        const speaker = state.speakers[user.id];
+
+        if (speaker) {
+          speaker.volume = 100 - Math.abs(user.volume);
         }
       }),
     );
-    */
-
-    console.log('active speaker', user);
-    set(state => ({
-      speakers: {
-        ...state.speakers,
-        [user.id]: {
-          ...user,
-          isSpeaking: false,
-          volume: Math.random() * (100 - Math.abs(user.volume)),
-        },
-      },
-    }));
   },
   addSpeaker: user => {
-    set(state => ({
-      participants: state.participants.filter(user => user.id !== user.id),
-      speakers: {
-        ...state.speakers,
-        [user.id]: {
-          ...user,
-          volume: 0,
-        },
-      },
-    }));
-    /*
     set(
-      produce(state => {
-        const participant = state.participants.find(
-          (p: Participant) => p.id === user.id,
-        );
-
-        if (!participant) {
-          state.participants.push(user);
-        } else {
-          participant.role = 'speaker';
-          participant.isRaisingHand = false;
-        }
+      produce<IParticipantStore>(state => {
+        delete state.viewers[user.id];
+        delete state.viewersWithRaisedHands[user.id];
+        state.speakers[user.id] = {...user, volume: 0};
       }),
     );
-    */
+  },
+  addSpeakers: speakers => {
+    set(() => {
+      speakers;
+    });
   },
   raiseHand: user => {
     set(
-      produce(state => {
-        const participant = state.participants.find(
-          (p: Participant) => p.id === user.id,
-        );
-
-        if (!participant) {
-          state.participants.push(user);
-        } else {
-          participant.isRaisingHand = true;
-        }
+      produce<IParticipantStore>(state => {
+        delete state.viewers[user.id];
+        state.viewersWithRaisedHands[user.id] = {
+          ...user,
+          isRaisingHand: true,
+        };
       }),
     );
   },
   addViewers: (viewers, page) =>
-    set(state => ({
-      page,
-      participants: [...state.participants, ...viewers],
-    })),
+    set(
+      produce<IParticipantStore>(state => {
+        viewers.forEach(viewer => {
+          state.viewers[viewer.id] = Participant.fromJSON(viewer);
+        });
+
+        state.page = page;
+      }),
+    ),
   addViewer: viewer => {
-    set(state => ({
-      participants: [...state.participants, viewer],
-      count: state.count + 1,
-    }));
+    set(
+      produce<IParticipantStore>(state => {
+        state.count++;
+        state.viewers[viewer.id] = Participant.fromJSON(viewer);
+      }),
+    );
   },
 }));

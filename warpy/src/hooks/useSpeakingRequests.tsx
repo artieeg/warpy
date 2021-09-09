@@ -4,13 +4,13 @@ import {useMemo} from 'react';
 import shallow from 'zustand/shallow';
 
 export const useSpeakingRequests = (): Participant[] => {
-  const participants = useParticipantStore(
-    state => state.participants,
+  const viewersWithRaisedHands = useParticipantStore(
+    state => state.viewersWithRaisedHands,
     shallow,
   );
 
   return useMemo(
-    () => participants.filter(p => p.isRaisingHand),
-    [participants],
+    () => Object.values(viewersWithRaisedHands),
+    [viewersWithRaisedHands],
   );
 };
