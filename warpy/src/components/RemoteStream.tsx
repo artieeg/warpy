@@ -3,12 +3,12 @@ import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {IParticipant, Participant, Stream} from '@app/models';
 import {
   useAppUser,
-  useLocalStream,
   useStreamSpeakers,
   useStreamViewers,
   useParticipantsCount,
   useSpeakingRequests,
   useEffectOnce,
+  useLocalAudioStream,
 } from '@app/hooks';
 import {MediaStream, RTCView} from 'react-native-webrtc';
 import {useRecvTransport} from '@app/hooks/useRecvTransport';
@@ -33,14 +33,13 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const user = useAppUser();
   const userId = user!.id;
   const [mediaStream, setMediaStream] = useState<MediaStream>();
-  const audioStream = useLocalStream('audio');
+  const {stream: audioStream, toggle, muted} = useLocalAudioStream();
   const [roomData, setRoomData] = useState<any>(null);
   const [panelVisible, setPanelVisible] = useState(true);
   const id = stream.id;
   const {api} = useAPIStore();
   const media = useMediaStreamingContext();
   const [isSpeaker, setIsSpeaker] = useState(false);
-  const [micIsOn, setMicIsOn] = useState(true);
   const [speakerOptions, setSpeakerOptions] = useState<any>();
   const [showReactions, setReactionsVisible] = useState(false);
   const [currentReaction, setCurrentReaction] = useState(reactionCodes[0]);
@@ -58,10 +57,6 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const speakers = useStreamSpeakers();
   const [viewers, fetchViewers] = useStreamViewers();
   const usersRaisingHand = useSpeakingRequests();
-
-  useEffect(() => {
-    audioStream?.getAudioTracks().forEach(audio => (audio.enabled = micIsOn));
-  }, [audioStream, micIsOn]);
 
   useEffect(() => {
     console.log(
@@ -177,9 +172,9 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
           participantsCount={participantsCount}
           onOpenParticipantsList={() => setPanelVisible(false)}
           onOpenReactions={onOpenReactions}
-          micIsOn={micIsOn}
+          micIsOn={!muted}
           reaction={currentReaction}
-          onMicToggle={() => setMicIsOn(prev => !prev)}
+          onMicToggle={toggle}
         />
       )}
 

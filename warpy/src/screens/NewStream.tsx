@@ -1,6 +1,6 @@
 import {
   useAppUser,
-  useLocalStream,
+  useLocalVideoStream,
   useParticipantsCount,
   useSpeakingRequests,
   useStreamSpeakers,
@@ -45,7 +45,7 @@ export const NewStream = () => {
   });
 
   const {width, height} = useWindowDimensions();
-  const localMediaStream = useLocalStream('video');
+  const {stream: localMediaStream} = useLocalVideoStream();
 
   useEffect(() => {
     const videoTrack = localMediaStream?.getVideoTracks()[0];
