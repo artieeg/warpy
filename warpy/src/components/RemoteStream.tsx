@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, useWindowDimensions, View} from 'react-native';
-import {Stream} from '@app/models';
+import {IParticipant, Participant, Stream} from '@app/models';
 import {
   useAppUser,
   useLocalStream,
@@ -100,8 +100,14 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
       console.log('media token set');
       setRoomData(data.recvMediaParams);
 
+      const fetchedSpeakers: Record<string, IParticipant> = {};
+      data.speakers.forEach(speaker => {
+        fetchedSpeakers[speaker.id] = Participant.fromJSON(speaker);
+      });
+
       useParticipantStore.getState().set({
-        participants: [...data.speakers, ...data.raisedHands],
+        participants: [...data.raisedHands.map(Participant.fromJSON)],
+        speakers: fetchedSpeakers,
         count: data.count,
         page: -1,
       });

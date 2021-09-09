@@ -105,12 +105,14 @@ export const useParticipantStore = create<IParticipantsStore>((set, get) => ({
     );
     */
 
+    console.log('active speaker', user);
     set(state => ({
       speakers: {
+        ...state.speakers,
         [user.id]: {
           ...user,
           isSpeaking: false,
-          volume: Math.random() * 70,
+          volume: Math.random() * (100 - Math.abs(user.volume)),
         },
       },
     }));
@@ -119,6 +121,7 @@ export const useParticipantStore = create<IParticipantsStore>((set, get) => ({
     set(state => ({
       participants: state.participants.filter(user => user.id !== user.id),
       speakers: {
+        ...state.speakers,
         [user.id]: {
           ...user,
           volume: 0,

@@ -2,21 +2,22 @@ import { ParticipantDAL } from "@backend/dal";
 import { IParticipant } from "@warpy/lib";
 import { BroadcastService } from "..";
 
-const sendActiveSpeakers = async (speakers: IParticipant[]): Promise<void> => {
+const sendActiveSpeakers = async (speakers: unknown[]): Promise<void> => {
   speakers.forEach((speaker) => {
-    BroadcastService.broadcastActiveSpeakers(speaker);
+    BroadcastService.broadcastActiveSpeakers(speaker as IParticipant);
   });
 };
 
 //TODO: too ugly
 
 export const updateActiveSpeakers = async (
-  speakers: string[]
+  speakers: Record<string, number>
 ): Promise<void> => {
-  const participants = await ParticipantDAL.getByIds(speakers);
+  const participants = await ParticipantDAL.getByIds(Object.keys(speakers));
+  console.log("active speakers", speakers);
 
   //Split active speakers by stream id; stream-id -> [array of active speakers]
-  const streamSpeakersMap: Record<string, IParticipant[]> = {};
+  const streamSpeakersMap: Record<string, unknown[]> = {};
 
   participants.forEach((participant: IParticipant) => {
     if (!participant.stream) {
@@ -26,10 +27,18 @@ export const updateActiveSpeakers = async (
     if (streamSpeakersMap[participant.stream]) {
       streamSpeakersMap[participant.stream] = [
         ...streamSpeakersMap[participant.stream],
-        participant,
+        {
+          ...participant,
+          volume: speakers[participant.id],
+        },
       ];
     } else {
-      streamSpeakersMap[participant.stream] = [participant];
+      streamSpeakersMap[participant.stream] = [
+        {
+          ...participant,
+          volume: speakers[participant.id],
+        },
+      ];
     }
   });
 

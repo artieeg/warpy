@@ -162,7 +162,7 @@ export interface IAllowSpeakerPayload {
 }
 
 export interface IActiveSpeakersPayload {
-  speakers: string[];
+  speakers: Record<string, number>;
 }
 
 export interface IUserDelete {

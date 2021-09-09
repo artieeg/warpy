@@ -11,11 +11,13 @@ interface ISpeakersProps {
 export const Speakers = (props: ISpeakersProps) => {
   const {speakers, style} = props;
 
-  console.log('active speakers', speakers);
+  const speakersSortedByVolume = speakers.sort(
+    (first, second) => second.volume - first.volume,
+  );
 
   return (
     <View style={[styles.container, style]}>
-      {speakers.map(speaker => (
+      {speakersSortedByVolume.slice(0, 3).map(speaker => (
         <Speaker
           volume={speaker.volume}
           isSpeaking={speaker.isSpeaking}
@@ -30,6 +32,6 @@ export const Speakers = (props: ISpeakersProps) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: 60,
+    height: 54,
   },
 });

@@ -232,7 +232,11 @@ export const onActiveSpeakers = (cb: any) => {
         return;
       }
 
-      const speakers = volumes.map((volume) => volume.producer.appData.user);
+      const speakers: Record<string, number> = {};
+
+      volumes.forEach((data) => {
+        speakers[data.producer.appData.user] = data.volume;
+      });
 
       cb(speakers);
     }

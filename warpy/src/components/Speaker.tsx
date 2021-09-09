@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react';
 import {User} from '@app/models';
-import {Animated, StyleSheet} from 'react-native';
+import {Animated, StyleSheet, View} from 'react-native';
 import {Avatar} from './Avatar';
 
 interface ISpeakerProps {
@@ -15,11 +15,18 @@ export const Speaker = (props: ISpeakerProps) => {
   const scale = useRef(new Animated.Value(1));
 
   useEffect(() => {
-    Animated.timing(scale.current, {
-      toValue: 1 + volume / 100,
-      duration: 100,
-      useNativeDriver: true,
-    }).start();
+    Animated.sequence([
+      Animated.timing(scale.current, {
+        toValue: 1 + volume / 80,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scale.current, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start();
   }, [volume]);
 
   const scaleStyle = {
@@ -31,19 +38,33 @@ export const Speaker = (props: ISpeakerProps) => {
   };
 
   return (
-    <Animated.View
-      style={[styles.wrapper, scaleStyle, isSpeaking && styles.isSpeaking]}>
+    <View style={styles.wrapper}>
+      <Animated.View
+        style={[styles.indicator, scaleStyle, styles.isSpeaking]}
+      />
       <Avatar user={user} />
-    </Animated.View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   wrapper: {
-    padding: 6,
+    //padding: 6,
     borderRadius: 60,
     alignItems: 'center',
     justifyContent: 'center',
+    marginRight: 10,
+    width: 50,
+    height: 50,
+  },
+  indicator: {
+    borderRadius: 45,
+    position: 'absolute',
+    aspectRatio: 1,
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
   },
   isSpeaking: {
     backgroundColor: '#BDF971',
