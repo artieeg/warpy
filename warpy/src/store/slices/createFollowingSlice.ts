@@ -1,5 +1,5 @@
 import {GetState, SetState} from 'zustand';
-import {IStore} from './useStore';
+import {IStore} from '../useStore';
 
 export interface IFollowingSlice {
   following: string[];

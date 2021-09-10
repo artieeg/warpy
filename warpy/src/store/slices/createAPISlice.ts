@@ -1,6 +1,7 @@
 import {GetState, SetState} from 'zustand';
 import {APIClient, WebSocketConn} from '@warpy/api';
 import config from '@app/config';
+import {IStore} from '../useStore';
 
 export interface IAPISlice {
   api: APIClient;
@@ -9,8 +10,8 @@ export interface IAPISlice {
 const socket = new WebSocketConn(new WebSocket(config.WS));
 
 export const createAPISlice = (
-  _set: SetState<IAPISlice>,
-  _get: GetState<IAPISlice>,
+  _set: SetState<IStore>,
+  _get: GetState<IStore>,
 ) => ({
   api: APIClient(socket),
 });

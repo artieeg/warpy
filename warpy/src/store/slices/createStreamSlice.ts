@@ -2,7 +2,7 @@ import {Participant} from '@app/models';
 import {GetState, SetState} from 'zustand';
 import produce from 'immer';
 import {Transport} from 'mediasoup-client/lib/Transport';
-import {IStore} from './useStore';
+import {IStore} from '../useStore';
 
 export interface IStreamSlice {
   /** Stores current stream id */

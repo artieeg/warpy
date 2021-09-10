@@ -1,6 +1,6 @@
 import {User} from '@app/models';
 import {GetState, SetState} from 'zustand';
-import {IStore} from './useStore';
+import {IStore} from '../useStore';
 
 export interface IUserSlice {
   user: User | null;

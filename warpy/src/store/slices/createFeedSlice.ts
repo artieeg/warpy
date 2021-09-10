@@ -1,6 +1,6 @@
 import {Stream} from '@app/models';
 import {GetState, SetState} from 'zustand';
-import {IStore} from './useStore';
+import {IStore} from '../useStore';
 
 export interface IFeedSlice {
   latestFeedPage: number;
@@ -12,8 +12,8 @@ export interface IFeedSlice {
 export const createFeedSlice = (
   set: SetState<IStore>,
   get: GetState<IStore>,
-) => ({
-  page: 0,
+): IFeedSlice => ({
+  latestFeedPage: 0,
   loading: false,
   feed: [],
   fetchNextPage: async () => {
