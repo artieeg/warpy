@@ -2,6 +2,7 @@ import {Participant} from '@app/models';
 import create, {SetState} from 'zustand';
 import produce from 'immer';
 import {useAPIStore} from './useAPIStore';
+import {Transport} from 'mediasoup-client/lib/Transport';
 
 interface IStreamStore {
   /** Stores current stream id */
@@ -33,7 +34,12 @@ interface IStreamStore {
   viewersWithRaisedHands: Record<string, Participant>;
   speakers: Record<string, Participant>;
 
-  create: (title: string, hub: string) => Promise<void>;
+  create: (
+    title: string,
+    hub: string,
+    media: any,
+    recvTransport?: Transport,
+  ) => Promise<void>;
   join: (id: string) => Promise<void>;
 
   setupAPIListeners: () => void;
@@ -60,7 +66,7 @@ export const useStreamStore = create<IStreamStore>((set, get) => ({
 
   set,
 
-  async create(title, hub) {
+  async create(title, hub, media, recvTransport) {
     const {api} = useAPIStore.getState();
 
     const {
@@ -75,6 +81,14 @@ export const useStreamStore = create<IStreamStore>((set, get) => ({
     const speakers: Record<string, Participant> = {};
     receivedSpeakers.forEach(speaker => {
       speakers[speaker.id] = Participant.fromJSON(speaker);
+    });
+
+    api.media.onNewTrack(data => {
+      media.consumeRemoteStream(
+        data.consumerParameters,
+        data.user,
+        recvTransport,
+      );
     });
 
     set({

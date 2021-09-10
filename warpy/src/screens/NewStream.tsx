@@ -53,7 +53,12 @@ export const NewStream = () => {
   });
 
   const {width, height} = useWindowDimensions();
-  const {stream: localMediaStream, switchCamera} = useLocalVideoStream();
+  const {
+    stream: localMediaStream,
+    switchCamera,
+    toggle,
+    muted,
+  } = useLocalVideoStream();
 
   useEffect(() => {}, [userFacingMode, localMediaStream]);
 
@@ -100,8 +105,12 @@ export const NewStream = () => {
   }, [streamId, sendRoomData, localMediaStream, userId, media, api]);
 
   const onStart = useCallback(() => {
-    createStream(title, hub);
-  }, [title, hub, api]);
+    if (streamId) {
+      return;
+    }
+
+    createStream(title, hub, media, recvTransport);
+  }, [title, streamId, hub, api, media, recvTransport]);
 
   const onStopStream = () => {
     api.stream.stop(streamId!);
@@ -112,7 +121,6 @@ export const NewStream = () => {
   const [viewers, fetchViewers] = useStreamViewers();
   const [panelVisible, setPanelVisible] = useState(true);
   const usersRaisingHand = useSpeakingRequests();
-  const [micIsOn, setMicIsOn] = useState(true);
 
   const showPanel = panelVisible && !selectedUser;
 
@@ -121,12 +129,6 @@ export const NewStream = () => {
     width,
     height,
   };
-
-  useEffect(() => {
-    localMediaStream
-      ?.getAudioTracks()
-      .forEach(audio => (audio.enabled = micIsOn));
-  }, [micIsOn, localMediaStream]);
 
   return (
     <View style={styles.wrapper}>
@@ -141,10 +143,10 @@ export const NewStream = () => {
       {streamId && (
         <StreamerPanel
           visible={showPanel}
+          micIsOn={!muted}
           participantsCount={participantsCount}
           onOpenParticipantsList={() => setPanelVisible(false)}
-          micIsOn={micIsOn}
-          onMicToggle={setMicIsOn}
+          onMicToggle={toggle}
           onFlipCamera={switchCamera}
         />
       )}

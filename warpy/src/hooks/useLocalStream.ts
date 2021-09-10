@@ -53,7 +53,14 @@ export const useLocalVideoStream = () => {
     }
   }, [stream]);
 
-  return {stream, switchCamera};
+  const [muted, setMuted] = useState(false);
+
+  const toggle = useCallback(() => {
+    stream?.getAudioTracks().forEach(audio => (audio.enabled = !muted));
+    setMuted(prev => !prev);
+  }, [stream, muted]);
+
+  return {stream, switchCamera, toggle, muted};
 };
 
 export const useLocalAudioStream = () => {
