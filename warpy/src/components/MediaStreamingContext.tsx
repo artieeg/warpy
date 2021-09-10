@@ -1,8 +1,7 @@
 import {Device} from 'mediasoup-client';
-import React, {createContext, useContext, useMemo, useState} from 'react';
+import React, {createContext, useContext, useMemo} from 'react';
 import {MediaClient} from '@warpykit-sdk/client';
-import {useAPIStore} from '@app/stores/useAPIStore';
-import {useStreamStore} from '@app/stores';
+import {useStore} from '@app/store';
 
 export const MediaStreamingContext = createContext<any>({});
 
@@ -14,8 +13,8 @@ let recvDevice = new Device({handlerName: 'ReactNative'});
 let sendDevice = new Device({handlerName: 'ReactNative'});
 
 export const MediaStreamingProvider = ({children}: any) => {
-  const {api} = useAPIStore();
-  const permissionsToken = useStreamStore(state => state.mediaPermissionsToken);
+  const api = useStore(state => state.api);
+  const permissionsToken = useStore(state => state.mediaPermissionsToken);
   //const [permissionsToken, setPermissionsToken] = useState<string | null>(null);
 
   const media = useMemo(

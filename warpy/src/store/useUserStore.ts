@@ -1,22 +1,25 @@
 import {User} from '@app/models';
-import create, {SetState} from 'zustand';
-import {useAPIStore} from './useAPIStore';
+import {GetState, SetState} from 'zustand';
+import {IStore} from './useStore';
 
-interface IUserStore {
+export interface IUserSlice {
   user: User | null;
-  loading: boolean;
+  isLoadingUser: boolean;
   exists: boolean;
   following: string[];
   loadUserData: (token: string) => Promise<void>;
 }
 
-export const useUserStore = create<IUserStore>((set, get) => ({
+export const createUserSlice = (
+  set: SetState<IStore>,
+  get: GetState<IStore>,
+): IUserSlice => ({
   user: null,
-  loading: true,
+  isLoadingUser: true,
   exists: false,
   following: [],
   loadUserData: async token => {
-    const {api} = useAPIStore.getState();
+    const {api} = get();
 
     set({
       loading: true,
@@ -29,6 +32,8 @@ export const useUserStore = create<IUserStore>((set, get) => ({
         loading: false,
         exists: false,
       });
+
+      return;
     }
 
     set({
@@ -37,4 +42,4 @@ export const useUserStore = create<IUserStore>((set, get) => ({
       loading: false,
     });
   },
-}));
+});

@@ -1,8 +1,8 @@
 import {IUser} from '@app/models';
-import {useUserStore} from '@app/stores';
+import {useStore} from '@app/store';
 
 export const useAppUser = (): IUser => {
-  return useUserStore(state => {
+  return useStore(state => {
     if (!state.user) {
       throw new Error('User is null');
     }

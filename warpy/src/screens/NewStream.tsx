@@ -18,9 +18,7 @@ import {
 } from '@app/components';
 import {useRecvTransport} from '@app/hooks/useRecvTransport';
 import {StreamerPanel} from '@app/components/StreamerPanel';
-import {useStreamStore} from '@app/stores';
-import {useAPIStore} from '@app/stores/useAPIStore';
-import {Participant} from '@app/models';
+import {useStore} from '@app/store';
 import shallow from 'zustand/shallow';
 
 export const NewStream = () => {
@@ -28,22 +26,20 @@ export const NewStream = () => {
   const [hub, setHub] = useState('60ec569668b42c003304630b');
   const user = useAppUser();
   const userId: string = user!.id;
-  const [sendRoomData, recvRoomData, streamId, createStream] = useStreamStore(
+  const [sendRoomData, recvRoomData, streamId, createStream, api] = useStore(
     state => [
       state.sendMediaParams,
       state.recvMediaParams,
       state.stream,
       state.create,
+      state.api,
     ],
     shallow,
   );
 
-  const [userFacingMode, setUserFacingMode] = useState(true);
-
   //Display a participant info modal
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
 
-  const {api} = useAPIStore();
   const media = useMediaStreamingContext();
 
   const recvTransport = useRecvTransport({
@@ -59,8 +55,6 @@ export const NewStream = () => {
     toggle,
     muted,
   } = useLocalVideoStream();
-
-  useEffect(() => {}, [userFacingMode, localMediaStream]);
 
   useEffect(() => {
     if (!recvTransport) {

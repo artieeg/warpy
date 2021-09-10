@@ -1,4 +1,4 @@
-import {useAPIStore} from '@app/stores/useAPIStore';
+import {useStore} from '@app/store';
 import React, {useEffect, useRef, useState} from 'react';
 import {Animated, StyleSheet, View} from 'react-native';
 import {Reaction} from './Reaction';
@@ -81,7 +81,7 @@ const EmittedReaction = React.memo((props: IEmittedReactionProps) => {
 });
 
 export const ReactionEmitter = () => {
-  const {api} = useAPIStore();
+  const api = useStore(state => state.api);
 
   const [reactions, setReactions] = useState<IReaction[]>([]);
 

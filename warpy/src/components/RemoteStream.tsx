@@ -15,11 +15,10 @@ import {ParticipantsModal} from './ParticipantsModal';
 import {ViewerStreamPanel} from './ViewerStreamPanel';
 import {ParticipantInfoModal} from './ParticipantInfoModal';
 import {SpeakerStreamPanel} from './SpeakerStreamPanel';
-import {useStreamStore} from '@app/stores';
+import {useStore} from '@app/store';
 import {Reactions} from './Reactions';
 import {reactionCodes} from './Reaction';
 import {ReactionCanvas} from './ReactionCanvas';
-import {useAPIStore} from '@app/stores/useAPIStore';
 import {useRemoteStreams} from '@app/hooks/useRemoteStreams';
 import shallow from 'zustand/shallow';
 
@@ -32,14 +31,14 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const {stream: audioStream, toggle, muted} = useLocalAudioStream();
   const [panelVisible, setPanelVisible] = useState(true);
   const id = stream.id;
-  const {api} = useAPIStore();
+  const api = useStore(state => state.api);
   const media = useMediaStreamingContext();
   const [isSpeaker, setIsSpeaker] = useState(false);
   const [speakerOptions, setSpeakerOptions] = useState<any>();
   const [showReactions, setReactionsVisible] = useState(false);
   const [currentReaction, setCurrentReaction] = useState(reactionCodes[0]);
 
-  const [roomData, join, totalParticipantCount] = useStreamStore(
+  const [roomData, join, totalParticipantCount] = useStore(
     state => [state.recvMediaParams, state.join, state.totalParticipantCount],
     shallow,
   );

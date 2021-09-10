@@ -1,10 +1,10 @@
 import {Participant} from '@app/models';
-import create, {SetState} from 'zustand';
+import {GetState, SetState} from 'zustand';
 import produce from 'immer';
-import {useAPIStore} from './useAPIStore';
 import {Transport} from 'mediasoup-client/lib/Transport';
+import {IStore} from './useStore';
 
-interface IStreamStore {
+export interface IStreamSlice {
   /** Stores current stream id */
   stream?: string;
 
@@ -44,7 +44,6 @@ interface IStreamStore {
 
   setupAPIListeners: () => void;
   setCount: (newCount: number) => any;
-  set: SetState<IStreamStore>;
   fetchMoreViewers: () => Promise<void>;
   addViewers: (viewers: Participant[], page: number) => void;
   addViewer: (viewer: Participant) => void;
@@ -55,7 +54,10 @@ interface IStreamStore {
   removeParticipant: (user: string) => void;
 }
 
-export const useStreamStore = create<IStreamStore>((set, get) => ({
+export const createStreamSlice = (
+  set: SetState<IStore>,
+  get: GetState<IStore>,
+): IStreamSlice => ({
   latestViewersPage: -1,
   isFetchingViewers: false,
   totalParticipantCount: 0,
@@ -64,10 +66,8 @@ export const useStreamStore = create<IStreamStore>((set, get) => ({
   viewersWithRaisedHands: {},
   speakers: {},
 
-  set,
-
   async create(title, hub, media, recvTransport) {
-    const {api} = useAPIStore.getState();
+    const {api} = get();
 
     const {
       stream,
@@ -102,7 +102,7 @@ export const useStreamStore = create<IStreamStore>((set, get) => ({
   },
 
   async join(stream) {
-    const {api} = useAPIStore.getState();
+    const {api} = get();
 
     const data = await api.stream.join(stream);
 
@@ -136,7 +136,7 @@ export const useStreamStore = create<IStreamStore>((set, get) => ({
   async fetchMoreViewers() {
     set({isFetchingViewers: true});
 
-    const {api} = useAPIStore.getState();
+    const {api} = get();
     const {latestViewersPage: page, stream} = get();
 
     if (!stream) {
@@ -146,7 +146,7 @@ export const useStreamStore = create<IStreamStore>((set, get) => ({
     const {viewers} = await api.stream.getViewers(stream, page + 1);
 
     set(
-      produce<IStreamStore>(state => {
+      produce<IStreamSlice>(state => {
         state.isFetchingViewers = false;
         viewers.forEach(
           viewer => (state.viewers[viewer.id] = Participant.fromJSON(viewer)),
@@ -156,9 +156,8 @@ export const useStreamStore = create<IStreamStore>((set, get) => ({
   },
 
   setupAPIListeners() {
-    const {api} = useAPIStore.getState();
-
     const store = get();
+    const {api} = store;
 
     api.stream.onNewViewer(data => {
       store.addViewer(data.viewer);
@@ -194,7 +193,7 @@ export const useStreamStore = create<IStreamStore>((set, get) => ({
 
   removeParticipant(user) {
     set(
-      produce<IStreamStore>(state => {
+      produce<IStreamSlice>(state => {
         state.totalParticipantCount--;
 
         delete state.viewers[user];
@@ -206,7 +205,7 @@ export const useStreamStore = create<IStreamStore>((set, get) => ({
 
   setActiveSpeaker(user) {
     set(
-      produce<IStreamStore>(state => {
+      produce<IStreamSlice>(state => {
         state.speakers[user.id] = {
           ...user,
           volume: 100 - Math.abs(user.volume),
@@ -218,7 +217,7 @@ export const useStreamStore = create<IStreamStore>((set, get) => ({
 
   addSpeaker(user) {
     set(
-      produce<IStreamStore>(state => {
+      produce<IStreamSlice>(state => {
         delete state.viewers[user.id];
         delete state.viewersWithRaisedHands[user.id];
         state.speakers[user.id] = {...user, volume: 0};
@@ -234,7 +233,7 @@ export const useStreamStore = create<IStreamStore>((set, get) => ({
 
   raiseHand(user) {
     set(
-      produce<IStreamStore>(state => {
+      produce<IStreamSlice>(state => {
         delete state.viewers[user.id];
         state.viewersWithRaisedHands[user.id] = {
           ...user,
@@ -246,7 +245,7 @@ export const useStreamStore = create<IStreamStore>((set, get) => ({
 
   addViewers(viewers, page) {
     set(
-      produce<IStreamStore>(state => {
+      produce<IStreamSlice>(state => {
         viewers.forEach(viewer => {
           state.viewers[viewer.id] = Participant.fromJSON(viewer);
         });
@@ -258,10 +257,10 @@ export const useStreamStore = create<IStreamStore>((set, get) => ({
 
   addViewer(viewer) {
     set(
-      produce<IStreamStore>(state => {
+      produce<IStreamSlice>(state => {
         state.totalParticipantCount++;
         state.viewers[viewer.id] = Participant.fromJSON(viewer);
       }),
     );
   },
-}));
+});

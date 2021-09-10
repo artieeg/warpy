@@ -1,4 +1,4 @@
-import {useAPIStore} from '@app/stores/useAPIStore';
+import {useStore} from '@app/store';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {GivenReaction, IGivenReaction} from './GivenReaction';
@@ -10,7 +10,7 @@ interface IReactionCanvasProps {
 
 export const ReactionCanvas = (props: IReactionCanvasProps) => {
   const {reaction, stream} = props;
-  const {api} = useAPIStore();
+  const api = useStore(state => state.api);
 
   const [reactions, setReactions] = useState<IGivenReaction[]>([]);
 

@@ -4,7 +4,7 @@ import {Avatar} from './Avatar';
 import {StyleSheet, View} from 'react-native';
 import {Text} from './Text';
 import {SmallTextButton} from './SmallTextButton';
-import {useAPIStore} from '@app/stores/useAPIStore';
+import {useStore} from '@app/store';
 
 interface IRaisedHandInfo {
   data: Participant;
@@ -13,7 +13,7 @@ interface IRaisedHandInfo {
 export const UserWithRaisedHand = (props: IRaisedHandInfo) => {
   const {data} = props;
 
-  const {api} = useAPIStore();
+  const api = useStore(state => state.api);
 
   const onAllow = useCallback(() => {
     api.stream.allowSpeaker(data.id);

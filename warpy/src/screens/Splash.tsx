@@ -1,6 +1,5 @@
 import {accessToken, loadTokens} from '@app/services';
-import {useStreamStore, useUserStore} from '@app/stores';
-import {useAPIStore} from '@app/stores/useAPIStore';
+import {useStore} from '@app/store';
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
@@ -8,19 +7,20 @@ import {View, Text, StyleSheet} from 'react-native';
 export const Splash = () => {
   const navigation = useNavigation();
 
-  const {api} = useAPIStore();
-
-  const participantStore = useStreamStore.getState();
+  const [setupAPIListeners, api, user, loadUserData] = useStore(state => [
+    state.setupAPIListeners,
+    state.api,
+    state.user,
+    state.loadUserData,
+  ]);
 
   useEffect(() => {
-    participantStore.setupAPIListeners();
+    setupAPIListeners();
 
     return () => {
       api.observer.removeAllListeners();
     };
   }, []);
-
-  const {user, loadUserData} = useUserStore();
 
   useEffect(() => {
     if (user) {

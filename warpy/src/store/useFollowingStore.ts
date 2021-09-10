@@ -1,16 +1,18 @@
-import create, {SetState} from 'zustand';
+import {GetState, SetState} from 'zustand';
+import {IStore} from './useStore';
 
-interface IFollowingStore {
+export interface IFollowingSlice {
   following: string[];
-  set: SetState<IFollowingStore>;
   add: (newFollowedUser: string) => void;
   remove: (unfollowedUser: string) => void;
   has: (user: string) => boolean;
 }
 
-export const useFollowingStore = create<IFollowingStore>((set, get) => ({
+export const createFollowingSlice = (
+  set: SetState<IStore>,
+  get: GetState<IStore>,
+): IFollowingSlice => ({
   following: [],
-  set,
   add: newFollowedUser =>
     set(state => ({
       following: [...state.following, newFollowedUser],
@@ -21,4 +23,4 @@ export const useFollowingStore = create<IFollowingStore>((set, get) => ({
     })),
 
   has: user => get().following.some(id => id === user),
-}));
+});

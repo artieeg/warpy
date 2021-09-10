@@ -1,10 +1,10 @@
 import {Participant} from '@app/models';
 import shallow from 'zustand/shallow';
-import {useStreamStore} from '@app/stores';
+import {useStore} from '@app/store';
 import {useMemo} from 'react';
 
 export const useStreamViewers = (): [Participant[], () => any] => {
-  const [viewers, fetchMoreViewers] = useStreamStore(
+  const [viewers, fetchMoreViewers] = useStore(
     state => [state.viewers, state.fetchMoreViewers],
     shallow,
   );

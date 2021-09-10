@@ -1,5 +1,5 @@
-import {useStreamStore} from '@app/stores';
+import {useStore} from '@app/store';
 
 export const useParticipantsCount = () => {
-  return useStreamStore(store => store.totalParticipantCount);
+  return useStore(store => store.totalParticipantCount);
 };

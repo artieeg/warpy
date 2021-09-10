@@ -1,9 +1,9 @@
-import {useFeedStore} from '@app/stores';
+import {useStore} from '@app/store';
 import {useEffect} from 'react';
 import shallow from 'zustand/shallow';
 
 export const useFeed = () => {
-  const [feed, fetchNextPage] = useFeedStore(
+  const [feed, fetchNextPage] = useStore(
     state => [state.feed, state.fetchNextPage],
     shallow,
   );

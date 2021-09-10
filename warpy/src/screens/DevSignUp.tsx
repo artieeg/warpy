@@ -2,7 +2,7 @@ import {setToken} from '@app/services';
 import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useState} from 'react';
 import {View, TextInput, Button, StyleSheet} from 'react-native';
-import {useAPIStore} from '@app/stores/useAPIStore';
+import {useStore} from '@app/store';
 
 export const DevSignUp = () => {
   const [username, setUsername] = useState('');
@@ -12,7 +12,7 @@ export const DevSignUp = () => {
 
   const navigation = useNavigation();
 
-  const {api} = useAPIStore();
+  const api = useStore(state => state.api);
 
   const onSignUp = useCallback(async () => {
     const {refresh, access} = await api.user.create({

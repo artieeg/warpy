@@ -1,24 +1,27 @@
 import {Stream} from '@app/models';
-import create from 'zustand';
-import {useAPIStore} from './useAPIStore';
+import {GetState, SetState} from 'zustand';
+import {IStore} from './useStore';
 
-interface IFeedStore {
-  page: number;
+export interface IFeedSlice {
+  latestFeedPage: number;
   feed: Stream[];
   fetchNextPage: () => void;
   loading: boolean;
 }
 
-export const useFeedStore = create<IFeedStore>((set, get) => ({
+export const createFeedSlice = (
+  set: SetState<IStore>,
+  get: GetState<IStore>,
+) => ({
   page: 0,
   loading: false,
   feed: [],
   fetchNextPage: async () => {
     set({loading: true});
-    const {feed} = await useAPIStore.getState().api.feed.get(get().page);
+    const {feed} = await get().api.feed.get(get().latestFeedPage);
 
     set(state => ({
       feed: [...state.feed, ...feed.map(Stream.fromJSON)],
     }));
   },
-}));
+});

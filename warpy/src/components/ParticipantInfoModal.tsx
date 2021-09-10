@@ -5,8 +5,8 @@ import {Text} from './Text';
 import {Avatar} from './Avatar';
 import {BaseSlideModal} from './BaseSlideModal';
 import {SmallTextButton} from './SmallTextButton';
-import {useFollowingStore} from '@app/stores';
-import {useAPIStore} from '@app/stores/useAPIStore';
+import {useStore} from '@app/store';
+import shallow from 'zustand/shallow';
 
 interface IParticipantInfoModal {
   user: string | null;
@@ -16,7 +16,7 @@ interface IParticipantInfoModal {
 export const ParticipantInfoModal = (props: IParticipantInfoModal) => {
   const {user, onHide} = props;
 
-  const {api} = useAPIStore();
+  const api = useStore(state => state.api);
 
   const [visible, setVisible] = useState(false);
 
@@ -30,7 +30,10 @@ export const ParticipantInfoModal = (props: IParticipantInfoModal) => {
     }
   }, [user]);
 
-  const followingStore = useFollowingStore();
+  const followingStore = useStore(
+    state => ({has: state.has, add: state.add, remove: state.remove}),
+    shallow,
+  );
 
   const isFollowing = followingStore.has(user!);
 
@@ -43,7 +46,7 @@ export const ParticipantInfoModal = (props: IParticipantInfoModal) => {
       return;
     }
 
-    if (useFollowingStore.getState().has(user)) {
+    if (followingStore.has(user)) {
       await api.user.unfollow(user);
 
       followingStore.remove(user);
