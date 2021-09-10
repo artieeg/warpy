@@ -18,18 +18,26 @@ import {
 } from '@app/components';
 import {useRecvTransport} from '@app/hooks/useRecvTransport';
 import {StreamerPanel} from '@app/components/StreamerPanel';
-import {useParticipantStore} from '@app/stores';
+import {useStreamStore} from '@app/stores';
 import {useAPIStore} from '@app/stores/useAPIStore';
 import {Participant} from '@app/models';
+import shallow from 'zustand/shallow';
 
 export const NewStream = () => {
-  const [streamId, setStreamId] = useState<string>();
   const [title, setTitle] = useState('test stream');
   const [hub, setHub] = useState('60ec569668b42c003304630b');
   const user = useAppUser();
   const userId: string = user!.id;
-  const [sendRoomData, setSendRoomData] = useState<any>();
-  const [recvRoomData, setRecvRoomData] = useState<any>();
+  const [sendRoomData, recvRoomData, streamId, createStream] = useStreamStore(
+    state => [
+      state.sendMediaParams,
+      state.recvMediaParams,
+      state.stream,
+      state.create,
+    ],
+    shallow,
+  );
+
   const [userFacingMode, setUserFacingMode] = useState(true);
 
   //Display a participant info modal
@@ -96,27 +104,8 @@ export const NewStream = () => {
     }
   }, [streamId, sendRoomData, localMediaStream, userId, media, api]);
 
-  const onStart = useCallback(async () => {
-    const {
-      stream,
-      media: mediaData,
-      speakers: receivedSpeakers,
-      count,
-      mediaPermissionsToken,
-      recvMediaParams,
-    } = await api.stream.create(title, hub);
-
-    console.log('permissions token', mediaPermissionsToken);
-
-    const participantStore = useParticipantStore.getState();
-
-    participantStore.addSpeakers(receivedSpeakers.map(Participant.fromJSON));
-    participantStore.setCount(count);
-
-    media.setPermissionsToken(mediaPermissionsToken);
-    setStreamId(stream);
-    setRecvRoomData(recvMediaParams);
-    setSendRoomData(mediaData);
+  const onStart = useCallback(() => {
+    createStream(title, hub);
   }, [title, hub, api]);
 
   const onStopStream = () => {
@@ -145,7 +134,7 @@ export const NewStream = () => {
   }, [micIsOn, localMediaStream]);
 
   return (
-    <View>
+    <View style={styles.wrapper}>
       {localMediaStream && (
         <RTCView
           style={localStreamStyle}
@@ -205,5 +194,9 @@ const styles = StyleSheet.create({
     left: 20,
     right: 20,
     height: 70,
+  },
+  wrapper: {
+    flex: 1,
+    backgroundColor: '#303030',
   },
 });

@@ -1,10 +1,10 @@
 import {Participant} from '@app/models/participant';
-import {useParticipantStore} from '@app/stores';
+import {useStreamStore} from '@app/stores';
 import {useMemo} from 'react';
 import shallow from 'zustand/shallow';
 
 export const useSpeakingRequests = (): Participant[] => {
-  const viewersWithRaisedHands = useParticipantStore(
+  const viewersWithRaisedHands = useStreamStore(
     state => state.viewersWithRaisedHands,
     shallow,
   );

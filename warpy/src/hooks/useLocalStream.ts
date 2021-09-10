@@ -6,50 +6,52 @@ import {
   MediaTrackConstraints,
 } from 'react-native-webrtc';
 
-const getMediaSource = async (kind: MediaKind): Promise<MediaStream | null> => {
-  const videoContstraints: MediaTrackConstraints = {
-    facingMode: 'user',
-    mandatory: {
-      minWidth: 720,
-      minHeight: 1080,
-      minFrameRate: 30,
-    },
-    optional: [],
-  };
+export const useLocalStream = (kind: MediaKind) => {
+  const [localStream, setLocalStream] = useState<MediaStream>();
 
-  //mediaStream is of type boolean | MediaStream somehow??
-  const mediaStream = await mediaDevices.getUserMedia({
-    audio: {
-      sampleRate: 48000,
-    } as any,
-    video: kind === 'video' ? videoContstraints : false,
-  });
+  const getMediaSource = useCallback(async () => {
+    const videoContstraints: MediaTrackConstraints = {
+      facingMode: 'user',
+      mandatory: {
+        minWidth: 720,
+        minHeight: 1080,
+        minFrameRate: 30,
+      },
+      optional: [],
+    };
 
-  //F
-  if (!mediaStream || mediaStream === true) {
-    return null;
-  }
+    //Why in the world getUserMedia returns boolean | MediaStream type??
+    const mediaStream = await mediaDevices.getUserMedia({
+      audio: {
+        sampleRate: 48000,
+      } as any,
+      video: kind === 'video' ? videoContstraints : false,
+    });
 
-  return mediaStream;
+    //F
+    if (!mediaStream || mediaStream === true) {
+      return;
+    }
+
+    setLocalStream(mediaStream);
+  }, [kind]);
+
+  useEffect(() => {
+    getMediaSource();
+  }, [getMediaSource]);
+
+  return localStream;
 };
 
 export const useLocalVideoStream = () => {
-  const [stream, setStream] = useState<MediaStream | null>();
-
-  useEffect(() => {
-    getMediaSource('video').then(setStream);
-  });
+  const stream = useLocalStream('video');
 
   return {stream};
 };
 
 export const useLocalAudioStream = () => {
-  const [stream, setStream] = useState<MediaStream | null>();
+  const stream = useLocalStream('video');
   const [muted, setMuted] = useState(false);
-
-  useEffect(() => {
-    getMediaSource('video').then(setStream);
-  });
 
   const toggle = useCallback(() => {
     stream?.getAudioTracks().forEach(audio => (audio.enabled = !muted));

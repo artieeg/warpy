@@ -15,6 +15,7 @@ export const Speakers = (props: ISpeakersProps) => {
     (first, second) => second.volume - first.volume,
   );
 
+  console.log('updated speakers', speakers);
   return (
     <View style={[styles.container, style]}>
       {speakersSortedByVolume.slice(0, 3).map(speaker => (

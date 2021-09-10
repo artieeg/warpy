@@ -15,9 +15,10 @@ export const Speaker = (props: ISpeakerProps) => {
   const scale = useRef(new Animated.Value(1));
 
   useEffect(() => {
+    console.log('changed volume', volume);
     Animated.sequence([
       Animated.timing(scale.current, {
-        toValue: 1 + volume / 80,
+        toValue: 1 + (100 - volume) / 100,
         duration: 100,
         useNativeDriver: true,
       }),

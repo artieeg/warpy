@@ -19,7 +19,7 @@ export class Participant extends User implements IParticipant {
     this.role = data.role;
     this.isRaisingHand = data.isRaisingHand;
     this.isSpeaking = false;
-    this.volume = 0;
+    this.volume = data.volume !== undefined ? data.volume : 0;
   }
 
   static fromJSON(json: any): Participant {
@@ -28,7 +28,7 @@ export class Participant extends User implements IParticipant {
       role: json.role,
       isRaisingHand: false,
       isSpeaking: false,
-      volume: 0,
+      volume: json.volume,
     });
   }
 }
