@@ -53,14 +53,9 @@ export const NewStream = () => {
   });
 
   const {width, height} = useWindowDimensions();
-  const {stream: localMediaStream} = useLocalVideoStream();
+  const {stream: localMediaStream, switchCamera} = useLocalVideoStream();
 
-  useEffect(() => {
-    const videoTrack = localMediaStream?.getVideoTracks()[0];
-    if (videoTrack) {
-      (videoTrack as any)._switchCamera();
-    }
-  }, [userFacingMode, localMediaStream]);
+  useEffect(() => {}, [userFacingMode, localMediaStream]);
 
   useEffect(() => {
     if (!recvTransport) {
@@ -150,7 +145,7 @@ export const NewStream = () => {
           onOpenParticipantsList={() => setPanelVisible(false)}
           micIsOn={micIsOn}
           onMicToggle={setMicIsOn}
-          onFlipCamera={() => setUserFacingMode(prev => !prev)}
+          onFlipCamera={switchCamera}
         />
       )}
       <ParticipantsModal
