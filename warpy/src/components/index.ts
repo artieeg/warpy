@@ -8,7 +8,6 @@ export * from './Speakers';
 export * from './ClapsButton';
 export * from './WarpButton';
 export * from './RaiseHandButton';
-export * from './MediaStreamingContext';
 export * from './ShowParticipantsButton';
 export * from './ParticipantsModal';
 export * from './Participant';

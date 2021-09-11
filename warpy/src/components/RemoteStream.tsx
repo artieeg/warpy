@@ -9,7 +9,6 @@ import {
   useLocalAudioStream,
 } from '@app/hooks';
 import {RTCView} from 'react-native-webrtc';
-import {useRecvTransport} from '@app/hooks/useRecvTransport';
 import {ParticipantsModal} from './ParticipantsModal';
 import {ViewerStreamPanel} from './ViewerStreamPanel';
 import {ParticipantInfoModal} from './ParticipantInfoModal';
@@ -32,8 +31,6 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const [panelVisible, setPanelVisible] = useState(true);
   const id = stream.id;
   const api = useStore(state => state.api);
-  //const [isSpeaker, setIsSpeaker] = useState(false);
-  //const [speakerOptions, setSpeakerOptions] = useState<any>();
   const [showReactions, setReactionsVisible] = useState(false);
   const [currentReaction, setCurrentReaction] = useState(reactionCodes[0]);
 

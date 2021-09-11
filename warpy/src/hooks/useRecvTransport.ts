@@ -1,15 +1,8 @@
 //import {createTransport, recvDevice, initRecvDevice} from '@app/services';
-import {useMediaStreamingContext} from '@app/components';
 import {useStore} from '@app/store';
 import {Transport} from 'mediasoup-client/lib/Transport';
 import {useCallback, useEffect, useState} from 'react';
 import shallow from 'zustand/shallow';
-
-interface IRecvTransportHookParams {
-  stream?: string;
-  recvTransportOptions?: any;
-  routerRtpCapabilities?: any;
-}
 
 export const useRecvTransport = () => {
   const [stream, media, recvDevice, mediaPermissionToken, recvMediaParams] =
