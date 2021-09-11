@@ -7,15 +7,15 @@ import {View, Text, StyleSheet} from 'react-native';
 export const Splash = () => {
   const navigation = useNavigation();
 
-  const [setupAPIListeners, api, user, loadUserData] = useStore(state => [
-    state.setupAPIListeners,
+  const [createAPISubscriptions, api, user, loadUserData] = useStore(state => [
+    state.createAPISubscriptions,
     state.api,
     state.user,
     state.loadUserData,
   ]);
 
   useEffect(() => {
-    setupAPIListeners();
+    createAPISubscriptions();
 
     return () => {
       api.observer.removeAllListeners();

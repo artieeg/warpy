@@ -1,18 +1,18 @@
 import {
   useAppUser,
   useLocalVideoStream,
+  useMediaStreaming,
   useParticipantsCount,
   useSpeakingRequests,
   useStreamSpeakers,
   useStreamViewers,
 } from '@app/hooks';
 import {RTCView} from 'react-native-webrtc';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {View, StyleSheet, useWindowDimensions} from 'react-native';
 import {
   StopStream,
   Button,
-  useMediaStreamingContext,
   ParticipantsModal,
   ParticipantInfoModal,
 } from '@app/components';
@@ -26,27 +26,15 @@ export const NewStream = () => {
   const [hub, setHub] = useState('60ec569668b42c003304630b');
   const user = useAppUser();
   const userId: string = user!.id;
-  const [sendRoomData, recvRoomData, streamId, createStream, api] = useStore(
-    state => [
-      state.sendMediaParams,
-      state.recvMediaParams,
-      state.stream,
-      state.create,
-      state.api,
-    ],
+  const [recvRoomData, streamId, createStream, api] = useStore(
+    state => [state.recvMediaParams, state.stream, state.create, state.api],
     shallow,
   );
 
   //Display a participant info modal
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
 
-  const media = useMediaStreamingContext();
-
-  const recvTransport = useRecvTransport({
-    stream: streamId,
-    recvTransportOptions: recvRoomData?.recvTransportOptions,
-    routerRtpCapabilities: recvRoomData?.routerRtpCapabilities,
-  });
+  const recvTransport = useRecvTransport();
 
   const {width, height} = useWindowDimensions();
   const {
@@ -56,55 +44,16 @@ export const NewStream = () => {
     muted,
   } = useLocalVideoStream();
 
-  useEffect(() => {
-    if (!recvTransport) {
-      return;
-    }
-
-    const newTrackUnsub = api.media.onNewTrack(data => {
-      media.consumeRemoteStream(
-        data.consumerParameters,
-        data.user,
-        recvTransport,
-      );
-    });
-
-    return () => {
-      newTrackUnsub();
-    };
-  }, [recvTransport, media, api]);
-
-  useEffect(() => {
-    if (sendRoomData && streamId && localMediaStream) {
-      media
-        .initSendDevice(sendRoomData.routerRtpCapabilities)
-        .then(async () => {
-          await Promise.all([
-            media.sendMediaStream(
-              localMediaStream,
-              streamId,
-              sendRoomData,
-              'video',
-            ),
-
-            media.sendMediaStream(
-              localMediaStream,
-              streamId,
-              sendRoomData,
-              'audio',
-            ),
-          ]);
-        });
-    }
-  }, [streamId, sendRoomData, localMediaStream, userId, media, api]);
+  useMediaStreaming({stream: localMediaStream, kind: 'video'});
+  useMediaStreaming({stream: localMediaStream, kind: 'audio'});
 
   const onStart = useCallback(() => {
     if (streamId) {
       return;
     }
 
-    createStream(title, hub, media, recvTransport);
-  }, [title, streamId, hub, api, media, recvTransport]);
+    createStream(title, hub, recvTransport);
+  }, [title, streamId, hub, api, recvTransport]);
 
   const onStopStream = () => {
     api.stream.stop(streamId!);

@@ -1,16 +1,29 @@
-import {useMediaStreamingContext} from '@app/components';
-import {Consumer, Transport} from 'mediasoup-client/lib/types';
+import {useStore} from '@app/store';
+import {Consumer} from 'mediasoup-client/lib/types';
 import {useEffect, useRef, useState} from 'react';
 import {MediaStream} from 'react-native-webrtc';
+import shallow from 'zustand/shallow';
 import {useAppUser} from './useAppUser';
+import {useRecvTransport} from './useRecvTransport';
 
 interface IStreams {
   videoStreams: MediaStream[];
   audioStreams: MediaStream[];
 }
 
-export const useRemoteStreams = (streamId: string, transport?: Transport) => {
-  const media = useMediaStreamingContext();
+export const useRemoteStreams = () => {
+  const [roomData, streamId] = useStore(
+    state => [state.recvMediaParams, state.stream],
+    shallow,
+  );
+
+  const transport = useRecvTransport();
+
+  const [mediaClient, mediaPermissionsToken] = useStore(
+    state => [state.mediaClient, state.mediaPermissionsToken],
+    shallow,
+  );
+
   const [streams, setStreams] = useState<IStreams>({
     videoStreams: [],
     audioStreams: [],
@@ -21,11 +34,24 @@ export const useRemoteStreams = (streamId: string, transport?: Transport) => {
   const fetched = useRef(false);
 
   useEffect(() => {
-    if (!transport || !media.permissionsToken || fetched.current) {
+    console.log(
+      !!streamId,
+      !!transport,
+      !!mediaClient,
+      !!mediaPermissionsToken,
+      !!fetched.current,
+    );
+    if (
+      !streamId ||
+      !transport ||
+      !mediaClient ||
+      !mediaPermissionsToken ||
+      fetched.current
+    ) {
       return;
     }
 
-    media
+    mediaClient
       .consumeRemoteStreams(userId, streamId, transport)
       .then((consumers: Consumer[]) => {
         const videoStreams: MediaStream[] = [];
@@ -48,7 +74,7 @@ export const useRemoteStreams = (streamId: string, transport?: Transport) => {
           audioStreams,
         });
       });
-  }, [transport, media.permissionsToken]);
+  }, [transport, mediaPermissionsToken, streamId]);
 
   return streams;
 };

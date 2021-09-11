@@ -11,3 +11,4 @@ export * from './useAppUser';
 export * from './useEffectOnce';
 export * from './usePreviewDimensions';
 export * from './useRemoteStreams';
+export * from './useMediaStreaming';

@@ -3,10 +3,13 @@ import {GetState, SetState} from 'zustand';
 import produce from 'immer';
 import {Transport} from 'mediasoup-client/lib/Transport';
 import {IStore} from '../useStore';
+import {arrayToMap} from '@app/utils';
 
 export interface IStreamSlice {
   /** Stores current stream id */
   stream?: string;
+
+  isSpeaker?: boolean;
 
   /** Stores latest fetched viewers page*/
   latestViewersPage: number;
@@ -16,17 +19,6 @@ export interface IStreamSlice {
    * Updates once a new user joins or leaves the stream
    * */
   totalParticipantCount: number;
-
-  /**
-   * Stores audio/video streaming permissions
-   * */
-  mediaPermissionsToken: string | null;
-
-  /**
-   * Mediasoup recv params
-   */
-  recvMediaParams?: any;
-  sendMediaParams?: any;
 
   isFetchingViewers: boolean;
 
@@ -42,7 +34,6 @@ export interface IStreamSlice {
   ) => Promise<void>;
   join: (id: string) => Promise<void>;
 
-  setupAPIListeners: () => void;
   setCount: (newCount: number) => any;
   fetchMoreViewers: () => Promise<void>;
   addViewers: (viewers: Participant[], page: number) => void;
@@ -61,50 +52,45 @@ export const createStreamSlice = (
   latestViewersPage: -1,
   isFetchingViewers: false,
   totalParticipantCount: 0,
-  mediaPermissionsToken: null,
   viewers: {},
   viewersWithRaisedHands: {},
   speakers: {},
 
-  async create(title, hub, media, recvTransport) {
-    const {api} = get();
+  async create(title, hub, recvTransport) {
+    const {api, initSpeakerMedia, initViewerMedia} = get();
 
     const {
       stream,
       media: mediaData,
-      speakers: receivedSpeakers,
+      speakers,
       count,
       mediaPermissionsToken,
       recvMediaParams,
     } = await api.stream.create(title, hub);
 
-    const speakers: Record<string, Participant> = {};
-    receivedSpeakers.forEach(speaker => {
-      speakers[speaker.id] = Participant.fromJSON(speaker);
-    });
-
-    api.media.onNewTrack(data => {
-      media.consumeRemoteStream(
+    /*
+    //TODO: move to the API slice
+    await api.media.onNewTrack(data => {
+      mediaClient.consumeRemoteStream(
         data.consumerParameters,
         data.user,
         recvTransport,
       );
     });
+    */
+
+    await initSpeakerMedia(mediaPermissionsToken, mediaData);
+    await initViewerMedia(mediaPermissionsToken, recvMediaParams);
 
     set({
-      mediaPermissionsToken,
       stream,
-      speakers,
+      speakers: arrayToMap<Participant>(speakers.map(Participant.fromJSON)),
       totalParticipantCount: count,
-      recvMediaParams,
-      sendMediaParams: mediaData,
     });
   },
 
   async join(stream) {
-    const {api} = get();
-
-    const data = await api.stream.join(stream);
+    const {api, initViewerMedia} = get();
 
     const {
       mediaPermissionsToken,
@@ -112,24 +98,17 @@ export const createStreamSlice = (
       speakers,
       raisedHands,
       count,
-    } = data;
+    } = await api.stream.join(stream);
 
-    const fetchedSpeakers: Record<string, Participant> = {};
-    speakers.forEach(speaker => {
-      fetchedSpeakers[speaker.id] = Participant.fromJSON(speaker);
-    });
-
-    const fetchedRaisedHands: Record<string, Participant> = {};
-    raisedHands.forEach(viewer => {
-      fetchedRaisedHands[viewer.id] = Participant.fromJSON(viewer);
-    });
+    await initViewerMedia(mediaPermissionsToken, recvMediaParams);
 
     set({
+      stream,
       totalParticipantCount: count,
-      mediaPermissionsToken,
-      recvMediaParams,
-      speakers: fetchedSpeakers,
-      viewersWithRaisedHands: fetchedRaisedHands,
+      speakers: arrayToMap<Participant>(speakers.map(Participant.fromJSON)),
+      viewersWithRaisedHands: arrayToMap<Participant>(
+        raisedHands.map(Participant.fromJSON),
+      ),
     });
   },
 
@@ -153,38 +132,6 @@ export const createStreamSlice = (
         );
       }),
     );
-  },
-
-  setupAPIListeners() {
-    const store = get();
-    const {api} = store;
-
-    api.stream.onNewViewer(data => {
-      store.addViewer(data.viewer);
-    });
-
-    api.stream.onActiveSpeaker(data => {
-      store.setActiveSpeaker(Participant.fromJSON(data.speaker as any));
-    });
-
-    api.stream.onNewRaisedHand(data => {
-      const participant = Participant.fromJSON(data.viewer);
-      participant.isRaisingHand = true;
-
-      store.raiseHand(participant);
-    });
-
-    api.stream.onNewSpeaker(data => {
-      const {speaker} = data;
-
-      store.addSpeaker(speaker);
-    });
-
-    api.stream.onUserLeft(data => {
-      const {user} = data;
-
-      store.removeParticipant(user);
-    });
   },
 
   setCount(newCount) {

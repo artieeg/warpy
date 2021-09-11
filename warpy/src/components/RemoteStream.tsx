@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {Stream} from '@app/models';
 import {
@@ -10,7 +10,6 @@ import {
 } from '@app/hooks';
 import {RTCView} from 'react-native-webrtc';
 import {useRecvTransport} from '@app/hooks/useRecvTransport';
-import {useMediaStreamingContext} from './MediaStreamingContext';
 import {ParticipantsModal} from './ParticipantsModal';
 import {ViewerStreamPanel} from './ViewerStreamPanel';
 import {ParticipantInfoModal} from './ParticipantInfoModal';
@@ -21,6 +20,7 @@ import {reactionCodes} from './Reaction';
 import {ReactionCanvas} from './ReactionCanvas';
 import {useRemoteStreams} from '@app/hooks/useRemoteStreams';
 import shallow from 'zustand/shallow';
+import {useMediaStreaming} from '@app/hooks/useMediaStreaming';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -32,52 +32,33 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const [panelVisible, setPanelVisible] = useState(true);
   const id = stream.id;
   const api = useStore(state => state.api);
-  const media = useMediaStreamingContext();
-  const [isSpeaker, setIsSpeaker] = useState(false);
-  const [speakerOptions, setSpeakerOptions] = useState<any>();
+  //const [isSpeaker, setIsSpeaker] = useState(false);
+  //const [speakerOptions, setSpeakerOptions] = useState<any>();
   const [showReactions, setReactionsVisible] = useState(false);
   const [currentReaction, setCurrentReaction] = useState(reactionCodes[0]);
 
-  const [roomData, join, totalParticipantCount] = useStore(
-    state => [state.recvMediaParams, state.join, state.totalParticipantCount],
+  const [join, totalParticipantCount, isSpeaker] = useStore(
+    state => [state.join, state.totalParticipantCount, state.isSpeaker],
     shallow,
   );
 
   //Display a participant info modal
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
 
-  const recvTransport = useRecvTransport({
-    stream: id,
-    recvTransportOptions: roomData?.recvTransportOptions,
-    routerRtpCapabilities: roomData?.routerRtpCapabilities,
-  });
-
   const speakers = useStreamSpeakers();
   const [viewers, fetchViewers] = useStreamViewers();
   const usersRaisingHand = useSpeakingRequests();
 
-  const {videoStreams} = useRemoteStreams(id, recvTransport);
+  const {videoStreams} = useRemoteStreams();
 
   useEffectOnce(() => {
     join(id);
   });
 
-  useEffect(() => {
-    const unsub = api.stream.onSpeakingAllowed(async options => {
-      await media.initSendDevice(options.media.rtpCapabilities);
-      media.setPermissionsToken(options.mediaPermissionToken);
-      setIsSpeaker(true);
-      setSpeakerOptions(options);
-    });
-
-    return unsub;
-  }, [id, audioStream, api, media]);
-
-  useEffect(() => {
-    if (speakerOptions && audioStream) {
-      media.sendMediaStream(audioStream, id, speakerOptions.media, 'audio');
-    }
-  }, [media, speakerOptions, id, audioStream]);
+  useMediaStreaming({
+    stream: audioStream,
+    kind: 'audio',
+  });
 
   const onOpenReactions = () => {
     setReactionsVisible(true);
