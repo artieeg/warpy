@@ -19,9 +19,9 @@ export const speak = (record: UserRecord) => {
 
     const audio = await getAudioStream();
 
-    const { rtpCapabilities } = media;
+    const { routerRtpCapabilities } = media;
 
-    await record.sendDevice.load({ routerRtpCapabilities: rtpCapabilities });
+    await record.sendDevice.load({ routerRtpCapabilities });
 
     const producer = await record.media.sendMediaStream(
       audio,

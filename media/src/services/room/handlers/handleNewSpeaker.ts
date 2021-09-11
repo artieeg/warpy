@@ -34,7 +34,7 @@ export const handleNewSpeaker: MessageHandler<
   });
 
   respond!({
-    rtpCapabilities: room.router.rtpCapabilities,
+    routerRtpCapabilities: room.router.rtpCapabilities,
     sendTransportOptions: {
       audio: getOptionsFromTransport(audioTransport),
     },

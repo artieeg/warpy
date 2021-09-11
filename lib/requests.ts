@@ -51,7 +51,7 @@ export interface INewSpeakerMediaResponse {
   sendTransportOptions: {
     audio: any;
   };
-  rtpCapabilities: any;
+  routerRtpCapabilities: any;
 }
 
 export interface IConnectMediaTransport {
