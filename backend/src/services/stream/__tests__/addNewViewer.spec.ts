@@ -1,4 +1,4 @@
-import { ParticipantDAL, UserDAL } from "@backend/dal";
+import { ParticipantDAL, UserDAO } from "@backend/dal";
 import { MediaService } from "@backend/services";
 import { mocked } from "ts-jest/utils";
 import {
@@ -21,12 +21,12 @@ describe("StreamService.addNewViewer", () => {
   const recvTransportParams = createRecvTransportParamsFixture({});
   const mediaPermissionsToken = "test-media-token";
 
-  const mockedUserDAL = mocked(UserDAL);
+  const mockedUserDAO = mocked(UserDAO);
   const mockedParticipantDAL = mocked(ParticipantDAL);
   const mockedMediaService = mocked(MediaService);
 
   beforeAll(() => {
-    mockedUserDAL.findById.mockResolvedValue(viewer);
+    mockedUserDAO.findById.mockResolvedValue(viewer);
     mockedMediaService.getConsumerNodeId.mockResolvedValue(consumerNodeId);
 
     mockedMediaService.createPermissionsToken.mockReturnValue(
@@ -47,7 +47,7 @@ describe("StreamService.addNewViewer", () => {
   });
 
   it("throws if viewer does not exist in the database", () => {
-    mockedUserDAL.findById.mockResolvedValueOnce(null);
+    mockedUserDAO.findById.mockResolvedValueOnce(null);
 
     expect(
       StreamService.addNewViewer(stream_id, viewer_id)

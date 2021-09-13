@@ -4,7 +4,7 @@ import {
   IUser,
   ParticipantDAL,
   RefreshTokenDAL,
-  UserDAL,
+  UserDAO,
 } from "@backend/dal";
 import { INewUser, IWhoAmIResponse } from "@warpy/lib";
 
@@ -21,7 +21,7 @@ export const UserService = {
   async createDevUser(data: INewUser): Promise<NewUserResponse> {
     const { username, last_name, first_name, email } = data;
 
-    const user = await UserDAL.createNewUser({
+    const user = await UserDAO.createNewUser({
       username,
       last_name,
       first_name,
@@ -43,12 +43,12 @@ export const UserService = {
   },
 
   async deleteUser(user: string): Promise<void> {
-    await UserDAL.delete(user);
+    await UserDAO.delete(user);
   },
 
   async whoAmI(id: string): Promise<IWhoAmIResponse> {
     const [user, following] = await Promise.all([
-      UserDAL.findById(id),
+      UserDAO.findById(id),
       FollowRecordDAL.getFollowedUserIds(id),
     ]);
 

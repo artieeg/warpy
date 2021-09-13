@@ -1,4 +1,4 @@
-import { ParticipantDAL, UserDAL } from "@backend/dal";
+import { ParticipantDAL, UserDAO } from "@backend/dal";
 import { IJoinStreamResponse } from "@warpy/lib";
 import { BroadcastService, MediaService } from "..";
 
@@ -7,7 +7,7 @@ export const addNewViewer = async (
   viewerId: string
 ): Promise<IJoinStreamResponse> => {
   const [viewer, recvNodeId] = await Promise.all([
-    UserDAL.findById(viewerId),
+    UserDAO.findById(viewerId),
     MediaService.getConsumerNodeId(),
   ]);
 

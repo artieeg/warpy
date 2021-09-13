@@ -1,4 +1,4 @@
-import { ParticipantDAL, StreamDAL, UserDAL } from "@backend/dal";
+import { ParticipantDAL, StreamDAL, UserDAO } from "@backend/dal";
 import { MediaService } from "@backend/services";
 import {
   createParticipantFixture,
@@ -37,20 +37,20 @@ describe("StreamService.createNewStream", () => {
   });
 
   const mockedMediaService = mocked(MediaService);
-  const mockedUserDAL = mocked(UserDAL);
+  const mockedUserDAO = mocked(UserDAO);
   const mockedStreamDAL = mocked(StreamDAL);
   const mockedParticipantDAL = mocked(ParticipantDAL);
 
   beforeAll(() => {
     mockedMediaService.getConsumerNodeId.mockResolvedValue(consumerNodeId);
     mockedMediaService.getProducerNodeId.mockResolvedValue(producerNodeId);
-    mockedUserDAL.findById.mockResolvedValue(streamer);
+    mockedUserDAO.findById.mockResolvedValue(streamer);
     mockedStreamDAL.create.mockResolvedValue(stream);
     mockedParticipantDAL.create.mockResolvedValue(streamerParticipantObject);
   });
 
   it("throws if user does not exist", () => {
-    mockedUserDAL.findById.mockResolvedValueOnce(null);
+    mockedUserDAO.findById.mockResolvedValueOnce(null);
 
     expect(
       StreamService.createNewStream(owner, title, hub)

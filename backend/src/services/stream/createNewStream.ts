@@ -1,14 +1,14 @@
 import { INewStreamResponse, Participant } from "@warpy/lib";
 import { MediaService } from "@backend/services";
 import { StreamDAL } from "@backend/dal/stream_dal";
-import { ParticipantDAL, UserDAL } from "@backend/dal";
+import { ParticipantDAL, UserDAO } from "@backend/dal";
 
 export const createNewStream = async (
   owner: string,
   title: string,
   hub: string
 ): Promise<INewStreamResponse> => {
-  const streamer = await UserDAL.findById(owner);
+  const streamer = await UserDAO.findById(owner);
 
   //Get nodes for sending and receiving media
   const [recvMediaNode, sendMediaNode] = await Promise.all([
