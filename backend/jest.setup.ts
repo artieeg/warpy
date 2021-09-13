@@ -6,6 +6,8 @@ jest.mock("@backend/services/message");
 jest.mock("@backend/services/broadcast");
 jest.mock("@backend/services/media");
 jest.mock("@backend/services/feed");
+jest.mock("@backend/services/cache");
+jest.mock("@backend/services/cache/client");
 jest.mock("@backend/dal/stream_dal");
 jest.mock("@backend/dal/follow_record_dal");
 jest.mock("@backend/dal/participant_dal");

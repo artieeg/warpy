@@ -22,7 +22,7 @@ export const toUserDTO = (data: User, includeDetails = false): IUser => {
   };
 };
 
-export const UserDAL = {
+export const UserDAO = {
   async createNewUser(data: NewUserParams): Promise<User> {
     const user = await prisma.user.create({
       data,
