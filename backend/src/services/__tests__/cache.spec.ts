@@ -50,4 +50,22 @@ describe("Cache Service", () => {
 
     expect(mockedGet).toBeCalledWith(id);
   });
+
+  it("wraps a function with cache with a custom prefix", async () => {
+    const fnToCache = jest
+      .fn()
+      .mockImplementation((a: number, b: number) => Math.pow(a, b));
+
+    const prefix = "square";
+
+    const cachedFn = CacheService.withCache(fnToCache, {
+      prefix,
+    });
+
+    const args = [2, 2];
+
+    await cachedFn(...args);
+
+    expect(mockedGet).toBeCalledWith(`${prefix}_${JSON.stringify(args)}`);
+  });
 });

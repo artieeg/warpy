@@ -19,6 +19,7 @@ type BaseFn = (...args: any[]) => any;
 
 type CacheParams<F extends BaseFn> = {
   keyExtractor?: ArgumentKeyExtractor<ArgumentTypes<F>>;
+  prefix?: string;
 };
 
 export function withCache<F extends BaseFn>(
@@ -30,7 +31,10 @@ export function withCache<F extends BaseFn>(
       ? params.keyExtractor
       : defaultKeyExtractor;
 
-    const key = keyExtractor(args);
+    let key = keyExtractor(args);
+    if (params?.prefix) {
+      key = params.prefix + "_" + key;
+    }
 
     const cachedValue = await get(key);
 
