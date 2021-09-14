@@ -19,7 +19,7 @@ export function get<T>(key: string, parse?: ValueParser<T>): Promise<T | null> {
         return resolve(null);
       }
 
-      resolve(parse ? parse(value) : (value as unknown as T));
+      resolve(parse ? parse(value) : (JSON.parse(value) as unknown as T));
     });
   });
 }

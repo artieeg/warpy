@@ -1,4 +1,5 @@
 import { Context } from "./types";
+import WebSocket from "ws";
 
 type CustomEventHandler = (context: Context, data: any) => Promise<void>;
 

@@ -25,5 +25,5 @@ export interface IReactionsUpdate {
 }
 
 export interface IChatMessagesEvent {
-  messages: IChatMessage;
+  messages: IChatMessage[];
 }
