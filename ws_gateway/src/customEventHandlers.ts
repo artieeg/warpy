@@ -9,7 +9,16 @@ export const customEventHandlers: Record<string, CustomEventHandler> = {
     if (!context.messageSendInterval) {
       context.messageSendInterval = setInterval(() => {
         if (context.ws.readyState === WebSocket.OPEN) {
-          context.ws.send(JSON.stringify({ event: "chat-messages", data }));
+          context.ws.send(
+            JSON.stringify({
+              event: "chat-messages",
+              data: {
+                messages: context.batchedChatMessages,
+              },
+            })
+          );
+
+          context.batchedChatMessages = [];
         }
       }, 5000);
     }
