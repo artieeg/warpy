@@ -24,11 +24,29 @@ export function get<T>(key: string, parse?: ValueParser<T>): Promise<T | null> {
   });
 }
 
-export function set(key: string, value: any): Promise<void> {
+function expire(key: string, expiry: number): Promise<void> {
+  return new Promise((resolve, reject) => {
+    client.expire(key, expiry, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+export function set(key: string, value: any, expiry: number): Promise<void> {
   return new Promise<void>((resolve, reject) => {
-    client.set(key, JSON.stringify(value), (err) => {
+    client.set(key, JSON.stringify(value), async (err) => {
       if (err) {
         return reject(err);
+      }
+
+      try {
+        await expire(key, expiry);
+      } catch (e) {
+        return reject(e);
       }
 
       resolve();

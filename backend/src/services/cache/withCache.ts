@@ -18,8 +18,13 @@ type CachedFunction<F extends BaseFn> = (
 type BaseFn = (...args: any[]) => any;
 
 type CacheParams<F extends BaseFn> = {
+  /** Specify a function that returns a string value for key from the args array */
   keyExtractor?: ArgumentKeyExtractor<ArgumentTypes<F>>;
+  /** Specify a key prefix */
   prefix?: string;
+
+  /** Expire value from cache after n seconds, default 60 */
+  expiry?: number;
 };
 
 export function withCache<F extends BaseFn>(
@@ -27,9 +32,9 @@ export function withCache<F extends BaseFn>(
   params?: CacheParams<F>
 ): CachedFunction<F> {
   return async (...args) => {
-    const keyExtractor = params?.keyExtractor
-      ? params.keyExtractor
-      : defaultKeyExtractor;
+    const keyExtractor = params?.keyExtractor || defaultKeyExtractor;
+
+    const expiry = params?.expiry || 60;
 
     let key = keyExtractor(args);
     if (params?.prefix) {
@@ -43,7 +48,7 @@ export function withCache<F extends BaseFn>(
     }
 
     const value = await fn(...args);
-    await set(key, value);
+    await set(key, value, expiry);
 
     return value;
   };
