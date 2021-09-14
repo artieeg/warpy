@@ -1,6 +1,6 @@
 import { User } from "@prisma/client";
 import { prisma } from "./client";
-import { IBaseUser, IUser } from "@warpy/lib";
+import { IUser } from "@warpy/lib";
 
 type NewUserParams = Omit<Omit<User, "id">, "created_at">;
 

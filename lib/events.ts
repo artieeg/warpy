@@ -1,4 +1,4 @@
-import { IMediaPermissions, IParticipant } from "./models";
+import { IChatMessage, IMediaPermissions, IParticipant } from "./models";
 
 export interface ISpeakingAllowedEvent {
   stream: string;
@@ -22,4 +22,8 @@ export interface IReactionsUpdate {
     emoji: string;
     user: string;
   }[];
+}
+
+export interface IChatMessagesEvent {
+  messages: IChatMessage;
 }
