@@ -1,12 +1,6 @@
 import { User } from "@prisma/client";
 import { prisma } from "./client";
-
-import { IBaseUser } from "@warpy/lib";
-
-export interface IUser extends IBaseUser {
-  email: string | null;
-  sub: string | null;
-}
+import { IBaseUser, IUser } from "@warpy/lib";
 
 type NewUserParams = Omit<Omit<User, "id">, "created_at">;
 
