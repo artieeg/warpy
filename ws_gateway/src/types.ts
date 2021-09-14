@@ -1,5 +1,6 @@
 import { Subscription } from "nats";
 import WebSocket from "ws";
+import { IChatMessage } from "@warpy/lib";
 
 export type Handler = (
   data: any,
@@ -15,4 +16,6 @@ export type Context = {
   user?: string;
   ws: WebSocket;
   sub?: Subscription;
+  batchedChatMessages: IChatMessage[];
+  messageSendInterval?: ReturnType<typeof setInterval>;
 };

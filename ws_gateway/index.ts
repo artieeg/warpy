@@ -65,7 +65,7 @@ const main = async () => {
   PingPongService.observer.on("user-disconnected", onUserDisconnect);
 
   server.on("connection", (ws) => {
-    const context: Context = { ws };
+    const context: Context = { ws, batchedChatMessages: [] };
 
     ws.ping();
 

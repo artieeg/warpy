@@ -1,3 +1,4 @@
+import { customEventHandlers } from "@ws_gateway/customEventHandlers";
 import { MessageService } from "@ws_gateway/services";
 import { Handler } from "@ws_gateway/types";
 import { jwt } from "@ws_gateway/utils";
@@ -8,11 +9,18 @@ export const onAuth: Handler = async (data, context, rid) => {
 
   context.user = user;
 
-  const [sub, listen] = MessageService.subscribeForEvents(
+  const [_sub, listen] = MessageService.subscribeForEvents(
     user,
     (message: any) => {
       const { event, data } = message;
-      context!.ws.send(JSON.stringify({ event, data }));
+
+      const customEventHandler = customEventHandlers[event];
+
+      if (customEventHandler) {
+        customEventHandler(context, data);
+      } else {
+        context.ws.send(JSON.stringify({ event, data }));
+      }
     }
   );
 
