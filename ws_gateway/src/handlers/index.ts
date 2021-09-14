@@ -14,3 +14,4 @@ export * from "./onUserDelete";
 export * from "./onReaction";
 export * from "./onFollow";
 export * from "./onUnfollow";
+export * from "./onNewChatMessage";

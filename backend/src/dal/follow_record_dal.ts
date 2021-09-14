@@ -1,6 +1,7 @@
 import { prisma } from "./client";
 import { FollowRecord, User } from "@prisma/client";
-import { IUser, toUserDTO } from "./user_dal";
+import { toUserDTO } from "./user_dal";
+import { IUser } from "@warpy/lib";
 
 export interface IFollow {
   follower_id: string;

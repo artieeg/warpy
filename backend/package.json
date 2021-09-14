@@ -29,6 +29,7 @@
   "dependencies": {
     "@prisma/client": "^2.29.1",
     "@warpy/lib": "1.0.0",
+    "bad-words": "^3.0.4",
     "mediasoup": "3",
     "module-alias": "^2.2.2",
     "nats": "^2.1.0",

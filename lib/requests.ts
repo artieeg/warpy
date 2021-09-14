@@ -192,3 +192,8 @@ export interface IUnfollowRequest {
   user: string;
   userToUnfollow: string;
 }
+
+export interface INewChatMessage {
+  user: string;
+  message: string;
+}
