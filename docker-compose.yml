@@ -1,29 +1,32 @@
 services:
   nats:
+    network_mode: "host"
     image: nats
     ports:
       - 4222:4222
-      - 6222:6222 
+      - 6222:6222
       - 8222:8222
 
   nginx:
     image: warpy_nginx
+    network_mode: "host"
     volumes:
-    - ./dev_env/nginx.conf:/etc/nginx/nginx.conf
+      - ./dev_env/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - 9999:9999
 
   redis:
     image: redis:6.2.4-alpine
+    network_mode: "host"
     ports:
       - 6379:6379
 
   backend:
     image: node:16.0.0-alpine
+    network_mode: "host"
     ports:
       - 9229:9229
-    env_file:
-      dev_env/backend.env
+    env_file: dev_env/backend.env
     volumes:
       - ./:/warpy
     working_dir: /warpy/backend
@@ -31,8 +34,9 @@ services:
 
   postgres:
     image: postgres:13-alpine
+    network_mode: "host"
     ports:
-    - 5432:5432
+      - 5432:5432
     volumes:
       - /data/warpy-pg/:/var/lib/postgresql/data
     environment:
@@ -42,8 +46,8 @@ services:
 
   ranker:
     image: node:16.0.0-alpine
-    env_file:
-      dev_env/ranker.env
+    network_mode: "host"
+    env_file: dev_env/ranker.env
     volumes:
       - ./:/warpy
     working_dir: /warpy/ranker
@@ -51,18 +55,27 @@ services:
 
   ws_gateway:
     image: node:16.0.0-alpine
-    env_file:
-      dev_env/ws_gateway.env
+    env_file: dev_env/ws_gateway.env
+    network_mode: "host"
     volumes:
       - ./:/warpy
     working_dir: /warpy/ws_gateway
     command: yarn start:dev
 
-  media:
-    image: node:16.0.0-alpine
-    env_file:
-      dev_env/media.env
-    volumes:
-      - ./:/warpy
-    working_dir: /warpy/media
-    command: yarn start:dev
+  media_producer:
+    image: media:latest
+    env_file: dev_env/media.env
+    network_mode: "host"
+    build:
+      context: .
+      dockerfile: ./Dockerfile.media
+    command: yarn start:dev:p
+
+  media_consumer:
+    image: media:latest
+    env_file: dev_env/media.env
+    network_mode: "host"
+    build:
+      context: .
+      dockerfile: ./Dockerfile.media
+    command: sh -c "sleep 10s && yarn start:dev:c"

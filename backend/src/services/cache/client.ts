@@ -1,6 +1,6 @@
 import { createClient } from "redis";
 
-const URL = process.env.FEEDS_CACHE || "redis://127.0.0.1:6375/1";
+const URL = "redis://127.0.0.1:6375/1";
 
 const client = createClient({
   url: URL,

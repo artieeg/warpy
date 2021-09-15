@@ -1,0 +1,33 @@
+FROM node:16.0.0
+
+#RUN apt update
+#RUN apt install python
+#RUN apt-get install -y python3-pip
+
+WORKDIR /
+
+#COPY ./package*.json .
+#COPY ./media/package*.json media/
+
+#COPY ./lib .
+
+COPY ./lib ./lib
+COPY ./media ./media
+COPY ./api_client ./api_client
+COPY ./media-client ./media-client
+
+COPY *.json .
+COPY *.lock .
+
+RUN yarn install
+
+WORKDIR /lib
+RUN yarn install
+
+
+WORKDIR /media
+
+RUN yarn install
+COPY ./media .
+
+#CMD ["yarn", "start:dev:p"]

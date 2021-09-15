@@ -54,15 +54,11 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
     );
   }, 800 + Math.random() * 800);
 
-  api.stream.onChatMessages((data) => {
-    console.log("received data", data);
-    console.log("total count", data.messages);
-  });
+  api.stream.onChatMessages((data) => {});
 
   setInterval(() => {
-    console.log("message sent");
     api.stream.sendChatMessage("yo");
-  }, 1000);
+  }, 1000 + Math.random() * 700);
 
   record.stream = streamId;
   record.role = "viewer";
