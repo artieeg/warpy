@@ -20,6 +20,7 @@ import {ReactionCanvas} from './ReactionCanvas';
 import {useRemoteStreams} from '@app/hooks/useRemoteStreams';
 import shallow from 'zustand/shallow';
 import {useMediaStreaming} from '@app/hooks/useMediaStreaming';
+import {ChatModal} from './ChatModal';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -33,6 +34,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const api = useStore(state => state.api);
   const [showReactions, setReactionsVisible] = useState(false);
   const [currentReaction, setCurrentReaction] = useState(reactionCodes[0]);
+  const [showChat, setShowChat] = useState(false);
 
   const [join, totalParticipantCount, isSpeaker] = useStore(
     state => [state.join, state.totalParticipantCount, state.isSpeaker],
@@ -137,6 +139,8 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
         visible={showReactions}
         onHide={() => setReactionsVisible(false)}
       />
+
+      <ChatModal visible={showChat} onHide={() => setShowChat(false)} />
     </View>
   );
 };

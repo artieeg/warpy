@@ -80,12 +80,22 @@ const EmittedReaction = React.memo((props: IEmittedReactionProps) => {
   );
 });
 
-export const ReactionEmitter = () => {
+interface IReactionEmitterProps {
+  disabled?: boolean;
+}
+
+export const ReactionEmitter = (props: IReactionEmitterProps) => {
+  const {disabled} = props;
+
   const api = useStore(state => state.api);
 
   const [reactions, setReactions] = useState<IReaction[]>([]);
 
   useEffect(() => {
+    if (disabled) {
+      return;
+    }
+
     const unsub = api.stream.onReactionsUpdate(data => {
       setReactions(prev => [
         ...prev,
@@ -104,7 +114,7 @@ export const ReactionEmitter = () => {
       unsub();
       clearInterval(interval);
     };
-  }, [api]);
+  }, [api, disabled]);
 
   return (
     <View style={styles.wrapper}>

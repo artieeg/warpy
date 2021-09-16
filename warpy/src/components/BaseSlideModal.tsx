@@ -3,14 +3,14 @@ import {StyleSheet, View, ViewProps} from 'react-native';
 import Modal from 'react-native-modal';
 import {Text} from './Text';
 
-interface IParticipanModalProps extends ViewProps {
+export interface IBaseModalProps extends ViewProps {
   title?: string;
   visible: boolean;
   onHide: () => void;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
-export const BaseSlideModal = (props: IParticipanModalProps) => {
+export const BaseSlideModal = (props: IBaseModalProps) => {
   const {visible, onHide, children, title, style} = props;
 
   return (
