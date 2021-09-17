@@ -14,14 +14,16 @@ export const customEventHandlers: Record<string, CustomEventHandler> = {
             JSON.stringify({
               event: "chat-messages",
               data: {
-                messages: context.batchedChatMessages.reverse(),
+                messages: context.batchedChatMessages
+                  .reverse()
+                  .filter((message) => message.sender.id !== context.user),
               },
             })
           );
 
           context.batchedChatMessages = [];
         }
-      }, 5000);
+      }, 2000);
     }
   },
 };
