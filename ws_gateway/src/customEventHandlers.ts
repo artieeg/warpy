@@ -14,7 +14,7 @@ export const customEventHandlers: Record<string, CustomEventHandler> = {
             JSON.stringify({
               event: "chat-messages",
               data: {
-                messages: context.batchedChatMessages,
+                messages: context.batchedChatMessages.reverse(),
               },
             })
           );
