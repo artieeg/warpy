@@ -1,8 +1,9 @@
 import { ParticipantDAL, UserDAO } from "@backend/dal";
 import { CacheService } from "./cache";
 import Filter from "bad-words";
-import { MINUTES_5, SECONDS_30 } from "@backend/constants";
+import { MINUTES_5, SECONDS_5 } from "@backend/constants";
 import { BroadcastService } from "./broadcast";
+import { IChatMessage } from "@warpy/lib";
 import cuid from "cuid";
 
 const cachedFindUser = CacheService.withCache(UserDAO.findById, {
@@ -25,7 +26,7 @@ const cachedGetParticipantsByStream = CacheService.withCache(
   {
     keyExtractor: ([streamId]) => streamId,
     prefix: "stream_participants",
-    expiry: SECONDS_30,
+    expiry: SECONDS_5,
   }
 );
 
@@ -57,15 +58,19 @@ const broadcastNewMessage = async (
   console.log("particiapnts", participants, typeof participants);
   const ids = participants.map((participant) => participant.id);
 
+  const message: IChatMessage = {
+    id: cuid(),
+    sender: user,
+    message: filteredMessage,
+    timestamp: Date.now(),
+  };
+
   BroadcastService.broadcastNewMessage({
     targetUserIds: ids,
-    message: {
-      id: cuid(),
-      sender: user,
-      message: filteredMessage,
-      timestamp: Date.now(),
-    },
+    message,
   });
+
+  return message;
 };
 
 export const ChatService = {
