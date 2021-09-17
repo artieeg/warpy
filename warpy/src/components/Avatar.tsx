@@ -27,8 +27,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#303030',
   },
   small: {
-    width: 30,
-    height: 30,
+    width: 40,
+    height: 40,
   },
   medium: {
     width: 50,

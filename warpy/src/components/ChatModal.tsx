@@ -1,18 +1,28 @@
-import React, {useState} from 'react';
-import {StyleSheet} from 'react-native';
+import {useChatMessages} from '@app/store/selectors';
+import React from 'react';
+import {FlatList, StyleSheet} from 'react-native';
 import {BaseSlideModal, IBaseModalProps} from './BaseSlideModal';
-import {Text} from './Text';
+import {ChatMessage} from './ChatMessage';
 
 interface IChatModalOptions extends IBaseModalProps {}
 
 export const ChatModal = (props: IChatModalOptions) => {
-  const [visible, setVisible] = useState(false);
+  const messages = useChatMessages();
 
   return (
     <BaseSlideModal {...props}>
-      <Text>Hello</Text>
+      <FlatList
+        style={styles.list}
+        inverted
+        data={messages}
+        renderItem={({item}) => <ChatMessage key={item.id} message={item} />}
+      />
     </BaseSlideModal>
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  list: {
+    height: 400,
+  },
+});

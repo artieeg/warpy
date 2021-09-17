@@ -55,13 +55,15 @@ export const StreamPanelBase = (props: IStreamPanelBaseProps) => {
         style={styles.participants}>
         <ReactionEmitter disabled />
         <Speakers speakers={speakers} style={styles.speakers} />
-        {children[2]}
+        {children[3]}
       </PanelButtonsHolder>
       <View style={styles.buttons}>
         <PanelButtonsHolder hideDirection="bottom" visible={showPanelItems}>
           {children[0]}
           <View style={styles.space} />
           {children[1]}
+          <View style={styles.space} />
+          {children[2]}
           <View style={styles.space} />
         </PanelButtonsHolder>
         <ToggleControls

@@ -59,10 +59,6 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
     kind: 'audio',
   });
 
-  const onOpenReactions = () => {
-    setReactionsVisible(true);
-  };
-
   const {width, height} = useWindowDimensions();
 
   const raiseHand = useCallback(() => {
@@ -100,7 +96,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
           visible={panelVisible}
           participantsCount={totalParticipantCount}
           onOpenParticipantsList={() => setPanelVisible(false)}
-          onOpenReactions={onOpenReactions}
+          onOpenReactions={() => setReactionsVisible(true)}
           micIsOn={!muted}
           reaction={currentReaction}
           onMicToggle={toggle}
@@ -112,9 +108,10 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
           visible={panelVisible}
           reaction={currentReaction}
           participantsCount={totalParticipantCount}
-          onRaiseHand={raiseHand}
-          onOpenReactions={onOpenReactions}
+          onOpenChat={() => setShowChat(true)}
+          onOpenReactions={() => setReactionsVisible(true)}
           onOpenParticipantsList={() => setPanelVisible(false)}
+          onRaiseHand={raiseHand}
         />
       )}
 

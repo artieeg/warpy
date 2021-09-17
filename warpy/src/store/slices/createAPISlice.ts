@@ -54,5 +54,11 @@ export const createAPISlice = (
 
       store.removeParticipant(user);
     });
+
+    api.stream.onChatMessages(data => {
+      const {messages} = data;
+
+      store.addMessages(messages);
+    });
   },
 });

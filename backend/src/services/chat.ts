@@ -3,6 +3,7 @@ import { CacheService } from "./cache";
 import Filter from "bad-words";
 import { MINUTES_5, SECONDS_30 } from "@backend/constants";
 import { BroadcastService } from "./broadcast";
+import cuid from "cuid";
 
 const cachedFindUser = CacheService.withCache(UserDAO.findById, {
   keyExtractor: ([id]) => id,
@@ -59,6 +60,7 @@ const broadcastNewMessage = async (
   BroadcastService.broadcastNewMessage({
     targetUserIds: ids,
     message: {
+      id: cuid(),
       sender: user,
       message: filteredMessage,
       timestamp: Date.now(),
