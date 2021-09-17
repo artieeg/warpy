@@ -1,6 +1,6 @@
 import React from 'react';
 import TextTicker from 'react-native-text-ticker';
-import {styles} from './Text';
+import {textStyles} from './Text';
 
 interface IPreviewTitleProps {
   size?: 'xsmall' | 'medium';
@@ -17,9 +17,9 @@ export const StreamPreviewTitle = (props: IPreviewTitleProps) => {
   return (
     <TextTicker
       style={[
-        styles[props.size || 'xsmall'],
-        styles.bold,
-        styles.bright,
+        textStyles[props.size || 'xsmall'],
+        textStyles.bold,
+        textStyles.bright,
         style,
       ]}
       duration={props.children.length * 200}

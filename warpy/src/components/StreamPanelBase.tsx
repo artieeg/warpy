@@ -53,7 +53,7 @@ export const StreamPanelBase = (props: IStreamPanelBaseProps) => {
         hideDirection="left"
         visible={showPanelItems}
         style={styles.participants}>
-        <ReactionEmitter disabled />
+        <ReactionEmitter disabled={false} />
         <Speakers speakers={speakers} style={styles.speakers} />
         {children[3]}
       </PanelButtonsHolder>

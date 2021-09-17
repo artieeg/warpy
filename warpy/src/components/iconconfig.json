@@ -229,6 +229,20 @@
       "search": [
         "chat"
       ]
+    },
+    {
+      "uid": "01d7a110f4b6dd8c03f231c199513d93",
+      "css": "send",
+      "code": 59408,
+      "src": "custom_icons",
+      "selected": true,
+      "svg": {
+        "path": "M83.3 875L958.3 500 83.3 125V416.7L708.3 500 83.3 583.3V875Z",
+        "width": 1000
+      },
+      "search": [
+        "send"
+      ]
     }
   ]
 }

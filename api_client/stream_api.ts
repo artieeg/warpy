@@ -7,6 +7,7 @@ import {
   IRequestViewersResponse,
   ISpeakingAllowedEvent,
   IChatMessagesEvent,
+  ISendMessageResponse,
 } from "@warpy/lib";
 
 export interface IStreamAPI {
@@ -14,7 +15,7 @@ export interface IStreamAPI {
   join: (stream: string) => Promise<IJoinStreamResponse>;
   react: (stream: string, emoji: string) => void;
   stop: (stream: string) => any;
-  sendChatMessage: (message: string) => void;
+  sendChatMessage: (message: string) => Promise<ISendMessageResponse>;
   getViewers: (
     stream: string,
     page: number
@@ -40,7 +41,7 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
   stop: (stream) => socket.publish("stream-stop", { stream }),
   react: (stream, emoji) => socket.publish("reaction", { stream, emoji }),
   sendChatMessage: (message: string) =>
-    socket.publish("new-chat-message", { message }),
+    socket.request("new-chat-message", { message }),
   join: (stream) => socket.request("join-stream", { stream }),
   getViewers: (stream, page) =>
     socket.request("request-viewers", { stream, page }),

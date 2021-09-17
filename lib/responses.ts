@@ -1,4 +1,4 @@
-import { IParticipant, ICandidate, IBaseUser } from "./models";
+import { IParticipant, ICandidate, IBaseUser, IChatMessage } from "./models";
 
 export interface INewStreamResponse {
   stream: string;
@@ -53,4 +53,8 @@ export interface IFollowResponse {
 
 export interface IUnfollowResponse {
   unfollowedUser: any;
+}
+
+export interface ISendMessageResponse {
+  message: IChatMessage;
 }
