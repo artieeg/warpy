@@ -13,7 +13,7 @@ export const createChatSlice: StoreSlice<IChatSlice> = (set, _get) => ({
   addMessages(messages) {
     set(
       produce<IChatSlice>(state => {
-        state.messages = [...state.messages, ...messages];
+        state.messages = [...messages, ...state.messages];
       }),
     );
   },

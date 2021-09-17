@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import {IChatMessage} from '@warpy/lib';
 import {Avatar} from './Avatar';
 import {Text} from './Text';
@@ -12,19 +12,20 @@ export const ChatMessage = React.memo((props: IChatMessageProps) => {
   const {sender, message} = props.message;
 
   return (
-    <TouchableOpacity style={styles.wrapper}>
-      <Avatar style={styles.avatar} size="small" user={sender} />
-      <View style={styles.text}>
-        <Text size="xsmall" weight="bold" color="info">
-          {sender.username}
-        </Text>
+    <TouchableWithoutFeedback>
+      <View style={styles.wrapper}>
+        <Avatar style={styles.avatar} size="small" user={sender} />
+        <View style={styles.text}>
+          <Text size="xsmall" weight="bold" color="info">
+            {sender.username}
+          </Text>
 
-        <Text size="xsmall" weight="bold">
-          Yeah sure, I mean if you spend all day shuffling words around you can
-          make anything sound bad, Morty
-        </Text>
+          <Text size="xsmall" weight="bold">
+            {message}
+          </Text>
+        </View>
       </View>
-    </TouchableOpacity>
+    </TouchableWithoutFeedback>
   );
 });
 
