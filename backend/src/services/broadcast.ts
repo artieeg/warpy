@@ -1,5 +1,5 @@
 import { ParticipantDAL } from "@backend/dal";
-import { IParticipant, Reaction } from "@warpy/lib";
+import { IChatMessage, IParticipant, Reaction } from "@warpy/lib";
 import { MessageService } from "./message";
 
 export const BroadcastService = {
@@ -14,7 +14,7 @@ export const BroadcastService = {
       return;
     }
 
-    const users = await ParticipantDAL.getParticipantsByStream(stream);
+    const users = await ParticipantDAL.getByStream(stream);
 
     await MessageService.sendMessageBroadcast(
       BroadcastService.getParticipantIds(users),
@@ -35,7 +35,7 @@ export const BroadcastService = {
       return;
     }
 
-    const users = await ParticipantDAL.getParticipantsByStream(stream);
+    const users = await ParticipantDAL.getByStream(stream);
 
     await MessageService.sendMessageBroadcast(
       BroadcastService.getParticipantIds(users),
@@ -50,7 +50,7 @@ export const BroadcastService = {
   },
 
   async broadcastParticipantLeft(user: string, stream: string): Promise<void> {
-    const users = await ParticipantDAL.getParticipantsByStream(stream);
+    const users = await ParticipantDAL.getByStream(stream);
 
     await MessageService.sendMessageBroadcast(
       BroadcastService.getParticipantIds(users),
@@ -71,7 +71,7 @@ export const BroadcastService = {
       return;
     }
 
-    const users = await ParticipantDAL.getParticipantsByStream(stream);
+    const users = await ParticipantDAL.getByStream(stream);
 
     await MessageService.sendMessageBroadcast(
       BroadcastService.getParticipantIds(users),
@@ -92,7 +92,7 @@ export const BroadcastService = {
       return;
     }
 
-    const users = await ParticipantDAL.getParticipantsByStream(stream);
+    const users = await ParticipantDAL.getByStream(stream);
 
     await MessageService.sendMessageBroadcast(
       BroadcastService.getParticipantIds(users),
@@ -114,7 +114,7 @@ export const BroadcastService = {
 
     console.log("broadcasting", reactions, "to", stream);
 
-    const users = await ParticipantDAL.getParticipantsByStream(stream);
+    const users = await ParticipantDAL.getByStream(stream);
     const ids = BroadcastService.getParticipantIds(users);
 
     MessageService.sendMessageBroadcast(ids, {
@@ -122,6 +122,20 @@ export const BroadcastService = {
       data: {
         stream,
         reactions,
+      },
+    });
+  },
+
+  async broadcastNewMessage(params: {
+    message: IChatMessage;
+    targetUserIds: string[];
+  }) {
+    const { message, targetUserIds } = params;
+
+    MessageService.sendMessageBroadcast(targetUserIds, {
+      event: "chat-message",
+      data: {
+        message,
       },
     });
   },

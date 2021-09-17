@@ -20,6 +20,7 @@ import {ReactionCanvas} from './ReactionCanvas';
 import {useRemoteStreams} from '@app/hooks/useRemoteStreams';
 import shallow from 'zustand/shallow';
 import {useMediaStreaming} from '@app/hooks/useMediaStreaming';
+import {ChatModal} from './ChatModal';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -33,6 +34,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const api = useStore(state => state.api);
   const [showReactions, setReactionsVisible] = useState(false);
   const [currentReaction, setCurrentReaction] = useState(reactionCodes[0]);
+  const [showChat, setShowChat] = useState(false);
 
   const [join, totalParticipantCount, isSpeaker] = useStore(
     state => [state.join, state.totalParticipantCount, state.isSpeaker],
@@ -56,10 +58,6 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
     stream: audioStream,
     kind: 'audio',
   });
-
-  const onOpenReactions = () => {
-    setReactionsVisible(true);
-  };
 
   const {width, height} = useWindowDimensions();
 
@@ -98,7 +96,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
           visible={panelVisible}
           participantsCount={totalParticipantCount}
           onOpenParticipantsList={() => setPanelVisible(false)}
-          onOpenReactions={onOpenReactions}
+          onOpenReactions={() => setReactionsVisible(true)}
           micIsOn={!muted}
           reaction={currentReaction}
           onMicToggle={toggle}
@@ -110,9 +108,10 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
           visible={panelVisible}
           reaction={currentReaction}
           participantsCount={totalParticipantCount}
-          onRaiseHand={raiseHand}
-          onOpenReactions={onOpenReactions}
+          onOpenChat={() => setShowChat(true)}
+          onOpenReactions={() => setReactionsVisible(true)}
           onOpenParticipantsList={() => setPanelVisible(false)}
+          onRaiseHand={raiseHand}
         />
       )}
 
@@ -137,6 +136,8 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
         visible={showReactions}
         onHide={() => setReactionsVisible(false)}
       />
+
+      <ChatModal visible={showChat} onHide={() => setShowChat(false)} />
     </View>
   );
 };

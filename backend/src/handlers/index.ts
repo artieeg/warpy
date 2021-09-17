@@ -15,3 +15,4 @@ export * from "./onNewOnlineNode";
 export * from "./onReaction";
 export * from "./onFollow";
 export * from "./onUnfollow";
+export * from "./onNewChatMessage";

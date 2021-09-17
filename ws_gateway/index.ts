@@ -16,6 +16,7 @@ import {
   onReaction,
   onFollow,
   onUnfollow,
+  onNewChatMessage,
 } from "@ws_gateway/handlers";
 import { IMessage } from "@ws_gateway/models";
 import { Context, Handlers } from "@ws_gateway/types";
@@ -48,6 +49,7 @@ const handlers: Handlers = {
   reaction: onReaction,
   "user-follow": onFollow,
   "user-unfollow": onUnfollow,
+  "new-chat-message": onNewChatMessage,
 };
 
 const main = async () => {
@@ -63,7 +65,7 @@ const main = async () => {
   PingPongService.observer.on("user-disconnected", onUserDisconnect);
 
   server.on("connection", (ws) => {
-    const context: Context = { ws };
+    const context: Context = { ws, batchedChatMessages: [] };
 
     ws.ping();
 

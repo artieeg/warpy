@@ -1,6 +1,6 @@
 import { createClient } from "redis";
 
-const URL = process.env.FEEDS_CACHE || "redis://127.0.0.1:6375/1";
+const URL = process.env.CACHE || "redis://127.0.0.1:6375/1";
 
 const client = createClient({
   url: URL,
@@ -19,7 +19,7 @@ export function get<T>(key: string, parse?: ValueParser<T>): Promise<T | null> {
         return resolve(null);
       }
 
-      resolve(parse ? parse(value) : (value as unknown as T));
+      resolve(parse ? parse(value) : (JSON.parse(value) as unknown as T));
     });
   });
 }

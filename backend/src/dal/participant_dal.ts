@@ -112,9 +112,7 @@ export const ParticipantDAL = {
     });
   },
 
-  getParticipantsByStream: async (
-    streamId: string
-  ): Promise<IParticipant[]> => {
+  getByStream: async (streamId: string): Promise<IParticipant[]> => {
     const participants = await prisma.participant.findMany({
       where: { stream_id: streamId },
       include: { user: true },

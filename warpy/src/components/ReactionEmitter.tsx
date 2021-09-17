@@ -49,12 +49,12 @@ const EmittedReaction = React.memo((props: IEmittedReactionProps) => {
           }),
         ]),
         Animated.timing(translateY.current, {
-          toValue: -200,
+          toValue: -130,
           duration: translateDuration,
           useNativeDriver: true,
         }),
         Animated.timing(translateX.current, {
-          toValue: Math.random() * 90 - 45,
+          toValue: Math.random() * 60 - 30,
           duration: translateDuration / 1.3,
           useNativeDriver: true,
         }),
@@ -74,18 +74,28 @@ const EmittedReaction = React.memo((props: IEmittedReactionProps) => {
   return (
     <View style={{position: 'absolute', bottom: 0}}>
       <Animated.View style={style}>
-        <Reaction code={props.reaction} />
+        <Reaction size={25} code={props.reaction} />
       </Animated.View>
     </View>
   );
 });
 
-export const ReactionEmitter = () => {
+interface IReactionEmitterProps {
+  disabled?: boolean;
+}
+
+export const ReactionEmitter = (props: IReactionEmitterProps) => {
+  const {disabled} = props;
+
   const api = useStore(state => state.api);
 
   const [reactions, setReactions] = useState<IReaction[]>([]);
 
   useEffect(() => {
+    if (disabled) {
+      return;
+    }
+
     const unsub = api.stream.onReactionsUpdate(data => {
       setReactions(prev => [
         ...prev,
@@ -98,13 +108,13 @@ export const ReactionEmitter = () => {
 
     const interval = setInterval(() => {
       setReactions(prev => prev.slice(10));
-    }, 5000);
+    }, 20000);
 
     return () => {
       unsub();
       clearInterval(interval);
     };
-  }, [api]);
+  }, [api, disabled]);
 
   return (
     <View style={styles.wrapper}>

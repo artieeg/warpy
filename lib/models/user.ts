@@ -7,6 +7,11 @@ export interface IBaseUser extends IEntity {
   avatar: string;
 }
 
+export interface IUser extends IBaseUser {
+  email: string | null;
+  sub: string | null;
+}
+
 export class BaseUser implements IBaseUser {
   id: string;
   last_name: string;

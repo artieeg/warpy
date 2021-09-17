@@ -1,11 +1,5 @@
 import { jwt } from "@backend/utils";
-import {
-  FollowRecordDAL,
-  IUser,
-  ParticipantDAL,
-  RefreshTokenDAL,
-  UserDAO,
-} from "@backend/dal";
+import { FollowRecordDAL, RefreshTokenDAL, UserDAO } from "@backend/dal";
 import { INewUser, IWhoAmIResponse } from "@warpy/lib";
 
 type NewUserResponse = {

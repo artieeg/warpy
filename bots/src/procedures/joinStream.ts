@@ -1,5 +1,10 @@
 import { ALLOWED_EMOJI } from "@warpy/lib";
 import { MediaClient } from "@warpykit-sdk/client";
+import {
+  uniqueNamesGenerator,
+  animals,
+  adjectives,
+} from "unique-names-generator";
 import { UserRecord } from "../types";
 import { createRecvTransport } from "../utils";
 
@@ -53,6 +58,17 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
       ALLOWED_EMOJI[Math.floor(Math.random() * ALLOWED_EMOJI.length)]
     );
   }, 800 + Math.random() * 800);
+
+  api.stream.onChatMessages((data) => {});
+
+  setInterval(() => {
+    const text = uniqueNamesGenerator({
+      dictionaries: [animals, adjectives],
+      separator: " ",
+    });
+
+    api.stream.sendChatMessage(text);
+  }, 1000 + Math.random() * 700);
 
   record.stream = streamId;
   record.role = "viewer";

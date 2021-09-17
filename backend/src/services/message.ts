@@ -42,6 +42,7 @@ const SubjectEventMap = {
   "stream.reaction": "reaction",
   "user.follow": "user-follow",
   "user.unfollow": "user-unfollow",
+  "stream.new-chat-message": "new-chat-message",
 };
 
 type Subject = keyof typeof SubjectEventMap;

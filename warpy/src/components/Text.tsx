@@ -20,9 +20,9 @@ export const Text = (props: ITextProps) => {
     <BaseText
       {...props}
       style={[
-        styles[color || 'bright'],
-        styles[weight || 'regular'],
-        styles[size || 'medium'],
+        textStyles[color || 'bright'],
+        textStyles[weight || 'regular'],
+        textStyles[size || 'medium'],
         style,
       ]}>
       {children}
@@ -30,7 +30,7 @@ export const Text = (props: ITextProps) => {
   );
 };
 
-export const styles = StyleSheet.create({
+export const textStyles = StyleSheet.create({
   dark: {
     color: '#000',
   },
