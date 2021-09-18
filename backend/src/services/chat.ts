@@ -55,7 +55,6 @@ const broadcastNewMessage = async (
   }
 
   const participants = await cachedGetParticipantsByStream(stream);
-  console.log("particiapnts", participants, typeof participants);
   const ids = participants.map((participant) => participant.id);
 
   const message: IChatMessage = {
