@@ -9,23 +9,14 @@ import {useStore} from '@app/store';
 
 interface IParticipantInfoModal {
   user: string | null;
+  visible: boolean;
   onHide: () => any;
 }
 
 export const ParticipantInfoModal = (props: IParticipantInfoModal) => {
-  const {user, onHide} = props;
+  const {user, visible, onHide} = props;
 
   const api = useStore.use.api();
-
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    if (user) {
-      setVisible(true);
-    } else {
-      setVisible(false);
-    }
-  }, [user]);
 
   const checkIsFollowing = useStore.use.has();
   const addNewFollowing = useStore.use.add();

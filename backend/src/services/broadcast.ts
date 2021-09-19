@@ -112,8 +112,6 @@ export const BroadcastService = {
   }): Promise<void> {
     const { stream, reactions } = params;
 
-    console.log("broadcasting", reactions, "to", stream);
-
     const users = await ParticipantDAL.getByStream(stream);
     const ids = BroadcastService.getParticipantIds(users);
 

@@ -22,6 +22,8 @@ export interface IStreamSlice {
 
   isFetchingViewers: boolean;
 
+  isStreamOwner: boolean;
+
   viewers: Record<string, Participant>;
   viewersWithRaisedHands: Record<string, Participant>;
   speakers: Record<string, Participant>;
@@ -55,6 +57,7 @@ export const createStreamSlice = (
   totalParticipantCount: 0,
   viewers: {},
   viewersWithRaisedHands: {},
+  isStreamOwner: false,
   speakers: {},
 
   async create(title, hub) {
@@ -87,6 +90,7 @@ export const createStreamSlice = (
       stream,
       speakers: arrayToMap<Participant>(speakers.map(Participant.fromJSON)),
       totalParticipantCount: count,
+      isStreamOwner: true,
     });
   },
 

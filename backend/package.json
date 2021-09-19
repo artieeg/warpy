@@ -30,14 +30,13 @@
     "@prisma/client": "^2.29.1",
     "@warpy/lib": "1.0.0",
     "bad-words": "^3.0.4",
+    "cuid": "^2.1.8",
     "mediasoup": "3",
     "module-alias": "^2.2.2",
     "nats": "^2.1.0",
     "pg": "^8.7.1",
     "prisma": "^2.29.1",
     "redis": "^3.1.2",
-    "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.2.36",
-    "cuid": "^2.1.8"
+    "reflect-metadata": "^0.1.13"
   }
 }
