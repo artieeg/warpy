@@ -24,11 +24,15 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   //Display a participant info modal
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
 
-  const [showUserActions, setShowUserActions] = useState(false);
-  const [panelVisible, setPanelVisible] = useState(true);
-  const [showReactions, setReactionsVisible] = useState(false);
+  const [currentModal, setCurrentModal] = useState<
+    | 'user-actions'
+    | 'participant-info'
+    | 'participants'
+    | 'reactions'
+    | 'chat'
+    | null
+  >(null);
   const [currentReaction, setCurrentReaction] = useState(reactionCodes[0]);
-  const [showChat, setShowChat] = useState(false);
 
   const {stream: audioStream, toggle, muted} = useLocalAudioStream();
   const {totalParticipantCount, videoStreams, isSpeaker} = useRemoteStream(id);
@@ -52,9 +56,6 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
     width,
   };
 
-  const showParticipantsModal =
-    !panelVisible && !selectedUser && !showUserActions;
-
   return (
     <View style={wrapperStyle}>
       {videoStreams[0] && (
@@ -69,10 +70,10 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
 
       {isSpeaker && (
         <SpeakerStreamPanel
-          visible={panelVisible}
+          visible={!currentModal}
           participantsCount={totalParticipantCount}
-          onOpenParticipantsList={() => setPanelVisible(false)}
-          onOpenReactions={() => setReactionsVisible(true)}
+          onOpenParticipantsList={() => setCurrentModal('participants')}
+          onOpenReactions={() => setCurrentModal('reactions')}
           micIsOn={!muted}
           reaction={currentReaction}
           onMicToggle={toggle}
@@ -81,39 +82,49 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
 
       {!isSpeaker && (
         <ViewerStreamPanel
-          visible={panelVisible}
+          visible={!currentModal}
           reaction={currentReaction}
           participantsCount={totalParticipantCount}
-          onOpenChat={() => setShowChat(true)}
-          onOpenReactions={() => setReactionsVisible(true)}
-          onOpenParticipantsList={() => setPanelVisible(false)}
+          onOpenChat={() => setCurrentModal('chat')}
+          onOpenParticipantsList={() => setCurrentModal('participants')}
+          onOpenReactions={() => setCurrentModal('reactions')}
         />
       )}
 
       <ParticipantInfoModal
         onHide={() => setSelectedUser(null)}
         user={selectedUser}
-        visible={!!selectedUser}
+        visible={currentModal === 'participant-info'}
       />
 
       <ParticipantsModal
         title={title}
-        onHide={() => setPanelVisible(true)}
-        visible={showParticipantsModal}
-        onSelectParticipant={setSelectedUser}
+        onHide={() => setCurrentModal(null)}
+        visible={currentModal === 'participants'}
+        onOpenActions={id => {
+          setSelectedUser(id);
+          setCurrentModal('user-actions');
+        }}
+        onSelectParticipant={id => {
+          setSelectedUser(id);
+          setCurrentModal('participant-info');
+        }}
       />
 
       <Reactions
         onPickReaction={setCurrentReaction}
-        visible={showReactions}
-        onHide={() => setReactionsVisible(false)}
+        visible={currentModal === 'reactions'}
+        onHide={() => setCurrentModal(null)}
       />
 
-      <ChatModal visible={showChat} onHide={() => setShowChat(false)} />
+      <ChatModal
+        visible={currentModal === 'chat'}
+        onHide={() => setCurrentModal(null)}
+      />
 
       <UserActionSheet
-        visible={showUserActions}
-        onHide={() => setShowUserActions(prev => !prev)}
+        visible={currentModal === 'user-actions'}
+        onHide={() => setCurrentModal(null)}
       />
     </View>
   );

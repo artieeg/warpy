@@ -23,10 +23,11 @@ interface IParticipanModalProps {
   onHide: () => void;
   title: string;
   onSelectParticipant: (id: string) => any;
+  onOpenActions: (id: string) => any;
 }
 
 export const ParticipantsModal = (props: IParticipanModalProps) => {
-  const {onSelectParticipant} = props;
+  const {onSelectParticipant, onOpenActions} = props;
   const usersRaisingHand = useSpeakingRequests();
   const speakers = useStreamSpeakers();
   const [viewers, onFetchMore] = useStreamViewers();
@@ -60,6 +61,9 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
             numColumns={4}
             renderItem={({item: flatListItem}) => (
               <TouchableOpacity
+                onLongPress={() => {
+                  onOpenActions(flatListItem.id);
+                }}
                 onPress={() => {
                   onSelectParticipant(flatListItem.id);
                 }}>
@@ -79,6 +83,9 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
             numColumns={4}
             renderItem={({item: flatListItem}) => (
               <TouchableOpacity
+                onLongPress={() => {
+                  onOpenActions(flatListItem.id);
+                }}
                 onPress={() => {
                   onSelectParticipant(flatListItem.id);
                 }}>

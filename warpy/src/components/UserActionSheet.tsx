@@ -48,6 +48,7 @@ export const UserActionSheet = (props: IUserActionSheetProps) => {
         </TouchableOpacity>
       </View>
       <TouchableOpacity
+        onPress={onHide}
         style={[styles.background, styles.cancel, styles.button]}>
         <Text size="small" weight="bold">
           cancel
