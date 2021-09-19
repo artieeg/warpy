@@ -36,40 +36,11 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
     [speakers],
   );
 
-  const data = [
-    {
-      title: 'Stream by',
-      data: [
-        {
-          list: [streamer!],
-          kind: 'streamer',
-        },
-      ],
-    },
-    {
-      title: 'Raising hands',
-      data: [
-        {
-          list: usersRaisingHand,
-
-          kind: 'raised_hands',
-        },
-      ],
-    },
-    {
-      title: 'Speakers',
-      data: [
-        {
-          list: speakers,
-          kind: 'speakers',
-        },
-      ],
-    },
-    {
-      title: 'Viewers',
-      data: [{list: viewers, kind: 'viewers'}],
-    },
-  ];
+  const data = useMemo(
+    () =>
+      getListData({viewers, speakers, usersRaisingHand, streamer: streamer!}),
+    [viewers, speakers, usersRaisingHand, streamer],
+  );
 
   const renderSection = (sectionData: any) => {
     const {item} = sectionData;
@@ -148,6 +119,51 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
     </BaseSlideModal>
   );
 };
+
+const getListData = ({
+  streamer,
+  speakers,
+  usersRaisingHand,
+  viewers,
+}: {
+  streamer: Participant;
+  speakers: Participant[];
+  usersRaisingHand: Participant[];
+  viewers: Participant[];
+}) => [
+  {
+    title: 'Stream by',
+    data: [
+      {
+        list: [streamer!],
+        kind: 'streamer',
+      },
+    ],
+  },
+  {
+    title: 'Raising hands',
+    data: [
+      {
+        list: usersRaisingHand,
+
+        kind: 'raised_hands',
+      },
+    ],
+  },
+  {
+    title: 'Speakers',
+    data: [
+      {
+        list: speakers,
+        kind: 'speakers',
+      },
+    ],
+  },
+  {
+    title: 'Viewers',
+    data: [{list: viewers, kind: 'viewers'}],
+  },
+];
 
 const styles = StyleSheet.create({
   modalStyle: {

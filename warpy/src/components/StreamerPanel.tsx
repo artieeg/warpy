@@ -5,9 +5,9 @@ import {IStreamPanelBase, StreamPanelBase} from './StreamPanelBase';
 import {ToggleMicButton} from './ToggleMicButton';
 import {OpenStatsButton} from './OpenStatsButton';
 import {FlipCameraButton} from './FlipCameraButton';
+import {useParticipantsCount} from '@app/hooks';
 
 interface IStreamerPanel extends IStreamPanelBase {
-  participantsCount: number;
   onOpenParticipantsList: () => any;
   micIsOn: boolean;
   onMicToggle: (on: boolean) => any;
@@ -15,13 +15,9 @@ interface IStreamerPanel extends IStreamPanelBase {
 }
 
 export const StreamerPanel = (props: IStreamerPanel) => {
-  const {
-    participantsCount,
-    onOpenParticipantsList,
-    onFlipCamera,
-    onMicToggle,
-    micIsOn,
-  } = props;
+  const {onOpenParticipantsList, onFlipCamera, onMicToggle, micIsOn} = props;
+
+  const participantsCount = useParticipantsCount();
 
   return (
     <StreamPanelBase {...props}>
@@ -29,8 +25,8 @@ export const StreamerPanel = (props: IStreamerPanel) => {
       <FlipCameraButton onPress={onFlipCamera} />
       <ShowParticipantsButton
         style={styles.spaceRight}
-        count={participantsCount}
         onOpenParticipantsList={onOpenParticipantsList}
+        count={participantsCount}
       />
       <ToggleMicButton onPress={() => onMicToggle(!micIsOn)} on={micIsOn} />
     </StreamPanelBase>
