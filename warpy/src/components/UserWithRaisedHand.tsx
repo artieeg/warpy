@@ -13,7 +13,7 @@ interface IRaisedHandInfo {
 export const UserWithRaisedHand = (props: IRaisedHandInfo) => {
   const {data} = props;
 
-  const api = useStore(state => state.api);
+  const api = useStore.use.api();
 
   const onAllow = useCallback(() => {
     api.stream.allowSpeaker(data.id);

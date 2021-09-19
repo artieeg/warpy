@@ -1,24 +1,21 @@
-import React, {useCallback, useState} from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {Stream} from '@app/models';
 import {
   useStreamSpeakers,
   useStreamViewers,
   useSpeakingRequests,
-  useEffectOnce,
   useLocalAudioStream,
+  useRemoteStream,
 } from '@app/hooks';
 import {RTCView} from 'react-native-webrtc';
 import {ParticipantsModal} from './ParticipantsModal';
 import {ViewerStreamPanel} from './ViewerStreamPanel';
 import {ParticipantInfoModal} from './ParticipantInfoModal';
 import {SpeakerStreamPanel} from './SpeakerStreamPanel';
-import {useStore} from '@app/store';
 import {Reactions} from './Reactions';
 import {reactionCodes} from './Reaction';
 import {ReactionCanvas} from './ReactionCanvas';
-import {useRemoteStreams} from '@app/hooks/useRemoteStreams';
-import shallow from 'zustand/shallow';
 import {useMediaStreaming} from '@app/hooks/useMediaStreaming';
 import {ChatModal} from './ChatModal';
 
@@ -27,32 +24,22 @@ interface IRemoteStreamProps {
 }
 
 export const RemoteStream = (props: IRemoteStreamProps) => {
-  const {stream} = props;
-  const {stream: audioStream, toggle, muted} = useLocalAudioStream();
-  const [panelVisible, setPanelVisible] = useState(true);
-  const id = stream.id;
-  const api = useStore(state => state.api);
-  const [showReactions, setReactionsVisible] = useState(false);
-  const [currentReaction, setCurrentReaction] = useState(reactionCodes[0]);
-  const [showChat, setShowChat] = useState(false);
-
-  const [join, totalParticipantCount, isSpeaker] = useStore(
-    state => [state.join, state.totalParticipantCount, state.isSpeaker],
-    shallow,
-  );
+  const {id, title} = props.stream;
 
   //Display a participant info modal
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
 
+  const [panelVisible, setPanelVisible] = useState(true);
+  const [showReactions, setReactionsVisible] = useState(false);
+  const [currentReaction, setCurrentReaction] = useState(reactionCodes[0]);
+  const [showChat, setShowChat] = useState(false);
+
+  const {stream: audioStream, toggle, muted} = useLocalAudioStream();
+  const {totalParticipantCount, videoStreams, isSpeaker} = useRemoteStream(id);
+
   const speakers = useStreamSpeakers();
   const [viewers, fetchViewers] = useStreamViewers();
   const usersRaisingHand = useSpeakingRequests();
-
-  const {videoStreams} = useRemoteStreams();
-
-  useEffectOnce(() => {
-    join(id);
-  });
 
   useMediaStreaming({
     stream: audioStream,
@@ -60,10 +47,6 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   });
 
   const {width, height} = useWindowDimensions();
-
-  const raiseHand = useCallback(() => {
-    api.stream.raiseHand();
-  }, [api]);
 
   const wrapperStyle = {
     ...styles.wrapper,
@@ -111,7 +94,6 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
           onOpenChat={() => setShowChat(true)}
           onOpenReactions={() => setReactionsVisible(true)}
           onOpenParticipantsList={() => setPanelVisible(false)}
-          onRaiseHand={raiseHand}
         />
       )}
 
@@ -123,7 +105,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
       <ParticipantsModal
         raisingHands={usersRaisingHand}
         speakers={speakers}
-        title={stream.title}
+        title={title}
         onHide={() => setPanelVisible(true)}
         visible={showParticipantsModal}
         viewers={viewers}

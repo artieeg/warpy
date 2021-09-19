@@ -87,7 +87,7 @@ interface IReactionEmitterProps {
 export const ReactionEmitter = (props: IReactionEmitterProps) => {
   const {disabled} = props;
 
-  const api = useStore(state => state.api);
+  const api = useStore.use.api();
 
   const [reactions, setReactions] = useState<IReaction[]>([]);
 

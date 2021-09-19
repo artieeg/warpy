@@ -16,7 +16,7 @@ interface IParticipantInfoModal {
 export const ParticipantInfoModal = (props: IParticipantInfoModal) => {
   const {user, onHide} = props;
 
-  const api = useStore(state => state.api);
+  const api = useStore.use.api();
 
   const [visible, setVisible] = useState(false);
 

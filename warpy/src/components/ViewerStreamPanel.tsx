@@ -1,14 +1,14 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {ClapButton} from './ClapsButton';
 import {WarpButton} from './WarpButton';
 import {RaiseHandButton} from './RaiseHandButton';
 import {ShowParticipantsButton} from './ShowParticipantsButton';
 import {IStreamPanelBase, StreamPanelBase} from './StreamPanelBase';
 import {ChatButton} from './ChatButton';
+import {useStore} from '@app/store';
 
 interface IRemoteStreamPanel extends IStreamPanelBase {
   participantsCount: number;
-  onRaiseHand: () => any;
   onOpenParticipantsList: () => any;
   onOpenReactions: () => any;
   onOpenChat: () => void;
@@ -19,11 +19,16 @@ export const ViewerStreamPanel = (props: IRemoteStreamPanel) => {
   const {
     participantsCount,
     onOpenReactions,
-    onRaiseHand,
     onOpenParticipantsList,
     reaction,
     onOpenChat,
   } = props;
+
+  const api = useStore.use.api();
+
+  const onRaiseHand = useCallback(() => {
+    api.stream.raiseHand();
+  }, [api]);
 
   return (
     <StreamPanelBase {...props}>

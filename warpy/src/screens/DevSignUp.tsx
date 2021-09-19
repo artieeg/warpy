@@ -10,10 +10,9 @@ export const DevSignUp = () => {
   const [email, setEmail] = useState('');
 
   const setToken = useStore.use.setToken();
+  const api = useStore.use.api();
 
   const navigation = useNavigation();
-
-  const api = useStore(state => state.api);
 
   const onSignUp = useCallback(async () => {
     const {refresh, access} = await api.user.create({
