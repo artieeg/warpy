@@ -1,13 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {Stream} from '@app/models';
-import {
-  useStreamSpeakers,
-  useStreamViewers,
-  useSpeakingRequests,
-  useLocalAudioStream,
-  useRemoteStream,
-} from '@app/hooks';
+import {useLocalAudioStream, useRemoteStream} from '@app/hooks';
 import {RTCView} from 'react-native-webrtc';
 import {ParticipantsModal} from './ParticipantsModal';
 import {ViewerStreamPanel} from './ViewerStreamPanel';
@@ -36,10 +30,6 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
 
   const {stream: audioStream, toggle, muted} = useLocalAudioStream();
   const {totalParticipantCount, videoStreams, isSpeaker} = useRemoteStream(id);
-
-  const speakers = useStreamSpeakers();
-  const [viewers, fetchViewers] = useStreamViewers();
-  const usersRaisingHand = useSpeakingRequests();
 
   useMediaStreaming({
     stream: audioStream,
@@ -103,14 +93,10 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
       />
 
       <ParticipantsModal
-        raisingHands={usersRaisingHand}
-        speakers={speakers}
         title={title}
         onHide={() => setPanelVisible(true)}
         visible={showParticipantsModal}
-        viewers={viewers}
         onSelectParticipant={setSelectedUser}
-        onFetchMore={fetchViewers}
       />
 
       <Reactions

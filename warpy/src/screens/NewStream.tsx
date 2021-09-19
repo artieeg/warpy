@@ -25,9 +25,8 @@ export const NewStream = () => {
   const [title, setTitle] = useState('test stream');
   const [hub, setHub] = useState('60ec569668b42c003304630b');
   const user = useAppUser();
-  const userId: string = user!.id;
-  const [recvRoomData, streamId, createStream, api] = useStore(
-    state => [state.recvMediaParams, state.stream, state.create, state.api],
+  const [streamId, createStream, api] = useStore(
+    state => [state.stream, state.create, state.api],
     shallow,
   );
 

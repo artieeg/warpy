@@ -12,21 +12,24 @@ import {ParticipantDisplay} from './Participant';
 import {UserWithRaisedHand} from './UserWithRaisedHand';
 import {StreamerInfo} from './StreamerInfo';
 import {Text} from './Text';
+import {
+  useSpeakingRequests,
+  useStreamSpeakers,
+  useStreamViewers,
+} from '@app/hooks';
 
 interface IParticipanModalProps {
   visible: boolean;
   onHide: () => void;
   title: string;
-  speakers: Participant[];
-  viewers: Participant[];
-  raisingHands: Participant[];
-  onFetchMore: () => void;
   onSelectParticipant: (id: string) => any;
 }
 
 export const ParticipantsModal = (props: IParticipanModalProps) => {
-  const {onSelectParticipant, onFetchMore, viewers, speakers, raisingHands} =
-    props;
+  const {onSelectParticipant} = props;
+  const usersRaisingHand = useSpeakingRequests();
+  const speakers = useStreamSpeakers();
+  const [viewers, onFetchMore] = useStreamViewers();
 
   const streamer = useMemo(
     () => speakers.find(speaker => speaker.role === 'streamer'),
@@ -47,7 +50,7 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
       title: 'Raising hands',
       data: [
         {
-          list: raisingHands,
+          list: usersRaisingHand,
 
           kind: 'raised_hands',
         },
