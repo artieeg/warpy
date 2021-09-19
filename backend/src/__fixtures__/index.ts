@@ -1,8 +1,9 @@
-import { IStream, IUser } from "@backend/dal";
+import { IStream } from "@backend/dal";
 import {
   IConnectRecvTransportParams,
   INewSpeakerMediaResponse,
   IParticipant,
+  IUser,
 } from "@warpy/lib";
 
 export const createStreamFixture = (data: Partial<IStream>): IStream => {

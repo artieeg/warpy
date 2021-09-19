@@ -16,11 +16,6 @@ import {
 
 const eventEmitter = new EventEmitter();
 
-const NATS = process.env.NATS_ADDR;
-if (!NATS) {
-  throw new Error("No nats addr specified");
-}
-
 let nc: NatsConnection;
 const jc = JSONCodec();
 
@@ -74,6 +69,11 @@ const _sendMessage = async (user: string, message: Uint8Array) => {
 
 export const MessageService = {
   async init(): Promise<void> {
+    const NATS = process.env.NATS_ADDR;
+    if (!NATS) {
+      throw new Error("No nats addr specified");
+    }
+
     nc = await connect({ servers: [NATS] });
 
     handleMessages();
