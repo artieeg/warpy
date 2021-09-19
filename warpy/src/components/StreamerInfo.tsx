@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {Participant} from '@app/models';
 import {Avatar} from './Avatar';
 import {StyleSheet, View} from 'react-native';
@@ -11,7 +11,7 @@ interface IStreamerInfoProps {
 export const StreamerInfo = (props: IStreamerInfoProps) => {
   const {data} = props;
 
-  const name = `${data.first_name} ${data.last_name}`;
+  const name = useMemo(() => `${data.first_name} ${data.last_name}`, []);
   return (
     <View style={styles.wrapper}>
       <Avatar user={data} />

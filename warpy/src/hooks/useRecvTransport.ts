@@ -35,8 +35,6 @@ export const useRecvTransport = () => {
       return;
     }
 
-    //await media.initRecvDevice(routerRtpCapabilities);
-
     const newTransport = await media.createTransport({
       roomId: stream,
       device: recvDevice,

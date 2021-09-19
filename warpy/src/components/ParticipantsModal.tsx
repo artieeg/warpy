@@ -42,6 +42,7 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
     [viewers, speakers, usersRaisingHand, streamer],
   );
 
+  //TODO: Separate components
   const renderSection = (sectionData: any) => {
     const {item} = sectionData;
 

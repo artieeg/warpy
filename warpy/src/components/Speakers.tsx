@@ -1,21 +1,21 @@
-import React from 'react';
-import {Participant} from '@app/models';
+import React, {useMemo} from 'react';
 import {Speaker} from './Speaker';
 import {StyleSheet, View} from 'react-native';
+import {useStreamSpeakers} from '@app/hooks';
 
 interface ISpeakersProps {
-  speakers: Participant[];
   style?: any;
 }
 
 export const Speakers = (props: ISpeakersProps) => {
-  const {speakers, style} = props;
+  const {style} = props;
+  const speakers = useStreamSpeakers();
 
-  const speakersSortedByVolume = speakers.sort(
-    (first, second) => second.volume - first.volume,
+  const speakersSortedByVolume = useMemo(
+    () => speakers.sort((first, second) => second.volume - first.volume),
+    [speakers],
   );
 
-  console.log('updated speakers', speakers);
   return (
     <View style={[styles.container, style]}>
       {speakersSortedByVolume.slice(0, 3).map(speaker => (
