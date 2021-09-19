@@ -1,4 +1,3 @@
-import {setToken} from '@app/services';
 import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useState} from 'react';
 import {View, TextInput, Button, StyleSheet} from 'react-native';
@@ -9,6 +8,8 @@ export const DevSignUp = () => {
   const [lastName, setLastName] = useState('');
   const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
+
+  const setToken = useStore.use.setToken();
 
   const navigation = useNavigation();
 
