@@ -1,5 +1,5 @@
 import {useStreamParticipant} from '@app/hooks';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text} from './Text';
 import {Avatar} from './Avatar';
@@ -27,7 +27,7 @@ export const ParticipantInfoModal = (props: IParticipantInfoModal) => {
 
   const userFullName = useMemo(
     () => `${participant?.first_name} ${participant?.last_name}`,
-    [],
+    [participant?.first_name, participant?.last_name],
   );
 
   const onToggleFollow = async () => {
