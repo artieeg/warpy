@@ -1,4 +1,5 @@
 const { CacheService } = jest.requireActual("../cache");
+import { MINUTES_1 } from "@backend/constants";
 import { mocked } from "ts-jest/utils";
 import { set, get } from "../cache/client";
 
@@ -26,7 +27,11 @@ describe("Cache Service", () => {
     const defaultGeneratedKey = JSON.stringify(args);
 
     expect(mockedGet).toBeCalledWith(defaultGeneratedKey);
-    expect(mockedSet).toBeCalledWith(defaultGeneratedKey, fnToCache(...args));
+    expect(mockedSet).toBeCalledWith(
+      defaultGeneratedKey,
+      fnToCache(...args),
+      MINUTES_1
+    );
   });
 
   it("wraps a function with cache with a custom key extractor", async () => {
