@@ -12,6 +12,7 @@ import {reactionCodes} from './Reaction';
 import {ReactionCanvas} from './ReactionCanvas';
 import {useMediaStreaming} from '@app/hooks/useMediaStreaming';
 import {ChatModal} from './ChatModal';
+import {UserActionSheet} from './UserActionSheet';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -23,6 +24,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   //Display a participant info modal
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
 
+  const [showUserActions, setShowUserActions] = useState(false);
   const [panelVisible, setPanelVisible] = useState(true);
   const [showReactions, setReactionsVisible] = useState(false);
   const [currentReaction, setCurrentReaction] = useState(reactionCodes[0]);
@@ -50,7 +52,8 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
     width,
   };
 
-  const showParticipantsModal = !panelVisible && !selectedUser;
+  const showParticipantsModal =
+    !panelVisible && !selectedUser && !showUserActions;
 
   return (
     <View style={wrapperStyle}>
@@ -90,6 +93,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
       <ParticipantInfoModal
         onHide={() => setSelectedUser(null)}
         user={selectedUser}
+        visible={!!selectedUser}
       />
 
       <ParticipantsModal
@@ -106,6 +110,11 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
       />
 
       <ChatModal visible={showChat} onHide={() => setShowChat(false)} />
+
+      <UserActionSheet
+        visible={showUserActions}
+        onHide={() => setShowUserActions(prev => !prev)}
+      />
     </View>
   );
 };
