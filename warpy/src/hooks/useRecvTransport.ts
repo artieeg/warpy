@@ -1,4 +1,3 @@
-//import {createTransport, recvDevice, initRecvDevice} from '@app/services';
 import {useStore} from '@app/store';
 import {Transport} from 'mediasoup-client/lib/Transport';
 import {useCallback, useEffect, useState} from 'react';
