@@ -4,7 +4,6 @@ import {Speakers} from './Speakers';
 import {ToggleControls} from './ToggleControls';
 import {PanelButtonsHolder} from './PanelButtonsHolder';
 import {ReactionEmitter} from './ReactionEmitter';
-import {useStreamSpeakers} from '@app/hooks';
 
 export interface IStreamPanelBase {
   visible: boolean;
@@ -19,7 +18,6 @@ export const StreamPanelBase = (props: IStreamPanelBaseProps) => {
 
   const [showPanelItems, setShowPanelItems] = useState(true);
 
-  const speakers = useStreamSpeakers();
   const opacity = useRef(new Animated.Value(1));
   const scale = useRef(new Animated.Value(1));
 
@@ -54,7 +52,7 @@ export const StreamPanelBase = (props: IStreamPanelBaseProps) => {
         visible={showPanelItems}
         style={styles.participants}>
         <ReactionEmitter disabled={false} />
-        <Speakers speakers={speakers} style={styles.speakers} />
+        <Speakers style={styles.speakers} />
         {children[3]}
       </PanelButtonsHolder>
       <View style={styles.buttons}>

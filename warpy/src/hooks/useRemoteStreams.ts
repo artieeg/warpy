@@ -12,11 +12,7 @@ interface IStreams {
 }
 
 export const useRemoteStreams = () => {
-  const [roomData, streamId] = useStore(
-    state => [state.recvMediaParams, state.stream],
-    shallow,
-  );
-
+  const streamId = useStore.use.stream();
   const transport = useRecvTransport();
 
   const [mediaClient, mediaPermissionsToken] = useStore(
@@ -34,13 +30,6 @@ export const useRemoteStreams = () => {
   const fetched = useRef(false);
 
   useEffect(() => {
-    console.log(
-      !!streamId,
-      !!transport,
-      !!mediaClient,
-      !!mediaPermissionsToken,
-      !!fetched.current,
-    );
     if (
       !streamId ||
       !transport ||

@@ -12,62 +12,37 @@ import {ParticipantDisplay} from './Participant';
 import {UserWithRaisedHand} from './UserWithRaisedHand';
 import {StreamerInfo} from './StreamerInfo';
 import {Text} from './Text';
+import {
+  useSpeakingRequests,
+  useStreamSpeakers,
+  useStreamViewers,
+} from '@app/hooks';
 
 interface IParticipanModalProps {
   visible: boolean;
   onHide: () => void;
   title: string;
-  speakers: Participant[];
-  viewers: Participant[];
-  raisingHands: Participant[];
-  onFetchMore: () => void;
   onSelectParticipant: (id: string) => any;
 }
 
 export const ParticipantsModal = (props: IParticipanModalProps) => {
-  const {onSelectParticipant, onFetchMore, viewers, speakers, raisingHands} =
-    props;
+  const {onSelectParticipant} = props;
+  const usersRaisingHand = useSpeakingRequests();
+  const speakers = useStreamSpeakers();
+  const [viewers, onFetchMore] = useStreamViewers();
 
   const streamer = useMemo(
     () => speakers.find(speaker => speaker.role === 'streamer'),
     [speakers],
   );
 
-  const data = [
-    {
-      title: 'Stream by',
-      data: [
-        {
-          list: [streamer!],
-          kind: 'streamer',
-        },
-      ],
-    },
-    {
-      title: 'Raising hands',
-      data: [
-        {
-          list: raisingHands,
+  const data = useMemo(
+    () =>
+      getListData({viewers, speakers, usersRaisingHand, streamer: streamer!}),
+    [viewers, speakers, usersRaisingHand, streamer],
+  );
 
-          kind: 'raised_hands',
-        },
-      ],
-    },
-    {
-      title: 'Speakers',
-      data: [
-        {
-          list: speakers,
-          kind: 'speakers',
-        },
-      ],
-    },
-    {
-      title: 'Viewers',
-      data: [{list: viewers, kind: 'viewers'}],
-    },
-  ];
-
+  //TODO: Separate components
   const renderSection = (sectionData: any) => {
     const {item} = sectionData;
 
@@ -145,6 +120,51 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
     </BaseSlideModal>
   );
 };
+
+const getListData = ({
+  streamer,
+  speakers,
+  usersRaisingHand,
+  viewers,
+}: {
+  streamer: Participant;
+  speakers: Participant[];
+  usersRaisingHand: Participant[];
+  viewers: Participant[];
+}) => [
+  {
+    title: 'Stream by',
+    data: [
+      {
+        list: [streamer!],
+        kind: 'streamer',
+      },
+    ],
+  },
+  {
+    title: 'Raising hands',
+    data: [
+      {
+        list: usersRaisingHand,
+
+        kind: 'raised_hands',
+      },
+    ],
+  },
+  {
+    title: 'Speakers',
+    data: [
+      {
+        list: speakers,
+        kind: 'speakers',
+      },
+    ],
+  },
+  {
+    title: 'Viewers',
+    data: [{list: viewers, kind: 'viewers'}],
+  },
+];
 
 const styles = StyleSheet.create({
   modalStyle: {

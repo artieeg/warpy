@@ -12,7 +12,7 @@ interface IStreamPreviewProps {
   style: any;
 }
 
-export const StreamPreview = (props: IStreamPreviewProps) => {
+export const StreamPreview = React.memo((props: IStreamPreviewProps) => {
   const {style, stream, onPress} = props;
   const {preview} = stream;
 
@@ -52,7 +52,7 @@ export const StreamPreview = (props: IStreamPreviewProps) => {
       </View>
     </TouchableOpacity>
   );
-};
+});
 
 const styles = StyleSheet.create({
   wrapper: {

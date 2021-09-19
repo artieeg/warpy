@@ -24,10 +24,8 @@ import shallow from 'zustand/shallow';
 export const NewStream = () => {
   const [title, setTitle] = useState('test stream');
   const [hub, setHub] = useState('60ec569668b42c003304630b');
-  const user = useAppUser();
-  const userId: string = user!.id;
-  const [recvRoomData, streamId, createStream, api] = useStore(
-    state => [state.recvMediaParams, state.stream, state.create, state.api],
+  const [streamId, createStream, api] = useStore(
+    state => [state.stream, state.create, state.api],
     shallow,
   );
 
@@ -59,11 +57,7 @@ export const NewStream = () => {
     api.stream.stop(streamId!);
   };
 
-  const participantsCount = useParticipantsCount();
-  const speakers = useStreamSpeakers();
-  const [viewers, fetchViewers] = useStreamViewers();
   const [panelVisible, setPanelVisible] = useState(true);
-  const usersRaisingHand = useSpeakingRequests();
 
   const showPanel = panelVisible && !selectedUser;
 
@@ -87,20 +81,16 @@ export const NewStream = () => {
         <StreamerPanel
           visible={showPanel}
           micIsOn={!muted}
-          participantsCount={participantsCount}
           onOpenParticipantsList={() => setPanelVisible(false)}
           onMicToggle={toggle}
           onFlipCamera={switchCamera}
         />
       )}
+
       <ParticipantsModal
-        speakers={speakers}
-        raisingHands={usersRaisingHand}
         title={title}
         onHide={() => setPanelVisible(true)}
         visible={!panelVisible}
-        viewers={viewers}
-        onFetchMore={fetchViewers}
         onSelectParticipant={setSelectedUser}
       />
 

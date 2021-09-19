@@ -10,7 +10,7 @@ interface IReactionCanvasProps {
 
 export const ReactionCanvas = (props: IReactionCanvasProps) => {
   const {reaction, stream} = props;
-  const api = useStore(state => state.api);
+  const api = useStore.use.api();
 
   const [reactions, setReactions] = useState<IGivenReaction[]>([]);
 

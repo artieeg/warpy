@@ -1,12 +1,11 @@
 import {useStreamParticipant} from '@app/hooks';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text} from './Text';
 import {Avatar} from './Avatar';
 import {BaseSlideModal} from './BaseSlideModal';
 import {SmallTextButton} from './SmallTextButton';
 import {useStore} from '@app/store';
-import shallow from 'zustand/shallow';
 
 interface IParticipantInfoModal {
   user: string | null;
@@ -16,44 +15,43 @@ interface IParticipantInfoModal {
 export const ParticipantInfoModal = (props: IParticipantInfoModal) => {
   const {user, onHide} = props;
 
-  const api = useStore(state => state.api);
+  const api = useStore.use.api();
 
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (user) {
-      setTimeout(() => {
-        setVisible(true);
-      }, 300);
+      setVisible(true);
     } else {
       setVisible(false);
     }
   }, [user]);
 
-  const followingStore = useStore(
-    state => ({has: state.has, add: state.add, remove: state.remove}),
-    shallow,
-  );
+  const checkIsFollowing = useStore.use.has();
+  const addNewFollowing = useStore.use.add();
+  const removeFollowing = useStore.use.remove();
 
-  const isFollowing = followingStore.has(user!);
-
+  const isFollowing = checkIsFollowing(user!);
   const participant = useStreamParticipant(user!);
 
-  const userFullName = `${participant?.first_name} ${participant?.last_name}`;
+  const userFullName = useMemo(
+    () => `${participant?.first_name} ${participant?.last_name}`,
+    [],
+  );
 
   const onToggleFollow = async () => {
     if (!user) {
       return;
     }
 
-    if (followingStore.has(user)) {
+    if (isFollowing) {
       await api.user.unfollow(user);
 
-      followingStore.remove(user);
+      removeFollowing(user);
     } else {
       await api.user.follow(user);
 
-      followingStore.add(user);
+      addNewFollowing(user);
     }
   };
 

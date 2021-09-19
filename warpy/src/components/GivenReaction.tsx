@@ -20,20 +20,12 @@ export const GivenReaction = React.memo((props: IGivenReaction) => {
   useEffect(() => {
     Animated.sequence([
       Animated.parallel([
-        /*
-        Animated.timing(opacity.current, {
-          toValue: 1,
-          duration: 100,
-          useNativeDriver: true,
-        }),
-         */
         Animated.timing(scale.current, {
           toValue: 1,
           duration: 100,
           useNativeDriver: true,
         }),
       ]),
-      //Animated.delay(300),
       Animated.timing(opacity.current, {
         toValue: 0,
         duration: 100,

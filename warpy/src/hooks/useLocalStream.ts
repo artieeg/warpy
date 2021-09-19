@@ -1,5 +1,5 @@
 import {MediaKind} from 'mediasoup-client/lib/RtpParameters';
-import {useState, useCallback, useEffect, useMemo} from 'react';
+import {useState, useCallback, useEffect} from 'react';
 import {
   mediaDevices,
   MediaStream,
@@ -20,7 +20,7 @@ export const useLocalStream = (kind: MediaKind) => {
       optional: [],
     };
 
-    //Why in the world getUserMedia returns boolean | MediaStream type??
+    //getUserMedia returns boolean | MediaStream type?? sadge
     const mediaStream = await mediaDevices.getUserMedia({
       audio: {
         sampleRate: 48000,
