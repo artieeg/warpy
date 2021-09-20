@@ -9,7 +9,9 @@ export const removeUserFromStreams = async (user: string): Promise<void> => {
       BroadcastService.broadcastParticipantLeft(user, stream);
     }
 
-    await ParticipantDAL.deleteParticipant(user);
+    await ParticipantDAL.updateOne(user, {
+      hasLeftStream: true,
+    });
     await FeedCacheService.removeServedStreams(user);
   } catch (e) {
     console.error(e);

@@ -139,6 +139,15 @@ export const ParticipantDAL = {
     });
   },
 
+  async updateOne(user: string, data: Partial<Participant>): Promise<void> {
+    await prisma.participant.update({
+      where: {
+        id: user
+      },
+      data
+    })
+  },
+
   async deleteParticipantsByStream(stream: string): Promise<void> {
     prisma.participant.deleteMany({
       where: { stream_id: stream },
