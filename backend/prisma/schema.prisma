@@ -36,6 +36,7 @@ model Participant {
   role          String
   isRaisingHand Boolean
   isBanned      Boolean @default(false)
+  hasLeftStream Boolean @default(false)
 
   recvNodeId    String
   sendNodeId    String?
