@@ -27,3 +27,7 @@ export interface IReactionsUpdate {
 export interface IChatMessagesEvent {
   messages: IChatMessage[];
 }
+
+export interface IUserKickedEvent {
+  user: string;
+}

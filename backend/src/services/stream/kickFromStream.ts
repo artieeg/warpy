@@ -1,4 +1,5 @@
 import { ParticipantDAL } from "@backend/dal";
+import { BroadcastService } from "../broadcast";
 
 export const kickFromStream = async ({
   user,
@@ -7,9 +8,28 @@ export const kickFromStream = async ({
   user: string;
   userToKick: string;
 }) => {
-  const participant = await ParticipantDAL.getById(user);
+  const userKickingData = await ParticipantDAL.getById(user);
 
-  if (participant?.role !== "streamer") {
+  if (userKickingData?.role !== "streamer") {
     throw new Error("Permission Error");
   }
+
+  const userToKickData = await ParticipantDAL.getById(userToKick);
+
+  const stream = userKickingData.stream;
+
+  if (!stream) {
+    return;
+  }
+
+  if (userToKickData?.stream !== stream) {
+    throw new Error("Can't kick this participant");
+  }
+
+  const streamParticipantIds = await ParticipantDAL.getIdsByStream(stream);
+
+  await BroadcastService.broadcastKickedUser({
+    user: userToKick,
+    ids: streamParticipantIds,
+  });
 };

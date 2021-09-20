@@ -4,8 +4,11 @@ import { BroadcastService } from "@backend/services/broadcast";
 import { createParticipantFixture } from "@backend/__fixtures__";
 import { mocked } from "ts-jest/utils";
 import { StreamService } from "../index";
+import { when } from "jest-when";
 
 describe("StreamService.kickFromStream", () => {
+  const streamId = "test-stream-id";
+
   const userIdKicking = "test-streamer-id";
   const userIdToKick = "test-user-id";
   const node = "test-node";
@@ -26,8 +29,36 @@ describe("StreamService.kickFromStream", () => {
 
   const streamParticipantIds = streamParticipants.map((p) => p.id);
 
+  const mockedGetById = mocked(ParticipantDAL).getById;
+
   beforeAll(() => {
-    mocked(ParticipantDAL).getById.mockResolvedValue(userKicking);
+    when(mockedGetById)
+      .calledWith(userIdKicking)
+      .mockResolvedValue(userKicking);
+
+    when(mockedGetById).calledWith(userIdToKick).mockResolvedValue(userToKick);
+
+    mocked(ParticipantDAL).getIdsByStream.mockResolvedValue(
+      streamParticipantIds
+    );
+  });
+
+  it("does not kick if the user isn't in the same stream", async () => {
+    when(mockedGetById)
+      .calledWith(userIdToKick)
+      .mockResolvedValueOnce(
+        createParticipantFixture({
+          ...userToKick,
+          stream: "different-stream-id",
+        })
+      );
+
+    expect(
+      StreamService.kickFromStream({
+        user: userIdKicking,
+        userToKick: userIdToKick,
+      })
+    ).rejects.toThrow("Can't kick this participant");
   });
 
   it("does not kick if the user does not have the permission", async () => {
