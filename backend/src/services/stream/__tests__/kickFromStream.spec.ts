@@ -7,17 +7,21 @@ import { StreamService } from "../index";
 import { when } from "jest-when";
 
 describe("StreamService.kickFromStream", () => {
-  const streamId = "test-stream-id";
-
   const userIdKicking = "test-streamer-id";
   const userIdToKick = "test-user-id";
-  const node = "test-node";
+  const recvNodeId = "test-recv-node";
+  const sendNodeId = "test-send-node";
 
   const userKicking = createParticipantFixture({
     id: userIdKicking,
     role: "streamer",
   });
-  const userToKick = createParticipantFixture({ id: userIdToKick });
+
+  const userToKick = createParticipantFixture({
+    id: userIdToKick,
+    recvNodeId,
+    sendNodeId,
+  });
 
   const streamParticipants = [
     userKicking,
@@ -38,9 +42,30 @@ describe("StreamService.kickFromStream", () => {
 
     when(mockedGetById).calledWith(userIdToKick).mockResolvedValue(userToKick);
 
+    mocked(MessageService).kickUser.mockResolvedValue({
+      status: "ok",
+      user: userIdToKick,
+    });
+
     mocked(ParticipantDAL).getIdsByStream.mockResolvedValue(
       streamParticipantIds
     );
+  });
+
+  it.todo("does not try to kick the user if it does not exist", async () => {
+    mocked(MessageService).kickUser.mockResolvedValueOnce({
+      status: "error",
+      user: userIdToKick,
+    });
+
+    expect(
+      StreamService.kickFromStream({
+        user: userIdKicking,
+        userToKick: userIdToKick,
+      })
+    ).rejects.toThrow("Failed to kick from the media nodes");
+
+    expect(mocked(ParticipantDAL).setBanStatus).toBeCalledTimes(0);
   });
 
   it("does not kick if the user isn't in the same stream", async () => {
@@ -85,8 +110,19 @@ describe("StreamService.kickFromStream", () => {
       userToKick: userIdToKick,
     });
 
-    expect(mocked(MessageService).kickUser).toBeCalledWith(node, userIdToKick);
+    expect(mocked(MessageService).kickUser).toBeCalledWith(
+      recvNodeId,
+      userIdToKick
+    );
+    expect(mocked(MessageService).kickUser).toBeCalledWith(
+      sendNodeId,
+      userIdToKick
+    );
   });
+
+  it.todo(
+    "does not proceed with kicking if media servers failed to remove media tracks"
+  );
 
   it("updates isBanned field on the participant model", async () => {
     await StreamService.kickFromStream({

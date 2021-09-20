@@ -165,7 +165,7 @@ export const MessageService = {
     });
 
     const response = await nc.request(`media.peer.kick-user.${node}`, m, {
-      timeout: 60000,
+      timeout: 5000,
     });
 
     return jc.decode(response.data) as IKickedFromMediaRoom;
