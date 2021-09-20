@@ -35,6 +35,7 @@ model Participant {
   stream        Stream? @relation(name: "participant", fields: [stream_id], references: [id], onDelete: Cascade)
   role          String
   isRaisingHand Boolean
+  isBanned      Boolean @default(false)
 
   Stream Stream[] @relation("owner")
   @@unique([user_id, stream_id], name: "stream_participant_index")

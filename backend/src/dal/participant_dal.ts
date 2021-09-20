@@ -156,7 +156,11 @@ export const ParticipantDAL = {
 
   getSpeakers: async (stream: string): Promise<IParticipant[]> => {
     const participants = await prisma.participant.findMany({
-      where: { stream_id: stream, role: { in: ["speaker", "streamer"] } },
+      where: {
+        stream_id: stream,
+        isBanned: false,
+        role: { in: ["speaker", "streamer"] },
+      },
       include: {
         user: true,
       },
@@ -171,7 +175,7 @@ export const ParticipantDAL = {
   ): Promise<IParticipant[]> => {
     const participants = await prisma.participant.findMany({
       include: { user: true },
-      where: { stream_id: stream, role: "viewer" },
+      where: { stream_id: stream, role: "viewer", isBanned: false },
       skip: 50 * page,
       take: 50,
     });
@@ -181,13 +185,18 @@ export const ParticipantDAL = {
 
   count: async (stream: string): Promise<number> => {
     return prisma.participant.count({
-      where: { stream_id: stream },
+      where: { stream_id: stream, isBanned: false },
     });
   },
 
   getWithRaisedHands: async (stream: string): Promise<IParticipant[]> => {
     const participants = await prisma.participant.findMany({
-      where: { stream_id: stream, isRaisingHand: true, role: "viewer" },
+      where: {
+        stream_id: stream,
+        isBanned: false,
+        isRaisingHand: true,
+        role: "viewer",
+      },
       include: {
         user: true,
       },

@@ -22,6 +22,7 @@ export const BackendEvents = {
   "user-unfollow": "user.unfollow",
   reaction: "stream.reaction",
   "new-chat-message": "stream.new-chat-message",
+  "kick-user": "stream.kick-user",
 };
 
 type EventAlias = keyof typeof BackendEvents;

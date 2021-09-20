@@ -197,3 +197,8 @@ export interface INewChatMessage {
   user: string;
   message: string;
 }
+
+export interface IKickUserRequest {
+  user: string;
+  userToKick: string;
+}

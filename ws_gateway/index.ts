@@ -17,6 +17,7 @@ import {
   onFollow,
   onUnfollow,
   onNewChatMessage,
+  onKickUser,
 } from "@ws_gateway/handlers";
 import { IMessage } from "@ws_gateway/models";
 import { Context, Handlers } from "@ws_gateway/types";
@@ -50,6 +51,7 @@ const handlers: Handlers = {
   "user-follow": onFollow,
   "user-unfollow": onUnfollow,
   "new-chat-message": onNewChatMessage,
+  "kick-user": onKickUser,
 };
 
 const main = async () => {
