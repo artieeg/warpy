@@ -3,11 +3,13 @@ import {
   StreamPreview,
   Text,
   StartNewStreamButton,
+  Toast,
 } from '@app/components';
 import {useAppUser, useFeed, usePreviewDimensions} from '@app/hooks';
+import {useToast} from '@app/hooks/useToast';
 import {Stream} from '@app/models';
 import {useNavigation} from '@react-navigation/native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 
 export const Feed = () => {
@@ -26,6 +28,19 @@ export const Feed = () => {
   const onOpenStream = (stream: Stream) => {
     navigation.navigate('Stream', {stream});
   };
+
+  const toast = useToast();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      toast.show({
+        text: `this is some toast message, kinda long ${Date.now()}`,
+        duration: Toast.LONG,
+      });
+    }, 4531);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <View style={styles.wrapper}>

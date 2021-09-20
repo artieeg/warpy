@@ -1,14 +1,14 @@
-import React, {createContext, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import React, {createContext, useEffect, useRef, useState} from 'react';
+import {StyleSheet, View, Animated} from 'react-native';
 import {Text} from './Text';
 
-enum DURATION {
+export enum Toast {
   LONG,
   SHORT,
 }
 
 type ToastMessage = {
-  duration: DURATION;
+  duration: Toast;
   text: string;
 };
 
@@ -16,10 +16,54 @@ interface IToastContext {
   show: (message: ToastMessage) => void;
 }
 
-const ToastContext = createContext<IToastContext | null>(null);
+export const ToastContext = createContext<IToastContext | null>(null);
+
+const FADE_DURATION = 100;
 
 export const ToastProvider = (props: any) => {
   const [message, setMessage] = useState<ToastMessage>();
+
+  const opacity = useRef(new Animated.Value(0));
+  const translateY = useRef(new Animated.Value(20));
+
+  useEffect(() => {
+    if (!message) {
+      return;
+    }
+
+    Animated.sequence([
+      Animated.parallel([
+        Animated.timing(translateY.current, {
+          toValue: 0,
+          duration: FADE_DURATION,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity.current, {
+          toValue: 1,
+          duration: FADE_DURATION,
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.delay(message.duration === Toast.LONG ? 2000 : 1000),
+      Animated.parallel([
+        Animated.timing(translateY.current, {
+          toValue: 20,
+          duration: FADE_DURATION,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity.current, {
+          toValue: 0,
+          duration: FADE_DURATION,
+          useNativeDriver: true,
+        }),
+      ]),
+    ]).start();
+  }, [message]);
+
+  const animatedStyle = {
+    transform: [{translateY: translateY.current}],
+    opacity: opacity.current,
+  };
 
   return (
     <>
@@ -32,11 +76,13 @@ export const ToastProvider = (props: any) => {
         }}
       />
 
-      <View style={styles.toast}>
-        <Text size="xsmall" color="dark" weight="bold">
-          asldfhakldsjf askjdfh laskdf
-        </Text>
-      </View>
+      {message && (
+        <Animated.View style={[styles.toast, animatedStyle]}>
+          <Text weight="bold" size="xsmall" color="dark">
+            {message.text}
+          </Text>
+        </Animated.View>
+      )}
     </>
   );
 };
@@ -45,6 +91,7 @@ const styles = StyleSheet.create({
   toast: {
     position: 'absolute',
     bottom: 30,
+    paddingHorizontal: 10,
     left: 30,
     right: 30,
     height: 60,
