@@ -5,6 +5,7 @@ import {
   IConnectNewSpeakerMedia,
   ICreateMediaRoom,
   IJoinMediaRoom,
+  IKickedFromMediaRoom,
   INewMediaRoomData,
   INewMediaTrack,
   INewSpeakerMediaResponse,
@@ -156,6 +157,18 @@ export const MessageService = {
     const m = jc.encode(data);
 
     nc.publish(subjects.media.track.send, m);
+  },
+
+  async kickUser(node: string, user: string): Promise<IKickedFromMediaRoom> {
+    const m = jc.encode({
+      user,
+    });
+
+    const response = await nc.request(`media.peer.kick-user.${node}`, m, {
+      timeout: 60000,
+    });
+
+    return jc.decode(response.data) as IKickedFromMediaRoom;
   },
 
   async joinMediaRoom(node: string, data: IJoinMediaRoom): Promise<unknown> {

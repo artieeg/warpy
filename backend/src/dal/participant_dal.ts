@@ -121,6 +121,15 @@ export const ParticipantDAL = {
     return participants.map(toParticipantDTO);
   },
 
+  async setBanStatus(user: string, isBanned: boolean): Promise<void> {
+    await prisma.participant.update({
+      where: { id: user },
+      data: {
+        isBanned,
+      },
+    });
+  },
+
   async deleteParticipantsByStream(stream: string): Promise<void> {
     prisma.participant.deleteMany({
       where: { stream_id: stream },

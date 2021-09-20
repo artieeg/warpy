@@ -1,4 +1,4 @@
-export const kickFromStream = ({
+export const kickFromStream = async ({
   user,
   userToKick,
 }: {

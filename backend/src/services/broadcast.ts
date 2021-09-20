@@ -137,4 +137,6 @@ export const BroadcastService = {
       },
     });
   },
+
+  async broadcastKickedUser({ user, ids }: { user: string; ids: string[] }) {},
 };
