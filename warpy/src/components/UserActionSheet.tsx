@@ -12,7 +12,9 @@ interface IUserActionSheetProps {
 }
 
 export const UserActionSheet = (props: IUserActionSheetProps) => {
-  const {visible, onHide} = props;
+  const {visible, onHide, user} = props;
+
+  const api = useStore.use.api();
 
   const isStreamOwner = useStore.use.isStreamOwner();
 
@@ -35,7 +37,13 @@ export const UserActionSheet = (props: IUserActionSheetProps) => {
           </Text>
         </TouchableOpacity>
         {isStreamOwner && (
-          <TouchableOpacity style={[styles.button, styles.bottomBorder]}>
+          <TouchableOpacity
+            onPress={() => {
+              if (user) {
+                api.stream.kickUser(user.id);
+              }
+            }}
+            style={[styles.button, styles.bottomBorder]}>
             <Text size="small" color="alert" weight="bold">
               kick
             </Text>

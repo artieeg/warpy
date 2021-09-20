@@ -60,5 +60,9 @@ export const createAPISlice = (
 
       store.addMessages(messages);
     });
+
+    api.stream.onUserKick(({user}) => {
+      store.removeParticipant(user);
+    });
   },
 });
