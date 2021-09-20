@@ -1,12 +1,4 @@
-import {
-  useAppUser,
-  useLocalVideoStream,
-  useMediaStreaming,
-  useParticipantsCount,
-  useSpeakingRequests,
-  useStreamSpeakers,
-  useStreamViewers,
-} from '@app/hooks';
+import {useLocalVideoStream, useMediaStreaming} from '@app/hooks';
 import {RTCView} from 'react-native-webrtc';
 import React, {useCallback, useState} from 'react';
 import {View, StyleSheet, useWindowDimensions} from 'react-native';
@@ -20,6 +12,7 @@ import {useRecvTransport} from '@app/hooks/useRecvTransport';
 import {StreamerPanel} from '@app/components/StreamerPanel';
 import {useStore} from '@app/store';
 import shallow from 'zustand/shallow';
+import {UserActionSheet} from '@app/components/UserActionSheet';
 
 export const NewStream = () => {
   const [title, setTitle] = useState('test stream');
@@ -28,6 +21,15 @@ export const NewStream = () => {
     state => [state.stream, state.create, state.api],
     shallow,
   );
+
+  const [currentModal, setCurrentModal] = useState<
+    | 'user-actions'
+    | 'participant-info'
+    | 'participants'
+    | 'reactions'
+    | 'chat'
+    | null
+  >(null);
 
   //Display a participant info modal
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
@@ -59,8 +61,6 @@ export const NewStream = () => {
 
   const [panelVisible, setPanelVisible] = useState(true);
 
-  const showPanel = panelVisible && !selectedUser;
-
   const localStreamStyle = {
     ...styles.localStream,
     width,
@@ -79,9 +79,9 @@ export const NewStream = () => {
       {streamId && <StopStream onPress={onStopStream} />}
       {streamId && (
         <StreamerPanel
-          visible={showPanel}
+          visible={!currentModal}
           micIsOn={!muted}
-          onOpenParticipantsList={() => setPanelVisible(false)}
+          onOpenParticipantsList={() => setCurrentModal('participants')}
           onMicToggle={toggle}
           onFlipCamera={switchCamera}
         />
@@ -90,11 +90,19 @@ export const NewStream = () => {
       <ParticipantsModal
         title={title}
         onHide={() => setPanelVisible(true)}
-        visible={!panelVisible}
-        onSelectParticipant={setSelectedUser}
+        onOpenActions={user => {
+          setSelectedUser(user);
+          setCurrentModal('user-actions');
+        }}
+        visible={currentModal === 'participants'}
+        onSelectParticipant={user => {
+          setCurrentModal('participant-info');
+          setSelectedUser(user);
+        }}
       />
 
       <ParticipantInfoModal
+        visible={currentModal === 'participant-info'}
         onHide={() => setSelectedUser(null)}
         user={selectedUser}
       />
@@ -104,6 +112,12 @@ export const NewStream = () => {
           <Button onPress={onStart} title="Start" />
         </View>
       )}
+
+      <UserActionSheet
+        user={selectedUser}
+        visible={currentModal === 'user-actions'}
+        onHide={() => setCurrentModal(null)}
+      />
     </View>
   );
 };

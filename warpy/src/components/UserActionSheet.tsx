@@ -6,7 +6,7 @@ import Modal from 'react-native-modal';
 import {Text} from './Text';
 
 interface IUserActionSheetProps {
-  user?: User;
+  user: string | null;
   visible: boolean;
   onHide: () => void;
 }
@@ -40,7 +40,7 @@ export const UserActionSheet = (props: IUserActionSheetProps) => {
           <TouchableOpacity
             onPress={() => {
               if (user) {
-                api.stream.kickUser(user.id);
+                api.stream.kickUser(user);
               }
             }}
             style={[styles.button, styles.bottomBorder]}>
