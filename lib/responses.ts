@@ -61,4 +61,5 @@ export interface ISendMessageResponse {
 
 export interface IKickedFromMediaRoom {
   user: string;
+  status: "ok" | "error";
 }

@@ -6,6 +6,8 @@ export interface IBaseParticipant extends IEntity {
   stream: string | null;
   role: Roles;
   isRaisingHand?: boolean;
+  recvNodeId?: string;
+  sendNodeId?: string;
 }
 
 export interface IParticipant extends IBaseUser, IBaseParticipant {}
@@ -14,6 +16,8 @@ export class Participant extends BaseUser implements IParticipant {
   role: Roles;
   stream: string | null;
   isRaisingHand?: boolean;
+  recvNodeId?: string;
+  sendNodeId?: string;
 
   constructor(data: IParticipant) {
     super(data);
