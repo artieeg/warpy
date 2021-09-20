@@ -42,7 +42,7 @@ model Participant {
   sendNodeId    String?
 
   Stream Stream[] @relation("owner")
-  @@unique([user_id, stream_id], name: "stream_participant_index")
+  @@unique([user_id, stream_id, hasLeftStream], name: "stream_participant_index")
 }
 
 model Stream {
