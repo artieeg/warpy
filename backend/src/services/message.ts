@@ -159,9 +159,14 @@ export const MessageService = {
     nc.publish(subjects.media.track.send, m);
   },
 
-  async kickUser(node: string, user: string): Promise<IKickedFromMediaRoom> {
+  async kickUser(
+    node: string,
+    stream: string,
+    user: string
+  ): Promise<IKickedFromMediaRoom> {
     const m = jc.encode({
       user,
+      stream,
     });
 
     const response = await nc.request(`media.peer.kick-user.${node}`, m, {

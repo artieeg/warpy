@@ -9,6 +9,8 @@ export const kickFromStream = async ({
   user: string;
   userToKick: string;
 }) => {
+  console.log("kicking user", user, userToKick);
+
   const userKickingData = await ParticipantDAL.getById(user);
 
   if (userKickingData?.role !== "streamer") {
@@ -34,8 +36,8 @@ export const kickFromStream = async ({
   const { sendNodeId, recvNodeId } = userToKickData;
 
   const [sendNodeResponse, recvNodeResponse] = await Promise.all([
-    sendNodeId ? MessageService.kickUser(sendNodeId, userToKick) : null,
-    recvNodeId ? MessageService.kickUser(recvNodeId, userToKick) : null,
+    sendNodeId ? MessageService.kickUser(sendNodeId, stream, userToKick) : null,
+    recvNodeId ? MessageService.kickUser(recvNodeId, stream, userToKick) : null,
   ]);
 
   if (sendNodeResponse?.status !== "ok" && recvNodeResponse?.status !== "ok") {
