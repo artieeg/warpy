@@ -134,6 +134,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
       />
 
       <ReportActionSheet
+        user={selectedUser}
         visible={currentModal === 'reports'}
         onHide={() => setCurrentModal(null)}
       />

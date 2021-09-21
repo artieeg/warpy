@@ -118,11 +118,14 @@ export const NewStream = () => {
       <UserActionSheet
         user={selectedUser}
         visible={currentModal === 'user-actions'}
-        onHide={() => setCurrentModal(null)}
+        onHide={() =>
+          setCurrentModal(prev => (prev === 'user-actions' ? null : prev))
+        }
         onReportUser={() => setCurrentModal('reports')}
       />
 
       <ReportActionSheet
+        user={selectedUser}
         visible={currentModal === 'reports'}
         onHide={() => setCurrentModal(null)}
       />
