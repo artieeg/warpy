@@ -5,6 +5,7 @@ import {
   IConnectNewSpeakerMedia,
   ICreateMediaRoom,
   IJoinMediaRoom,
+  IKickedFromMediaRoom,
   INewMediaRoomData,
   INewMediaTrack,
   INewSpeakerMediaResponse,
@@ -38,6 +39,7 @@ const SubjectEventMap = {
   "user.follow": "user-follow",
   "user.unfollow": "user-unfollow",
   "stream.new-chat-message": "new-chat-message",
+  "stream.kick-user": "kick-user",
 };
 
 type Subject = keyof typeof SubjectEventMap;
@@ -155,6 +157,23 @@ export const MessageService = {
     const m = jc.encode(data);
 
     nc.publish(subjects.media.track.send, m);
+  },
+
+  async kickUser(
+    node: string,
+    stream: string,
+    user: string
+  ): Promise<IKickedFromMediaRoom> {
+    const m = jc.encode({
+      user,
+      stream,
+    });
+
+    const response = await nc.request(`media.peer.kick-user.${node}`, m, {
+      timeout: 5000,
+    });
+
+    return jc.decode(response.data) as IKickedFromMediaRoom;
   },
 
   async joinMediaRoom(node: string, data: IJoinMediaRoom): Promise<unknown> {

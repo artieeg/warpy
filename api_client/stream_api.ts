@@ -8,6 +8,7 @@ import {
   ISpeakingAllowedEvent,
   IChatMessagesEvent,
   ISendMessageResponse,
+  IUserKickedEvent,
 } from "@warpy/lib";
 
 export interface IStreamAPI {
@@ -16,6 +17,7 @@ export interface IStreamAPI {
   react: (stream: string, emoji: string) => void;
   stop: (stream: string) => any;
   sendChatMessage: (message: string) => Promise<ISendMessageResponse>;
+  kickUser: (userToKick: string) => void;
   getViewers: (
     stream: string,
     page: number
@@ -30,6 +32,7 @@ export interface IStreamAPI {
   onSpeakingAllowed: EventHandler<ISpeakingAllowedEvent>;
   onActiveSpeaker: EventHandler<IActiveSpeakerEvent>;
   onChatMessages: EventHandler<IChatMessagesEvent>;
+  onUserKick: EventHandler<IUserKickedEvent>;
 }
 
 export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
@@ -38,6 +41,7 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
       title,
       hub,
     }),
+  kickUser: (userToKick) => socket.publish("kick-user", { userToKick }),
   stop: (stream) => socket.publish("stream-stop", { stream }),
   react: (stream, emoji) => socket.publish("reaction", { stream, emoji }),
   sendChatMessage: (message: string) =>
@@ -55,4 +59,5 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
   onSpeakingAllowed: (handler) => socket.on("speaking-allowed", handler),
   onReactionsUpdate: (handler) => socket.on("reactions-update", handler),
   onChatMessages: (handler) => socket.on("chat-messages", handler),
+  onUserKick: (handler) => socket.on("user-kicked", handler),
 });

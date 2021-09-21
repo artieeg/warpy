@@ -137,4 +137,13 @@ export const BroadcastService = {
       },
     });
   },
+
+  async broadcastKickedUser({ user, ids }: { user: string; ids: string[] }) {
+    MessageService.sendMessageBroadcast(ids, {
+      event: "user-kicked",
+      data: {
+        user,
+      },
+    });
+  },
 };

@@ -14,6 +14,7 @@ import {
   ProducerSubjectEventMap,
   ConsumerSubjectEventMap,
 } from "./subjects";
+import { CommonSubjectEventMap } from "./subjects/common";
 
 const eventEmitter = new EventEmitter();
 
@@ -49,6 +50,12 @@ const initConsumerFunctions = () => {
   );
 };
 
+const initCommonFunctions = () => {
+  Object.keys(CommonSubjectEventMap).forEach((subject) =>
+    subscribeTo(subject as any)
+  );
+};
+
 export const init = async () => {
   nc = await connect({ servers: [NATS] });
 
@@ -59,21 +66,17 @@ export const init = async () => {
   if (role === "CONSUMER") {
     initConsumerFunctions();
   }
+
+  initCommonFunctions();
 };
 
 export const sendMessageToUser = (user: string, message: IMessage) => {
   nc.publish(`reply.user.${user}`, jc.encode(message));
 };
 
-type Event =
-  | "create-room"
-  | "new-track"
-  | "connect-transport"
-  | "join-room"
-  | "new-speaker"
-  | "new-egress"
-  | "new-producer"
-  | "recv-tracks-request";
+type EventMap = typeof SubjectEventMap;
+
+type Event = EventMap[keyof EventMap];
 
 export const on = (event: Event, handler: MessageHandler<any, any>) => {
   eventEmitter.on(event, handler);

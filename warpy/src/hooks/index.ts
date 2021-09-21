@@ -13,3 +13,4 @@ export * from './useRemoteStreams';
 export * from './useMediaStreaming';
 export * from './useAppSetUp';
 export * from './useRemoteStream';
+export * from './useKickHandler';

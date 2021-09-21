@@ -1,6 +1,46 @@
 import { ParticipantDAL, UserDAO } from "@backend/dal";
-import { IJoinStreamResponse } from "@warpy/lib";
+import { IJoinStreamResponse, IParticipant } from "@warpy/lib";
 import { BroadcastService, MediaService } from "..";
+
+class StreamForbiddenError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
+}
+
+const findOrCreateParticipant = async (
+  id: string,
+  stream: string,
+  recvNodeId: string
+): Promise<IParticipant> => {
+  try {
+    const existingParticipant = await ParticipantDAL.getByIdAndStream(
+      id,
+      stream
+    );
+
+    if (existingParticipant.isBanned) {
+      throw new StreamForbiddenError("User is banned from this stream");
+    }
+
+    const participant = await ParticipantDAL.updateOne(id, { recvNodeId });
+
+    return participant;
+  } catch (e) {
+    if (e instanceof StreamForbiddenError) {
+      throw e;
+    }
+
+    const participant = await ParticipantDAL.create({
+      user_id: id,
+      role: "viewer",
+      stream,
+      recvNodeId,
+    });
+
+    return participant;
+  }
+};
 
 export const addNewViewer = async (
   stream: string,
@@ -15,11 +55,11 @@ export const addNewViewer = async (
     throw new Error();
   }
 
-  const participant = await ParticipantDAL.create({
-    user_id: viewer.id,
-    role: "viewer",
+  const participant = await findOrCreateParticipant(
+    viewer.id,
     stream,
-  });
+    recvNodeId
+  );
 
   await MediaService.assignUserToNode(viewerId, recvNodeId);
   const recvMediaParams = await MediaService.joinRoom(

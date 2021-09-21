@@ -14,6 +14,8 @@ export class Participant extends BaseUser implements IParticipant {
   role: Roles;
   stream: string | null;
   isRaisingHand?: boolean;
+  recvNodeId?: string;
+  sendNodeId?: string;
 
   constructor(data: IParticipant) {
     super(data);

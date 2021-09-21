@@ -7,9 +7,17 @@ type CreateNewParticipant = {
   user_id: string;
   role?: Roles;
   stream?: string;
+  recvNodeId: string;
 };
 
-export const toParticipantDTO = (
+interface IFullParticipant extends IParticipant {
+  recvNodeId: string;
+  sendNodeId: string | null;
+  isBanned: boolean;
+  hasLeftStream: boolean;
+}
+
+export const toParticipantClientDTO = (
   data: (Participant & { user?: User }) | null
 ): IParticipant => {
   if (!data) {
@@ -28,12 +36,29 @@ export const toParticipantDTO = (
   };
 };
 
+export const toFullParticipantDTO = (
+  data: (Participant & { user?: User }) | null
+): IFullParticipant => {
+  if (!data) {
+    throw new Error("Participant is null");
+  }
+
+  return {
+    ...toParticipantClientDTO(data),
+    recvNodeId: data.recvNodeId,
+    sendNodeId: data.sendNodeId,
+    isBanned: data.isBanned,
+    hasLeftStream: data.hasLeftStream,
+  };
+};
+
 export const ParticipantDAL = {
   create: async ({
     user_id,
     role,
     stream,
-  }: CreateNewParticipant): Promise<IParticipant> => {
+    recvNodeId,
+  }: CreateNewParticipant): Promise<IFullParticipant> => {
     const data = await prisma.participant.create({
       data: {
         stream_id: stream,
@@ -41,13 +66,31 @@ export const ParticipantDAL = {
         isRaisingHand: false,
         user_id: user_id,
         id: user_id,
+        recvNodeId,
       },
       include: {
         user: true,
       },
     });
 
-    return toParticipantDTO(data);
+    return toFullParticipantDTO(data);
+  },
+
+  async getByIdAndStream(
+    user_id: string,
+    stream: string
+  ): Promise<IFullParticipant> {
+    const data = await prisma.participant.findFirst({
+      where: {
+        user_id: user_id,
+        stream_id: stream,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    return toFullParticipantDTO(data);
   },
 
   async setStream(user_id: string, stream: string): Promise<void> {
@@ -71,7 +114,7 @@ export const ParticipantDAL = {
       },
     });
 
-    return data.map(toParticipantDTO);
+    return data.map(toParticipantClientDTO);
   },
 
   makeSpeaker: async (user: string): Promise<IParticipant | null> => {
@@ -90,10 +133,10 @@ export const ParticipantDAL = {
       return null;
     }
 
-    return toParticipantDTO(speaker);
+    return toParticipantClientDTO(speaker);
   },
 
-  getById: async (user: string): Promise<IParticipant | null> => {
+  getById: async (user: string): Promise<IFullParticipant | null> => {
     const participant = await prisma.participant.findUnique({
       where: { user_id: user },
       include: { user: true },
@@ -103,7 +146,7 @@ export const ParticipantDAL = {
       return null;
     }
 
-    return toParticipantDTO(participant);
+    return toFullParticipantDTO(participant);
   },
 
   deleteParticipant: async (id: string): Promise<void> => {
@@ -112,13 +155,49 @@ export const ParticipantDAL = {
     });
   },
 
+  getIdsByStream: async (streamId: string): Promise<string[]> => {
+    const result = await prisma.participant.findMany({
+      where: { stream_id: streamId },
+      select: { id: true },
+    });
+
+    return result.map((r) => r.id);
+  },
+
   getByStream: async (streamId: string): Promise<IParticipant[]> => {
     const participants = await prisma.participant.findMany({
       where: { stream_id: streamId },
       include: { user: true },
     });
 
-    return participants.map(toParticipantDTO);
+    return participants.map(toParticipantClientDTO);
+  },
+
+  async setBanStatus(user: string, isBanned: boolean): Promise<void> {
+    await prisma.participant.update({
+      where: { id: user },
+      data: {
+        isBanned,
+        hasLeftStream: true,
+      },
+    });
+  },
+
+  async updateOne(
+    user: string,
+    data: Partial<Participant>
+  ): Promise<IFullParticipant> {
+    const updated = await prisma.participant.update({
+      where: {
+        id: user,
+      },
+      include: {
+        user: true,
+      },
+      data,
+    });
+
+    return toFullParticipantDTO(updated);
   },
 
   async deleteParticipantsByStream(stream: string): Promise<void> {
@@ -147,7 +226,13 @@ export const ParticipantDAL = {
 
   async getRoleFor(user: string, stream: string): Promise<string | null> {
     const result = await prisma.participant.findUnique({
-      where: { stream_participant_index: { user_id: user, stream_id: stream } },
+      where: {
+        stream_participant_index: {
+          user_id: user,
+          stream_id: stream,
+          hasLeftStream: false,
+        },
+      },
       select: { role: true },
     });
 
@@ -156,13 +241,18 @@ export const ParticipantDAL = {
 
   getSpeakers: async (stream: string): Promise<IParticipant[]> => {
     const participants = await prisma.participant.findMany({
-      where: { stream_id: stream, role: { in: ["speaker", "streamer"] } },
+      where: {
+        stream_id: stream,
+        isBanned: false,
+        role: { in: ["speaker", "streamer"] },
+        hasLeftStream: false,
+      },
       include: {
         user: true,
       },
     });
 
-    return participants.map(toParticipantDTO);
+    return participants.map(toParticipantClientDTO);
   },
 
   getViewersPage: async (
@@ -171,29 +261,40 @@ export const ParticipantDAL = {
   ): Promise<IParticipant[]> => {
     const participants = await prisma.participant.findMany({
       include: { user: true },
-      where: { stream_id: stream, role: "viewer" },
+      where: {
+        stream_id: stream,
+        role: "viewer",
+        isBanned: false,
+        hasLeftStream: false,
+      },
       skip: 50 * page,
       take: 50,
     });
 
-    return participants.map(toParticipantDTO);
+    return participants.map(toParticipantClientDTO);
   },
 
   count: async (stream: string): Promise<number> => {
     return prisma.participant.count({
-      where: { stream_id: stream },
+      where: { stream_id: stream, isBanned: false, hasLeftStream: false },
     });
   },
 
   getWithRaisedHands: async (stream: string): Promise<IParticipant[]> => {
     const participants = await prisma.participant.findMany({
-      where: { stream_id: stream, isRaisingHand: true, role: "viewer" },
+      where: {
+        stream_id: stream,
+        isBanned: false,
+        hasLeftStream: false,
+        isRaisingHand: true,
+        role: "viewer",
+      },
       include: {
         user: true,
       },
     });
 
-    return participants.map(toParticipantDTO);
+    return participants.map(toParticipantClientDTO);
   },
 
   setRaiseHand: async (user: string, flag: boolean): Promise<IParticipant> => {
@@ -207,6 +308,6 @@ export const ParticipantDAL = {
       },
     });
 
-    return toParticipantDTO(participant);
+    return toParticipantClientDTO(participant);
   },
 };

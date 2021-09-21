@@ -18,3 +18,4 @@ export * from './StartNewStreamButton';
 export * from './ViewersCountPreview';
 export * from './StreamPreviewTitle';
 export * from './ToggleControls';
+export * from './ToastProvider';

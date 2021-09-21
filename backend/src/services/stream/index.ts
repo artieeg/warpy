@@ -8,6 +8,7 @@ import { allowSpeaker } from "./allowSpeaker";
 import { updateActiveSpeakers } from "./updateActiveSpeakers";
 import { countNewReaction, runReactionSync } from "./countNewReaction";
 import { onReactionUpdate } from "./observer";
+import { kickFromStream } from "./kickFromStream";
 
 export const StreamService = {
   createNewStream,
@@ -21,4 +22,5 @@ export const StreamService = {
   onReactionUpdate,
   runReactionSync,
   countNewReaction,
+  kickFromStream,
 };

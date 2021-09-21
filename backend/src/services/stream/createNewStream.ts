@@ -23,6 +23,7 @@ export const createNewStream = async (
   const participant = await ParticipantDAL.create({
     user_id: streamer.id,
     role: "streamer",
+    recvNodeId: recvMediaNode,
   });
 
   const stream = await StreamDAL.create({

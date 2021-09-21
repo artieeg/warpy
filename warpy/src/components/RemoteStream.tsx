@@ -123,6 +123,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
       />
 
       <UserActionSheet
+        user={selectedUser}
         visible={currentModal === 'user-actions'}
         onHide={() => setCurrentModal(null)}
       />

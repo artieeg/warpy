@@ -58,3 +58,8 @@ export interface IUnfollowResponse {
 export interface ISendMessageResponse {
   message: IChatMessage;
 }
+
+export interface IKickedFromMediaRoom {
+  user: string;
+  status: "ok" | "error";
+}

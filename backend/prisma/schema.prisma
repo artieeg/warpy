@@ -35,9 +35,14 @@ model Participant {
   stream        Stream? @relation(name: "participant", fields: [stream_id], references: [id], onDelete: Cascade)
   role          String
   isRaisingHand Boolean
+  isBanned      Boolean @default(false)
+  hasLeftStream Boolean @default(false)
+
+  recvNodeId    String
+  sendNodeId    String?
 
   Stream Stream[] @relation("owner")
-  @@unique([user_id, stream_id], name: "stream_participant_index")
+  @@unique([user_id, stream_id, hasLeftStream], name: "stream_participant_index")
 }
 
 model Stream {

@@ -26,6 +26,7 @@ import {
   onUnfollow,
   onFollow,
   onNewChatMessage,
+  onKickUser,
 } from "@backend/handlers";
 
 const main = async () => {
@@ -49,6 +50,7 @@ const main = async () => {
   MessageService.on("new-media-node", onNewOnlineNode);
   MessageService.on("new-media-node", onNewOnlineNode);
   MessageService.on("new-chat-message", onNewChatMessage);
+  MessageService.on("kick-user", onKickUser);
 
   MessageService.on("user-follow", onFollow);
   MessageService.on("user-unfollow", onUnfollow);
