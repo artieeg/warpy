@@ -202,3 +202,9 @@ export interface IKickUserRequest {
   user: string;
   userToKick: string;
 }
+
+export interface IUserReportRequest {
+  reportedUserId: string;
+  reportReasonId: string;
+  user: string;
+}

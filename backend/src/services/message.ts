@@ -40,6 +40,7 @@ const SubjectEventMap = {
   "user.unfollow": "user-unfollow",
   "stream.new-chat-message": "new-chat-message",
   "stream.kick-user": "kick-user",
+  "user.report": "report-user",
 };
 
 export type Subject = keyof typeof SubjectEventMap;

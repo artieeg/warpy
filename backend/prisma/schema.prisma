@@ -18,13 +18,29 @@ model User {
   email       String
   sub         String
   created_at  DateTime     @default(now())
-  participant Participant?
+  participant Participant[]
+
+  sent_reports Report[] @relation(name: "sent_reports")
+  received_reports Report[] @relation(name: "received_reports")
 
   followers FollowRecord[] @relation(name: "follower")
   followed  FollowRecord[] @relation(name: "followed")
 
   //Stream Stream[]
   @@map(name: "Users")
+}
+
+model Report {
+  id          String       @id @default(cuid())
+  reporter_id       String  @unique
+  reporter          User    @relation(name: "sent_reports", fields: [reporter_id], references: [id], onDelete: Cascade)
+
+  reported_id       String  @unique
+  reported          User    @relation(name: "received_reports", fields: [reported_id], references: [id], onDelete: Cascade)
+
+  reason String
+
+  created_at  DateTime     @default(now())
 }
 
 model Participant {
