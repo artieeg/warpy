@@ -17,3 +17,4 @@ export * from "./onFollow";
 export * from "./onUnfollow";
 export * from "./onNewChatMessage";
 export * from "./onKickUser";
+export * from "./onUserReport";

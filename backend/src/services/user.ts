@@ -1,5 +1,10 @@
 import { jwt } from "@backend/utils";
-import { FollowRecordDAL, RefreshTokenDAL, UserDAO } from "@backend/dal";
+import {
+  FollowRecordDAL,
+  RefreshTokenDAL,
+  ReportDAO,
+  UserDAO,
+} from "@backend/dal";
 import { INewUser, IWhoAmIResponse } from "@warpy/lib";
 
 type NewUserResponse = {
@@ -50,5 +55,17 @@ export const UserService = {
       user,
       following,
     };
+  },
+
+  async addUserReport(
+    reported: string,
+    reporter: string,
+    reportReasonId: string
+  ) {
+    await ReportDAO.create({
+      reportee: reporter,
+      reported,
+      reason: reportReasonId,
+    });
   },
 };
