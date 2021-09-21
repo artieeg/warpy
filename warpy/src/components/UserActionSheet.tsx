@@ -41,6 +41,7 @@ export const UserActionSheet = (props: IUserActionSheetProps) => {
             onPress={() => {
               if (user) {
                 api.stream.kickUser(user);
+                onHide();
               }
             }}
             style={[styles.button, styles.bottomBorder]}>
