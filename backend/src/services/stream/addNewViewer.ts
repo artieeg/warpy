@@ -1,12 +1,7 @@
 import { ParticipantDAL, UserDAO } from "@backend/dal";
 import { IJoinStreamResponse, IParticipant } from "@warpy/lib";
 import { BroadcastService, MediaService } from "..";
-
-class StreamForbiddenError extends Error {
-  constructor(message: string) {
-    super(message);
-  }
-}
+import { BannedFromStreamError } from "@backend/errors";
 
 const findOrCreateParticipant = async (
   id: string,
@@ -20,14 +15,14 @@ const findOrCreateParticipant = async (
     );
 
     if (existingParticipant.isBanned) {
-      throw new StreamForbiddenError("User is banned from this stream");
+      throw new BannedFromStreamError("User is banned from this stream");
     }
 
     const participant = await ParticipantDAL.updateOne(id, { recvNodeId });
 
     return participant;
   } catch (e) {
-    if (e instanceof StreamForbiddenError) {
+    if (e instanceof BannedFromStreamError) {
       throw e;
     }
 

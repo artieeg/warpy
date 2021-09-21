@@ -42,7 +42,8 @@ const SubjectEventMap = {
   "stream.kick-user": "kick-user",
 };
 
-type Subject = keyof typeof SubjectEventMap;
+export type Subject = keyof typeof SubjectEventMap;
+export type Event = typeof SubjectEventMap[Subject];
 
 const subscribeTo = async (subject: Subject) => {
   const sub = nc.subscribe(subject);

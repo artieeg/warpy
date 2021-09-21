@@ -5,6 +5,7 @@ import {
   BroadcastService,
   MessageService,
   StreamService,
+  Event,
 } from "@backend/services";
 
 import {
@@ -28,32 +29,38 @@ import {
   onNewChatMessage,
   onKickUser,
 } from "@backend/handlers";
+import { withErrorHandling } from "@backend/utils/withErrorHandling";
+import { MessageHandler } from "@warpy/lib";
 
 const main = async () => {
   await MessageService.init();
   StreamService.runReactionSync();
 
-  MessageService.on("user-joins-stream", onJoinStream);
-  MessageService.on("stream-stop", onStreamStop);
-  MessageService.on("stream-new", onNewStream);
-  MessageService.on("user-disconnected", onUserDisconnect);
-  MessageService.on("viewers-request", onViewersRequest);
-  MessageService.on("raise-hand", onRaiseHand);
-  MessageService.on("speaker-allow", onAllowSpeaker);
-  MessageService.on("feed-request", onFeedRequest);
-  MessageService.on("whoami-request", onWhoAmIRequest);
-  MessageService.on("new-user", onNewUser);
-  MessageService.on("active-speakers", onActiveSpeakers);
-  MessageService.on("user-delete", onUserDelete);
-  MessageService.on("new-stream-preview", onNewStreamPreview);
-  MessageService.on("reaction", onReaction);
-  MessageService.on("new-media-node", onNewOnlineNode);
-  MessageService.on("new-media-node", onNewOnlineNode);
-  MessageService.on("new-chat-message", onNewChatMessage);
-  MessageService.on("kick-user", onKickUser);
+  const handlers: Record<Event, MessageHandler<any, any>> = {
+    "user-joins-stream": onJoinStream,
+    "stream-stop": onStreamStop,
+    "stream-new": onNewStream,
+    "user-disconnected": onUserDisconnect,
+    "viewers-request": onViewersRequest,
+    "raise-hand": onRaiseHand,
+    "speaker-allow": onAllowSpeaker,
+    "feed-request": onFeedRequest,
+    "whoami-request": onWhoAmIRequest,
+    "new-user": onNewUser,
+    "active-speakers": onActiveSpeakers,
+    "user-delete": onUserDelete,
+    "new-stream-preview": onNewStreamPreview,
+    reaction: onReaction,
+    "new-media-node": onNewOnlineNode,
+    "new-chat-message": onNewChatMessage,
+    "kick-user": onKickUser,
+    "user-follow": onFollow,
+    "user-unfollow": onUnfollow,
+  };
 
-  MessageService.on("user-follow", onFollow);
-  MessageService.on("user-unfollow", onUnfollow);
+  for (const [event, handler] of Object.entries(handlers)) {
+    MessageService.on(event, withErrorHandling(handler));
+  }
 
   StreamService.onReactionUpdate(BroadcastService.broadcastReactions);
   console.log(":>");

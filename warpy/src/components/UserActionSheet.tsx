@@ -1,4 +1,3 @@
-import {User} from '@app/models';
 import {useStore} from '@app/store';
 import React from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
