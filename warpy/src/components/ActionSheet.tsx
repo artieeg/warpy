@@ -1,5 +1,7 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import {
+  Animated,
+  Easing,
   StyleSheet,
   TouchableOpacity,
   TouchableOpacityProps,
@@ -36,36 +38,59 @@ export const ActionSheetButton = (props: IActionButtonProps) => {
 export const ActionSheet = (props: IActionSheetProps) => {
   const {visible, onHide, actions} = props;
 
+  const opacity = useRef(new Animated.Value(0));
+
+  useEffect(() => {
+    Animated.sequence([
+      Animated.delay(300),
+      Animated.timing(opacity.current, {
+        toValue: visible ? 1 : 0,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [visible]);
+
   const filteredActions = actions.filter(
     action => action !== null,
   ) as IActionButtonProps[];
+
+  const animatedStyle = {
+    opacity: opacity.current,
+  };
 
   return (
     <Modal
       isVisible={visible}
       onModalHide={onHide}
+      animationInTiming={400}
+      animationOutTiming={400}
       style={styles.modal}
       statusBarTranslucent>
-      <View style={[styles.background, styles.actions]}>
-        {filteredActions.map(({title, color, onPress}) => (
-          <ActionSheetButton
-            title={title}
-            color={color}
-            onPress={e => {
-              onHide();
-              onPress(e);
-            }}
-            key={title}
-          />
-        ))}
-      </View>
-      <TouchableOpacity
-        onPress={onHide}
-        style={[styles.background, styles.cancel, styles.button]}>
-        <Text size="small" weight="bold">
-          cancel
-        </Text>
-      </TouchableOpacity>
+      <Animated.View style={animatedStyle}>
+        <View style={[styles.background, styles.actions]}>
+          {filteredActions.map(({title, color, onPress}) => (
+            <ActionSheetButton
+              title={title}
+              color={color}
+              onPress={e => {
+                onHide();
+                if (onPress) {
+                  onPress(e);
+                }
+              }}
+              key={title}
+            />
+          ))}
+        </View>
+        <TouchableOpacity
+          onPress={onHide}
+          style={[styles.background, styles.cancel, styles.button]}>
+          <Text size="small" weight="bold">
+            cancel
+          </Text>
+        </TouchableOpacity>
+      </Animated.View>
     </Modal>
   );
 };
