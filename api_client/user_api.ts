@@ -13,6 +13,10 @@ export interface IUserAPI {
   delete: () => Promise<IUserDeleteResponse>;
   follow: (userToFollow: string) => Promise<IFollowResponse>;
   unfollow: (userToUnfollow: string) => Promise<IUnfollowResponse>;
+  report: (
+    userToReport: string,
+    reportReasonId: string
+  ) => Promise<INewUserResponse>;
 }
 
 export interface INewUser {
@@ -28,6 +32,8 @@ export const UserAPI = (socket: WebSocketConn): IUserAPI => ({
   auth: (token) => socket.request("auth", { token }),
   delete: () => socket.request("delete-user", {}),
   follow: (userToFollow) => socket.request("user-follow", { userToFollow }),
+  report: (reportedUserId, reportReasonId) =>
+    socket.request("report-user", { reportedUserId, reportReasonId }),
   unfollow: (userToUnfollow) =>
     socket.request("user-unfollow", { userToUnfollow }),
 });

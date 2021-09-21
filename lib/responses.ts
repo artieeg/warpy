@@ -63,3 +63,7 @@ export interface IKickedFromMediaRoom {
   user: string;
   status: "ok" | "error";
 }
+
+export interface IUserReportResponse {
+  reportedUser: string;
+}
