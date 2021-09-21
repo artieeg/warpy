@@ -65,7 +65,7 @@ export const ParticipantDAL = {
         role: role || "viewer",
         isRaisingHand: false,
         user_id: user_id,
-        id: user_id,
+        //id: user_id,
         recvNodeId,
       },
       include: {
@@ -158,10 +158,10 @@ export const ParticipantDAL = {
   getIdsByStream: async (streamId: string): Promise<string[]> => {
     const result = await prisma.participant.findMany({
       where: { stream_id: streamId },
-      select: { id: true },
+      select: { user_id: true },
     });
 
-    return result.map((r) => r.id);
+    return result.map((r) => r.user_id);
   },
 
   getByStream: async (streamId: string): Promise<IParticipant[]> => {
@@ -175,7 +175,7 @@ export const ParticipantDAL = {
 
   async setBanStatus(user: string, isBanned: boolean): Promise<void> {
     await prisma.participant.update({
-      where: { id: user },
+      where: { user_id: user },
       data: {
         isBanned,
         hasLeftStream: true,
@@ -189,7 +189,7 @@ export const ParticipantDAL = {
   ): Promise<IFullParticipant> {
     const updated = await prisma.participant.update({
       where: {
-        id: user,
+        user_id: user,
       },
       include: {
         user: true,

@@ -18,7 +18,7 @@ model User {
   email       String
   sub         String
   created_at  DateTime     @default(now())
-  participant Participant?
+  participant Participant[]
 
   followers FollowRecord[] @relation(name: "follower")
   followed  FollowRecord[] @relation(name: "followed")
