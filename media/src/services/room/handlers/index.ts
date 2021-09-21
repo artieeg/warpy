@@ -7,3 +7,4 @@ export * from "./handleNewRoom";
 export * from "./handleNewSpeaker";
 export * from "./handleNewTrack";
 export * from "./handleRecvTracksRequest";
+export * from "./handleKickedUser";

@@ -18,6 +18,7 @@ const main = async () => {
   MessageService.on("new-speaker", RoomService.handleNewSpeaker);
   MessageService.on("new-egress", RoomService.handleNewEgress);
   MessageService.on("new-producer", RoomService.handleNewProducer);
+  MessageService.on("kick-user", RoomService.handleKickedUser);
 
   SFUService.onActiveSpeakers(MessageService.sendActiveSpeakers);
 
