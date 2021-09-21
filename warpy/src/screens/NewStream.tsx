@@ -7,6 +7,7 @@ import {
   Button,
   ParticipantsModal,
   ParticipantInfoModal,
+  ReportActionSheet,
 } from '@app/components';
 import {useRecvTransport} from '@app/hooks/useRecvTransport';
 import {StreamerPanel} from '@app/components/StreamerPanel';
@@ -26,6 +27,7 @@ export const NewStream = () => {
     | 'user-actions'
     | 'participant-info'
     | 'participants'
+    | 'reports'
     | 'reactions'
     | 'chat'
     | null
@@ -116,6 +118,12 @@ export const NewStream = () => {
       <UserActionSheet
         user={selectedUser}
         visible={currentModal === 'user-actions'}
+        onHide={() => setCurrentModal(null)}
+        onReportUser={() => setCurrentModal('reports')}
+      />
+
+      <ReportActionSheet
+        visible={currentModal === 'reports'}
         onHide={() => setCurrentModal(null)}
       />
     </View>

@@ -13,6 +13,7 @@ import {ReactionCanvas} from './ReactionCanvas';
 import {useMediaStreaming} from '@app/hooks/useMediaStreaming';
 import {ChatModal} from './ChatModal';
 import {UserActionSheet} from './UserActionSheet';
+import {ReportActionSheet} from './ReportActionSheet';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -29,6 +30,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
     | 'participant-info'
     | 'participants'
     | 'reactions'
+    | 'reports'
     | 'chat'
     | null
   >(null);
@@ -125,6 +127,14 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
       <UserActionSheet
         user={selectedUser}
         visible={currentModal === 'user-actions'}
+        onHide={() =>
+          setCurrentModal(prev => (prev === 'user-actions' ? null : prev))
+        }
+        onReportUser={() => setCurrentModal('reports')}
+      />
+
+      <ReportActionSheet
+        visible={currentModal === 'reports'}
         onHide={() => setCurrentModal(null)}
       />
     </View>
