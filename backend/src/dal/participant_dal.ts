@@ -80,13 +80,13 @@ export const ParticipantDAL = {
     user_id: string,
     stream: string
   ): Promise<IFullParticipant> {
-    const data = await prisma.participant.findUnique({
+    const data = await prisma.participant.findFirst({
       where: {
-        stream_participant_index: {
-          user_id: user_id,
-          stream_id: stream,
-          hasLeftStream: false,
-        },
+        user_id: user_id,
+        stream_id: stream,
+      },
+      include: {
+        user: true,
       },
     });
 
@@ -178,6 +178,7 @@ export const ParticipantDAL = {
       where: { id: user },
       data: {
         isBanned,
+        hasLeftStream: true,
       },
     });
   },

@@ -5,7 +5,11 @@ export const onJoinStream: MessageHandler<IJoinStream, IJoinStreamResponse> =
   async (data, respond) => {
     const { stream, user } = data;
 
-    const response = await StreamService.addNewViewer(stream, user);
+    try {
+      const response = await StreamService.addNewViewer(stream, user);
 
-    respond(response);
+      respond(response);
+    } catch (e) {
+      console.error(e);
+    }
   };
