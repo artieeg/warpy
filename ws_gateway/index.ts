@@ -19,6 +19,7 @@ import {
   onNewChatMessage,
   onKickUser,
   onUserReport,
+  onUserBlock,
 } from "@ws_gateway/handlers";
 import { IMessage } from "@ws_gateway/models";
 import { Context, Handlers } from "@ws_gateway/types";
