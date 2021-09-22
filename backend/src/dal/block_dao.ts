@@ -50,6 +50,19 @@ export const BlockDAO = {
     });
   },
 
+  async getBlockedByIds(user: string): Promise<string[]> {
+    const blocks = await prisma.userBlock.findMany({
+      where: {
+        blocked_id: user,
+      },
+      select: {
+        blocker_id: true,
+      },
+    });
+
+    return blocks.map((block) => block.blocker_id);
+  },
+
   async getBlockedUsers(user: string): Promise<IUserBlock[]> {
     const blocks = await prisma.userBlock.findMany({
       where: {
