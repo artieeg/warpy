@@ -208,3 +208,8 @@ export interface IUserReportRequest {
   reportReasonId: string;
   user: string;
 }
+
+export interface IUserBlockRequest {
+  userToBlock: string;
+  user: string;
+}

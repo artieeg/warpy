@@ -67,3 +67,7 @@ export interface IKickedFromMediaRoom {
 export interface IUserReportResponse {
   reportedUser: string;
 }
+
+export interface IUserBlockResponse {
+  blockId: string;
+}

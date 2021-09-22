@@ -29,6 +29,7 @@ import {
   onNewChatMessage,
   onKickUser,
   onUserReport,
+  onUserBlock,
 } from "@backend/handlers";
 import { withErrorHandling } from "@backend/utils/withErrorHandling";
 import { MessageHandler } from "@warpy/lib";
@@ -58,6 +59,7 @@ const main = async () => {
     "user-follow": onFollow,
     "user-unfollow": onUnfollow,
     "report-user": onUserReport,
+    "block-user": onUserBlock,
   };
 
   for (const [event, handler] of Object.entries(handlers)) {
