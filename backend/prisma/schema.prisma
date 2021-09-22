@@ -39,19 +39,19 @@ model User {
 model UserBlock {
   id          String       @id @default(cuid())
 
-  blocked_id       String  @unique
+  blocked_id       String  
   blocked          User    @relation(name: "blocked", fields: [blocked_id], references: [id], onDelete: Cascade)
 
-  blocker_id       String  @unique
+  blocker_id       String  
   blocker   User    @relation(name: "blocker", fields: [blocked_id], references: [id], onDelete: Cascade)
 }
 
 model Report {
   id          String       @id @default(cuid())
-  reporter_id       String  @unique
+  reporter_id       String  
   reporter          User    @relation(name: "sent_reports", fields: [reporter_id], references: [id], onDelete: Cascade)
 
-  reported_id       String  @unique
+  reported_id       String  
   reported          User    @relation(name: "received_reports", fields: [reported_id], references: [id], onDelete: Cascade)
 
   reason String
