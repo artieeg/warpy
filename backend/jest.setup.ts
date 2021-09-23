@@ -11,6 +11,7 @@ jest.mock("@backend/services/media");
 jest.mock("@backend/services/feed");
 jest.mock("@backend/services/cache/client");
 jest.mock("@backend/dal/stream_dal");
+jest.mock("@backend/dal/block_dao");
 jest.mock("@backend/dal/follow_record_dal");
 jest.mock("@backend/dal/participant_dal");
 jest.mock("@backend/dal/user_dal");
