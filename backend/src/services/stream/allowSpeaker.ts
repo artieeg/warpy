@@ -16,8 +16,6 @@ const checkBannedBySpeaker = async (user: string, stream: string) => {
   const blocker = speakers.find((speaker) => blockedByIds.includes(speaker.id));
 
   if (blocker) {
-    console.log("blocked by a user");
-
     throw new BlockedByAnotherSpeaker({
       last_name: blocker.last_name,
       first_name: blocker.first_name,
