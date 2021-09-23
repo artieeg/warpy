@@ -31,6 +31,21 @@ export class InternalError extends BaseError {
   }
 }
 
+export class StreamHasBlockedSpeakerError extends BaseError {
+  constructor({
+    last_name,
+    first_name,
+  }: {
+    last_name: string;
+    first_name: string;
+  }) {
+    super();
+
+    this.name = "StreamHasBlockedSpeakerError";
+    this.info = `Can't let this user speak: they have banned ${first_name} ${last_name}`;
+  }
+}
+
 export class BlockedByAnotherSpeaker extends BaseError {
   constructor({
     last_name,

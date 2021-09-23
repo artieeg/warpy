@@ -2,6 +2,7 @@ import { BlockDAO, ParticipantDAL } from "@backend/dal";
 import {
   BlockedByAnotherSpeaker,
   NoPermissionError,
+  StreamHasBlockedSpeakerError,
   StreamNotFound,
   UserNotFound,
 } from "@backend/errors";
@@ -10,13 +11,27 @@ import { BroadcastService, MediaService, MessageService } from "..";
 const checkBannedBySpeaker = async (user: string, stream: string) => {
   const speakers = await ParticipantDAL.getSpeakers(stream);
   const blockedByIds = await BlockDAO.getBlockedByIds(user);
+  const blockedIds = await BlockDAO.getBlockedUserIds(user);
 
   const blocker = speakers.find((speaker) => blockedByIds.includes(speaker.id));
 
   if (blocker) {
+    console.log("blocked by a user");
+
     throw new BlockedByAnotherSpeaker({
       last_name: blocker.last_name,
       first_name: blocker.first_name,
+    });
+  }
+
+  const blockedStreamSpeaker = speakers.find((speaker) =>
+    blockedIds.includes(speaker.id)
+  );
+
+  if (blockedStreamSpeaker) {
+    throw new StreamHasBlockedSpeakerError({
+      last_name: blockedStreamSpeaker.last_name,
+      first_name: blockedStreamSpeaker.first_name,
     });
   }
 };
