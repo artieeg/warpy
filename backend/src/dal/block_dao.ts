@@ -50,6 +50,9 @@ export const BlockDAO = {
     });
   },
 
+  /**
+   * Returns ids of the users, who blocked us
+   */
   async getBlockedByIds(user: string): Promise<string[]> {
     const blocks = await prisma.userBlock.findMany({
       where: {
@@ -63,6 +66,25 @@ export const BlockDAO = {
     return blocks.map((block) => block.blocker_id);
   },
 
+  /**
+   * Returns ids of users blocked by us
+   */
+  async getBlockedUserIds(user: string): Promise<string[]> {
+    const blocks = await prisma.userBlock.findMany({
+      where: {
+        blocker_id: user,
+      },
+      select: {
+        blocked_id: true,
+      },
+    });
+
+    return blocks.map((block) => block.blocked_id);
+  },
+
+  /**
+   * Returns blocks that are made by us
+   */
   async getBlockedUsers(user: string): Promise<IUserBlock[]> {
     const blocks = await prisma.userBlock.findMany({
       where: {

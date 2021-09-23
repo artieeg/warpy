@@ -1,10 +1,16 @@
 import { FeedCacheService } from ".";
-import { IStream, ParticipantDAL, StreamDAL } from "@backend/dal";
+import { BlockDAO, IStream, ParticipantDAL, StreamDAL } from "@backend/dal";
 import { ICandidate } from "@warpy/lib";
 
 export const FeedService = {
   async getFeed(user: string, hub?: string): Promise<ICandidate[]> {
-    const candidates: IStream[] = await StreamDAL.getAll();
+    const blockedUserIds = await BlockDAO.getBlockedUserIds(user);
+    const blockedByUserIds = await BlockDAO.getBlockedByIds(user);
+
+    const candidates: IStream[] = await StreamDAL.get({
+      blockedUserIds,
+      blockedByUserIds,
+    });
 
     const feed = Promise.all(
       candidates.map(
