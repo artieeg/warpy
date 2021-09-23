@@ -6,5 +6,5 @@ export const onAllowSpeaker: MessageHandler<IAllowSpeakerPayload> = async (
 ) => {
   const { speaker, user } = data;
 
-  StreamService.allowSpeaker(speaker, user);
+  await StreamService.allowSpeaker(speaker, user);
 };

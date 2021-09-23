@@ -9,3 +9,4 @@ export * from "./rate_limit";
 export * from "./follow";
 export * from "./cache";
 export * from "./chat";
+export * from "./block";

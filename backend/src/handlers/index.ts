@@ -18,3 +18,4 @@ export * from "./onUnfollow";
 export * from "./onNewChatMessage";
 export * from "./onKickUser";
 export * from "./onUserReport";
+export * from "./onUserBlock";

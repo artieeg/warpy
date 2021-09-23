@@ -2,6 +2,7 @@ import {
   IFollowResponse,
   INewUserResponse,
   IUnfollowResponse,
+  IUserBlockResponse,
   IUserDeleteResponse,
   IWhoAmIResponse,
 } from "@warpy/lib";
@@ -17,6 +18,7 @@ export interface IUserAPI {
     userToReport: string,
     reportReasonId: string
   ) => Promise<INewUserResponse>;
+  block: (userToBlock: string) => Promise<IUserBlockResponse>;
 }
 
 export interface INewUser {
@@ -32,6 +34,7 @@ export const UserAPI = (socket: WebSocketConn): IUserAPI => ({
   auth: (token) => socket.request("auth", { token }),
   delete: () => socket.request("delete-user", {}),
   follow: (userToFollow) => socket.request("user-follow", { userToFollow }),
+  block: (userToBlock: string) => socket.request("block-user", { userToBlock }),
   report: (reportedUserId, reportReasonId) =>
     socket.request("report-user", { reportedUserId, reportReasonId }),
   unfollow: (userToUnfollow) =>

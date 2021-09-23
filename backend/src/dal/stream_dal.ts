@@ -79,8 +79,32 @@ export const StreamDAL = {
     return result.count;
   },
 
-  async getAll(): Promise<IStream[]> {
-    const streams = await prisma.stream.findMany();
+  async get({
+    blockedUserIds,
+    blockedByUserIds,
+  }: {
+    blockedUserIds: string[];
+    blockedByUserIds: string[];
+  }): Promise<IStream[]> {
+    const streams = await prisma.stream.findMany({
+      where: {
+        AND: [
+          {
+            owner_id: {
+              notIn: blockedUserIds, //The host should not be blocked
+            },
+          },
+          {
+            owner_id: {
+              notIn: blockedByUserIds, //The host shouldn't have us blocked
+            },
+          },
+        ],
+      },
+      include: {
+        participants: true,
+      },
+    });
 
     return streams.map(toStreamDTO);
   },

@@ -1,7 +1,7 @@
-import { ParticipantDAL, UserDAO } from "@backend/dal";
+import { BlockDAO, ParticipantDAL, UserDAO } from "@backend/dal";
 import { CacheService } from "./cache";
 import Filter from "bad-words";
-import { MINUTES_5, SECONDS_5 } from "@backend/constants";
+import { MINUTES_1, MINUTES_5, SECONDS_5 } from "@backend/constants";
 import { BroadcastService } from "./broadcast";
 import { IChatMessage } from "@warpy/lib";
 import cuid from "cuid";
@@ -30,6 +30,18 @@ const cachedGetParticipantsByStream = CacheService.withCache(
   }
 );
 
+const cachedGetBlockedIds = CacheService.withCache(BlockDAO.getBlockedUserIds, {
+  keyExtractor: ([user]) => user,
+  prefix: "blocked_user_ids",
+  expiry: MINUTES_1,
+});
+
+const cachedGetBlockedByIds = CacheService.withCache(BlockDAO.getBlockedByIds, {
+  keyExtractor: ([user]) => user,
+  prefix: "blocked_by_ids",
+  expiry: MINUTES_1,
+});
+
 const profanityFilter = new Filter();
 
 const getFilteredMessage = (message: string): string => {
@@ -55,7 +67,12 @@ const broadcastNewMessage = async (
   }
 
   const participants = await cachedGetParticipantsByStream(stream);
-  const ids = participants.map((participant) => participant.id);
+  const blockedByIds = await cachedGetBlockedByIds(user_id);
+  const blockedIds = await cachedGetBlockedIds(user_id);
+
+  const ids = participants
+    .map((participant) => participant.id)
+    .filter((id) => !blockedByIds.includes(id) && !blockedIds.includes(id));
 
   const message: IChatMessage = {
     id: cuid(),

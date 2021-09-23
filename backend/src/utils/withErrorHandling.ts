@@ -19,9 +19,9 @@ const filterUnknownErrors = (error: Error) => {
 };
 
 export const withErrorHandling = (fn: Handler) => {
-  const handler: Handler = (data, respond) => {
+  const handler: Handler = async (data, respond) => {
     try {
-      fn(data, respond);
+      await fn(data, respond);
     } catch (error) {
       const filteredError = filterUnknownErrors(error);
 

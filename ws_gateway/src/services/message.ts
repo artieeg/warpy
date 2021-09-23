@@ -24,6 +24,7 @@ export const BackendEvents = {
   "new-chat-message": "stream.new-chat-message",
   "kick-user": "stream.kick-user",
   "report-user": "user.report",
+  "block-user": "user.block",
 };
 
 type EventAlias = keyof typeof BackendEvents;

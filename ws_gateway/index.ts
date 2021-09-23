@@ -19,6 +19,7 @@ import {
   onNewChatMessage,
   onKickUser,
   onUserReport,
+  onUserBlock,
 } from "@ws_gateway/handlers";
 import { IMessage } from "@ws_gateway/models";
 import { Context, Handlers } from "@ws_gateway/types";
@@ -54,6 +55,7 @@ const handlers: Handlers = {
   "new-chat-message": onNewChatMessage,
   "kick-user": onKickUser,
   "report-user": onUserReport,
+  "block-user": onUserBlock,
 };
 
 const main = async () => {

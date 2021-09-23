@@ -1,9 +1,6 @@
 import {useStore} from '@app/store';
 import React from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import Modal from 'react-native-modal';
 import {ActionSheet} from './ActionSheet';
-import {Text} from './Text';
 
 interface IUserActionSheetProps {
   user: string | null;
@@ -26,6 +23,11 @@ export const UserActionSheet = (props: IUserActionSheetProps) => {
         {
           title: 'block',
           color: 'alert',
+          onPress: async () => {
+            if (user) {
+              await api.user.block(user);
+            }
+          },
         },
         {
           title: 'report',

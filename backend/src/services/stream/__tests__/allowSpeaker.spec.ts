@@ -1,6 +1,6 @@
 import { mocked } from "ts-jest/utils";
 import { StreamService } from "../index";
-import { ParticipantDAL } from "@backend/dal";
+import { BlockDAO, ParticipantDAL } from "@backend/dal";
 import {
   MessageService,
   MediaService,
@@ -8,12 +8,13 @@ import {
 } from "@backend/services";
 import { createParticipantFixture } from "@backend/__fixtures__";
 import { Roles } from "@warpy/lib";
+import { BlockedByAnotherSpeaker } from "@backend/errors";
 
 describe("StreamService.allowSpeaker", () => {
   const mockedParticipantDAL = mocked(ParticipantDAL);
   const mockedBroadcastService = mocked(BroadcastService);
   const mockedMediaService = mocked(MediaService);
-  const mockedMessageService = mocked(MessageService);
+  const mockedBlockDAO = mocked(BlockDAO);
 
   const host = createParticipantFixture({ role: "streamer" });
   const viewer = createParticipantFixture({ role: "viewer" });
@@ -23,18 +24,26 @@ describe("StreamService.allowSpeaker", () => {
   const producerNodeId = "test-producer-node-id";
   const permissionsToken = "test-permissions-token";
 
+  const existingSpeakerId = "existing-speaker-id";
+
+  const speakers = [
+    createParticipantFixture({ id: existingSpeakerId, role: "speaker" }),
+  ];
+
   const testSpeakerMedia = { test: true };
 
   beforeAll(() => {
     mockedParticipantDAL.getCurrentStreamFor.mockResolvedValue(stream);
     mockedParticipantDAL.getRoleFor.mockResolvedValue(host.role);
     mockedParticipantDAL.makeSpeaker.mockResolvedValue(newSpeaker);
+    mockedParticipantDAL.getSpeakers.mockResolvedValue(speakers);
     mockedMediaService.connectSpeakerMedia.mockResolvedValue(
       testSpeakerMedia as any
     );
     mockedMediaService.getConsumerNodeId.mockResolvedValue(consumerNodeId);
     mockedMediaService.getConsumerNodeId.mockResolvedValue(producerNodeId);
     mockedMediaService.createPermissionsToken.mockReturnValue(permissionsToken);
+    mockedBlockDAO.getBlockedByIds.mockResolvedValue([]);
 
     //TODO: mock the whole method
   });
@@ -64,6 +73,16 @@ describe("StreamService.allowSpeaker", () => {
 
     expect(mockedBroadcastService.broadcastNewSpeaker).toBeCalledWith(
       newSpeaker
+    );
+  });
+
+  it("does not allow speaking if the user is blocked by one of the speakers", () => {
+    mockedBlockDAO.getBlockedByIds.mockResolvedValueOnce([existingSpeakerId]);
+    expect(StreamService.allowSpeaker(viewer.id, host.id)).rejects.toEqual(
+      new BlockedByAnotherSpeaker({
+        last_name: speakers[0].last_name,
+        first_name: speakers[0].first_name,
+      })
     );
   });
 });
