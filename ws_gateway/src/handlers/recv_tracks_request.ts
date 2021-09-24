@@ -31,6 +31,7 @@ export const onRecvTracksRequest: Handler = async (data, context, rid) => {
     },
     rid,
   });
+
   context.ws.send(
     JSON.stringify({
       event: "recv-tracks-response",

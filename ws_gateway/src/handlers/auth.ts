@@ -24,9 +24,12 @@ export const onAuth: Handler = async (data, context, rid) => {
     }
   );
 
-  const response = await MessageService.sendBackendRequest("whoami-request", {
-    user,
-  });
+  const response = await MessageService.sendBackendRequest(
+    "user.whoami-request",
+    {
+      user,
+    }
+  );
 
   context.ws.send(
     JSON.stringify({

@@ -120,7 +120,7 @@ export interface IWhoAmIRequest {
 }
 
 export interface INewStream {
-  owner: string;
+  user: string;
   title: string;
   hub: string;
 }

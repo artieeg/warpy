@@ -1,31 +1,15 @@
 import "module-alias/register";
-
-import {
-  onAuth,
-  onRaiseHand,
-  onJoinStream,
-  onAllowSpeaker,
-  onNewTrack,
-  onRecvTracksRequest,
-  onViewersRequest,
-  onStreamStop,
-  onNewStream,
-  onFeedRequest,
-  onNewUser,
-  onUserDelete,
-  onReaction,
-  onFollow,
-  onUnfollow,
-  onNewChatMessage,
-  onKickUser,
-  onUserReport,
-  onUserBlock,
-} from "@ws_gateway/handlers";
+import joi from "joi";
+import { handle } from "./src/handle";
 import { IMessage } from "@ws_gateway/models";
-import { Context, Handlers } from "@ws_gateway/types";
+import { Context, HandlerConfig } from "@ws_gateway/types";
 import ws from "ws";
 import { MessageService, PingPongService } from "@ws_gateway/services";
-import { onConnectTransport } from "@ws_gateway/handlers/connect_transport";
+import {
+  onAuth,
+  onRecvTracksRequest,
+  onConnectTransport,
+} from "@ws_gateway/handlers";
 
 const PORT = Number.parseInt(process.env.PORT || "10000");
 
@@ -35,27 +19,152 @@ const server = new ws.Server({
   host: "0.0.0.0",
 });
 
-const handlers: Handlers = {
-  auth: onAuth,
-  "join-stream": onJoinStream,
-  "raise-hand": onRaiseHand,
-  "speaker-allow": onAllowSpeaker,
-  "new-track": onNewTrack,
-  "connect-transport": onConnectTransport,
-  "recv-tracks-request": onRecvTracksRequest,
-  "request-viewers": onViewersRequest,
-  "stream-stop": onStreamStop,
-  "stream-new": onNewStream,
-  "request-feed": onFeedRequest,
-  "new-user": onNewUser,
-  "delete-user": onUserDelete,
-  reaction: onReaction,
-  "user-follow": onFollow,
-  "user-unfollow": onUnfollow,
-  "new-chat-message": onNewChatMessage,
-  "kick-user": onKickUser,
-  "report-user": onUserReport,
-  "block-user": onUserBlock,
+const handlers: Record<string, HandlerConfig> = {
+  "join-stream": {
+    subject: "stream.join",
+    kind: "request",
+    auth: true,
+    schema: joi.object({
+      stream: joi.string().max(64).required(),
+    }),
+  },
+  "raise-hand": {
+    subject: "user.raise-hand",
+    kind: "event",
+    auth: true,
+    schema: joi.object({}),
+  },
+  "speaker-allow": {
+    subject: "speaker.allow",
+    kind: "event",
+    auth: true,
+    schema: joi.object({
+      speaker: joi.string().max(64).required(),
+    }),
+  },
+  "new-track": {
+    subject: "media.track.send",
+    kind: "event",
+    auth: true,
+    schema: joi.object().unknown(),
+  },
+  "request-viewers": {
+    subject: "viewers.get",
+    kind: "request",
+    auth: true,
+    schema: joi.object({
+      page: joi.number().min(0).required(),
+      stream: joi.string().max(64).required(),
+    }),
+  },
+  "stream-stop": {
+    subject: "stream.stop",
+    kind: "event",
+    auth: true,
+    schema: joi.object({
+      stream: joi.string().max(64).required(),
+    }),
+  },
+  "stream-new": {
+    subject: "stream.create",
+    kind: "request",
+    auth: true,
+    schema: joi.object({
+      title: joi.string().min(3).max(64).required(),
+      hub: joi.string().max(64).required(),
+    }),
+  },
+  "request-feed": {
+    subject: "feeds.get",
+    kind: "request",
+    auth: true,
+    schema: joi.object({ page: joi.number().min(0).required() }),
+  },
+  "new-user": {
+    subject: "user.create",
+    kind: "request",
+    auth: false,
+    schema: joi.object().unknown(),
+  },
+  "delete-user": {
+    subject: "user.delete",
+    kind: "request",
+    auth: true,
+    schema: joi.object({}),
+  },
+  reaction: {
+    subject: "stream.reaction",
+    kind: "event",
+    auth: true,
+    schema: joi.object({
+      stream: joi.string().max(64).required(),
+      emoji: joi.string().max(64).required(),
+    }),
+  },
+  "user-follow": {
+    subject: "user.follow",
+    kind: "event",
+    auth: true,
+    schema: joi.object({
+      userToFollow: joi.string().max(64).required(),
+    }),
+  },
+  "user-unfollow": {
+    subject: "user.follow",
+    kind: "event",
+    auth: true,
+    schema: joi.object({
+      userToUnfollow: joi.string().max(64).required(),
+    }),
+  },
+  "new-chat-message": {
+    subject: "stream.new-chat-message",
+    kind: "request",
+    auth: true,
+    schema: joi.object({
+      message: joi.string().max(500).required(),
+    }),
+  },
+  "kick-user": {
+    subject: "stream.kick-user",
+    kind: "event",
+    auth: true,
+    schema: joi.object({
+      userToKick: joi.string().max(64).required(),
+    }),
+  },
+  "report-user": {
+    subject: "user.report",
+    kind: "request",
+    auth: true,
+    schema: joi.object({
+      reportedUserId: joi.string().max(64).required(),
+      reportReasonId: joi.string().max(64).required(),
+    }),
+  },
+  "block-user": {
+    subject: "user.block",
+    kind: "request",
+    auth: true,
+    schema: joi.object({
+      userToBlock: joi.string().max(64).required(),
+    }),
+  },
+
+  auth: {
+    schema: joi.object({
+      token: joi.string().max(400).required(),
+    }),
+    customHandler: onAuth,
+  },
+  "connect-transport": {
+    schema: joi.object().unknown(),
+    customHandler: onConnectTransport,
+  },
+  "recv-tracks-request": {
+    schema: joi.object().unknown(),
+    customHandler: onRecvTracksRequest,
+  },
 };
 
 const main = async () => {
@@ -81,7 +190,7 @@ const main = async () => {
       const { event, data, rid } = message;
 
       try {
-        await handlers[event](data, context, rid);
+        await handle({ data, event, context, rid, handler: handlers[event] });
       } catch (e) {
         console.log("failed to process", event);
 
