@@ -27,17 +27,15 @@ export const BackendEvents = {
   "block-user": "user.block",
 };
 
-type EventAlias = keyof typeof BackendEvents;
-
-export const sendBackendMessage = (event: EventAlias, data: any) => {
-  nc.publish(BackendEvents[event], jc.encode(data));
+export const sendBackendMessage = (subject: string, data: any) => {
+  nc.publish(subject, jc.encode(data));
 };
 
 export const sendBackendRequest = async (
-  event: EventAlias,
+  subject: string,
   data: any
 ): Promise<any> => {
-  const response = await nc.request(BackendEvents[event], jc.encode(data), {
+  const response = await nc.request(subject, jc.encode(data), {
     timeout: 240000, //for debug purposes
   });
 

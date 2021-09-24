@@ -1,31 +1,12 @@
 import "module-alias/register";
+import joi from "joi";
+import { handle } from "./src/handler";
 
-import {
-  onAuth,
-  onRaiseHand,
-  onJoinStream,
-  onAllowSpeaker,
-  onNewTrack,
-  onRecvTracksRequest,
-  onViewersRequest,
-  onStreamStop,
-  onNewStream,
-  onFeedRequest,
-  onNewUser,
-  onUserDelete,
-  onReaction,
-  onFollow,
-  onUnfollow,
-  onNewChatMessage,
-  onKickUser,
-  onUserReport,
-  onUserBlock,
-} from "@ws_gateway/handlers";
 import { IMessage } from "@ws_gateway/models";
-import { Context, Handlers } from "@ws_gateway/types";
+import { Context } from "@ws_gateway/types";
 import ws from "ws";
 import { MessageService, PingPongService } from "@ws_gateway/services";
-import { onConnectTransport } from "@ws_gateway/handlers/connect_transport";
+import { Handler } from "@ws_gateway/models/handler";
 
 const PORT = Number.parseInt(process.env.PORT || "10000");
 
@@ -35,27 +16,15 @@ const server = new ws.Server({
   host: "0.0.0.0",
 });
 
-const handlers: Handlers = {
-  auth: onAuth,
-  "join-stream": onJoinStream,
-  "raise-hand": onRaiseHand,
-  "speaker-allow": onAllowSpeaker,
-  "new-track": onNewTrack,
-  "connect-transport": onConnectTransport,
-  "recv-tracks-request": onRecvTracksRequest,
-  "request-viewers": onViewersRequest,
-  "stream-stop": onStreamStop,
-  "stream-new": onNewStream,
-  "request-feed": onFeedRequest,
-  "new-user": onNewUser,
-  "delete-user": onUserDelete,
-  reaction: onReaction,
-  "user-follow": onFollow,
-  "user-unfollow": onUnfollow,
-  "new-chat-message": onNewChatMessage,
-  "kick-user": onKickUser,
-  "report-user": onUserReport,
-  "block-user": onUserBlock,
+const handlers: Record<string, Handler> = {
+  "join-stream": {
+    subject: "stream.join",
+    kind: "event",
+    auth: true,
+    schema: joi.object({
+      stream: joi.string().max(64).required(),
+    }),
+  },
 };
 
 const main = async () => {
@@ -81,7 +50,7 @@ const main = async () => {
       const { event, data, rid } = message;
 
       try {
-        await handlers[event](data, context, rid);
+        await handle({ data, context, rid, handler: handlers[event] });
       } catch (e) {
         console.log("failed to process", event);
 
