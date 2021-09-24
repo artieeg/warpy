@@ -1,20 +1,17 @@
-import { Context } from "@ws_gateway/types";
-import { Handler } from "@ws_gateway/models/handler";
+import { Context, HandlerConfig } from "@ws_gateway/types";
 import { MessageService } from "./services";
 
 type HandleParams = {
   data: any;
   context: Context;
   rid?: string;
-  handler: Handler;
+  handler: HandlerConfig;
   event: string;
 };
 
-export const handle = async ({ data, event, context, rid, handler }: HandleParams) => {
+export const handle = async ({ data, context, rid, handler }: HandleParams) => {
   const { ws } = context;
   const { subject, schema, auth, customHandler, kind } = handler;
-
-  console.log(event);
 
   const { error: schemaValidationError } = schema.validate(data);
 

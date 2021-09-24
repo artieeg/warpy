@@ -1,14 +1,15 @@
 import "module-alias/register";
 import joi from "joi";
-import { handle } from "./src/handler";
-
+import { handle } from "./src/handle";
 import { IMessage } from "@ws_gateway/models";
-import { Context } from "@ws_gateway/types";
+import { Context, HandlerConfig } from "@ws_gateway/types";
 import ws from "ws";
 import { MessageService, PingPongService } from "@ws_gateway/services";
-import { Handler } from "@ws_gateway/models/handler";
-import { onAuth, onRecvTracksRequest } from "@ws_gateway/handlers";
-import { onConnectTransport } from "@ws_gateway/handlers/connect_transport";
+import {
+  onAuth,
+  onRecvTracksRequest,
+  onConnectTransport,
+} from "@ws_gateway/handlers";
 
 const PORT = Number.parseInt(process.env.PORT || "10000");
 
@@ -18,7 +19,7 @@ const server = new ws.Server({
   host: "0.0.0.0",
 });
 
-const handlers: Record<string, Handler> = {
+const handlers: Record<string, HandlerConfig> = {
   "join-stream": {
     subject: "stream.join",
     kind: "request",
