@@ -11,6 +11,7 @@ export const onConnectTransport: Handler = async (data, context?) => {
   const { recvNodeId, sendNodeId } = permissions;
 
   console.log("permissions", permissions);
+  console.log(data);
 
   if (!user) {
     return;

@@ -3,9 +3,9 @@ import { StreamService } from "@backend/services";
 
 export const onNewStream: MessageHandler<INewStream, INewStreamResponse> =
   async (params, respond) => {
-    const { owner, title, hub } = params;
+    const { user, title, hub } = params;
     try {
-      const result = await StreamService.createNewStream(owner, title, hub);
+      const result = await StreamService.createNewStream(user, title, hub);
       respond(result);
     } catch (e) {
       console.error(e);

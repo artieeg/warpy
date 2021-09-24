@@ -11,7 +11,7 @@ export const onNewStream: Handler = async (data, context, rid) => {
   const { title, hub } = data;
 
   const response = await MessageService.sendBackendRequest("stream-new", {
-    owner: user,
+    user,
     title,
     hub,
   });

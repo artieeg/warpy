@@ -11,5 +11,5 @@ export type Handler = {
    * if "request", the handler will wait for the backend's response;
    * if "event", it will simply publish the message;
    * */
-  kind: "request" | "event";
+  kind?: "request" | "event";
 };

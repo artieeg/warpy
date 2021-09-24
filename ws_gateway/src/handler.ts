@@ -7,11 +7,14 @@ type HandleParams = {
   context: Context;
   rid?: string;
   handler: Handler;
+  event: string;
 };
 
-export const handle = async ({ data, context, rid, handler }: HandleParams) => {
+export const handle = async ({ data, event, context, rid, handler }: HandleParams) => {
   const { ws } = context;
   const { subject, schema, auth, customHandler, kind } = handler;
+
+  console.log(event);
 
   const { error: schemaValidationError } = schema.validate(data);
 
