@@ -12,7 +12,7 @@ const App = () => {
   StatusBar.setBackgroundColor('transparent');
 
   return (
-    <ToastProvider>
+    <>
       <NavigationContainer>
         <Stack.Navigator headerMode="none">
           <Stack.Screen name="Splash" component={Splash} />
@@ -22,7 +22,9 @@ const App = () => {
           <Stack.Screen name="Stream" component={Stream} />
         </Stack.Navigator>
       </NavigationContainer>
-    </ToastProvider>
+
+      <ToastProvider />
+    </>
   );
 };
 

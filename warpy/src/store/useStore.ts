@@ -14,6 +14,7 @@ import {State, UseStore} from 'zustand';
 import {createTokenSlice, ITokenSlice} from './slices/createTokenSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {configurePersist} from 'zustand-persist';
+import {createToastSlice, IToastSlice} from './slices/createToastSlice';
 
 interface Selectors<StoreType> {
   use: {
@@ -43,6 +44,7 @@ export interface IStore
     IDeviceSlice,
     IChatSlice,
     ITokenSlice,
+    IToastSlice,
     IAPISlice {
   set: SetState<IStore>;
   get: GetState<IStore>;
@@ -60,6 +62,7 @@ export const useStore = createSelectorHooks<IStore>(
       ...createDeviceSlice(set, get),
       ...createChatSlice(set, get),
       ...createTokenSlice(set, get),
+      ...createToastSlice(set, get),
       set,
       get,
     };

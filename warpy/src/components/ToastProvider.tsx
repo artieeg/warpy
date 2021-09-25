@@ -1,27 +1,13 @@
-import React, {createContext, useEffect, useRef, useState} from 'react';
-import {StyleSheet, View, Animated} from 'react-native';
+import {useStore} from '@app/store';
+import React, {useEffect, useRef} from 'react';
+import {StyleSheet, Animated} from 'react-native';
 import {Text} from './Text';
-
-export enum Toast {
-  LONG,
-  SHORT,
-}
-
-type ToastMessage = {
-  duration: Toast;
-  text: string;
-};
-
-interface IToastContext {
-  show: (message: ToastMessage) => void;
-}
-
-export const ToastContext = createContext<IToastContext | null>(null);
 
 const FADE_DURATION = 100;
 
-export const ToastProvider = (props: any) => {
-  const [message, setMessage] = useState<ToastMessage>();
+export const ToastProvider = () => {
+  const message = useStore.use.message();
+  const duration = useStore.use.duration();
 
   const opacity = useRef(new Animated.Value(0));
   const translateY = useRef(new Animated.Value(20));
@@ -44,7 +30,7 @@ export const ToastProvider = (props: any) => {
           useNativeDriver: true,
         }),
       ]),
-      Animated.delay(message.duration === Toast.LONG ? 2000 : 1000),
+      Animated.delay(duration === 'LONG' ? 2000 : 1000),
       Animated.parallel([
         Animated.timing(translateY.current, {
           toValue: 20,
@@ -57,7 +43,11 @@ export const ToastProvider = (props: any) => {
           useNativeDriver: true,
         }),
       ]),
-    ]).start();
+    ]).start(() => {
+      useStore.setState({
+        message: null,
+      });
+    });
   }, [message]);
 
   const animatedStyle = {
@@ -67,19 +57,10 @@ export const ToastProvider = (props: any) => {
 
   return (
     <>
-      <ToastContext.Provider
-        {...props}
-        value={{
-          show(message) {
-            setMessage(message);
-          },
-        }}
-      />
-
       {message && (
         <Animated.View style={[styles.toast, animatedStyle]}>
           <Text weight="bold" size="xsmall" color="dark">
-            {message.text}
+            {message}
           </Text>
         </Animated.View>
       )}
