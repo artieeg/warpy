@@ -3,28 +3,26 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {GivenReaction, IGivenReaction} from './GivenReaction';
 
-interface IReactionCanvasProps {
-  reaction: string;
-  stream: string;
-}
-
-export const ReactionCanvas = (props: IReactionCanvasProps) => {
-  const {reaction, stream} = props;
+export const ReactionCanvas = () => {
+  const reaction = useStore.use.reaction();
+  const stream = useStore.use.stream();
   const api = useStore.use.api();
 
   const [reactions, setReactions] = useState<IGivenReaction[]>([]);
 
   useEffect(() => {
     setInterval(() => {
-      //const date = Date.now();
       setReactions([]);
-      //      setReactions(prev => prev.filter(item => date - item.timestamp < 2000));
     }, 10000);
   }, []);
 
   const onTouchStart = useCallback(
     ({nativeEvent}: any) => {
       const maxAngle = 50;
+
+      if (!stream) {
+        return;
+      }
 
       api.stream.react(stream, reaction);
       setReactions(prev => [

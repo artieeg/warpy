@@ -21,3 +21,5 @@ export * from './ToggleControls';
 export * from './ToastProvider';
 export * from './ReportActionSheet';
 export * from './ActionSheet';
+export * from './ModalProvider';
+export * from './ToastProvider';

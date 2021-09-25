@@ -8,6 +8,7 @@ import {arrayToMap} from '@app/utils';
 export interface IStreamSlice {
   /** Stores current stream id */
   stream: string | null;
+  title: string | null;
 
   isSpeaker?: boolean;
 
@@ -59,6 +60,7 @@ export const createStreamSlice = (
   viewersWithRaisedHands: {},
   isStreamOwner: false,
   speakers: {},
+  title: null,
 
   async create(title, hub) {
     const {api, initSpeakerMedia, initViewerMedia} = get();
@@ -88,6 +90,7 @@ export const createStreamSlice = (
 
     set({
       stream,
+      title,
       speakers: arrayToMap<Participant>(speakers.map(Participant.fromJSON)),
       totalParticipantCount: count,
       isStreamOwner: true,
