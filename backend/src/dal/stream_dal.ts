@@ -71,6 +71,15 @@ export const StreamDAL = {
     return count;
   },
 
+  async stop(stream_id: string): Promise<void> {
+    await prisma.stream.update({
+      where: { id: stream_id },
+      data: {
+        live: false,
+      },
+    });
+  },
+
   async deleteByUser(user: string): Promise<number> {
     const result = await prisma.stream.deleteMany({
       where: { owner_id: user },
@@ -88,6 +97,7 @@ export const StreamDAL = {
   }): Promise<IStream[]> {
     const streams = await prisma.stream.findMany({
       where: {
+        live: true,
         AND: [
           {
             owner_id: {
@@ -100,9 +110,6 @@ export const StreamDAL = {
             },
           },
         ],
-      },
-      include: {
-        participants: true,
       },
     });
 
