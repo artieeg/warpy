@@ -1,10 +1,27 @@
 import {RemoteStream} from '@app/components';
-import React from 'react';
+import {useStore} from '@app/store';
+import React, {useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 
 export const Stream = (props: any) => {
   const {route} = props;
   const {stream} = route.params;
+
+  useEffect(() => {
+    useStore.setState({
+      title: stream.title,
+      stream: stream.id,
+    });
+
+    return () => {
+      useStore.setState({
+        title: null,
+        stream: null,
+      });
+    };
+  });
+
+  //TODO: create remote stream slice, store title, id, etc. use in modals
 
   return (
     <View style={styles.wrapper}>

@@ -21,7 +21,6 @@ import {
 interface IParticipanModalProps {
   visible: boolean;
   onHide: () => void;
-  title: string;
   onSelectParticipant: (id: string) => any;
   onOpenActions: (id: string) => any;
 }

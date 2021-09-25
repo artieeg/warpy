@@ -3,7 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {DevSignUp, Feed, NewStream, Splash, Stream} from './src/screens';
 import {StatusBar} from 'react-native';
-import {ToastProvider} from '@app/components/ToastProvider';
+import {ModalProvider, ToastProvider} from '@app/components';
 
 const Stack = createStackNavigator();
 
@@ -24,6 +24,7 @@ const App = () => {
       </NavigationContainer>
 
       <ToastProvider />
+      <ModalProvider />
     </>
   );
 };

@@ -12,13 +12,11 @@ interface ISpeakerStreamPanel extends IStreamPanelBase {
   participantsCount: number;
   onOpenParticipantsList: () => any;
   onOpenReactions: () => any;
-  reaction: string;
 }
 
 export const SpeakerStreamPanel = (props: ISpeakerStreamPanel) => {
   const {
     participantsCount,
-    reaction,
     onOpenReactions,
     onOpenParticipantsList,
     micIsOn,
@@ -28,7 +26,7 @@ export const SpeakerStreamPanel = (props: ISpeakerStreamPanel) => {
   return (
     <StreamPanelBase {...props}>
       <StopSpeakingButton style={styles.spaceRight} onPress={() => {}} />
-      <ClapButton reaction={reaction} onPress={onOpenReactions} />
+      <ClapButton onPress={onOpenReactions} />
       <ShowParticipantsButton
         style={styles.spaceRight}
         count={participantsCount}
