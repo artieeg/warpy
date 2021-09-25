@@ -1,5 +1,7 @@
-import { ParticipantDAL } from "@backend/dal";
+import { ParticipantDAL, StreamDAL } from "@backend/dal";
 import { BroadcastService, FeedCacheService } from "..";
+
+//TODO: code's too bad over here
 
 export const removeUserFromStreams = async (user: string): Promise<void> => {
   const stream = await ParticipantDAL.getCurrentStreamFor(user);
@@ -9,13 +11,15 @@ export const removeUserFromStreams = async (user: string): Promise<void> => {
     if (participant) {
       await ParticipantDAL.updateOne(user, {
         hasLeftStream: true,
+        left_at: new Date(),
       });
 
       if (stream) {
         BroadcastService.broadcastParticipantLeft(user, stream);
 
         if (participant?.role === "streamer") {
-          ParticipantDAL.deleteParticipant(user);
+          await StreamDAL.stop(stream);
+          await ParticipantDAL.allParticipantsLeave(stream);
         }
       }
     }

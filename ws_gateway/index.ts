@@ -174,7 +174,7 @@ const main = async () => {
   console.log("Started ws gateway service");
 
   const onUserDisconnect = (user: string) => {
-    MessageService.sendBackendMessage("user-disconnected", { user });
+    MessageService.sendBackendMessage("user.disconnected", { user });
   };
 
   PingPongService.observer.on("user-disconnected", onUserDisconnect);

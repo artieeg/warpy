@@ -10,17 +10,17 @@ generator client {
 }
 
 model User {
-  id          String       @id @default(cuid())
+  id          String        @id @default(cuid())
   username    String
   first_name  String
   last_name   String
   avatar      String
   email       String
   sub         String
-  created_at  DateTime     @default(now())
+  created_at  DateTime      @default(now())
   participant Participant[]
 
-  sent_reports Report[] @relation(name: "sent_reports")
+  sent_reports     Report[] @relation(name: "sent_reports")
   received_reports Report[] @relation(name: "received_reports")
 
   //Blocked by
@@ -32,55 +32,57 @@ model User {
   followers FollowRecord[] @relation(name: "follower")
   followed  FollowRecord[] @relation(name: "followed")
 
+  Stream Stream[] @relation("owner")
   //Stream Stream[]
   @@map(name: "Users")
 }
 
 model UserBlock {
-  id          String       @id @default(cuid())
+  id String @id @default(cuid())
 
-  blocked_id       String  
-  blocked          User    @relation(name: "blocked", fields: [blocked_id], references: [id], onDelete: Cascade)
+  blocked_id String
+  blocked    User   @relation(name: "blocked", fields: [blocked_id], references: [id], onDelete: Cascade)
 
-  blocker_id       String  
-  blocker   User    @relation(name: "blocker", fields: [blocked_id], references: [id], onDelete: Cascade)
+  blocker_id String
+  blocker    User   @relation(name: "blocker", fields: [blocked_id], references: [id], onDelete: Cascade)
 }
 
 model Report {
-  id          String       @id @default(cuid())
-  reporter_id       String  
-  reporter          User    @relation(name: "sent_reports", fields: [reporter_id], references: [id], onDelete: Cascade)
+  id          String @id @default(cuid())
+  reporter_id String
+  reporter    User   @relation(name: "sent_reports", fields: [reporter_id], references: [id], onDelete: Cascade)
 
-  reported_id       String  
-  reported          User    @relation(name: "received_reports", fields: [reported_id], references: [id], onDelete: Cascade)
+  reported_id String
+  reported    User   @relation(name: "received_reports", fields: [reported_id], references: [id], onDelete: Cascade)
 
   reason String
 
-  created_at  DateTime     @default(now())
+  created_at DateTime @default(now())
 }
 
 model Participant {
-  id            String  @id @default(cuid())
-  user_id       String  @unique
-  user          User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  id            String    @id @default(cuid())
+  user_id       String    @unique
+  user          User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
   stream_id     String?
-  stream        Stream? @relation(name: "participant", fields: [stream_id], references: [id], onDelete: Cascade)
+  stream        Stream?   @relation(name: "participant", fields: [stream_id], references: [id], onDelete: Cascade)
   role          String
   isRaisingHand Boolean
-  isBanned      Boolean @default(false)
-  hasLeftStream Boolean @default(false)
+  isBanned      Boolean   @default(false)
+  hasLeftStream Boolean   @default(false)
+  joined_at     DateTime  @default(now())
+  left_at       DateTime?
 
-  recvNodeId    String
-  sendNodeId    String?
+  recvNodeId String
+  sendNodeId String?
 
-  Stream Stream[] @relation("owner")
   @@unique([user_id, stream_id, hasLeftStream], name: "stream_participant_index")
 }
 
 model Stream {
   id           String        @id @default(cuid())
   title        String
-  owner        Participant   @relation(name: "owner", fields: [owner_id], references: [user_id], onDelete: Cascade)
+  owner        User          @relation(name: "owner", fields: [owner_id], references: [id], onDelete: Cascade)
   owner_id     String
   hub          String
   live         Boolean

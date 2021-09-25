@@ -93,6 +93,18 @@ export const ParticipantDAL = {
     return toFullParticipantDTO(data);
   },
 
+  async allParticipantsLeave(stream: string): Promise<void> {
+    await prisma.participant.updateMany({
+      where: {
+        stream_id: stream,
+      },
+      data: {
+        left_at: new Date(),
+        hasLeftStream: true,
+      },
+    });
+  },
+
   async setStream(user_id: string, stream: string): Promise<void> {
     await prisma.participant.update({
       where: { user_id },
@@ -178,7 +190,10 @@ export const ParticipantDAL = {
       where: { user_id: user },
       data: {
         isBanned,
-        hasLeftStream: true,
+        ...(isBanned && {
+          hasLeftStream: true,
+          left_at: new Date(),
+        }),
       },
     });
   },
