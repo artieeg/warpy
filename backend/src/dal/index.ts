@@ -5,3 +5,4 @@ export * from "./refresh_token_dal";
 export * from "./follow_record_dal";
 export * from "./reports_dao";
 export * from "./block_dao";
+export * from "./invite";

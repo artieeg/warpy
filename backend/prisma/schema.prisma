@@ -32,6 +32,9 @@ model User {
   followers FollowRecord[] @relation(name: "follower")
   followed  FollowRecord[] @relation(name: "followed")
 
+  inviter Invite[] @relation(name: "inviter")
+  invitee Invite[] @relation(name: "invitee")
+
   Stream Stream[] @relation("owner")
   //Stream Stream[]
   @@map(name: "Users")
@@ -44,7 +47,7 @@ model UserBlock {
   blocked    User   @relation(name: "blocked", fields: [blocked_id], references: [id], onDelete: Cascade)
 
   blocker_id String
-  blocker    User   @relation(name: "blocker", fields: [blocked_id], references: [id], onDelete: Cascade)
+  blocker    User   @relation(name: "blocker", fields: [blocker_id], references: [id], onDelete: Cascade)
 }
 
 model Report {
@@ -88,6 +91,7 @@ model Stream {
   live         Boolean
   preview      String?
   participants Participant[] @relation(name: "participant")
+  invites      Invite[]      @relation(name: "invites")
   reactions    Int
 }
 
@@ -105,4 +109,17 @@ model FollowRecord {
   followed User @relation(name: "followed", fields: [followed_id], references: [id], onDelete: Cascade)
 
   @@unique([follower_id, followed_id], name: "unique_follow_index")
+}
+
+model Invite {
+  id String @id @default(cuid())
+
+  stream_id String
+  stream    Stream @relation(name: "invites", fields: [stream_id], references: [id], onDelete: Cascade)
+
+  invitee_id String
+  invitee    User   @relation(name: "invitee", fields: [invitee_id], references: [id], onDelete: Cascade)
+
+  inviter_id String
+  inviter    User   @relation(name: "inviter", fields: [inviter_id], references: [id], onDelete: Cascade)
 }

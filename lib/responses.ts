@@ -1,4 +1,10 @@
-import { IParticipant, ICandidate, IBaseUser, IChatMessage } from "./models";
+import {
+  IParticipant,
+  ICandidate,
+  IBaseUser,
+  IChatMessage,
+  IInvite,
+} from "./models";
 
 export interface INewStreamResponse {
   stream: string;
@@ -70,4 +76,8 @@ export interface IUserReportResponse {
 
 export interface IUserBlockResponse {
   blockId: string;
+}
+
+export interface IInviteResponse {
+  invite: IInvite;
 }

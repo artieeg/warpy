@@ -30,6 +30,7 @@ import {
   onKickUser,
   onUserReport,
   onUserBlock,
+  onInvite,
 } from "@backend/handlers";
 import { withErrorHandling } from "@backend/utils/withErrorHandling";
 import { MessageHandler } from "@warpy/lib";
@@ -60,6 +61,7 @@ const main = async () => {
     "user-unfollow": onUnfollow,
     "report-user": onUserReport,
     "block-user": onUserBlock,
+    "stream-invite": onInvite,
   };
 
   for (const [event, handler] of Object.entries(handlers)) {

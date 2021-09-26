@@ -213,3 +213,9 @@ export interface IUserBlockRequest {
   userToBlock: string;
   user: string;
 }
+
+export interface IInviteRequest {
+  invitee: string;
+  stream: string;
+  user: string;
+}
