@@ -1,5 +1,5 @@
 import { User } from "@prisma/client";
-import { prisma } from "./client";
+import { prisma, runPrismaQuery } from "./client";
 import { IUser } from "@warpy/lib";
 
 type NewUserParams = Omit<Omit<User, "id">, "created_at">;
@@ -18,22 +18,26 @@ export const toUserDTO = (data: User, includeDetails = false): IUser => {
 
 export const UserDAO = {
   async createNewUser(data: NewUserParams): Promise<User> {
-    const user = await prisma.user.create({
-      data,
-    });
+    const user = await runPrismaQuery(() =>
+      prisma.user.create({
+        data,
+      })
+    );
 
     return user;
   },
 
   async findById(id: string, details = false): Promise<IUser | null> {
-    const user = await prisma.user.findUnique({
-      where: { id },
-    });
+    const user = await runPrismaQuery(() =>
+      prisma.user.findUnique({
+        where: { id },
+      })
+    );
 
     return user ? toUserDTO(user, details) : null;
   },
 
   async delete(id: string): Promise<User> {
-    return prisma.user.delete({ where: { id } });
+    return await runPrismaQuery(() => prisma.user.delete({ where: { id } }));
   },
 };

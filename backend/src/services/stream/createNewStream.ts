@@ -2,6 +2,7 @@ import { INewStreamResponse, Participant } from "@warpy/lib";
 import { MediaService } from "@backend/services";
 import { StreamDAL } from "@backend/dal/stream_dal";
 import { ParticipantDAL, UserDAO } from "@backend/dal";
+import { UserNotFound } from "@backend/errors";
 
 export const createNewStream = async (
   owner: string,
@@ -17,7 +18,7 @@ export const createNewStream = async (
   ]);
 
   if (!streamer) {
-    throw new Error();
+    throw new UserNotFound();
   }
 
   const participant = await ParticipantDAL.create({

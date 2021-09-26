@@ -1,4 +1,9 @@
 import { ParticipantDAL } from "@backend/dal";
+import {
+  InternalError,
+  NoPermissionError,
+  UserNotFound,
+} from "@backend/errors";
 import { BroadcastService } from "../broadcast";
 import { MessageService } from "../message";
 
@@ -9,18 +14,16 @@ export const kickFromStream = async ({
   user: string;
   userToKick: string;
 }) => {
-  console.log("kicking user", user, userToKick);
-
   const userKickingData = await ParticipantDAL.getById(user);
 
   if (userKickingData?.role !== "streamer") {
-    throw new Error("Permission Error");
+    throw new NoPermissionError();
   }
 
   const userToKickData = await ParticipantDAL.getById(userToKick);
 
   if (!userToKickData) {
-    throw new Error("User to kick does not exist");
+    throw new UserNotFound();
   }
 
   const stream = userKickingData.stream;
@@ -30,7 +33,7 @@ export const kickFromStream = async ({
   }
 
   if (userToKickData?.stream !== stream) {
-    throw new Error("Can't kick this participant");
+    throw new NoPermissionError();
   }
 
   const { sendNodeId, recvNodeId } = userToKickData;
@@ -41,7 +44,7 @@ export const kickFromStream = async ({
   ]);
 
   if (sendNodeResponse?.status !== "ok" && recvNodeResponse?.status !== "ok") {
-    throw new Error("Failed to kick from the media nodes");
+    throw new InternalError();
   }
 
   const streamParticipantIds = await ParticipantDAL.getIdsByStream(stream);
