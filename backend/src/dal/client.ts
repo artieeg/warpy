@@ -17,6 +17,7 @@ export async function runPrismaQuery<F extends BaseQueryFn>(
     return result;
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      console.error(e);
       //TODO: handle prisma-specific errors
     }
 
