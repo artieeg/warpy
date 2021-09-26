@@ -42,7 +42,7 @@ const SubjectEventMap = {
   "stream.kick-user": "kick-user",
   "user.report": "report-user",
   "user.block": "block-user",
-  "user.invite": "stream-invite",
+  "user.invite": "user-invite",
 };
 
 export type Subject = keyof typeof SubjectEventMap;

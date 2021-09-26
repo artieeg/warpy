@@ -150,6 +150,15 @@ const handlers: Record<string, HandlerConfig> = {
       userToBlock: joi.string().max(64).required(),
     }),
   },
+  "invite-user": {
+    schema: joi.object({
+      invitee: joi.string().max(64).required(),
+      steram: joi.string().max(64).required(),
+    }),
+    kind: "request",
+    auth: true,
+    subject: "user.invite",
+  },
 
   auth: {
     schema: joi.object({

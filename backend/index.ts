@@ -61,7 +61,7 @@ const main = async () => {
     "user-unfollow": onUnfollow,
     "report-user": onUserReport,
     "block-user": onUserBlock,
-    "stream-invite": onInvite,
+    "user-invite": onInvite,
   };
 
   for (const [event, handler] of Object.entries(handlers)) {
