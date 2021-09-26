@@ -14,7 +14,6 @@ export const updateActiveSpeakers = async (
   speakers: Record<string, number>
 ): Promise<void> => {
   const participants = await ParticipantDAL.getByIds(Object.keys(speakers));
-  console.log("active speakers", speakers);
 
   //Split active speakers by stream id; stream-id -> [array of active speakers]
   const streamSpeakersMap: Record<string, unknown[]> = {};

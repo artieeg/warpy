@@ -1,3 +1,4 @@
+import { InternalError } from "@backend/errors";
 import redis from "redis";
 import { promisify } from "util";
 
@@ -24,7 +25,7 @@ export const FeedCacheService = {
     return new Promise((resolve, reject) => {
       client.sadd(user, streamId, (err) => {
         if (err) {
-          return reject(err);
+          return reject(new InternalError());
         }
 
         return resolve();

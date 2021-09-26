@@ -1,11 +1,13 @@
-import { prisma } from "./client";
+import { prisma, runPrismaQuery } from "./client";
 
 export const RefreshTokenDAL = {
   async create(token: string): Promise<void> {
-    await prisma.refreshToken.create({
-      data: {
-        token,
-      },
-    });
+    await runPrismaQuery(() =>
+      prisma.refreshToken.create({
+        data: {
+          token,
+        },
+      })
+    );
   },
 };

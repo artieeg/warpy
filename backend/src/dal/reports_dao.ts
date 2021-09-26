@@ -1,4 +1,4 @@
-import { prisma } from "./client";
+import { prisma, runPrismaQuery } from "./client";
 
 export const ReportDAO = {
   async create({
@@ -10,12 +10,14 @@ export const ReportDAO = {
     reported: string;
     reason: string;
   }) {
-    await prisma.report.create({
-      data: {
-        reason,
-        reported_id: reported,
-        reporter_id: reportee,
-      },
-    });
+    await runPrismaQuery(() =>
+      prisma.report.create({
+        data: {
+          reason,
+          reported_id: reported,
+          reporter_id: reportee,
+        },
+      })
+    );
   },
 };

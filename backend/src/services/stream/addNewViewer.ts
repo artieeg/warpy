@@ -1,7 +1,7 @@
 import { ParticipantDAL, UserDAO } from "@backend/dal";
 import { IJoinStreamResponse, IParticipant } from "@warpy/lib";
 import { BroadcastService, MediaService } from "..";
-import { BannedFromStreamError } from "@backend/errors";
+import { BannedFromStreamError, UserNotFound } from "@backend/errors";
 
 const findOrCreateParticipant = async (
   id: string,
@@ -47,7 +47,7 @@ export const addNewViewer = async (
   ]);
 
   if (!viewer) {
-    throw new Error();
+    throw new UserNotFound();
   }
 
   const participant = await findOrCreateParticipant(
