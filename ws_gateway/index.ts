@@ -160,6 +160,16 @@ const handlers: Record<string, HandlerConfig> = {
     subject: "user.invite",
   },
 
+  "invite-suggestions": {
+    schema: joi.object({
+      invitee: joi.string().max(64).required(),
+      steram: joi.string().max(64).required(),
+    }),
+    kind: "request",
+    auth: true,
+    subject: "user.invite-suggestions",
+  },
+
   auth: {
     schema: joi.object({
       token: joi.string().max(400).required(),
