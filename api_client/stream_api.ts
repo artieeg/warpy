@@ -10,6 +10,7 @@ import {
   ISendMessageResponse,
   IUserKickedEvent,
   IInviteSuggestionsResponse,
+  IInviteResponse,
 } from "@warpy/lib";
 
 export interface IStreamAPI {
@@ -24,6 +25,7 @@ export interface IStreamAPI {
     page: number
   ) => Promise<IRequestViewersResponse>;
   raiseHand: () => any;
+  invite: (invitee: string, stream: string) => Promise<IInviteResponse>;
   getInviteSuggestions: (stream: string) => Promise<IInviteSuggestionsResponse>;
   allowSpeaker: (speaker: string) => any;
   onReactionsUpdate: EventHandler<IReactionsUpdate>;
@@ -43,6 +45,8 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
       title,
       hub,
     }),
+  invite: (invitee, stream) =>
+    socket.request("invite-user", { invitee, stream }),
   getInviteSuggestions: (stream) =>
     socket.request("invite-suggestions", { stream }),
   kickUser: (userToKick) => socket.publish("kick-user", { userToKick }),
