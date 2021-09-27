@@ -6,6 +6,7 @@ type Modal =
   | 'participants'
   | 'reactions'
   | 'reports'
+  | 'invite'
   | 'chat';
 
 type OpenModalParams = {
@@ -21,7 +22,7 @@ export interface IModalSlice {
 }
 
 export const createModalSlice: StoreSlice<IModalSlice> = (set, get) => ({
-  modalCurrent: null,
+  modalCurrent: 'invite',
   modalSelectedUser: null,
   closeCurrentModal() {
     set({

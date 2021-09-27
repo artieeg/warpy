@@ -162,8 +162,7 @@ const handlers: Record<string, HandlerConfig> = {
 
   "invite-suggestions": {
     schema: joi.object({
-      invitee: joi.string().max(64).required(),
-      steram: joi.string().max(64).required(),
+      stream: joi.string().max(64).required(),
     }),
     kind: "request",
     auth: true,

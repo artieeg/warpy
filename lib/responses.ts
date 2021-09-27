@@ -4,6 +4,7 @@ import {
   IBaseUser,
   IChatMessage,
   IInvite,
+  IUser,
 } from "./models";
 
 export interface INewStreamResponse {
@@ -80,4 +81,8 @@ export interface IUserBlockResponse {
 
 export interface IInviteResponse {
   invite: IInvite;
+}
+
+export interface IInviteSuggestionsResponse {
+  suggestions: IUser[];
 }

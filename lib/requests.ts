@@ -219,3 +219,8 @@ export interface IInviteRequest {
   stream: string;
   user: string;
 }
+
+export interface IInviteSuggestionsRequest {
+  user: string;
+  stream: string;
+}

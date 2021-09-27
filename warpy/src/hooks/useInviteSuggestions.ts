@@ -1,3 +1,22 @@
-export const useInviteSuggections = () => {
-  //const
+import {useStore} from '@app/store';
+import {IUser} from '@warpy/lib';
+import {useEffect, useState} from 'react';
+
+export const useInviteSuggections = (): IUser[] => {
+  const [suggestions, setSuggestions] = useState<IUser[]>([]);
+
+  const currentStream = useStore.use.stream();
+  const api = useStore.use.api();
+
+  useEffect(() => {
+    //if (currentStream) {
+    setTimeout(() => {
+      api.stream
+        .getInviteSuggestions('test')
+        .then(({suggestions}) => setSuggestions(suggestions));
+    }, 1000);
+    //}
+  }, [currentStream]);
+
+  return suggestions;
 };

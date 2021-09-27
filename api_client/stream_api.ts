@@ -9,6 +9,7 @@ import {
   IChatMessagesEvent,
   ISendMessageResponse,
   IUserKickedEvent,
+  IInviteSuggestionsResponse,
 } from "@warpy/lib";
 
 export interface IStreamAPI {
@@ -23,6 +24,7 @@ export interface IStreamAPI {
     page: number
   ) => Promise<IRequestViewersResponse>;
   raiseHand: () => any;
+  getInviteSuggestions: (stream: string) => Promise<IInviteSuggestionsResponse>;
   allowSpeaker: (speaker: string) => any;
   onReactionsUpdate: EventHandler<IReactionsUpdate>;
   onNewViewer: EventHandler;
@@ -41,6 +43,8 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
       title,
       hub,
     }),
+  getInviteSuggestions: (stream) =>
+    socket.request("invite-suggestions", { stream }),
   kickUser: (userToKick) => socket.publish("kick-user", { userToKick }),
   stop: (stream) => socket.publish("stream-stop", { stream }),
   react: (stream, emoji) => socket.publish("reaction", { stream, emoji }),
