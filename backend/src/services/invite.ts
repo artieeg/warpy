@@ -41,6 +41,10 @@ export const InviteService = {
       suggestions[j] = temp;
     }
 
-    return suggestions;
+    const uniqueSuggestionMap = new Map<string, IUser>(
+      suggestions.map((user) => [user.id, user])
+    );
+
+    return Array.from(uniqueSuggestionMap.values());
   },
 };

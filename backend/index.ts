@@ -31,6 +31,7 @@ import {
   onUserReport,
   onUserBlock,
   onInvite,
+  onInviteSuggestionsRequest,
 } from "@backend/handlers";
 import { withErrorHandling } from "@backend/utils/withErrorHandling";
 import { MessageHandler } from "@warpy/lib";
@@ -62,6 +63,7 @@ const main = async () => {
     "report-user": onUserReport,
     "block-user": onUserBlock,
     "user-invite": onInvite,
+    "invite-suggestions": onInviteSuggestionsRequest,
   };
 
   for (const [event, handler] of Object.entries(handlers)) {
