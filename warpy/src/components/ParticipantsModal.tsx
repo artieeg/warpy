@@ -17,6 +17,8 @@ import {
   useStreamSpeakers,
   useStreamViewers,
 } from '@app/hooks';
+import {InviteUserButton} from './InviteUserButton';
+import {useStore} from '@app/store';
 
 interface IParticipanModalProps {
   visible: boolean;
@@ -30,6 +32,7 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
   const usersRaisingHand = useSpeakingRequests();
   const speakers = useStreamSpeakers();
   const [viewers, onFetchMore] = useStreamViewers();
+  const openNewModal = useStore.use.openNewModal();
 
   const streamer = useMemo(
     () => speakers.find(speaker => speaker.role === 'streamer'),
@@ -99,6 +102,8 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
 
   return (
     <BaseSlideModal {...props} style={styles.modal}>
+      <InviteUserButton onPress={() => openNewModal('invite')} />
+
       <SectionList
         style={styles.horizontalPadding}
         sections={data}

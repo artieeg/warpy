@@ -22,7 +22,7 @@ export interface IModalSlice {
 }
 
 export const createModalSlice: StoreSlice<IModalSlice> = (set, get) => ({
-  modalCurrent: 'invite',
+  modalCurrent: null,
   modalSelectedUser: null,
   closeCurrentModal() {
     set({
