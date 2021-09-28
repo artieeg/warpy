@@ -1,6 +1,6 @@
 import { FeedCacheService } from ".";
-import { BlockDAO, IStream, ParticipantDAL, StreamDAL } from "@backend/dal";
-import { ICandidate } from "@warpy/lib";
+import { BlockDAO, ParticipantDAL, StreamDAL } from "@backend/dal";
+import { ICandidate, IStream } from "@warpy/lib";
 
 export const FeedService = {
   async getFeed(user: string, hub?: string): Promise<ICandidate[]> {

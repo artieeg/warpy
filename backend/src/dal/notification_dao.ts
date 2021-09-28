@@ -20,6 +20,7 @@ export const NotificationDAO = {
           include: {
             invitee: true,
             inviter: true,
+            stream: true,
           },
         },
       },
