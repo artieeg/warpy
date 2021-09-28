@@ -20,3 +20,5 @@ export * from "./onKickUser";
 export * from "./onUserReport";
 export * from "./onUserBlock";
 export * from "./onInvite";
+export * from "./onInviteSuggestionsRequest";
+export * from "./onUserSearch";

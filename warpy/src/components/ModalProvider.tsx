@@ -6,6 +6,7 @@ import {ReportActionSheet} from './ReportActionSheet';
 import {ChatModal} from './ChatModal';
 import {Reactions} from './Reactions';
 import {UserActionSheet} from './UserActionSheet';
+import {InviteModal} from './InviteModal';
 
 export const ModalProvider = () => {
   const modal = useStore.use.modalCurrent();
@@ -54,6 +55,11 @@ export const ModalProvider = () => {
       <ReportActionSheet
         user={modalSelectedUser}
         visible={modal === 'reports'}
+        onHide={() => closeCurrentModal()}
+      />
+
+      <InviteModal
+        visible={modal === 'invite'}
         onHide={() => closeCurrentModal()}
       />
     </>

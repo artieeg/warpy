@@ -22,14 +22,14 @@ export const createUserSlice = (
     const {api} = get();
 
     set({
-      loading: true,
+      isLoadingUser: true,
     });
 
     const {user, following} = await api.user.auth(token);
 
     if (!user || !following) {
       set({
-        loading: false,
+        isLoadingUser: false,
         exists: false,
       });
 
@@ -39,7 +39,7 @@ export const createUserSlice = (
     set({
       user,
       following,
-      loading: false,
+      isLoadingUser: false,
     });
   },
 });

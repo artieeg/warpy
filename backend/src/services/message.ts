@@ -43,6 +43,8 @@ const SubjectEventMap = {
   "user.report": "report-user",
   "user.block": "block-user",
   "user.invite": "user-invite",
+  "user.invite-suggestions": "invite-suggestions",
+  "user.search": "search-user",
 };
 
 export type Subject = keyof typeof SubjectEventMap;

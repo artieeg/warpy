@@ -27,6 +27,37 @@ export const UserDAO = {
     return user;
   },
 
+  async search(textToSearch: string): Promise<IUser[]> {
+    const users = await runPrismaQuery(() =>
+      prisma.user.findMany({
+        where: {
+          OR: [
+            {
+              first_name: {
+                contains: textToSearch,
+                mode: "insensitive",
+              },
+            },
+            {
+              last_name: {
+                contains: textToSearch,
+                mode: "insensitive",
+              },
+            },
+            {
+              username: {
+                contains: textToSearch,
+                mode: "insensitive",
+              },
+            },
+          ],
+        },
+      })
+    );
+
+    return users.map((user) => toUserDTO(user));
+  },
+
   async findById(id: string, details = false): Promise<IUser | null> {
     const user = await runPrismaQuery(() =>
       prisma.user.findUnique({

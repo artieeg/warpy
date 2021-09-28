@@ -1,7 +1,9 @@
+import { IStream } from "./candidate";
 import { IUser } from "./user";
 
 export interface IInvite {
-  stream: string;
+  id: string;
+  stream: IStream;
   invitee: IUser;
   inviter: IUser;
 }

@@ -14,3 +14,4 @@ export * from './useMediaStreaming';
 export * from './useAppSetUp';
 export * from './useRemoteStream';
 export * from './useKickHandler';
+export * from './useUserSearch';

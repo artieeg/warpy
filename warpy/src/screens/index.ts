@@ -3,3 +3,4 @@ export * from './DevSignUp';
 export * from './Feed';
 export * from './NewStream';
 export * from './Stream';
+export * from './Notifications';

@@ -3,14 +3,14 @@ import {TextProps} from 'react-native';
 import {StyleSheet, Text as BaseText} from 'react-native';
 
 type TextWeight = 'regular' | 'bold' | 'light' | 'extraBold';
-type TextColor = 'dark' | 'bright' | 'info' | 'button' | 'alert';
+type TextColor = 'dark' | 'bright' | 'info' | 'button' | 'alert' | 'white';
 type TextSize = 'small' | 'medium' | 'large' | 'xsmall';
 
 interface ITextProps extends TextProps {
   weight?: TextWeight;
   size?: TextSize;
   color?: TextColor;
-  children: string;
+  children: any;
 }
 
 export const Text = (props: ITextProps) => {
@@ -24,15 +24,17 @@ export const Text = (props: ITextProps) => {
         textStyles[weight || 'regular'],
         textStyles[size || 'medium'],
         style,
-      ]}>
-      {children}
-    </BaseText>
+      ]}
+    />
   );
 };
 
 export const textStyles = StyleSheet.create({
   dark: {
     color: '#000',
+  },
+  white: {
+    color: '#fff',
   },
   bright: {
     color: '#BDF971',

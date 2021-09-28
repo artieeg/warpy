@@ -1,7 +1,14 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {DevSignUp, Feed, NewStream, Splash, Stream} from './src/screens';
+import {
+  DevSignUp,
+  Feed,
+  NewStream,
+  Notifications,
+  Splash,
+  Stream,
+} from './src/screens';
 import {StatusBar} from 'react-native';
 import {ModalProvider, ToastProvider} from '@app/components';
 
@@ -20,6 +27,7 @@ const App = () => {
           <Stack.Screen name="Feed" component={Feed} />
           <Stack.Screen name="NewStream" component={NewStream} />
           <Stack.Screen name="Stream" component={Stream} />
+          <Stack.Screen name="Notifications" component={Notifications} />
         </Stack.Navigator>
       </NavigationContainer>
 

@@ -3,6 +3,7 @@ import {
   StreamPreview,
   Text,
   StartNewStreamButton,
+  OpenNotificationsButton,
 } from '@app/components';
 import {useAppUser, useFeed, usePreviewDimensions} from '@app/hooks';
 import {Stream} from '@app/models';
@@ -23,6 +24,10 @@ export const Feed = () => {
     navigation.navigate('NewStream');
   };
 
+  const onOpenNotifications = () => {
+    navigation.navigate('Notifications');
+  };
+
   const onOpenStream = (stream: Stream) => {
     navigation.navigate('Stream', {stream});
   };
@@ -34,6 +39,10 @@ export const Feed = () => {
           /feed
         </Text>
         <View style={styles.row}>
+          <OpenNotificationsButton
+            style={styles.headerButton}
+            onPress={onOpenNotifications}
+          />
           <StartNewStreamButton
             style={styles.headerButton}
             onPress={onStartStream}

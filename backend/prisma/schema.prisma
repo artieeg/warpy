@@ -120,6 +120,14 @@ model Invite {
   invitee_id String
   invitee    User   @relation(name: "invitee", fields: [invitee_id], references: [id], onDelete: Cascade)
 
-  inviter_id String
-  inviter    User   @relation(name: "inviter", fields: [inviter_id], references: [id], onDelete: Cascade)
+  inviter_id   String
+  inviter      User           @relation(name: "inviter", fields: [inviter_id], references: [id], onDelete: Cascade)
+  Notification Notification[]
+}
+
+model Notification {
+  id String @id @default(cuid())
+
+  invite_id String?
+  invite    Invite? @relation(fields: [invite_id], references: [id], onDelete: Cascade)
 }

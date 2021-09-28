@@ -1,14 +1,8 @@
 import { prisma, runPrismaQuery } from "./client";
 import { Stream } from "@prisma/client";
+import { IStream } from "@warpy/lib";
 
 type CreateNewStream = Omit<Stream, "id">;
-
-export interface IStream {
-  id: string;
-  owner: string;
-  hub: string;
-  title: string;
-}
 
 export const toStreamDTO = (data: Stream): IStream => {
   return {
@@ -16,6 +10,7 @@ export const toStreamDTO = (data: Stream): IStream => {
     owner: data.owner_id,
     hub: data.hub,
     title: data.title,
+    preview: data.preview,
   };
 };
 

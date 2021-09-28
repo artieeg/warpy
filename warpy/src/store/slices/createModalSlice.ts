@@ -6,6 +6,7 @@ type Modal =
   | 'participants'
   | 'reactions'
   | 'reports'
+  | 'invite'
   | 'chat';
 
 type OpenModalParams = {

@@ -16,15 +16,9 @@ export const toFollowDTO = (
   let followData: IFollow = {
     followed_id: data.followed_id,
     follower_id: data.follower_id,
+    followed: data.followed && toUserDTO(data.followed),
+    follower: data.follower && toUserDTO(data.follower),
   };
-
-  if (data.follower && data.followed) {
-    followData = {
-      ...followData,
-      followed: toUserDTO(data.followed),
-      follower: toUserDTO(data.followed),
-    };
-  }
 
   return followData;
 };
@@ -43,8 +37,8 @@ export const FollowRecordDAL = {
     return toFollowDTO(follow);
   },
 
-  async deleteFollow(follower: string, followed: string): Promise<IFollow> {
-    const follow = await runPrismaQuery(() =>
+  async deleteFollow(follower: string, followed: string): Promise<void> {
+    await runPrismaQuery(() =>
       prisma.followRecord.delete({
         where: {
           unique_follow_index: {
@@ -54,8 +48,36 @@ export const FollowRecordDAL = {
         },
       })
     );
+  },
 
-    return toFollowDTO(follow);
+  async getFollowed(user: string): Promise<IFollow[]> {
+    const followers = await runPrismaQuery(() =>
+      prisma.followRecord.findMany({
+        where: {
+          follower_id: user,
+        },
+        include: {
+          followed: true,
+        },
+      })
+    );
+
+    return followers.map(toFollowDTO);
+  },
+
+  async getFollowers(user: string): Promise<IFollow[]> {
+    const followers = await runPrismaQuery(() =>
+      prisma.followRecord.findMany({
+        where: {
+          followed_id: user,
+        },
+        include: {
+          follower: true,
+        },
+      })
+    );
+
+    return followers.map(toFollowDTO);
   },
 
   async getFollowedUserIds(user: string): Promise<string[]> {

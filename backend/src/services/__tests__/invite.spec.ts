@@ -54,4 +54,6 @@ describe("InviteService", () => {
       record
     );
   });
+
+  it.todo("checks if inviter is a follower or followed by invitee ");
 });
