@@ -90,3 +90,7 @@ export interface IInviteSuggestionsResponse {
 export interface IUserSearchResponse {
   users: IUser[];
 }
+
+export interface ICancelInviteResponse {
+  status: string;
+}

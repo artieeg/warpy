@@ -17,6 +17,17 @@ export const NotificationService = {
     });
   },
 
+  async cancelNotification(id: string) {
+    await NotificationDAO.delete(id);
+
+    MessageService.sendMessage(id, {
+      event: "notification-deleted",
+      data: {
+        notification: id,
+      },
+    });
+  },
+
   async sendNewFollowNofification(followedUser: string, follower: string) {
     throw new Error("unimplemented");
   },

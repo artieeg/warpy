@@ -178,6 +178,15 @@ const handlers: Record<string, HandlerConfig> = {
     subject: "user.search",
   },
 
+  "cancel-stream-invite": {
+    schema: joi.object({
+      invite_id: joi.string().max(64).required(),
+    }),
+    kind: "request",
+    auth: true,
+    subject: "user.cancel-invite",
+  },
+
   auth: {
     schema: joi.object({
       token: joi.string().max(400).required(),

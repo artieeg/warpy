@@ -16,16 +16,27 @@ export const UserInviteOption = ({user}: IUserInviteProps) => {
   const api = useStore.use.api();
   const stream = useStore.use.stream();
 
+  const [invite, setInvite] = useState<string>();
+
   const onInviteUser = useCallback(async () => {
     if (stream) {
       const {invite} = await api.stream.invite(user.id, stream);
-      console.log('invite', invite);
+      setInvite(invite.id);
+    }
+  }, [user.id]);
+
+  const onCancelInvite = useCallback(async () => {
+    if (invite) {
+      console.log('cancelling invite', invite);
+      await api.stream.cancelInvite(invite);
     }
   }, [user.id]);
 
   useEffect(() => {
     if (invited) {
       onInviteUser();
+    } else {
+      onCancelInvite();
     }
   }, [invited]);
 

@@ -23,6 +23,13 @@ export const InviteService = {
     return invite;
   },
 
+  async deleteInvite(user: string, invite_id: string) {
+    const { notification_id } = await InviteDAO.delete(invite_id, user);
+    if (notification_id) {
+      await NotificationService.cancelNotification(notification_id);
+    }
+  },
+
   async getInviteSuggestions(user: string, _stream: string): Promise<IUser[]> {
     const [followed, following] = await Promise.all([
       FollowRecordDAL.getFollowed(user),
