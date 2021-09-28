@@ -7,3 +7,4 @@ export * from "./reports_dao";
 export * from "./block_dao";
 export * from "./invite";
 export * from "./notification_dao";
+export * from "./StreamBlockDAO";

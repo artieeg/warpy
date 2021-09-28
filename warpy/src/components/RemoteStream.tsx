@@ -19,18 +19,6 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const modal = useStore.use.modalCurrent();
   const openNewModal = useStore.use.openNewModal();
 
-  /*
-  const [currentModal, setCurrentModal] = useState<
-    | 'user-actions'
-    | 'participant-info'
-    | 'participants'
-    | 'reactions'
-    | 'reports'
-    | 'chat'
-    | null
-  >(null);
-  */
-
   const {stream: audioStream, toggle, muted} = useLocalAudioStream();
   const {totalParticipantCount, videoStreams, isSpeaker} = useRemoteStream(id);
 

@@ -1,4 +1,4 @@
-import { ParticipantDAL } from "@backend/dal";
+import { ParticipantDAL, StreamBlockDAO } from "@backend/dal";
 import {
   InternalError,
   NoPermissionError,
@@ -49,7 +49,7 @@ export const kickFromStream = async ({
 
   const streamParticipantIds = await ParticipantDAL.getIdsByStream(stream);
 
-  await ParticipantDAL.setBanStatus(userToKick, true);
+  await StreamBlockDAO.create(stream, userToKick);
 
   await BroadcastService.broadcastKickedUser({
     user: userToKick,

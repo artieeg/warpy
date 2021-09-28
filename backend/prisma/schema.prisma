@@ -23,6 +23,9 @@ model User {
   sent_reports     Report[] @relation(name: "sent_reports")
   received_reports Report[] @relation(name: "received_reports")
 
+  //Blocked in streams
+  streamBlocked StreamBlock[] @relation(name: "stream_blocks")
+
   //Blocked by
   blocked UserBlock[] @relation(name: "blocked")
 
@@ -35,7 +38,6 @@ model User {
   inviter Invite[] @relation(name: "inviter")
   invitee Invite[] @relation(name: "invitee")
 
-  Stream Stream[] @relation("owner")
   //Stream Stream[]
   @@map(name: "Users")
 }
@@ -79,18 +81,31 @@ model Participant {
   recvNodeId String
   sendNodeId String?
 
+  Stream Stream[] @relation("owner")
+
   @@unique([user_id, stream_id, hasLeftStream], name: "stream_participant_index")
+}
+
+model StreamBlock {
+  id String @id @default(cuid())
+
+  stream_id String
+  stream    Stream @relation(name: "blocks", fields: [stream_id], references: [id], onDelete: Cascade)
+
+  user_id String @unique
+  user    User   @relation(name: "stream_blocks", fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model Stream {
   id           String        @id @default(cuid())
   title        String
-  owner        User          @relation(name: "owner", fields: [owner_id], references: [id], onDelete: Cascade)
   owner_id     String
+  owner        Participant          @relation(name: "owner", fields: [owner_id], references: [user_id], onDelete: Cascade)
   hub          String
   live         Boolean
   preview      String?
   participants Participant[] @relation(name: "participant")
+  blocks       StreamBlock[] @relation(name: "blocks")
   invites      Invite[]      @relation(name: "invites")
   reactions    Int
 }
