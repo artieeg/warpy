@@ -192,11 +192,6 @@ const handlers: Record<string, HandlerConfig> = {
     schema: joi.object().unknown(),
     customHandler: onRecvTracksRequest,
   },
-
-  "recv-tracks-request": {
-    schema: joi.object().unknown(),
-    customHandler: onRecvTracksRequest,
-  },
 };
 
 const main = async () => {
