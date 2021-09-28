@@ -2,7 +2,7 @@ import {useStore} from '@app/store';
 import {IUser} from '@warpy/lib';
 import {useEffect, useState} from 'react';
 
-export const useInviteSuggections = (): IUser[] => {
+export const useInviteSuggestions = (): IUser[] => {
   const [suggestions, setSuggestions] = useState<IUser[]>([]);
 
   const currentStream = useStore.use.stream();

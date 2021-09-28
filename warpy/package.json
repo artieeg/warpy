@@ -42,6 +42,7 @@
     "react-redux": "^7.2.4",
     "redux": "^4.1.0",
     "redux-thunk": "^2.3.0",
+    "use-debounce": "^7.0.0",
     "zustand": "^3.5.7",
     "zustand-persist": "^0.3.1"
   },
