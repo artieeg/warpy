@@ -86,3 +86,7 @@ export interface IInviteResponse {
 export interface IInviteSuggestionsResponse {
   suggestions: IUser[];
 }
+
+export interface IUserSearchResponse {
+  users: IUser[];
+}

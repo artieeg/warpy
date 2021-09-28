@@ -5,7 +5,7 @@ import {
   ReportDAO,
   UserDAO,
 } from "@backend/dal";
-import { INewUser, IWhoAmIResponse } from "@warpy/lib";
+import { INewUser, IUser, IWhoAmIResponse } from "@warpy/lib";
 
 type NewUserResponse = {
   id: string;
@@ -55,6 +55,10 @@ export const UserService = {
       user,
       following,
     };
+  },
+
+  async search(textToSearch: string): Promise<IUser[]> {
+    return UserDAO.search(textToSearch);
   },
 
   async addUserReport(

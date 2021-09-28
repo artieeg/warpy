@@ -224,3 +224,7 @@ export interface IInviteSuggestionsRequest {
   user: string;
   stream: string;
 }
+
+export interface IUserSearchRequest {
+  textToSearch: string;
+}
