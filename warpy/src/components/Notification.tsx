@@ -16,7 +16,7 @@ const InviteNotification = ({invite}: {invite: IInvite}) => (
         {invite.inviter.username}
       </Text>
       <Text size="xsmall" color="white" weight="bold">
-        invited you to join the Waterfalls & chill live stream
+        invited you to join the {invite.stream.title} live stream
       </Text>
     </View>
   </View>

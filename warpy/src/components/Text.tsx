@@ -10,7 +10,7 @@ interface ITextProps extends TextProps {
   weight?: TextWeight;
   size?: TextSize;
   color?: TextColor;
-  children: string;
+  children: any;
 }
 
 export const Text = (props: ITextProps) => {
@@ -24,9 +24,8 @@ export const Text = (props: ITextProps) => {
         textStyles[weight || 'regular'],
         textStyles[size || 'medium'],
         style,
-      ]}>
-      {children}
-    </BaseText>
+      ]}
+    />
   );
 };
 
