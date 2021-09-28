@@ -1,4 +1,9 @@
-import { IChatMessage, IMediaPermissions, IParticipant } from "./models";
+import {
+  IChatMessage,
+  IMediaPermissions,
+  INotification,
+  IParticipant,
+} from "./models";
 
 export interface ISpeakingAllowedEvent {
   stream: string;
@@ -30,4 +35,8 @@ export interface IChatMessagesEvent {
 
 export interface IUserKickedEvent {
   user: string;
+}
+
+export interface INotificationEvent {
+  notification: INotification;
 }

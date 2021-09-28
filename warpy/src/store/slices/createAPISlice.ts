@@ -64,5 +64,9 @@ export const createAPISlice = (
     api.stream.onUserKick(({user}) => {
       store.removeParticipant(user);
     });
+
+    api.notification.onNewNotification(data => {
+      get().addNotification(data.notification);
+    });
   },
 });

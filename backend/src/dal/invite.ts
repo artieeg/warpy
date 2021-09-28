@@ -7,6 +7,7 @@ export const toInviteDTO = (
   data: Invite & { invitee: User; inviter: User }
 ): IInvite => {
   return {
+    id: data.id,
     stream: data.stream_id,
     invitee: toUserDTO(data.invitee),
     inviter: toUserDTO(data.inviter),

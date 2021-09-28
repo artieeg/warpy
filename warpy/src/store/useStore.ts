@@ -12,14 +12,16 @@ import {createDeviceSlice, IDeviceSlice} from './slices/createDeviceSlice';
 import {createChatSlice, IChatSlice} from './slices/createChatSlice';
 import {State, UseStore} from 'zustand';
 import {createTokenSlice, ITokenSlice} from './slices/createTokenSlice';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {configurePersist} from 'zustand-persist';
 import {createToastSlice, IToastSlice} from './slices/createToastSlice';
 import {createModalSlice, IModalSlice} from './slices/createModalSlice';
 import {
   createReactionSlice,
   IReactionSlice,
 } from './slices/createReactionSlice';
+import {
+  createNotificationSlice,
+  INotificationSlice,
+} from './slices/createNotificationSlice';
 
 interface Selectors<StoreType> {
   use: {
@@ -51,6 +53,7 @@ export interface IStore
     IModalSlice,
     ITokenSlice,
     IReactionSlice,
+    INotificationSlice,
     IToastSlice,
     IAPISlice {
   set: SetState<IStore>;
@@ -64,6 +67,7 @@ export const useStore = createSelectorHooks<IStore>(
       ...createStreamSlice(set, get),
       ...createFeedSlice(set, get),
       ...createAPISlice(set, get),
+      ...createNotificationSlice(set, get),
       ...createUserSlice(set, get),
       ...createFollowingSlice(set, get),
       ...createMediaSlice(set, get),
