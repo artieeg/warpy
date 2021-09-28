@@ -169,6 +169,15 @@ const handlers: Record<string, HandlerConfig> = {
     subject: "user.invite-suggestions",
   },
 
+  "search-user": {
+    schema: joi.object({
+      textToSearch: joi.string().max(64).required(),
+    }),
+    kind: "request",
+    auth: true,
+    subject: "user.search",
+  },
+
   auth: {
     schema: joi.object({
       token: joi.string().max(400).required(),
@@ -179,6 +188,11 @@ const handlers: Record<string, HandlerConfig> = {
     schema: joi.object().unknown(),
     customHandler: onConnectTransport,
   },
+  "recv-tracks-request": {
+    schema: joi.object().unknown(),
+    customHandler: onRecvTracksRequest,
+  },
+
   "recv-tracks-request": {
     schema: joi.object().unknown(),
     customHandler: onRecvTracksRequest,
