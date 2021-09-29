@@ -30,7 +30,7 @@ export const UserInviteOption = ({user}: IUserInviteProps) => {
       console.log('cancelling invite', invite);
       await api.stream.cancelInvite(invite);
     }
-  }, [user.id]);
+  }, [user.id, invite]);
 
   useEffect(() => {
     if (invited) {
