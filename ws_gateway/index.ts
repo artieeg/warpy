@@ -173,7 +173,7 @@ const handlers: Record<string, HandlerConfig> = {
     schema: joi.object({}),
     kind: "event",
     auth: true,
-    subject: "user.search",
+    subject: "notifications.read",
   },
 
   "search-user": {

@@ -66,9 +66,11 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
     streamId
   );
 
+  /*
   setTimeout(async () => {
     await api.stream.cancelInvite(invite.id);
   }, [5000]);
+  */
 
   /*
   setInterval(() => {
