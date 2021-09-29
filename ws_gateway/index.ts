@@ -185,6 +185,20 @@ const handlers: Record<string, HandlerConfig> = {
     subject: "user.search",
   },
 
+  "get-read-notifications": {
+    schema: joi.object({}),
+    kind: "request",
+    auth: true,
+    subject: "notifications.get-read",
+  },
+
+  "get-unread-notifications": {
+    schema: joi.object({}),
+    kind: "request",
+    auth: true,
+    subject: "notifications.get-unread",
+  },
+
   "cancel-stream-invite": {
     schema: joi.object({
       invite_id: joi.string().max(64).required(),

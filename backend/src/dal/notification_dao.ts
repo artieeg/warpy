@@ -33,6 +33,33 @@ export const NotificationDAO = {
     return toNotificationDTO(notification);
   },
 
+  async getUnread(user_id: string) {
+    const notifications = await runPrismaQuery(() =>
+      prisma.notification.findMany({
+        where: {
+          user_id,
+          hasBeenSeen: false,
+        },
+      })
+    );
+
+    return notifications.map(toNotificationDTO);
+  },
+
+  async getAll(user_id: string, page: number) {
+    const notifications = await runPrismaQuery(() =>
+      prisma.notification.findMany({
+        where: {
+          user_id,
+        },
+        skip: page * 50,
+        take: 50,
+      })
+    );
+
+    return notifications.map(toNotificationDTO);
+  },
+
   async readAll(user_id: string) {
     await runPrismaQuery(() =>
       prisma.notification.updateMany({

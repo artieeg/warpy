@@ -237,3 +237,12 @@ export interface ICancelInviteRequest {
 export interface IReadNotifications {
   user: string;
 }
+
+export interface IGetUnreadNotifications {
+  user: string;
+}
+
+export interface IGetReadNotifications {
+  user: string;
+  page: number;
+}

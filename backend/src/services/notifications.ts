@@ -24,9 +24,15 @@ export const NotificationService = {
     await NotificationDAO.readAll(user_id);
   },
 
-  async cancelNotification(user_id: string, notification_id: string) {
-    //const notification = await NotificationDAO.delete(id);
+  async getUnreadNotifications(user: string) {
+    return await NotificationDAO.getUnread(user);
+  },
 
+  async getReadNotifications(user: string, page: number) {
+    return await NotificationDAO.getAll(user, page);
+  },
+
+  async cancelNotification(user_id: string, notification_id: string) {
     MessageService.sendMessage(user_id, {
       event: "notification-deleted",
       data: {
