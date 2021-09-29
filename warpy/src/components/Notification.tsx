@@ -1,5 +1,10 @@
-import React from 'react';
-import {View, StyleSheet, TouchableWithoutFeedback} from 'react-native';
+import React, {useEffect, useRef} from 'react';
+import {
+  View,
+  Animated,
+  StyleSheet,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import {IInvite, INotification} from '@warpy/lib';
 import {Avatar} from './Avatar';
 import {Text} from './Text';
@@ -35,13 +40,29 @@ const InviteNotification = ({invite}: {invite: IInvite}) => {
 export const Notification = ({notification}: INotificationProps) => {
   const {invite} = notification;
 
+  const opacity = useRef(new Animated.Value(0));
+
   const renderNotificationContent = () => {
     if (invite) {
       return <InviteNotification invite={invite} />;
     }
   };
 
-  return <View>{renderNotificationContent()}</View>;
+  const style = {
+    opacity: opacity.current,
+  };
+
+  useEffect(() => {
+    Animated.timing(opacity.current, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  });
+
+  return (
+    <Animated.View style={style}>{renderNotificationContent()}</Animated.View>
+  );
 };
 
 const styles = StyleSheet.create({

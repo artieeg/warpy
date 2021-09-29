@@ -6,14 +6,16 @@ export const toNotificationDTO = (notification: any): INotification => {
   return {
     id: notification.id,
     invite: notification.invite && toInviteDTO(notification.invite),
+    hasBeenSeen: notification.hasBeenSeen,
   };
 };
 
 export const NotificationDAO = {
-  async createFromInvite(invite_id: string) {
+  async createFromInvite(user_id: string, invite_id: string) {
     const notification = await runPrismaQuery(() =>
       prisma.notification.create({
         data: {
+          user_id,
           invite_id,
         },
         include: {
@@ -29,6 +31,19 @@ export const NotificationDAO = {
     );
 
     return toNotificationDTO(notification);
+  },
+
+  async readAll(user_id: string) {
+    await runPrismaQuery(() =>
+      prisma.notification.updateMany({
+        where: {
+          user_id,
+        },
+        data: {
+          hasBeenSeen: true,
+        },
+      })
+    );
   },
 
   async delete(id: string) {

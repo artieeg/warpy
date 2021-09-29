@@ -233,3 +233,7 @@ export interface ICancelInviteRequest {
   user: string;
   invite_id: string;
 }
+
+export interface IReadNotifications {
+  user: string;
+}

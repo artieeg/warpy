@@ -169,6 +169,13 @@ const handlers: Record<string, HandlerConfig> = {
     subject: "user.invite-suggestions",
   },
 
+  "read-notifications": {
+    schema: joi.object({}),
+    kind: "event",
+    auth: true,
+    subject: "user.search",
+  },
+
   "search-user": {
     schema: joi.object({
       textToSearch: joi.string().max(64).required(),

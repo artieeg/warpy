@@ -4,7 +4,10 @@ import { MessageService } from "./message";
 
 export const NotificationService = {
   async createInviteNotification(invite: IInvite) {
-    const notification = await NotificationDAO.createFromInvite(invite.id);
+    const notification = await NotificationDAO.createFromInvite(
+      invite.invitee.id,
+      invite.id
+    );
 
     const { invitee } = invite;
     const { id } = invitee;
@@ -15,6 +18,10 @@ export const NotificationService = {
         notification,
       },
     });
+  },
+
+  async readAllNotifications(user_id: string) {
+    await NotificationDAO.readAll(user_id);
   },
 
   async cancelNotification(user_id: string, notification_id: string) {

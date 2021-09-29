@@ -34,6 +34,7 @@ import {
   onInviteSuggestionsRequest,
   onUserSearch,
   onCancelInvite,
+  onReadNotifications,
 } from "@backend/handlers";
 import { withErrorHandling } from "@backend/utils/withErrorHandling";
 import { MessageHandler } from "@warpy/lib";
@@ -68,6 +69,7 @@ const main = async () => {
     "invite-suggestions": onInviteSuggestionsRequest,
     "search-user": onUserSearch,
     "cancel-stream-invite": onCancelInvite,
+    "read-notifications": onReadNotifications,
   };
 
   for (const [event, handler] of Object.entries(handlers)) {

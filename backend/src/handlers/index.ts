@@ -23,3 +23,4 @@ export * from "./onInvite";
 export * from "./onInviteSuggestionsRequest";
 export * from "./onUserSearch";
 export * from "./onCancelInvite";
+export * from "./onReadNotifications";

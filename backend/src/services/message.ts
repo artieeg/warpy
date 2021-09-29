@@ -46,6 +46,7 @@ const SubjectEventMap = {
   "user.invite-suggestions": "invite-suggestions",
   "user.search": "search-user",
   "user.cancel-invite": "cancel-stream-invite",
+  "notifications.read": "read-notifications",
 };
 
 export type Subject = keyof typeof SubjectEventMap;
