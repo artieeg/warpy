@@ -34,6 +34,10 @@ export const useAppSetUp = () => {
   }, []);
 
   useEffect(() => {
+    useStore.getState().fetchUnreadNotifications();
+  }, []);
+
+  useEffect(() => {
     if (user) {
       navigation.navigate('Feed');
     }

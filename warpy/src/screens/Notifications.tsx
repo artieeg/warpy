@@ -12,7 +12,7 @@ import React from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
 
 export const Notifications = () => {
-  const notifications = useNotifications();
+  const {notifications, fetchMoreNotifications} = useNotifications();
   const user = useStore.use.user();
   const navigation = useNavigation();
 
@@ -42,6 +42,7 @@ export const Notifications = () => {
       <FlatList
         data={notifications}
         renderItem={({item}) => <Notification notification={item} />}
+        onEndReached={fetchMoreNotifications}
       />
     </View>
   );

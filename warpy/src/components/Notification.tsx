@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useMemo, useRef} from 'react';
 import {
   View,
   Animated,
@@ -14,8 +14,13 @@ interface INotificationProps {
   notification: INotification;
 }
 
-const InviteNotification = ({invite}: {invite: IInvite}) => {
+const InviteNotification = ({notification}: INotificationProps) => {
   const navigation = useNavigation();
+
+  //Keep showing the circle regardless if state has updated
+  const hasBeenSeen = useMemo(() => notification.hasBeenSeen, []);
+
+  const invite = notification.invite!;
 
   return (
     <TouchableWithoutFeedback
@@ -25,9 +30,12 @@ const InviteNotification = ({invite}: {invite: IInvite}) => {
       <View style={styles.wrapper}>
         <Avatar user={invite.inviter} />
         <View style={styles.info}>
-          <Text size="xsmall" weight="bold">
-            {invite.inviter.username}
-          </Text>
+          <View style={styles.row}>
+            <Text size="xsmall" weight="bold">
+              {invite.inviter.username}
+            </Text>
+            {!hasBeenSeen && <View style={styles.new} />}
+          </View>
           <Text size="xsmall" color="white" weight="bold">
             invited you to join the {invite.stream.title} live stream
           </Text>
@@ -44,7 +52,7 @@ export const Notification = ({notification}: INotificationProps) => {
 
   const renderNotificationContent = () => {
     if (invite) {
-      return <InviteNotification invite={invite} />;
+      return <InviteNotification notification={notification} />;
     }
   };
 
@@ -61,12 +69,18 @@ export const Notification = ({notification}: INotificationProps) => {
   });
 
   return (
-    <Animated.View style={style}>{renderNotificationContent()}</Animated.View>
+    <Animated.View style={[style, styles.animatedWrapper]}>
+      {renderNotificationContent()}
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
+  animatedWrapper: {
+    flexDirection: 'row',
+  },
   wrapper: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: 20,
@@ -75,5 +89,16 @@ const styles = StyleSheet.create({
   info: {
     marginLeft: 10,
     flex: 1,
+  },
+  new: {
+    width: 15,
+    height: 15,
+    backgroundColor: '#F9F871',
+    borderRadius: 15,
+    marginHorizontal: 10,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });

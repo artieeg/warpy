@@ -1,14 +1,20 @@
 import {useStore} from '@app/store';
-import {useEffect} from 'react';
+import {useCallback, useEffect} from 'react';
 
 export const useNotifications = () => {
   const notifications = useStore.use.notifications();
 
-  const api = useStore.use.api();
+  useEffect(() => {
+    useStore.getState().readAllNotifications();
+  }, [notifications.length]);
+
+  const fetchMoreNotifications = useCallback(() => {
+    useStore.getState().fetchReadNotifications();
+  }, []);
 
   useEffect(() => {
-    api.notification.readAll();
-  }, [notifications]);
+    fetchMoreNotifications();
+  }, []);
 
-  return notifications;
+  return {notifications, fetchMoreNotifications};
 };

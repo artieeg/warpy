@@ -40,6 +40,15 @@ export const NotificationDAO = {
           user_id,
           hasBeenSeen: false,
         },
+        include: {
+          invite: {
+            include: {
+              invitee: true,
+              inviter: true,
+              stream: true,
+            },
+          },
+        },
       })
     );
 
@@ -51,6 +60,15 @@ export const NotificationDAO = {
       prisma.notification.findMany({
         where: {
           user_id,
+        },
+        include: {
+          invite: {
+            include: {
+              invitee: true,
+              inviter: true,
+              stream: true,
+            },
+          },
         },
         skip: page * 50,
         take: 50,
