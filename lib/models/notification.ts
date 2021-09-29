@@ -4,4 +4,5 @@ export interface INotification {
   id: string;
   invite?: IInvite;
   hasBeenSeen: boolean;
+  created_at: number;
 }

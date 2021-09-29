@@ -5,10 +5,11 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from 'react-native';
-import {IInvite, INotification} from '@warpy/lib';
+import {INotification} from '@warpy/lib';
 import {Avatar} from './Avatar';
 import {Text} from './Text';
 import {useNavigation} from '@react-navigation/native';
+import moment from 'moment';
 
 interface INotificationProps {
   notification: INotification;
@@ -22,6 +23,11 @@ const InviteNotification = ({notification}: INotificationProps) => {
 
   const invite = notification.invite!;
 
+  const timeFromNow = useMemo(
+    () => moment(notification.created_at).fromNow(),
+    [],
+  );
+
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -30,11 +36,16 @@ const InviteNotification = ({notification}: INotificationProps) => {
       <View style={styles.wrapper}>
         <Avatar user={invite.inviter} />
         <View style={styles.info}>
-          <View style={styles.row}>
-            <Text size="xsmall" weight="bold">
-              {invite.inviter.username}
+          <View style={[styles.row, styles.space]}>
+            <View style={styles.row}>
+              <Text size="xsmall" weight="bold">
+                {invite.inviter.username}
+              </Text>
+              {!hasBeenSeen && <View style={styles.new} />}
+            </View>
+            <Text size="xsmall" color="info" weight="bold">
+              {timeFromNow}
             </Text>
-            {!hasBeenSeen && <View style={styles.new} />}
           </View>
           <Text size="xsmall" color="white" weight="bold">
             invited you to join the {invite.stream.title} live stream
@@ -100,5 +111,8 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  space: {
+    justifyContent: 'space-between',
   },
 });

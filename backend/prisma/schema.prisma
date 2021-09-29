@@ -152,7 +152,8 @@ model Notification {
   user_id String
   user    User   @relation(name: "notifications", fields: [user_id], references: [id], onDelete: Cascade)
 
-
   invite_id String? @unique
   invite    Invite? @relation(fields: [invite_id], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
 }
