@@ -186,7 +186,7 @@ const handlers: Record<string, HandlerConfig> = {
   },
 
   "get-read-notifications": {
-    schema: joi.object({}),
+    schema: joi.object({ page: joi.number().min(0) }),
     kind: "request",
     auth: true,
     subject: "notifications.get-read",
