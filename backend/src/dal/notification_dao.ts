@@ -32,12 +32,17 @@ export const NotificationDAO = {
   },
 
   async delete(id: string) {
-    await runPrismaQuery(() =>
+    const notification = await runPrismaQuery(() =>
       prisma.notification.delete({
         where: {
           id,
         },
+        include: {
+          invite: true,
+        },
       })
     );
+
+    return toNotificationDTO(notification);
   },
 };

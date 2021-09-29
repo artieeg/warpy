@@ -17,13 +17,13 @@ export const NotificationService = {
     });
   },
 
-  async cancelNotification(id: string) {
-    await NotificationDAO.delete(id);
+  async cancelNotification(user_id: string, notification_id: string) {
+    //const notification = await NotificationDAO.delete(id);
 
-    MessageService.sendMessage(id, {
+    MessageService.sendMessage(user_id, {
       event: "notification-deleted",
       data: {
-        notification: id,
+        notification_id,
       },
     });
   },

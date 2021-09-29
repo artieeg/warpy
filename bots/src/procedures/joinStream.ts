@@ -61,7 +61,14 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
 
   api.stream.onChatMessages((data) => {});
 
-  await api.stream.invite("cku4afwh901182anujiwq7u4x", streamId);
+  const { invite } = await api.stream.invite(
+    "cku4afwh901182anujiwq7u4x",
+    streamId
+  );
+
+  setTimeout(async () => {
+    await api.stream.cancelInvite(invite.id);
+  }, [5000]);
 
   /*
   setInterval(() => {

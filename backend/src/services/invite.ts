@@ -24,9 +24,13 @@ export const InviteService = {
   },
 
   async deleteInvite(user: string, invite_id: string) {
-    const { notification_id } = await InviteDAO.delete(invite_id, user);
+    const { notification_id, invitee_id } = await InviteDAO.delete(
+      invite_id,
+      user
+    );
+
     if (notification_id) {
-      await NotificationService.cancelNotification(notification_id);
+      await NotificationService.cancelNotification(invitee_id, notification_id);
     }
   },
 

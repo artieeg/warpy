@@ -44,7 +44,7 @@ export const InviteDAO = {
   },
 
   async delete(invite_id: string, user: string) {
-    const { id, notification } = await runPrismaQuery(() =>
+    const { id, notification, invitee_id } = await runPrismaQuery(() =>
       prisma.invite.delete({
         where: {
           inviter_index: {
@@ -62,6 +62,6 @@ export const InviteDAO = {
       })
     );
 
-    return { id, notification_id: notification?.id };
+    return { id, invitee_id, notification_id: notification?.id };
   },
 };

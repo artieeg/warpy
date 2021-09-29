@@ -40,3 +40,7 @@ export interface IUserKickedEvent {
 export interface INotificationEvent {
   notification: INotification;
 }
+
+export interface INotificationDeleteEvent {
+  notification_id: string;
+}
