@@ -24,7 +24,9 @@ export const removeUserFromStreams = async (user: string): Promise<void> => {
       //}
     }
 
-    await ParticipantDAL.deleteParticipant(participant.id);
+    try {
+      await ParticipantDAL.deleteParticipant(participant.id);
+    } catch (e) {}
   }
 
   await FeedCacheService.removeServedStreams(user);

@@ -5,6 +5,7 @@ import {
   IChatMessage,
   IInvite,
   IUser,
+  INotification,
 } from "./models";
 
 export interface INewStreamResponse {
@@ -89,4 +90,12 @@ export interface IInviteSuggestionsResponse {
 
 export interface IUserSearchResponse {
   users: IUser[];
+}
+
+export interface ICancelInviteResponse {
+  status: string;
+}
+
+export interface INotificationsPage {
+  notifications: INotification[];
 }

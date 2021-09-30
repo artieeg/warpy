@@ -169,6 +169,13 @@ const handlers: Record<string, HandlerConfig> = {
     subject: "user.invite-suggestions",
   },
 
+  "read-notifications": {
+    schema: joi.object({}),
+    kind: "event",
+    auth: true,
+    subject: "notifications.read",
+  },
+
   "search-user": {
     schema: joi.object({
       textToSearch: joi.string().max(64).required(),
@@ -176,6 +183,29 @@ const handlers: Record<string, HandlerConfig> = {
     kind: "request",
     auth: true,
     subject: "user.search",
+  },
+
+  "get-read-notifications": {
+    schema: joi.object({ page: joi.number().min(0) }),
+    kind: "request",
+    auth: true,
+    subject: "notifications.get-read",
+  },
+
+  "get-unread-notifications": {
+    schema: joi.object({}),
+    kind: "request",
+    auth: true,
+    subject: "notifications.get-unread",
+  },
+
+  "cancel-stream-invite": {
+    schema: joi.object({
+      invite_id: joi.string().max(64).required(),
+    }),
+    kind: "request",
+    auth: true,
+    subject: "user.cancel-invite",
   },
 
   auth: {

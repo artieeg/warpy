@@ -68,5 +68,9 @@ export const createAPISlice = (
     api.notification.onNewNotification(data => {
       get().addNotification(data.notification);
     });
+
+    api.notification.onNotificationDelete(data => {
+      get().removeNotification(data.notification_id);
+    });
   },
 });

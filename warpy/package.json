@@ -25,6 +25,7 @@
     "immer": "^9.0.5",
     "mediasoup-client": "^3.6.36",
     "mock-socket": "^9.0.3",
+    "moment": "^2.29.1",
     "nanoid": "^3.1.23",
     "react": "17.0.1",
     "react-native": "0.64.2",

@@ -38,6 +38,8 @@ model User {
   inviter Invite[] @relation(name: "inviter")
   invitee Invite[] @relation(name: "invitee")
 
+  notifications Notification[] @relation(name: "notifications")
+
   //Stream Stream[]
   @@map(name: "Users")
 }
@@ -100,7 +102,7 @@ model Stream {
   id           String        @id @default(cuid())
   title        String
   owner_id     String
-  owner        Participant          @relation(name: "owner", fields: [owner_id], references: [user_id], onDelete: Cascade)
+  owner        Participant   @relation(name: "owner", fields: [owner_id], references: [user_id], onDelete: Cascade)
   hub          String
   live         Boolean
   preview      String?
@@ -136,13 +138,22 @@ model Invite {
   invitee    User   @relation(name: "invitee", fields: [invitee_id], references: [id], onDelete: Cascade)
 
   inviter_id   String
-  inviter      User           @relation(name: "inviter", fields: [inviter_id], references: [id], onDelete: Cascade)
-  Notification Notification[]
+  inviter      User          @relation(name: "inviter", fields: [inviter_id], references: [id], onDelete: Cascade)
+  notification Notification?
+
+  @@unique([id, inviter_id], name: "inviter_index")
 }
 
 model Notification {
   id String @id @default(cuid())
 
-  invite_id String?
+  hasBeenSeen Boolean @default(false)
+
+  user_id String
+  user    User   @relation(name: "notifications", fields: [user_id], references: [id], onDelete: Cascade)
+
+  invite_id String? @unique
   invite    Invite? @relation(fields: [invite_id], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
 }

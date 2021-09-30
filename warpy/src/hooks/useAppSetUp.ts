@@ -1,6 +1,7 @@
 import {useStore} from '@app/store';
 import {useNavigation} from '@react-navigation/native';
 import {useEffect} from 'react';
+import shallow from 'zustand/shallow';
 
 export const useAppSetUp = () => {
   const navigation = useNavigation();
@@ -16,14 +17,17 @@ export const useAppSetUp = () => {
     api,
     user,
     loadUserData,
-  ] = useStore(state => [
-    state.createAPISubscriptions,
-    state.exists,
-    state.isLoadingUser,
-    state.api,
-    state.user,
-    state.loadUserData,
-  ]);
+  ] = useStore(
+    state => [
+      state.createAPISubscriptions,
+      state.exists,
+      state.isLoadingUser,
+      state.api,
+      state.user,
+      state.loadUserData,
+    ],
+    shallow,
+  );
 
   useEffect(() => {
     createAPISubscriptions();
@@ -36,6 +40,7 @@ export const useAppSetUp = () => {
   useEffect(() => {
     if (user) {
       navigation.navigate('Feed');
+      useStore.getState().fetchUnreadNotifications();
     }
   }, [user, navigation]);
 

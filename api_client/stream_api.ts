@@ -11,6 +11,7 @@ import {
   IUserKickedEvent,
   IInviteSuggestionsResponse,
   IInviteResponse,
+  ICancelInviteResponse,
 } from "@warpy/lib";
 
 export interface IStreamAPI {
@@ -26,6 +27,7 @@ export interface IStreamAPI {
   ) => Promise<IRequestViewersResponse>;
   raiseHand: () => any;
   invite: (invitee: string, stream: string) => Promise<IInviteResponse>;
+  cancelInvite: (invite_id: string) => Promise<ICancelInviteResponse>;
   getInviteSuggestions: (stream: string) => Promise<IInviteSuggestionsResponse>;
   allowSpeaker: (speaker: string) => any;
   onReactionsUpdate: EventHandler<IReactionsUpdate>;
@@ -47,6 +49,8 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
     }),
   invite: (invitee, stream) =>
     socket.request("invite-user", { invitee, stream }),
+  cancelInvite: (invite_id) =>
+    socket.request("cancel-stream-invite", { invite_id }),
   getInviteSuggestions: (stream) =>
     socket.request("invite-suggestions", { stream }),
   kickUser: (userToKick) => socket.publish("kick-user", { userToKick }),

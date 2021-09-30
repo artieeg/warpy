@@ -5,13 +5,14 @@ import {
   StartNewStreamButton,
   Text,
 } from '@app/components';
+import {useNotifications} from '@app/hooks';
 import {useStore} from '@app/store';
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
 
 export const Notifications = () => {
-  const notifications = useStore.use.notifications();
+  const {notifications, fetchMoreNotifications} = useNotifications();
   const user = useStore.use.user();
   const navigation = useNavigation();
 
@@ -19,8 +20,8 @@ export const Notifications = () => {
     navigation.navigate('NewStream');
   };
 
-  const onOpenNotifications = () => {
-    navigation.navigate('Notifications');
+  const onOpenFeed = () => {
+    navigation.navigate('Feed');
   };
 
   return (
@@ -30,10 +31,7 @@ export const Notifications = () => {
           /news
         </Text>
         <View style={styles.row}>
-          <OpenHomeButton
-            style={styles.headerButton}
-            onPress={onOpenNotifications}
-          />
+          <OpenHomeButton style={styles.headerButton} onPress={onOpenFeed} />
           <StartNewStreamButton
             style={styles.headerButton}
             onPress={onStartStream}
@@ -44,6 +42,7 @@ export const Notifications = () => {
       <FlatList
         data={notifications}
         renderItem={({item}) => <Notification notification={item} />}
+        onEndReached={fetchMoreNotifications}
       />
     </View>
   );

@@ -43,14 +43,25 @@ export const InviteDAO = {
     return toInviteDTO(invite);
   },
 
-  async delete(id: string, user: string): Promise<void> {
-    await runPrismaQuery(() => {
-      prisma.invite.deleteMany({
+  async delete(invite_id: string, user: string) {
+    const { id, notification, invitee_id } = await runPrismaQuery(() =>
+      prisma.invite.delete({
         where: {
-          inviter_id: user,
-          id,
+          inviter_index: {
+            inviter_id: user,
+            id: invite_id,
+          },
         },
-      });
-    });
+        include: {
+          notification: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      })
+    );
+
+    return { id, invitee_id, notification_id: notification?.id };
   },
 };

@@ -33,9 +33,12 @@ import {
   onInvite,
   onInviteSuggestionsRequest,
   onUserSearch,
+  onCancelInvite,
+  onReadNotifications,
 } from "@backend/handlers";
 import { withErrorHandling } from "@backend/utils/withErrorHandling";
 import { MessageHandler } from "@warpy/lib";
+import { NotificationController } from "@backend/controllers/notification";
 
 const main = async () => {
   await MessageService.init();
@@ -66,6 +69,10 @@ const main = async () => {
     "user-invite": onInvite,
     "invite-suggestions": onInviteSuggestionsRequest,
     "search-user": onUserSearch,
+    "cancel-stream-invite": onCancelInvite,
+    "read-notifications": onReadNotifications,
+    "get-read-notifications": NotificationController.getReadNotifications,
+    "get-unread-notifications": NotificationController.getUnreadNotifications,
   };
 
   for (const [event, handler] of Object.entries(handlers)) {

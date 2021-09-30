@@ -228,3 +228,21 @@ export interface IInviteSuggestionsRequest {
 export interface IUserSearchRequest {
   textToSearch: string;
 }
+
+export interface ICancelInviteRequest {
+  user: string;
+  invite_id: string;
+}
+
+export interface IReadNotifications {
+  user: string;
+}
+
+export interface IGetUnreadNotifications {
+  user: string;
+}
+
+export interface IGetReadNotifications {
+  user: string;
+  page: number;
+}
