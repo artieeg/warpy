@@ -53,7 +53,7 @@ const main = async () => {
     "raise-hand": onRaiseHand,
     "speaker-allow": onAllowSpeaker,
     "feed-request": onFeedRequest,
-    "whoami-request": onWhoAmIRequest,
+    //"whoami-request": onWhoAmIRequest,
     "new-user": onNewUser,
     "active-speakers": onActiveSpeakers,
     "user-delete": onUserDelete,

@@ -1,0 +1,2 @@
+-- AddForeignKey
+ALTER TABLE "UserBlock" ADD FOREIGN KEY ("blocker_id") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

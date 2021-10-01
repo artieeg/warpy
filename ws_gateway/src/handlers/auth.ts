@@ -27,9 +27,12 @@ export const onAuth: Handler = async (data, context, rid) => {
   const response = await MessageService.sendBackendRequest(
     "user.whoami-request",
     {
+      id: Math.random().toString(),
       user,
     }
   );
+
+  console.log("whoami response", response);
 
   context.ws.send(
     JSON.stringify({

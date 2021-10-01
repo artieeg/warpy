@@ -4,6 +4,7 @@
     "lib",
     "api_client",
     "bots",
+    "backend_2",
     "media-client",
     "backend",
     "clipper",
@@ -18,6 +19,7 @@
   "_moduleAliases": {
     "@app": "./warpy/src",
     "@backend": "./backend/src",
+    "@backend_2": "./backend_2/src",
     "@ws_gateway": "./ws_gateway/src",
     "@media": "./media/src",
     "@warpykit": "./warpykit-sdk-node/src",

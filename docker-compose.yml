@@ -18,6 +18,14 @@ services:
       #ports:
       #- 6379:6379
 
+  backend_2:
+    image: node:16.0.0-alpine
+    env_file: dev_env/backend.env
+    volumes:
+      - ./:/warpy
+    working_dir: /warpy/backend_2
+    command: yarn start:dev
+
   backend:
     image: node:16.0.0-alpine
     ports:
