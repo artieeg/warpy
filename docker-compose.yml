@@ -21,15 +21,15 @@ services:
   backend_2:
     image: node:16.0.0-alpine
     env_file: dev_env/backend.env
+    ports:
+      - 9229:9229
     volumes:
       - ./:/warpy
     working_dir: /warpy/backend_2
-    command: yarn start:dev
+    command: yarn start:debug
 
   backend:
     image: node:16.0.0-alpine
-    ports:
-      - 9229:9229
     env_file: dev_env/backend.env
     volumes:
       - ./:/warpy

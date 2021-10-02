@@ -45,7 +45,7 @@ const main = async () => {
   StreamService.runReactionSync();
 
   const handlers: Record<Event, MessageHandler<any, any>> = {
-    "user-joins-stream": onJoinStream,
+    //"user-joins-stream": onJoinStream,
     "stream-stop": onStreamStop,
     "stream-new": onNewStream,
     "user-disconnected": onUserDisconnect,

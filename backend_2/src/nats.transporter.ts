@@ -1,6 +1,6 @@
 import { CustomTransportStrategy, Server } from '@nestjs/microservices';
 import { connect, JSONCodec, Msg, NatsConnection } from 'nats';
-import { catchError, of } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
 
 export class NatsServer extends Server implements CustomTransportStrategy {
   nc: NatsConnection;
@@ -18,10 +18,14 @@ export class NatsServer extends Server implements CustomTransportStrategy {
 
       const response = await this.messageHandlers.get(subject)(message);
 
-      response.subscribe({
-        next: (value) => this.sendResponse(msg, value),
-        error: (err) => this.sendResponse(msg, err),
-      });
+      if (response instanceof Observable) {
+        response.subscribe({
+          next: (value) => this.sendResponse(msg, value),
+          error: (err) => this.sendResponse(msg, err),
+        });
+      } else {
+        this.sendResponse(msg, response);
+      }
 
       /*
       response

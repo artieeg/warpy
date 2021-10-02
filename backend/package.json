@@ -30,9 +30,11 @@
   },
   "dependencies": {
     "@prisma/client": "^2.29.1",
+    "@types/jsonwebtoken": "^8.5.5",
     "@warpy/lib": "1.0.0",
     "bad-words": "^3.0.4",
     "cuid": "^2.1.8",
+    "jsonwebtoken": "^8.5.1",
     "mediasoup": "3",
     "module-alias": "^2.2.2",
     "nats": "^2.1.0",

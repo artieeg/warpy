@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { NatsModule } from './modules/nats/nats.module';
+import { ParticipantModule } from './modules/participant/participant.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { StreamBlockModule } from './modules/stream-block/stream-block.module';
 import { StreamModule } from './modules/stream/stream.module';
@@ -13,6 +15,8 @@ import { UserModule } from './modules/user/user.module';
     UserModule,
     StreamModule,
     StreamBlockModule,
+    NatsModule,
+    ParticipantModule,
     EventEmitterModule.forRoot(),
   ],
   controllers: [AppController],
