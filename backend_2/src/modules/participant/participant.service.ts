@@ -11,6 +11,10 @@ export class ParticipantService {
     private eventEmitter: EventEmitter2,
   ) {}
 
+  async getStreamParticipants(stream: string) {
+    return this.participant.getIdsByStream(stream);
+  }
+
   async createNewViewer({ user, stream, recvNodeId }: NewViewerParams) {
     const participant = await this.participant.create({
       user_id: user,
@@ -19,6 +23,6 @@ export class ParticipantService {
       recvNodeId,
     });
 
-    this.eventEmitter.emit('participant.new', { participant });
+    this.eventEmitter.emit('participant.new', participant);
   }
 }
