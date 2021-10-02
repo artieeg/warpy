@@ -23,11 +23,14 @@
   "dependencies": {
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
+    "@nestjs/event-emitter": "^1.0.0",
     "@nestjs/microservices": "^8.0.9",
     "@nestjs/platform-express": "^8.0.0",
     "@prisma/client": "2.29.1",
     "@warpy/lib": "1.0.0",
+    "jsonwebtoken": "^8.5.1",
     "nats": "^2.2.0",
+    "redis": "^3.1.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"
@@ -76,7 +79,7 @@
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s",
-      "!**/*.(entity|controller).(t|j)s"
+      "!**/*.(entity|controller|module).(t|j)s"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"

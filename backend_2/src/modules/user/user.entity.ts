@@ -9,7 +9,7 @@ type NewUserParams = Omit<User, 'id' | 'created_at'>;
 export class UserEntity {
   constructor(private prisma: PrismaService) {}
 
-  toUserDTO(data: User, includeDetails = false): IUser {
+  static toUserDTO(data: User, includeDetails = false): IUser {
     return {
       id: data.id,
       last_name: data.last_name,
@@ -55,7 +55,7 @@ export class UserEntity {
       },
     });
 
-    return users.map((user) => this.toUserDTO(user));
+    return users.map((user) => UserEntity.toUserDTO(user));
   }
 
   async findById(id: string, details = false): Promise<IUser | null> {
@@ -63,12 +63,12 @@ export class UserEntity {
       where: { id },
     });
 
-    return user ? this.toUserDTO(user, details) : null;
+    return user ? UserEntity.toUserDTO(user, details) : null;
   }
 
   async delete(id: string): Promise<IUser | null> {
     const user = await this.prisma.user.delete({ where: { id } });
 
-    return user ? this.toUserDTO(user) : null;
+    return user ? UserEntity.toUserDTO(user) : null;
   }
 }
