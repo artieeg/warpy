@@ -2368,7 +2368,7 @@
     jsonc-parser "3.0.0"
     pluralize "8.0.0"
 
-"@nestjs/testing@^8.0.0":
+"@nestjs/testing@^8.0.9":
   version "8.0.9"
   resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-8.0.9.tgz#46a5770fbed19766d0230cc5d8fa3d8746c9befa"
   integrity sha512-idFhNESD90jUjDfvePgUS5uJzSXEYRhA8xfpv3snWMr3/4ouR5m+o7Wb3Zr+kDbU0Pi+SemKDLv9QoFWatHDeA==
@@ -11150,6 +11150,20 @@ ts-jest@^27.0.4:
     lodash "4.x"
     make-error "1.x"
     mkdirp "1.x"
+    semver "7.x"
+    yargs-parser "20.x"
+
+ts-jest@^27.0.5:
+  version "27.0.5"
+  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-27.0.5.tgz#0b0604e2271167ec43c12a69770f0bb65ad1b750"
+  integrity sha512-lIJApzfTaSSbtlksfFNHkWOzLJuuSm4faFAfo5kvzOiRAuoN4/eKxVJ2zEAho8aecE04qX6K1pAzfH5QHL1/8w==
+  dependencies:
+    bs-logger "0.x"
+    fast-json-stable-stringify "2.x"
+    jest-util "^27.0.0"
+    json5 "2.x"
+    lodash "4.x"
+    make-error "1.x"
     semver "7.x"
     yargs-parser "20.x"
 
