@@ -2,7 +2,7 @@ import { UserNotFound } from '@backend_2/errors';
 import { ExceptionFilter } from '@backend_2/rpc-exception.filter';
 import { Controller, UseFilters } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { IWhoAmIRequest, IWhoAmIResponse } from '@warpy/lib';
+import { IUserDisconnected, IWhoAmIRequest, IWhoAmIResponse } from '@warpy/lib';
 import { UserService } from './user.service';
 
 @Controller()

@@ -1,3 +1,4 @@
+import { UserNotFound } from '@backend_2/errors';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IJoinStreamResponse } from '@warpy/lib';
@@ -54,5 +55,16 @@ export class ParticipantService {
 
   async getStreamParticipants(stream: string) {
     return this.participant.getIdsByStream(stream);
+  }
+
+  async deleteParticipant(user: string) {
+    console.log('deleting user', user);
+    const stream = await this.participant.getCurrentStreamFor(user);
+
+    this.eventEmitter.emit('participant.delete', { user, stream });
+
+    try {
+      await this.participant.deleteParticipant(user);
+    } catch (e) {}
   }
 }

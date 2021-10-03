@@ -15,6 +15,28 @@ export class BroadcastService {
     this.nc.publish(`reply.user.${user}`, message);
   }
 
+  @OnEvent('participant.delete')
+  async broadcastParticipantLeft({
+    user,
+    stream,
+  }: {
+    user: string;
+    stream: string;
+  }) {
+    const ids = await this.participant.getStreamParticipants(stream);
+
+    console.log('broadcasting to', ids);
+    const message = this.nc.jc.encode({
+      event: 'user-left',
+      data: {
+        user,
+        stream,
+      },
+    });
+
+    ids.forEach((id) => this.send(id, message));
+  }
+
   @OnEvent('participant.new')
   async broadcastNewParticipant(participant: IParticipant) {
     const ids = await this.participant.getStreamParticipants(

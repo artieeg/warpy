@@ -12,7 +12,7 @@ import { ParticipantService } from './participant.service';
     PrismaModule,
     MediaModule,
     StreamBlockModule,
-    EventEmitterModule.forRoot(),
+    //EventEmitterModule.forRoot(),
   ],
   providers: [ParticipantService, ParticipantEntity],
   controllers: [ParticipantController],

@@ -3,6 +3,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BlockModule } from './modules/block/block.module';
+import { BroadcastModule } from './modules/broadcast/broadcast.module';
 import { FeedModule } from './modules/feed/feed.module';
 import { MediaModule } from './modules/media/media.module';
 import { NatsModule } from './modules/nats/nats.module';
@@ -24,6 +25,7 @@ import { UserModule } from './modules/user/user.module';
     NatsModule,
     ParticipantModule,
     BlockModule,
+    BroadcastModule,
     EventEmitterModule.forRoot(),
   ],
   controllers: [AppController],
