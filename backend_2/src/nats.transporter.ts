@@ -55,6 +55,7 @@ export class NatsServer extends Server implements CustomTransportStrategy {
     for (const subject of this.messageHandlers.keys()) {
       this.subscribeTo(subject);
     }
+
     callback();
   }
 

@@ -26,7 +26,7 @@ services:
     volumes:
       - ./:/warpy
     working_dir: /warpy/backend_2
-    command: yarn start:debug
+    command: yarn start:nodemon2
 
   backend:
     image: node:16.0.0-alpine

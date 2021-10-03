@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { PrismaService } from '@backend_2/modules/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { IUser } from '@warpy/lib';
 
 type NewUserParams = Omit<User, 'id' | 'created_at'>;

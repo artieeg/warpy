@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { BlockModule } from './modules/block/block.module';
+import { FeedModule } from './modules/feed/feed.module';
+import { MediaModule } from './modules/media/media.module';
 import { NatsModule } from './modules/nats/nats.module';
 import { ParticipantModule } from './modules/participant/participant.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
@@ -11,12 +14,16 @@ import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
-    PrismaModule,
+    //PrismaModule,
+    FeedModule,
     UserModule,
+    StreamModule,
+    MediaModule,
     StreamModule,
     StreamBlockModule,
     NatsModule,
     ParticipantModule,
+    BlockModule,
     EventEmitterModule.forRoot(),
   ],
   controllers: [AppController],

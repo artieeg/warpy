@@ -1,5 +1,5 @@
 import { UserNotFound } from '@backend_2/errors';
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { IUser } from '@warpy/lib';
 import { UserEntity } from './user.entity';
 

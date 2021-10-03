@@ -10,7 +10,7 @@ export class StreamBlockService {
     const ban = await this.streamBlock.find(user, stream);
 
     if (ban) {
-      throw new BannedFromStreamError('User is banned from this stream');
+      throw new BannedFromStreamError();
     }
   }
 }

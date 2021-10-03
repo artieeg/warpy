@@ -5,8 +5,8 @@ export class BaseError extends RpcException {
 }
 
 export class BannedFromStreamError extends BaseError {
-  constructor(message: string) {
-    super(message);
+  constructor() {
+    super("You've been banned from this stream");
 
     this.name = 'BannedFromStreamError';
     this.message = "You've been banned from this stream";

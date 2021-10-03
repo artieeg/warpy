@@ -20,7 +20,7 @@ export class ParticipantService {
     stream: string,
     viewerId: string,
   ): Promise<IJoinStreamResponse> {
-    const { token, permissions } = await this.media.createNewViewer(
+    const { token, permissions } = await this.media.getViewerPermissions(
       viewerId,
       stream,
     );

@@ -47,7 +47,7 @@ const main = async () => {
   const handlers: Record<Event, MessageHandler<any, any>> = {
     //"user-joins-stream": onJoinStream,
     "stream-stop": onStreamStop,
-    "stream-new": onNewStream,
+    //"stream-new": onNewStream,
     "user-disconnected": onUserDisconnect,
     "viewers-request": onViewersRequest,
     "raise-hand": onRaiseHand,

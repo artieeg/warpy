@@ -4,14 +4,15 @@ import { IParticipant, Roles } from '@warpy/lib';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserEntity } from '../user/user.entity';
 
-type CreateNewParticipant = {
+export type CreateNewParticipant = {
   user_id: string;
   role?: Roles;
   stream?: string;
   recvNodeId: string;
+  sendNodeId?: string;
 };
 
-interface IFullParticipant extends IParticipant {
+export interface IFullParticipant extends IParticipant {
   recvNodeId: string;
   sendNodeId: string | null;
   isBanned: boolean;

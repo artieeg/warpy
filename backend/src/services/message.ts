@@ -25,7 +25,7 @@ const SubjectEventMap = {
   "user.disconnected": "user-disconnected",
   "stream.create": "stream-new",
   "user.whoami-request": "whoami-request",
-  "feeds.get": "feed-request",
+  //"feeds.get": "feed-request",
   "viewers.get": "viewers-request",
   "stream.join": "user-joins-stream",
   "user.raise-hand": "raise-hand",
