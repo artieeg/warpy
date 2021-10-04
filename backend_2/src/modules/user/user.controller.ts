@@ -5,6 +5,8 @@ import { MessagePattern } from '@nestjs/microservices';
 import {
   INewUser,
   INewUserResponse,
+  IUserDelete,
+  IUserDeleteResponse,
   IUserDisconnected,
   IWhoAmIRequest,
   IWhoAmIResponse,
@@ -32,5 +34,15 @@ export class UserController {
     if (process.env.NODE !== 'production' && data.kind === 'dev') {
       return this.userService.createDevUser(data);
     }
+  }
+
+  @UseFilters(ExceptionFilter)
+  @MessagePattern('user.delete')
+  async onUserDelete({ user }: IUserDelete): Promise<IUserDeleteResponse> {
+    await this.userService.deleteUser(user);
+
+    return {
+      status: 'ok',
+    };
   }
 }

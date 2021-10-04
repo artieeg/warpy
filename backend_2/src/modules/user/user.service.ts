@@ -47,4 +47,8 @@ export class UserService {
       refresh: refreshToken,
     };
   }
+
+  async deleteUser(user: string) {
+    await this.user.delete(user);
+  }
 }
