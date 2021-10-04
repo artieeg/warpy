@@ -67,4 +67,10 @@ export class ParticipantService {
       await this.participant.deleteParticipant(user);
     } catch (e) {}
   }
+
+  async getViewers(stream: string, page: number) {
+    const viewers = await this.participant.getViewersPage(stream, page);
+
+    return viewers;
+  }
 }

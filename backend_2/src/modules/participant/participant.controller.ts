@@ -3,6 +3,7 @@ import { MessagePattern } from '@nestjs/microservices';
 import {
   IJoinStream,
   IJoinStreamResponse,
+  IRequestViewers,
   IUserDisconnected,
 } from '@warpy/lib';
 import { ParticipantService } from './participant.service';
@@ -22,5 +23,12 @@ export class ParticipantController {
   @MessagePattern('user.disconnected')
   async onUserDisconnect({ user }: IUserDisconnected) {
     await this.participant.deleteParticipant(user);
+  }
+
+  @MessagePattern('viewers.get')
+  async onViewersRequest({ stream, page }: IRequestViewers) {
+    const viewers = await this.participant.getViewers(stream, page);
+
+    return { viewers };
   }
 }
