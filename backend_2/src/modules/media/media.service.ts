@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import {
+  IConnectNewSpeakerMedia,
   IConnectRecvTransportParams,
   ICreateMediaRoom,
   IMediaPermissions,
   INewMediaRoomData,
+  INewSpeakerMediaResponse,
 } from '@warpy/lib';
 import * as jwt from 'jsonwebtoken';
 import { NatsService } from '../nats/nats.service';
@@ -27,7 +29,17 @@ export class MediaService {
     return response as INewMediaRoomData;
   }
 
-  async getConsumerParams(recvNodeId: string, user: string, roomId: string) {
+  async getSpeakerParams(
+    params: IConnectNewSpeakerMedia,
+  ): Promise<INewSpeakerMediaResponse> {
+    const response = await this.nc.request(`media.peer.make-speaker`, params, {
+      timeout: 60000,
+    });
+
+    return response as INewSpeakerMediaResponse;
+  }
+
+  async getViewerParams(recvNodeId: string, user: string, roomId: string) {
     const response = await this.nc.request(
       `media.peer.join.${recvNodeId}`,
       {
@@ -67,6 +79,26 @@ export class MediaService {
       room,
       audio: true,
       video: true,
+      recvNodeId: optional.recvNodeId || (await this.getRecvNodeId()),
+      sendNodeId: optional.sendNodeId || (await this.getSendNodeId()),
+      ...optional,
+    };
+
+    const token = this.createPermissionToken(permissions);
+
+    return { token, permissions };
+  }
+
+  async getSpeakerPermissions(
+    user: string,
+    room: string,
+    optional?: Partial<IMediaPermissions>,
+  ) {
+    const permissions: IMediaPermissions = {
+      user,
+      room,
+      audio: true,
+      video: false,
       recvNodeId: optional.recvNodeId || (await this.getRecvNodeId()),
       sendNodeId: optional.sendNodeId || (await this.getSendNodeId()),
       ...optional,

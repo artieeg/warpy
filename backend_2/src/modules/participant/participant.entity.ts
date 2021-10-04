@@ -110,6 +110,23 @@ export class ParticipantEntity {
     });
   }
 
+  async updateOne(
+    user_id: string,
+    data: Partial<Participant>,
+  ): Promise<IParticipant> {
+    const participant = await this.prisma.participant.update({
+      where: {
+        user_id,
+      },
+      include: {
+        user: true,
+      },
+      data,
+    });
+
+    return ParticipantEntity.toParticipantClientDTO(participant);
+  }
+
   async setStream(user_id: string, stream: string): Promise<void> {
     await this.prisma.participant.update({
       where: { user_id },
@@ -134,7 +151,7 @@ export class ParticipantEntity {
     return data.map(ParticipantEntity.toParticipantClientDTO);
   }
 
-  async makeSpeaker(user: string): Promise<IParticipant | null> {
+  async makeSpeaker(user: string): Promise<IFullParticipant | null> {
     const speaker = await this.prisma.participant.update({
       where: { user_id: user },
       data: {
@@ -150,7 +167,7 @@ export class ParticipantEntity {
       return null;
     }
 
-    return ParticipantEntity.toParticipantClientDTO(speaker);
+    return ParticipantEntity.toFullParticipantDTO(speaker);
   }
 
   async getById(user: string): Promise<IFullParticipant | null> {
@@ -201,23 +218,6 @@ export class ParticipantEntity {
         }),
       },
     });
-  }
-
-  async updateOne(
-    user: string,
-    data: Partial<Participant>,
-  ): Promise<IFullParticipant> {
-    const updated = await this.prisma.participant.update({
-      where: {
-        user_id: user,
-      },
-      include: {
-        user: true,
-      },
-      data,
-    });
-
-    return ParticipantEntity.toFullParticipantDTO(updated);
   }
 
   async deleteParticipantsByStream(stream: string): Promise<void> {

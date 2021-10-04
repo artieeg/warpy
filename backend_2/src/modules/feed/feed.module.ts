@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { StreamModule } from '..';
 import { BlockModule } from '../block/block.module';
 import { ParticipantEntity } from '../participant/participant.entity';

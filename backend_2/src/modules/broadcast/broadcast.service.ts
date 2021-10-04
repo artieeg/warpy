@@ -1,22 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { IParticipant } from '@warpy/lib';
-import { NatsService } from '../nats/nats.service';
+import { MessageService } from '../message/message.service';
 import { ParticipantService } from '../participant/participant.service';
 
 @Injectable()
 export class BroadcastService {
   constructor(
     private participant: ParticipantService,
-    private nc: NatsService,
+    private messageService: MessageService,
   ) {}
 
-  private send(user: string, message: Uint8Array) {
-    this.nc.publish(`reply.user.${user}`, message);
-  }
-
   private broadcast(ids: string[], message: Uint8Array) {
-    ids.forEach((id) => this.send(id, message));
+    ids.forEach((id) => this.messageService.send(id, message));
   }
 
   @OnEvent('participant.raise-hand')
@@ -24,7 +20,7 @@ export class BroadcastService {
     const { stream } = viewer;
     const ids = await this.participant.getStreamParticipants(stream);
 
-    const message = this.nc.jc.encode({
+    const message = this.messageService.encodeMessage({
       event: 'raise-hand',
       data: {
         viewer,
@@ -45,7 +41,7 @@ export class BroadcastService {
   }) {
     const ids = await this.participant.getStreamParticipants(stream);
 
-    const message = this.nc.jc.encode({
+    const message = this.messageService.encodeMessage({
       event: 'user-left',
       data: {
         user,
@@ -62,7 +58,7 @@ export class BroadcastService {
       participant.stream,
     );
 
-    const message = this.nc.jc.encode({
+    const message = this.messageService.encodeMessage({
       event: 'new-viewer',
       data: {
         stream: participant.stream,

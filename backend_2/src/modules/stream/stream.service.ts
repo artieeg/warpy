@@ -58,7 +58,7 @@ export class StreamService {
       host: owner,
     });
 
-    const recvMediaParams = await this.mediaService.getConsumerParams(
+    const recvMediaParams = await this.mediaService.getViewerParams(
       participant.recvNodeId,
       owner,
       stream.id,

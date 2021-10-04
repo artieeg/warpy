@@ -1,12 +1,17 @@
-import { UserNotFound } from '@backend_2/errors';
-import { Injectable } from '@nestjs/common';
+import {
+  NoPermissionError,
+  StreamNotFound,
+  UserNotFound,
+} from '@backend_2/errors';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IJoinStreamResponse } from '@warpy/lib';
+import { BlockService } from '../block/block.service';
+import { BroadcastService } from '../broadcast/broadcast.service';
 import { MediaService } from '../media/media.service';
+import { MessageService } from '../message/message.service';
 import { StreamBlockService } from '../stream-block/stream-block.service';
 import { ParticipantEntity } from './participant.entity';
-
-type NewViewerParams = { user: string; stream: string; recvNodeId: string };
 
 @Injectable()
 export class ParticipantService {
@@ -15,6 +20,8 @@ export class ParticipantService {
     private media: MediaService,
     private streamBlocks: StreamBlockService,
     private participant: ParticipantEntity,
+    private blockService: BlockService,
+    private messageService: MessageService,
   ) {}
 
   async createNewViewer(
@@ -38,7 +45,7 @@ export class ParticipantService {
     this.eventEmitter.emit('participant.new', viewer);
 
     const [recvMediaParams, speakers, raisedHands, count] = await Promise.all([
-      this.media.getConsumerParams(permissions.recvNodeId, viewerId, stream),
+      this.media.getViewerParams(permissions.recvNodeId, viewerId, stream),
       this.participant.getSpeakers(stream),
       this.participant.getWithRaisedHands(stream),
       this.participant.count(stream),
@@ -77,5 +84,58 @@ export class ParticipantService {
     const participant = await this.participant.setRaiseHand(user, flag);
 
     this.eventEmitter.emit('participant.raise-hand', participant);
+  }
+
+  async allowSpeaker(hostId: string, newSpeakerId: string) {
+    const stream = await this.participant.getCurrentStreamFor(hostId);
+
+    if (!stream) {
+      throw new StreamNotFound();
+    }
+
+    const role = await this.participant.getRoleFor(hostId, stream);
+
+    if (role !== 'streamer') {
+      throw new NoPermissionError();
+    }
+
+    await this.blockService.isBannedBySpeaker(newSpeakerId, stream);
+
+    const speakerData = await this.participant.makeSpeaker(newSpeakerId);
+
+    if (!speakerData) {
+      throw new UserNotFound();
+    }
+
+    const media = await this.media.getSpeakerParams({
+      speaker: newSpeakerId,
+      roomId: stream,
+    });
+
+    const { recvNodeId } = speakerData;
+    const sendNodeId = await this.media.getSendNodeId();
+
+    await this.participant.updateOne(newSpeakerId, { recvNodeId });
+
+    const mediaPermissionToken = this.media.getSpeakerPermissions(
+      newSpeakerId,
+      stream,
+      {
+        recvNodeId,
+        sendNodeId,
+      },
+    );
+
+    this.messageService.sendMessage(newSpeakerId, {
+      event: 'speaking-allowed',
+      data: {
+        stream,
+        media,
+        mediaPermissionToken,
+      },
+    });
+
+    this.eventEmitter.emit('participant.new-speaker', speakerData);
+    //BroadcastService.broadcastNewSpeaker(speakerData);
   }
 }

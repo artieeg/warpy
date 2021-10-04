@@ -1,6 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
+  IAllowSpeakerPayload,
   IJoinStream,
   IJoinStreamResponse,
   IRaiseHand,
@@ -40,5 +41,10 @@ export class ParticipantController {
   @MessagePattern('user.raise-hand')
   async onRaiseHand({ user }: IRaiseHand) {
     await this.participant.setRaiseHand(user, true);
+  }
+
+  @MessagePattern('speaker.allow')
+  async onNewSpeaker({ user, speaker }: IAllowSpeakerPayload) {
+    this.participant.allowSpeaker(user, speaker);
   }
 }
