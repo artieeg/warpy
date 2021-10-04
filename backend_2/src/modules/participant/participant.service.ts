@@ -5,7 +5,7 @@ import {
 } from '@backend_2/errors';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { IJoinStreamResponse } from '@warpy/lib';
+import { IJoinStreamResponse, IParticipant } from '@warpy/lib';
 import { BlockService } from '../block/block.service';
 import { BroadcastService } from '../broadcast/broadcast.service';
 import { MediaService } from '../media/media.service';
@@ -115,9 +115,9 @@ export class ParticipantService {
     const { recvNodeId } = speakerData;
     const sendNodeId = await this.media.getSendNodeId();
 
-    await this.participant.updateOne(newSpeakerId, { recvNodeId });
+    await this.participant.updateOne(newSpeakerId, { sendNodeId });
 
-    const mediaPermissionToken = this.media.getSpeakerPermissions(
+    const { token } = await this.media.getSpeakerPermissions(
       newSpeakerId,
       stream,
       {
@@ -131,11 +131,48 @@ export class ParticipantService {
       data: {
         stream,
         media,
-        mediaPermissionToken,
+        mediaPermissionToken: token,
       },
     });
 
     this.eventEmitter.emit('participant.new-speaker', speakerData);
-    //BroadcastService.broadcastNewSpeaker(speakerData);
+  }
+
+  async broadcastActiveSpeakers(speakers: Record<string, number>) {
+    const ids = Object.keys(speakers);
+    const participants = await this.participant.getByIds(ids);
+
+    //Split active speakers by stream id; stream-id -> [array of active speakers]
+    const streamSpeakersMap: Record<string, unknown[]> = {};
+
+    participants.forEach((participant: IParticipant) => {
+      if (!participant.stream) {
+        return;
+      }
+
+      if (streamSpeakersMap[participant.stream]) {
+        streamSpeakersMap[participant.stream] = [
+          ...streamSpeakersMap[participant.stream],
+          {
+            ...participant,
+            volume: speakers[participant.id],
+          },
+        ];
+      } else {
+        streamSpeakersMap[participant.stream] = [
+          {
+            ...participant,
+            volume: speakers[participant.id],
+          },
+        ];
+      }
+    });
+
+    for (const stream in streamSpeakersMap) {
+      this.eventEmitter.emit('participant.active-speakers', {
+        stream,
+        activeSpeakers: streamSpeakersMap[stream],
+      });
+    }
   }
 }

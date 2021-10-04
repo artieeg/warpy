@@ -1,6 +1,8 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
+  IActiveSpeakerEvent,
+  IActiveSpeakersPayload,
   IAllowSpeakerPayload,
   IJoinStream,
   IJoinStreamResponse,
@@ -45,6 +47,11 @@ export class ParticipantController {
 
   @MessagePattern('speaker.allow')
   async onNewSpeaker({ user, speaker }: IAllowSpeakerPayload) {
-    this.participant.allowSpeaker(user, speaker);
+    await this.participant.allowSpeaker(user, speaker);
+  }
+
+  @MessagePattern('stream.active-speakers')
+  async onActiveSpeakers({ speakers }: IActiveSpeakersPayload) {
+    await this.participant.broadcastActiveSpeakers(speakers);
   }
 }

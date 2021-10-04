@@ -15,6 +15,45 @@ export class BroadcastService {
     ids.forEach((id) => this.messageService.send(id, message));
   }
 
+  @OnEvent('participant.active-speakers')
+  async broadcastActiveSpeakers({
+    stream,
+    activeSpeakers,
+  }: {
+    stream: string;
+    activeSpeakers: any[];
+  }) {
+    const ids = await this.participant.getStreamParticipants(stream);
+
+    activeSpeakers.forEach((speaker) => {
+      const message = this.messageService.encodeMessage({
+        event: 'active-speaker',
+        data: {
+          stream: stream,
+          speaker,
+        },
+      });
+
+      this.broadcast(ids, message);
+    });
+  }
+
+  @OnEvent('participant.new-speaker')
+  async broadcastNewSpeaker(speaker: IParticipant) {
+    const { stream } = speaker;
+    const ids = await this.participant.getStreamParticipants(stream);
+
+    const message = this.messageService.encodeMessage({
+      event: 'new-speaker',
+      data: {
+        speaker,
+        stream,
+      },
+    });
+
+    this.broadcast(ids, message);
+  }
+
   @OnEvent('participant.raise-hand')
   async broadcastHandRaise(viewer: IParticipant) {
     const { stream } = viewer;
