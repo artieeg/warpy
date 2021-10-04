@@ -15,6 +15,21 @@ export class BroadcastService {
     ids.forEach((id) => this.messageService.send(id, message));
   }
 
+  @OnEvent('reactions')
+  async broadcastReactions({ stream, reactions }: any) {
+    const ids = await this.participant.getStreamParticipants(stream);
+
+    const message = this.messageService.encodeMessage({
+      event: 'reactions-update',
+      data: {
+        stream,
+        reactions,
+      },
+    });
+
+    this.broadcast(ids, message);
+  }
+
   @OnEvent('participant.active-speakers')
   async broadcastActiveSpeakers({
     stream,

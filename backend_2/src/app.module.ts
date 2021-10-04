@@ -8,7 +8,7 @@ import { FeedModule } from './modules/feed/feed.module';
 import { MediaModule } from './modules/media/media.module';
 import { NatsModule } from './modules/nats/nats.module';
 import { ParticipantModule } from './modules/participant/participant.module';
-import { PrismaModule } from './modules/prisma/prisma.module';
+import { ReactionModule } from './modules/reaction/reaction.module';
 import { StreamBlockModule } from './modules/stream-block/stream-block.module';
 import { StreamModule } from './modules/stream/stream.module';
 import { UserModule } from './modules/user/user.module';
@@ -26,6 +26,7 @@ import { UserModule } from './modules/user/user.module';
     ParticipantModule,
     BlockModule,
     BroadcastModule,
+    ReactionModule,
     EventEmitterModule.forRoot(),
   ],
   controllers: [AppController],
