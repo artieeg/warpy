@@ -1,6 +1,11 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { INewStream, INewStreamResponse, IStopStream } from '@warpy/lib';
+import {
+  INewPreviewEvent,
+  INewStream,
+  INewStreamResponse,
+  IStopStream,
+} from '@warpy/lib';
 import { StreamService } from './stream.service';
 
 @Controller()
@@ -21,5 +26,10 @@ export class StreamController {
   @MessagePattern('stream.stop')
   async stopStream({ user }: IStopStream) {
     await this.streamService.stopStream(user);
+  }
+
+  @MessagePattern('stream.new-preview')
+  async onNewStreamPreview({ stream, preview }: INewPreviewEvent) {
+    await this.streamService.setStreamPreview(stream, preview);
   }
 }

@@ -82,4 +82,8 @@ export class StreamService {
       await this.participantEntity.allParticipantsLeave(participant.stream);
     }
   }
+
+  async setStreamPreview(stream: string, preview: string) {
+    await this.streamEntity.setPreviewClip(stream, preview);
+  }
 }
