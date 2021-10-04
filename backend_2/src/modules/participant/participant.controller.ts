@@ -3,7 +3,9 @@ import { MessagePattern } from '@nestjs/microservices';
 import {
   IJoinStream,
   IJoinStreamResponse,
+  IRaiseHand,
   IRequestViewers,
+  IRequestViewersResponse,
   IUserDisconnected,
 } from '@warpy/lib';
 import { ParticipantService } from './participant.service';
@@ -13,7 +15,7 @@ export class ParticipantController {
   constructor(private participant: ParticipantService) {}
 
   @MessagePattern('stream.join')
-  async createNewViewer({
+  async onNewViewer({
     stream,
     user,
   }: IJoinStream): Promise<IJoinStreamResponse> {
@@ -26,9 +28,17 @@ export class ParticipantController {
   }
 
   @MessagePattern('viewers.get')
-  async onViewersRequest({ stream, page }: IRequestViewers) {
+  async onViewersRequest({
+    stream,
+    page,
+  }: IRequestViewers): Promise<IRequestViewersResponse> {
     const viewers = await this.participant.getViewers(stream, page);
 
     return { viewers };
+  }
+
+  @MessagePattern('user.raise-hand')
+  async onRaiseHand({ user }: IRaiseHand) {
+    await this.participant.setRaiseHand(user, true);
   }
 }

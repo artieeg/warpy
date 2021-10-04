@@ -58,7 +58,6 @@ export class ParticipantService {
   }
 
   async deleteParticipant(user: string) {
-    console.log('deleting user', user);
     const stream = await this.participant.getCurrentStreamFor(user);
 
     this.eventEmitter.emit('participant.delete', { user, stream });
@@ -72,5 +71,11 @@ export class ParticipantService {
     const viewers = await this.participant.getViewersPage(stream, page);
 
     return viewers;
+  }
+
+  async setRaiseHand(user: string, flag: boolean) {
+    const participant = await this.participant.setRaiseHand(user, flag);
+
+    this.eventEmitter.emit('participant.raise-hand', participant);
   }
 }

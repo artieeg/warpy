@@ -15,6 +15,26 @@ export class BroadcastService {
     this.nc.publish(`reply.user.${user}`, message);
   }
 
+  private broadcast(ids: string[], message: Uint8Array) {
+    ids.forEach((id) => this.send(id, message));
+  }
+
+  @OnEvent('participant.raise-hand')
+  async broadcastHandRaise(viewer: IParticipant) {
+    const { stream } = viewer;
+    const ids = await this.participant.getStreamParticipants(stream);
+
+    const message = this.nc.jc.encode({
+      event: 'raise-hand',
+      data: {
+        viewer,
+        stream,
+      },
+    });
+
+    this.broadcast(ids, message);
+  }
+
   @OnEvent('participant.delete')
   async broadcastParticipantLeft({
     user,
@@ -25,7 +45,6 @@ export class BroadcastService {
   }) {
     const ids = await this.participant.getStreamParticipants(stream);
 
-    console.log('broadcasting to', ids);
     const message = this.nc.jc.encode({
       event: 'user-left',
       data: {
@@ -34,7 +53,7 @@ export class BroadcastService {
       },
     });
 
-    ids.forEach((id) => this.send(id, message));
+    this.broadcast(ids, message);
   }
 
   @OnEvent('participant.new')
@@ -51,6 +70,6 @@ export class BroadcastService {
       },
     });
 
-    ids.forEach((id) => this.send(id, message));
+    this.broadcast(ids, message);
   }
 }
