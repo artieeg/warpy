@@ -6,6 +6,6 @@ import { StreamBlockService } from './stream-block.service';
 @Module({
   imports: [PrismaModule],
   providers: [StreamBlockEntity, StreamBlockService],
-  exports: [StreamBlockService],
+  exports: [StreamBlockService, StreamBlockEntity],
 })
 export class StreamBlockModule {}

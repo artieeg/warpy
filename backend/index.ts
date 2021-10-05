@@ -61,7 +61,7 @@ const main = async () => {
     //reaction: onReaction,
     //"new-media-node": onNewOnlineNode,
     //"new-chat-message": onNewChatMessage,
-    "kick-user": onKickUser,
+    //"kick-user": onKickUser,
     "user-follow": onFollow,
     "user-unfollow": onUnfollow,
     "report-user": onUserReport,

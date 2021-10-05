@@ -1,8 +1,11 @@
+import { InternalError } from '@backend_2/errors';
+import { IFullParticipant } from '@backend_2/participant/participant.entity';
 import { Injectable } from '@nestjs/common';
 import {
   IConnectNewSpeakerMedia,
   IConnectRecvTransportParams,
   ICreateMediaRoom,
+  IKickedFromMediaRoom,
   IMediaPermissions,
   INewMediaNode,
   INewMediaRoomData,
@@ -127,5 +130,37 @@ export class MediaService {
 
   async addNewMediaNode(id: string, role: MediaServiceRole) {
     await this.cache.addNewNode(id, role);
+  }
+
+  private async kickFromRoom(user: string, stream: string, node: string) {
+    const response = await this.nc.request(
+      `media.peer.kick-user.${node}`,
+      {
+        user,
+        stream,
+      },
+      { timeout: 5000 },
+    );
+
+    return response as IKickedFromMediaRoom;
+  }
+
+  async removeUserFromNodes({
+    id,
+    stream,
+    sendNodeId,
+    recvNodeId,
+  }: IFullParticipant) {
+    const [sendNodeResponse, recvNodeResponse] = await Promise.all([
+      sendNodeId ? this.kickFromRoom(id, stream, sendNodeId) : null,
+      recvNodeId ? this.kickFromRoom(id, stream, recvNodeId) : null,
+    ]);
+
+    if (
+      sendNodeResponse?.status !== 'ok' &&
+      recvNodeResponse?.status !== 'ok'
+    ) {
+      throw new InternalError();
+    }
   }
 }

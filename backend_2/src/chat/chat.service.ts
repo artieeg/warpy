@@ -6,13 +6,13 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IChatMessage } from '@warpy/lib';
 const cuid = require('cuid');
-import Filter from 'bad-words';
+const Filter = require('bad-words');
 
 console.log(Filter);
 
 @Injectable()
 export class ChatService {
-  //profanityFilter = new Filter();
+  profanityFilter = new Filter();
 
   constructor(
     private eventEmitter: EventEmitter2,
@@ -22,8 +22,7 @@ export class ChatService {
   ) {}
 
   getFilteredMessage(message: string): string {
-    return message;
-    //return this.profanityFilter.clean(message);
+    return this.profanityFilter.clean(message);
   }
 
   async sendNewMessage(userId: string, text: string) {

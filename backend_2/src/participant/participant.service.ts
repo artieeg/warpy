@@ -3,11 +3,11 @@ import {
   StreamNotFound,
   UserNotFound,
 } from '@backend_2/errors';
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { StreamBlockEntity } from '@backend_2/stream-block/stream-block.entity';
+import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IJoinStreamResponse, IParticipant } from '@warpy/lib';
 import { BlockService } from '../block/block.service';
-import { BroadcastService } from '../broadcast/broadcast.service';
 import { MediaService } from '../media/media.service';
 import { MessageService } from '../message/message.service';
 import { StreamBlockService } from '../stream-block/stream-block.service';
@@ -22,6 +22,7 @@ export class ParticipantService {
     private participant: ParticipantEntity,
     private blockService: BlockService,
     private messageService: MessageService,
+    private streamBlockEntity: StreamBlockEntity,
   ) {}
 
   async createNewViewer(
@@ -174,5 +175,34 @@ export class ParticipantService {
         activeSpeakers: streamSpeakersMap[stream],
       });
     }
+  }
+
+  async kickUser(userToKick: string, userKicking: string) {
+    const userKickingData = await this.participant.getById(userKicking);
+
+    if (userKickingData?.role !== 'streamer') {
+      throw new NoPermissionError();
+    }
+
+    const userToKickData = await this.participant.getById(userToKick);
+
+    if (!userToKickData) {
+      throw new UserNotFound();
+    }
+
+    const stream = userKickingData.stream;
+
+    if (!stream) {
+      return;
+    }
+
+    if (userToKickData?.stream !== stream) {
+      throw new NoPermissionError();
+    }
+
+    await this.media.removeUserFromNodes(userToKickData);
+    await this.streamBlockEntity.create(stream, userToKick);
+
+    this.eventEmitter.emit('participant.kicked', userToKickData);
   }
 }

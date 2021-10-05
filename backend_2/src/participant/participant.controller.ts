@@ -1,11 +1,11 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
-  IActiveSpeakerEvent,
   IActiveSpeakersPayload,
   IAllowSpeakerPayload,
   IJoinStream,
   IJoinStreamResponse,
+  IKickUserRequest,
   IRaiseHand,
   IRequestViewers,
   IRequestViewersResponse,
@@ -53,5 +53,10 @@ export class ParticipantController {
   @MessagePattern('stream.active-speakers')
   async onActiveSpeakers({ speakers }: IActiveSpeakersPayload) {
     await this.participant.broadcastActiveSpeakers(speakers);
+  }
+
+  @MessagePattern('stream.kick-user')
+  async onKickUser({ userToKick, user }: IKickUserRequest) {
+    await this.participant.kickUser(userToKick, user);
   }
 }
