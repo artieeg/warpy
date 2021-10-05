@@ -4,8 +4,10 @@ import {
   IConnectRecvTransportParams,
   ICreateMediaRoom,
   IMediaPermissions,
+  INewMediaNode,
   INewMediaRoomData,
   INewSpeakerMediaResponse,
+  MediaServiceRole,
 } from '@warpy/lib';
 import * as jwt from 'jsonwebtoken';
 import { NatsService } from '../nats/nats.service';
@@ -121,5 +123,9 @@ export class MediaService {
     const token = this.createPermissionToken(permissions);
 
     return { token, permissions };
+  }
+
+  async addNewMediaNode(id: string, role: MediaServiceRole) {
+    await this.cache.addNewNode(id, role);
   }
 }

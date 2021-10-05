@@ -33,6 +33,12 @@ export class MediaCacheService implements OnModuleInit {
     });
   }
 
+  async addNewNode(node: string, role: MediaServiceRole) {
+    const setOfNodes = this.getSetNameFromRole(role);
+
+    this.client.sadd(setOfNodes, node);
+  }
+
   async getProducerNodeId(): Promise<string> {
     const producerIds = await this.getNodeIdsWithRole('PRODUCER');
 
