@@ -64,7 +64,7 @@ const main = async () => {
     //"kick-user": onKickUser,
     //"user-follow": onFollow,
     //"user-unfollow": onUnfollow,
-    "report-user": onUserReport,
+    //"report-user": onUserReport,
     "block-user": onUserBlock,
     "user-invite": onInvite,
     "invite-suggestions": onInviteSuggestionsRequest,

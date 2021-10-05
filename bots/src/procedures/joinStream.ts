@@ -85,11 +85,10 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
   record.role = "viewer";
 
   api.stream.onNewViewer(async ({ viewer }) => {
-    console.log("following", viewer.id);
     await api.user.follow(viewer.id);
+    await api.user.report(viewer.id, "test");
 
     setTimeout(async () => {
-      console.log("unfollowing", viewer.id);
       await api.user.unfollow(viewer.id);
     }, 1000);
   });
