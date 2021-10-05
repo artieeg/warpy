@@ -1,1 +1,1 @@
-jest.mock('./modules/prisma/prisma.service');
+jest.mock('./prisma/prisma.service');

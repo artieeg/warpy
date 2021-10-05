@@ -15,6 +15,18 @@ export class BroadcastService {
     ids.forEach((id) => this.messageService.send(id, message));
   }
 
+  @OnEvent('chat.message')
+  async broadcastChatMessage({ idsToBroadcast, message }: any) {
+    const payload = this.messageService.encodeMessage({
+      event: 'chat-message',
+      data: {
+        message,
+      },
+    });
+
+    this.broadcast(idsToBroadcast, payload);
+  }
+
   @OnEvent('reactions')
   async broadcastReactions({ stream, reactions }: any) {
     const ids = await this.participant.getStreamParticipants(stream);

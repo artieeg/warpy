@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserBlock, User } from '@prisma/client';
-import { IUserBlock } from '../../../../lib';
+import { IUserBlock } from '@warpy/lib';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserEntity } from '../user/user.entity';
 

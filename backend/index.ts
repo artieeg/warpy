@@ -60,7 +60,7 @@ const main = async () => {
     //"new-stream-preview": onNewStreamPreview,
     //reaction: onReaction,
     //"new-media-node": onNewOnlineNode,
-    "new-chat-message": onNewChatMessage,
+    //"new-chat-message": onNewChatMessage,
     "kick-user": onKickUser,
     "user-follow": onFollow,
     "user-unfollow": onUnfollow,

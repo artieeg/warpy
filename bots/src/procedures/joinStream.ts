@@ -72,7 +72,6 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
   }, [5000]);
   */
 
-  /*
   setInterval(() => {
     const text = uniqueNamesGenerator({
       dictionaries: [animals, adjectives],
@@ -81,7 +80,6 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
 
     api.stream.sendChatMessage(text);
   }, 1000 + Math.random() * 700);
-  */
 
   record.stream = streamId;
   record.role = "viewer";
