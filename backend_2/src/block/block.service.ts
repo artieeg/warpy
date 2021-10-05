@@ -13,6 +13,15 @@ export class BlockService {
     private blockEntity: BlockEntity,
   ) {}
 
+  async blockUser(blocker: string, blocked: string) {
+    const blockId = await this.blockEntity.create({
+      blocker,
+      blocked,
+    });
+
+    return blockId;
+  }
+
   async isBannedBySpeaker(user: string, stream: string) {
     const speakers = await this.participantEntity.getSpeakers(stream);
     const blockedByIds = await this.blockEntity.getBlockedByIds(user);

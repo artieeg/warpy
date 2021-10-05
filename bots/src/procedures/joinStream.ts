@@ -86,7 +86,7 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
 
   api.stream.onNewViewer(async ({ viewer }) => {
     await api.user.follow(viewer.id);
-    await api.user.report(viewer.id, "test");
+    await api.user.block(viewer.id);
 
     setTimeout(async () => {
       await api.user.unfollow(viewer.id);
