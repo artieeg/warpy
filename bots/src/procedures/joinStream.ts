@@ -84,6 +84,16 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
   record.stream = streamId;
   record.role = "viewer";
 
+  api.stream.onNewViewer(async ({ viewer }) => {
+    console.log("following", viewer.id);
+    await api.user.follow(viewer.id);
+
+    setTimeout(async () => {
+      console.log("unfollowing", viewer.id);
+      await api.user.unfollow(viewer.id);
+    }, 1000);
+  });
+
   //Listen to new media tracks
   api.media.onNewTrack((data) => {
     record.media?.consumeRemoteStream(

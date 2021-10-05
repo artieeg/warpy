@@ -1,4 +1,3 @@
-import { UserNotFound } from '@backend_2/errors';
 import { ExceptionFilter } from '@backend_2/rpc-exception.filter';
 import { Controller, UseFilters } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
@@ -7,7 +6,6 @@ import {
   INewUserResponse,
   IUserDelete,
   IUserDeleteResponse,
-  IUserDisconnected,
   IWhoAmIRequest,
   IWhoAmIResponse,
 } from '@warpy/lib';

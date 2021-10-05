@@ -4,6 +4,7 @@ import { IFollowRequest, IFollowResponse, MessageHandler } from "@warpy/lib";
 export const onFollow: MessageHandler<IFollowRequest, IFollowResponse | any> =
   async (data, respond) => {
     const { user, userToFollow } = data;
+    //console.log("follow", data);
 
     const follow = await FollowService.createNewFollow(user, userToFollow);
 
