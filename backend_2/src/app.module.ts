@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BlockModule } from './block/block.module';
 import { BroadcastModule } from './broadcast/broadcast.module';
 import { ChatModule } from './chat/chat.module';
+import { configuration } from './config/configuration';
 import { FeedModule } from './feed/feed.module';
 import { FollowModule } from './follow/follow.module';
 import { InviteModule } from './invite/invite.module';
@@ -38,6 +40,9 @@ import { UserModule } from './user/user.module';
     FollowModule,
     NotificationModule,
     EventEmitterModule.forRoot(),
+    ConfigModule.forRoot({
+      load: [configuration],
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
