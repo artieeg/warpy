@@ -86,7 +86,8 @@
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s",
-      "!**/*.(entity|controller|module).(t|j)s"
+      "!**/*.(entity|controller|module).(t|j)s",
+      "!./src/prisma"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"

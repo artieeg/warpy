@@ -6,6 +6,7 @@ import { FeedModule } from '@backend_2/feed/feed.module';
 import { FollowModule } from '@backend_2/follow/follow.module';
 import { InviteModule } from '@backend_2/invite/invite.module';
 import { MediaModule } from '@backend_2/media/media.module';
+import { MessageModule } from '@backend_2/message/message.module';
 import { NatsModule } from '@backend_2/nats/nats.module';
 import { NotificationModule } from '@backend_2/notification/notification.module';
 import { ParticipantModule } from '@backend_2/participant/participant.module';
@@ -23,6 +24,7 @@ export const testModuleBuilder = Test.createTestingModule({
     FeedModule,
     UserModule,
     StreamModule,
+    MessageModule,
     UserReportModule,
     MediaModule,
     StreamModule,
