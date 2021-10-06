@@ -7,8 +7,10 @@ import { BroadcastModule } from './broadcast/broadcast.module';
 import { ChatModule } from './chat/chat.module';
 import { FeedModule } from './feed/feed.module';
 import { FollowModule } from './follow/follow.module';
+import { InviteModule } from './invite/invite.module';
 import { MediaModule } from './media/media.module';
 import { NatsModule } from './nats/nats.module';
+import { NotificationModule } from './notification/notification.module';
 import { ParticipantModule } from './participant/participant.module';
 import { ReactionModule } from './reaction/reaction.module';
 import { StreamBlockModule } from './stream-block/stream-block.module';
@@ -29,10 +31,12 @@ import { UserModule } from './user/user.module';
     NatsModule,
     ParticipantModule,
     BlockModule,
+    InviteModule,
     ChatModule,
     BroadcastModule,
     ReactionModule,
     FollowModule,
+    NotificationModule,
     EventEmitterModule.forRoot(),
   ],
   controllers: [AppController],

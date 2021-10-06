@@ -7,6 +7,7 @@ export const toNotificationDTO = (notification: any): INotification => {
     id: notification.id,
     invite: notification.invite && toInviteDTO(notification.invite),
     hasBeenSeen: notification.hasBeenSeen,
+    user_id: notification.user_id,
     created_at: notification.created_at,
   };
 };

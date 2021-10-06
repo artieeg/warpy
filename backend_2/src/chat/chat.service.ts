@@ -8,8 +8,6 @@ import { IChatMessage } from '@warpy/lib';
 const cuid = require('cuid');
 const Filter = require('bad-words');
 
-console.log(Filter);
-
 @Injectable()
 export class ChatService {
   profanityFilter = new Filter();

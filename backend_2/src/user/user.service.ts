@@ -13,6 +13,10 @@ export class UserService {
     private refreshTokenEntity: RefreshTokenEntity,
   ) {}
 
+  async search(text: string): Promise<IUser[]> {
+    return this.user.search(text);
+  }
+
   async getById(user: string): Promise<IUser> {
     const data = await this.user.findById(user, true);
 
@@ -39,7 +43,6 @@ export class UserService {
     const refreshToken = this.tokenService.createToken(user.id, '1y');
 
     await this.refreshTokenEntity.create(refreshToken);
-    console.log(accessToken, refreshToken, user);
 
     return {
       id: user.id,

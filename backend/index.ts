@@ -66,13 +66,13 @@ const main = async () => {
     //"user-unfollow": onUnfollow,
     //"report-user": onUserReport,
     //"block-user": onUserBlock,
-    "user-invite": onInvite,
-    "invite-suggestions": onInviteSuggestionsRequest,
+    //"user-invite": onInvite,
+    //"cancel-stream-invite": onCancelInvite,
+    //"invite-suggestions": onInviteSuggestionsRequest,
+    //"read-notifications": onReadNotifications,
+    //"get-read-notifications": NotificationController.getReadNotifications,
+    //"get-unread-notifications": NotificationController.getUnreadNotifications,
     "search-user": onUserSearch,
-    "cancel-stream-invite": onCancelInvite,
-    "read-notifications": onReadNotifications,
-    "get-read-notifications": NotificationController.getReadNotifications,
-    "get-unread-notifications": NotificationController.getUnreadNotifications,
   };
 
   for (const [event, handler] of Object.entries(handlers)) {

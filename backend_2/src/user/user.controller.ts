@@ -6,6 +6,8 @@ import {
   INewUserResponse,
   IUserDelete,
   IUserDeleteResponse,
+  IUserSearchRequest,
+  IUserSearchResponse,
   IWhoAmIRequest,
   IWhoAmIResponse,
 } from '@warpy/lib';
@@ -42,5 +44,15 @@ export class UserController {
     return {
       status: 'ok',
     };
+  }
+
+  @UseFilters(ExceptionFilter)
+  @MessagePattern('user.search')
+  async onUserSearch({
+    textToSearch,
+  }: IUserSearchRequest): Promise<IUserSearchResponse> {
+    const users = await this.userService.search(textToSearch);
+
+    return { users };
   }
 }

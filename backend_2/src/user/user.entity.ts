@@ -21,12 +21,12 @@ export class UserEntity {
     };
   }
 
-  async createNewUser(data: NewUserParams): Promise<User> {
-    const user = this.prisma.user.create({
+  async createNewUser(data: NewUserParams): Promise<IUser> {
+    const user = await this.prisma.user.create({
       data,
     });
 
-    return user;
+    return UserEntity.toUserDTO(user);
   }
 
   async search(textToSearch: string): Promise<IUser[]> {

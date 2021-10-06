@@ -1,10 +1,9 @@
 import { BannedFromStreamError } from '@backend_2/errors';
 import { createUserFixture } from '@backend_2/__fixtures__';
-import { Test } from '@nestjs/testing';
+import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
 import { MediaService } from '../media/media.service';
 import { StreamBlockService } from '../stream-block/stream-block.service';
 import { ParticipantEntity } from './participant.entity';
-import { ParticipantModule } from './participant.module';
 import { ParticipantService } from './participant.service';
 
 const mockedMediaService = {
@@ -14,7 +13,7 @@ const mockedMediaService = {
       test: true,
     },
   }),
-  getConsumerParams: jest.fn(),
+  getViewerParams: jest.fn(),
 };
 
 const mockedStreamBlock = {
@@ -44,9 +43,7 @@ describe('ParticipantService', () => {
   const streamParticipants = ['id1', 'id2'];
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({
-      imports: [ParticipantModule],
-    })
+    const moduleRef = await testModuleBuilder
       .overrideProvider(StreamBlockService)
       .useValue(mockedStreamBlock)
       .overrideProvider(MediaService)
@@ -61,7 +58,7 @@ describe('ParticipantService', () => {
     mockedParticipantEntity.count.mockResolvedValue(count);
     mockedParticipantEntity.getSpeakers.mockResolvedValue(speakers);
 
-    mockedMediaService.getConsumerParams.mockResolvedValue(recvMediaParams);
+    mockedMediaService.getViewerParams.mockResolvedValue(recvMediaParams);
     mockedParticipantEntity.getIdsByStream.mockResolvedValue(
       streamParticipants,
     );
