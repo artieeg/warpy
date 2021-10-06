@@ -1,3 +1,4 @@
+import { IFollow } from '@backend_2/follow/follow.entity';
 import { IStream } from '@warpy/lib';
 import { IConnectRecvTransportParams, IParticipant, IUser } from '@warpy/lib';
 
@@ -46,5 +47,13 @@ export const createRecvTransportParamsFixture = (
   recvTransportOptions: {
     test: true,
   },
+  ...data,
+});
+
+export const createFollowRecord = (data: Partial<IFollow>): IFollow => ({
+  followed_id: 'followed',
+  follower_id: 'follower',
+  follower: createUserFixture({ id: 'follower' }),
+  followed: createUserFixture({ id: 'followed' }),
   ...data,
 });
