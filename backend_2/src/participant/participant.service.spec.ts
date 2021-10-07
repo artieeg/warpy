@@ -1,9 +1,12 @@
 import { BannedFromStreamError } from '@backend_2/errors';
-import { createUserFixture } from '@backend_2/__fixtures__';
+import { mockedEventEmitter } from '@backend_2/events/events.service.mock';
+import { createParticipantFixture } from '@backend_2/__fixtures__';
 import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { MediaService } from '../media/media.service';
 import { StreamBlockService } from '../stream-block/stream-block.service';
 import { ParticipantEntity } from './participant.entity';
+import { mockedParticipantEntity } from './participant.entity.mock';
 import { ParticipantService } from './participant.service';
 
 const mockedMediaService = {
@@ -20,14 +23,6 @@ const mockedStreamBlock = {
   checkUserBanned: jest.fn(),
 };
 
-const mockedParticipantEntity = {
-  create: jest.fn(),
-  getSpeakers: jest.fn(),
-  getWithRaisedHands: jest.fn(),
-  count: jest.fn(),
-  getIdsByStream: jest.fn(),
-};
-
 describe('ParticipantService', () => {
   let participantService: ParticipantService;
 
@@ -35,8 +30,13 @@ describe('ParticipantService', () => {
   const user = 'test-user';
 
   const count = 120;
-  const speakers = [createUserFixture({})];
-  const raisedHands = [createUserFixture({})];
+  const speakers = [createParticipantFixture({ role: 'speaker' })];
+  const raisedHands = [
+    createParticipantFixture({
+      role: 'viewer',
+      isRaisingHand: true,
+    }),
+  ];
   const mediaPermissionsToken = 'test';
   const recvMediaParams = { test: true };
 
@@ -50,6 +50,8 @@ describe('ParticipantService', () => {
       .useValue(mockedMediaService)
       .overrideProvider(ParticipantEntity)
       .useValue(mockedParticipantEntity)
+      .overrideProvider(EventEmitter2)
+      .useValue(mockedEventEmitter)
       .compile();
 
     participantService = moduleRef.get(ParticipantService);
@@ -87,6 +89,45 @@ describe('ParticipantService', () => {
   it('returns stream participants', () => {
     expect(participantService.getStreamParticipants('test')).resolves.toEqual(
       streamParticipants,
+    );
+  });
+
+  it('emits participant.delete event when a participant has been deleted', async () => {
+    const user = 'test';
+    const stream = 'test2';
+
+    mockedParticipantEntity.getCurrentStreamFor.mockResolvedValue(stream);
+
+    await participantService.deleteParticipant(user);
+
+    expect(mockedEventEmitter.emit).toBeCalledWith('participant.delete', {
+      user,
+      stream,
+    });
+  });
+
+  it('deletes a participant', async () => {
+    const stream = 'test2';
+    const user = 'user';
+
+    mockedParticipantEntity.getCurrentStreamFor.mockResolvedValue(stream);
+    await participantService.deleteParticipant(user);
+
+    expect(mockedParticipantEntity.deleteParticipant).toHaveBeenCalledWith(
+      user,
+    );
+  });
+
+  it('fetches viewers page', async () => {
+    const stream = 'stream';
+    const page = 4;
+
+    const viewers = [createParticipantFixture({ stream, role: 'viewer' })];
+
+    mockedParticipantEntity.getViewersPage.mockResolvedValue(viewers);
+
+    expect(participantService.getViewers(stream, page)).resolves.toStrictEqual(
+      viewers,
     );
   });
 });

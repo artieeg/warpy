@@ -49,11 +49,13 @@ describe('ChatService', () => {
 
   it('sends a message', async () => {
     const sender = createUserFixture({});
+    const stream = 'test-stream-id';
     const participantIds = ['id1', 'id2', 'id3'];
     const blockedBy = ['id1'];
     const blocked = ['id2'];
     const message = 'test message';
 
+    mockedParticipantEntity.getCurrentStreamFor.mockResolvedValueOnce(stream);
     mockedUserEntity.findById.mockResolvedValue(sender);
     mockedParticipantEntity.getIdsByStream.mockResolvedValueOnce(
       participantIds,

@@ -1,4 +1,8 @@
-import { UserNotFound } from '@backend_2/errors';
+import {
+  NoPermissionError,
+  StreamNotFound,
+  UserNotFound,
+} from '@backend_2/errors';
 import { Injectable } from '@nestjs/common';
 import { INewStreamResponse } from '@warpy/lib';
 import { MediaService } from '../media/media.service';
@@ -80,6 +84,12 @@ export class StreamService {
     if (participant?.stream && participant?.role === 'streamer') {
       await this.streamEntity.stop(participant.stream);
       await this.participantEntity.allParticipantsLeave(participant.stream);
+    } else if (!participant) {
+      throw new UserNotFound();
+    } else if (!participant.stream) {
+      throw new StreamNotFound();
+    } else {
+      throw new NoPermissionError();
     }
   }
 
