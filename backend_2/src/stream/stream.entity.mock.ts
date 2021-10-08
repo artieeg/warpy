@@ -1,8 +1,4 @@
-import { createStreamFixture } from '@backend_2/__fixtures__';
+import { getMockedInstance } from '@backend_2/utils';
+import { StreamEntity } from './stream.entity';
 
-export const mockedStreamEntity = {
-  get: jest.fn(),
-  create: jest.fn().mockResolvedValue(createStreamFixture({})),
-  stop: jest.fn(),
-  setPreviewClip: jest.fn(),
-};
+export const mockedStreamEntity = getMockedInstance<StreamEntity>(StreamEntity);

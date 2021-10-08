@@ -25,6 +25,7 @@ export class ReactionService implements OnModuleInit, OnModuleDestroy {
 
   onModuleDestroy() {
     clearInterval(this.syncInterval);
+    this.syncInterval = null;
   }
 
   async countNewReaction(
@@ -33,7 +34,7 @@ export class ReactionService implements OnModuleInit, OnModuleDestroy {
     stream: string,
   ): Promise<void> {
     if (!ALLOWED_EMOJI.includes(emoji)) {
-      return;
+      throw new Error();
     }
 
     if (!this.batchedReactionUpdates[stream]) {
@@ -53,9 +54,7 @@ export class ReactionService implements OnModuleInit, OnModuleDestroy {
 
           this.eventEmitter.emit('reactions', { stream, reactions });
           await this.streamEntity.incReactionsCount(stream, reactions.length);
-        } catch (e) {
-          console.error(e);
-        }
+        } catch (e) {}
       },
     );
 

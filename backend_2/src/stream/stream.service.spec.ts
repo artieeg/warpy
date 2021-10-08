@@ -36,6 +36,10 @@ describe('StreamService', () => {
     streamService = m.get(StreamService);
   });
 
+  beforeEach(() => {
+    mockedStreamEntity.create.mockResolvedValue(createStreamFixture({}));
+  });
+
   it('throws if user does not exist', async () => {
     mockedUserEntity.findById.mockResolvedValueOnce(null);
 
