@@ -1,6 +1,6 @@
 import { MessageService } from '@backend_2/message/message.service';
 import { Injectable } from '@nestjs/common';
-import { IInvite } from '@warpy/lib';
+import { IInvite, INotification } from '@warpy/lib';
 import { NotificationEntity } from './notification.entity';
 
 @Injectable()
@@ -9,6 +9,15 @@ export class NotificationService {
     private notificationEntity: NotificationEntity,
     private messageService: MessageService,
   ) {}
+
+  private async sendNotification(user: string, notification: INotification) {
+    this.messageService.sendMessage(user, {
+      event: 'notification',
+      data: {
+        notification,
+      },
+    });
+  }
 
   async createInviteNotification(invite: IInvite) {
     const notification = await this.notificationEntity.createFromInvite(
@@ -19,12 +28,7 @@ export class NotificationService {
     const { invitee } = invite;
     const { id } = invitee;
 
-    this.messageService.sendMessage(id, {
-      event: 'notification',
-      data: {
-        notification,
-      },
-    });
+    this.sendNotification(id, notification);
   }
 
   async readAllNotifications(user_id: string) {
@@ -48,9 +52,5 @@ export class NotificationService {
         notification_id,
       },
     });
-  }
-
-  async sendNewFollowNofification(followedUser: string, follower: string) {
-    throw new Error('unimplemented');
   }
 }

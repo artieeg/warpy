@@ -88,13 +88,11 @@ export class ParticipantService {
   }
 
   async allowSpeaker(hostId: string, newSpeakerId: string) {
-    const stream = await this.participant.getCurrentStreamFor(hostId);
+    const { stream, role } = await this.participant.getById(hostId);
 
     if (!stream) {
       throw new StreamNotFound();
     }
-
-    const role = await this.participant.getRoleFor(hostId, stream);
 
     if (role !== 'streamer') {
       throw new NoPermissionError();
@@ -139,6 +137,7 @@ export class ParticipantService {
     this.eventEmitter.emit('participant.new-speaker', speakerData);
   }
 
+  //TODO: do not fetch participant info from the db (#110)
   async broadcastActiveSpeakers(speakers: Record<string, number>) {
     const ids = Object.keys(speakers);
     const participants = await this.participant.getByIds(ids);
@@ -147,10 +146,6 @@ export class ParticipantService {
     const streamSpeakersMap: Record<string, unknown[]> = {};
 
     participants.forEach((participant: IParticipant) => {
-      if (!participant.stream) {
-        return;
-      }
-
       if (streamSpeakersMap[participant.stream]) {
         streamSpeakersMap[participant.stream] = [
           ...streamSpeakersMap[participant.stream],
@@ -177,10 +172,14 @@ export class ParticipantService {
     }
   }
 
-  async kickUser(userToKick: string, userKicking: string) {
-    const userKickingData = await this.participant.getById(userKicking);
+  async kickUser(userToKick: string, moderatorId: string) {
+    const moderator = await this.participant.getById(moderatorId);
 
-    if (userKickingData?.role !== 'streamer') {
+    if (!moderator) {
+      throw new UserNotFound();
+    }
+
+    if (moderator.role !== 'streamer') {
       throw new NoPermissionError();
     }
 
@@ -190,13 +189,9 @@ export class ParticipantService {
       throw new UserNotFound();
     }
 
-    const stream = userKickingData.stream;
+    const stream = moderator.stream;
 
-    if (!stream) {
-      return;
-    }
-
-    if (userToKickData?.stream !== stream) {
+    if (userToKickData.stream !== stream) {
       throw new NoPermissionError();
     }
 

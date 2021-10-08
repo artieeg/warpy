@@ -1,10 +1,11 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ALLOWED_EMOJI, Reaction } from '@warpy/lib';
 import { StreamEntity } from '../stream/stream.entity';
 
 @Injectable()
-export class ReactionService implements OnModuleInit {
+export class ReactionService implements OnModuleInit, OnModuleDestroy {
+  syncInterval: ReturnType<typeof setInterval>;
   batchedReactionUpdates: Record<string, Reaction[]> = {};
 
   constructor(
@@ -19,7 +20,11 @@ export class ReactionService implements OnModuleInit {
   }
 
   onModuleInit() {
-    setInterval(() => this.syncReactions(), 1000);
+    this.syncInterval = setInterval(() => this.syncReactions(), 1000);
+  }
+
+  onModuleDestroy() {
+    clearInterval(this.syncInterval);
   }
 
   async countNewReaction(

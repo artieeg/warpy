@@ -1,5 +1,6 @@
 import { IFollow } from '@backend_2/follow/follow.entity';
-import { IStream } from '@warpy/lib';
+import { IFullParticipant } from '@backend_2/participant/participant.entity';
+import { IInvite, INotification, IStream } from '@warpy/lib';
 import { IConnectRecvTransportParams, IParticipant, IUser } from '@warpy/lib';
 
 export const createStreamFixture = (data: Partial<IStream>): IStream => {
@@ -27,12 +28,16 @@ export const createUserFixture = (data: Partial<IUser>): IUser => {
 };
 
 export const createParticipantFixture = (
-  data: Partial<IParticipant>,
-): IParticipant => ({
+  data: Partial<IFullParticipant>,
+): IFullParticipant => ({
   ...createUserFixture(data),
   stream: 'test-stream-id',
   role: 'viewer',
   isRaisingHand: false,
+  recvNodeId: 'test-node-id',
+  sendNodeId: 'test-node-id',
+  isBanned: false,
+  hasLeftStream: false,
   ...data,
 });
 
@@ -55,5 +60,23 @@ export const createFollowRecord = (data: Partial<IFollow>): IFollow => ({
   follower_id: 'follower',
   follower: createUserFixture({ id: 'follower' }),
   followed: createUserFixture({ id: 'followed' }),
+  ...data,
+});
+
+export const createInviteFixture = (data: Partial<IInvite>): IInvite => ({
+  invitee: createUserFixture({ id: '1' }),
+  inviter: createUserFixture({ id: '2' }),
+  id: 'test',
+  stream: createStreamFixture({}),
+  ...data,
+});
+
+export const createNotificationFixture = (
+  data: Partial<INotification>,
+): INotification => ({
+  id: 'test',
+  hasBeenSeen: false,
+  created_at: 1000,
+  user_id: 'test2',
   ...data,
 });

@@ -21,7 +21,9 @@ describe('StreamBlock service', () => {
   });
 
   it('throws an error if the user is banned from a stream', () => {
-    mockedStreamBlockEntity.find.mockResolvedValueOnce({ block: 'test-block' });
+    mockedStreamBlockEntity.find.mockResolvedValueOnce({
+      block: 'test-block',
+    } as any);
 
     expect(
       streamBlockService.checkUserBanned('test', 'test'),
