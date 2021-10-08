@@ -2,7 +2,7 @@ import { Participant } from "./participant";
 
 export interface IStream {
   id: string;
-  owner: string;
+  owner: string | null;
   title: string;
   hub: string;
   preview: string | null;

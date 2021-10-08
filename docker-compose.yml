@@ -20,13 +20,21 @@ services:
 
   backend:
     image: node:16.0.0-alpine
+    env_file: dev_env/backend.env
     ports:
       - 9229:9229
-    env_file: dev_env/backend.env
     volumes:
       - ./:/warpy
-    working_dir: /warpy/backend
-    command: yarn start:dev
+    working_dir: /warpy/backend_2
+    command: yarn start:nodemon2
+
+      #backend:
+      #image: node:16.0.0-alpine
+      #env_file: dev_env/backend.env
+      #volumes:
+      #- ./:/warpy
+      #working_dir: /warpy/backend
+      #command: yarn start:dev
 
   postgres:
     image: postgres:13-alpine
@@ -59,6 +67,8 @@ services:
     image: media:latest
     env_file: dev_env/media.env
     network_mode: "host"
+    depends_on:
+      - "backend"
     build:
       context: .
       dockerfile: ./Dockerfile.media
@@ -68,6 +78,9 @@ services:
     image: media:latest
     env_file: dev_env/media.env
     network_mode: "host"
+    depends_on:
+      - "backend"
+      - "media_producer"
     build:
       context: .
       dockerfile: ./Dockerfile.media

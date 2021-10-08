@@ -72,7 +72,6 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
   }, [5000]);
   */
 
-  /*
   setInterval(() => {
     const text = uniqueNamesGenerator({
       dictionaries: [animals, adjectives],
@@ -81,10 +80,18 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
 
     api.stream.sendChatMessage(text);
   }, 1000 + Math.random() * 700);
-  */
 
   record.stream = streamId;
   record.role = "viewer";
+
+  api.stream.onNewViewer(async ({ viewer }) => {
+    await api.user.follow(viewer.id);
+    //await api.user.block(viewer.id);
+
+    setTimeout(async () => {
+      await api.user.unfollow(viewer.id);
+    }, 1000);
+  });
 
   //Listen to new media tracks
   api.media.onNewTrack((data) => {

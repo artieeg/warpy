@@ -103,15 +103,15 @@ const handlers: Record<string, HandlerConfig> = {
   },
   "user-follow": {
     subject: "user.follow",
-    kind: "event",
+    kind: "request",
     auth: true,
     schema: joi.object({
       userToFollow: joi.string().max(64).required(),
     }),
   },
   "user-unfollow": {
-    subject: "user.follow",
-    kind: "event",
+    subject: "user.unfollow",
+    kind: "request",
     auth: true,
     schema: joi.object({
       userToUnfollow: joi.string().max(64).required(),
