@@ -88,7 +88,13 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s",
       "!**/*.(entity|controller|module).(t|j)s",
-      "!**/prisma.service.ts"
+      "!**/prisma.service.ts",
+      "!**/app.service.ts",
+      "!**/main.ts",
+      "!**/errors.ts",
+      "!**/nats.transporter.ts",
+      "!**/rpc-exception.filter.ts",
+      "!**/nats"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"

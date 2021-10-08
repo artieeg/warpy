@@ -20,6 +20,10 @@ describe('ReactionService', () => {
     reactionService = m.get(ReactionService);
   });
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('creates an interval for syncing reactions', () => {
     reactionService.onModuleInit();
 
