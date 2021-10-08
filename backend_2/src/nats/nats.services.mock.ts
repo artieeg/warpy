@@ -3,4 +3,5 @@ export const mockedNatsService = {
     encode: jest.fn().mockReturnValue('encoded-msg'),
   },
   publish: jest.fn(),
+  request: jest.fn(),
 };

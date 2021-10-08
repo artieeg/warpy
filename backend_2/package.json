@@ -87,8 +87,9 @@
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s",
-      "!**/*.(entity|controller|module).(t|j)s",
+      "!**/*.(entity|controller|module|cache).(t|j)s",
       "!**/prisma.service.ts",
+      "!**/nats.service.ts",
       "!**/app.service.ts",
       "!**/main.ts",
       "!**/errors.ts",

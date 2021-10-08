@@ -16,8 +16,16 @@ describe('UserReport', () => {
   });
 
   it('creates new user report', async () => {
-    await userReportService.addUserReport('id1', 'id2', 'reason');
+    const reportee = '1';
+    const reported = '2';
+    const reason = '1';
 
-    expect(mockedUserReportEntity.create).toBeCalled();
+    await userReportService.addUserReport(reported, reportee, reason);
+
+    expect(mockedUserReportEntity.create).toBeCalledWith({
+      reportee,
+      reported,
+      reason,
+    });
   });
 });

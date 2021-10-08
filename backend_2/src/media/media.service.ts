@@ -74,6 +74,19 @@ export class MediaService {
     };
   }
 
+  private async getNodes(
+    permissions?: Partial<IMediaPermissions>,
+  ): Promise<{ sendNodeId: string; recvNodeId: string }> {
+    if (!permissions) {
+      return this.getSendRecvNodeIds();
+    }
+
+    return {
+      sendNodeId: permissions.sendNodeId || (await this.getSendNodeId()),
+      recvNodeId: permissions.recvNodeId || (await this.getRecvNodeId()),
+    };
+  }
+
   async getStreamerPermissions(
     user: string,
     room: string,
@@ -84,9 +97,8 @@ export class MediaService {
       room,
       audio: true,
       video: true,
-      recvNodeId: optional.recvNodeId || (await this.getRecvNodeId()),
-      sendNodeId: optional.sendNodeId || (await this.getSendNodeId()),
       ...optional,
+      ...(await this.getNodes(optional)),
     };
 
     const token = this.createPermissionToken(permissions);
@@ -104,9 +116,8 @@ export class MediaService {
       room,
       audio: true,
       video: false,
-      recvNodeId: optional.recvNodeId || (await this.getRecvNodeId()),
-      sendNodeId: optional.sendNodeId || (await this.getSendNodeId()),
       ...optional,
+      ...(await this.getNodes(optional)),
     };
 
     const token = this.createPermissionToken(permissions);
@@ -157,8 +168,8 @@ export class MediaService {
     ]);
 
     if (
-      sendNodeResponse?.status !== 'ok' &&
-      recvNodeResponse?.status !== 'ok'
+      (sendNodeResponse && sendNodeResponse.status !== 'ok') ||
+      (recvNodeResponse && recvNodeResponse.status !== 'ok')
     ) {
       throw new InternalError();
     }
