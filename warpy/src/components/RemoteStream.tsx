@@ -8,6 +8,7 @@ import {SpeakerStreamPanel} from './SpeakerStreamPanel';
 import {ReactionCanvas} from './ReactionCanvas';
 import {useMediaStreaming} from '@app/hooks/useMediaStreaming';
 import {useStore} from '@app/store';
+import {StreamOverlay} from './StreamOverlay';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -53,26 +54,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
 
       <ReactionCanvas />
 
-      {isSpeaker && (
-        <SpeakerStreamPanel
-          visible={!modal}
-          participantsCount={totalParticipantCount}
-          onOpenParticipantsList={() => openNewModal('participants')}
-          onOpenReactions={() => openNewModal('reactions')}
-          micIsOn={!muted}
-          onMicToggle={toggle}
-        />
-      )}
-
-      {!isSpeaker && (
-        <ViewerStreamPanel
-          visible={!modal}
-          participantsCount={totalParticipantCount}
-          onOpenChat={() => openNewModal('chat')}
-          onOpenParticipantsList={() => openNewModal('participants')}
-          onOpenReactions={() => openNewModal('reactions')}
-        />
-      )}
+      <StreamOverlay />
     </View>
   );
 };

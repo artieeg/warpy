@@ -1,19 +1,22 @@
+import {useStore} from '@app/store';
 import React from 'react';
 import {RoundButton} from './RoundButton';
 import {Text} from './Text';
 
 interface IShowParticipantsProps {
-  count: number;
+  count?: number;
   style?: any;
   onOpenParticipantsList: () => any;
 }
 
 export const ShowParticipantsButton = (props: IShowParticipantsProps) => {
-  const {style, count, onOpenParticipantsList} = props;
+  const {style, onOpenParticipantsList} = props;
+
+  const count = useStore.use.totalParticipantCount();
 
   return (
     <RoundButton onPress={onOpenParticipantsList} style={style}>
-      <Text weight="bold" size="small">
+      <Text color="white" weight="bold" size="small">
         {count.toString()}
       </Text>
     </RoundButton>
