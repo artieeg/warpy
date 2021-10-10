@@ -1,11 +1,16 @@
+import {useStore} from '@app/store';
 import React from 'react';
-import {Icon} from './Icon';
-import {IRoundButtonProps, RoundButton} from './RoundButton';
+import {IconButton} from './IconButton';
 
-export const ChatButton = (props: IRoundButtonProps) => {
+export const ChatButton = () => {
+  const openNewModal = useStore.use.openNewModal();
+
   return (
-    <RoundButton {...props}>
-      <Icon name="chat" size={30} color="#fff" />
-    </RoundButton>
+    <IconButton
+      onPress={() => openNewModal('chat')}
+      color="#ffffff"
+      name="chat"
+      size={30}
+    />
   );
 };

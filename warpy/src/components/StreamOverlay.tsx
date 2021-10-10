@@ -1,13 +1,19 @@
+import {useStore} from '@app/store';
 import React from 'react';
 import {View, StyleSheet, useWindowDimensions} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import {ChatButton} from './ChatButton';
 import {ClapButton} from './ClapsButton';
 import {IconButton} from './IconButton';
-import {ReactionButton} from './ReactionButton';
+import {RaiseHandButton} from './RaiseHandButton';
 import {ShowParticipantsButton} from './ShowParticipantsButton';
+import {Speakers} from './Speakers';
+import {ToggleMicButton} from './ToggleMicButton';
 
 export const StreamOverlay = () => {
   const gradientHeightStyle = {height: useWindowDimensions().height / 3};
+
+  const role = useStore.use.role();
 
   return (
     <View style={styles.wrapper}>
@@ -19,15 +25,14 @@ export const StreamOverlay = () => {
       />
 
       <View style={styles.buttons}>
-        <ClapButton onPress={() => {}} />
-        <IconButton color="#ffffff" name="mic-on" size={30} />
-        <IconButton color="#ffffff" name="chat" size={30} />
-        <ShowParticipantsButton
-          onOpenParticipantsList={() => {}}
-          style={styles.transparent}
-        />
+        <ClapButton />
+        {role === 'viewer' && <RaiseHandButton />}
+        {role === 'speaker' && <ToggleMicButton />}
+        <ChatButton />
+        <ShowParticipantsButton style={styles.transparent} />
         <IconButton color="#ffffff" name="eye-off" size={30} />
       </View>
+      <Speakers />
     </View>
   );
 };

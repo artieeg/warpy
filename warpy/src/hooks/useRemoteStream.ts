@@ -7,10 +7,7 @@ import {useKickHandler} from './useKickHandler';
 export const useRemoteStream = (id: string) => {
   const {videoStreams} = useRemoteStreams();
 
-  const [join, totalParticipantCount, isSpeaker] = useStore(
-    state => [state.join, state.totalParticipantCount, state.isSpeaker],
-    shallow,
-  );
+  const [join] = useStore(state => [state.join, state.isSpeaker], shallow);
 
   useEffect(() => {
     if (id) {
@@ -21,8 +18,6 @@ export const useRemoteStream = (id: string) => {
   useKickHandler();
 
   return {
-    totalParticipantCount,
-    isSpeaker,
     videoStreams,
   };
 };

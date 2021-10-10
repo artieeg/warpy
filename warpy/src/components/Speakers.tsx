@@ -1,7 +1,8 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import {Speaker} from './Speaker';
 import {StyleSheet, View} from 'react-native';
-import {useStreamSpeakers} from '@app/hooks';
+import {useStore} from '@app/store';
+import shallow from 'zustand/shallow';
 
 interface ISpeakersProps {
   style?: any;
@@ -9,21 +10,20 @@ interface ISpeakersProps {
 
 export const Speakers = (props: ISpeakersProps) => {
   const {style} = props;
-  const speakers = useStreamSpeakers();
-
-  const speakersSortedByVolume = useMemo(
-    () => speakers.sort((first, second) => second.volume - first.volume),
-    [speakers],
+  //const speakers = useStreamSpeakers();
+  const [activeSpeakers, deleteActiveSpeaker] = useStore(
+    state => [state.activeSpeakers, state.deleteActiveSpeaker],
+    shallow,
   );
 
   return (
     <View style={[styles.container, style]}>
-      {speakersSortedByVolume.slice(0, 3).map(speaker => (
+      {Object.entries(activeSpeakers).map(([speaker, volume]) => (
         <Speaker
-          volume={speaker.volume}
-          isSpeaking={speaker.isSpeaking}
-          key={speaker.id}
-          user={speaker}
+          onDoneSpeaking={() => deleteActiveSpeaker(speaker)}
+          volume={volume}
+          key={speaker}
+          id={speaker}
         />
       ))}
     </View>
@@ -32,7 +32,8 @@ export const Speakers = (props: ISpeakersProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    height: 54,
+    position: 'absolute',
+    right: 20,
+    bottom: 80,
   },
 });

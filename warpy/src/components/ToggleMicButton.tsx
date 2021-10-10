@@ -1,30 +1,20 @@
+import {useStore} from '@app/store';
 import React from 'react';
-import {StyleSheet} from 'react-native';
-import {Icon} from './Icon';
-import {RoundButton} from './RoundButton';
+import {IconButton} from './IconButton';
+import shallow from 'zustand/shallow';
 
-interface IToggleMicButtonProps {
-  on: boolean;
-  style?: any;
-  onPress: () => any;
-}
-
-export const ToggleMicButton = (props: IToggleMicButtonProps) => {
-  const {style, on, onPress} = props;
+export const ToggleMicButton = () => {
+  const [toggleAudio, muted] = useStore(
+    state => [state.toggleAudio, state.audioMuted],
+    shallow,
+  );
 
   return (
-    <RoundButton onPress={onPress} style={[on && styles.micOnButton, style]}>
-      <Icon
-        name={on ? 'mic-on' : 'mic-off'}
-        size={30}
-        color={on ? '#110E11' : '#EEE5E9'}
-      />
-    </RoundButton>
+    <IconButton
+      onPress={() => toggleAudio(!muted)}
+      color="#ffffff"
+      name={muted ? 'mic-off' : 'mic-on'}
+      size={30}
+    />
   );
 };
-
-const styles = StyleSheet.create({
-  micOnButton: {
-    backgroundColor: '#EEE5E9',
-  },
-});
