@@ -1,19 +1,15 @@
+import {useStore} from '@app/store';
 import React from 'react';
 import {RoundButton} from './RoundButton';
 import {Text} from './Text';
 
-interface IShowParticipantsProps {
-  count: number;
-  style?: any;
-  onOpenParticipantsList: () => any;
-}
-
-export const ShowParticipantsButton = (props: IShowParticipantsProps) => {
-  const {style, count, onOpenParticipantsList} = props;
+export const ShowParticipantsButton = (props: {style: any}) => {
+  const count = useStore.use.totalParticipantCount();
+  const openNewModal = useStore.use.openNewModal();
 
   return (
-    <RoundButton onPress={onOpenParticipantsList} style={style}>
-      <Text weight="bold" size="small">
+    <RoundButton {...props} onPress={() => openNewModal('participants')}>
+      <Text color="white" weight="bold" size="small">
         {count.toString()}
       </Text>
     </RoundButton>

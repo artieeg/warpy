@@ -1,13 +1,10 @@
+import {useStore} from '@app/store';
 import {MediaKind} from 'mediasoup-client/lib/RtpParameters';
 import {useState, useCallback, useEffect} from 'react';
-import {
-  mediaDevices,
-  MediaStream,
-  MediaTrackConstraints,
-} from 'react-native-webrtc';
+import {mediaDevices, MediaTrackConstraints} from 'react-native-webrtc';
 
 export const useLocalStream = (kind: MediaKind) => {
-  const [localStream, setLocalStream] = useState<MediaStream>();
+  const localStream = useStore(state => state[kind]);
 
   const getMediaSource = useCallback(async () => {
     const videoContstraints: MediaTrackConstraints = {
@@ -33,11 +30,18 @@ export const useLocalStream = (kind: MediaKind) => {
       return;
     }
 
-    setLocalStream(mediaStream);
+    //useStore.setState({[kind]: mediaStream});
+    if (kind === 'video') {
+      useStore.setState({video: mediaStream});
+    } else {
+      useStore.setState({audio: mediaStream});
+    }
   }, [kind]);
 
   useEffect(() => {
-    getMediaSource();
+    if (!localStream) {
+      getMediaSource();
+    }
   }, [getMediaSource]);
 
   return localStream;
@@ -64,13 +68,13 @@ export const useLocalVideoStream = () => {
 };
 
 export const useLocalAudioStream = () => {
-  const stream = useLocalStream('video');
+  const audioStream = useLocalStream('video');
   const [muted, setMuted] = useState(false);
 
   const toggle = useCallback(() => {
-    stream?.getAudioTracks().forEach(audio => (audio.enabled = !muted));
+    audioStream?.getAudioTracks().forEach(audio => (audio.enabled = !muted));
     setMuted(prev => !prev);
-  }, [stream, muted]);
+  }, [audioStream, muted]);
 
-  return {stream, toggle, muted};
+  return {stream: audioStream, toggle, muted};
 };

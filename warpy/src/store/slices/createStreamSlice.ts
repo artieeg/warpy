@@ -4,13 +4,17 @@ import produce from 'immer';
 import {Transport} from 'mediasoup-client/lib/Transport';
 import {IStore} from '../useStore';
 import {arrayToMap} from '@app/utils';
+import {Roles} from '@warpy/lib';
 
 export interface IStreamSlice {
   /** Stores current stream id */
   stream: string | null;
   title: string | null;
 
-  isSpeaker?: boolean;
+  role: Roles | null;
+
+  isSpeaker: boolean | null;
+  isStreamOwner: boolean;
 
   /** Stores latest fetched viewers page*/
   latestViewersPage: number;
@@ -22,8 +26,6 @@ export interface IStreamSlice {
   totalParticipantCount: number;
 
   isFetchingViewers: boolean;
-
-  isStreamOwner: boolean;
 
   viewers: Record<string, Participant>;
   viewersWithRaisedHands: Record<string, Participant>;
@@ -43,7 +45,6 @@ export interface IStreamSlice {
   addViewer: (viewer: Participant) => void;
   addSpeaker: (speaker: Participant) => void;
   addSpeakers: (speakers: Participant[]) => void;
-  setActiveSpeaker: (speaker: Participant) => void;
   raiseHand: (user: Participant) => void;
   removeParticipant: (user: string) => void;
 }
@@ -53,6 +54,8 @@ export const createStreamSlice = (
   get: GetState<IStore>,
 ): IStreamSlice => ({
   stream: null,
+  role: null,
+  isSpeaker: false,
   latestViewersPage: -1,
   isFetchingViewers: false,
   totalParticipantCount: 0,
@@ -94,6 +97,7 @@ export const createStreamSlice = (
       speakers: arrayToMap<Participant>(speakers.map(Participant.fromJSON)),
       totalParticipantCount: count,
       isStreamOwner: true,
+      role: 'streamer',
     });
   },
 
@@ -117,6 +121,7 @@ export const createStreamSlice = (
       viewersWithRaisedHands: arrayToMap<Participant>(
         raisedHands.map(Participant.fromJSON),
       ),
+      role: 'viewer',
     });
   },
 
@@ -154,18 +159,6 @@ export const createStreamSlice = (
         delete state.viewers[user];
         delete state.viewersWithRaisedHands[user];
         delete state.speakers[user];
-      }),
-    );
-  },
-
-  setActiveSpeaker(user) {
-    set(
-      produce<IStreamSlice>(state => {
-        state.speakers[user.id] = {
-          ...user,
-          volume: 100 - Math.abs(user.volume),
-        };
-        console.log(state.speakers);
       }),
     );
   },

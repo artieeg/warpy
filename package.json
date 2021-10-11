@@ -18,8 +18,7 @@
   ],
   "_moduleAliases": {
     "@app": "./warpy/src",
-    "@backend": "./backend/src",
-    "@backend_2": "./backend_2/src",
+    "@backend_2": "./backend/src",
     "@ws_gateway": "./ws_gateway/src",
     "@media": "./media/src",
     "@warpykit": "./warpykit-sdk-node/src",

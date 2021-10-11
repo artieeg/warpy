@@ -25,8 +25,8 @@ services:
       - 9229:9229
     volumes:
       - ./:/warpy
-    working_dir: /warpy/backend_2
-    command: yarn start:nodemon2
+    working_dir: /warpy/backend
+    command: yarn start:nodemon
 
       #backend:
       #image: node:16.0.0-alpine
@@ -72,7 +72,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile.media
-    command: sh -c "sleep 10s && yarn start:dev:p"
+    command: sh -c "sleep 20s && yarn start:dev:p"
 
   media_consumer:
     image: media:latest
@@ -84,4 +84,4 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile.media
-    command: sh -c "sleep 10s && yarn start:dev:c"
+    command: sh -c "sleep 20s && yarn start:dev:c"

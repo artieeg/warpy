@@ -2,14 +2,14 @@ import {useStore} from '@app/store';
 import React from 'react';
 import {IconButton} from './IconButton';
 
-export const ChatButton = () => {
-  const openNewModal = useStore.use.openNewModal();
+export const SwitchCameraButton = () => {
+  const switchCamera = useStore.use.switchCamera();
 
   return (
     <IconButton
-      onPress={() => openNewModal('chat')}
+      onPress={switchCamera}
       color="#ffffff"
-      name="chat"
+      name="toggle-camera"
       size={30}
     />
   );

@@ -33,10 +33,6 @@ export const ViewerStreamPanel = (props: IRemoteStreamPanel) => {
       <ChatButton onPress={onOpenChat} />
       <ClapButton onPress={onOpenReactions} />
       <RaiseHandButton onPress={onRaiseHand} />
-      <ShowParticipantsButton
-        count={participantsCount}
-        onOpenParticipantsList={onOpenParticipantsList}
-      />
     </StreamPanelBase>
   );
 };

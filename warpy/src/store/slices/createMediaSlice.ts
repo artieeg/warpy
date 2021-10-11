@@ -1,9 +1,13 @@
 import {MediaClient} from '@warpykit-sdk/client';
 import {GetState, SetState} from 'zustand';
 import {IStore} from '../useStore';
+import {MediaStream} from 'react-native-webrtc';
 
 export interface IMediaSlice {
   mediaClient?: ReturnType<typeof MediaClient>;
+  video?: MediaStream;
+  audio?: MediaStream;
+  audioMuted: boolean;
 
   /**
    * Mediasoup recv params
@@ -24,7 +28,12 @@ export interface IMediaSlice {
     permissions: string,
     sendMediaParams: any,
   ) => Promise<void>;
+
   initViewerMedia: (permissions: string, recvMediaParams: any) => Promise<void>;
+
+  toggleAudio: (flag: boolean) => void;
+  toggleVideo: (flag: boolean) => void;
+  switchCamera: () => void;
 }
 
 export const createMediaSlice = (
@@ -32,6 +41,23 @@ export const createMediaSlice = (
   get: GetState<IStore>,
 ): IMediaSlice => ({
   mediaPermissionsToken: null,
+  audioMuted: false,
+
+  switchCamera() {
+    (get().video?.getVideoTracks()[0] as any)._switchCamera();
+  },
+
+  toggleAudio(flag) {
+    get()
+      .audio?.getAudioTracks()
+      .forEach(audio => (audio.enabled = flag));
+
+    set({
+      audioMuted: flag,
+    });
+  },
+
+  toggleVideo(_flag) {},
 
   async initViewerMedia(permissions, recvMediaParams) {
     const {api, recvDevice, sendDevice, initRecvDevice} = get();

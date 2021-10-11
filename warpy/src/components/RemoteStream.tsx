@@ -3,11 +3,9 @@ import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {Stream} from '@app/models';
 import {useLocalAudioStream, useRemoteStream} from '@app/hooks';
 import {RTCView} from 'react-native-webrtc';
-import {ViewerStreamPanel} from './ViewerStreamPanel';
-import {SpeakerStreamPanel} from './SpeakerStreamPanel';
 import {ReactionCanvas} from './ReactionCanvas';
 import {useMediaStreaming} from '@app/hooks/useMediaStreaming';
-import {useStore} from '@app/store';
+import {StreamOverlay} from './StreamOverlay';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -16,11 +14,8 @@ interface IRemoteStreamProps {
 export const RemoteStream = (props: IRemoteStreamProps) => {
   const {id} = props.stream;
 
-  const modal = useStore.use.modalCurrent();
-  const openNewModal = useStore.use.openNewModal();
-
-  const {stream: audioStream, toggle, muted} = useLocalAudioStream();
-  const {totalParticipantCount, videoStreams, isSpeaker} = useRemoteStream(id);
+  const {stream: audioStream} = useLocalAudioStream();
+  const {videoStreams} = useRemoteStream(id);
 
   useMediaStreaming({
     stream: audioStream,
@@ -53,26 +48,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
 
       <ReactionCanvas />
 
-      {isSpeaker && (
-        <SpeakerStreamPanel
-          visible={!modal}
-          participantsCount={totalParticipantCount}
-          onOpenParticipantsList={() => openNewModal('participants')}
-          onOpenReactions={() => openNewModal('reactions')}
-          micIsOn={!muted}
-          onMicToggle={toggle}
-        />
-      )}
-
-      {!isSpeaker && (
-        <ViewerStreamPanel
-          visible={!modal}
-          participantsCount={totalParticipantCount}
-          onOpenChat={() => openNewModal('chat')}
-          onOpenParticipantsList={() => openNewModal('participants')}
-          onOpenReactions={() => openNewModal('reactions')}
-        />
-      )}
+      <StreamOverlay />
     </View>
   );
 };

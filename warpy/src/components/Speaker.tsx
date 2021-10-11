@@ -1,33 +1,53 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useMemo, useRef} from 'react';
 import {User} from '@app/models';
 import {Animated, StyleSheet, View} from 'react-native';
 import {Avatar} from './Avatar';
+import {useStore} from '@app/store';
 
 interface ISpeakerProps {
-  user: User;
-  isSpeaking?: boolean;
+  id: string;
   volume: number;
+  onDoneSpeaking: () => void;
 }
 
 export const Speaker = (props: ISpeakerProps) => {
-  const {user, isSpeaking, volume} = props;
+  const {id, volume, onDoneSpeaking} = props;
+  const user = useMemo(() => useStore.getState().speakers[id], [id]);
 
   const scale = useRef(new Animated.Value(1));
 
+  const anim = useRef<Animated.CompositeAnimation>();
+  const hideTimeout = useRef<ReturnType<typeof setTimeout>>();
+
   useEffect(() => {
-    console.log('changed volume', volume);
-    Animated.sequence([
+    anim.current = Animated.sequence([
       Animated.timing(scale.current, {
-        toValue: 1 + (100 - volume) / 100,
+        toValue: 1 + (30 - volume) / 100,
         duration: 100,
         useNativeDriver: true,
       }),
       Animated.timing(scale.current, {
         toValue: 1,
-        duration: 300,
+        duration: 100,
         useNativeDriver: true,
       }),
-    ]).start();
+    ]);
+
+    anim.current.start();
+
+    if (hideTimeout.current) {
+      clearTimeout(hideTimeout.current);
+    }
+
+    hideTimeout.current = setTimeout(() => {
+      Animated.timing(scale.current, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start(() => {
+        onDoneSpeaking();
+      });
+    }, 400);
   }, [volume]);
 
   const scaleStyle = {
@@ -39,22 +59,32 @@ export const Speaker = (props: ISpeakerProps) => {
   };
 
   return (
-    <View style={styles.wrapper}>
+    <Animated.View style={[styles.wrapper, scaleStyle]}>
       <Animated.View
-        style={[styles.indicator, scaleStyle, styles.isSpeaking]}
-      />
-      <Avatar user={user} />
-    </View>
+        style={[
+          styles.indicator,
+          //scaleStyle,
+          styles.isSpeaking,
+        ]}></Animated.View>
+      <Avatar style={styles.avatar} user={user} />
+    </Animated.View>
   );
 };
+/**
+ *
+ */
 
 const styles = StyleSheet.create({
+  avatar: {
+    width: 50,
+    height: 50,
+  },
   wrapper: {
     //padding: 6,
     borderRadius: 60,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 10,
+    marginTop: 20,
     width: 50,
     height: 50,
   },
@@ -62,13 +92,13 @@ const styles = StyleSheet.create({
     borderRadius: 45,
     position: 'absolute',
     aspectRatio: 1,
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
+    left: 5,
+    right: 5,
+    top: 5,
+    bottom: 5,
   },
   isSpeaking: {
-    backgroundColor: '#BDF971',
+    backgroundColor: '#BDF97130',
     borderRadius: 60,
   },
 });
