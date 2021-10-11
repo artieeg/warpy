@@ -33,6 +33,7 @@ export interface IMediaSlice {
 
   toggleAudio: (flag: boolean) => void;
   toggleVideo: (flag: boolean) => void;
+  switchCamera: () => void;
 }
 
 export const createMediaSlice = (
@@ -41,6 +42,10 @@ export const createMediaSlice = (
 ): IMediaSlice => ({
   mediaPermissionsToken: null,
   audioMuted: false,
+
+  switchCamera() {
+    (get().video?.getVideoTracks()[0] as any)._switchCamera();
+  },
 
   toggleAudio(flag) {
     get()

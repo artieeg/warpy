@@ -6,49 +6,49 @@ import {useStore} from '@app/store';
 
 interface ISpeakerProps {
   id: string;
-  isSpeaking?: boolean;
   volume: number;
   onDoneSpeaking: () => void;
 }
 
 export const Speaker = (props: ISpeakerProps) => {
-  const {id, isSpeaking, volume, onDoneSpeaking} = props;
+  const {id, volume, onDoneSpeaking} = props;
   const user = useMemo(() => useStore.getState().speakers[id], [id]);
 
-  const avatarScale = useRef(new Animated.Value(1));
   const scale = useRef(new Animated.Value(1));
 
+  const anim = useRef<Animated.CompositeAnimation>();
+  const hideTimeout = useRef<ReturnType<typeof setTimeout>>();
+
   useEffect(() => {
-    console.log('changed volume', volume);
-    Animated.sequence([
+    anim.current = Animated.sequence([
       Animated.timing(scale.current, {
-        toValue: 1 + (70 - volume) / 100,
+        toValue: 1 + (30 - volume) / 100,
         duration: 100,
         useNativeDriver: true,
       }),
       Animated.timing(scale.current, {
         toValue: 1,
-        duration: 300,
+        duration: 100,
         useNativeDriver: true,
       }),
-      Animated.timing(avatarScale.current, {
-        toValue: 0,
-        duration: 400,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      console.log('done speakeing');
-      onDoneSpeaking();
-    });
-  }, [volume]);
+    ]);
 
-  const avatarScaleStyle = {
-    transform: [
-      {
-        scale: avatarScale.current,
-      },
-    ],
-  };
+    anim.current.start();
+
+    if (hideTimeout.current) {
+      clearTimeout(hideTimeout.current);
+    }
+
+    hideTimeout.current = setTimeout(() => {
+      Animated.timing(scale.current, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start(() => {
+        onDoneSpeaking();
+      });
+    }, 400);
+  }, [volume]);
 
   const scaleStyle = {
     transform: [
@@ -59,11 +59,11 @@ export const Speaker = (props: ISpeakerProps) => {
   };
 
   return (
-    <Animated.View style={[styles.wrapper, avatarScaleStyle]}>
+    <Animated.View style={[styles.wrapper, scaleStyle]}>
       <Animated.View
         style={[
           styles.indicator,
-          scaleStyle,
+          //scaleStyle,
           styles.isSpeaking,
         ]}></Animated.View>
       <Avatar style={styles.avatar} user={user} />

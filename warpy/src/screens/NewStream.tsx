@@ -4,9 +4,9 @@ import React, {useCallback, useState} from 'react';
 import {View, StyleSheet, useWindowDimensions} from 'react-native';
 import {StopStream, Button} from '@app/components';
 import {useRecvTransport} from '@app/hooks/useRecvTransport';
-import {StreamerPanel} from '@app/components/StreamerPanel';
 import {useStore} from '@app/store';
 import shallow from 'zustand/shallow';
+import {StreamOverlay} from '@app/components/StreamOverlay';
 
 export const NewStream = () => {
   const [title, setTitle] = useState('test stream');
@@ -15,9 +15,6 @@ export const NewStream = () => {
     state => [state.stream, state.create, state.api],
     shallow,
   );
-
-  const modal = useStore.use.modalCurrent();
-  const openNewModal = useStore.use.openNewModal();
 
   const recvTransport = useRecvTransport();
 
@@ -59,16 +56,7 @@ export const NewStream = () => {
           streamURL={localMediaStream.toURL()}
         />
       )}
-      {streamId && <StopStream onPress={onStopStream} />}
-      {streamId && (
-        <StreamerPanel
-          visible={!modal}
-          micIsOn={!muted}
-          onOpenParticipantsList={() => openNewModal('participants')}
-          onMicToggle={toggle}
-          onFlipCamera={switchCamera}
-        />
-      )}
+      {streamId && <StreamOverlay />}
 
       {!streamId && (
         <View style={styles.startStreamButton}>
