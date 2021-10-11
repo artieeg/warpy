@@ -8,6 +8,7 @@ import {ClapButton} from './ClapsButton';
 import {IconButton} from './IconButton';
 import {InviteButton} from './InviteButton';
 import {RaiseHandButton} from './RaiseHandButton';
+import {ReactionCanvas} from './ReactionCanvas';
 import {ReactionEmitter} from './ReactionEmitter';
 import {ShowParticipantsButton} from './ShowParticipantsButton';
 import {Speakers} from './Speakers';
@@ -59,7 +60,13 @@ export const StreamOverlay = () => {
       };
     } else if (role === 'speaker') {
       return {
-        top: [],
+        top: [
+          <EmptyItem />,
+          <InviteButton />,
+          <AwardButton />,
+          <StopStream />,
+          <EmptyItem />,
+        ],
         bottom: [
           <ReactionEmitter disabled={false} />,
           <ClapButton />,
@@ -71,7 +78,13 @@ export const StreamOverlay = () => {
       };
     } else {
       return {
-        top: [],
+        top: [
+          <EmptyItem />,
+          <InviteButton />,
+          <AwardButton />,
+          <StopStream />,
+          <EmptyItem />,
+        ],
         bottom: [
           <ReactionEmitter disabled={false} />,
           <ClapButton />,
@@ -89,6 +102,7 @@ export const StreamOverlay = () => {
   return (
     <View style={styles.row}>
       <Animated.View style={[styles.wrapper, wrapperAnimatedStyle]}>
+        <ReactionCanvas />
         <LinearGradient
           style={[styles.gradientBottom, gradientHeightStyle]}
           start={{x: 0, y: 0.8}}
