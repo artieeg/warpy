@@ -1,4 +1,5 @@
 dev_env/database/*
+dev_env/backend.external_apis.env
 target
 node_modules
 .vim
