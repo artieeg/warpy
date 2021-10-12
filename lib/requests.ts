@@ -246,3 +246,8 @@ export interface IGetReadNotifications {
   user: string;
   page: number;
 }
+
+export interface IGifsRequest {
+  user: string;
+  page: number;
+}

@@ -208,6 +208,14 @@ const handlers: Record<string, HandlerConfig> = {
     subject: "user.cancel-invite",
   },
 
+  "get-gifs": {
+    schema: joi.object({
+      page: joi.number().min(0).required(),
+    }),
+    kind: "request",
+    subject: "gifs.get",
+  },
+
   auth: {
     schema: joi.object({
       token: joi.string().max(400).required(),

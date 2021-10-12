@@ -4,6 +4,7 @@ import { IStreamAPI, StreamAPI } from "./stream_api";
 import { IMediaAPI, MediaAPI } from "./media_api";
 import { INotificationAPI, NotificationAPI } from "./notifications_api";
 import { IUserAPI, UserAPI } from "./user_api";
+import { IGifsAPI, GifsAPI } from "./gifs_api";
 import { APIObserver, IAPIObserver } from "./api_observer";
 
 interface IAPIClient {
@@ -13,6 +14,7 @@ interface IAPIClient {
   feed: IFeedAPI;
   media: IMediaAPI;
   notification: INotificationAPI;
+  gifs: IGifsAPI;
   close: () => void;
 }
 
@@ -24,6 +26,7 @@ export const APIClient = (socket: WebSocketConn): IAPIClient => ({
   media: MediaAPI(socket),
   close: () => socket.socket.close(),
   notification: NotificationAPI(socket),
+  gifs: GifsAPI(socket),
 });
 
 export type APIClient = ReturnType<typeof APIClient>;
