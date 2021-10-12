@@ -4,7 +4,7 @@ import {StoreSlice} from '../types';
 export interface IActiveSpeakerSlice {
   activeSpeakers: Record<string, number>;
 
-  setActiveSpeaker: (speaker: string, volume: number) => void;
+  setActiveSpeakers: (speaker: {user: string; volume: number}[]) => void;
   deleteActiveSpeaker: (speaker: string) => void;
 }
 
@@ -19,10 +19,12 @@ export const createActiveSpeakerSlice: StoreSlice<IActiveSpeakerSlice> = (
       }),
     );
   },
-  setActiveSpeaker: (speaker, volume) => {
+  setActiveSpeakers: speakers => {
     set(
       produce(state => {
-        state.activeSpeakers[speaker] = volume;
+        speakers.forEach(({user, volume}) => {
+          state.activeSpeakers[user] = volume;
+        });
       }),
     );
   },

@@ -138,36 +138,13 @@ export class ParticipantService {
   }
 
   //TODO: do not fetch participant info from the db (#110)
-  async broadcastActiveSpeakers(speakers: Record<string, number>) {
-    const ids = Object.keys(speakers);
-    const participants = await this.participant.getByIds(ids);
-
-    //Split active speakers by stream id; stream-id -> [array of active speakers]
-    const streamSpeakersMap: Record<string, unknown[]> = {};
-
-    participants.forEach((participant: IParticipant) => {
-      if (streamSpeakersMap[participant.stream]) {
-        streamSpeakersMap[participant.stream] = [
-          ...streamSpeakersMap[participant.stream],
-          {
-            ...participant,
-            volume: speakers[participant.id],
-          },
-        ];
-      } else {
-        streamSpeakersMap[participant.stream] = [
-          {
-            ...participant,
-            volume: speakers[participant.id],
-          },
-        ];
-      }
-    });
-
-    for (const stream in streamSpeakersMap) {
+  async broadcastActiveSpeakers(
+    speakers: Record<string, { user: string; volume: number }>,
+  ) {
+    for (const stream in speakers) {
       this.eventEmitter.emit('participant.active-speakers', {
         stream,
-        activeSpeakers: streamSpeakersMap[stream],
+        activeSpeakers: speakers[stream],
       });
     }
   }

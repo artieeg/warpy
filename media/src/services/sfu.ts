@@ -227,15 +227,29 @@ export const onActiveSpeakers = (cb: any) => {
   getAudioLevelObserver().on(
     "volumes",
     (volumes: AudioLevelObserverVolume[]) => {
-      console.log("volumes", volumes);
       if (volumes.length === 0) {
         return;
       }
 
-      const speakers: Record<string, number> = {};
+      const speakers: Record<
+        string,
+        {
+          user: string;
+          volume: number;
+        }[]
+      > = {};
 
       volumes.forEach((data) => {
-        speakers[data.producer.appData.user] = data.volume;
+        const { user, stream } = data.producer.appData;
+        const volume = data.volume;
+
+        const speakerVolumeData = { user, volume };
+
+        if (!speakers[stream]) {
+          speakers[stream] = [speakerVolumeData];
+        } else {
+          speakers[stream].push(speakerVolumeData);
+        }
       });
 
       cb(speakers);

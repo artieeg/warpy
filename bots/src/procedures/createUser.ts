@@ -22,6 +22,7 @@ export const createUser = async (): Promise<UserRecord> => {
     last_name,
     email: "monki@banancorp.com",
     kind: "dev",
+    avatar: "https://c.tenor.com/24aVYR7egHEAAAAC/cute-dog.gif",
   });
 
   const { user } = await api.user.auth(access);

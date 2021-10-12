@@ -66,7 +66,7 @@ export const Speaker = (props: ISpeakerProps) => {
           //scaleStyle,
           styles.isSpeaking,
         ]}></Animated.View>
-      <Avatar style={styles.avatar} user={user} />
+      <Avatar useRNImage style={styles.avatar} user={user} />
     </Animated.View>
   );
 };
