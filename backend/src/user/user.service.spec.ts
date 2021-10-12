@@ -47,6 +47,7 @@ describe('UserService', () => {
       last_name: 'test',
       first_name: 'test',
       email: 'test@sth.com',
+      avatar: 'tenor.com/avatar',
     });
 
     expect(response).toStrictEqual({

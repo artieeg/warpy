@@ -21,6 +21,7 @@ export const DevSignUp = () => {
       first_name: firstName,
       email,
       kind: 'dev',
+      avatar: 'https://c.tenor.com/24aVYR7egHEAAAAC/cute-dog.gif',
     });
 
     await setToken(access, 'access');

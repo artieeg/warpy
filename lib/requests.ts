@@ -152,6 +152,7 @@ export interface INewUser {
   username: string;
   last_name: string;
   first_name: string;
+  avatar: string;
   email: string;
   kind: "dev" | "apple" | "google" | "twitter" | "facebook";
 }
@@ -245,4 +246,9 @@ export interface IGetUnreadNotifications {
 export interface IGetReadNotifications {
   user: string;
   page: number;
+}
+
+export interface IGifsRequest {
+  search?: string;
+  next?: string;
 }

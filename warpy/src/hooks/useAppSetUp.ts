@@ -50,7 +50,7 @@ export const useAppSetUp = () => {
 
   useEffect(() => {
     if (tokenLoadError || (!userExists && !isLoadingUser)) {
-      navigation.navigate('DevSignUp');
+      navigation.navigate('SignUpName');
     }
   }, [tokenLoadError]);
 

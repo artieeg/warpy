@@ -4,3 +4,7 @@ export * from './Feed';
 export * from './NewStream';
 export * from './Stream';
 export * from './Notifications';
+export * from './SignUpName';
+export * from './SignUpUsername';
+export * from './SignUpAvatar';
+export * from './Loading';

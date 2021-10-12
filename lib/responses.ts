@@ -99,3 +99,8 @@ export interface ICancelInviteResponse {
 export interface INotificationsPage {
   notifications: INotification[];
 }
+
+export interface IGifsResponse {
+  next: string;
+  gifs: string[];
+}

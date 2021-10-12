@@ -10,4 +10,7 @@ async function bootstrap() {
 
   app.listen();
 }
+
 bootstrap();
+
+process.on('SIGTERM', () => process.exit());

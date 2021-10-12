@@ -26,6 +26,7 @@ import {
   createActiveSpeakerSlice,
   IActiveSpeakerSlice,
 } from './slices/createActiveSpeakerSlice';
+import {createSignUpSlice, ISignUpSlice} from './slices/createSignUpSlice';
 
 interface Selectors<StoreType> {
   use: {
@@ -59,6 +60,7 @@ export interface IStore
     IReactionSlice,
     INotificationSlice,
     IActiveSpeakerSlice,
+    ISignUpSlice,
     IToastSlice,
     IAPISlice {
   set: SetState<IStore>;
@@ -71,6 +73,7 @@ export const useStore = createSelectorHooks<IStore>(
       ...createModalSlice(set, get),
       ...createActiveSpeakerSlice(set, get),
       ...createStreamSlice(set, get),
+      ...createSignUpSlice(set, get),
       ...createFeedSlice(set, get),
       ...createAPISlice(set, get),
       ...createNotificationSlice(set, get),
