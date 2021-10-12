@@ -11,7 +11,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:nodemon2": "nest start --watch --exec 'node -r tsconfig-paths/register -r ts-node/register --inspect=0.0.0.0 ./src/main.ts'",
-    "start:nodemon": "ts-node-dev -r tsconfig-paths/register ./src/main.ts --watch ./src ",
+    "start:nodemon": "ts-node-dev -r tsconfig-paths/register ./src/main.ts --watch ./src --exit-child",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug 0.0.0.0 --watch",
     "start:prod": "node dist/main",
@@ -32,6 +32,7 @@
     "@prisma/client": "2.29.1",
     "@types/jsonwebtoken": "^8.5.5",
     "@warpy/lib": "1.0.0",
+    "axios": "^0.22.0",
     "bad-words": "^3.0.4",
     "cuid": "^2.1.8",
     "jsonwebtoken": "^8.5.1",
@@ -39,8 +40,7 @@
     "redis": "^3.1.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0",
-    "tenorjs": "^1.0.8"
+    "rxjs": "^7.2.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",

@@ -8,12 +8,12 @@ export class GifController {
   constructor(private gifService: GifService) {}
 
   @MessagePattern('gifs.get')
-  async getGifs({ page }: IGifsRequest): Promise<IGifsResponse> {
-    const gifs = await this.gifService.getGifs(page);
+  async getGifs({ next }: IGifsRequest): Promise<IGifsResponse> {
+    const { gifs, next: newNext } = await this.gifService.getTrendingGifs(next);
 
     return {
       gifs,
-      page,
+      next: newNext,
     };
   }
 }
