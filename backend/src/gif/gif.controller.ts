@@ -7,8 +7,21 @@ import { GifService } from './gif.service';
 export class GifController {
   constructor(private gifService: GifService) {}
 
-  @MessagePattern('gifs.get')
-  async getGifs({ next }: IGifsRequest): Promise<IGifsResponse> {
+  @MessagePattern('gifs.search')
+  async searchGifs({ next, search }: IGifsRequest): Promise<IGifsResponse> {
+    const { gifs, next: newNext } = await this.gifService.searchGifs(
+      search,
+      next,
+    );
+
+    return {
+      gifs,
+      next: newNext,
+    };
+  }
+
+  @MessagePattern('gifs.trending')
+  async getTrendingGifs({ next }: IGifsRequest): Promise<IGifsResponse> {
     const { gifs, next: newNext } = await this.gifService.getTrendingGifs(next);
 
     return {

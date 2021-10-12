@@ -208,12 +208,21 @@ const handlers: Record<string, HandlerConfig> = {
     subject: "user.cancel-invite",
   },
 
-  "get-gifs": {
+  "search-gifs": {
     schema: joi.object({
-      page: joi.number().min(0).required(),
+      search: joi.string().required(),
+      next: joi.string().optional(),
     }),
     kind: "request",
-    subject: "gifs.get",
+    subject: "gifs.search",
+  },
+
+  "get-trending-gifs": {
+    schema: joi.object({
+      next: joi.string().optional(),
+    }),
+    kind: "request",
+    subject: "gifs.trending",
   },
 
   auth: {

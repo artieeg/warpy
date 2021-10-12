@@ -1,17 +1,19 @@
-import React from 'react';
-import {FlatList, StyleSheet, useWindowDimensions, View} from 'react-native';
+import React, {useState} from 'react';
+import {FlatList, StyleSheet, View} from 'react-native';
 import {Text} from '@app/components';
 import {useGifs} from '@app/hooks/useGifs';
 import FastImage from 'react-native-fast-image';
 import {AvatarOption} from '@app/components/AvatarOption';
 import {useStore} from '@app/store';
 import {SearchInput} from '@app/components/SearchInput';
+import {ConfirmButton} from '@app/components/ConfirmButton';
+import {useNavigation} from '@react-navigation/native';
 
 export const SignUpAvatar = () => {
-  const gifs = useGifs();
+  const [search, setSearch] = useState('');
+  const gifs = useGifs(search);
 
-  const gifHeight = (useWindowDimensions().width - 80) / 1.2;
-  const gifWidth = (useWindowDimensions().width - 50) / 2;
+  const navigation = useNavigation();
 
   const [signUpAvatar, signUpName, signUpUsername] = useStore(state => [
     state.signUpAvatar,
@@ -21,18 +23,26 @@ export const SignUpAvatar = () => {
 
   return (
     <View style={styles.wrapper}>
-      <Text style={styles.space} size="large" weight="extraBold">
-        /join/avatar
-      </Text>
+      <View style={styles.header}>
+        <Text style={styles.space} size="large" weight="extraBold">
+          /join/avatar
+        </Text>
+        <ConfirmButton onPress={() => navigation.navigate('Loading')} />
+      </View>
 
       <View style={styles.user}>
         <FastImage source={{uri: signUpAvatar}} style={styles.avatar} />
         <View style={{marginLeft: 20}}>
           <Text weight="bold">{signUpName}</Text>
-          <Text>{signUpUsername}</Text>
+          <Text weight="bold" size="small">
+            {signUpUsername}
+          </Text>
         </View>
       </View>
-      <SearchInput placeholder="search gifs" />
+      <SearchInput
+        onChangeText={text => setSearch(text)}
+        placeholder="search gifs via Tenor"
+      />
       <FlatList
         data={[...gifs, ...gifs, ...gifs, ...gifs]}
         numColumns={2}
@@ -80,5 +90,9 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 70,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });

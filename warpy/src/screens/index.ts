@@ -7,3 +7,4 @@ export * from './Notifications';
 export * from './SignUpName';
 export * from './SignUpUsername';
 export * from './SignUpAvatar';
+export * from './Loading';

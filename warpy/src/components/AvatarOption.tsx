@@ -25,7 +25,7 @@ export const AvatarOption = ({
         position: 'relative',
         width: gifWidth,
         marginBottom: 10,
-        borderRadius: 12,
+        borderRadius: 25,
         overflow: 'hidden',
       }}>
       <FastImage
@@ -34,14 +34,14 @@ export const AvatarOption = ({
         style={{
           zIndex: 0,
           flex: 1,
-          borderRadius: 12,
+          borderRadius: 25,
           backgroundColor: '#3030ff',
         }}
       />
       <View
         style={{
           position: 'absolute',
-          borderRadius: 12,
+          borderRadius: 25,
           borderWidth: 1,
           width: '100%',
           borderColor: 'transparent',

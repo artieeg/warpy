@@ -1,6 +1,7 @@
 import React from 'react';
 import {IUser} from '@app/models';
-import {Image, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 interface IAvatarProps {
   user: IUser;
@@ -13,7 +14,7 @@ export const Avatar = (props: IAvatarProps) => {
   const {avatar} = user;
 
   return (
-    <Image
+    <FastImage
       style={[styles.avatar, styles[size || 'medium'], style]}
       source={{uri: avatar}}
     />

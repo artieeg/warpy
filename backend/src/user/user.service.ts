@@ -28,15 +28,15 @@ export class UserService {
   }
 
   async createDevUser(data: INewUser): Promise<INewUserResponse> {
-    const { username, last_name, first_name, email } = data;
+    const { username, avatar, last_name, first_name, email } = data;
 
     const user = await this.user.createNewUser({
       username,
       last_name,
       first_name,
       email,
+      avatar,
       sub: 'DEV_ACCOUNT',
-      avatar: 'https://media.giphy.com/media/nDSlfqf0gn5g4/giphy.gif',
     });
 
     const accessToken = this.tokenService.createToken(user.id, '1d');

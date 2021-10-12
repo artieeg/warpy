@@ -11,6 +11,7 @@ import {
   SignUpUsername,
   Splash,
   Stream,
+  Loading,
 } from './src/screens';
 import {StatusBar} from 'react-native';
 import {ModalProvider, ToastProvider} from '@app/components';
@@ -26,6 +27,7 @@ const App = () => {
       <NavigationContainer>
         <Stack.Navigator headerMode="none">
           <Stack.Screen name="SignUpName" component={SignUpName} />
+          <Stack.Screen name="Loading" component={Loading} />
           <Stack.Screen name="SignUpUsername" component={SignUpUsername} />
           <Stack.Screen name="SignUpAvatar" component={SignUpAvatar} />
           <Stack.Screen name="Splash" component={Splash} />

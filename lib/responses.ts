@@ -101,6 +101,6 @@ export interface INotificationsPage {
 }
 
 export interface IGifsResponse {
-  page: number;
+  next: string;
   gifs: string[];
 }
