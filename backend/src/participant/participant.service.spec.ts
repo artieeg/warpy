@@ -272,33 +272,27 @@ describe('ParticipantService', () => {
   });
 
   it('emits active speakers info', async () => {
-    const speakers = [
-      createParticipantFixture({ id: 'id-1', stream: 'stream-1' }),
-      createParticipantFixture({ id: 'id-3', stream: 'stream-1' }),
-      createParticipantFixture({ id: 'id-2', stream: 'stream-2' }),
-    ];
-
-    const volumes = {
-      [speakers[0].id]: 50,
-      [speakers[2].id]: 20,
-      [speakers[1].id]: 40,
+    const speakers = {
+      stream0: [
+        {
+          user: 'user0',
+          volume: 50,
+        },
+        {
+          user: 'user1',
+          volume: 50,
+        },
+      ],
     };
 
-    mockedParticipantEntity.getByIds.mockResolvedValueOnce(speakers);
+    await participantService.broadcastActiveSpeakers(speakers);
 
-    await participantService.broadcastActiveSpeakers(volumes);
-
-    speakers.forEach((speaker) => {
+    Object.keys(speakers).forEach((stream) => {
       expect(mockedEventEmitter.emit).toBeCalledWith(
         'participant.active-speakers',
         {
-          stream: speaker.stream,
-          activeSpeakers: expect.arrayContaining([
-            {
-              ...speaker,
-              volume: volumes[speaker.id],
-            },
-          ]),
+          stream,
+          activeSpeakers: expect.arrayContaining(speakers[stream]),
         },
       );
     });

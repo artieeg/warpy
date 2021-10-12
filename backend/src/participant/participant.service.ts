@@ -139,7 +139,7 @@ export class ParticipantService {
 
   //TODO: do not fetch participant info from the db (#110)
   async broadcastActiveSpeakers(
-    speakers: Record<string, { user: string; volume: number }>,
+    speakers: Record<string, { user: string; volume: number }[]>,
   ) {
     for (const stream in speakers) {
       this.eventEmitter.emit('participant.active-speakers', {

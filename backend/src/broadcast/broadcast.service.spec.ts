@@ -56,7 +56,7 @@ describe('BroadcastService', () => {
   it('broadcasts active speakers', async () => {
     await broadcast.broadcastActiveSpeakers({
       stream: 'test',
-      activeSpeakers: ['sth'],
+      activeSpeakers: ['sth'] as any,
     });
 
     participants.forEach((id) => {
