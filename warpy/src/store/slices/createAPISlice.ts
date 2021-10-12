@@ -25,7 +25,7 @@ export const createAPISlice = (
     });
 
     api.stream.onActiveSpeaker(data => {
-      store.setActiveSpeaker(data.speaker.id, (data.speaker as any).volume);
+      store.setActiveSpeakers(data.speakers);
     });
 
     api.stream.onNewRaisedHand(data => {

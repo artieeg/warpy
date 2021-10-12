@@ -47,7 +47,7 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
     newProducer = await transport.produce({
       kind,
       rtpParameters,
-      appData: { ...appData, user, transportId },
+      appData: { ...appData, user, transportId, stream: roomId },
     });
     console.log("producing", kind);
 

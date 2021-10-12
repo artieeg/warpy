@@ -13,7 +13,7 @@ export interface ISpeakingAllowedEvent {
 
 export interface IActiveSpeakerEvent {
   stream: string;
-  speaker: IParticipant;
+  speakers: { user: string; volume: number }[];
 }
 
 export interface INewPreviewEvent {

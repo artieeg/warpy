@@ -65,21 +65,19 @@ export class BroadcastService {
     activeSpeakers,
   }: {
     stream: string;
-    activeSpeakers: any[];
+    activeSpeakers: { user: string; volume: number }[];
   }) {
     const ids = await this.participant.getIdsByStream(stream);
 
-    activeSpeakers.forEach((speaker) => {
-      const message = this.messageService.encodeMessage({
-        event: 'active-speaker',
-        data: {
-          stream: stream,
-          speaker,
-        },
-      });
-
-      this.broadcast(ids, message);
+    const message = this.messageService.encodeMessage({
+      event: 'active-speaker',
+      data: {
+        stream: stream,
+        speakers: activeSpeakers,
+      },
     });
+
+    this.broadcast(ids, message);
   }
 
   @OnEvent('participant.new-speaker')

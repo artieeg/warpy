@@ -163,7 +163,7 @@ export interface IAllowSpeakerPayload {
 }
 
 export interface IActiveSpeakersPayload {
-  speakers: Record<string, number>;
+  speakers: Record<string, { user: string; volume: number }>;
 }
 
 export interface IUserDelete {

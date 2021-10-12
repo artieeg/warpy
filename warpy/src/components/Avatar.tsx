@@ -1,17 +1,27 @@
 import React from 'react';
 import {IUser} from '@app/models';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Image} from 'react-native';
 import FastImage from 'react-native-fast-image';
 
 interface IAvatarProps {
   user: IUser;
   style?: any;
   size?: 'small' | 'medium' | 'large';
+  useRNImage?: boolean;
 }
 
 export const Avatar = (props: IAvatarProps) => {
-  const {user, size, style} = props;
+  const {user, size, style, useRNImage} = props;
   const {avatar} = user;
+
+  if (useRNImage) {
+    return (
+      <Image
+        style={[styles.avatar, styles[size || 'medium'], style]}
+        source={{uri: avatar}}
+      />
+    );
+  }
 
   return (
     <FastImage
