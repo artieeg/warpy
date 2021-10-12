@@ -16,8 +16,12 @@ export const IconButton = (props: IIconButtonProps) => {
   return (
     <RoundButton
       {...props}
-      style={[!hasBackground && styles.transparent, props.style]}>
-      <Icon {...props} />
+      style={[
+        !hasBackground && styles.transparent,
+        props.style,
+        styles.button,
+      ]}>
+      <Icon {...props} style={{}} />
     </RoundButton>
   );
 };
@@ -25,5 +29,9 @@ export const IconButton = (props: IIconButtonProps) => {
 const styles = StyleSheet.create({
   transparent: {
     backgroundColor: '#00000000',
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
