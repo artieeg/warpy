@@ -2,12 +2,15 @@ import {MediaClient} from '@warpykit-sdk/client';
 import {GetState, SetState} from 'zustand';
 import {IStore} from '../useStore';
 import {MediaStream} from 'react-native-webrtc';
+import {Transport} from 'mediasoup-client/lib/Transport';
 
 export interface IMediaSlice {
   mediaClient?: ReturnType<typeof MediaClient>;
   video?: MediaStream;
   audio?: MediaStream;
   audioMuted: boolean;
+
+  sendTransport: Transport | null;
 
   /**
    * Mediasoup recv params
@@ -40,6 +43,7 @@ export const createMediaSlice = (
   set: SetState<IStore>,
   get: GetState<IStore>,
 ): IMediaSlice => ({
+  sendTransport: null,
   mediaPermissionsToken: null,
   audioMuted: false,
 
@@ -77,9 +81,28 @@ export const createMediaSlice = (
   },
 
   async initSpeakerMedia(permissions, sendMediaParams) {
-    const {api, recvDevice, sendDevice, initSendDevice} = get();
+    const {api, mediaClient, stream, recvDevice, sendDevice, initSendDevice} =
+      get();
 
-    await initSendDevice(sendMediaParams.routerRtpCapabilities);
+    if (!mediaClient) {
+      return;
+    }
+
+    const {routerRtpCapabilities, sendTransportOptions} = sendMediaParams;
+
+    await initSendDevice(routerRtpCapabilities);
+
+    const sendTransport = await mediaClient.createTransport({
+      roomId: stream!,
+      device: sendDevice,
+      permissionsToken: permissions,
+      direction: 'send',
+      options: {
+        sendTransportOptions: sendTransportOptions,
+      },
+      isProducer: true,
+    });
+
     set({
       mediaPermissionsToken: permissions,
       mediaClient: MediaClient({
@@ -89,6 +112,7 @@ export const createMediaSlice = (
         permissionsToken: permissions,
       }),
       sendMediaParams,
+      sendTransport,
     });
   },
 });

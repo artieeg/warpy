@@ -11,14 +11,20 @@ export const useMediaStreaming = ({
   stream?: MediaStream;
   kind: MediaKind;
 }) => {
-  const [sendMediaParams, id, mediaClient] = useStore(
-    state => [state.sendMediaParams, state.stream, state.mediaClient],
+  const [sendTransport, id, mediaClient] = useStore(
+    state => [state.sendTransport, state.stream, state.mediaClient],
     shallow,
   );
 
   useEffect(() => {
-    if (sendMediaParams && id && stream) {
-      mediaClient?.sendMediaStream(stream, id, sendMediaParams, kind);
+    if (sendTransport && id && stream) {
+      mediaClient?.sendMediaStream(
+        kind === 'audio'
+          ? stream.getAudioTracks()[0]
+          : stream.getVideoTracks()[0],
+        kind,
+        sendTransport,
+      );
     }
-  }, [mediaClient, sendMediaParams, id, stream]);
+  }, [mediaClient, sendTransport, id, stream]);
 };

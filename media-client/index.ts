@@ -1,18 +1,18 @@
-import {createTransportFactory} from './createTransport';
-import {sendMediaStreamFactory} from './sendMediaStream';
-import {consumeRemoteStream} from './consumeRemoteStream';
-import {MediaAPIFactory} from './types';
-import {consumeRemoteStreamsFactory} from './consumeRemoteStreams';
+import { createTransportFactory } from "./createTransport";
+import { sendMediaStreamFactory } from "./sendMediaStream";
+import { consumeRemoteStream } from "./consumeRemoteStream";
+import { MediaAPIFactory } from "./types";
+import { consumeRemoteStreamsFactory } from "./consumeRemoteStreams";
 
-export const MediaClient: MediaAPIFactory = params => {
-  const {recvDevice, sendDevice, api, permissionsToken} = params;
+export const MediaClient: MediaAPIFactory = (params) => {
+  const { recvDevice, sendDevice, api, permissionsToken } = params;
 
-  const createTransport = createTransportFactory(api, permissionsToken);
-  const sendMediaStream = sendMediaStreamFactory(sendDevice, createTransport);
+  const createTransport = createTransportFactory(api);
+  const sendMediaStream = sendMediaStreamFactory();
   const consumeRemoteStreams = consumeRemoteStreamsFactory(
     api,
     recvDevice,
-    permissionsToken,
+    permissionsToken
   );
 
   return {

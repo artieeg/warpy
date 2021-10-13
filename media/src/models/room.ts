@@ -1,9 +1,8 @@
 import { AudioLevelObserver } from "mediasoup/lib/AudioLevelObserver";
 import { Router } from "mediasoup/lib/Router";
-import { Worker } from "mediasoup/lib/Worker";
-import { Peer } from "./peer";
+import { IPeer } from "./peer";
 
-type Peers = Record<string, Peer>;
+type Peers = Record<string, IPeer>;
 
 export interface IRoom {
   router: Router;

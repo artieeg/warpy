@@ -19,15 +19,25 @@ export const speak = (record: UserRecord) => {
 
     const audio = await getAudioStream();
 
-    const { routerRtpCapabilities } = media;
+    const { routerRtpCapabilities, sendTransportOptions } = media;
 
     await record.sendDevice.load({ routerRtpCapabilities });
 
+    const sendTransport = await record.media.createTransport({
+      roomId: stream!,
+      device: record.sendDevice,
+      permissionsToken: mediaPermissionToken,
+      direction: "send",
+      options: {
+        sendTransportOptions: sendTransportOptions,
+      },
+      isProducer: true,
+    });
+
     const producer = await record.media.sendMediaStream(
       audio,
-      stream!,
       media,
-      "audio"
+      sendTransport
     );
 
     record.producers = [producer];

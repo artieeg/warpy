@@ -2,9 +2,9 @@ import { CreateTransport } from "./types";
 import { APIClient } from "@warpy/api";
 
 export const createTransportFactory =
-  (api: APIClient, permissionsToken: string | null): CreateTransport =>
+  (api: APIClient): CreateTransport =>
   async (params) => {
-    const { roomId, device, direction, options, isProducer, mediaKind } =
+    const { roomId, permissionsToken, device, direction, options, isProducer } =
       params;
 
     const transportOptions =
@@ -32,7 +32,6 @@ export const createTransportFactory =
           dtlsParameters,
           direction,
           roomId: roomId,
-          mediaKind,
           mediaPermissionsToken: permissionsToken,
         },
         isProducer

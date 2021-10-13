@@ -1,5 +1,5 @@
 import { config } from "@media/config";
-import { IRoom, Peer } from "@media/models";
+import { createNewPeer, IRoom } from "@media/models";
 import { role } from "@media/role";
 import { SFUService } from "@media/services";
 import { getOptionsFromTransport } from "@media/utils";
@@ -24,9 +24,6 @@ export const handleNewRoom: MessageHandler<
 > = async (data, respond) => {
   const { roomId, host } = data;
 
-  console.log("role");
-  console.log("new room", data);
-
   if (rooms[roomId]) {
     return;
   }
@@ -43,25 +40,20 @@ export const handleNewRoom: MessageHandler<
       host
     );
 
-    room.peers[host] = new Peer({
+    room.peers[host] = createNewPeer({
       recvTransport,
     });
 
     return;
   }
 
-  const [audio, video] = await Promise.all([
+  const [sendTransport, plainTransport] = await Promise.all([
     SFUService.createTransport("send", router, host),
-    SFUService.createTransport("send", router, host),
+    SFUService.createPlainTransport(router),
   ]);
 
-  const plainTransport = await SFUService.createPlainTransport(router);
-
-  room.peers[host] = new Peer({
-    sendTransport: {
-      audio,
-      video,
-    },
+  room.peers[host] = createNewPeer({
+    sendTransport,
     plainTransport,
   });
 
@@ -75,9 +67,6 @@ export const handleNewRoom: MessageHandler<
 
   respond!({
     routerRtpCapabilities: rooms[roomId].router.rtpCapabilities,
-    sendTransportOptions: {
-      video: getOptionsFromTransport(video),
-      audio: getOptionsFromTransport(audio),
-    },
+    sendTransportOptions: getOptionsFromTransport(sendTransport),
   });
 };

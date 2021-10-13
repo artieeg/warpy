@@ -39,6 +39,7 @@ export const useRecvTransport = () => {
       roomId: stream,
       device: recvDevice,
       direction: 'recv',
+      permissionsToken: mediaPermissionToken,
       options: {recvTransportOptions},
       isProducer: false,
     });

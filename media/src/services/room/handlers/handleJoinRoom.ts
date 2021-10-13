@@ -1,4 +1,4 @@
-import { Peer } from "@media/models";
+import { createNewPeer } from "@media/models";
 import { role } from "@media/role";
 import { SFUService } from "@media/services";
 import { getOptionsFromTransport } from "@media/utils";
@@ -24,7 +24,7 @@ export const handleJoinRoom = async (data: IJoinMediaRoom, respond: any) => {
       user
     );
 
-    const peer = new Peer({ recvTransport });
+    const peer = createNewPeer({ recvTransport });
     room.peers[user] = peer;
 
     respond({

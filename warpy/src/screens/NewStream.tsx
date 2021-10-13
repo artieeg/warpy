@@ -2,7 +2,7 @@ import {useLocalVideoStream, useMediaStreaming} from '@app/hooks';
 import {RTCView} from 'react-native-webrtc';
 import React, {useCallback, useState} from 'react';
 import {View, StyleSheet, useWindowDimensions} from 'react-native';
-import {StopStream, Button} from '@app/components';
+import {Button} from '@app/components';
 import {useRecvTransport} from '@app/hooks/useRecvTransport';
 import {useStore} from '@app/store';
 import shallow from 'zustand/shallow';
@@ -19,12 +19,7 @@ export const NewStream = () => {
   const recvTransport = useRecvTransport();
 
   const {width, height} = useWindowDimensions();
-  const {
-    stream: localMediaStream,
-    switchCamera,
-    toggle,
-    muted,
-  } = useLocalVideoStream();
+  const {stream: localMediaStream} = useLocalVideoStream();
 
   useMediaStreaming({stream: localMediaStream, kind: 'video'});
   useMediaStreaming({stream: localMediaStream, kind: 'audio'});
@@ -36,10 +31,6 @@ export const NewStream = () => {
 
     createStream(title, hub, recvTransport);
   }, [title, streamId, hub, api, recvTransport]);
-
-  const onStopStream = () => {
-    api.stream.stop(streamId!);
-  };
 
   const localStreamStyle = {
     ...styles.localStream,

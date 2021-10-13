@@ -45,6 +45,9 @@ export class ParticipantController {
     await this.participant.setRaiseHand(user, true);
   }
 
+  @MessagePattern('participant.set-permissions')
+  async onSetPermissions() {}
+
   @MessagePattern('speaker.allow')
   async onNewSpeaker({ user, speaker }: IAllowSpeakerPayload) {
     await this.participant.allowSpeaker(user, speaker);

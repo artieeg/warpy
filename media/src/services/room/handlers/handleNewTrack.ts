@@ -30,7 +30,7 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
   const { peers } = room;
 
   const peer = peers[user];
-  const transport = peer.getSendTransport(kind);
+  const transport = peer.sendTransport;
 
   if (!transport) {
     return; //TODO: Send error

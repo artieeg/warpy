@@ -1,4 +1,4 @@
-import { Peer } from "@media/models";
+import { createNewPeer } from "@media/models";
 import { SFUService } from "@media/services";
 import { getOptionsFromTransport } from "@media/utils";
 import {
@@ -26,17 +26,12 @@ export const handleNewSpeaker: MessageHandler<
     speaker
   );
 
-  room.peers[speaker] = new Peer({
-    sendTransport: {
-      audio: audioTransport,
-      video: null,
-    },
+  room.peers[speaker] = createNewPeer({
+    sendTransport: audioTransport,
   });
 
   respond!({
     routerRtpCapabilities: room.router.rtpCapabilities,
-    sendTransportOptions: {
-      audio: getOptionsFromTransport(audioTransport),
-    },
+    sendTransportOptions: getOptionsFromTransport(audioTransport),
   });
 };

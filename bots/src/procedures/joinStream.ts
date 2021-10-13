@@ -35,6 +35,7 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
     routerRtpCapabilities,
     recvTransportOptions,
     record,
+    permissionsToken: mediaPermissionsToken,
   });
 
   if (process.env.MODE === "LOADTEST") {

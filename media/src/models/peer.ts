@@ -7,10 +7,7 @@ import {
 } from "mediasoup/lib/types";
 
 export interface IPeer {
-  sendTransport: {
-    video: Transport | null;
-    audio: Transport | null;
-  };
+  sendTransport: Transport | null;
   recvTransport: Transport | null;
   plainTransport: PlainTransport | null;
   producer: {
@@ -20,34 +17,15 @@ export interface IPeer {
   consumers: Consumer[];
 }
 
-export class Peer implements IPeer {
-  sendTransport: {
-    video: Transport | null;
-    audio: Transport | null;
-  };
-  plainTransport: PlainTransport | null;
-  recvTransport: Transport | null;
+export const createNewPeer = (data: Partial<IPeer>): IPeer => ({
+  sendTransport: null,
+  recvTransport: null,
+  plainTransport: null,
+  consumers: [],
+  ...data,
   producer: {
-    audio: Producer | null;
-    video: Producer | null;
-  };
-  consumers: Consumer[];
-
-  constructor(data: Partial<IPeer>) {
-    this.sendTransport = data.sendTransport || {
-      video: null,
-      audio: null,
-    };
-    this.plainTransport = data.plainTransport || null;
-    this.recvTransport = data.recvTransport || null;
-    this.producer = data.producer || {
-      video: null,
-      audio: null,
-    };
-    this.consumers = data.consumers || [];
-  }
-
-  getSendTransport(kind: MediaKind) {
-    return this.sendTransport[kind];
-  }
-}
+    audio: null,
+    video: null,
+    ...data.producer,
+  },
+});
