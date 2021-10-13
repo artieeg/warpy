@@ -10,12 +10,7 @@ export const speak = (record: UserRecord) => {
   api.stream.onSpeakingAllowed(async (data) => {
     const { media, mediaPermissionToken } = data;
 
-    record.media = MediaClient({
-      recvDevice: record.recvDevice,
-      sendDevice: record.sendDevice,
-      permissionsToken: mediaPermissionToken,
-      api,
-    });
+    record.media.permissionsToken = mediaPermissionToken;
 
     const audio = await getAudioStream();
 

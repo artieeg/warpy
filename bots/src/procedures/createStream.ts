@@ -22,12 +22,12 @@ export const createStream = async (record: UserRecord) => {
   const { stream, media, mediaPermissionsToken } = response;
   const { routerRtpCapabilities, sendTransportOptions } = media;
 
-  record.media = MediaClient({
+  record.media = new MediaClient(
+    record.recvDevice,
+    record.sendDevice,
     api,
-    recvDevice: record.recvDevice,
-    sendDevice: record.sendDevice,
-    permissionsToken: mediaPermissionsToken,
-  } as any);
+    mediaPermissionsToken
+  );
 
   await record.sendDevice.load({
     routerRtpCapabilities,

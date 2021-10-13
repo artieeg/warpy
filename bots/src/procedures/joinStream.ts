@@ -23,12 +23,12 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
 
   console.log(`joined room with ${count} viewers`);
 
-  record.media = MediaClient({
+  record.media = new MediaClient(
     recvDevice,
     sendDevice,
-    permissionsToken: mediaPermissionsToken,
     api,
-  });
+    mediaPermissionsToken
+  );
 
   const transport = await createRecvTransport({
     stream: streamId,
