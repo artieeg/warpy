@@ -5,7 +5,6 @@ import { Consumer, ConsumerOptions } from "mediasoup-client/lib/types";
 import { MediaStreamTrack } from "react-native-webrtc";
 import { APIClient } from "@warpy/api";
 
-//TODO: create a union type over MediaStream and AiortcMediaStream
 export type MediaAPIStream = MediaStreamTrack | any;
 
 export interface ICreateTransportParams {
