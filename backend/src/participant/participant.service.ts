@@ -177,5 +177,17 @@ export class ParticipantService {
     this.eventEmitter.emit('participant.kicked', userToKickData);
   }
 
-  async setRole(mod: string, userToUpdate: string, role: Roles) {}
+  async setRole(mod: string, userToUpdate: string, role: Roles) {
+    const moderator = await this.participant.getById(mod);
+
+    const { stream } = moderator;
+
+    if (moderator.role !== 'streamer') {
+      throw new NoPermissionError();
+    }
+
+    if (role !== 'viewer') {
+      await this.blockService.isBannedBySpeaker(userToUpdate, stream);
+    }
+  }
 }

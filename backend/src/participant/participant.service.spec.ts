@@ -1,8 +1,11 @@
 import { BlockEntity } from '@backend_2/block/block.entity';
 import { mockedBlockEntity } from '@backend_2/block/block.entity.mock';
+import { BlockService } from '@backend_2/block/block.service';
 import {
   BannedFromStreamError,
+  BlockedByAnotherSpeaker,
   NoPermissionError,
+  StreamHasBlockedSpeakerError,
   StreamNotFound,
   UserNotFound,
 } from '@backend_2/errors';
@@ -10,6 +13,7 @@ import { mockedEventEmitter } from '@backend_2/events/events.service.mock';
 import { mockedMediaService } from '@backend_2/media/media.service.mock';
 import { MessageService } from '@backend_2/message/message.service';
 import { mockedMessageService } from '@backend_2/message/message.service.mock';
+import { mockedBlockService } from '@backend_2/block/block.service.mock';
 import { StreamBlockEntity } from '@backend_2/stream-block/stream-block.entity';
 import { mockedStreamBlockEntity } from '@backend_2/stream-block/stream-block.entity.mock';
 import { createParticipantFixture } from '@backend_2/__fixtures__';
@@ -40,6 +44,8 @@ const createService = async () => {
     .useValue(mockedMediaService)
     .overrideProvider(ParticipantEntity)
     .useValue(mockedParticipantEntity)
+    .overrideProvider(BlockService)
+    .useValue(mockedBlockService)
     .overrideProvider(EventEmitter2)
     .useValue(mockedEventEmitter)
     .compile();
@@ -418,13 +424,49 @@ describe('ParticipantService', () => {
   });
 
   describe('changing roles', () => {
-    it.todo('checks the permission to change roles');
-    it.todo(
-      'checks if there are banned streamers/speakers by the new speaker/streamer',
-    );
-    it.todo(
-      'checks if the new speaker/streamer has been banned by other speakers/streamers',
-    );
+    const modId = 'user0';
+    const userId = 'user1';
+
+    const mod = createParticipantFixture({ id: modId, role: 'streamer' });
+    const user = createParticipantFixture({ id: userId, role: 'viewer' });
+
+    beforeAll(() => {
+      when(mockedParticipantEntity.getById)
+        .calledWith(modId)
+        .mockResolvedValue(mod);
+
+      when(mockedParticipantEntity.getById)
+        .calledWith(userId)
+        .mockResolvedValue(user);
+    });
+
+    it('checks the permission to change roles', () => {
+      when(mockedParticipantEntity.getById)
+        .calledWith(modId)
+        .mockResolvedValueOnce(
+          createParticipantFixture({
+            role: 'speaker',
+          }),
+        );
+
+      expect(
+        participantService.setRole(modId, userId, 'speaker'),
+      ).rejects.toThrowError(NoPermissionError);
+    });
+
+    it('checks block data to see if the user can speak/stream', () => {
+      mockedBlockService.isBannedBySpeaker.mockRejectedValueOnce(
+        new StreamHasBlockedSpeakerError({
+          last_name: 'test',
+          first_name: 'test',
+        }),
+      );
+
+      expect(
+        participantService.setRole(modId, userId, 'speaker'),
+      ).rejects.toThrowError(StreamHasBlockedSpeakerError);
+    });
+
     it.todo('creates a send transport if the previous role is "viewer"');
     it.todo('deletes the send transport if the new role is viewer');
     it.todo(
