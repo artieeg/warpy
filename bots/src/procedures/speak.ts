@@ -7,7 +7,7 @@ export const speak = (record: UserRecord) => {
 
   api.stream.raiseHand();
 
-  api.stream.onSpeakingAllowed(async (data) => {
+  api.stream.onRoleUpdate(async (data) => {
     const { media, mediaPermissionToken } = data;
 
     record.media.permissionsToken = mediaPermissionToken;

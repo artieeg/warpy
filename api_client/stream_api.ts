@@ -35,7 +35,7 @@ export interface IStreamAPI {
   onNewRaisedHand: EventHandler;
   onUserLeft: EventHandler;
   onNewSpeaker: EventHandler;
-  onSpeakingAllowed: EventHandler<ISpeakingAllowedEvent>;
+  onRoleUpdate: EventHandler<ISpeakingAllowedEvent>;
   onActiveSpeaker: EventHandler<IActiveSpeakerEvent>;
   onChatMessages: EventHandler<IChatMessagesEvent>;
   onUserKick: EventHandler<IUserKickedEvent>;
@@ -68,7 +68,7 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
   onUserLeft: (handler) => socket.on("user-left", handler),
   onNewSpeaker: (handler) => socket.on("new-speaker", handler),
   onActiveSpeaker: (handler) => socket.on("active-speaker", handler),
-  onSpeakingAllowed: (handler) => socket.on("speaking-allowed", handler),
+  onRoleUpdate: (handler) => socket.on("speaking-allowed", handler),
   onReactionsUpdate: (handler) => socket.on("reactions-update", handler),
   onChatMessages: (handler) => socket.on("chat-messages", handler),
   onUserKick: (handler) => socket.on("user-kicked", handler),
