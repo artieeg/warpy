@@ -24,7 +24,10 @@ export const handleConnectTransport = async (data: IConnectTransport) => {
     */
   }
 
+  console.log(data);
+
   const room = rooms[roomId];
+  console.log({ room });
 
   if (!room) {
     return; //TODO;;; send error

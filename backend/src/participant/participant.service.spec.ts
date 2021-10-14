@@ -26,6 +26,27 @@ const mockedStreamBlock = {
   checkUserBanned: jest.fn(),
 };
 
+const createService = async () => {
+  const moduleRef = await testModuleBuilder
+    .overrideProvider(StreamBlockEntity)
+    .useValue(mockedStreamBlockEntity)
+    .overrideProvider(MessageService)
+    .useValue(mockedMessageService)
+    .overrideProvider(BlockEntity)
+    .useValue(mockedBlockEntity)
+    .overrideProvider(StreamBlockService)
+    .useValue(mockedStreamBlock)
+    .overrideProvider(MediaService)
+    .useValue(mockedMediaService)
+    .overrideProvider(ParticipantEntity)
+    .useValue(mockedParticipantEntity)
+    .overrideProvider(EventEmitter2)
+    .useValue(mockedEventEmitter)
+    .compile();
+
+  return moduleRef.get(ParticipantService);
+};
+
 describe('ParticipantService', () => {
   let participantService: ParticipantService;
 
@@ -46,24 +67,7 @@ describe('ParticipantService', () => {
   const streamParticipants = ['id1', 'id2'];
 
   beforeAll(async () => {
-    const moduleRef = await testModuleBuilder
-      .overrideProvider(StreamBlockEntity)
-      .useValue(mockedStreamBlockEntity)
-      .overrideProvider(MessageService)
-      .useValue(mockedMessageService)
-      .overrideProvider(BlockEntity)
-      .useValue(mockedBlockEntity)
-      .overrideProvider(StreamBlockService)
-      .useValue(mockedStreamBlock)
-      .overrideProvider(MediaService)
-      .useValue(mockedMediaService)
-      .overrideProvider(ParticipantEntity)
-      .useValue(mockedParticipantEntity)
-      .overrideProvider(EventEmitter2)
-      .useValue(mockedEventEmitter)
-      .compile();
-
-    participantService = moduleRef.get(ParticipantService);
+    participantService = await createService();
 
     mockedParticipantEntity.getWithRaisedHands.mockResolvedValue(raisedHands);
     mockedParticipantEntity.count.mockResolvedValue(count);
@@ -411,5 +415,25 @@ describe('ParticipantService', () => {
       userToKick.stream,
       userToKick.id,
     );
+  });
+
+  describe('changing roles', () => {
+    it.todo('checks the permission to change roles');
+    it.todo(
+      'checks if there are banned streamers/speakers by the new speaker/streamer',
+    );
+    it.todo(
+      'checks if the new speaker/streamer has been banned by other speakers/streamers',
+    );
+    it.todo('creates a send transport if the previous role is "viewer"');
+    it.todo('deletes the send transport if the new role is viewer');
+    it.todo(
+      "tells the media node to stop streaming user's video when they go from being a streamer to being a speaker",
+    );
+    it.todo(
+      "tells the media node to stop streaming user's audio when they go from being a streamer/speaker to being a viewer",
+    );
+    it.todo('sends the permission update event');
+    it.todo('broadcasts new the speaker/participant event');
   });
 });

@@ -20,18 +20,23 @@ export const handleNewSpeaker: MessageHandler<
     return;
   }
 
-  const audioTransport = await SFUService.createTransport(
+  const sendTransport = await SFUService.createTransport(
     "send",
     room.router,
     speaker
   );
 
-  room.peers[speaker] = createNewPeer({
-    sendTransport: audioTransport,
+  const peer = createNewPeer({
+    sendTransport,
   });
+
+  //Close video producer if it exists
+  peer.producer.video?.close();
+
+  room.peers[speaker] = peer;
 
   respond!({
     routerRtpCapabilities: room.router.rtpCapabilities,
-    sendTransportOptions: getOptionsFromTransport(audioTransport),
+    sendTransportOptions: getOptionsFromTransport(sendTransport),
   });
 };

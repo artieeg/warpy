@@ -6,7 +6,7 @@ import {
 import { StreamBlockEntity } from '@backend_2/stream-block/stream-block.entity';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { IJoinStreamResponse, IParticipant } from '@warpy/lib';
+import { IJoinStreamResponse, Roles } from '@warpy/lib';
 import { BlockService } from '../block/block.service';
 import { MediaService } from '../media/media.service';
 import { MessageService } from '../message/message.service';
@@ -137,7 +137,6 @@ export class ParticipantService {
     this.eventEmitter.emit('participant.new-speaker', speakerData);
   }
 
-  //TODO: do not fetch participant info from the db (#110)
   async broadcastActiveSpeakers(
     speakers: Record<string, { user: string; volume: number }[]>,
   ) {
@@ -177,4 +176,6 @@ export class ParticipantService {
 
     this.eventEmitter.emit('participant.kicked', userToKickData);
   }
+
+  async setRole(mod: string, userToUpdate: string, role: Roles) {}
 }
