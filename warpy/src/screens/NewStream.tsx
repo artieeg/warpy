@@ -1,4 +1,8 @@
-import {useLocalVideoStream, useMediaStreaming} from '@app/hooks';
+import {
+  useLocalAudioStream,
+  useLocalVideoStream,
+  useMediaStreaming,
+} from '@app/hooks';
 import {RTCView} from 'react-native-webrtc';
 import React, {useCallback, useState} from 'react';
 import {View, StyleSheet, useWindowDimensions} from 'react-native';
@@ -20,9 +24,10 @@ export const NewStream = () => {
 
   const {width, height} = useWindowDimensions();
   const {stream: localMediaStream} = useLocalVideoStream();
+  useLocalAudioStream();
 
-  useMediaStreaming({stream: localMediaStream, kind: 'video'});
-  useMediaStreaming({stream: localMediaStream, kind: 'audio'});
+  //useMediaStreaming({stream: localMediaStream, kind: 'video'});
+  //useMediaStreaming({stream: localMediaStream, kind: 'audio'});
 
   const onStart = useCallback(() => {
     if (streamId) {

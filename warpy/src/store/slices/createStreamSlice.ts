@@ -66,7 +66,7 @@ export const createStreamSlice = (
   title: null,
 
   async create(title, hub) {
-    const {api, initSpeakerMedia, initViewerMedia} = get();
+    const {api, sendMedia, initViewerMedia} = get();
 
     const {
       stream,
@@ -88,9 +88,6 @@ export const createStreamSlice = (
     });
     */
 
-    await initSpeakerMedia(mediaPermissionsToken, mediaData);
-    await initViewerMedia(mediaPermissionsToken, recvMediaParams);
-
     set({
       stream,
       title,
@@ -99,6 +96,9 @@ export const createStreamSlice = (
       isStreamOwner: true,
       role: 'streamer',
     });
+
+    await initViewerMedia(mediaPermissionsToken, recvMediaParams);
+    await sendMedia(mediaPermissionsToken, mediaData, ['audio', 'video']);
   },
 
   async join(stream) {

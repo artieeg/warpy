@@ -1,13 +1,19 @@
 import {MediaClient} from '@warpykit-sdk/client';
 import {GetState, SetState} from 'zustand';
 import {IStore} from '../useStore';
-import {MediaStream} from 'react-native-webrtc';
+import {MediaStream, MediaStreamTrack} from 'react-native-webrtc';
 import {Transport} from 'mediasoup-client/lib/Transport';
 
 export interface IMediaSlice {
   mediaClient?: MediaClient;
-  video?: MediaStream;
-  audio?: MediaStream;
+  video?: {
+    stream: MediaStream;
+    track: MediaStreamTrack;
+  };
+  audio?: {
+    stream: MediaStream;
+    track: MediaStreamTrack;
+  };
   audioMuted: boolean;
 
   sendTransport: Transport | null;
@@ -27,9 +33,10 @@ export interface IMediaSlice {
    * */
   mediaPermissionsToken: string | null;
 
-  initSpeakerMedia: (
+  sendMedia: (
     permissions: string,
     sendMediaParams: any,
+    tracks: ('audio' | 'video')[],
   ) => Promise<void>;
 
   initViewerMedia: (permissions: string, recvMediaParams: any) => Promise<void>;
@@ -48,12 +55,12 @@ export const createMediaSlice = (
   audioMuted: false,
 
   switchCamera() {
-    (get().video?.getVideoTracks()[0] as any)._switchCamera();
+    (get().video?.track as any)._switchCamera();
   },
 
   toggleAudio(flag) {
     get()
-      .audio?.getAudioTracks()
+      .audio?.stream.getAudioTracks()
       .forEach(audio => (audio.enabled = flag));
 
     set({
@@ -75,7 +82,7 @@ export const createMediaSlice = (
     });
   },
 
-  async initSpeakerMedia(permissions, sendMediaParams) {
+  async sendMedia(permissions, sendMediaParams, tracks) {
     const {mediaClient, stream, sendDevice, initSendDevice} = get();
 
     if (!mediaClient) {
@@ -99,10 +106,27 @@ export const createMediaSlice = (
       isProducer: true,
     });
 
+    tracks.forEach(async kind => {
+      const track = get()[kind]?.track;
+      console.log({track, kind});
+
+      if (track) {
+        const producer = await mediaClient.sendMediaStream(
+          track,
+          kind,
+          sendTransport,
+        );
+
+        console.log('producer', producer);
+      }
+    });
+
+    /*
     set({
       mediaPermissionsToken: permissions,
       sendMediaParams,
       sendTransport,
     });
+    */
   },
 });

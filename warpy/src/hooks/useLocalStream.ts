@@ -32,9 +32,19 @@ export const useLocalStream = (kind: MediaKind) => {
 
     //useStore.setState({[kind]: mediaStream});
     if (kind === 'video') {
-      useStore.setState({video: mediaStream});
+      useStore.setState({
+        video: {
+          stream: mediaStream,
+          track: mediaStream.getVideoTracks()[0],
+        },
+      });
     } else {
-      useStore.setState({audio: mediaStream});
+      useStore.setState({
+        audio: {
+          stream: mediaStream,
+          track: mediaStream.getAudioTracks()[0],
+        },
+      });
     }
   }, [kind]);
 
@@ -44,7 +54,7 @@ export const useLocalStream = (kind: MediaKind) => {
     }
   }, [getMediaSource]);
 
-  return localStream;
+  return localStream?.stream;
 };
 
 export const useLocalVideoStream = () => {
@@ -68,7 +78,7 @@ export const useLocalVideoStream = () => {
 };
 
 export const useLocalAudioStream = () => {
-  const audioStream = useLocalStream('video');
+  const audioStream = useLocalStream('audio');
   const [muted, setMuted] = useState(false);
 
   const toggle = useCallback(() => {

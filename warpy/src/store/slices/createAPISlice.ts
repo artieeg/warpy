@@ -35,8 +35,10 @@ export const createAPISlice = (
       store.raiseHand(participant);
     });
 
-    api.stream.onSpeakingAllowed(async options => {
-      await get().initSpeakerMedia(options.mediaPermissionToken, options.media);
+    api.stream.onRoleUpdate(async options => {
+      await get().sendMedia(options.mediaPermissionToken, options.media, [
+        'audio',
+      ]);
 
       set({
         isSpeaker: true,
