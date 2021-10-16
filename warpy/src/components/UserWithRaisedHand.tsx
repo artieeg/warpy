@@ -16,7 +16,7 @@ export const UserWithRaisedHand = (props: IRaisedHandInfo) => {
   const api = useStore.use.api();
 
   const onAllow = useCallback(() => {
-    api.stream.allowSpeaker(data.id);
+    api.stream.setRole(data.id, 'speaker');
   }, [api, data.id]);
 
   const name = `${data.first_name} ${data.last_name}`;

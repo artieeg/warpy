@@ -15,7 +15,7 @@ export const createStream = async (record: UserRecord) => {
     const { viewer } = data;
 
     setTimeout(() => {
-      api.stream.allowSpeaker(viewer.id);
+      api.stream.setRole(viewer.id, "speaker");
     }, 5000);
   });
 

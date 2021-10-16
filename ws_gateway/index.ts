@@ -229,7 +229,9 @@ const handlers: Record<string, HandlerConfig> = {
   "set-role": {
     schema: joi.object({
       userToUpdate: joi.string().max(64).required(),
-      role: joi.string().valid(["viewer", "speaker", "streamer"] as Roles[]),
+      role: joi
+        .string()
+        .valid(...(["viewer", "speaker", "streamer"] as Roles[])),
     }),
     kind: "request",
     auth: true,
