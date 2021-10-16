@@ -1,8 +1,7 @@
-import React, {useCallback} from 'react';
+import React from 'react';
 import {Avatar} from './Avatar';
 import {StyleSheet, View} from 'react-native';
 import {Text} from './Text';
-import {SmallTextButton} from './SmallTextButton';
 import {useStore} from '@app/store';
 import {IParticipant} from '@warpy/lib';
 import {IconButton} from './IconButton';
@@ -13,11 +12,11 @@ interface IRaisedHandInfo {
 
 export const UserProducer = (props: IRaisedHandInfo) => {
   const {data} = props;
-  const {role} = data;
+  const {id, role} = data;
+  const name = `${data.first_name} ${data.last_name}`;
 
   const api = useStore.use.api();
 
-  const name = `${data.first_name} ${data.last_name}`;
   return (
     <View style={styles.wrapper}>
       <Avatar user={data} />
@@ -27,6 +26,9 @@ export const UserProducer = (props: IRaisedHandInfo) => {
         </Text>
         <View style={styles.producerActionWrapper}>
           <IconButton
+            onPress={async () => {
+              api.stream.setRole(id, role === 'viewer' ? 'speaker' : 'viewer');
+            }}
             size={20}
             name={role !== 'viewer' ? 'mic-on' : 'mic-off'}
             color={role !== 'viewer' ? '#000' : '#fff'}
@@ -36,6 +38,12 @@ export const UserProducer = (props: IRaisedHandInfo) => {
             ]}
           />
           <IconButton
+            onPress={async () => {
+              api.stream.setRole(
+                id,
+                role === 'streamer' ? 'speaker' : 'streamer',
+              );
+            }}
             size={20}
             name={role !== 'streamer' ? 'video' : 'video-off'}
             color={role !== 'streamer' ? '#fff' : '#000'}
