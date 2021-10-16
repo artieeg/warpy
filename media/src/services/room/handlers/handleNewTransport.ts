@@ -3,14 +3,14 @@ import { SFUService } from "@media/services";
 import { getOptionsFromTransport } from "@media/utils";
 import {
   MessageHandler,
-  IConnectNewSpeakerMedia,
-  INewSpeakerMediaResponse,
+  ICreateTransport,
+  INewTransportResponse,
 } from "@warpy/lib";
 import { rooms } from "../rooms";
 
-export const handleNewSpeaker: MessageHandler<
-  IConnectNewSpeakerMedia,
-  INewSpeakerMediaResponse
+export const handleNewTransport: MessageHandler<
+  ICreateTransport,
+  INewTransportResponse
 > = async (data, respond) => {
   const { roomId, speaker } = data;
 

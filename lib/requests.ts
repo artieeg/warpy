@@ -38,12 +38,12 @@ export interface IJoinMediaRoom {
   user: string;
 }
 
-export interface IConnectNewSpeakerMedia {
+export interface ICreateTransport {
   roomId: string;
   speaker: string;
 }
 
-export interface INewSpeakerMediaResponse {
+export interface INewTransportResponse {
   sendTransportOptions: ITransportOptions;
   routerRtpCapabilities: any;
 }

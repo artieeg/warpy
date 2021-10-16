@@ -106,7 +106,7 @@ export class ParticipantService {
       throw new UserNotFound();
     }
 
-    const media = await this.media.getSpeakerParams({
+    const media = await this.media.createSendTransport({
       speaker: newSpeakerId,
       roomId: stream,
     });
@@ -179,7 +179,6 @@ export class ParticipantService {
 
   async setRole(mod: string, userToUpdate: string, role: Roles) {
     const moderator = await this.participant.getById(mod);
-
     const { stream } = moderator;
 
     if (moderator.role !== 'streamer') {
@@ -189,5 +188,41 @@ export class ParticipantService {
     if (role !== 'viewer') {
       await this.blockService.isBannedBySpeaker(userToUpdate, stream);
     }
+
+    const oldUserData = await this.participant.getById(userToUpdate);
+
+    let sendNodeId = oldUserData.sendNodeId;
+    let recvNodeId = oldUserData.recvNodeId;
+
+    let response = {};
+
+    if (oldUserData.role === 'viewer') {
+      //If the user was viewer, he hasn't been assigned to a media send node
+      sendNodeId = await this.media.getSendNodeId();
+
+      response['media'] = await this.media.createSendTransport({
+        roomId: stream,
+        speaker: userToUpdate,
+      });
+    }
+
+    const updatedUser = await this.participant.updateOne(userToUpdate, {
+      sendNodeId,
+      role,
+    });
+
+    response['mediaPermissionToken'] = this.media.createPermissionToken({
+      audio: role !== 'viewer',
+      video: role === 'streamer',
+      sendNodeId,
+      recvNodeId,
+      user: userToUpdate,
+      room: stream,
+    });
+
+    this.messageService.sendMessage(userToUpdate, {
+      event: 'speaking-allowed',
+      data: response,
+    });
   }
 }

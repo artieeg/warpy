@@ -3,7 +3,6 @@ import { mockedBlockEntity } from '@backend_2/block/block.entity.mock';
 import { BlockService } from '@backend_2/block/block.service';
 import {
   BannedFromStreamError,
-  BlockedByAnotherSpeaker,
   NoPermissionError,
   StreamHasBlockedSpeakerError,
   StreamNotFound,
@@ -424,20 +423,35 @@ describe('ParticipantService', () => {
   });
 
   describe('changing roles', () => {
-    const modId = 'user0';
-    const userId = 'user1';
+    const modId = 'role-user0';
+    const userId = 'role-user1';
 
     const mod = createParticipantFixture({ id: modId, role: 'streamer' });
     const user = createParticipantFixture({ id: userId, role: 'viewer' });
+
+    const testMediaData = { data: 'test' };
+    const newPermissionToken = 'test';
 
     beforeAll(() => {
       when(mockedParticipantEntity.getById)
         .calledWith(modId)
         .mockResolvedValue(mod);
 
+      when(mockedMediaService.createPermissionToken).mockReturnValue(
+        newPermissionToken,
+      );
+
+      mockedMediaService.createSendTransport.mockResolvedValue(
+        testMediaData as any,
+      );
+
       when(mockedParticipantEntity.getById)
         .calledWith(userId)
         .mockResolvedValue(user);
+    });
+
+    beforeEach(() => {
+      jest.clearAllMocks();
     });
 
     it('checks the permission to change roles', () => {
@@ -467,7 +481,80 @@ describe('ParticipantService', () => {
       ).rejects.toThrowError(StreamHasBlockedSpeakerError);
     });
 
-    it.todo('creates a send transport if the previous role is "viewer"');
+    it('does not create a send transport if previous role is not "viewer"', async () => {
+      when(mockedParticipantEntity.getById)
+        .calledWith(userId)
+        .mockResolvedValueOnce({ ...user, role: 'speaker' });
+
+      await participantService.setRole(modId, userId, 'streamer');
+
+      expect(mockedMediaService.createSendTransport).not.toBeCalled();
+      expect(mockedMessageService.sendMessage).not.toBeCalledWith(
+        userId,
+        expect.objectContaining({
+          data: expect.objectContaining({
+            media: testMediaData,
+          }),
+        }),
+      );
+    });
+
+    it('creates a send transport if the previous role is "viewer"', async () => {
+      await participantService.setRole(modId, userId, 'speaker');
+
+      expect(mockedMediaService.createSendTransport).toBeCalled();
+      expect(mockedMessageService.sendMessage).toBeCalledWith(
+        userId,
+        expect.objectContaining({
+          data: expect.objectContaining({
+            media: testMediaData,
+          }),
+        }),
+      );
+    });
+
+    it('sends updated permissions token to the affected user', async () => {
+      await participantService.setRole(modId, userId, 'speaker');
+
+      expect(mockedMessageService.sendMessage).toBeCalledWith(
+        userId,
+        expect.objectContaining({
+          data: expect.objectContaining({
+            mediaPermissionToken: newPermissionToken,
+          }),
+        }),
+      );
+    });
+
+    it.todo('broadcasts new the speaker/participant event');
+
+    it('updates the role in the db', async () => {
+      await participantService.setRole(modId, userId, 'speaker');
+
+      expect(mockedParticipantEntity.updateOne).toBeCalledWith(
+        userId,
+        expect.objectContaining({
+          role: 'speaker',
+          sendNodeId: expect.anything(),
+        }),
+      );
+    });
+
+    it("sets the send node id if there's none", async () => {
+      const sendNodeId = 'test0';
+
+      mockedMediaService.getSendNodeId.mockResolvedValueOnce(sendNodeId);
+      await participantService.setRole(modId, userId, 'speaker');
+
+      expect(mockedParticipantEntity.updateOne).toBeCalledWith(
+        userId,
+        expect.objectContaining({
+          role: 'speaker',
+          sendNodeId: sendNodeId,
+        }),
+      );
+    });
+
     it.todo('deletes the send transport if the new role is viewer');
     it.todo(
       "tells the media node to stop streaming user's video when they go from being a streamer to being a speaker",
@@ -475,7 +562,5 @@ describe('ParticipantService', () => {
     it.todo(
       "tells the media node to stop streaming user's audio when they go from being a streamer/speaker to being a viewer",
     );
-    it.todo('sends the permission update event');
-    it.todo('broadcasts new the speaker/participant event');
   });
 });

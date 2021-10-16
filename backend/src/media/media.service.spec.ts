@@ -37,12 +37,12 @@ describe('MediaService', () => {
     ).resolves.toStrictEqual(newRoomData);
   });
 
-  it('returns params to connect speaker', async () => {
+  it('returns params to connect new transport', async () => {
     const speakerMediaParams = { data: 'test' };
     mockedNatsService.request.mockResolvedValueOnce(speakerMediaParams);
 
     expect(
-      mediaService.getSpeakerParams({ test: 'test' } as any),
+      mediaService.createSendTransport({ test: 'test' } as any),
     ).resolves.toStrictEqual(speakerMediaParams);
   });
 
