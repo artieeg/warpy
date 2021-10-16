@@ -1,6 +1,5 @@
 export * from './feed';
 export * from './useLocalStream';
-export * from './useRecvTransport';
 export * from './useStreamViewers';
 export * from './useStreamProducers';
 export * from './useParticipantsCount';

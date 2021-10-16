@@ -41,7 +41,6 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
   if (process.env.MODE === "LOADTEST") {
     //TODO: Consuming VP8 streams causes memory leak in aiortc apparently
     const consumers = await record.media.consumeRemoteStreams(
-      record.user.id,
       streamId,
       transport
     );

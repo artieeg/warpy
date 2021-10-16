@@ -56,7 +56,6 @@ interface IMediaAPI {
   ) => Promise<Consumer>;
 
   consumeRemoteStreams: (
-    user: string,
     stream: string,
     transport: Transport
   ) => Promise<Consumer[]>;

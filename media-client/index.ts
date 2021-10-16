@@ -120,11 +120,7 @@ export class MediaClient {
     return producer;
   }
 
-  async consumeRemoteStreams(
-    user: string,
-    stream: string,
-    transport: Transport
-  ) {
+  async consumeRemoteStreams(stream: string, transport: Transport) {
     const { consumerParams } = await this.api.media.getRecvTracks({
       rtpCapabilities: this.recvDevice.rtpCapabilities,
       stream,
@@ -136,7 +132,7 @@ export class MediaClient {
         transport.consume({
           ...params.consumerParameters,
           appData: {
-            user,
+            user: params.consumerParameters.user,
             producerId: params.consumerParameters.producerId,
             mediaTag: "media-" + Math.random(),
           },
@@ -148,24 +144,3 @@ export class MediaClient {
     return consumers;
   }
 }
-
-/*
-export const MediaClient: MediaAPIFactory = (params) => {
-  const { recvDevice, sendDevice, api, permissionsToken } = params;
-
-  const createTransport = createTransportFactory(api);
-  const sendMediaStream = sendMediaStreamFactory();
-  const consumeRemoteStreams = consumeRemoteStreamsFactory(
-    api,
-    recvDevice,
-    permissionsToken
-  );
-
-  return {
-    sendMediaStream,
-    consumeRemoteStream,
-    consumeRemoteStreams,
-    createTransport,
-  };
-};
-*/

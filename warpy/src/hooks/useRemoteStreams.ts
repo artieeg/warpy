@@ -1,10 +1,6 @@
 import {useStore} from '@app/store';
-import {Consumer} from 'mediasoup-client/lib/types';
-import {useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {MediaStream} from 'react-native-webrtc';
-import shallow from 'zustand/shallow';
-import {useAppUser} from './useAppUser';
-import {useRecvTransport} from './useRecvTransport';
 
 interface IStreams {
   videoStreams: MediaStream[];
@@ -12,58 +8,36 @@ interface IStreams {
 }
 
 export const useRemoteStreams = () => {
-  const streamId = useStore.use.stream();
-  const transport = useRecvTransport();
-
-  const [mediaClient, mediaPermissionsToken] = useStore(
-    state => [state.mediaClient, state.mediaPermissionsToken],
-    shallow,
-  );
-
   const [streams, setStreams] = useState<IStreams>({
     videoStreams: [],
     audioStreams: [],
   });
 
-  const {id: userId} = useAppUser();
+  const producers = useStore.use.producers();
 
-  const fetched = useRef(false);
+  const getStreams = useCallback(() => {
+    let newVideoStreams = [] as MediaStream[];
+    let newAudioStreams = [] as MediaStream[];
+
+    Object.values(producers).forEach(producer => {
+      if (producer.media?.audio) {
+        newAudioStreams.push(new MediaStream([producer.media?.audio]));
+      }
+
+      if (producer.media?.video) {
+        newVideoStreams.push(new MediaStream([producer.media?.video]));
+      }
+    });
+
+    setStreams({
+      videoStreams: newVideoStreams,
+      audioStreams: newAudioStreams,
+    });
+  }, [producers]);
 
   useEffect(() => {
-    if (
-      !streamId ||
-      !transport ||
-      !mediaClient ||
-      !mediaPermissionsToken ||
-      fetched.current
-    ) {
-      return;
-    }
-
-    mediaClient
-      .consumeRemoteStreams(userId, streamId, transport)
-      .then((consumers: Consumer[]) => {
-        const videoStreams: MediaStream[] = [];
-        const audioStreams: MediaStream[] = [];
-
-        consumers.forEach(consumer => {
-          const stream = new MediaStream([consumer.track]);
-
-          if (consumer.kind === 'video') {
-            videoStreams.push(stream);
-          } else {
-            audioStreams.push(stream);
-          }
-        });
-
-        fetched.current = true;
-
-        setStreams({
-          videoStreams,
-          audioStreams,
-        });
-      });
-  }, [transport, mediaPermissionsToken, streamId]);
+    getStreams();
+  }, [getStreams]);
 
   return streams;
 };

@@ -77,9 +77,16 @@ export const createMediaSlice = (
 
     await initRecvDevice(recvMediaParams.routerRtpCapabilities);
 
+    const mediaClient = new MediaClient(
+      recvDevice,
+      sendDevice,
+      api,
+      permissions,
+    );
+
     set({
       mediaPermissionsToken: permissions,
-      mediaClient: new MediaClient(recvDevice, sendDevice, api, permissions),
+      mediaClient,
       recvMediaParams,
     });
   },
@@ -98,19 +105,28 @@ export const createMediaSlice = (
     mediaClient.permissionsToken = permissions;
     mediaClient.sendDevice = sendDevice;
 
-    const sendTransport = await mediaClient.createTransport({
-      roomId: stream!,
-      device: sendDevice,
-      direction: 'send',
-      options: {
-        sendTransportOptions: sendTransportOptions,
-      },
-      isProducer: true,
-    });
+    const getOrCreateSendTransport = async (): Promise<Transport> => {
+      const sendTransport = get().sendTransport;
+
+      if (!sendTransport) {
+        return await mediaClient.createTransport({
+          roomId: stream!,
+          device: sendDevice,
+          direction: 'send',
+          options: {
+            sendTransportOptions: sendTransportOptions,
+          },
+          isProducer: true,
+        });
+      } else {
+        return sendTransport;
+      }
+    };
+
+    const sendTransport = await getOrCreateSendTransport();
 
     tracks.forEach(async kind => {
       const track = get()[kind]?.track;
-      console.log({track, kind});
 
       if (track) {
         const producer = await mediaClient.sendMediaStream(
@@ -123,12 +139,8 @@ export const createMediaSlice = (
       }
     });
 
-    /*
     set({
-      mediaPermissionsToken: permissions,
-      sendMediaParams,
       sendTransport,
     });
-    */
   },
 });

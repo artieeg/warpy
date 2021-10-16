@@ -34,14 +34,13 @@ export const createAPISlice = (
       store.raiseHand(participant);
     });
 
-    api.stream.onRoleUpdate(async options => {
-      await get().sendMedia(options.mediaPermissionToken, options.media, [
-        'audio',
+    api.stream.onRoleUpdate(async ({mediaPermissionToken, media, role}) => {
+      await get().sendMedia(mediaPermissionToken, media, [
+        role === 'speaker' ? 'audio' : 'video',
       ]);
 
       set({
-        isSpeaker: true,
-        role: 'speaker',
+        role,
       });
     });
 

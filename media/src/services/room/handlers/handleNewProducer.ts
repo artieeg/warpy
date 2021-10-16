@@ -62,7 +62,8 @@ export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
         rtpCapabilities,
         peerRecvTransport,
         userId,
-        peers[peerId]
+        peers[peerId],
+        peerId
       );
 
       MessageService.sendMessageToUser(peerId, {

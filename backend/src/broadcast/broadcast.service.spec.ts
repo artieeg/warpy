@@ -65,7 +65,7 @@ describe('BroadcastService', () => {
   });
 
   it('broadcasts new speaker', async () => {
-    await broadcast.broadcastNewSpeaker(createParticipantFixture({}));
+    await broadcast.broadcastRoleChange(createParticipantFixture({}));
 
     participants.forEach((id) => {
       expect(mockedMessageService.send).toBeCalledWith(id, expect.anything());

@@ -108,7 +108,8 @@ export const createConsumer = async (
   rtpCapabilities: RtpCapabilities,
   transport: Transport,
   user: string,
-  peerConsuming: IPeer
+  peerConsuming: IPeer,
+  peerId: string
 ): Promise<Consumer> => {
   if (!router.canConsume({ producerId: producer.id, rtpCapabilities })) {
     throw new Error(
@@ -133,8 +134,8 @@ export const createConsumer = async (
       kind: consumer.kind,
       rtpParameters: consumer.rtpParameters,
       type: consumer.type,
-      //producerPaused: consumer.producerPaused,
       producerPaused: false,
+      user: peerId,
     },
   };
 };

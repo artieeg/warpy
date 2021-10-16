@@ -1,9 +1,16 @@
 import {GetState, SetState} from 'zustand';
 import produce from 'immer';
-import {Transport} from 'mediasoup-client/lib/Transport';
 import {IStore} from '../useStore';
 import {arrayToMap} from '@app/utils';
 import {IParticipant, Roles} from '@warpy/lib';
+import {Consumer} from 'mediasoup-client/lib/types';
+
+interface IParticipantWithMedia extends IParticipant {
+  media?: {
+    audio?: Consumer;
+    video?: Consumer;
+  };
+}
 
 export interface IStreamSlice {
   /** Stores current stream id */
@@ -27,19 +34,14 @@ export interface IStreamSlice {
   isFetchingViewers: boolean;
 
   /** Stream viewers */
-  consumers: Record<string, IParticipant>;
+  consumers: Record<string, IParticipantWithMedia>;
 
   /** Users sending audio/video streams */
-  producers: Record<string, IParticipant>;
+  producers: Record<string, IParticipantWithMedia>;
 
   viewersWithRaisedHands: Record<string, IParticipant>;
 
-  create: (
-    title: string,
-    hub: string,
-    media: any,
-    recvTransport?: Transport,
-  ) => Promise<void>;
+  create: (title: string, hub: string) => Promise<void>;
   join: (id: string) => Promise<void>;
 
   setCount: (newCount: number) => any;
@@ -94,6 +96,19 @@ export const createStreamSlice = (
     });
 
     await initViewerMedia(mediaPermissionsToken, recvMediaParams);
+
+    const recvTransport = await get().mediaClient!.createTransport({
+      roomId: stream,
+      device: get().recvDevice,
+      direction: 'recv',
+      options: {
+        recvTransportOptions: recvMediaParams.recvTransportOptions,
+      },
+      isProducer: false,
+    });
+
+    set({recvTransport});
+
     await sendMedia(mediaPermissionsToken, mediaData, ['audio', 'video']);
   },
 
@@ -110,10 +125,42 @@ export const createStreamSlice = (
 
     await initViewerMedia(mediaPermissionsToken, recvMediaParams);
 
+    const mediaClient = get().mediaClient!;
+
+    console.log(recvMediaParams);
+
+    const recvTransport = await mediaClient?.createTransport({
+      roomId: stream,
+      device: get().recvDevice,
+      direction: 'recv',
+      options: {
+        recvTransportOptions: recvMediaParams.recvTransportOptions,
+      },
+      isProducer: false,
+    });
+
+    const consumers = await mediaClient.consumeRemoteStreams(
+      stream,
+      recvTransport,
+    );
+
     set({
       stream,
+      recvTransport,
       totalParticipantCount: count,
-      producers: arrayToMap<IParticipant>(speakers),
+      producers: arrayToMap<IParticipantWithMedia>(
+        speakers.map(p => ({
+          ...p,
+          media: {
+            audio: consumers.find(
+              c => c.appData.user === p.id && c.kind === 'audio',
+            ),
+            video: consumers.find(
+              c => c.appData.user === p.id && c.kind === 'video',
+            ),
+          },
+        })),
+      ),
       viewersWithRaisedHands: arrayToMap<IParticipant>(raisedHands),
       role: 'viewer',
     });

@@ -7,7 +7,6 @@ import {RTCView} from 'react-native-webrtc';
 import React, {useCallback, useState} from 'react';
 import {View, StyleSheet, useWindowDimensions} from 'react-native';
 import {Button} from '@app/components';
-import {useRecvTransport} from '@app/hooks/useRecvTransport';
 import {useStore} from '@app/store';
 import shallow from 'zustand/shallow';
 import {StreamOverlay} from '@app/components/StreamOverlay';
@@ -20,22 +19,17 @@ export const NewStream = () => {
     shallow,
   );
 
-  const recvTransport = useRecvTransport();
-
   const {width, height} = useWindowDimensions();
   const {stream: localMediaStream} = useLocalVideoStream();
   useLocalAudioStream();
-
-  //useMediaStreaming({stream: localMediaStream, kind: 'video'});
-  //useMediaStreaming({stream: localMediaStream, kind: 'audio'});
 
   const onStart = useCallback(() => {
     if (streamId) {
       return;
     }
 
-    createStream(title, hub, recvTransport);
-  }, [title, streamId, hub, api, recvTransport]);
+    createStream(title, hub);
+  }, [title, streamId, hub, api]);
 
   const localStreamStyle = {
     ...styles.localStream,
