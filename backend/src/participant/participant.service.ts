@@ -194,7 +194,9 @@ export class ParticipantService {
     let sendNodeId = oldUserData.sendNodeId;
     let recvNodeId = oldUserData.recvNodeId;
 
-    let response = {};
+    let response = {
+      role,
+    };
 
     if (oldUserData.role === 'viewer') {
       //If the user was viewer, he hasn't been assigned to a media send node
@@ -221,8 +223,10 @@ export class ParticipantService {
     });
 
     this.messageService.sendMessage(userToUpdate, {
-      event: 'speaking-allowed',
+      event: 'role-change',
       data: response,
     });
+
+    this.eventEmitter.emit('participant.role-change', updatedUser);
   }
 }

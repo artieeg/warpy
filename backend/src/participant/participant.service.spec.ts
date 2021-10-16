@@ -24,6 +24,7 @@ import { StreamBlockService } from '../stream-block/stream-block.service';
 import { ParticipantEntity } from './participant.entity';
 import { mockedParticipantEntity } from './participant.entity.mock';
 import { ParticipantService } from './participant.service';
+import { Roles } from '@warpy/lib';
 
 const mockedStreamBlock = {
   checkUserBanned: jest.fn(),
@@ -429,6 +430,9 @@ describe('ParticipantService', () => {
     const mod = createParticipantFixture({ id: modId, role: 'streamer' });
     const user = createParticipantFixture({ id: userId, role: 'viewer' });
 
+    const newRole = 'speaker';
+    const updatedUser = { ...user, role: newRole as Roles };
+
     const testMediaData = { data: 'test' };
     const newPermissionToken = 'test';
 
@@ -436,6 +440,8 @@ describe('ParticipantService', () => {
       when(mockedParticipantEntity.getById)
         .calledWith(modId)
         .mockResolvedValue(mod);
+
+      mockedParticipantEntity.updateOne.mockResolvedValue(updatedUser);
 
       when(mockedMediaService.createPermissionToken).mockReturnValue(
         newPermissionToken,
@@ -464,7 +470,7 @@ describe('ParticipantService', () => {
         );
 
       expect(
-        participantService.setRole(modId, userId, 'speaker'),
+        participantService.setRole(modId, userId, newRole),
       ).rejects.toThrowError(NoPermissionError);
     });
 
@@ -477,7 +483,7 @@ describe('ParticipantService', () => {
       );
 
       expect(
-        participantService.setRole(modId, userId, 'speaker'),
+        participantService.setRole(modId, userId, newRole),
       ).rejects.toThrowError(StreamHasBlockedSpeakerError);
     });
 
@@ -500,7 +506,7 @@ describe('ParticipantService', () => {
     });
 
     it('creates a send transport if the previous role is "viewer"', async () => {
-      await participantService.setRole(modId, userId, 'speaker');
+      await participantService.setRole(modId, userId, newRole);
 
       expect(mockedMediaService.createSendTransport).toBeCalled();
       expect(mockedMessageService.sendMessage).toBeCalledWith(
@@ -514,7 +520,7 @@ describe('ParticipantService', () => {
     });
 
     it('sends updated permissions token to the affected user', async () => {
-      await participantService.setRole(modId, userId, 'speaker');
+      await participantService.setRole(modId, userId, newRole);
 
       expect(mockedMessageService.sendMessage).toBeCalledWith(
         userId,
@@ -526,10 +532,17 @@ describe('ParticipantService', () => {
       );
     });
 
-    it.todo('broadcasts new the speaker/participant event');
+    it('broadcasts the new speaker/participant event', async () => {
+      await participantService.setRole(modId, userId, newRole);
+
+      expect(mockedEventEmitter.emit).toBeCalledWith(
+        'participant.role-change',
+        updatedUser,
+      );
+    });
 
     it('updates the role in the db', async () => {
-      await participantService.setRole(modId, userId, 'speaker');
+      await participantService.setRole(modId, userId, newRole);
 
       expect(mockedParticipantEntity.updateOne).toBeCalledWith(
         userId,
@@ -544,7 +557,7 @@ describe('ParticipantService', () => {
       const sendNodeId = 'test0';
 
       mockedMediaService.getSendNodeId.mockResolvedValueOnce(sendNodeId);
-      await participantService.setRole(modId, userId, 'speaker');
+      await participantService.setRole(modId, userId, newRole);
 
       expect(mockedParticipantEntity.updateOne).toBeCalledWith(
         userId,
@@ -556,9 +569,11 @@ describe('ParticipantService', () => {
     });
 
     it.todo('deletes the send transport if the new role is viewer');
+
     it.todo(
       "tells the media node to stop streaming user's video when they go from being a streamer to being a speaker",
     );
+
     it.todo(
       "tells the media node to stop streaming user's audio when they go from being a streamer/speaker to being a viewer",
     );

@@ -80,13 +80,13 @@ export class BroadcastService {
     this.broadcast(ids, message);
   }
 
-  @OnEvent('participant.new-speaker')
+  @OnEvent('participant.role-change')
   async broadcastNewSpeaker(speaker: IParticipant) {
     const { stream } = speaker;
     const ids = await this.participant.getIdsByStream(stream);
 
     const message = this.messageService.encodeMessage({
-      event: 'new-speaker',
+      event: 'participant-role-change',
       data: {
         speaker,
         stream,

@@ -46,7 +46,7 @@ export const createAPISlice = (
       });
     });
 
-    api.stream.onNewSpeaker(data => {
+    api.stream.onParticipantRoleChange(data => {
       const {speaker} = data;
 
       store.addSpeaker(speaker);
