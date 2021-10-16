@@ -81,7 +81,7 @@ export class BroadcastService {
   }
 
   @OnEvent('participant.role-change')
-  async broadcastNewSpeaker(speaker: IParticipant) {
+  async broadcastRoleChange(speaker: IParticipant) {
     const { stream } = speaker;
     const ids = await this.participant.getIdsByStream(stream);
 
