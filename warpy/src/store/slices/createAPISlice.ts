@@ -2,7 +2,6 @@ import {GetState, SetState} from 'zustand';
 import {APIClient, WebSocketConn} from '@warpy/api';
 import config from '@app/config';
 import {IStore} from '../useStore';
-import {Participant} from '@app/models';
 
 export interface IAPISlice {
   api: APIClient;
@@ -29,7 +28,7 @@ export const createAPISlice = (
     });
 
     api.stream.onNewRaisedHand(data => {
-      const participant = Participant.fromJSON(data.viewer);
+      const participant = data.viewer;
       participant.isRaisingHand = true;
 
       store.raiseHand(participant);
@@ -59,9 +58,9 @@ export const createAPISlice = (
     });
 
     api.stream.onParticipantRoleChange(data => {
-      const {speaker} = data;
+      const {user} = data;
 
-      store.addSpeaker(speaker);
+      store.addProducer(user);
     });
 
     api.stream.onUserLeft(data => {

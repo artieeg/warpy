@@ -1,11 +1,11 @@
 import React, {useMemo} from 'react';
-import {Participant} from '@app/models';
 import {Avatar} from './Avatar';
 import {StyleSheet, View} from 'react-native';
 import {Text} from './Text';
+import {IParticipant} from '@warpy/lib';
 
 interface IStreamerInfoProps {
-  data: Participant;
+  data: IParticipant;
 }
 
 export const StreamerInfo = (props: IStreamerInfoProps) => {

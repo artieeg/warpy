@@ -1,4 +1,3 @@
-import {Participant} from '@app/models';
 import React, {useMemo} from 'react';
 import {
   FlatList,
@@ -14,11 +13,13 @@ import {StreamerInfo} from './StreamerInfo';
 import {Text} from './Text';
 import {
   useSpeakingRequests,
-  useStreamSpeakers,
+  useStreamProducers,
   useStreamViewers,
 } from '@app/hooks';
 import {InviteUserButton} from './InviteUserButton';
 import {useStore} from '@app/store';
+import {IParticipant} from '@warpy/lib';
+import {UserProducer} from './UserProducer';
 
 interface IParticipanModalProps {
   visible: boolean;
@@ -30,19 +31,24 @@ interface IParticipanModalProps {
 export const ParticipantsModal = (props: IParticipanModalProps) => {
   const {onSelectParticipant, onOpenActions} = props;
   const usersRaisingHand = useSpeakingRequests();
-  const speakers = useStreamSpeakers();
+  const producers = useStreamProducers();
   const [viewers, onFetchMore] = useStreamViewers();
   const openNewModal = useStore.use.openNewModal();
 
   const streamer = useMemo(
-    () => speakers.find(speaker => speaker.role === 'streamer'),
-    [speakers],
+    () => producers.find(speaker => speaker.role === 'streamer'),
+    [producers],
   );
 
   const data = useMemo(
     () =>
-      getListData({viewers, speakers, usersRaisingHand, streamer: streamer!}),
-    [viewers, speakers, usersRaisingHand, streamer],
+      getListData({
+        viewers,
+        speakers: producers,
+        usersRaisingHand,
+        streamer: streamer!,
+      }),
+    [viewers, producers, usersRaisingHand, streamer],
   );
 
   //TODO: Separate components
@@ -77,7 +83,28 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
       );
     }
 
-    if (kind === 'speakers' || kind === 'viewers') {
+    if (kind === 'speakers') {
+      return (
+        <TouchableWithoutFeedback>
+          <FlatList
+            data={item.list}
+            renderItem={({item: flatListItem}) => (
+              <TouchableOpacity
+                onLongPress={() => {
+                  onOpenActions(flatListItem.id);
+                }}
+                onPress={() => {
+                  onSelectParticipant(flatListItem.id);
+                }}>
+                <UserProducer data={flatListItem} />
+              </TouchableOpacity>
+            )}
+          />
+        </TouchableWithoutFeedback>
+      );
+    }
+
+    if (kind === 'viewers') {
       return (
         <TouchableWithoutFeedback>
           <FlatList
@@ -138,10 +165,10 @@ const getListData = ({
   usersRaisingHand,
   viewers,
 }: {
-  streamer: Participant;
-  speakers: Participant[];
-  usersRaisingHand: Participant[];
-  viewers: Participant[];
+  streamer: IParticipant;
+  speakers: IParticipant[];
+  usersRaisingHand: IParticipant[];
+  viewers: IParticipant[];
 }) => [
   {
     title: 'Stream by',

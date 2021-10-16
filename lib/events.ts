@@ -1,4 +1,4 @@
-import { IChatMessage, INotification } from "./models";
+import { IChatMessage, INotification, IParticipant } from "./models";
 import { Roles } from "./types";
 
 export interface IRoleUpdateEvent {
@@ -40,4 +40,8 @@ export interface INotificationEvent {
 
 export interface INotificationDeleteEvent {
   notification_id: string;
+}
+
+export interface IParticipantRoleChangeEvent {
+  user: IParticipant;
 }

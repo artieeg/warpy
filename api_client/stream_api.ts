@@ -13,6 +13,7 @@ import {
   IInviteResponse,
   ICancelInviteResponse,
   Roles,
+  IParticipantRoleChangeEvent,
 } from "@warpy/lib";
 
 export interface IStreamAPI {
@@ -36,7 +37,7 @@ export interface IStreamAPI {
   onNewViewer: EventHandler;
   onNewRaisedHand: EventHandler;
   onUserLeft: EventHandler;
-  onParticipantRoleChange: EventHandler;
+  onParticipantRoleChange: EventHandler<IParticipantRoleChangeEvent>;
   onRoleUpdate: EventHandler<IRoleUpdateEvent>;
   onActiveSpeaker: EventHandler<IActiveSpeakerEvent>;
   onChatMessages: EventHandler<IChatMessagesEvent>;

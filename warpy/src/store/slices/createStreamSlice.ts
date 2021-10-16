@@ -1,10 +1,9 @@
-import {Participant} from '@app/models';
 import {GetState, SetState} from 'zustand';
 import produce from 'immer';
 import {Transport} from 'mediasoup-client/lib/Transport';
 import {IStore} from '../useStore';
 import {arrayToMap} from '@app/utils';
-import {Roles} from '@warpy/lib';
+import {IParticipant, Roles} from '@warpy/lib';
 
 export interface IStreamSlice {
   /** Stores current stream id */
@@ -27,9 +26,13 @@ export interface IStreamSlice {
 
   isFetchingViewers: boolean;
 
-  viewers: Record<string, Participant>;
-  viewersWithRaisedHands: Record<string, Participant>;
-  speakers: Record<string, Participant>;
+  /** Stream viewers */
+  consumers: Record<string, IParticipant>;
+
+  /** Users sending audio/video streams */
+  producers: Record<string, IParticipant>;
+
+  viewersWithRaisedHands: Record<string, IParticipant>;
 
   create: (
     title: string,
@@ -41,11 +44,11 @@ export interface IStreamSlice {
 
   setCount: (newCount: number) => any;
   fetchMoreViewers: () => Promise<void>;
-  addViewers: (viewers: Participant[], page: number) => void;
-  addViewer: (viewer: Participant) => void;
-  addSpeaker: (speaker: Participant) => void;
-  addSpeakers: (speakers: Participant[]) => void;
-  raiseHand: (user: Participant) => void;
+  addViewers: (viewers: IParticipant[], page: number) => void;
+  addViewer: (viewer: IParticipant) => void;
+  addProducer: (speaker: IParticipant) => void;
+  addProducers: (speakers: IParticipant[]) => void;
+  raiseHand: (user: IParticipant) => void;
   removeParticipant: (user: string) => void;
 }
 
@@ -59,10 +62,14 @@ export const createStreamSlice = (
   latestViewersPage: -1,
   isFetchingViewers: false,
   totalParticipantCount: 0,
-  viewers: {},
   viewersWithRaisedHands: {},
   isStreamOwner: false,
-  speakers: {},
+
+  /** Audio/video streamers */
+  producers: {},
+
+  consumers: {},
+
   title: null,
 
   async create(title, hub) {
@@ -77,21 +84,10 @@ export const createStreamSlice = (
       recvMediaParams,
     } = await api.stream.create(title, hub);
 
-    /*
-    //TODO: move to the API slice
-    await api.media.onNewTrack(data => {
-      mediaClient.consumeRemoteStream(
-        data.consumerParameters,
-        data.user,
-        recvTransport,
-      );
-    });
-    */
-
     set({
       stream,
       title,
-      speakers: arrayToMap<Participant>(speakers.map(Participant.fromJSON)),
+      producers: arrayToMap<IParticipant>(speakers),
       totalParticipantCount: count,
       isStreamOwner: true,
       role: 'streamer',
@@ -117,10 +113,8 @@ export const createStreamSlice = (
     set({
       stream,
       totalParticipantCount: count,
-      speakers: arrayToMap<Participant>(speakers.map(Participant.fromJSON)),
-      viewersWithRaisedHands: arrayToMap<Participant>(
-        raisedHands.map(Participant.fromJSON),
-      ),
+      producers: arrayToMap<IParticipant>(speakers),
+      viewersWithRaisedHands: arrayToMap<IParticipant>(raisedHands),
       role: 'viewer',
     });
   },
@@ -140,9 +134,7 @@ export const createStreamSlice = (
     set(
       produce<IStreamSlice>(state => {
         state.isFetchingViewers = false;
-        viewers.forEach(
-          viewer => (state.viewers[viewer.id] = Participant.fromJSON(viewer)),
-        );
+        viewers.forEach(viewer => (state.consumers[viewer.id] = viewer));
       }),
     );
   },
@@ -156,24 +148,25 @@ export const createStreamSlice = (
       produce<IStreamSlice>(state => {
         state.totalParticipantCount--;
 
-        delete state.viewers[user];
+        delete state.consumers[user];
         delete state.viewersWithRaisedHands[user];
-        delete state.speakers[user];
+        delete state.producers[user];
       }),
     );
   },
 
-  addSpeaker(user) {
+  addProducer(user) {
     set(
       produce<IStreamSlice>(state => {
-        delete state.viewers[user.id];
+        delete state.consumers[user.id];
         delete state.viewersWithRaisedHands[user.id];
-        state.speakers[user.id] = {...user, volume: 0};
+
+        state.producers[user.id] = user;
       }),
     );
   },
 
-  addSpeakers(speakers) {
+  addProducers(speakers) {
     set(() => {
       speakers;
     });
@@ -182,7 +175,7 @@ export const createStreamSlice = (
   raiseHand(user) {
     set(
       produce<IStreamSlice>(state => {
-        delete state.viewers[user.id];
+        delete state.consumers[user.id];
         state.viewersWithRaisedHands[user.id] = {
           ...user,
           isRaisingHand: true,
@@ -195,7 +188,7 @@ export const createStreamSlice = (
     set(
       produce<IStreamSlice>(state => {
         viewers.forEach(viewer => {
-          state.viewers[viewer.id] = Participant.fromJSON(viewer);
+          state.consumers[viewer.id] = viewer;
         });
 
         state.latestViewersPage = page;
@@ -207,7 +200,7 @@ export const createStreamSlice = (
     set(
       produce<IStreamSlice>(state => {
         state.totalParticipantCount++;
-        state.viewers[viewer.id] = Participant.fromJSON(viewer);
+        state.consumers[viewer.id] = viewer;
       }),
     );
   },

@@ -2,7 +2,7 @@ export * from './feed';
 export * from './useLocalStream';
 export * from './useRecvTransport';
 export * from './useStreamViewers';
-export * from './useStreamSpeakers';
+export * from './useStreamProducers';
 export * from './useParticipantsCount';
 export * from './useSpeakingRequests';
 export * from './useSpeakingRequests';

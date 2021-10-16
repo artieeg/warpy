@@ -12,7 +12,7 @@ interface ISpeakerProps {
 
 export const Speaker = (props: ISpeakerProps) => {
   const {id, volume, onDoneSpeaking} = props;
-  const user = useMemo(() => useStore.getState().speakers[id], [id]);
+  const user = useMemo(() => useStore.getState().producers[id], [id]);
 
   const scale = useRef(new Animated.Value(1));
 
