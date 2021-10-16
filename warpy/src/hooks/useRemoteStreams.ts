@@ -16,22 +16,13 @@ export const useRemoteStreams = () => {
   const producers = useStore.use.producers();
 
   const getStreams = useCallback(() => {
-    let newVideoStreams = [] as MediaStream[];
-    let newAudioStreams = [] as MediaStream[];
-
-    Object.values(producers).forEach(producer => {
-      if (producer.media?.audio) {
-        newAudioStreams.push(new MediaStream([producer.media?.audio]));
-      }
-
-      if (producer.media?.video) {
-        newVideoStreams.push(new MediaStream([producer.media?.video]));
-      }
-    });
-
     setStreams({
-      videoStreams: newVideoStreams,
-      audioStreams: newAudioStreams,
+      videoStreams: Object.values(producers)
+        .map(p => p.media?.video?.track)
+        .filter(s => !!s) as any,
+      audioStreams: Object.values(producers)
+        .map(p => p.media?.audio?.track)
+        .filter(s => !!s) as any,
     });
   }, [producers]);
 

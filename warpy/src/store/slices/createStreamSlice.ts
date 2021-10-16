@@ -7,8 +7,14 @@ import {Consumer} from 'mediasoup-client/lib/types';
 
 interface IParticipantWithMedia extends IParticipant {
   media?: {
-    audio?: Consumer;
-    video?: Consumer;
+    audio?: {
+      consumer: Consumer;
+      track: MediaStream;
+    };
+    video?: {
+      consumer: Consumer;
+      track: MediaStream;
+    };
   };
 }
 
@@ -149,17 +155,29 @@ export const createStreamSlice = (
       recvTransport,
       totalParticipantCount: count,
       producers: arrayToMap<IParticipantWithMedia>(
-        speakers.map(p => ({
-          ...p,
-          media: {
-            audio: consumers.find(
-              c => c.appData.user === p.id && c.kind === 'audio',
-            ),
-            video: consumers.find(
-              c => c.appData.user === p.id && c.kind === 'video',
-            ),
-          },
-        })),
+        speakers.map(p => {
+          const audioConsumer = consumers.find(
+            c => c.appData.user === p.id && c.kind === 'audio',
+          );
+
+          const videoConsumer = consumers.find(
+            c => c.appData.user === p.id && c.kind === 'video',
+          );
+
+          return {
+            ...p,
+            media: {
+              audio: audioConsumer && {
+                consumer: audioConsumer,
+                track: new MediaStream([audioConsumer.track]),
+              },
+              video: videoConsumer && {
+                consumer: videoConsumer,
+                track: new MediaStream([videoConsumer.track]),
+              },
+            },
+          };
+        }),
       ),
       viewersWithRaisedHands: arrayToMap<IParticipant>(raisedHands),
       role: 'viewer',

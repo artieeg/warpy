@@ -2,6 +2,7 @@ import {GetState, SetState} from 'zustand';
 import {APIClient, WebSocketConn} from '@warpy/api';
 import config from '@app/config';
 import {IStore} from '../useStore';
+import produce from 'immer';
 
 export interface IAPISlice {
   api: APIClient;
@@ -48,10 +49,25 @@ export const createAPISlice = (
       const {mediaClient, recvTransport} = get();
 
       if (mediaClient && recvTransport) {
-        await mediaClient.consumeRemoteStream(
+        const consumer = await mediaClient.consumeRemoteStream(
           data.consumerParameters,
           data.user,
           recvTransport,
+        );
+
+        set(
+          produce<IStore>(state => {
+            state.producers[data.user] = {
+              ...state.producers[data.user],
+              media: {
+                ...state.producers[data.user],
+                [consumer.kind]: {
+                  consumer,
+                  track: new MediaStream([consumer.track]),
+                },
+              } as any,
+            };
+          }),
         );
       }
     });
