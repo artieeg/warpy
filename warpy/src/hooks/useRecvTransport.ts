@@ -4,19 +4,24 @@ import {useCallback, useEffect, useState} from 'react';
 import shallow from 'zustand/shallow';
 
 export const useRecvTransport = () => {
-  const [stream, media, recvDevice, mediaPermissionToken, recvMediaParams] =
-    useStore(
-      state => [
-        state.stream,
-        state.mediaClient,
-        state.recvDevice,
-        state.mediaPermissionsToken,
-        state.recvMediaParams,
-      ],
-      shallow,
-    );
-
-  const [transport, setTransport] = useState<Transport>();
+  const [
+    transport,
+    stream,
+    media,
+    recvDevice,
+    mediaPermissionToken,
+    recvMediaParams,
+  ] = useStore(
+    state => [
+      state.recvTransport,
+      state.stream,
+      state.mediaClient,
+      state.recvDevice,
+      state.mediaPermissionsToken,
+      state.recvMediaParams,
+    ],
+    shallow,
+  );
 
   const createRecvTransport = useCallback(async () => {
     if (!recvMediaParams) {
@@ -39,16 +44,17 @@ export const useRecvTransport = () => {
       roomId: stream,
       device: recvDevice,
       direction: 'recv',
-      permissionsToken: mediaPermissionToken,
       options: {recvTransportOptions},
       isProducer: false,
     });
 
-    setTransport(newTransport);
+    useStore.setState({recvTransport: newTransport});
   }, [stream, recvMediaParams, media, mediaPermissionToken]);
 
   useEffect(() => {
-    createRecvTransport();
+    if (!transport) {
+      createRecvTransport();
+    }
   }, [createRecvTransport]);
 
   return transport;

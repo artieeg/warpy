@@ -1,9 +1,11 @@
 import { IChatMessage, INotification } from "./models";
+import { Roles } from "./types";
 
-export interface ISpeakingAllowedEvent {
+export interface IRoleUpdateEvent {
   stream: string;
-  media: any;
+  media?: any;
   mediaPermissionToken: string;
+  role: Roles;
 }
 
 export interface IActiveSpeakerEvent {

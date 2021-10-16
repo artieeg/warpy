@@ -5,7 +5,7 @@ import {
   IJoinStreamResponse,
   INewStreamResponse,
   IRequestViewersResponse,
-  ISpeakingAllowedEvent,
+  IRoleUpdateEvent,
   IChatMessagesEvent,
   ISendMessageResponse,
   IUserKickedEvent,
@@ -37,7 +37,7 @@ export interface IStreamAPI {
   onNewRaisedHand: EventHandler;
   onUserLeft: EventHandler;
   onParticipantRoleChange: EventHandler;
-  onRoleUpdate: EventHandler<ISpeakingAllowedEvent>;
+  onRoleUpdate: EventHandler<IRoleUpdateEvent>;
   onActiveSpeaker: EventHandler<IActiveSpeakerEvent>;
   onChatMessages: EventHandler<IChatMessagesEvent>;
   onUserKick: EventHandler<IUserKickedEvent>;

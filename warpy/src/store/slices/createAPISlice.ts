@@ -46,6 +46,18 @@ export const createAPISlice = (
       });
     });
 
+    api.media.onNewTrack(async data => {
+      const {mediaClient, recvTransport} = get();
+
+      if (mediaClient && recvTransport) {
+        await mediaClient.consumeRemoteStream(
+          data.consumerParameters,
+          data.user,
+          recvTransport,
+        );
+      }
+    });
+
     api.stream.onParticipantRoleChange(data => {
       const {speaker} = data;
 

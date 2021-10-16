@@ -17,6 +17,7 @@ export interface IMediaSlice {
   audioMuted: boolean;
 
   sendTransport: Transport | null;
+  recvTransport: Transport | null;
 
   /**
    * Mediasoup recv params
@@ -53,6 +54,7 @@ export const createMediaSlice = (
   sendTransport: null,
   mediaPermissionsToken: null,
   audioMuted: false,
+  recvTransport: null,
 
   switchCamera() {
     (get().video?.track as any)._switchCamera();
