@@ -12,6 +12,7 @@ import {
   IInviteSuggestionsResponse,
   IInviteResponse,
   ICancelInviteResponse,
+  Roles,
 } from "@warpy/lib";
 
 export interface IStreamAPI {
@@ -29,6 +30,7 @@ export interface IStreamAPI {
   invite: (invitee: string, stream: string) => Promise<IInviteResponse>;
   cancelInvite: (invite_id: string) => Promise<ICancelInviteResponse>;
   getInviteSuggestions: (stream: string) => Promise<IInviteSuggestionsResponse>;
+  setRole: (userToUpdate: string, role: Roles) => void;
   allowSpeaker: (speaker: string) => any;
   onReactionsUpdate: EventHandler<IReactionsUpdate>;
   onNewViewer: EventHandler;
@@ -62,6 +64,8 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
   getViewers: (stream, page) =>
     socket.request("request-viewers", { stream, page }),
   raiseHand: () => socket.publish("raise-hand", {}),
+  setRole: (userToUpdate, role) =>
+    socket.publish("set-role", { userToUpdate, role }),
   allowSpeaker: (speaker) => socket.publish("speaker-allow", { speaker }),
   onNewViewer: (handler) => socket.on("new-viewer", handler),
   onNewRaisedHand: (handler) => socket.on("raise-hand", handler),

@@ -1,4 +1,4 @@
-import { MediaDirection, MediaKind, MediaServiceRole } from "./types";
+import { MediaDirection, MediaKind, MediaServiceRole, Roles } from "./types";
 
 export interface ITransportOptions {
   id: string;
@@ -245,4 +245,10 @@ export interface IGetReadNotifications {
 export interface IGifsRequest {
   search?: string;
   next?: string;
+}
+
+export interface ISetRoleRequest {
+  user: string;
+  userToUpdate: string;
+  role: Roles;
 }

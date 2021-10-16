@@ -10,6 +10,7 @@ import {
   onRecvTracksRequest,
   onConnectTransport,
 } from "@ws_gateway/handlers";
+import { Roles } from "@warpy/lib";
 
 const PORT = Number.parseInt(process.env.PORT || "10000");
 
@@ -223,6 +224,16 @@ const handlers: Record<string, HandlerConfig> = {
     }),
     kind: "request",
     subject: "gifs.trending",
+  },
+
+  "set-role": {
+    schema: joi.object({
+      userToUpdate: joi.string().max(64).required(),
+      role: joi.string().valid(["viewer", "speaker", "streamer"] as Roles[]),
+    }),
+    kind: "request",
+    auth: true,
+    subject: "participant.set-role",
   },
 
   auth: {

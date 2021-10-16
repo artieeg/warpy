@@ -9,6 +9,7 @@ import {
   IRaiseHand,
   IRequestViewers,
   IRequestViewersResponse,
+  ISetRoleRequest,
   IUserDisconnected,
 } from '@warpy/lib';
 import { ParticipantService } from './participant.service';
@@ -47,6 +48,11 @@ export class ParticipantController {
 
   @MessagePattern('participant.set-permissions')
   async onSetPermissions() {}
+
+  @MessagePattern('participant.set-role')
+  async onSetRole({ user, userToUpdate, role }: ISetRoleRequest) {
+    await this.participant.setRole(user, userToUpdate, role);
+  }
 
   @MessagePattern('speaker.allow')
   async onNewSpeaker({ user, speaker }: IAllowSpeakerPayload) {
