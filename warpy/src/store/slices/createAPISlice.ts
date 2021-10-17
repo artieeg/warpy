@@ -36,7 +36,9 @@ export const createAPISlice = (
     });
 
     api.stream.onRoleUpdate(async ({mediaPermissionToken, media, role}) => {
-      await get().sendMedia(mediaPermissionToken, media, [
+      set({sendMediaParams: media, role});
+
+      await get().sendMedia(mediaPermissionToken, [
         role === 'speaker' ? 'audio' : 'video',
       ]);
 

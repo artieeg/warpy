@@ -95,6 +95,7 @@ export const createStreamSlice = (
     set({
       stream,
       title,
+      sendMediaParams: mediaData,
       producers: arrayToMap<IParticipant>(speakers),
       totalParticipantCount: count,
       isStreamOwner: true,
@@ -115,7 +116,7 @@ export const createStreamSlice = (
 
     set({recvTransport});
 
-    await sendMedia(mediaPermissionsToken, mediaData, ['audio', 'video']);
+    await sendMedia(mediaPermissionsToken, ['audio', 'video']);
   },
 
   async join(stream) {

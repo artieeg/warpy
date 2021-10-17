@@ -36,7 +36,6 @@ export interface IMediaSlice {
 
   sendMedia: (
     permissions: string,
-    sendMediaParams: any,
     tracks: ('audio' | 'video')[],
   ) => Promise<void>;
 
@@ -91,8 +90,9 @@ export const createMediaSlice = (
     });
   },
 
-  async sendMedia(permissions, sendMediaParams, tracks) {
-    const {mediaClient, stream, sendDevice, initSendDevice} = get();
+  async sendMedia(permissions, tracks) {
+    const {mediaClient, stream, sendMediaParams, sendDevice, initSendDevice} =
+      get();
 
     if (!mediaClient) {
       return;

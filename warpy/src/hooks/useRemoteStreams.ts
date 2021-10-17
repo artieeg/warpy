@@ -27,6 +27,11 @@ export const useRemoteStreams = () => {
   }, [producers]);
 
   useEffect(() => {
+    console.log('audio: ', streams.audioStreams.length);
+    console.log('video: ', streams.videoStreams.length);
+  }, [streams]);
+
+  useEffect(() => {
     getStreams();
   }, [getStreams]);
 
