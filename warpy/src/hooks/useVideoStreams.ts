@@ -2,7 +2,11 @@ import {useMemo} from 'react';
 import {useLocalVideoStream, useLocalAudioStream, useRemoteStreams} from '.';
 import {useStore} from '@app/store';
 
-export const useVideoStreams = () => {
+export const useVideoStreams = ({
+  forceLocalStream,
+}: {
+  forceLocalStream?: boolean;
+}) => {
   const {stream: localVideoStream} = useLocalVideoStream();
   useLocalAudioStream();
   const {videoStreams} = useRemoteStreams();
@@ -10,7 +14,7 @@ export const useVideoStreams = () => {
   const role = useStore.use.role();
 
   const streams = useMemo(() => {
-    if (localVideoStream && role === 'streamer') {
+    if (localVideoStream && (role === 'streamer' || forceLocalStream)) {
       return [localVideoStream, ...videoStreams];
     } else {
       return videoStreams;

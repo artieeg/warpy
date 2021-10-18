@@ -1,33 +1,16 @@
-import {useLocalAudioStream} from '@app/hooks';
-import React, {useCallback, useState} from 'react';
+import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Button} from '@app/components';
-import {useStore} from '@app/store';
-import shallow from 'zustand/shallow';
 import {StreamOverlay} from '@app/components/StreamOverlay';
 import {Streams} from '@app/components/Streams';
+import {useNewStreamController} from '@app/hooks/useNewStreamController';
 
 export const NewStream = () => {
-  const [title, setTitle] = useState('test stream');
-  const [hub, setHub] = useState('60ec569668b42c003304630b');
-  const [streamId, createStream, api] = useStore(
-    state => [state.stream, state.create, state.api],
-    shallow,
-  );
-
-  useLocalAudioStream();
-
-  const onStart = useCallback(() => {
-    if (streamId) {
-      return;
-    }
-
-    createStream(title, hub);
-  }, [title, streamId, hub, api]);
+  const {streamId, onStart} = useNewStreamController();
 
   return (
     <View style={styles.wrapper}>
-      <Streams />
+      <Streams forceLocalStream />
 
       {streamId && <StreamOverlay />}
 

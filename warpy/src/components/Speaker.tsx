@@ -58,6 +58,10 @@ export const Speaker = (props: ISpeakerProps) => {
     ],
   };
 
+  if (!user) {
+    return null;
+  }
+
   return (
     <Animated.View style={[styles.wrapper, scaleStyle]}>
       <Animated.View

@@ -3,8 +3,12 @@ import {useVideoStreams} from '@app/hooks/useVideoStreams';
 import React from 'react';
 import {RTCView} from 'react-native-webrtc';
 
-export const Streams = () => {
-  const streams = useVideoStreams();
+interface IStreamsProps {
+  forceLocalStream?: boolean;
+}
+
+export const Streams = ({forceLocalStream}: IStreamsProps) => {
+  const streams = useVideoStreams({forceLocalStream});
 
   const {width, height} = useWindowDimensions();
 
