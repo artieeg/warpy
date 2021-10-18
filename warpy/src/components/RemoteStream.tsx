@@ -1,14 +1,16 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {Stream} from '@app/models';
 import {
   useLocalAudioStream,
   useLocalVideoStream,
   useRemoteStream,
+  useRemoteStreams,
 } from '@app/hooks';
 import {RTCView} from 'react-native-webrtc';
 import {ReactionCanvas} from './ReactionCanvas';
 import {StreamOverlay} from './StreamOverlay';
+import {useStore} from '@app/store';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -19,7 +21,21 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
 
   const {stream: localVideoStream} = useLocalVideoStream();
   const {stream: audioStream} = useLocalAudioStream();
-  const {videoStreams} = useRemoteStream(id);
+  const {videoStreams} = useRemoteStreams();
+
+  const role = useStore.use.role();
+
+  const streams = useMemo(() => {
+    if (localVideoStream && role === 'streamer') {
+      return [localVideoStream, ...videoStreams];
+    } else {
+      return videoStreams;
+    }
+  }, [localVideoStream, videoStreams]);
+
+  useRemoteStream(id);
+
+  console.log(streams);
 
   const {width, height} = useWindowDimensions();
 
@@ -31,19 +47,19 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
 
   const mediaStyle = {
     ...styles.media,
-    height,
-    width,
+    width: streams.length > 2 ? width / 2 : width,
+    height: streams.length > 1 ? height / 2 : height,
   };
 
   return (
     <View style={wrapperStyle}>
-      {videoStreams[0] && (
+      {streams.map(stream => (
         <RTCView
-          objectFit="cover"
           style={mediaStyle}
-          streamURL={videoStreams[0].toURL()}
+          objectFit="cover"
+          streamURL={stream.toURL()}
         />
-      )}
+      ))}
 
       <ReactionCanvas />
 
@@ -54,12 +70,10 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
 
 const styles = StyleSheet.create({
   media: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
     backgroundColor: '#ff3030',
   },
   wrapper: {
     backgroundColor: '#30ff30',
+    flexWrap: 'wrap',
   },
 });

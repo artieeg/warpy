@@ -5,7 +5,7 @@ import {
   useRemoteStreams,
 } from '@app/hooks';
 import {RTCView} from 'react-native-webrtc';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {View, StyleSheet, useWindowDimensions} from 'react-native';
 import {Button} from '@app/components';
 import {useStore} from '@app/store';
@@ -21,10 +21,19 @@ export const NewStream = () => {
   );
 
   const {width, height} = useWindowDimensions();
-  const {stream: localMediaStream} = useLocalVideoStream();
   useLocalAudioStream();
 
+  const {stream} = useLocalVideoStream();
+
   const {videoStreams} = useRemoteStreams();
+
+  const streams = useMemo(() => {
+    if (stream) {
+      return [stream, ...videoStreams];
+    } else {
+      return videoStreams;
+    }
+  }, [stream, videoStreams]);
 
   const onStart = useCallback(() => {
     if (streamId) {
@@ -36,26 +45,24 @@ export const NewStream = () => {
 
   const localStreamStyle = {
     ...styles.localStream,
-    width: videoStreams.length > 1 ? width / 2 : width,
-    height: videoStreams.length > 0 ? height / 2 : height,
+    width: streams.length > 2 ? width / 2 : width,
+    height: streams.length > 1 ? height / 2 : height,
   };
 
   return (
     <View style={styles.wrapper}>
-      {localMediaStream && (
-        <RTCView
-          style={localStreamStyle}
-          objectFit="cover"
-          streamURL={localMediaStream.toURL()}
-        />
-      )}
-      {videoStreams[0] && (
-        <RTCView
-          style={localStreamStyle}
-          objectFit="cover"
-          streamURL={videoStreams[0].toURL()}
-        />
-      )}
+      {streams.map(stream => {
+        console.log(stream);
+
+        return (
+          <RTCView
+            style={localStreamStyle}
+            objectFit="cover"
+            streamURL={stream.toURL()}
+          />
+        );
+      })}
+
       {streamId && <StreamOverlay />}
 
       {!streamId && (
@@ -87,5 +94,6 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#303030',
+    flexWrap: 'wrap',
   },
 });
