@@ -54,7 +54,7 @@ export interface IStreamSlice {
   fetchMoreViewers: () => Promise<void>;
   addViewers: (viewers: IParticipant[], page: number) => void;
   addViewer: (viewer: IParticipant) => void;
-  addProducer: (speaker: IParticipant) => void;
+  setProducer: (speaker: IParticipant) => void;
   addProducers: (speakers: IParticipant[]) => void;
   raiseHand: (user: IParticipant) => void;
   removeParticipant: (user: string) => void;
@@ -221,7 +221,7 @@ export const createStreamSlice = (
     );
   },
 
-  addProducer(user) {
+  setProducer(user) {
     set(
       produce<IStreamSlice>(state => {
         delete state.consumers[user.id];

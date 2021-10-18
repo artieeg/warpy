@@ -82,7 +82,7 @@ export const createAPISlice = (
     api.stream.onParticipantRoleChange(data => {
       const {user} = data;
 
-      store.addProducer(user);
+      store.setProducer(user);
     });
 
     api.stream.onUserLeft(data => {
