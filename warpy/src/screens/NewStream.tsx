@@ -1,16 +1,11 @@
-import {
-  useLocalAudioStream,
-  useLocalVideoStream,
-  useMediaStreaming,
-  useRemoteStreams,
-} from '@app/hooks';
-import {RTCView} from 'react-native-webrtc';
-import React, {useCallback, useMemo, useState} from 'react';
-import {View, StyleSheet, useWindowDimensions} from 'react-native';
+import {useLocalAudioStream} from '@app/hooks';
+import React, {useCallback, useState} from 'react';
+import {View, StyleSheet} from 'react-native';
 import {Button} from '@app/components';
 import {useStore} from '@app/store';
 import shallow from 'zustand/shallow';
 import {StreamOverlay} from '@app/components/StreamOverlay';
+import {Streams} from '@app/components/Streams';
 
 export const NewStream = () => {
   const [title, setTitle] = useState('test stream');
@@ -20,20 +15,7 @@ export const NewStream = () => {
     shallow,
   );
 
-  const {width, height} = useWindowDimensions();
   useLocalAudioStream();
-
-  const {stream} = useLocalVideoStream();
-
-  const {videoStreams} = useRemoteStreams();
-
-  const streams = useMemo(() => {
-    if (stream) {
-      return [stream, ...videoStreams];
-    } else {
-      return videoStreams;
-    }
-  }, [stream, videoStreams]);
 
   const onStart = useCallback(() => {
     if (streamId) {
@@ -43,25 +25,9 @@ export const NewStream = () => {
     createStream(title, hub);
   }, [title, streamId, hub, api]);
 
-  const localStreamStyle = {
-    ...styles.localStream,
-    width: streams.length > 2 ? width / 2 : width,
-    height: streams.length > 1 ? height / 2 : height,
-  };
-
   return (
     <View style={styles.wrapper}>
-      {streams.map(stream => {
-        console.log(stream);
-
-        return (
-          <RTCView
-            style={localStreamStyle}
-            objectFit="cover"
-            streamURL={stream.toURL()}
-          />
-        );
-      })}
+      <Streams />
 
       {streamId && <StreamOverlay />}
 
