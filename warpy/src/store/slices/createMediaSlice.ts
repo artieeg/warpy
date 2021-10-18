@@ -106,20 +106,24 @@ export const createMediaSlice = (
     mediaClient.sendDevice = sendDevice;
 
     const getOrCreateSendTransport = async (): Promise<Transport> => {
-      const sendTransport = get().sendTransport;
+      const transport = get().sendTransport;
 
-      if (!sendTransport) {
-        return await mediaClient.createTransport({
+      if (!transport) {
+        let newSendTransport = await mediaClient.createTransport({
           roomId: stream!,
           device: sendDevice,
           direction: 'send',
           options: {
-            sendTransportOptions: sendTransportOptions,
+            sendTransportOptions,
           },
           isProducer: true,
         });
+
+        set({sendTransport: newSendTransport});
+
+        return newSendTransport;
       } else {
-        return sendTransport;
+        return transport;
       }
     };
 
@@ -129,6 +133,8 @@ export const createMediaSlice = (
       const track = get()[kind]?.track;
 
       if (track) {
+        console.log(`sending track ${track.id}, ${track.kind} === ${kind}`);
+
         const producer = await mediaClient.sendMediaStream(
           track,
           kind,
@@ -137,10 +143,6 @@ export const createMediaSlice = (
 
         console.log('producer', producer);
       }
-    });
-
-    set({
-      sendTransport,
     });
   },
 });

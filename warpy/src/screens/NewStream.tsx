@@ -2,6 +2,7 @@ import {
   useLocalAudioStream,
   useLocalVideoStream,
   useMediaStreaming,
+  useRemoteStreams,
 } from '@app/hooks';
 import {RTCView} from 'react-native-webrtc';
 import React, {useCallback, useState} from 'react';
@@ -23,6 +24,8 @@ export const NewStream = () => {
   const {stream: localMediaStream} = useLocalVideoStream();
   useLocalAudioStream();
 
+  const {videoStreams} = useRemoteStreams();
+
   const onStart = useCallback(() => {
     if (streamId) {
       return;
@@ -33,8 +36,8 @@ export const NewStream = () => {
 
   const localStreamStyle = {
     ...styles.localStream,
-    width,
-    height,
+    width: videoStreams.length > 1 ? width / 2 : width,
+    height: videoStreams.length > 0 ? height / 2 : height,
   };
 
   return (
@@ -44,6 +47,13 @@ export const NewStream = () => {
           style={localStreamStyle}
           objectFit="cover"
           streamURL={localMediaStream.toURL()}
+        />
+      )}
+      {videoStreams[0] && (
+        <RTCView
+          style={localStreamStyle}
+          objectFit="cover"
+          streamURL={videoStreams[0].toURL()}
         />
       )}
       {streamId && <StreamOverlay />}

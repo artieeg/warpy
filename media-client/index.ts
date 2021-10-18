@@ -57,6 +57,9 @@ export class MediaClient {
 
     if (direction === "send") {
       transport.on("produce", (produceParams, callback, errback) => {
+        console.log("producing new track");
+        console.log(produceParams.kind);
+
         const { kind, rtpParameters, appData } = produceParams;
 
         this.api.observer.once("@media/send-track-created", (data: any) => {
@@ -112,12 +115,22 @@ export class MediaClient {
     kind: MediaKind,
     sendTransport: Transport
   ): Promise<Producer> {
-    const producer = await sendTransport.produce({
-      track: track as any,
-      appData: { kind },
-    });
+    console.log("sending media stream", kind, track);
 
-    return producer;
+    try {
+      const producer = await sendTransport.produce({
+        track: track as any,
+        appData: { kind },
+      });
+
+      console.log("new producer", producer);
+
+      return producer;
+    } catch (e) {
+      console.error(e);
+
+      throw e;
+    }
   }
 
   async consumeRemoteStreams(stream: string, transport: Transport) {

@@ -1,10 +1,13 @@
 import React from 'react';
 import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {Stream} from '@app/models';
-import {useLocalAudioStream, useRemoteStream} from '@app/hooks';
+import {
+  useLocalAudioStream,
+  useLocalVideoStream,
+  useRemoteStream,
+} from '@app/hooks';
 import {RTCView} from 'react-native-webrtc';
 import {ReactionCanvas} from './ReactionCanvas';
-import {useMediaStreaming} from '@app/hooks/useMediaStreaming';
 import {StreamOverlay} from './StreamOverlay';
 
 interface IRemoteStreamProps {
@@ -14,13 +17,9 @@ interface IRemoteStreamProps {
 export const RemoteStream = (props: IRemoteStreamProps) => {
   const {id} = props.stream;
 
+  const {stream: localVideoStream} = useLocalVideoStream();
   const {stream: audioStream} = useLocalAudioStream();
   const {videoStreams} = useRemoteStream(id);
-
-  useMediaStreaming({
-    stream: audioStream,
-    kind: 'audio',
-  });
 
   const {width, height} = useWindowDimensions();
 

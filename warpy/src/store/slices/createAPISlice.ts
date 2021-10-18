@@ -36,19 +36,22 @@ export const createAPISlice = (
     });
 
     api.stream.onRoleUpdate(async ({mediaPermissionToken, media, role}) => {
-      set({sendMediaParams: media, role});
+      if (media) {
+        set({sendMediaParams: media});
+      }
+
+      console.log('role update', role);
 
       await get().sendMedia(mediaPermissionToken, [
         role === 'speaker' ? 'audio' : 'video',
       ]);
 
-      set({
-        role,
-      });
+      set({role});
     });
 
     api.media.onNewTrack(async data => {
       const {mediaClient, recvTransport} = get();
+      console.log('creating consumer');
 
       if (mediaClient && recvTransport) {
         const consumer = await mediaClient.consumeRemoteStream(
@@ -56,6 +59,8 @@ export const createAPISlice = (
           data.user,
           recvTransport,
         );
+
+        console.log('consumer', consumer);
 
         set(
           produce<IStore>(state => {
