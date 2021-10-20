@@ -50,9 +50,10 @@ export const useLocalStream = (kind: MediaKind) => {
 
   useEffect(() => {
     if (!localStream) {
+      console.log(`getting new ${kind} media stream`);
       getMediaSource();
     }
-  }, [getMediaSource]);
+  }, [getMediaSource, localStream]);
 
   return localStream?.stream;
 };

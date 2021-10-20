@@ -252,3 +252,12 @@ export interface ISetRoleRequest {
   userToUpdate: string;
   role: Roles;
 }
+
+export interface IRemoveUserProducersRequest {
+  user: string;
+  stream: string;
+  producers: {
+    audio?: boolean;
+    video?: boolean;
+  };
+}

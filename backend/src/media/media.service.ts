@@ -177,4 +177,16 @@ export class MediaService {
       throw new InternalError();
     }
   }
+
+  async removeUserProducers(
+    user: string,
+    sendNode: string,
+    stream: string,
+    producers: { video?: boolean; audio?: boolean },
+  ) {
+    this.nc.publish(
+      `media.peer.remove-producers.${sendNode}`,
+      this.nc.jc.encode({ user, stream, producers }),
+    );
+  }
 }

@@ -40,13 +40,37 @@ export const createAPISlice = (
         set({sendMediaParams: media});
       }
 
-      console.log('role update', role);
+      console.log('new role', role);
+      if (role === 'speaker' || role === 'viewer') {
+        console.log('closing video producer');
+        get().video?.producer?.close();
 
-      await get().sendMedia(mediaPermissionToken, [
-        role === 'speaker' ? 'audio' : 'video',
-      ]);
+        set(
+          produce<IStore>(state => {
+            state.video = undefined;
+          }),
+        );
+      }
+
+      if (role === 'viewer') {
+        console.log('closing audio producer');
+        get().audio?.producer?.close();
+      }
+
+      const oldRole = get().role;
+
+      console.log(`old role ${oldRole}`);
 
       set({role});
+
+      if (oldRole === 'streamer' && role === 'speaker') {
+        return;
+      } else {
+        const kind = role === 'speaker' ? 'audio' : 'video';
+
+        console.log(`sending ${kind} stream`);
+        await get().sendMedia(mediaPermissionToken, [kind]);
+      }
     });
 
     api.media.onNewTrack(async data => {

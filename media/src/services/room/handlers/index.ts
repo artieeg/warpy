@@ -8,3 +8,4 @@ export * from "./handleNewTransport";
 export * from "./handleNewTrack";
 export * from "./handleRecvTracksRequest";
 export * from "./handleKickedUser";
+export * from "./handleRemoveUserProducers";

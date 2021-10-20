@@ -162,4 +162,18 @@ describe('MediaService', () => {
       InternalError,
     );
   });
+
+  it("tells media services to remove user' producers", async () => {
+    const user = 'test0';
+    const producers = { video: true };
+    const node = 'node0';
+    const stream = 'test';
+
+    await mediaService.removeUserProducers(user, node, stream, producers);
+
+    expect(mockedNatsService.publish).toBeCalledWith(
+      `media.peer.remove-producers.${node}`,
+      expect.anything(),
+    );
+  });
 });

@@ -1,4 +1,7 @@
+import { NodeInfo } from "@media/nodeinfo";
+
 const producerJoinRoomSubject = `media.peer.join.*`;
+const removeUserProducers = `media.peer.remove-producers.${NodeInfo.id}`;
 
 export const ProducerSubjectEventMap = {
   "media.track.send": "new-track",
@@ -7,4 +10,5 @@ export const ProducerSubjectEventMap = {
   "media.egress.try-connect": "new-egress",
   "media.transport.connect.producer": "connect-transport",
   [producerJoinRoomSubject]: "join-room",
+  [removeUserProducers]: "remove-user-producers",
 };

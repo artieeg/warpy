@@ -2,17 +2,20 @@ import {MediaClient} from '@warpykit-sdk/client';
 import {GetState, SetState} from 'zustand';
 import {IStore} from '../useStore';
 import {MediaStream, MediaStreamTrack} from 'react-native-webrtc';
-import {Transport} from 'mediasoup-client/lib/Transport';
+import {Transport, Producer} from 'mediasoup-client/lib/types';
+import produce from 'immer';
 
 export interface IMediaSlice {
   mediaClient?: MediaClient;
   video?: {
     stream: MediaStream;
     track: MediaStreamTrack;
+    producer?: Producer;
   };
   audio?: {
     stream: MediaStream;
     track: MediaStreamTrack;
+    producer?: Producer;
   };
   audioMuted: boolean;
 
@@ -94,13 +97,16 @@ export const createMediaSlice = (
     const {mediaClient, stream, sendMediaParams, sendDevice, initSendDevice} =
       get();
 
+    console.log({mediaClient: !!mediaClient});
     if (!mediaClient) {
       return;
     }
 
     const {routerRtpCapabilities, sendTransportOptions} = sendMediaParams;
 
+    console.log('init send device');
     await initSendDevice(routerRtpCapabilities);
+    console.log('done');
 
     mediaClient.permissionsToken = permissions;
     mediaClient.sendDevice = sendDevice;
@@ -127,7 +133,9 @@ export const createMediaSlice = (
       }
     };
 
+    console.log('send transport');
     const sendTransport = await getOrCreateSendTransport();
+    console.log('done');
 
     tracks.forEach(async kind => {
       const track = get()[kind]?.track;
@@ -139,6 +147,12 @@ export const createMediaSlice = (
           track,
           kind,
           sendTransport,
+        );
+
+        set(
+          produce<IStore>(state => {
+            state[kind]!.producer = producer;
+          }),
         );
 
         console.log('producer', producer);
