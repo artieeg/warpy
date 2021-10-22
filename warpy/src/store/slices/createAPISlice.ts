@@ -36,46 +36,30 @@ export const createAPISlice = (
     });
 
     api.stream.onRoleUpdate(async ({mediaPermissionToken, media, role}) => {
+      const oldRole = get().role;
+
       if (media) {
-        set({sendMediaParams: media});
-      }
-
-      console.log('new role', role);
-      if (role === 'speaker' || role === 'viewer') {
-        console.log('closing video producer');
-        get().video?.producer?.close();
-
-        set(
-          produce<IStore>(state => {
-            state.video = undefined;
-          }),
-        );
+        set({sendMediaParams: media, role});
+      } else {
+        set({role});
       }
 
       if (role === 'viewer') {
-        console.log('closing audio producer');
-        get().audio?.producer?.close();
+        get().closeProducers(['audio', 'video']);
+      } else if (role === 'speaker') {
+        get().closeProducers(['video']);
       }
-
-      const oldRole = get().role;
-
-      console.log(`old role ${oldRole}`);
-
-      set({role});
 
       if (oldRole === 'streamer' && role === 'speaker') {
         return;
       } else {
         const kind = role === 'speaker' ? 'audio' : 'video';
-
-        console.log(`sending ${kind} stream`);
         await get().sendMedia(mediaPermissionToken, [kind]);
       }
     });
 
     api.media.onNewTrack(async data => {
       const {mediaClient, recvTransport} = get();
-      console.log('creating consumer');
 
       if (mediaClient && recvTransport) {
         const consumer = await mediaClient.consumeRemoteStream(
@@ -83,8 +67,6 @@ export const createAPISlice = (
           data.user,
           recvTransport,
         );
-
-        console.log('consumer', consumer);
 
         set(
           produce<IStore>(state => {

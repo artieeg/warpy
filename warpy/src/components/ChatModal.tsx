@@ -1,4 +1,4 @@
-import {useChatMessages} from '@app/store/selectors';
+import {useStore} from '@app/store';
 import React, {useCallback, useRef} from 'react';
 import {FlatList, StyleSheet} from 'react-native';
 import {BaseSlideModal, IBaseModalProps} from './BaseSlideModal';
@@ -8,7 +8,7 @@ import {ChatMessageInput} from './ChatMessageInput';
 interface IChatModalOptions extends IBaseModalProps {}
 
 export const ChatModal = (props: IChatModalOptions) => {
-  const messages = useChatMessages();
+  const messages = useStore.use.messages();
 
   const flatListRef = useRef<any>();
   const scrollPositionRef = useRef(0);

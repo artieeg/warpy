@@ -2,7 +2,7 @@ import {MediaClient} from '@warpykit-sdk/client';
 import {GetState, SetState} from 'zustand';
 import {IStore} from '../useStore';
 import {MediaStream, MediaStreamTrack} from 'react-native-webrtc';
-import {Transport, Producer} from 'mediasoup-client/lib/types';
+import {Transport, Producer, MediaKind} from 'mediasoup-client/lib/types';
 import produce from 'immer';
 
 export interface IMediaSlice {
@@ -47,6 +47,7 @@ export interface IMediaSlice {
   toggleAudio: (flag: boolean) => void;
   toggleVideo: (flag: boolean) => void;
   switchCamera: () => void;
+  closeProducers: (producers: MediaKind[]) => void;
 }
 
 export const createMediaSlice = (
@@ -57,6 +58,17 @@ export const createMediaSlice = (
   mediaPermissionsToken: null,
   audioMuted: false,
   recvTransport: null,
+
+  closeProducers(producers) {
+    set(
+      produce<IStore>(state => {
+        producers.forEach(producer => {
+          state[producer]?.producer?.close();
+          state[producer] = undefined;
+        });
+      }),
+    );
+  },
 
   switchCamera() {
     (get().video?.track as any)._switchCamera();
@@ -75,9 +87,13 @@ export const createMediaSlice = (
   toggleVideo(_flag) {},
 
   async initViewerMedia(permissions, recvMediaParams) {
-    const {api, recvDevice, sendDevice, initRecvDevice} = get();
+    const {api, recvDevice, sendDevice} = get();
 
-    await initRecvDevice(recvMediaParams.routerRtpCapabilities);
+    if (!recvDevice.loaded) {
+      await recvDevice.load({
+        routerRtpCapabilities: recvMediaParams.routerRtpCapabilities,
+      });
+    }
 
     const mediaClient = new MediaClient(
       recvDevice,
@@ -94,59 +110,45 @@ export const createMediaSlice = (
   },
 
   async sendMedia(permissions, tracks) {
-    const {mediaClient, stream, sendMediaParams, sendDevice, initSendDevice} =
-      get();
+    const {mediaClient, stream, sendMediaParams, sendDevice} = get();
 
-    console.log({mediaClient: !!mediaClient});
     if (!mediaClient) {
       return;
     }
 
     const {routerRtpCapabilities, sendTransportOptions} = sendMediaParams;
 
-    console.log('init send device');
-    await initSendDevice(routerRtpCapabilities);
-    console.log('done');
+    if (!sendDevice.loaded) {
+      await sendDevice.load({routerRtpCapabilities});
+    }
 
     mediaClient.permissionsToken = permissions;
     mediaClient.sendDevice = sendDevice;
 
-    const getOrCreateSendTransport = async (): Promise<Transport> => {
-      const transport = get().sendTransport;
+    let sendTransport = get().sendTransport;
 
-      if (!transport) {
-        let newSendTransport = await mediaClient.createTransport({
-          roomId: stream!,
-          device: sendDevice,
-          direction: 'send',
-          options: {
-            sendTransportOptions,
-          },
-          isProducer: true,
-        });
+    if (!sendTransport) {
+      sendTransport = await mediaClient.createTransport({
+        roomId: stream!,
+        device: sendDevice,
+        direction: 'send',
+        options: {
+          sendTransportOptions,
+        },
+        isProducer: true,
+      });
 
-        set({sendTransport: newSendTransport});
-
-        return newSendTransport;
-      } else {
-        return transport;
-      }
-    };
-
-    console.log('send transport');
-    const sendTransport = await getOrCreateSendTransport();
-    console.log('done');
+      set({sendTransport});
+    }
 
     tracks.forEach(async kind => {
       const track = get()[kind]?.track;
 
       if (track) {
-        console.log(`sending track ${track.id}, ${track.kind} === ${kind}`);
-
         const producer = await mediaClient.sendMediaStream(
           track,
           kind,
-          sendTransport,
+          sendTransport as Transport,
         );
 
         set(
@@ -154,8 +156,6 @@ export const createMediaSlice = (
             state[kind]!.producer = producer;
           }),
         );
-
-        console.log('producer', producer);
       }
     });
   },
