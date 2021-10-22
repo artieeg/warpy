@@ -6,8 +6,8 @@ import {useLocalAudioStream} from '.';
 export const useNewStreamController = () => {
   const [title, setTitle] = useState('test stream');
   const [hub, setHub] = useState('60ec569668b42c003304630b');
-  const [streamId, createStream, api] = useStore(
-    state => [state.stream, state.create, state.api],
+  const [streamId, dispatchCreateStream] = useStore(
+    state => [state.stream, state.dispatchCreateStream],
     shallow,
   );
 
@@ -18,8 +18,8 @@ export const useNewStreamController = () => {
       return;
     }
 
-    createStream(title, hub);
-  }, [title, streamId, hub, api]);
+    dispatchCreateStream(title, hub);
+  }, [title, streamId, hub]);
 
   return {onStart, streamId, setTitle, setHub};
 };

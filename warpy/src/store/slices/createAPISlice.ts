@@ -36,26 +36,7 @@ export const createAPISlice = (
     });
 
     api.stream.onRoleUpdate(async ({mediaPermissionToken, media, role}) => {
-      const oldRole = get().role;
-
-      if (media) {
-        set({sendMediaParams: media, role});
-      } else {
-        set({role});
-      }
-
-      if (role === 'viewer') {
-        get().closeProducers(['audio', 'video']);
-      } else if (role === 'speaker') {
-        get().closeProducers(['video']);
-      }
-
-      if (oldRole === 'streamer' && role === 'speaker') {
-        return;
-      } else {
-        const kind = role === 'speaker' ? 'audio' : 'video';
-        await get().sendMedia(mediaPermissionToken, [kind]);
-      }
+      await get().dispatchRoleUpdate(role, mediaPermissionToken, media);
     });
 
     api.media.onNewTrack(async data => {
