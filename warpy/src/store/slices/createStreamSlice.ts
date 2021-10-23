@@ -1,17 +1,13 @@
 import {GetState, SetState} from 'zustand';
 import produce from 'immer';
 import {IStore} from '../useStore';
-import {arrayToMap} from '@app/utils';
 import {IParticipant, Roles} from '@warpy/lib';
-import {Consumer} from 'mediasoup-client/lib/types';
 import {IParticipantWithMedia} from '@app/types';
 
 export interface IStreamSlice {
   /** Stores current stream id */
   stream: string | null;
   title: string | null;
-
-  role: Roles | null;
 
   isSpeaker: boolean | null;
   isStreamOwner: boolean;
@@ -35,9 +31,7 @@ export interface IStreamSlice {
 
   viewersWithRaisedHands: Record<string, IParticipant>;
 
-  setCount: (newCount: number) => any;
   fetchMoreViewers: () => Promise<void>;
-  addViewers: (viewers: IParticipant[], page: number) => void;
   addViewer: (viewer: IParticipant) => void;
   setProducer: (speaker: IParticipant) => void;
   addProducers: (speakers: IParticipant[]) => void;
@@ -50,7 +44,6 @@ export const createStreamSlice = (
   get: GetState<IStore>,
 ): IStreamSlice => ({
   stream: null,
-  role: null,
   isSpeaker: false,
   latestViewersPage: -1,
   isFetchingViewers: false,
@@ -83,10 +76,6 @@ export const createStreamSlice = (
         viewers.forEach(viewer => (state.consumers[viewer.id] = viewer));
       }),
     );
-  },
-
-  setCount(newCount) {
-    set(() => ({totalParticipantCount: newCount}));
   },
 
   removeParticipant(user) {
@@ -126,18 +115,6 @@ export const createStreamSlice = (
           ...user,
           isRaisingHand: true,
         };
-      }),
-    );
-  },
-
-  addViewers(viewers, page) {
-    set(
-      produce<IStreamSlice>(state => {
-        viewers.forEach(viewer => {
-          state.consumers[viewer.id] = viewer;
-        });
-
-        state.latestViewersPage = page;
       }),
     );
   },

@@ -11,8 +11,8 @@ interface ISpeakersProps {
 export const Speakers = (props: ISpeakersProps) => {
   const {style} = props;
   //const speakers = useStreamSpeakers();
-  const [activeSpeakers, deleteActiveSpeaker] = useStore(
-    state => [state.activeSpeakers, state.deleteActiveSpeaker],
+  const [activeSpeakers, dispatchAudioLevelDelete] = useStore(
+    state => [state.userAudioLevels, state.dispatchAudioLevelDelete],
     shallow,
   );
 
@@ -20,7 +20,7 @@ export const Speakers = (props: ISpeakersProps) => {
     <View style={[styles.container, style]}>
       {Object.entries(activeSpeakers).map(([speaker, volume]) => (
         <Speaker
-          onDoneSpeaking={() => deleteActiveSpeaker(speaker)}
+          onDoneSpeaking={() => dispatchAudioLevelDelete(speaker)}
           volume={volume}
           key={speaker}
           id={speaker}

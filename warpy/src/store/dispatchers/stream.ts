@@ -1,47 +1,18 @@
+import {IParticipant} from '@warpy/lib';
 import {arrayToMap} from '@app/utils';
-import {IParticipant, Roles} from '@warpy/lib';
 import {StoreSlice} from '../types';
 import {IParticipantWithMedia} from '@app/types';
 
-export interface IDispatcherSlice {
-  dispatchRoleUpdate: (
-    role: Roles,
-    mediaPermissionToken: string,
-    sendMediaParams?: any,
-  ) => Promise<void>;
-
-  dispatchCreateStream: (title: string, hub: string) => Promise<void>;
-  dispatchJoinStream: (stream: string) => Promise<void>;
+export interface IStreamDispatchers {
+  dispatchStreamCreate: (title: string, hub: string) => Promise<void>;
+  dispatchStreamJoin: (stream: string) => Promise<void>;
 }
 
-export const createDispatcherSlice: StoreSlice<IDispatcherSlice> = (
+export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
   set,
   get,
 ) => ({
-  async dispatchRoleUpdate(role, mediaPermissionToken, sendMediaParams) {
-    const oldRole = get().role;
-
-    if (sendMediaParams) {
-      set({sendMediaParams, role});
-    } else {
-      set({role});
-    }
-
-    if (role === 'viewer') {
-      get().closeProducers(['audio', 'video']);
-    } else if (role === 'speaker') {
-      get().closeProducers(['video']);
-    }
-
-    if (oldRole === 'streamer' && role === 'speaker') {
-      return;
-    } else {
-      const kind = role === 'speaker' ? 'audio' : 'video';
-      await get().sendMedia(mediaPermissionToken, [kind]);
-    }
-  },
-
-  async dispatchCreateStream(title, hub) {
+  async dispatchStreamCreate(title, hub) {
     const {api, sendMedia, initViewerMedia} = get();
 
     const {
@@ -80,7 +51,7 @@ export const createDispatcherSlice: StoreSlice<IDispatcherSlice> = (
     await sendMedia(mediaPermissionsToken, ['audio', 'video']);
   },
 
-  async dispatchJoinStream(stream) {
+  async dispatchStreamJoin(stream) {
     const {api, initViewerMedia} = get();
 
     const {

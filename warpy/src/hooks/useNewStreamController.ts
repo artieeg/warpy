@@ -7,7 +7,7 @@ export const useNewStreamController = () => {
   const [title, setTitle] = useState('test stream');
   const [hub, setHub] = useState('60ec569668b42c003304630b');
   const [streamId, dispatchCreateStream] = useStore(
-    state => [state.stream, state.dispatchCreateStream],
+    state => [state.stream, state.dispatchStreamCreate],
     shallow,
   );
 

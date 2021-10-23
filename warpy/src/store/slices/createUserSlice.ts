@@ -1,13 +1,14 @@
 import {User} from '@app/models';
+import {Roles} from '@warpy/lib';
 import {GetState, SetState} from 'zustand';
 import {IStore} from '../useStore';
 
 export interface IUserSlice {
   user: User | null;
+  role: Roles | null;
   isLoadingUser: boolean;
   exists: boolean;
   following: string[];
-  loadUserData: (token: string) => Promise<void>;
 }
 
 export const createUserSlice = (
@@ -15,31 +16,8 @@ export const createUserSlice = (
   get: GetState<IStore>,
 ): IUserSlice => ({
   user: null,
+  role: null,
   isLoadingUser: true,
   exists: false,
   following: [],
-  loadUserData: async token => {
-    const {api} = get();
-
-    set({
-      isLoadingUser: true,
-    });
-
-    const {user, following} = await api.user.auth(token);
-
-    if (!user || !following) {
-      set({
-        isLoadingUser: false,
-        exists: false,
-      });
-
-      return;
-    }
-
-    set({
-      user,
-      following,
-      isLoadingUser: false,
-    });
-  },
 });

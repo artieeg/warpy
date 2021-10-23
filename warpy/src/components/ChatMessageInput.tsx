@@ -7,7 +7,9 @@ import {useStore} from '@app/store';
 export const ChatMessageInput = () => {
   const [message, setMessage] = useState('');
 
-  const sendChatMessage = useStore(state => state.sendChatMessage);
+  const dispatchChatSendMessage = useStore(
+    state => state.dispatchChatSendMessage,
+  );
 
   return (
     <View style={styles.wrapper}>
@@ -23,7 +25,7 @@ export const ChatMessageInput = () => {
         placeholder="type your message"
       />
       <SendMessageButton
-        onPress={() => sendChatMessage(message)}
+        onPress={() => dispatchChatSendMessage(message)}
         style={styles.button}
       />
     </View>

@@ -3,7 +3,7 @@ import {useEffect} from 'react';
 import {useKickHandler} from './useKickHandler';
 
 export const useRemoteStream = (id: string) => {
-  const dispatchJoinStream = useStore(state => state.dispatchJoinStream);
+  const dispatchJoinStream = useStore(state => state.dispatchStreamJoin);
 
   useEffect(() => {
     if (id) {

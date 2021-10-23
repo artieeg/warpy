@@ -25,7 +25,7 @@ export const createAPISlice = (
     });
 
     api.stream.onActiveSpeaker(data => {
-      store.setActiveSpeakers(data.speakers);
+      store.dispatchAudioLevelsUpdate(data.speakers);
     });
 
     api.stream.onNewRaisedHand(data => {
@@ -36,7 +36,7 @@ export const createAPISlice = (
     });
 
     api.stream.onRoleUpdate(async ({mediaPermissionToken, media, role}) => {
-      await get().dispatchRoleUpdate(role, mediaPermissionToken, media);
+      await get().dispatchUserRoleUpdate(role, mediaPermissionToken, media);
     });
 
     api.media.onNewTrack(async data => {

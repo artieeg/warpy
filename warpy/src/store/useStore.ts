@@ -23,14 +23,20 @@ import {
   INotificationSlice,
 } from './slices/createNotificationSlice';
 import {
-  createActiveSpeakerSlice,
-  IActiveSpeakerSlice,
-} from './slices/createActiveSpeakerSlice';
+  createAudioLevelSlice,
+  IAudioLevelSlice,
+} from './slices/createAudioLevelSlice';
 import {createSignUpSlice, ISignUpSlice} from './slices/createSignUpSlice';
 import {
-  createDispatcherSlice,
-  IDispatcherSlice,
-} from './slices/createDispatcherSlice';
+  createUserDispatchers,
+  createStreamDispatchers,
+  IUserDispatchers,
+  IStreamDispatchers,
+  IAudioLevelDispatchers,
+  createAudioLevelDispatchers,
+  IChatDispatchers,
+  createChatDispatchers,
+} from './dispatchers';
 
 interface Selectors<StoreType> {
   use: {
@@ -60,13 +66,16 @@ export interface IStore
     IDeviceSlice,
     IChatSlice,
     IModalSlice,
-    IDispatcherSlice,
+    IStreamDispatchers,
+    IUserDispatchers,
     ITokenSlice,
     IReactionSlice,
     INotificationSlice,
-    IActiveSpeakerSlice,
+    IAudioLevelSlice,
     ISignUpSlice,
     IToastSlice,
+    IAudioLevelDispatchers,
+    IChatDispatchers,
     IAPISlice {
   set: SetState<IStore>;
   get: GetState<IStore>;
@@ -76,7 +85,7 @@ export const useStore = createSelectorHooks<IStore>(
   create<IStore>((set, get): IStore => {
     return {
       ...createModalSlice(set, get),
-      ...createActiveSpeakerSlice(set, get),
+      ...createAudioLevelSlice(set, get),
       ...createStreamSlice(set, get),
       ...createSignUpSlice(set, get),
       ...createFeedSlice(set, get),
@@ -86,11 +95,14 @@ export const useStore = createSelectorHooks<IStore>(
       ...createFollowingSlice(set, get),
       ...createMediaSlice(set, get),
       ...createDeviceSlice(),
-      ...createDispatcherSlice(set, get),
       ...createChatSlice(set, get),
       ...createTokenSlice(set, get),
       ...createToastSlice(set, get),
       ...createReactionSlice(set, get),
+      ...createUserDispatchers(set, get),
+      ...createStreamDispatchers(set, get),
+      ...createAudioLevelDispatchers(set, get),
+      ...createChatDispatchers(set, get),
       set,
       get,
     };
