@@ -47,6 +47,7 @@ import {
   createModalDispatchers,
   createNotificationDispatchers,
   createReactionDispatchers,
+  IReactionDispatchers,
 } from './dispatchers';
 
 interface Selectors<StoreType> {
@@ -92,7 +93,7 @@ export interface IStore
     IMediaDispatchers,
     IModalDispatchers,
     INotificaionDispatchers,
-    IReactionSlice,
+    IReactionDispatchers,
     IAPISlice {
   set: SetState<IStore>;
   get: GetState<IStore>;

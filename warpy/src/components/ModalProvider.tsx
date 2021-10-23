@@ -33,15 +33,9 @@ export const ModalProvider = () => {
         }}
       />
 
-      <Reactions
-        visible={modal === 'reactions'}
-        onHide={() => dispatchModalClose()}
-      />
+      <Reactions visible={modal === 'reactions'} />
 
-      <ChatModal
-        visible={modal === 'chat'}
-        onHide={() => dispatchModalClose()}
-      />
+      <ChatModal visible={modal === 'chat'} />
 
       <UserActionSheet
         user={modalSelectedUser}
