@@ -6,6 +6,7 @@ import {Avatar} from './Avatar';
 import {BaseSlideModal} from './BaseSlideModal';
 import {SmallTextButton} from './SmallTextButton';
 import {useStore} from '@app/store';
+import shallow from 'zustand/shallow';
 
 interface IParticipantInfoModal {
   user: string | null;
@@ -16,13 +17,19 @@ interface IParticipantInfoModal {
 export const ParticipantInfoModal = (props: IParticipantInfoModal) => {
   const {user, visible, onHide} = props;
 
-  const api = useStore.use.api();
+  const [following, dispatchFollowingAdd, dispatchFollowingRemove] = useStore(
+    state => [
+      state.following,
+      state.dispatchFollowingAdd,
+      state.dispatchFollowingRemove,
+    ],
+    shallow,
+  );
 
-  const checkIsFollowing = useStore.use.has();
-  const addNewFollowing = useStore.use.add();
-  const removeFollowing = useStore.use.remove();
-
-  const isFollowing = checkIsFollowing(user!);
+  const isFollowing = useMemo(
+    () => following.includes(user!),
+    [following, user],
+  );
   const participant = useStreamParticipant(user!);
 
   const userFullName = useMemo(
@@ -36,13 +43,9 @@ export const ParticipantInfoModal = (props: IParticipantInfoModal) => {
     }
 
     if (isFollowing) {
-      await api.user.unfollow(user);
-
-      removeFollowing(user);
+      dispatchFollowingRemove(user);
     } else {
-      await api.user.follow(user);
-
-      addNewFollowing(user);
+      dispatchFollowingAdd(user);
     }
   };
 
