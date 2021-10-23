@@ -3,14 +3,8 @@ import {StoreSlice} from '../types';
 
 export interface IReactionSlice {
   reaction: string;
-  setCurrentReaction: (reaction: string) => void;
 }
 
-export const createReactionSlice: StoreSlice<IReactionSlice> = set => ({
+export const createReactionSlice: StoreSlice<IReactionSlice> = () => ({
   reaction: reactionCodes[0],
-  setCurrentReaction(reaction) {
-    set({
-      reaction,
-    });
-  },
 });

@@ -48,7 +48,15 @@ import {
   createNotificationDispatchers,
   createReactionDispatchers,
   IReactionDispatchers,
+  createParticipantDispatchers,
+  IParticipantDispatchers,
+  IToastDispatchers,
+  createToastDispatchers,
 } from './dispatchers';
+import {
+  createParticipantSlice,
+  IParticipantSlice,
+} from './slices/createParticipantSlice';
 
 interface Selectors<StoreType> {
   use: {
@@ -94,6 +102,9 @@ export interface IStore
     IModalDispatchers,
     INotificaionDispatchers,
     IReactionDispatchers,
+    IParticipantSlice,
+    IParticipantDispatchers,
+    IToastDispatchers,
     IAPISlice {
   set: SetState<IStore>;
   get: GetState<IStore>;
@@ -117,6 +128,7 @@ export const useStore = createSelectorHooks<IStore>(
       ...createTokenSlice(set, get),
       ...createToastSlice(set, get),
       ...createReactionSlice(set, get),
+      ...createParticipantSlice(set, get),
       ...createUserDispatchers(set, get),
       ...createStreamDispatchers(set, get),
       ...createAudioLevelDispatchers(set, get),
@@ -127,6 +139,8 @@ export const useStore = createSelectorHooks<IStore>(
       ...createModalDispatchers(set, get),
       ...createNotificationDispatchers(set, get),
       ...createReactionDispatchers(set, get),
+      ...createParticipantDispatchers(set, get),
+      ...createToastDispatchers(set, get),
       set,
       get,
     };

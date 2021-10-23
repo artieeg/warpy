@@ -21,7 +21,7 @@ export const createAPISlice = (
     const {api} = store;
 
     api.stream.onNewViewer(data => {
-      store.addViewer(data.viewer);
+      store.dispatchViewerAdd(data.viewer);
     });
 
     api.stream.onActiveSpeaker(data => {
@@ -32,7 +32,7 @@ export const createAPISlice = (
       const participant = data.viewer;
       participant.isRaisingHand = true;
 
-      store.raiseHand(participant);
+      store.dispatchRaisedHand(participant);
     });
 
     api.stream.onRoleUpdate(async ({mediaPermissionToken, media, role}) => {
@@ -69,13 +69,13 @@ export const createAPISlice = (
     api.stream.onParticipantRoleChange(data => {
       const {user} = data;
 
-      store.setProducer(user);
+      store.dispatchStreamerAdd(user);
     });
 
     api.stream.onUserLeft(data => {
       const {user} = data;
 
-      store.removeParticipant(user);
+      store.dispatchParticipantRemove(user);
     });
 
     api.stream.onChatMessages(data => {
@@ -85,7 +85,7 @@ export const createAPISlice = (
     });
 
     api.stream.onUserKick(({user}) => {
-      store.removeParticipant(user);
+      store.dispatchParticipantRemove(user);
     });
 
     api.notification.onNewNotification(data => {

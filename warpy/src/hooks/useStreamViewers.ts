@@ -4,12 +4,12 @@ import {useMemo} from 'react';
 import {IParticipant} from '@warpy/lib';
 
 export const useStreamViewers = (): [IParticipant[], () => any] => {
-  const [viewers, fetchMoreViewers] = useStore(
-    state => [state.consumers, state.fetchMoreViewers],
+  const [viewers, dispatchViewersFetch] = useStore(
+    state => [state.viewers, state.dispatchViewersFetch],
     shallow,
   );
 
   const viewersArray = useMemo(() => Object.values(viewers), [viewers]);
 
-  return [viewersArray, fetchMoreViewers];
+  return [viewersArray, dispatchViewersFetch];
 };

@@ -28,7 +28,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       stream,
       title,
       sendMediaParams: mediaData,
-      producers: arrayToMap<IParticipant>(speakers),
+      streamers: arrayToMap<IParticipant>(speakers),
       totalParticipantCount: count,
       isStreamOwner: true,
       role: 'streamer',
@@ -85,7 +85,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       stream,
       recvTransport,
       totalParticipantCount: count,
-      producers: arrayToMap<IParticipantWithMedia>(
+      streamers: arrayToMap<IParticipantWithMedia>(
         speakers.map(p => {
           const audioConsumer = consumers.find(
             c => c.appData.user === p.id && c.kind === 'audio',

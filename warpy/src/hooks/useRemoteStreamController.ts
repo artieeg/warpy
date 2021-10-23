@@ -2,7 +2,7 @@ import {useStore} from '@app/store';
 import {useEffect} from 'react';
 import {useKickHandler} from './useKickHandler';
 
-export const useRemoteStream = (id: string) => {
+export const useRemoteStreamController = (id: string) => {
   const dispatchJoinStream = useStore(state => state.dispatchStreamJoin);
 
   useEffect(() => {

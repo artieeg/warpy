@@ -1,7 +1,6 @@
 import {User} from '@app/models';
 import {Roles} from '@warpy/lib';
-import {GetState, SetState} from 'zustand';
-import {IStore} from '../useStore';
+import {StoreSlice} from '../types';
 
 export interface IUserSlice {
   user: User | null;
@@ -11,10 +10,7 @@ export interface IUserSlice {
   following: string[];
 }
 
-export const createUserSlice = (
-  set: SetState<IStore>,
-  get: GetState<IStore>,
-): IUserSlice => ({
+export const createUserSlice: StoreSlice<IUserSlice> = () => ({
   user: null,
   role: null,
   isLoadingUser: true,

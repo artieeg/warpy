@@ -10,7 +10,6 @@ interface ISpeakersProps {
 
 export const Speakers = (props: ISpeakersProps) => {
   const {style} = props;
-  //const speakers = useStreamSpeakers();
   const [activeSpeakers, dispatchAudioLevelDelete] = useStore(
     state => [state.userAudioLevels, state.dispatchAudioLevelDelete],
     shallow,

@@ -1,8 +1,6 @@
 import {MediaClient} from '@warpykit-sdk/client';
-import {IStore} from '../useStore';
 import {MediaStream, MediaStreamTrack} from 'react-native-webrtc';
-import {Transport, Producer, MediaKind} from 'mediasoup-client/lib/types';
-import produce from 'immer';
+import {Transport, Producer} from 'mediasoup-client/lib/types';
 import {StoreSlice} from '../types';
 
 export interface IMediaSlice {

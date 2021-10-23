@@ -24,3 +24,5 @@ export type Modal =
   | 'reports'
   | 'invite'
   | 'chat';
+
+export type DURATION = 'LONG' | 'SHORT';
