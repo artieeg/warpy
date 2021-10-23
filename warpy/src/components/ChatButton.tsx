@@ -3,11 +3,11 @@ import React from 'react';
 import {IconButton} from './IconButton';
 
 export const ChatButton = () => {
-  const openNewModal = useStore.use.openNewModal();
+  const dispatchModalOpen = useStore.use.dispatchModalOpen();
 
   return (
     <IconButton
-      onPress={() => openNewModal('chat')}
+      onPress={() => dispatchModalOpen('chat')}
       color="#ffffff"
       name="chat"
       size={30}

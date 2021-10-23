@@ -22,11 +22,11 @@ const ReactionContainer = (props: any) => {
 interface IReactionsProps {
   visible: boolean;
   onHide: () => void;
-  onPickReaction: (reaction: string) => void;
 }
 
 export const Reactions = (props: IReactionsProps) => {
-  const {visible, onHide, onPickReaction} = props;
+  const {visible, onHide} = props;
+  const setCurrentReaction = useStore.use.setCurrentReaction();
 
   return (
     <BaseSlideModal
@@ -42,7 +42,7 @@ export const Reactions = (props: IReactionsProps) => {
           <ReactionContainer>
             <ReactionButton
               onPress={() => {
-                onPickReaction(item);
+                setCurrentReaction(item);
                 onHide();
               }}
               code={item}

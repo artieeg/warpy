@@ -4,14 +4,14 @@ import {IconButton} from './IconButton';
 import shallow from 'zustand/shallow';
 
 export const ToggleMicButton = () => {
-  const [toggleAudio, muted] = useStore(
-    state => [state.toggleAudio, state.audioMuted],
+  const [dispatchAudioToggle, muted] = useStore(
+    state => [state.dispatchAudioToggle, state.audioMuted],
     shallow,
   );
 
   return (
     <IconButton
-      onPress={() => toggleAudio(!muted)}
+      onPress={() => dispatchAudioToggle(!muted)}
       color="#ffffff"
       name={muted ? 'mic-off' : 'mic-on'}
       size={30}

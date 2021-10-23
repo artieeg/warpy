@@ -3,11 +3,11 @@ import React from 'react';
 import {IconButton} from './IconButton';
 
 export const SwitchCameraButton = () => {
-  const switchCamera = useStore.use.switchCamera();
+  const dispatchCameraSwitch = useStore.use.dispatchCameraSwitch();
 
   return (
     <IconButton
-      onPress={switchCamera}
+      onPress={dispatchCameraSwitch}
       color="#ffffff"
       name="toggle-camera"
       size={30}

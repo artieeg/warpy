@@ -49,9 +49,9 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
     }
 
     if (role === 'viewer') {
-      get().closeProducers(['audio', 'video']);
+      get().dispatchProducerClose(['audio', 'video']);
     } else if (role === 'speaker') {
-      get().closeProducers(['video']);
+      get().dispatchProducerClose(['video']);
     }
 
     if (oldRole === 'streamer' && role === 'speaker') {

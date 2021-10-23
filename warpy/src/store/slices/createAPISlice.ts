@@ -81,7 +81,7 @@ export const createAPISlice = (
     api.stream.onChatMessages(data => {
       const {messages} = data;
 
-      store.addMessages(messages);
+      store.dispatchChatMessages(messages);
     });
 
     api.stream.onUserKick(({user}) => {
@@ -89,11 +89,11 @@ export const createAPISlice = (
     });
 
     api.notification.onNewNotification(data => {
-      get().addNotification(data.notification);
+      get().dispatchNotificationAdd(data.notification);
     });
 
     api.notification.onNotificationDelete(data => {
-      get().removeNotification(data.notification_id);
+      get().dispatchNotificationRemove(data.notification_id);
     });
   },
 });

@@ -5,11 +5,11 @@ export const useNotifications = () => {
   const notifications = useStore.use.notifications();
 
   useEffect(() => {
-    useStore.getState().readAllNotifications();
+    useStore.getState().dispatchNotificationsReadAll();
   }, [notifications.length]);
 
   const fetchMoreNotifications = useCallback(() => {
-    useStore.getState().fetchReadNotifications();
+    useStore.getState().dispatchNotificationsFetchRead();
   }, []);
 
   useEffect(() => {

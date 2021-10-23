@@ -61,13 +61,6 @@ export const useLocalStream = (kind: MediaKind) => {
 export const useLocalVideoStream = () => {
   const stream = useLocalStream('video');
 
-  const switchCamera = useCallback(() => {
-    const videoTrack = stream?.getVideoTracks()[0];
-    if (videoTrack) {
-      (videoTrack as any)._switchCamera();
-    }
-  }, [stream]);
-
   const [muted, setMuted] = useState(false);
 
   const toggle = useCallback(() => {
@@ -75,7 +68,7 @@ export const useLocalVideoStream = () => {
     setMuted(prev => !prev);
   }, [stream, muted]);
 
-  return {stream, switchCamera, toggle, muted};
+  return {stream, toggle, muted};
 };
 
 export const useLocalAudioStream = () => {

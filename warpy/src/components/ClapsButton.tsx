@@ -3,14 +3,17 @@ import {useStore} from '@app/store';
 import React from 'react';
 import {Reaction} from './Reaction';
 import {RoundButton} from './RoundButton';
+import shallow from 'zustand/shallow';
 
 export const ClapButton = () => {
-  const reaction = useStore.use.reaction();
-  const openNewModal = useStore.use.openNewModal();
+  const [reaction, dispatchModalOpen] = useStore(
+    state => [state.reaction, state.dispatchModalOpen],
+    shallow,
+  );
 
   return (
     <RoundButton
-      onPress={() => openNewModal('reactions')}
+      onPress={() => dispatchModalOpen('reactions')}
       style={styles.transparent}>
       <Reaction code={reaction} />
     </RoundButton>

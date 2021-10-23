@@ -40,6 +40,13 @@ import {
   createFeedDispatchers,
   IFollowingDispatchers,
   createFollowingDispatchers,
+  IMediaDispatchers,
+  createMediaDispatchers,
+  IModalDispatchers,
+  INotificaionDispatchers,
+  createModalDispatchers,
+  createNotificationDispatchers,
+  createReactionDispatchers,
 } from './dispatchers';
 
 interface Selectors<StoreType> {
@@ -82,6 +89,10 @@ export interface IStore
     IToastSlice,
     IAudioLevelDispatchers,
     IChatDispatchers,
+    IMediaDispatchers,
+    IModalDispatchers,
+    INotificaionDispatchers,
+    IReactionSlice,
     IAPISlice {
   set: SetState<IStore>;
   get: GetState<IStore>;
@@ -111,6 +122,10 @@ export const useStore = createSelectorHooks<IStore>(
       ...createChatDispatchers(set, get),
       ...createFeedDispatchers(set, get),
       ...createFollowingDispatchers(set, get),
+      ...createMediaDispatchers(set, get),
+      ...createModalDispatchers(set, get),
+      ...createNotificationDispatchers(set, get),
+      ...createReactionDispatchers(set, get),
       set,
       get,
     };

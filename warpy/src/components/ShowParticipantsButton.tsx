@@ -5,10 +5,10 @@ import {Text} from './Text';
 
 export const ShowParticipantsButton = (props: {style: any}) => {
   const count = useStore.use.totalParticipantCount();
-  const openNewModal = useStore.use.openNewModal();
+  const dispatchModalOpen = useStore.use.dispatchModalOpen();
 
   return (
-    <RoundButton {...props} onPress={() => openNewModal('participants')}>
+    <RoundButton {...props} onPress={() => dispatchModalOpen('participants')}>
       <Text color="white" weight="bold" size="small">
         {count.toString()}
       </Text>

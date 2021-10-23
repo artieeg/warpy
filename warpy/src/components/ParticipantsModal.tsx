@@ -33,7 +33,7 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
   const usersRaisingHand = useSpeakingRequests();
   const producers = useStreamProducers();
   const [viewers, onFetchMore] = useStreamViewers();
-  const openNewModal = useStore.use.openNewModal();
+  const dispatchModalOpen = useStore.use.dispatchModalOpen();
 
   const streamer = useMemo(
     () => producers.find(speaker => speaker.role === 'streamer'),
@@ -129,7 +129,7 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
 
   return (
     <BaseSlideModal {...props} style={styles.modal}>
-      <InviteUserButton onPress={() => openNewModal('invite')} />
+      <InviteUserButton onPress={() => dispatchModalOpen('invite')} />
 
       <SectionList
         style={styles.horizontalPadding}

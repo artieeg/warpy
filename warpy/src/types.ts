@@ -15,3 +15,12 @@ export interface IParticipantWithMedia extends IParticipant {
     };
   };
 }
+
+export type Modal =
+  | 'user-actions'
+  | 'participant-info'
+  | 'participants'
+  | 'reactions'
+  | 'reports'
+  | 'invite'
+  | 'chat';

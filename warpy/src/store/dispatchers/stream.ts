@@ -13,7 +13,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
   get,
 ) => ({
   async dispatchStreamCreate(title, hub) {
-    const {api, sendMedia, initViewerMedia} = get();
+    const {api, dispatchMediaSend, dispatchInitViewer} = get();
 
     const {
       stream,
@@ -34,7 +34,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       role: 'streamer',
     });
 
-    await initViewerMedia(mediaPermissionsToken, recvMediaParams);
+    await dispatchInitViewer(mediaPermissionsToken, recvMediaParams);
 
     const recvTransport = await get().mediaClient!.createTransport({
       roomId: stream,
@@ -48,11 +48,11 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
 
     set({recvTransport});
 
-    await sendMedia(mediaPermissionsToken, ['audio', 'video']);
+    await dispatchMediaSend(mediaPermissionsToken, ['audio', 'video']);
   },
 
   async dispatchStreamJoin(stream) {
-    const {api, initViewerMedia} = get();
+    const {api, dispatchInitViewer} = get();
 
     const {
       mediaPermissionsToken,
@@ -62,7 +62,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       count,
     } = await api.stream.join(stream);
 
-    await initViewerMedia(mediaPermissionsToken, recvMediaParams);
+    await dispatchInitViewer(mediaPermissionsToken, recvMediaParams);
 
     const mediaClient = get().mediaClient!;
 
