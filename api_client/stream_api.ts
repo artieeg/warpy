@@ -14,6 +14,7 @@ import {
   ICancelInviteResponse,
   Roles,
   IParticipantRoleChangeEvent,
+  IMediaToggleEvent,
 } from "@warpy/lib";
 
 export interface IStreamAPI {
@@ -23,6 +24,10 @@ export interface IStreamAPI {
   stop: (stream: string) => any;
   sendChatMessage: (message: string) => Promise<ISendMessageResponse>;
   kickUser: (userToKick: string) => void;
+  toggleMedia: (payload: {
+    audioEnabled?: boolean;
+    videoEnabled?: boolean;
+  }) => void;
   getViewers: (
     stream: string,
     page: number
@@ -42,6 +47,7 @@ export interface IStreamAPI {
   onActiveSpeaker: EventHandler<IActiveSpeakerEvent>;
   onChatMessages: EventHandler<IChatMessagesEvent>;
   onUserKick: EventHandler<IUserKickedEvent>;
+  onMediaToggle: EventHandler<IMediaToggleEvent>;
 }
 
 export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
@@ -50,6 +56,13 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
       title,
       hub,
     }),
+  toggleMedia: ({
+    audioEnabled,
+    videoEnabled,
+  }: {
+    audioEnabled?: boolean;
+    videoEnabled?: boolean;
+  }) => socket.request("media-toggle", { audioEnabled, videoEnabled }),
   invite: (invitee, stream) =>
     socket.request("invite-user", { invitee, stream }),
   cancelInvite: (invite_id) =>
@@ -78,4 +91,5 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
   onReactionsUpdate: (handler) => socket.on("reactions-update", handler),
   onChatMessages: (handler) => socket.on("chat-messages", handler),
   onUserKick: (handler) => socket.on("user-kicked", handler),
+  onMediaToggle: (handler) => socket.on("user-toggled-media", handler),
 });

@@ -261,3 +261,9 @@ export interface IRemoveUserProducersRequest {
     video?: boolean;
   };
 }
+
+export interface IMediaToggleRequest {
+  user: string;
+  videoEnabled?: boolean;
+  audioEnabled?: boolean;
+}

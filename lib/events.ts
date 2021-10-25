@@ -45,3 +45,10 @@ export interface INotificationDeleteEvent {
 export interface IParticipantRoleChangeEvent {
   user: IParticipant;
 }
+
+export interface IMediaToggleEvent {
+  user: string;
+  stream: string;
+  videoEnabled?: boolean;
+  audioEnabled?: boolean;
+}
