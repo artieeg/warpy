@@ -6,6 +6,7 @@ import {
   IJoinStream,
   IJoinStreamResponse,
   IKickUserRequest,
+  IMediaToggleRequest,
   IRaiseHand,
   IRequestViewers,
   IRequestViewersResponse,
@@ -67,5 +68,17 @@ export class ParticipantController {
   @MessagePattern('stream.kick-user')
   async onKickUser({ userToKick, user }: IKickUserRequest) {
     await this.participant.kickUser(userToKick, user);
+  }
+
+  @MessagePattern('participant.media-toggle')
+  async onMediaToggle({
+    user,
+    audioEnabled,
+    videoEnabled,
+  }: IMediaToggleRequest) {
+    await this.participant.setMediaEnabled(user, {
+      audioEnabled,
+      videoEnabled,
+    });
   }
 }

@@ -578,4 +578,26 @@ describe('ParticipantService', () => {
       "tells the media node to stop streaming user's audio when they go from being a streamer/speaker to being a viewer",
     );
   });
+
+  it('set media enabled', async () => {
+    const userId = 'media-test-user0';
+    const streamId = 'test-stream-0';
+
+    when(mockedParticipantEntity.getCurrentStreamFor)
+      .calledWith(userId)
+      .mockResolvedValue(streamId);
+
+    const media = {
+      videoEnabled: true,
+      audioEnabled: true,
+    };
+
+    await participantService.setMediaEnabled(userId, media);
+
+    expect(mockedEventEmitter.emit).toBeCalledWith('participant.media-toggle', {
+      user: userId,
+      stream: streamId,
+      ...media,
+    });
+  });
 });

@@ -88,6 +88,18 @@ describe('BroadcastService', () => {
     });
   });
 
+  it('broadcasts participant media toggle', async () => {
+    await broadcast.broadcastMediaToggle({
+      user: 'test',
+      stream: 'test',
+      videoEnabled: true,
+    });
+
+    participants.forEach((id) => {
+      expect(mockedMessageService.send).toBeCalledWith(id, expect.anything());
+    });
+  });
+
   it('broadcasts participant join', async () => {
     await broadcast.broadcastNewParticipant(createParticipantFixture({}));
 

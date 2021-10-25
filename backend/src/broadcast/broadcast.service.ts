@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { IParticipant } from '@warpy/lib';
 import { MessageService } from '../message/message.service';
-import { ParticipantService } from '../participant/participant.service';
 
 @Injectable()
 export class BroadcastService {
@@ -14,6 +13,33 @@ export class BroadcastService {
 
   private broadcast(ids: string[], message: Uint8Array) {
     ids.forEach((id) => this.messageService.send(id, message));
+  }
+
+  @OnEvent('participant.media-toggle')
+  async broadcastMediaToggle({
+    user,
+    stream,
+    videoEnabled,
+    audioEnabled,
+  }: {
+    user: string;
+    stream: string;
+    videoEnabled?: boolean;
+    audioEnabled?: boolean;
+  }) {
+    const ids = await this.participant.getIdsByStream(stream);
+
+    const payload = this.messageService.encodeMessage({
+      event: 'user-toggled-media',
+      data: {
+        user,
+        stream,
+        videoEnabled,
+        audioEnabled,
+      },
+    });
+
+    this.broadcast(ids, payload);
   }
 
   @OnEvent('participant.kicked')

@@ -229,4 +229,21 @@ export class ParticipantService {
 
     this.eventEmitter.emit('participant.role-change', updatedUser);
   }
+
+  async setMediaEnabled(
+    user: string,
+    {
+      videoEnabled,
+      audioEnabled,
+    }: { videoEnabled?: boolean; audioEnabled?: boolean },
+  ) {
+    const stream = await this.participant.getCurrentStreamFor(user);
+
+    this.eventEmitter.emit('participant.media-toggle', {
+      user,
+      stream,
+      videoEnabled,
+      audioEnabled,
+    });
+  }
 }
