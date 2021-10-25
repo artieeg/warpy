@@ -102,10 +102,12 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
               audio: audioConsumer && {
                 consumer: audioConsumer,
                 track: new MediaStream([audioConsumer.track]),
+                active: true,
               },
               video: videoConsumer && {
                 consumer: videoConsumer,
                 track: new MediaStream([videoConsumer.track]),
+                active: true,
               },
             },
           };

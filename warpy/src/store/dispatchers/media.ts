@@ -13,8 +13,8 @@ export interface IMediaDispatchers {
     permissions: string,
     recvMediaParams: any,
   ) => Promise<void>;
-  dispatchAudioToggle: (flag: boolean) => void;
-  dispatchVideoToggle: (flag: boolean) => void;
+  dispatchAudioToggle: (flag: boolean) => Promise<void>;
+  dispatchVideoToggle: (flag: boolean) => Promise<void>;
   dispatchCameraSwitch: () => void;
   dispatchProducerClose: (producers: MediaKind[]) => void;
 }
@@ -61,20 +61,22 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
     (get().video?.track as any)._switchCamera();
   },
 
-  dispatchAudioToggle(flag) {
-    get()
-      .audio?.stream.getAudioTracks()
-      .forEach(audio => (audio.enabled = flag));
+  async dispatchAudioToggle(flag) {
+    const {api, audio} = get();
+    await api.stream.toggleMedia({audioEnabled: flag});
+
+    audio?.stream.getAudioTracks().forEach(audio => (audio.enabled = flag));
 
     set({
       audioMuted: flag,
     });
   },
 
-  dispatchVideoToggle(flag) {
-    get()
-      .video?.stream.getVideoTracks()
-      .forEach(video => (video.enabled = flag));
+  async dispatchVideoToggle(flag) {
+    const {api, video} = get();
+
+    await api.stream.toggleMedia({videoEnabled: flag});
+    video?.stream.getVideoTracks().forEach(video => (video.enabled = flag));
 
     set({
       videoStopped: flag,

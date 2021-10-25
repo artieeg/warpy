@@ -27,7 +27,7 @@ export interface IStreamAPI {
   toggleMedia: (payload: {
     audioEnabled?: boolean;
     videoEnabled?: boolean;
-  }) => void;
+  }) => Promise<void>;
   getViewers: (
     stream: string,
     page: number

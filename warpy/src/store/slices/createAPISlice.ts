@@ -39,6 +39,14 @@ export const createAPISlice = (
       await get().dispatchUserRoleUpdate(role, mediaPermissionToken, media);
     });
 
+    api.stream.onMediaToggle(data => {
+      get().dispatchMediaToggle(data.user, {
+        video: data.videoEnabled,
+        audio: data.audioEnabled,
+      });
+      console.log(`${data.user} toggled media`, data);
+    });
+
     api.media.onNewTrack(async data => {
       const {mediaClient, recvTransport} = get();
 
@@ -51,10 +59,10 @@ export const createAPISlice = (
 
         set(
           produce<IStore>(state => {
-            state.producers[data.user] = {
-              ...state.producers[data.user],
+            state.streamers[data.user] = {
+              ...state.streamers[data.user],
               media: {
-                ...state.producers[data.user],
+                ...state.streamers[data.user],
                 [consumer.kind]: {
                   consumer,
                   track: new MediaStream([consumer.track]),

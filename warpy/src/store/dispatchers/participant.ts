@@ -10,6 +10,10 @@ export interface IParticipantDispatchers {
   dispatchStreamers: (streamers: IParticipant[]) => void;
   dispatchRaisedHand: (user: IParticipant) => void;
   dispatchParticipantRemove: (user: string) => void;
+  dispatchMediaToggle: (
+    user: string,
+    data: {video?: boolean; audio?: boolean},
+  ) => void;
 }
 
 export const createParticipantDispatchers: StoreSlice<IParticipantDispatchers> =
@@ -80,6 +84,28 @@ export const createParticipantDispatchers: StoreSlice<IParticipantDispatchers> =
         produce<IStore>(state => {
           state.totalParticipantCount++;
           state.viewers[viewer.id] = viewer;
+        }),
+      );
+    },
+
+    dispatchMediaToggle(user, {video, audio}) {
+      set(
+        produce<IStore>(state => {
+          const {media} = state.streamers[user];
+
+          if (!media) {
+            return;
+          }
+
+          if (video !== undefined && media.video) {
+            state.streamers[user].media!.video!.active = video;
+            console.log(state.streamers[user].media!.video);
+          }
+
+          if (audio !== undefined && media.audio) {
+            state.streamers[user].media!.audio!.active = audio;
+            console.log(state.streamers[user].media!.audio);
+          }
         }),
       );
     },

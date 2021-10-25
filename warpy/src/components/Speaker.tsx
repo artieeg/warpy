@@ -1,6 +1,5 @@
 import React, {useEffect, useMemo, useRef} from 'react';
-import {User} from '@app/models';
-import {Animated, StyleSheet, View} from 'react-native';
+import {Animated, StyleSheet} from 'react-native';
 import {Avatar} from './Avatar';
 import {useStore} from '@app/store';
 
@@ -12,7 +11,7 @@ interface ISpeakerProps {
 
 export const Speaker = (props: ISpeakerProps) => {
   const {id, volume, onDoneSpeaking} = props;
-  const user = useMemo(() => useStore.getState().producers[id], [id]);
+  const user = useMemo(() => useStore.getState().streamers[id], [id]);
 
   const scale = useRef(new Animated.Value(1));
 

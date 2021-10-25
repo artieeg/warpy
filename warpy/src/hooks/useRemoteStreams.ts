@@ -18,7 +18,13 @@ export const useRemoteStreams = () => {
   const getStreams = useCallback(() => {
     setStreams({
       videoStreams: Object.values(streamers)
-        .map(p => p.media?.video?.track)
+        .map(p => {
+          if (p.media?.video?.active) {
+            return p.media?.video?.track;
+          } else {
+            return undefined;
+          }
+        })
         .filter(s => !!s) as any,
       audioStreams: Object.values(streamers)
         .map(p => p.media?.audio?.track)
