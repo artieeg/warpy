@@ -45,6 +45,7 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
       recvMediaParams,
     });
   },
+
   dispatchProducerClose(producers) {
     set(
       produce<IStore>(state => {
@@ -70,7 +71,15 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
     });
   },
 
-  dispatchVideoToggle(_flag) {},
+  dispatchVideoToggle(flag) {
+    get()
+      .video?.stream.getVideoTracks()
+      .forEach(video => (video.enabled = flag));
+
+    set({
+      videoStopped: flag,
+    });
+  },
 
   async dispatchMediaSend(permissions, tracks) {
     const {mediaClient, stream, sendMediaParams, sendDevice} = get();

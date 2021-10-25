@@ -24,6 +24,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       recvMediaParams,
     } = await api.stream.create(title, hub);
 
+    console.log(speakers);
     set({
       stream,
       title,

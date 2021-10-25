@@ -1,7 +1,6 @@
 import {useStore} from '@app/store';
 import {useCallback, useEffect, useState} from 'react';
 import {MediaStream} from 'react-native-webrtc';
-import {useLocalVideoStream} from './useLocalStream';
 
 interface IStreams {
   videoStreams: MediaStream[];
@@ -14,18 +13,18 @@ export const useRemoteStreams = () => {
     audioStreams: [],
   });
 
-  const producers = useStore.use.producers();
+  const streamers = useStore.use.streamers();
 
   const getStreams = useCallback(() => {
     setStreams({
-      videoStreams: Object.values(producers)
+      videoStreams: Object.values(streamers)
         .map(p => p.media?.video?.track)
         .filter(s => !!s) as any,
-      audioStreams: Object.values(producers)
+      audioStreams: Object.values(streamers)
         .map(p => p.media?.audio?.track)
         .filter(s => !!s) as any,
     });
-  }, [producers]);
+  }, [streamers]);
 
   useEffect(() => {
     getStreams();

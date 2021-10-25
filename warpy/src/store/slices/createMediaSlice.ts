@@ -16,6 +16,7 @@ export interface IMediaSlice {
     producer?: Producer;
   };
   audioMuted: boolean;
+  videoStopped: boolean;
 
   sendTransport: Transport | null;
   recvTransport: Transport | null;
@@ -40,5 +41,6 @@ export const createMediaSlice: StoreSlice<IMediaSlice> = (): IMediaSlice => ({
   sendTransport: null,
   mediaPermissionsToken: null,
   audioMuted: false,
+  videoStopped: false,
   recvTransport: null,
 });
