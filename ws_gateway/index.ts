@@ -238,16 +238,28 @@ const handlers: Record<string, HandlerConfig> = {
     subject: "participant.set-role",
   },
 
+  "media-toggle": {
+    schema: joi.object({
+      videoEnabled: joi.boolean().optional(),
+      audioEnabled: joi.boolean().optional(),
+    }),
+    kind: "request",
+    auth: true,
+    subject: "participant.media-toggle",
+  },
+
   auth: {
     schema: joi.object({
       token: joi.string().max(400).required(),
     }),
     customHandler: onAuth,
   },
+
   "connect-transport": {
     schema: joi.object().unknown(),
     customHandler: onConnectTransport,
   },
+
   "recv-tracks-request": {
     schema: joi.object().unknown(),
     customHandler: onRecvTracksRequest,
