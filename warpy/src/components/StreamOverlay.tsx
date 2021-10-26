@@ -86,7 +86,7 @@ export const StreamOverlay = () => {
           <EmptyItem />,
         ],
         bottom: [
-          <ReactionEmitter disabled={false} />,
+          <ReactionEmitter disabled />,
           <ClapButton />,
           <RaiseHandButton />,
           <ChatButton />,
