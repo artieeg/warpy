@@ -7822,6 +7822,11 @@ lines-and-columns@^1.1.6:
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.1.6.tgz#1c00c743b433cd0a4e80758f7b64a57440d9ff00"
   integrity sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=
 
+linked-list@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/linked-list/-/linked-list-3.0.1.tgz#4efa6fa9764571e6bd10b6d2d584c3e5678391ab"
+  integrity sha512-SZQtR4X1ytETq5AUUHmB0b4HuekzdfowzWXCBrd1GUPzeUx3zAdDE4j+M/IEFKaazkfOSBRcPzl7dFA9EZtmHA==
+
 loader-runner@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/loader-runner/-/loader-runner-4.2.0.tgz#d7022380d66d14c5fb1d496b89864ebcfd478384"

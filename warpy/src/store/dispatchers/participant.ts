@@ -99,12 +99,10 @@ export const createParticipantDispatchers: StoreSlice<IParticipantDispatchers> =
 
           if (video !== undefined && media.video) {
             state.streamers[user].media!.video!.active = video;
-            console.log(state.streamers[user].media!.video);
           }
 
           if (audio !== undefined && media.audio) {
             state.streamers[user].media!.audio!.active = audio;
-            console.log(state.streamers[user].media!.audio);
           }
         }),
       );

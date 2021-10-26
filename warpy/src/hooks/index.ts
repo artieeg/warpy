@@ -1,5 +1,4 @@
 export * from './feed';
-export * from './useLocalStream';
 export * from './useStreamViewers';
 export * from './useStreamProducers';
 export * from './useParticipantsCount';

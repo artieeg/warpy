@@ -1,17 +1,23 @@
 import {useStore} from '@app/store';
-import {useCallback, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import shallow from 'zustand/shallow';
-import {useLocalAudioStream} from '.';
 
 export const useNewStreamController = () => {
   const [title, setTitle] = useState('test stream');
   const [hub, setHub] = useState('60ec569668b42c003304630b');
-  const [streamId, dispatchCreateStream] = useStore(
-    state => [state.stream, state.dispatchStreamCreate],
+  const [streamId, dispatchCreateStream, dispatchMediaRequest] = useStore(
+    state => [
+      state.stream,
+      state.dispatchStreamCreate,
+      state.dispatchMediaRequest,
+    ],
     shallow,
   );
 
-  useLocalAudioStream();
+  useEffect(() => {
+    dispatchMediaRequest('audio', {enabled: true});
+    dispatchMediaRequest('video', {enabled: true});
+  }, []);
 
   const onStart = useCallback(() => {
     if (streamId) {

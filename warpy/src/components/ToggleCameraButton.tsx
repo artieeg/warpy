@@ -11,7 +11,7 @@ export const ToggleCameraButton = () => {
 
   return (
     <IconButton
-      onPress={() => dispatchVideoToggle(!videoStopped)}
+      onPress={() => dispatchVideoToggle()}
       color="#ffffff"
       name={videoStopped ? 'video' : 'video-off'}
       size={30}

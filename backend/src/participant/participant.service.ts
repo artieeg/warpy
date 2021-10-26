@@ -239,6 +239,18 @@ export class ParticipantService {
   ) {
     const stream = await this.participant.getCurrentStreamFor(user);
 
+    const update = {};
+
+    if (audioEnabled !== undefined) {
+      update['audioEnabled'] = audioEnabled;
+    }
+
+    if (videoEnabled !== undefined) {
+      update['videoEnabled'] = videoEnabled;
+    }
+
+    await this.participant.updateOne(user, update);
+
     this.eventEmitter.emit('participant.media-toggle', {
       user,
       stream,

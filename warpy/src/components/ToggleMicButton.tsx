@@ -11,7 +11,7 @@ export const ToggleMicButton = () => {
 
   return (
     <IconButton
-      onPress={() => dispatchAudioToggle(!muted)}
+      onPress={() => dispatchAudioToggle()}
       color="#ffffff"
       name={muted ? 'mic-off' : 'mic-on'}
       size={30}

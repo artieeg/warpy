@@ -23,6 +23,7 @@
     "axios": "^0.21.1",
     "babel-plugin-module-resolver": "^4.1.0",
     "immer": "^9.0.5",
+    "linked-list": "^3.0.1",
     "mediasoup-client": "^3.6.36",
     "mock-socket": "^9.0.3",
     "moment": "^2.29.1",

@@ -1,9 +1,13 @@
 import {useStore} from '@app/store';
 import {useEffect} from 'react';
+import shallow from 'zustand/shallow';
 import {useKickHandler} from './useKickHandler';
 
 export const useRemoteStreamController = (id: string) => {
-  const dispatchJoinStream = useStore(state => state.dispatchStreamJoin);
+  const [dispatchJoinStream, dispatchMediaRequest] = useStore(
+    state => [state.dispatchStreamJoin, state.dispatchMediaRequest],
+    shallow,
+  );
 
   useEffect(() => {
     if (id) {

@@ -6,6 +6,8 @@ export interface IBaseParticipant extends IEntity {
   stream: string | null;
   role: Roles;
   isRaisingHand?: boolean;
+  audioEnabled?: boolean;
+  videoEnabled?: boolean;
 }
 
 export interface IParticipant extends IBaseUser, IBaseParticipant {}
