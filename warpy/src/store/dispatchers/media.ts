@@ -60,7 +60,7 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
     if (kind === 'video') {
       console.log('setting video');
       set({
-        videoStopped: !params?.enabled,
+        videoEnabled: !params?.enabled,
         video: {
           stream: mediaStream,
           track: mediaStream.getVideoTracks()[0],
@@ -68,7 +68,7 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
       });
     } else {
       set({
-        audioMuted: !params?.enabled,
+        audioEnabled: !params?.enabled,
         audio: {
           stream: mediaStream,
           track: mediaStream.getAudioTracks()[0],
@@ -116,28 +116,28 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
   },
 
   async dispatchAudioToggle() {
-    const {api, audio, audioMuted} = get();
-    await api.stream.toggleMedia({audioEnabled: audioMuted});
+    const {api, audio, audioEnabled} = get();
+    await api.stream.toggleMedia({audioEnabled});
 
     audio?.stream
       .getAudioTracks()
-      .forEach(audio => (audio.enabled = audioMuted));
+      .forEach(audio => (audio.enabled = audioEnabled));
 
     set({
-      audioMuted: !audioMuted,
+      audioEnabled: !audioEnabled,
     });
   },
 
   async dispatchVideoToggle() {
-    const {api, video, videoStopped} = get();
+    const {api, video, videoEnabled} = get();
 
-    await api.stream.toggleMedia({videoEnabled: videoStopped});
+    await api.stream.toggleMedia({videoEnabled});
     video?.stream
       .getVideoTracks()
-      .forEach(video => (video.enabled = videoStopped));
+      .forEach(video => (video.enabled = videoEnabled));
 
     set({
-      videoStopped: !videoStopped,
+      videoEnabled: !videoEnabled,
     });
   },
 

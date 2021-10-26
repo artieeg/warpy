@@ -8,8 +8,8 @@ export const useVideoStreams = ({
 }: {
   forceLocalStream?: boolean;
 }) => {
-  const [videoStopped, localVideoData] = useStore(
-    state => [state.videoStopped, state.video],
+  const [videoEnabled, localVideoData] = useStore(
+    state => [state.videoEnabled, state.video],
     shallow,
   );
   const localVideoStream = localVideoData?.stream;
@@ -22,13 +22,13 @@ export const useVideoStreams = ({
     if (
       localVideoStream &&
       (role === 'streamer' || forceLocalStream) &&
-      !videoStopped
+      !videoEnabled
     ) {
       return [localVideoStream, ...videoStreams];
     } else {
       return videoStreams;
     }
-  }, [localVideoStream, videoStreams, videoStopped]);
+  }, [localVideoStream, videoStreams, videoEnabled]);
 
   return streams;
 };
