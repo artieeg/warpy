@@ -1,11 +1,23 @@
 import {useStore} from '@app/store';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Animated, StyleSheet, View} from 'react-native';
 import {Reaction} from './Reaction';
+import {Item, List} from 'linked-list';
 
 interface IReaction {
   reaction: string;
   key: number;
+}
+
+class CReaction extends Item implements IReaction {
+  reaction!: string;
+  key!: number;
+
+  constructor(props: IReaction) {
+    super();
+
+    Object.assign(this, props);
+  }
 }
 
 interface IEmittedReactionProps {
@@ -89,7 +101,9 @@ export const ReactionEmitter = (props: IReactionEmitterProps) => {
 
   const api = useStore.use.api();
 
-  const [reactions, setReactions] = useState<IReaction[]>([]);
+  const [rerender, setRerender] = useState(false);
+
+  const reactions = useRef(new List());
 
   useEffect(() => {
     if (disabled) {
@@ -97,17 +111,20 @@ export const ReactionEmitter = (props: IReactionEmitterProps) => {
     }
 
     const unsub = api.stream.onReactionsUpdate(data => {
-      setReactions(prev => [
-        ...prev,
-        ...data.reactions.map(reaction => ({
-          reaction: reaction.emoji,
-          key: Math.random(),
-        })),
-      ]);
+      data.reactions.forEach(reaction =>
+        reactions.current.prepend(
+          new CReaction({
+            reaction: reaction.emoji,
+            key: Math.random(),
+          }),
+        ),
+      );
+      setRerender(prev => !prev);
     });
 
     const interval = setInterval(() => {
-      setReactions(prev => prev.slice(10));
+      reactions.current = new List();
+      setRerender(prev => !prev);
     }, 20000);
 
     return () => {
@@ -116,13 +133,19 @@ export const ReactionEmitter = (props: IReactionEmitterProps) => {
     };
   }, [api, disabled]);
 
-  return (
-    <View style={styles.wrapper}>
-      {reactions.map(reaction => (
-        <EmittedReaction reaction={reaction.reaction} key={reaction.key} />
-      ))}
-    </View>
-  );
+  const renderReactions = useCallback(() => {
+    const components = [];
+
+    for (const reaction of reactions.current) {
+      components.push(
+        <EmittedReaction reaction={reaction.reaction} key={reaction.key} />,
+      );
+    }
+
+    return components;
+  }, [rerender]);
+
+  return <View style={styles.wrapper}>{renderReactions()}</View>;
 };
 
 const styles = StyleSheet.create({

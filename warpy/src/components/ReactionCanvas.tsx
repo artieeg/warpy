@@ -1,18 +1,21 @@
 import {useStore} from '@app/store';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
-import {GivenReaction, IGivenReaction} from './GivenReaction';
+import {GivenReaction, CGivenReaction} from './GivenReaction';
+import {List} from 'linked-list';
 
 export const ReactionCanvas = () => {
   const reaction = useStore.use.reaction();
   const stream = useStore.use.stream();
   const api = useStore.use.api();
 
-  const [reactions, setReactions] = useState<IGivenReaction[]>([]);
+  const reactions = useRef(new List());
+  const [rerender, setRerender] = useState(true);
 
   useEffect(() => {
     setInterval(() => {
-      setReactions([]);
+      reactions.current = new List();
+      setRerender(prev => !prev);
     }, 10000);
   }, []);
 
@@ -25,26 +28,34 @@ export const ReactionCanvas = () => {
       }
 
       api.stream.react(stream, reaction);
-      setReactions(prev => [
-        ...prev,
-        {
+      reactions.current.append(
+        new CGivenReaction({
           x: nativeEvent.pageX,
           y: nativeEvent.pageY,
           key: nativeEvent.pageX + nativeEvent.pageY,
           timestamp: Date.now(),
           rotate: (Math.random() * maxAngle - maxAngle / 2).toString() + 'deg',
           reaction,
-        },
-      ]);
+        }),
+      );
+      setRerender(prev => !prev);
     },
     [reaction, api, stream],
   );
 
+  const renderReactions = () => {
+    const components = [];
+
+    for (const item of reactions.current) {
+      components.push(<GivenReaction {...item} key={item.key} />);
+    }
+
+    return components;
+  };
+
   return (
     <View onTouchStart={onTouchStart} style={styles.wrapper}>
-      {reactions.map(item => (
-        <GivenReaction {...item} key={item.key} />
-      ))}
+      {renderReactions()}
       <View />
     </View>
   );

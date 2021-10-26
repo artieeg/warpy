@@ -1,3 +1,4 @@
+import {Item} from 'linked-list';
 import React, {useEffect, useRef} from 'react';
 import {Animated, StyleProp} from 'react-native';
 import {Reaction} from './Reaction';
@@ -11,7 +12,22 @@ export interface IGivenReaction {
   reaction: string;
 }
 
-export const GivenReaction = React.memo((props: IGivenReaction) => {
+export class CGivenReaction extends Item implements IGivenReaction {
+  x!: number;
+  y!: number;
+  key!: number;
+  timestamp!: number;
+  rotate!: string;
+  reaction!: string;
+
+  constructor(params: IGivenReaction) {
+    super();
+
+    Object.assign(this, params);
+  }
+}
+
+export const GivenReaction = React.memo((props: CGivenReaction) => {
   const scale = useRef(new Animated.Value(2.5));
   const opacity = useRef(new Animated.Value(1));
 
