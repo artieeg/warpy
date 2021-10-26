@@ -6,7 +6,7 @@ import {
 import { StreamBlockEntity } from '@backend_2/stream-block/stream-block.entity';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { IJoinStreamResponse, IParticipant } from '@warpy/lib';
+import { IJoinStreamResponse, Roles } from '@warpy/lib';
 import { BlockService } from '../block/block.service';
 import { MediaService } from '../media/media.service';
 import { MessageService } from '../message/message.service';
@@ -106,7 +106,7 @@ export class ParticipantService {
       throw new UserNotFound();
     }
 
-    const media = await this.media.getSpeakerParams({
+    const media = await this.media.createSendTransport({
       speaker: newSpeakerId,
       roomId: stream,
     });
@@ -137,7 +137,6 @@ export class ParticipantService {
     this.eventEmitter.emit('participant.new-speaker', speakerData);
   }
 
-  //TODO: do not fetch participant info from the db (#110)
   async broadcastActiveSpeakers(
     speakers: Record<string, { user: string; volume: number }[]>,
   ) {
@@ -176,5 +175,87 @@ export class ParticipantService {
     await this.streamBlockEntity.create(stream, userToKick);
 
     this.eventEmitter.emit('participant.kicked', userToKickData);
+  }
+
+  async setRole(mod: string, userToUpdate: string, role: Roles) {
+    const moderator = await this.participant.getById(mod);
+    const { stream } = moderator;
+
+    if (moderator.role !== 'streamer') {
+      throw new NoPermissionError();
+    }
+
+    if (role !== 'viewer') {
+      await this.blockService.isBannedBySpeaker(userToUpdate, stream);
+    }
+
+    const oldUserData = await this.participant.getById(userToUpdate);
+
+    let sendNodeId = oldUserData.sendNodeId;
+    let recvNodeId = oldUserData.recvNodeId;
+
+    let response = {
+      role,
+    };
+
+    if (oldUserData.role === 'viewer') {
+      //If the user was viewer, he hasn't been assigned to a media send node
+      sendNodeId = await this.media.getSendNodeId();
+
+      response['media'] = await this.media.createSendTransport({
+        roomId: stream,
+        speaker: userToUpdate,
+      });
+    }
+
+    const updatedUser = await this.participant.updateOne(userToUpdate, {
+      sendNodeId,
+      role,
+    });
+
+    response['mediaPermissionToken'] = this.media.createPermissionToken({
+      audio: role !== 'viewer',
+      video: role === 'streamer',
+      sendNodeId,
+      recvNodeId,
+      user: userToUpdate,
+      room: stream,
+    });
+
+    this.messageService.sendMessage(userToUpdate, {
+      event: 'role-change',
+      data: response,
+    });
+
+    this.eventEmitter.emit('participant.role-change', updatedUser);
+  }
+
+  async setMediaEnabled(
+    user: string,
+    {
+      videoEnabled,
+      audioEnabled,
+    }: { videoEnabled?: boolean; audioEnabled?: boolean },
+  ) {
+    const stream = await this.participant.getCurrentStreamFor(user);
+
+    const update = {};
+
+    if (audioEnabled !== undefined) {
+      update['audioEnabled'] = audioEnabled;
+    }
+
+    if (videoEnabled !== undefined) {
+      update['videoEnabled'] = videoEnabled;
+    }
+
+    await this.participant.updateOne(user, update);
+
+    this.eventEmitter.emit('participant.media-toggle', {
+      user,
+      stream,
+      videoEnabled,
+      audioEnabled,
+    });
   }
 }

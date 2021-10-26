@@ -7,27 +7,32 @@ export const speak = (record: UserRecord) => {
 
   api.stream.raiseHand();
 
-  api.stream.onSpeakingAllowed(async (data) => {
+  api.stream.onRoleUpdate(async (data) => {
     const { media, mediaPermissionToken } = data;
 
-    record.media = MediaClient({
-      recvDevice: record.recvDevice,
-      sendDevice: record.sendDevice,
-      permissionsToken: mediaPermissionToken,
-      api,
-    });
+    record.media.permissionsToken = mediaPermissionToken;
 
     const audio = await getAudioStream();
 
-    const { routerRtpCapabilities } = media;
+    const { routerRtpCapabilities, sendTransportOptions } = media;
 
     await record.sendDevice.load({ routerRtpCapabilities });
 
+    const sendTransport = await record.media.createTransport({
+      roomId: stream!,
+      device: record.sendDevice,
+      permissionsToken: mediaPermissionToken,
+      direction: "send",
+      options: {
+        sendTransportOptions: sendTransportOptions,
+      },
+      isProducer: true,
+    });
+
     const producer = await record.media.sendMediaStream(
       audio,
-      stream!,
       media,
-      "audio"
+      sendTransport
     );
 
     record.producers = [producer];

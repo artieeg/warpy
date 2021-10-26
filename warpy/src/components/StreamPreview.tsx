@@ -19,7 +19,7 @@ export const StreamPreview = React.memo((props: IStreamPreviewProps) => {
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={[styles.wrapper, style]}>
-        <Video
+        <View
           repeat
           muted
           paused={false}
@@ -56,7 +56,7 @@ export const StreamPreview = React.memo((props: IStreamPreviewProps) => {
 
 const styles = StyleSheet.create({
   wrapper: {
-    //backgroundColor: '#ACC3FD',
+    backgroundColor: '#ACC3FD',
     flex: 1,
     overflow: 'hidden',
     margin: 10,
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   },
   video: {
     flex: 1,
-    backgroundColor: '#ACC3FD',
+    backgroundColor: '#5C73FD',
   },
   participants: {
     flexDirection: 'row',

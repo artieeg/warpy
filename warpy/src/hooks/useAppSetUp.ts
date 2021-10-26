@@ -16,7 +16,7 @@ export const useAppSetUp = () => {
     isLoadingUser,
     api,
     user,
-    loadUserData,
+    dispatchUserLoadData,
   ] = useStore(
     state => [
       state.createAPISubscriptions,
@@ -24,7 +24,7 @@ export const useAppSetUp = () => {
       state.isLoadingUser,
       state.api,
       state.user,
-      state.loadUserData,
+      state.dispatchUserLoadData,
     ],
     shallow,
   );
@@ -40,7 +40,7 @@ export const useAppSetUp = () => {
   useEffect(() => {
     if (user) {
       navigation.navigate('Feed');
-      useStore.getState().fetchUnreadNotifications();
+      useStore.getState().dispatchNotificationsFetchUnread();
     }
   }, [user, navigation]);
 
@@ -56,7 +56,7 @@ export const useAppSetUp = () => {
 
   useEffect(() => {
     if (accessToken) {
-      loadUserData(accessToken);
+      dispatchUserLoadData(accessToken);
     }
   }, [accessToken]);
 };

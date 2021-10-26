@@ -38,6 +38,8 @@ export class StreamService {
       role: 'streamer',
       recvNodeId,
       sendNodeId,
+      audioEnabled: true,
+      videoEnabled: true,
     });
 
     const stream = await this.streamEntity.create({

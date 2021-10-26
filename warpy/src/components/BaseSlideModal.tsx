@@ -1,3 +1,4 @@
+import {useStore} from '@app/store';
 import React from 'react';
 import {StyleSheet, View, ViewProps} from 'react-native';
 import Modal from 'react-native-modal';
@@ -6,12 +7,12 @@ import {Text} from './Text';
 export interface IBaseModalProps extends ViewProps {
   title?: string;
   visible: boolean;
-  onHide: () => void;
   children?: React.ReactNode;
 }
 
 export const BaseSlideModal = (props: IBaseModalProps) => {
-  const {visible, onHide, children, title, style} = props;
+  const {visible, children, title, style} = props;
+  const dispatchModalClose = useStore.use.dispatchModalClose();
 
   return (
     <Modal
@@ -21,7 +22,7 @@ export const BaseSlideModal = (props: IBaseModalProps) => {
       useNativeDriverForBackdrop
       propagateSwipe={true}
       onSwipeComplete={() => {
-        onHide();
+        dispatchModalClose();
       }}
       swipeDirection={['down']}
       swipeThreshold={100}

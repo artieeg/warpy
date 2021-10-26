@@ -6,9 +6,11 @@ import {
   IJoinStream,
   IJoinStreamResponse,
   IKickUserRequest,
+  IMediaToggleRequest,
   IRaiseHand,
   IRequestViewers,
   IRequestViewersResponse,
+  ISetRoleRequest,
   IUserDisconnected,
 } from '@warpy/lib';
 import { ParticipantService } from './participant.service';
@@ -45,6 +47,14 @@ export class ParticipantController {
     await this.participant.setRaiseHand(user, true);
   }
 
+  @MessagePattern('participant.set-permissions')
+  async onSetPermissions() {}
+
+  @MessagePattern('participant.set-role')
+  async onSetRole({ user, userToUpdate, role }: ISetRoleRequest) {
+    await this.participant.setRole(user, userToUpdate, role);
+  }
+
   @MessagePattern('speaker.allow')
   async onNewSpeaker({ user, speaker }: IAllowSpeakerPayload) {
     await this.participant.allowSpeaker(user, speaker);
@@ -58,5 +68,17 @@ export class ParticipantController {
   @MessagePattern('stream.kick-user')
   async onKickUser({ userToKick, user }: IKickUserRequest) {
     await this.participant.kickUser(userToKick, user);
+  }
+
+  @MessagePattern('participant.media-toggle')
+  async onMediaToggle({
+    user,
+    audioEnabled,
+    videoEnabled,
+  }: IMediaToggleRequest) {
+    await this.participant.setMediaEnabled(user, {
+      audioEnabled,
+      videoEnabled,
+    });
   }
 }

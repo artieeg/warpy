@@ -2974,6 +2974,21 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
+"@types/jest-when@^2.7.3":
+  version "2.7.3"
+  resolved "https://registry.yarnpkg.com/@types/jest-when/-/jest-when-2.7.3.tgz#40735b320d8655ebff01123cb58afbdaf8274658"
+  integrity sha512-BdDZnKj3ZO1VsRlJFyRx6yLa0hG9++qetnBKhESjCGRVAm6S4aaKXXLm9xGFmtAQpzuMC44wxhvkG2cl6axvyQ==
+  dependencies:
+    "@types/jest" "*"
+
+"@types/jest@*", "@types/jest@^27.0.1":
+  version "27.0.2"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-27.0.2.tgz#ac383c4d4aaddd29bbf2b916d8d105c304a5fcd7"
+  integrity sha512-4dRxkS/AFX0c5XW6IPMNOydLn2tEhNhJV7DnYK+0bjoJZ+QTmfucBlihX7aoEsh/ocYtkLC73UbnBXBXIxsULA==
+  dependencies:
+    jest-diff "^27.0.0"
+    pretty-format "^27.0.0"
+
 "@types/jest@^26.0.24":
   version "26.0.24"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-26.0.24.tgz#943d11976b16739185913a1936e0de0c4a7d595a"
@@ -2981,14 +2996,6 @@
   dependencies:
     jest-diff "^26.0.0"
     pretty-format "^26.0.0"
-
-"@types/jest@^27.0.1":
-  version "27.0.2"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-27.0.2.tgz#ac383c4d4aaddd29bbf2b916d8d105c304a5fcd7"
-  integrity sha512-4dRxkS/AFX0c5XW6IPMNOydLn2tEhNhJV7DnYK+0bjoJZ+QTmfucBlihX7aoEsh/ocYtkLC73UbnBXBXIxsULA==
-  dependencies:
-    jest-diff "^27.0.0"
-    pretty-format "^27.0.0"
 
 "@types/json-schema@*", "@types/json-schema@^7.0.3", "@types/json-schema@^7.0.4", "@types/json-schema@^7.0.5", "@types/json-schema@^7.0.7", "@types/json-schema@^7.0.8":
   version "7.0.9"
@@ -7814,6 +7821,11 @@ lines-and-columns@^1.1.6:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.1.6.tgz#1c00c743b433cd0a4e80758f7b64a57440d9ff00"
   integrity sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=
+
+linked-list@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/linked-list/-/linked-list-3.0.1.tgz#4efa6fa9764571e6bd10b6d2d584c3e5678391ab"
+  integrity sha512-SZQtR4X1ytETq5AUUHmB0b4HuekzdfowzWXCBrd1GUPzeUx3zAdDE4j+M/IEFKaazkfOSBRcPzl7dFA9EZtmHA==
 
 loader-runner@^4.2.0:
   version "4.2.0"

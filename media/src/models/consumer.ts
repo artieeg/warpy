@@ -9,5 +9,6 @@ export interface Consumer {
     rtpParameters: RtpParameters;
     type: ConsumerType;
     producerPaused: boolean;
+    user: string;
   };
 }

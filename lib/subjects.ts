@@ -21,7 +21,7 @@ export const subjects = {
       create: "media.room.create",
     },
     peer: {
-      makeSpeaker: "media.peer.make-speaker",
+      makeSpeaker: "media.transport.send-transport",
       join: "media.peer.join",
     },
     transport: {

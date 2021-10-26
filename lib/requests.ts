@@ -1,4 +1,4 @@
-import { MediaDirection, MediaKind, MediaServiceRole } from "./types";
+import { MediaDirection, MediaKind, MediaServiceRole, Roles } from "./types";
 
 export interface ITransportOptions {
   id: string;
@@ -18,11 +18,7 @@ export interface ICreateMediaRoom {
 
 export interface INewMediaRoomData {
   routerRtpCapabilities: any;
-  //recvTransportOptions: ITransportOptions;
-  sendTransportOptions: {
-    video: ITransportOptions;
-    audio: ITransportOptions;
-  };
+  sendTransportOptions: ITransportOptions;
 }
 
 export interface INewMediaTrack {
@@ -42,15 +38,13 @@ export interface IJoinMediaRoom {
   user: string;
 }
 
-export interface IConnectNewSpeakerMedia {
+export interface ICreateTransport {
   roomId: string;
   speaker: string;
 }
 
-export interface INewSpeakerMediaResponse {
-  sendTransportOptions: {
-    audio: any;
-  };
+export interface INewTransportResponse {
+  sendTransportOptions: ITransportOptions;
   routerRtpCapabilities: any;
 }
 
@@ -251,4 +245,25 @@ export interface IGetReadNotifications {
 export interface IGifsRequest {
   search?: string;
   next?: string;
+}
+
+export interface ISetRoleRequest {
+  user: string;
+  userToUpdate: string;
+  role: Roles;
+}
+
+export interface IRemoveUserProducersRequest {
+  user: string;
+  stream: string;
+  producers: {
+    audio?: boolean;
+    video?: boolean;
+  };
+}
+
+export interface IMediaToggleRequest {
+  user: string;
+  videoEnabled?: boolean;
+  audioEnabled?: boolean;
 }

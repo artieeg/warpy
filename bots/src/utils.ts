@@ -18,11 +18,17 @@ type NewRecvTransportParams = {
   stream: string;
   recvTransportOptions: any;
   routerRtpCapabilities: any;
+  permissionsToken: string;
 };
 
 export const createRecvTransport = async (params: NewRecvTransportParams) => {
-  const { stream, record, recvTransportOptions, routerRtpCapabilities } =
-    params;
+  const {
+    stream,
+    permissionsToken,
+    record,
+    recvTransportOptions,
+    routerRtpCapabilities,
+  } = params;
 
   if (!record.media) {
     throw new Error("User's media client is not initialized");
@@ -36,6 +42,7 @@ export const createRecvTransport = async (params: NewRecvTransportParams) => {
     direction: "recv",
     options: { recvTransportOptions },
     isProducer: false,
+    permissionsToken,
   });
 
   return newTransport;

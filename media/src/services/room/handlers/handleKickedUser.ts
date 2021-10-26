@@ -23,8 +23,7 @@ export const handleKickedUser: MessageHandler<
   peer.producer.audio?.close();
 
   peer.recvTransport?.close();
-  peer.sendTransport?.audio?.close();
-  peer.sendTransport?.video?.close();
+  peer.sendTransport?.close();
 
   peer.consumers.forEach((consumer) => consumer.close());
 

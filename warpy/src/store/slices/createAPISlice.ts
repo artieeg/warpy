@@ -2,7 +2,7 @@ import {GetState, SetState} from 'zustand';
 import {APIClient, WebSocketConn} from '@warpy/api';
 import config from '@app/config';
 import {IStore} from '../useStore';
-import {Participant} from '@app/models';
+import produce from 'immer';
 
 export interface IAPISlice {
   api: APIClient;
@@ -21,57 +21,87 @@ export const createAPISlice = (
     const {api} = store;
 
     api.stream.onNewViewer(data => {
-      store.addViewer(data.viewer);
+      store.dispatchViewerAdd(data.viewer);
     });
 
     api.stream.onActiveSpeaker(data => {
-      store.setActiveSpeakers(data.speakers);
+      store.dispatchAudioLevelsUpdate(data.speakers);
     });
 
     api.stream.onNewRaisedHand(data => {
-      const participant = Participant.fromJSON(data.viewer);
+      const participant = data.viewer;
       participant.isRaisingHand = true;
 
-      store.raiseHand(participant);
+      store.dispatchRaisedHand(participant);
     });
 
-    api.stream.onSpeakingAllowed(async options => {
-      await get().initSpeakerMedia(options.mediaPermissionToken, options.media);
+    api.stream.onRoleUpdate(async ({mediaPermissionToken, media, role}) => {
+      await get().dispatchUserRoleUpdate(role, mediaPermissionToken, media);
+    });
 
-      set({
-        isSpeaker: true,
-        role: 'speaker',
+    api.stream.onMediaToggle(data => {
+      get().dispatchMediaToggle(data.user, {
+        video: data.videoEnabled,
+        audio: data.audioEnabled,
       });
+      console.log(`${data.user} toggled media`, data);
     });
 
-    api.stream.onNewSpeaker(data => {
-      const {speaker} = data;
+    api.media.onNewTrack(async data => {
+      const {mediaClient, recvTransport} = get();
 
-      store.addSpeaker(speaker);
+      if (mediaClient && recvTransport) {
+        const consumer = await mediaClient.consumeRemoteStream(
+          data.consumerParameters,
+          data.user,
+          recvTransport,
+        );
+
+        set(
+          produce<IStore>(state => {
+            state.streamers[data.user] = {
+              ...state.streamers[data.user],
+              media: {
+                ...state.streamers[data.user],
+                [consumer.kind]: {
+                  consumer,
+                  track: new MediaStream([consumer.track]),
+                },
+              } as any,
+            };
+          }),
+        );
+      }
+    });
+
+    api.stream.onParticipantRoleChange(data => {
+      const {user} = data;
+
+      store.dispatchStreamerAdd(user);
     });
 
     api.stream.onUserLeft(data => {
       const {user} = data;
 
-      store.removeParticipant(user);
+      store.dispatchParticipantRemove(user);
     });
 
     api.stream.onChatMessages(data => {
       const {messages} = data;
 
-      store.addMessages(messages);
+      store.dispatchChatMessages(messages);
     });
 
     api.stream.onUserKick(({user}) => {
-      store.removeParticipant(user);
+      store.dispatchParticipantRemove(user);
     });
 
     api.notification.onNewNotification(data => {
-      get().addNotification(data.notification);
+      get().dispatchNotificationAdd(data.notification);
     });
 
     api.notification.onNotificationDelete(data => {
-      get().removeNotification(data.notification_id);
+      get().dispatchNotificationRemove(data.notification_id);
     });
   },
 });

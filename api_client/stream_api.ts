@@ -5,13 +5,16 @@ import {
   IJoinStreamResponse,
   INewStreamResponse,
   IRequestViewersResponse,
-  ISpeakingAllowedEvent,
+  IRoleUpdateEvent,
   IChatMessagesEvent,
   ISendMessageResponse,
   IUserKickedEvent,
   IInviteSuggestionsResponse,
   IInviteResponse,
   ICancelInviteResponse,
+  Roles,
+  IParticipantRoleChangeEvent,
+  IMediaToggleEvent,
 } from "@warpy/lib";
 
 export interface IStreamAPI {
@@ -21,6 +24,10 @@ export interface IStreamAPI {
   stop: (stream: string) => any;
   sendChatMessage: (message: string) => Promise<ISendMessageResponse>;
   kickUser: (userToKick: string) => void;
+  toggleMedia: (payload: {
+    audioEnabled?: boolean;
+    videoEnabled?: boolean;
+  }) => Promise<void>;
   getViewers: (
     stream: string,
     page: number
@@ -29,16 +36,18 @@ export interface IStreamAPI {
   invite: (invitee: string, stream: string) => Promise<IInviteResponse>;
   cancelInvite: (invite_id: string) => Promise<ICancelInviteResponse>;
   getInviteSuggestions: (stream: string) => Promise<IInviteSuggestionsResponse>;
+  setRole: (userToUpdate: string, role: Roles) => void;
   allowSpeaker: (speaker: string) => any;
   onReactionsUpdate: EventHandler<IReactionsUpdate>;
   onNewViewer: EventHandler;
   onNewRaisedHand: EventHandler;
   onUserLeft: EventHandler;
-  onNewSpeaker: EventHandler;
-  onSpeakingAllowed: EventHandler<ISpeakingAllowedEvent>;
+  onParticipantRoleChange: EventHandler<IParticipantRoleChangeEvent>;
+  onRoleUpdate: EventHandler<IRoleUpdateEvent>;
   onActiveSpeaker: EventHandler<IActiveSpeakerEvent>;
   onChatMessages: EventHandler<IChatMessagesEvent>;
   onUserKick: EventHandler<IUserKickedEvent>;
+  onMediaToggle: EventHandler<IMediaToggleEvent>;
 }
 
 export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
@@ -47,6 +56,13 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
       title,
       hub,
     }),
+  toggleMedia: ({
+    audioEnabled,
+    videoEnabled,
+  }: {
+    audioEnabled?: boolean;
+    videoEnabled?: boolean;
+  }) => socket.request("media-toggle", { audioEnabled, videoEnabled }),
   invite: (invitee, stream) =>
     socket.request("invite-user", { invitee, stream }),
   cancelInvite: (invite_id) =>
@@ -62,14 +78,18 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
   getViewers: (stream, page) =>
     socket.request("request-viewers", { stream, page }),
   raiseHand: () => socket.publish("raise-hand", {}),
+  setRole: (userToUpdate, role) =>
+    socket.publish("set-role", { userToUpdate, role }),
   allowSpeaker: (speaker) => socket.publish("speaker-allow", { speaker }),
   onNewViewer: (handler) => socket.on("new-viewer", handler),
   onNewRaisedHand: (handler) => socket.on("raise-hand", handler),
   onUserLeft: (handler) => socket.on("user-left", handler),
-  onNewSpeaker: (handler) => socket.on("new-speaker", handler),
+  onParticipantRoleChange: (handler) =>
+    socket.on("participant-role-change", handler),
   onActiveSpeaker: (handler) => socket.on("active-speaker", handler),
-  onSpeakingAllowed: (handler) => socket.on("speaking-allowed", handler),
+  onRoleUpdate: (handler) => socket.on("role-change", handler),
   onReactionsUpdate: (handler) => socket.on("reactions-update", handler),
   onChatMessages: (handler) => socket.on("chat-messages", handler),
   onUserKick: (handler) => socket.on("user-kicked", handler),
+  onMediaToggle: (handler) => socket.on("user-toggled-media", handler),
 });

@@ -1,4 +1,4 @@
-import { Peer } from "@media/models";
+import { createNewPeer } from "@media/models";
 import { SFUService, MessageService } from "@media/services";
 import { MessageHandler, INewProducer } from "@warpy/lib";
 import { rooms } from "../rooms";
@@ -33,7 +33,7 @@ export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
       userId
     );
 
-    peers[userId] = new Peer({
+    peers[userId] = createNewPeer({
       recvTransport,
       producer: {
         audio: kind === "audio" ? pipeProducer : null,
@@ -62,7 +62,8 @@ export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
         rtpCapabilities,
         peerRecvTransport,
         userId,
-        peers[peerId]
+        peers[peerId],
+        peerId
       );
 
       MessageService.sendMessageToUser(peerId, {

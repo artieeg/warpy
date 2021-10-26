@@ -23,10 +23,40 @@ import {
   INotificationSlice,
 } from './slices/createNotificationSlice';
 import {
-  createActiveSpeakerSlice,
-  IActiveSpeakerSlice,
-} from './slices/createActiveSpeakerSlice';
+  createAudioLevelSlice,
+  IAudioLevelSlice,
+} from './slices/createAudioLevelSlice';
 import {createSignUpSlice, ISignUpSlice} from './slices/createSignUpSlice';
+import {
+  createUserDispatchers,
+  createStreamDispatchers,
+  IUserDispatchers,
+  IStreamDispatchers,
+  IAudioLevelDispatchers,
+  createAudioLevelDispatchers,
+  IChatDispatchers,
+  createChatDispatchers,
+  IFeedDispatchers,
+  createFeedDispatchers,
+  IFollowingDispatchers,
+  createFollowingDispatchers,
+  IMediaDispatchers,
+  createMediaDispatchers,
+  IModalDispatchers,
+  INotificaionDispatchers,
+  createModalDispatchers,
+  createNotificationDispatchers,
+  createReactionDispatchers,
+  IReactionDispatchers,
+  createParticipantDispatchers,
+  IParticipantDispatchers,
+  IToastDispatchers,
+  createToastDispatchers,
+} from './dispatchers';
+import {
+  createParticipantSlice,
+  IParticipantSlice,
+} from './slices/createParticipantSlice';
 
 interface Selectors<StoreType> {
   use: {
@@ -56,12 +86,25 @@ export interface IStore
     IDeviceSlice,
     IChatSlice,
     IModalSlice,
+    IFeedDispatchers,
+    IFollowingDispatchers,
+    IStreamDispatchers,
+    IUserDispatchers,
     ITokenSlice,
     IReactionSlice,
     INotificationSlice,
-    IActiveSpeakerSlice,
+    IAudioLevelSlice,
     ISignUpSlice,
     IToastSlice,
+    IAudioLevelDispatchers,
+    IChatDispatchers,
+    IMediaDispatchers,
+    IModalDispatchers,
+    INotificaionDispatchers,
+    IReactionDispatchers,
+    IParticipantSlice,
+    IParticipantDispatchers,
+    IToastDispatchers,
     IAPISlice {
   set: SetState<IStore>;
   get: GetState<IStore>;
@@ -71,7 +114,7 @@ export const useStore = createSelectorHooks<IStore>(
   create<IStore>((set, get): IStore => {
     return {
       ...createModalSlice(set, get),
-      ...createActiveSpeakerSlice(set, get),
+      ...createAudioLevelSlice(set, get),
       ...createStreamSlice(set, get),
       ...createSignUpSlice(set, get),
       ...createFeedSlice(set, get),
@@ -80,11 +123,24 @@ export const useStore = createSelectorHooks<IStore>(
       ...createUserSlice(set, get),
       ...createFollowingSlice(set, get),
       ...createMediaSlice(set, get),
-      ...createDeviceSlice(set, get),
+      ...createDeviceSlice(),
       ...createChatSlice(set, get),
       ...createTokenSlice(set, get),
       ...createToastSlice(set, get),
       ...createReactionSlice(set, get),
+      ...createParticipantSlice(set, get),
+      ...createUserDispatchers(set, get),
+      ...createStreamDispatchers(set, get),
+      ...createAudioLevelDispatchers(set, get),
+      ...createChatDispatchers(set, get),
+      ...createFeedDispatchers(set, get),
+      ...createFollowingDispatchers(set, get),
+      ...createMediaDispatchers(set, get),
+      ...createModalDispatchers(set, get),
+      ...createNotificationDispatchers(set, get),
+      ...createReactionDispatchers(set, get),
+      ...createParticipantDispatchers(set, get),
+      ...createToastDispatchers(set, get),
       set,
       get,
     };

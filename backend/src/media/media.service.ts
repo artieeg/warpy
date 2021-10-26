@@ -2,14 +2,13 @@ import { InternalError } from '@backend_2/errors';
 import { IFullParticipant } from '@backend_2/participant/participant.entity';
 import { Injectable } from '@nestjs/common';
 import {
-  IConnectNewSpeakerMedia,
+  ICreateTransport,
   IConnectRecvTransportParams,
   ICreateMediaRoom,
   IKickedFromMediaRoom,
   IMediaPermissions,
-  INewMediaNode,
   INewMediaRoomData,
-  INewSpeakerMediaResponse,
+  INewTransportResponse,
   MediaServiceRole,
 } from '@warpy/lib';
 import * as jwt from 'jsonwebtoken';
@@ -22,7 +21,7 @@ const secret = process.env.MEDIA_JWT_SECRET || 'test-secret';
 export class MediaService {
   constructor(private cache: MediaCacheService, private nc: NatsService) {}
 
-  private createPermissionToken(permissions: IMediaPermissions): string {
+  createPermissionToken(permissions: IMediaPermissions): string {
     return jwt.sign(permissions, secret, {
       expiresIn: 60,
     });
@@ -34,14 +33,18 @@ export class MediaService {
     return response as INewMediaRoomData;
   }
 
-  async getSpeakerParams(
-    params: IConnectNewSpeakerMedia,
-  ): Promise<INewSpeakerMediaResponse> {
-    const response = await this.nc.request(`media.peer.make-speaker`, params, {
-      timeout: 60000,
-    });
+  async createSendTransport(
+    params: ICreateTransport,
+  ): Promise<INewTransportResponse> {
+    const response = await this.nc.request(
+      `media.transport.send-transport`,
+      params,
+      {
+        timeout: 60000,
+      },
+    );
 
-    return response as INewSpeakerMediaResponse;
+    return response as INewTransportResponse;
   }
 
   async getViewerParams(recvNodeId: string, user: string, roomId: string) {
@@ -173,5 +176,17 @@ export class MediaService {
     ) {
       throw new InternalError();
     }
+  }
+
+  async removeUserProducers(
+    user: string,
+    sendNode: string,
+    stream: string,
+    producers: { video?: boolean; audio?: boolean },
+  ) {
+    this.nc.publish(
+      `media.peer.remove-producers.${sendNode}`,
+      this.nc.jc.encode({ user, stream, producers }),
+    );
   }
 }

@@ -1,15 +1,15 @@
-import {Participant} from '@app/models';
 import shallow from 'zustand/shallow';
 import {useStore} from '@app/store';
 import {useMemo} from 'react';
+import {IParticipant} from '@warpy/lib';
 
-export const useStreamViewers = (): [Participant[], () => any] => {
-  const [viewers, fetchMoreViewers] = useStore(
-    state => [state.viewers, state.fetchMoreViewers],
+export const useStreamViewers = (): [IParticipant[], () => any] => {
+  const [viewers, dispatchViewersFetch] = useStore(
+    state => [state.viewers, state.dispatchViewersFetch],
     shallow,
   );
 
   const viewersArray = useMemo(() => Object.values(viewers), [viewers]);
 
-  return [viewersArray, fetchMoreViewers];
+  return [viewersArray, dispatchViewersFetch];
 };

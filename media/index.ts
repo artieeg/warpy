@@ -15,10 +15,14 @@ const main = async () => {
   MessageService.on("connect-transport", RoomService.handleConnectTransport);
   MessageService.on("join-room", RoomService.handleJoinRoom);
   MessageService.on("recv-tracks-request", RoomService.handleRecvTracksRequest);
-  MessageService.on("new-speaker", RoomService.handleNewSpeaker);
+  MessageService.on("new-speaker", RoomService.handleNewTransport);
   MessageService.on("new-egress", RoomService.handleNewEgress);
   MessageService.on("new-producer", RoomService.handleNewProducer);
   MessageService.on("kick-user", RoomService.handleKickedUser);
+  MessageService.on(
+    "remove-user-producers",
+    RoomService.handleRemoveUserProducers
+  );
 
   SFUService.onActiveSpeakers(MessageService.sendActiveSpeakers);
 

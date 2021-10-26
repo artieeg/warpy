@@ -23,24 +23,24 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
 
   console.log(`joined room with ${count} viewers`);
 
-  record.media = MediaClient({
+  record.media = new MediaClient(
     recvDevice,
     sendDevice,
-    permissionsToken: mediaPermissionsToken,
     api,
-  });
+    mediaPermissionsToken
+  );
 
   const transport = await createRecvTransport({
     stream: streamId,
     routerRtpCapabilities,
     recvTransportOptions,
     record,
+    permissionsToken: mediaPermissionsToken,
   });
 
   if (process.env.MODE === "LOADTEST") {
     //TODO: Consuming VP8 streams causes memory leak in aiortc apparently
     const consumers = await record.media.consumeRemoteStreams(
-      record.user.id,
       streamId,
       transport
     );

@@ -1,13 +1,25 @@
 import {MediaClient} from '@warpykit-sdk/client';
-import {GetState, SetState} from 'zustand';
-import {IStore} from '../useStore';
-import {MediaStream} from 'react-native-webrtc';
+import {MediaStream, MediaStreamTrack} from 'react-native-webrtc';
+import {Transport, Producer} from 'mediasoup-client/lib/types';
+import {StoreSlice} from '../types';
 
 export interface IMediaSlice {
-  mediaClient?: ReturnType<typeof MediaClient>;
-  video?: MediaStream;
-  audio?: MediaStream;
-  audioMuted: boolean;
+  mediaClient?: MediaClient;
+  video?: {
+    stream: MediaStream;
+    track: MediaStreamTrack;
+    producer?: Producer;
+  };
+  audio?: {
+    stream: MediaStream;
+    track: MediaStreamTrack;
+    producer?: Producer;
+  };
+  audioEnabled: boolean;
+  videoEnabled: boolean;
+
+  sendTransport: Transport | null;
+  recvTransport: Transport | null;
 
   /**
    * Mediasoup recv params
@@ -23,72 +35,12 @@ export interface IMediaSlice {
    * Stores audio/video streaming permissions
    * */
   mediaPermissionsToken: string | null;
-
-  initSpeakerMedia: (
-    permissions: string,
-    sendMediaParams: any,
-  ) => Promise<void>;
-
-  initViewerMedia: (permissions: string, recvMediaParams: any) => Promise<void>;
-
-  toggleAudio: (flag: boolean) => void;
-  toggleVideo: (flag: boolean) => void;
-  switchCamera: () => void;
 }
 
-export const createMediaSlice = (
-  set: SetState<IStore>,
-  get: GetState<IStore>,
-): IMediaSlice => ({
+export const createMediaSlice: StoreSlice<IMediaSlice> = (): IMediaSlice => ({
+  sendTransport: null,
   mediaPermissionsToken: null,
-  audioMuted: false,
-
-  switchCamera() {
-    (get().video?.getVideoTracks()[0] as any)._switchCamera();
-  },
-
-  toggleAudio(flag) {
-    get()
-      .audio?.getAudioTracks()
-      .forEach(audio => (audio.enabled = flag));
-
-    set({
-      audioMuted: flag,
-    });
-  },
-
-  toggleVideo(_flag) {},
-
-  async initViewerMedia(permissions, recvMediaParams) {
-    const {api, recvDevice, sendDevice, initRecvDevice} = get();
-
-    await initRecvDevice(recvMediaParams.routerRtpCapabilities);
-
-    set({
-      mediaPermissionsToken: permissions,
-      mediaClient: MediaClient({
-        recvDevice,
-        sendDevice,
-        api,
-        permissionsToken: permissions,
-      }),
-      recvMediaParams,
-    });
-  },
-
-  async initSpeakerMedia(permissions, sendMediaParams) {
-    const {api, recvDevice, sendDevice, initSendDevice} = get();
-
-    await initSendDevice(sendMediaParams.routerRtpCapabilities);
-    set({
-      mediaPermissionsToken: permissions,
-      mediaClient: MediaClient({
-        recvDevice,
-        sendDevice,
-        api,
-        permissionsToken: permissions,
-      }),
-      sendMediaParams,
-    });
-  },
+  audioEnabled: false,
+  videoEnabled: false,
+  recvTransport: null,
 });

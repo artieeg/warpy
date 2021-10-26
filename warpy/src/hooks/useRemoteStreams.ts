@@ -1,10 +1,6 @@
 import {useStore} from '@app/store';
-import {Consumer} from 'mediasoup-client/lib/types';
-import {useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {MediaStream} from 'react-native-webrtc';
-import shallow from 'zustand/shallow';
-import {useAppUser} from './useAppUser';
-import {useRecvTransport} from './useRecvTransport';
 
 interface IStreams {
   videoStreams: MediaStream[];
@@ -12,58 +8,33 @@ interface IStreams {
 }
 
 export const useRemoteStreams = () => {
-  const streamId = useStore.use.stream();
-  const transport = useRecvTransport();
-
-  const [mediaClient, mediaPermissionsToken] = useStore(
-    state => [state.mediaClient, state.mediaPermissionsToken],
-    shallow,
-  );
-
   const [streams, setStreams] = useState<IStreams>({
     videoStreams: [],
     audioStreams: [],
   });
 
-  const {id: userId} = useAppUser();
+  const streamers = useStore.use.streamers();
 
-  const fetched = useRef(false);
+  const getStreams = useCallback(() => {
+    setStreams({
+      videoStreams: Object.values(streamers)
+        .map(p => {
+          if (p.media?.video?.active) {
+            return p.media?.video?.track;
+          } else {
+            return undefined;
+          }
+        })
+        .filter(s => !!s) as any,
+      audioStreams: Object.values(streamers)
+        .map(p => p.media?.audio?.track)
+        .filter(s => !!s) as any,
+    });
+  }, [streamers]);
 
   useEffect(() => {
-    if (
-      !streamId ||
-      !transport ||
-      !mediaClient ||
-      !mediaPermissionsToken ||
-      fetched.current
-    ) {
-      return;
-    }
-
-    mediaClient
-      .consumeRemoteStreams(userId, streamId, transport)
-      .then((consumers: Consumer[]) => {
-        const videoStreams: MediaStream[] = [];
-        const audioStreams: MediaStream[] = [];
-
-        consumers.forEach(consumer => {
-          const stream = new MediaStream([consumer.track]);
-
-          if (consumer.kind === 'video') {
-            videoStreams.push(stream);
-          } else {
-            audioStreams.push(stream);
-          }
-        });
-
-        fetched.current = true;
-
-        setStreams({
-          videoStreams,
-          audioStreams,
-        });
-      });
-  }, [transport, mediaPermissionsToken, streamId]);
+    getStreams();
+  }, [getStreams]);
 
   return streams;
 };

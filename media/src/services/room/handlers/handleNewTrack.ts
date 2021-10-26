@@ -30,7 +30,7 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
   const { peers } = room;
 
   const peer = peers[user];
-  const transport = peer.getSendTransport(kind);
+  const transport = peer.sendTransport;
 
   if (!transport) {
     return; //TODO: Send error
@@ -81,26 +81,30 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
         paused: true,
       });
 
+      /*
       if (!rtpConsumer) {
         throw new Error("Failed to create rtp consumer");
       }
+      */
 
-      peer.consumers.push(rtpConsumer);
+      if (rtpConsumer) {
+        peer.consumers.push(rtpConsumer);
 
-      MessageService.sendRecordRequest({
-        stream: roomId,
-        remoteRtpPort: peer.plainTransport?.appData.remoteRtpPort,
-        //remoteRtcpPort,
-        localRtcpPort: peer.plainTransport?.rtcpTuple
-          ? peer.plainTransport.rtcpTuple?.localPort
-          : undefined,
-        rtpCapabilities: recorderRtpCapabilities,
-        rtpParameters: rtpConsumer.rtpParameters,
-      });
+        MessageService.sendRecordRequest({
+          stream: roomId,
+          remoteRtpPort: peer.plainTransport?.appData.remoteRtpPort,
+          //remoteRtcpPort,
+          localRtcpPort: peer.plainTransport?.rtcpTuple
+            ? peer.plainTransport.rtcpTuple?.localPort
+            : undefined,
+          rtpCapabilities: recorderRtpCapabilities,
+          rtpParameters: rtpConsumer.rtpParameters,
+        });
 
-      setTimeout(() => {
-        rtpConsumer.resume();
-      }, 1000);
+        setTimeout(() => {
+          rtpConsumer.resume();
+        }, 1000);
+      }
     }
 
     const pipeConsumers = await SFUService.createPipeConsumers(newProducer.id);

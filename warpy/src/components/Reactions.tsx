@@ -3,6 +3,7 @@ import {BaseSlideModal} from './BaseSlideModal';
 import {FlatList, StyleSheet, useWindowDimensions, View} from 'react-native';
 import {ReactionButton} from './ReactionButton';
 import {reactionCodes} from './Reaction';
+import {useStore} from '@app/store';
 
 const ReactionContainer = (props: any) => {
   const {width} = useWindowDimensions();
@@ -21,18 +22,15 @@ const ReactionContainer = (props: any) => {
 
 interface IReactionsProps {
   visible: boolean;
-  onHide: () => void;
-  onPickReaction: (reaction: string) => void;
 }
 
 export const Reactions = (props: IReactionsProps) => {
-  const {visible, onHide, onPickReaction} = props;
+  const {visible} = props;
+  const dispatchReactionChange = useStore.use.dispatchReactionChange();
+  const dispatchModalClose = useStore.use.dispatchModalClose();
 
   return (
-    <BaseSlideModal
-      onHide={onHide}
-      visible={visible}
-      title="pick your reaction">
+    <BaseSlideModal visible={visible} title="pick your reaction">
       <FlatList
         style={styles.list}
         numColumns={5}
@@ -42,8 +40,8 @@ export const Reactions = (props: IReactionsProps) => {
           <ReactionContainer>
             <ReactionButton
               onPress={() => {
-                onPickReaction(item);
-                onHide();
+                dispatchReactionChange(item);
+                dispatchModalClose();
               }}
               code={item}
             />

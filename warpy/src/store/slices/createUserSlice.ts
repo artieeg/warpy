@@ -1,45 +1,19 @@
 import {User} from '@app/models';
-import {GetState, SetState} from 'zustand';
-import {IStore} from '../useStore';
+import {Roles} from '@warpy/lib';
+import {StoreSlice} from '../types';
 
 export interface IUserSlice {
   user: User | null;
+  role: Roles | null;
   isLoadingUser: boolean;
   exists: boolean;
   following: string[];
-  loadUserData: (token: string) => Promise<void>;
 }
 
-export const createUserSlice = (
-  set: SetState<IStore>,
-  get: GetState<IStore>,
-): IUserSlice => ({
+export const createUserSlice: StoreSlice<IUserSlice> = () => ({
   user: null,
+  role: null,
   isLoadingUser: true,
   exists: false,
   following: [],
-  loadUserData: async token => {
-    const {api} = get();
-
-    set({
-      isLoadingUser: true,
-    });
-
-    const {user, following} = await api.user.auth(token);
-
-    if (!user || !following) {
-      set({
-        isLoadingUser: false,
-        exists: false,
-      });
-
-      return;
-    }
-
-    set({
-      user,
-      following,
-      isLoadingUser: false,
-    });
-  },
 });

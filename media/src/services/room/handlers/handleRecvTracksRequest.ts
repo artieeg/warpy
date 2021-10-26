@@ -22,14 +22,11 @@ export const handleRecvTracksRequest: MessageHandler<
 
   const peer = peers[user];
 
-  console.log("peer", !!peer);
   if (!peer) {
     return;
   }
 
   const transport = peer.recvTransport;
-
-  console.log("transport", !!transport);
 
   if (!transport) {
     return;
@@ -59,7 +56,8 @@ export const handleRecvTracksRequest: MessageHandler<
             rtpCapabilities,
             transport,
             user,
-            peers[peerId]
+            peers[peerId],
+            peerId
           )
         );
       }
@@ -72,7 +70,8 @@ export const handleRecvTracksRequest: MessageHandler<
             rtpCapabilities,
             transport,
             user,
-            peers[peerId]
+            peers[peerId],
+            peerId
           )
         );
       }

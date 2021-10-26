@@ -11,56 +11,48 @@ import {InviteModal} from './InviteModal';
 export const ModalProvider = () => {
   const modal = useStore.use.modalCurrent();
   const modalSelectedUser = useStore.use.modalSelectedUser();
-  const openNewModal = useStore.use.openNewModal();
-  const closeCurrentModal = useStore.use.closeCurrentModal();
-  const setCurrentReaction = useStore.use.setCurrentReaction();
+  const dispatchModalOpen = useStore.use.dispatchModalOpen();
+  const dispatchModalClose = useStore.use.dispatchModalClose();
 
   return (
     <>
       <ParticipantInfoModal
-        onHide={() => closeCurrentModal()}
+        onHide={() => dispatchModalClose()}
         user={modalSelectedUser}
         visible={modal === 'participant-info'}
       />
 
       <ParticipantsModal
-        onHide={() => closeCurrentModal()}
+        onHide={() => dispatchModalClose()}
         visible={modal === 'participants'}
         onOpenActions={id => {
-          openNewModal('user-actions', {selectedUser: id});
+          dispatchModalOpen('user-actions', {selectedUser: id});
         }}
         onSelectParticipant={id => {
-          openNewModal('participant-info', {selectedUser: id});
+          dispatchModalOpen('participant-info', {selectedUser: id});
         }}
       />
 
-      <Reactions
-        onPickReaction={setCurrentReaction}
-        visible={modal === 'reactions'}
-        onHide={() => closeCurrentModal()}
-      />
+      <Reactions visible={modal === 'reactions'} />
 
-      <ChatModal
-        visible={modal === 'chat'}
-        onHide={() => closeCurrentModal()}
-      />
+      <ChatModal visible={modal === 'chat'} />
 
       <UserActionSheet
         user={modalSelectedUser}
         visible={modal === 'user-actions'}
-        onHide={() => closeCurrentModal()}
-        onReportUser={() => openNewModal('reports')}
+        onHide={() => dispatchModalClose()}
+        onReportUser={() => dispatchModalOpen('reports')}
       />
 
       <ReportActionSheet
         user={modalSelectedUser}
         visible={modal === 'reports'}
-        onHide={() => closeCurrentModal()}
+        onHide={() => dispatchModalClose()}
       />
 
       <InviteModal
         visible={modal === 'invite'}
-        onHide={() => closeCurrentModal()}
+        onHide={() => dispatchModalClose()}
       />
     </>
   );

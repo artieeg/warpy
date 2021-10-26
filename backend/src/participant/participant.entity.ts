@@ -10,6 +10,8 @@ export type CreateNewParticipant = {
   stream?: string;
   recvNodeId: string;
   sendNodeId?: string;
+  audioEnabled?: boolean;
+  videoEnabled?: boolean;
 };
 
 export interface IFullParticipant extends IParticipant {
@@ -24,7 +26,13 @@ export class ParticipantEntity {
   constructor(private prisma: PrismaService) {}
 
   static toParticipantClientDTO(
-    data: (Participant & { user?: User }) | null,
+    data:
+      | (Participant & {
+          user?: User;
+          videoEnabled?: boolean;
+          audioEnabled?: boolean;
+        })
+      | null,
   ): IParticipant {
     if (!data) {
       throw new Error('Participant is null');
@@ -39,6 +47,8 @@ export class ParticipantEntity {
       stream: data.stream_id,
       role: data.role as Roles,
       isRaisingHand: data.isRaisingHand,
+      audioEnabled: data.audioEnabled,
+      videoEnabled: data.videoEnabled,
     };
   }
 
@@ -63,6 +73,8 @@ export class ParticipantEntity {
     role,
     stream,
     recvNodeId,
+    audioEnabled,
+    videoEnabled,
   }: CreateNewParticipant): Promise<IFullParticipant> {
     const data = await this.prisma.participant.create({
       data: {
@@ -70,6 +82,8 @@ export class ParticipantEntity {
         role: role || 'viewer',
         isRaisingHand: false,
         user_id: user_id,
+        audioEnabled,
+        videoEnabled,
         //id: user_id,
         recvNodeId,
       },

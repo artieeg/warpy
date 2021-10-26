@@ -1,8 +1,10 @@
 import { BlockEntity } from '@backend_2/block/block.entity';
 import { mockedBlockEntity } from '@backend_2/block/block.entity.mock';
+import { BlockService } from '@backend_2/block/block.service';
 import {
   BannedFromStreamError,
   NoPermissionError,
+  StreamHasBlockedSpeakerError,
   StreamNotFound,
   UserNotFound,
 } from '@backend_2/errors';
@@ -10,6 +12,7 @@ import { mockedEventEmitter } from '@backend_2/events/events.service.mock';
 import { mockedMediaService } from '@backend_2/media/media.service.mock';
 import { MessageService } from '@backend_2/message/message.service';
 import { mockedMessageService } from '@backend_2/message/message.service.mock';
+import { mockedBlockService } from '@backend_2/block/block.service.mock';
 import { StreamBlockEntity } from '@backend_2/stream-block/stream-block.entity';
 import { mockedStreamBlockEntity } from '@backend_2/stream-block/stream-block.entity.mock';
 import { createParticipantFixture } from '@backend_2/__fixtures__';
@@ -21,9 +24,33 @@ import { StreamBlockService } from '../stream-block/stream-block.service';
 import { ParticipantEntity } from './participant.entity';
 import { mockedParticipantEntity } from './participant.entity.mock';
 import { ParticipantService } from './participant.service';
+import { Roles } from '@warpy/lib';
 
 const mockedStreamBlock = {
   checkUserBanned: jest.fn(),
+};
+
+const createService = async () => {
+  const moduleRef = await testModuleBuilder
+    .overrideProvider(StreamBlockEntity)
+    .useValue(mockedStreamBlockEntity)
+    .overrideProvider(MessageService)
+    .useValue(mockedMessageService)
+    .overrideProvider(BlockEntity)
+    .useValue(mockedBlockEntity)
+    .overrideProvider(StreamBlockService)
+    .useValue(mockedStreamBlock)
+    .overrideProvider(MediaService)
+    .useValue(mockedMediaService)
+    .overrideProvider(ParticipantEntity)
+    .useValue(mockedParticipantEntity)
+    .overrideProvider(BlockService)
+    .useValue(mockedBlockService)
+    .overrideProvider(EventEmitter2)
+    .useValue(mockedEventEmitter)
+    .compile();
+
+  return moduleRef.get(ParticipantService);
 };
 
 describe('ParticipantService', () => {
@@ -46,24 +73,7 @@ describe('ParticipantService', () => {
   const streamParticipants = ['id1', 'id2'];
 
   beforeAll(async () => {
-    const moduleRef = await testModuleBuilder
-      .overrideProvider(StreamBlockEntity)
-      .useValue(mockedStreamBlockEntity)
-      .overrideProvider(MessageService)
-      .useValue(mockedMessageService)
-      .overrideProvider(BlockEntity)
-      .useValue(mockedBlockEntity)
-      .overrideProvider(StreamBlockService)
-      .useValue(mockedStreamBlock)
-      .overrideProvider(MediaService)
-      .useValue(mockedMediaService)
-      .overrideProvider(ParticipantEntity)
-      .useValue(mockedParticipantEntity)
-      .overrideProvider(EventEmitter2)
-      .useValue(mockedEventEmitter)
-      .compile();
-
-    participantService = moduleRef.get(ParticipantService);
+    participantService = await createService();
 
     mockedParticipantEntity.getWithRaisedHands.mockResolvedValue(raisedHands);
     mockedParticipantEntity.count.mockResolvedValue(count);
@@ -411,5 +421,183 @@ describe('ParticipantService', () => {
       userToKick.stream,
       userToKick.id,
     );
+  });
+
+  describe('changing roles', () => {
+    const modId = 'role-user0';
+    const userId = 'role-user1';
+
+    const mod = createParticipantFixture({ id: modId, role: 'streamer' });
+    const user = createParticipantFixture({ id: userId, role: 'viewer' });
+
+    const newRole = 'speaker';
+    const updatedUser = { ...user, role: newRole as Roles };
+
+    const testMediaData = { data: 'test' };
+    const newPermissionToken = 'test';
+
+    beforeAll(() => {
+      when(mockedParticipantEntity.getById)
+        .calledWith(modId)
+        .mockResolvedValue(mod);
+
+      mockedParticipantEntity.updateOne.mockResolvedValue(updatedUser);
+
+      when(mockedMediaService.createPermissionToken).mockReturnValue(
+        newPermissionToken,
+      );
+
+      mockedMediaService.createSendTransport.mockResolvedValue(
+        testMediaData as any,
+      );
+
+      when(mockedParticipantEntity.getById)
+        .calledWith(userId)
+        .mockResolvedValue(user);
+    });
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('checks the permission to change roles', () => {
+      when(mockedParticipantEntity.getById)
+        .calledWith(modId)
+        .mockResolvedValueOnce(
+          createParticipantFixture({
+            role: 'speaker',
+          }),
+        );
+
+      expect(
+        participantService.setRole(modId, userId, newRole),
+      ).rejects.toThrowError(NoPermissionError);
+    });
+
+    it('checks block data to see if the user can speak/stream', () => {
+      mockedBlockService.isBannedBySpeaker.mockRejectedValueOnce(
+        new StreamHasBlockedSpeakerError({
+          last_name: 'test',
+          first_name: 'test',
+        }),
+      );
+
+      expect(
+        participantService.setRole(modId, userId, newRole),
+      ).rejects.toThrowError(StreamHasBlockedSpeakerError);
+    });
+
+    it('does not create a send transport if previous role is not "viewer"', async () => {
+      when(mockedParticipantEntity.getById)
+        .calledWith(userId)
+        .mockResolvedValueOnce({ ...user, role: 'speaker' });
+
+      await participantService.setRole(modId, userId, 'streamer');
+
+      expect(mockedMediaService.createSendTransport).not.toBeCalled();
+      expect(mockedMessageService.sendMessage).not.toBeCalledWith(
+        userId,
+        expect.objectContaining({
+          data: expect.objectContaining({
+            media: testMediaData,
+          }),
+        }),
+      );
+    });
+
+    it('creates a send transport if the previous role is "viewer"', async () => {
+      await participantService.setRole(modId, userId, newRole);
+
+      expect(mockedMediaService.createSendTransport).toBeCalled();
+      expect(mockedMessageService.sendMessage).toBeCalledWith(
+        userId,
+        expect.objectContaining({
+          data: expect.objectContaining({
+            media: testMediaData,
+          }),
+        }),
+      );
+    });
+
+    it('sends updated permissions token to the affected user', async () => {
+      await participantService.setRole(modId, userId, newRole);
+
+      expect(mockedMessageService.sendMessage).toBeCalledWith(
+        userId,
+        expect.objectContaining({
+          data: expect.objectContaining({
+            mediaPermissionToken: newPermissionToken,
+          }),
+        }),
+      );
+    });
+
+    it('broadcasts the new speaker/participant event', async () => {
+      await participantService.setRole(modId, userId, newRole);
+
+      expect(mockedEventEmitter.emit).toBeCalledWith(
+        'participant.role-change',
+        updatedUser,
+      );
+    });
+
+    it('updates the role in the db', async () => {
+      await participantService.setRole(modId, userId, newRole);
+
+      expect(mockedParticipantEntity.updateOne).toBeCalledWith(
+        userId,
+        expect.objectContaining({
+          role: 'speaker',
+          sendNodeId: expect.anything(),
+        }),
+      );
+    });
+
+    it("sets the send node id if there's none", async () => {
+      const sendNodeId = 'test0';
+
+      mockedMediaService.getSendNodeId.mockResolvedValueOnce(sendNodeId);
+      await participantService.setRole(modId, userId, newRole);
+
+      expect(mockedParticipantEntity.updateOne).toBeCalledWith(
+        userId,
+        expect.objectContaining({
+          role: 'speaker',
+          sendNodeId: sendNodeId,
+        }),
+      );
+    });
+
+    it.todo('deletes the send transport if the new role is viewer');
+
+    it.todo(
+      "tells the media node to stop streaming user's video when they go from being a streamer to being a speaker",
+    );
+
+    it.todo(
+      "tells the media node to stop streaming user's audio when they go from being a streamer/speaker to being a viewer",
+    );
+  });
+
+  it('set media enabled', async () => {
+    const userId = 'media-test-user0';
+    const streamId = 'test-stream-0';
+
+    when(mockedParticipantEntity.getCurrentStreamFor)
+      .calledWith(userId)
+      .mockResolvedValue(streamId);
+
+    const media = {
+      videoEnabled: true,
+      audioEnabled: true,
+    };
+
+    await participantService.setMediaEnabled(userId, media);
+
+    expect(mockedEventEmitter.emit).toBeCalledWith('participant.media-toggle', {
+      user: userId,
+      stream: streamId,
+      ...media,
+    });
   });
 });

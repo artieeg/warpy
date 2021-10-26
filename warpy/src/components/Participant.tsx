@@ -2,10 +2,10 @@ import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Text} from './Text';
 import {Avatar} from './Avatar';
-import {Participant} from '@app/models';
+import {IParticipant} from '@warpy/lib';
 
 interface IParticipantProps {
-  data: Participant;
+  data: IParticipant;
 }
 
 export const ParticipantDisplay = (props: IParticipantProps) => {

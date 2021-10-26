@@ -15,19 +15,24 @@ export const createStream = async (record: UserRecord) => {
     const { viewer } = data;
 
     setTimeout(() => {
-      api.stream.allowSpeaker(viewer.id);
+      api.stream.setRole(viewer.id, "speaker");
+
+      setTimeout(() => {
+        console.log("allowing streaming");
+        api.stream.setRole(viewer.id, "streamer");
+      });
     }, 5000);
   });
 
   const { stream, media, mediaPermissionsToken } = response;
-  const { routerRtpCapabilities } = media;
+  const { routerRtpCapabilities, sendTransportOptions } = media;
 
-  record.media = MediaClient({
+  record.media = new MediaClient(
+    record.recvDevice,
+    record.sendDevice,
     api,
-    recvDevice: record.recvDevice,
-    sendDevice: record.sendDevice,
-    permissionsToken: mediaPermissionsToken,
-  } as any);
+    mediaPermissionsToken
+  );
 
   await record.sendDevice.load({
     routerRtpCapabilities,
@@ -35,8 +40,23 @@ export const createStream = async (record: UserRecord) => {
 
   const localMediaStream = await getMediaStream();
 
+  const sendTransport = await record.media.createTransport({
+    roomId: stream!,
+    device: record.sendDevice,
+    permissionsToken: mediaPermissionsToken,
+    direction: "send",
+    options: {
+      sendTransportOptions: sendTransportOptions,
+    },
+    isProducer: true,
+  });
+
   const producers = await Promise.all([
-    record.media.sendMediaStream(localMediaStream, stream, media, "video"),
+    record.media.sendMediaStream(
+      localMediaStream.getVideoTracks()[0],
+      media,
+      sendTransport
+    ),
     //record.media.sendMediaStream(localMediaStream, stream, media, "audio"),
   ]);
 

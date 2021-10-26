@@ -65,7 +65,7 @@ describe('BroadcastService', () => {
   });
 
   it('broadcasts new speaker', async () => {
-    await broadcast.broadcastNewSpeaker(createParticipantFixture({}));
+    await broadcast.broadcastRoleChange(createParticipantFixture({}));
 
     participants.forEach((id) => {
       expect(mockedMessageService.send).toBeCalledWith(id, expect.anything());
@@ -82,6 +82,18 @@ describe('BroadcastService', () => {
 
   it('broadcasts participant left', async () => {
     await broadcast.broadcastParticipantLeft({ stream: 'test', user: 'test' });
+
+    participants.forEach((id) => {
+      expect(mockedMessageService.send).toBeCalledWith(id, expect.anything());
+    });
+  });
+
+  it('broadcasts participant media toggle', async () => {
+    await broadcast.broadcastMediaToggle({
+      user: 'test',
+      stream: 'test',
+      videoEnabled: true,
+    });
 
     participants.forEach((id) => {
       expect(mockedMessageService.send).toBeCalledWith(id, expect.anything());

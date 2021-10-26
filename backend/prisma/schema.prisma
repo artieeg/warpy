@@ -80,6 +80,9 @@ model Participant {
   joined_at     DateTime  @default(now())
   left_at       DateTime?
 
+  videoEnabled  Boolean   @default(false)
+  audioEnabled  Boolean   @default(false)
+
   recvNodeId String
   sendNodeId String?
 

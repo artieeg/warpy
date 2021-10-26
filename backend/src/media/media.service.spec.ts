@@ -37,12 +37,12 @@ describe('MediaService', () => {
     ).resolves.toStrictEqual(newRoomData);
   });
 
-  it('returns params to connect speaker', async () => {
+  it('returns params to connect new transport', async () => {
     const speakerMediaParams = { data: 'test' };
     mockedNatsService.request.mockResolvedValueOnce(speakerMediaParams);
 
     expect(
-      mediaService.getSpeakerParams({ test: 'test' } as any),
+      mediaService.createSendTransport({ test: 'test' } as any),
     ).resolves.toStrictEqual(speakerMediaParams);
   });
 
@@ -160,6 +160,20 @@ describe('MediaService', () => {
 
     expect(mediaService.removeUserFromNodes(participant)).rejects.toThrowError(
       InternalError,
+    );
+  });
+
+  it("tells media services to remove user' producers", async () => {
+    const user = 'test0';
+    const producers = { video: true };
+    const node = 'node0';
+    const stream = 'test';
+
+    await mediaService.removeUserProducers(user, node, stream, producers);
+
+    expect(mockedNatsService.publish).toBeCalledWith(
+      `media.peer.remove-producers.${node}`,
+      expect.anything(),
     );
   });
 });

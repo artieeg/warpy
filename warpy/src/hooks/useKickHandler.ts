@@ -6,12 +6,12 @@ export const useKickHandler = () => {
   const navigation = useNavigation();
   const api = useStore.use.api();
   const appUser = useStore.use.user();
-  const show = useStore.use.showToastMessage();
+  const dispatchToastMessage = useStore.use.dispatchToastMessage();
 
   useEffect(() => {
     api.stream.onUserKick(({user}) => {
       if (appUser?.id === user) {
-        show('You have been kicked from this room', 'LONG');
+        dispatchToastMessage('You have been kicked from this room', 'LONG');
 
         navigation.goBack();
       }

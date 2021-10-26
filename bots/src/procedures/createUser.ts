@@ -36,11 +36,11 @@ export const createUser = async (): Promise<UserRecord> => {
     api,
     recvDevice: createDevice(),
     sendDevice: createDevice(),
-    media: MediaClient({
-      permissionsToken: "",
-      recvDevice: createDevice() as any,
-      sendDevice: createDevice() as any,
+    media: new MediaClient(
+      createDevice() as any,
+      createDevice() as any,
       api,
-    }),
+      ""
+    ),
   };
 };

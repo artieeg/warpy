@@ -3,13 +3,13 @@ import {useEffect} from 'react';
 import shallow from 'zustand/shallow';
 
 export const useFeed = () => {
-  const [feed, fetchNextPage] = useStore(
-    state => [state.feed, state.fetchNextPage],
+  const [feed, dispatchFeedFetchNext] = useStore(
+    state => [state.feed, state.dispatchFeedFetchNext],
     shallow,
   );
 
   useEffect(() => {
-    fetchNextPage();
+    dispatchFeedFetchNext();
   }, []);
 
   return feed;

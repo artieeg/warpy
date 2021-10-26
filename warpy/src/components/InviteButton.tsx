@@ -3,11 +3,11 @@ import React from 'react';
 import {IconButton} from './IconButton';
 
 export const InviteButton = () => {
-  const openNewModal = useStore.use.openNewModal();
+  const dispatchModalOpen = useStore.use.dispatchModalOpen();
 
   return (
     <IconButton
-      onPress={() => openNewModal('invite')}
+      onPress={() => dispatchModalOpen('invite')}
       name="invite-user"
       color="#ffffff"
       size={30}

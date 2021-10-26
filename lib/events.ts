@@ -1,9 +1,11 @@
-import { IChatMessage, INotification } from "./models";
+import { IChatMessage, INotification, IParticipant } from "./models";
+import { Roles } from "./types";
 
-export interface ISpeakingAllowedEvent {
+export interface IRoleUpdateEvent {
   stream: string;
-  media: any;
+  media?: any;
   mediaPermissionToken: string;
+  role: Roles;
 }
 
 export interface IActiveSpeakerEvent {
@@ -38,4 +40,15 @@ export interface INotificationEvent {
 
 export interface INotificationDeleteEvent {
   notification_id: string;
+}
+
+export interface IParticipantRoleChangeEvent {
+  user: IParticipant;
+}
+
+export interface IMediaToggleEvent {
+  user: string;
+  stream: string;
+  videoEnabled?: boolean;
+  audioEnabled?: boolean;
 }
