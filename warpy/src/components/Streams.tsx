@@ -1,4 +1,11 @@
-import {FlatList, StyleSheet, useWindowDimensions, View} from 'react-native';
+import {
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import {useVideoStreams} from '@app/hooks/useVideoStreams';
 import React, {useMemo} from 'react';
 import {RTCView} from 'react-native-webrtc';
@@ -34,74 +41,47 @@ export const Room = ({forceLocalStream}: IStreamsProps) => {
   );
 
   const participants = useMemo(
-    () => [
-      ...Object.values(streamers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-      ...Object.values(viewers),
-    ],
+    () => Object.values(streamers),
     [streamers, viewers],
   );
 
-  const renderRoomContent = () => {
-    if (streams.length > 0) {
-      return streams.map((stream, i) => (
-        <RTCView
-          style={mediaStyles[streams.length - 1][i]}
-          objectFit="cover"
-          streamURL={stream.toURL()}
-        />
-      ));
-    } else {
-      return (
+  if (streams.length > 0) {
+    return (
+      <View style={styles.videoWrapper}>
+        {streams.map((stream, i) => (
+          <RTCView
+            style={mediaStyles[streams.length - 1][i]}
+            objectFit="cover"
+            streamURL={stream.toURL()}
+          />
+        ))}
+      </View>
+    );
+  } else {
+    return (
+      <View style={styles.wrapper}>
         <FlatList
           contentContainerStyle={styles.list}
           data={participants}
           renderItem={({item}) => <AudioRoomParticipant data={item} />}
           numColumns={3}
         />
-      );
-    }
-  };
-
-  return <View style={styles.wrapper}>{renderRoomContent()}</View>;
+      </View>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
-  wrapper: {
+  videoWrapper: {
     flexWrap: 'wrap',
     flexDirection: 'row',
     backgroundColor: '#000000',
   },
+  wrapper: {
+    flexDirection: 'row',
+    backgroundColor: '#000000',
+  },
   list: {
-    height: 2000,
-    backgroundColor: '#ff3030',
+    paddingTop: 80,
   },
 });
