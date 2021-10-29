@@ -25,7 +25,6 @@ services:
       - dev_env/backend.env
     ports:
       - 3000:3000
-      - 9229:9229
     volumes:
       - ./:/warpy
     working_dir: /warpy/bots_api
