@@ -2,7 +2,7 @@ import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Button} from '@app/components';
 import {StreamOverlay} from '@app/components/StreamOverlay';
-import {Streams} from '@app/components/Streams';
+import {Room} from '@app/components/Streams';
 import {useNewStreamController} from '@app/hooks/useNewStreamController';
 
 export const NewStream = () => {
@@ -10,7 +10,7 @@ export const NewStream = () => {
 
   return (
     <View style={styles.wrapper}>
-      <Streams forceLocalStream />
+      <Room forceLocalStream />
 
       {streamId && <StreamOverlay />}
 

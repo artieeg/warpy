@@ -56,7 +56,6 @@ export const ReactionCanvas = () => {
   return (
     <View onTouchStart={onTouchStart} style={styles.wrapper}>
       {renderReactions()}
-      <View />
     </View>
   );
 };
@@ -68,6 +67,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#3030ff10',
+    backgroundColor: '#3030ff',
   },
 });
