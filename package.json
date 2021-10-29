@@ -3,9 +3,10 @@
   "workspaces": [
     "lib",
     "api_client",
-    "bots",
+    "bots_api",
     "backend_2",
     "media-client",
+    "bots-api",
     "backend",
     "clipper",
     "warpy",
@@ -21,6 +22,7 @@
     "@backend_2": "./backend/src",
     "@ws_gateway": "./ws_gateway/src",
     "@media": "./media/src",
+    "@bots_api": "./bots-api/src",
     "@warpykit": "./warpykit-sdk-node/src",
     "@clipper": "./clipper/src"
   },
