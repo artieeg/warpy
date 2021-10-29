@@ -1,11 +1,11 @@
 import {
-  FlatList,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
   useWindowDimensions,
   View,
 } from 'react-native';
+import {FlatList} from 'react-native-gesture-handler';
 import {useVideoStreams} from '@app/hooks/useVideoStreams';
 import React, {useMemo} from 'react';
 import {RTCView} from 'react-native-webrtc';
@@ -61,7 +61,8 @@ export const Room = ({forceLocalStream}: IStreamsProps) => {
     return (
       <View style={styles.wrapper}>
         <FlatList
-          contentContainerStyle={styles.list}
+          contentContainerStyle={styles.listContent}
+          style={styles.listC}
           data={participants}
           renderItem={({item}) => <AudioRoomParticipant data={item} />}
           numColumns={3}
@@ -80,8 +81,10 @@ const styles = StyleSheet.create({
   wrapper: {
     flexDirection: 'row',
     backgroundColor: '#000000',
+    flex: 1,
   },
-  list: {
+  listC: {},
+  listContent: {
     paddingTop: 80,
   },
 });

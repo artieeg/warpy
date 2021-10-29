@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
     height: 50,
   },
   wrapper: {
-    //padding: 6,
     borderRadius: 60,
     alignItems: 'center',
     justifyContent: 'center',

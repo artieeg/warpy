@@ -24,5 +24,6 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
 const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: '#000',
+    flex: 1,
   },
 });

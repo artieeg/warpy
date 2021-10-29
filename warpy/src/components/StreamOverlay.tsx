@@ -117,7 +117,7 @@ export const StreamOverlay = () => {
         pointerEvents="box-none"
         style={[styles.wrapper, wrapperAnimatedStyle]}>
         <LinearGradient
-          pointerEvents="box-none"
+          pointerEvents="none"
           style={[styles.gradientBottom, gradientHeightStyle]}
           start={{x: 0, y: 0.8}}
           end={{x: 0, y: 0}}
@@ -125,17 +125,19 @@ export const StreamOverlay = () => {
         />
 
         <LinearGradient
-          pointerEvents="box-none"
+          pointerEvents="none"
           style={[styles.gradientTop, gradientHeightStyle]}
           start={{x: 0, y: 0}}
           end={{x: 0, y: 0.8}}
           colors={['#050505fa', '#05050500']}
         />
 
-        <View style={styles.topButtons}>{top.map(item => item)}</View>
-        <View style={styles.bottomButtons}>{bottom.map(item => item)}</View>
-
-        {videoStreams.length > 0 && <Speakers />}
+        <View pointerEvents="box-none" style={styles.topButtons}>
+          {top.map(item => item)}
+        </View>
+        <View pointerEvents="box-none" style={styles.bottomButtons}>
+          {bottom.map(item => item)}
+        </View>
       </Animated.View>
       <IconButton
         style={styles.visibility}
