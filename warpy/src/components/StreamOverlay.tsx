@@ -1,3 +1,4 @@
+import {useVideoStreams} from '@app/hooks/useVideoStreams';
 import {useStore} from '@app/store';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, useWindowDimensions, Animated} from 'react-native';
@@ -21,9 +22,12 @@ const EmptyItem = () => <View style={{width: 50, height: 50}} />;
 
 export const StreamOverlay = () => {
   const [isVisible, setVisible] = useState(true);
+  const [debouncedVisible, setDebouncedVisible] = useState(true);
 
   const gradientHeightStyle = {height: useWindowDimensions().height / 3.4};
   const role = useStore.use.role();
+
+  const videoStreams = useVideoStreams({forceLocalStream: true});
 
   const opacity = useRef(new Animated.Value(1));
 
@@ -32,7 +36,7 @@ export const StreamOverlay = () => {
       toValue: isVisible ? 1 : 0,
       duration: 200,
       useNativeDriver: true,
-    }).start();
+    }).start(() => setDebouncedVisible(isVisible));
   }, [isVisible]);
 
   const wrapperAnimatedStyle = {
@@ -40,6 +44,14 @@ export const StreamOverlay = () => {
   };
 
   const getPanelContent = useCallback(() => {
+    //Remove buttons when they aren't visible
+    if (!isVisible && !debouncedVisible) {
+      return {
+        top: [],
+        bottom: [],
+      };
+    }
+
     if (role === 'streamer') {
       return {
         top: [
@@ -95,15 +107,17 @@ export const StreamOverlay = () => {
         ],
       };
     }
-  }, [role]);
+  }, [role, isVisible, debouncedVisible]);
 
   const {top, bottom} = useMemo(() => getPanelContent(), [getPanelContent]);
 
   return (
-    <View style={styles.row}>
-      <Animated.View style={[styles.wrapper, wrapperAnimatedStyle]}>
-        <ReactionCanvas />
+    <View pointerEvents="box-none" style={styles.row}>
+      <Animated.View
+        pointerEvents="box-none"
+        style={[styles.wrapper, wrapperAnimatedStyle]}>
         <LinearGradient
+          pointerEvents="none"
           style={[styles.gradientBottom, gradientHeightStyle]}
           start={{x: 0, y: 0.8}}
           end={{x: 0, y: 0}}
@@ -111,16 +125,19 @@ export const StreamOverlay = () => {
         />
 
         <LinearGradient
+          pointerEvents="none"
           style={[styles.gradientTop, gradientHeightStyle]}
           start={{x: 0, y: 0}}
           end={{x: 0, y: 0.8}}
           colors={['#050505fa', '#05050500']}
         />
 
-        <View style={styles.topButtons}>{top.map(item => item)}</View>
-        <View style={styles.bottomButtons}>{bottom.map(item => item)}</View>
-
-        <Speakers />
+        <View pointerEvents="box-none" style={styles.topButtons}>
+          {top.map(item => item)}
+        </View>
+        <View pointerEvents="box-none" style={styles.bottomButtons}>
+          {bottom.map(item => item)}
+        </View>
       </Animated.View>
       <IconButton
         style={styles.visibility}

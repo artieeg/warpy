@@ -26,3 +26,4 @@ export * from './ToastProvider';
 export * from './OpenNotificationsButton';
 export * from './Notification';
 export * from './OpenHomeButton';
+export * from './AudioRoomParticipant';

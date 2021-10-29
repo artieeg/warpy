@@ -1,9 +1,8 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Stream} from '@app/models';
-import {ReactionCanvas} from './ReactionCanvas';
 import {StreamOverlay} from './StreamOverlay';
-import {Streams} from './Streams';
+import {Room} from './Streams';
 import {useRemoteStreamController} from '@app/hooks';
 
 interface IRemoteStreamProps {
@@ -16,8 +15,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
 
   return (
     <View style={styles.wrapper}>
-      <Streams />
-      <ReactionCanvas />
+      <Room />
       <StreamOverlay />
     </View>
   );
@@ -25,6 +23,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: '#30ff30',
+    backgroundColor: '#000',
+    flex: 1,
   },
 });
