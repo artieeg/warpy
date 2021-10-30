@@ -3,3 +3,8 @@ export type CreateBotDTO = {
   name: string;
   avatar: string;
 };
+
+export type BotConfirmResponseDTO = {
+  user: string;
+  bot: string;
+};
