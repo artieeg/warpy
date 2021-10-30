@@ -43,7 +43,7 @@ export const sendBackendRequest = async (
 };
 
 let nc: NatsConnection;
-const jc = JSONCodec();
+export const jc = JSONCodec();
 
 export const init = async () => {
   nc = await connect({ servers: [NATS] });

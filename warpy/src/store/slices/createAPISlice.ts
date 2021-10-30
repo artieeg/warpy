@@ -47,6 +47,11 @@ export const createAPISlice = (
       console.log(`${data.user} toggled media`, data);
     });
 
+    api.botDev.onCreateBotConfirmRequest(({confirmation_id, bot}) => {
+      console.log('confirm bot', bot);
+      api.botDev.confirm(confirmation_id);
+    });
+
     api.media.onNewTrack(async data => {
       const {mediaClient, recvTransport} = get();
 

@@ -35,5 +35,7 @@ export class BotsService {
       });
 
     await this.botEntity.create(name, botname, avatar, devAccountId);
+
+    return { id: 'test', confimed: confirmation.confirmed };
   }
 }

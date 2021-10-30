@@ -6,6 +6,11 @@ export class DeveloperAccountEntity {
   constructor(private prismaService: PrismaService) {}
 
   async getDeveloperAccount(user: string) {
-    return 'test';
+    const { id } = await this.prismaService.developerAccount.findUnique({
+      where: { user_id: user },
+      select: { id: true },
+    });
+
+    return id;
   }
 }

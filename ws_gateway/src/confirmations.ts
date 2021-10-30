@@ -13,6 +13,6 @@ export const requestConfirmation = (
   return new Promise<void>((resolve, reject) => {
     confirmations[confirmation_id] = { resolve, reject };
 
-    ctx.ws.send(data);
+    ctx.ws.send(JSON.stringify(data));
   });
 };

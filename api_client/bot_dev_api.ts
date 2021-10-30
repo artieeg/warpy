@@ -4,12 +4,15 @@ import { EventHandler } from "./types";
 
 export interface IBotDevAPI {
   onCreateBotConfirmRequest: EventHandler<IBotDevConfirmation>;
-  confirmNewBot: (confirmation_id: string) => void;
+  confirm: (confirmation_id: string) => void;
+  cancel: (confirmation_id: string) => void;
 }
 
 export const BotDevAPI = (socket: WebSocketConn): IBotDevAPI => ({
   onCreateBotConfirmRequest: (handler) =>
     socket.on("bot-create-confirmation", handler),
-  confirmNewBot: (confirmation_id) =>
-    socket.publish("bot-create-confirmation", { confirmation_id }),
+  confirm: (confirmation_id) =>
+    socket.publish("confirmation", { confirmation_id, flag: true }),
+  cancel: (confirmation_id) =>
+    socket.publish("confirmation", { confirmation_id, flag: false }),
 });
