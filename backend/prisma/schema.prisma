@@ -38,7 +38,8 @@ model User {
   inviter Invite[] @relation(name: "inviter")
   invitee Invite[] @relation(name: "invitee")
 
-  notifications Notification[] @relation(name: "notifications")
+  notifications Notification[]    @relation(name: "notifications")
+  developer     DeveloperAccount? @relation(name: "developer")
 
   //Stream Stream[]
   @@map(name: "Users")
@@ -80,8 +81,8 @@ model Participant {
   joined_at     DateTime  @default(now())
   left_at       DateTime?
 
-  videoEnabled  Boolean   @default(false)
-  audioEnabled  Boolean   @default(false)
+  videoEnabled Boolean @default(false)
+  audioEnabled Boolean @default(false)
 
   recvNodeId String
   sendNodeId String?
@@ -159,4 +160,10 @@ model Notification {
   invite    Invite? @relation(fields: [invite_id], references: [id], onDelete: Cascade)
 
   created_at DateTime @default(now())
+}
+
+model DeveloperAccount {
+  id      String @id @default(cuid())
+  user_id String @unique
+  user    User   @relation(name: "developer", fields: [user_id], references: [id], onDelete: Cascade)
 }
