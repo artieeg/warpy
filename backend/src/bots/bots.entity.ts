@@ -9,6 +9,17 @@ export class BotsEntity {
     name: string,
     botname: string,
     avatar: string,
-    creator: string,
-  ) {}
+    creator_id: string,
+  ) {
+    const { id } = await this.prismaService.bot.create({
+      data: {
+        name,
+        botname,
+        avatar,
+        creator_id,
+      },
+    });
+
+    return id;
+  }
 }

@@ -162,8 +162,19 @@ model Notification {
   created_at DateTime @default(now())
 }
 
+model Bot {
+  id         String           @id @default(cuid())
+  name       String           @unique
+  botname    String           @unique
+  avatar     String
+  creator_id String
+  creator    DeveloperAccount @relation(name: "bot_creator", fields: [creator_id], references: [id], onDelete: Cascade)
+}
+
 model DeveloperAccount {
   id      String @id @default(cuid())
   user_id String @unique
   user    User   @relation(name: "developer", fields: [user_id], references: [id], onDelete: Cascade)
+
+  bots Bot[] @relation(name: "bot_creator")
 }

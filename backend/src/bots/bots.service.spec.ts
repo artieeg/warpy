@@ -1,8 +1,11 @@
 import { DeveloperAccountEntity } from '@backend_2/developer_account/developer_account.entity';
 import { mockedDeveloperAccountEntity } from '@backend_2/developer_account/developer_account.entity.mock';
+import { NotADeveloper } from '@backend_2/errors';
 import { mockedMediaService } from '@backend_2/media/media.service.mock';
 import { MessageService } from '@backend_2/message/message.service';
 import { mockedMessageService } from '@backend_2/message/message.service.mock';
+import { TokenService } from '@backend_2/token/token.service';
+import { mockedTokenService } from '@backend_2/token/token.service.mock';
 import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
 import { BotsEntity } from './bots.entity';
 import { mockedBotsEntity } from './bots.entity.mock';
@@ -19,6 +22,8 @@ describe('BotsService', () => {
       .useValue(mockedDeveloperAccountEntity)
       .overrideProvider(MessageService)
       .useValue(mockedMessageService)
+      .overrideProvider(TokenService)
+      .useValue(mockedTokenService)
       .compile();
     botsService = m.get(BotsService);
   });
@@ -27,15 +32,19 @@ describe('BotsService', () => {
     const devAccountId = 'dev_user0';
     const user = 'user0';
     const bot = 'bot_id0';
+    const token = 'test-token';
 
     beforeAll(() => {
+      mockedBotsEntity.create.mockResolvedValue(bot);
+
+      mockedTokenService.createToken.mockReturnValue(token);
+
       mockedDeveloperAccountEntity.getDeveloperAccount.mockResolvedValue(
         devAccountId,
       );
 
       mockedMessageService.request.mockResolvedValue({
-        user,
-        bot,
+        confirmed: true,
       });
     });
 
@@ -62,9 +71,25 @@ describe('BotsService', () => {
 
     it.todo('checks if botname ends with "bot"');
 
-    it.todo('checks if user is a developer');
+    it('checks if user is a developer', async () => {
+      mockedDeveloperAccountEntity.getDeveloperAccount.mockRejectedValueOnce(
+        new NotADeveloper(),
+      );
 
-    it.todo('returns bot secret token');
+      expect(
+        botsService.createNewBot('Bot Name', 'test_bot', user, 'test'),
+      ).rejects.toThrowError(NotADeveloper);
+    });
+
+    it('returns bot token, id, confirmation result', () => {
+      expect(
+        botsService.createNewBot('Bot Name', 'test_bot', user, 'test'),
+      ).resolves.toStrictEqual({
+        id: bot,
+        confimed: true,
+        token,
+      });
+    });
 
     it('creates a new bot in the db', async () => {
       await botsService.createNewBot('Bot Name', 'test_bot', user, 'test');

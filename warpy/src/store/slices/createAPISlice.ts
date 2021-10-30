@@ -48,8 +48,10 @@ export const createAPISlice = (
     });
 
     api.botDev.onCreateBotConfirmRequest(({confirmation_id, bot}) => {
-      console.log('confirm bot', bot);
-      api.botDev.confirm(confirmation_id);
+      get().dispatchModalOpen('bot-confirm', {
+        botConfirmData: bot,
+        botConfirmId: confirmation_id,
+      });
     });
 
     api.media.onNewTrack(async data => {

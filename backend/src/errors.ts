@@ -78,3 +78,12 @@ export class StreamNotFound extends BaseError {
     this.message = "Can't find this stream";
   }
 }
+
+export class NotADeveloper extends BaseError {
+  constructor() {
+    super('Not a developer');
+
+    this.name = 'NotADeveloper';
+    this.message = 'Not a developer';
+  }
+}

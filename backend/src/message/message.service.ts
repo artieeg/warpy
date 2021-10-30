@@ -25,7 +25,7 @@ export class MessageService {
     const response = await this.nc.request<T>(
       `request.user.${user}`,
       this.encodeMessage(request),
-      { timeout: 5000 },
+      { timeout: 90000 },
     );
 
     return response;

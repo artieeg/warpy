@@ -20,6 +20,7 @@ import { ParticipantModule } from './participant/participant.module';
 import { ReactionModule } from './reaction/reaction.module';
 import { StreamBlockModule } from './stream-block/stream-block.module';
 import { StreamModule } from './stream/stream.module';
+import { TokenModule } from './token/token.module';
 import { UserReportModule } from './user-report/user-report.module';
 import { UserModule } from './user/user.module';
 
@@ -30,6 +31,7 @@ import { UserModule } from './user/user.module';
     GifModule,
     FeedModule,
     UserModule,
+    TokenModule,
     StreamModule,
     UserReportModule,
     MediaModule,

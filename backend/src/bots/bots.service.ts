@@ -1,5 +1,6 @@
 import { DeveloperAccountEntity } from '@backend_2/developer_account/developer_account.entity';
 import { MessageService } from '@backend_2/message/message.service';
+import { TokenService } from '@backend_2/token/token.service';
 import { Injectable } from '@nestjs/common';
 import { BotConfirmResponseDTO } from './bots.dto';
 import { BotsEntity } from './bots.entity';
@@ -10,6 +11,7 @@ export class BotsService {
     private botEntity: BotsEntity,
     private developerAccountEntity: DeveloperAccountEntity,
     private messageService: MessageService,
+    private tokenService: TokenService,
   ) {}
 
   async createNewBot(
@@ -34,8 +36,9 @@ export class BotsService {
         },
       });
 
-    await this.botEntity.create(name, botname, avatar, devAccountId);
+    const id = await this.botEntity.create(name, botname, avatar, devAccountId);
+    const token = this.tokenService.createToken(id);
 
-    return { id: 'test', confimed: confirmation.confirmed };
+    return { id, confimed: confirmation.confirmed, token };
   }
 }
