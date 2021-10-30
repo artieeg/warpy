@@ -8,6 +8,7 @@ import { BotsModule } from './bots/bots.module';
 import { BroadcastModule } from './broadcast/broadcast.module';
 import { ChatModule } from './chat/chat.module';
 import { configuration } from './config/configuration';
+import { DeveloperAccountModule } from './developer_account/developer_account.module';
 import { FeedModule } from './feed/feed.module';
 import { FollowModule } from './follow/follow.module';
 import { GifModule } from './gif/gif.module';
@@ -25,6 +26,7 @@ import { UserModule } from './user/user.module';
 @Module({
   imports: [
     BotsModule,
+    DeveloperAccountModule,
     GifModule,
     FeedModule,
     UserModule,
