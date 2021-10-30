@@ -52,3 +52,12 @@ export interface IMediaToggleEvent {
   videoEnabled?: boolean;
   audioEnabled?: boolean;
 }
+
+export interface IBotDevConfirmation {
+  confirmation_id: string;
+  bot: {
+    botname: string;
+    avatar: string;
+    name: string;
+  };
+}
