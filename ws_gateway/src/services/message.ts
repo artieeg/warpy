@@ -104,6 +104,30 @@ export const sendRecvTracksRequest = async (node: string, data: any) => {
   return jc.decode(reply.data) as IRecvTracksResponse;
 };
 
+export const subscribeForRequests = (
+  user: string,
+  callback: any
+): [Subscription, () => Promise<any>] => {
+  console.log(`subbign for request.user.${user}`);
+
+  const sub = nc.subscribe(`request.user.${user}`);
+
+  const listen = async () => {
+    for await (const msg of sub) {
+      const data = jc.decode(msg.data) as any;
+      try {
+        const response = await callback(data, msg);
+
+        msg.respond(jc.encode(response));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
+
+  return [sub, listen];
+};
+
 export const subscribeForEvents = (
   user: string,
   callback: any
@@ -116,7 +140,7 @@ export const subscribeForEvents = (
     for await (const msg of sub) {
       const data = jc.decode(msg.data) as any;
       try {
-        callback(data);
+        await callback(data);
       } catch (e) {
         console.error(e);
       }

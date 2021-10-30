@@ -1,7 +1,9 @@
 import { customEventHandlers } from "@ws_gateway/customEventHandlers";
+import { customRequestHandlers } from "@ws_gateway/customRequestHandlers";
 import { MessageService } from "@ws_gateway/services";
 import { Handler } from "@ws_gateway/types";
 import { jwt } from "@ws_gateway/utils";
+import { Msg } from "nats";
 
 export const onAuth: Handler = async (data, context, rid) => {
   const { token } = data;
@@ -9,7 +11,20 @@ export const onAuth: Handler = async (data, context, rid) => {
 
   context.user = user;
 
-  const [_sub, listen] = MessageService.subscribeForEvents(
+  const [_req_sub, listenRequest] = MessageService.subscribeForRequests(
+    user,
+    async (message: any, msg: Msg) => {
+      const { request, data } = message;
+
+      const customRequestHandler = customRequestHandlers[request];
+
+      if (customRequestHandler) {
+        return customRequestHandler(context, data, msg);
+      }
+    }
+  );
+
+  const [_sub, listenEvent] = MessageService.subscribeForEvents(
     user,
     (message: any) => {
       const { event, data } = message;
@@ -45,5 +60,5 @@ export const onAuth: Handler = async (data, context, rid) => {
     })
   );
 
-  listen();
+  listenEvent();
 };
