@@ -4,6 +4,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BlockModule } from './block/block.module';
+import { BotsModule } from './bots/bots.module';
 import { BroadcastModule } from './broadcast/broadcast.module';
 import { ChatModule } from './chat/chat.module';
 import { configuration } from './config/configuration';
@@ -23,7 +24,7 @@ import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    //PrismaModule,
+    BotsModule,
     GifModule,
     FeedModule,
     UserModule,

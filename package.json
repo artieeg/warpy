@@ -3,10 +3,8 @@
   "workspaces": [
     "lib",
     "api_client",
-    "bots_api",
     "backend_2",
     "media-client",
-    "bots-api",
     "backend",
     "clipper",
     "warpy",

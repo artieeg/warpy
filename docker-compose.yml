@@ -19,17 +19,6 @@ services:
       #ports:
       #- 6379:6379
 
-  bots_api:
-    image: node:16.0.0-alpine
-    env_file:
-      - dev_env/backend.env
-    ports:
-      - 3000:3000
-    volumes:
-      - ./:/warpy
-    working_dir: /warpy/bots_api
-    command: yarn start:dev
-
   backend:
     image: node:16.0.0-alpine
     env_file:
@@ -37,6 +26,7 @@ services:
       - dev_env/backend.external_apis.env
     ports:
       - 9229:9229
+      - 3000:3000
     volumes:
       - ./:/warpy
     working_dir: /warpy/backend

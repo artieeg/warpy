@@ -2356,10 +2356,10 @@
   dependencies:
     eventemitter2 "6.4.4"
 
-"@nestjs/microservices@^8.0.9":
-  version "8.0.9"
-  resolved "https://registry.yarnpkg.com/@nestjs/microservices/-/microservices-8.0.9.tgz#74b2c8df654e4ab09a6fc9a66c78dbcfb0b519f8"
-  integrity sha512-VSWWoI7gmyAfZP8j/QHukgpn1RKRoylOUj0cI1VTAdCFfj7sz+gmci9aw8abLaXFGy/ooje2V4ND8eT655cIDw==
+"@nestjs/microservices@^8.1.2":
+  version "8.1.2"
+  resolved "https://registry.yarnpkg.com/@nestjs/microservices/-/microservices-8.1.2.tgz#c621b10ee60a8cde978001c0ba05ffd8cada3994"
+  integrity sha512-7BnKIa3+w6a/1vJO5euE+RTP6ejwlpGRdoAQ64BTpReHxboFzX7C4Zb6cnM84x1AIl/xe8x+fDoUztxJn4LSiA==
   dependencies:
     iterare "1.2.1"
     json-socket "0.3.0"
@@ -2386,14 +2386,6 @@
     fs-extra "10.0.0"
     jsonc-parser "3.0.0"
     pluralize "8.0.0"
-
-"@nestjs/testing@^8.0.0":
-  version "8.1.2"
-  resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-8.1.2.tgz#fc8c3371f45891e935a1b45ae31fd35bd2a045d6"
-  integrity sha512-Iffx79y4Bt3gAJd8n+9Nhbmq9uB0KWZ0KasdQwQsbCNuhTsvgjQ1iD/khFYtf1dGthSndmrAQgvl+jkX7W7KKA==
-  dependencies:
-    optional "0.1.4"
-    tslib "2.3.1"
 
 "@nestjs/testing@^8.0.9":
   version "8.0.9"
@@ -11140,7 +11132,7 @@ tsconfig-paths-webpack-plugin@3.5.1:
     enhanced-resolve "^5.7.0"
     tsconfig-paths "^3.9.0"
 
-tsconfig-paths@3.11.0, tsconfig-paths@^3.10.1, tsconfig-paths@^3.11.0, tsconfig-paths@^3.9.0:
+tsconfig-paths@3.11.0, tsconfig-paths@^3.11.0, tsconfig-paths@^3.9.0:
   version "3.11.0"
   resolved "https://registry.yarnpkg.com/tsconfig-paths/-/tsconfig-paths-3.11.0.tgz#954c1fe973da6339c78e06b03ce2e48810b65f36"
   integrity sha512-7ecdYDnIdmv639mmDwslG6KQg1Z9STTz1j7Gcz0xa+nshh/gKDAHcPxRbWOsA3SPp0tXP2leTcY9Kw+NAkfZzA==
