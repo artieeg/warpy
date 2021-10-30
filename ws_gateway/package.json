@@ -15,6 +15,7 @@
   "dependencies": {
     "@warpy/lib": "1.0.0",
     "bufferutil": "^4.0.3",
+    "cuid": "^2.1.8",
     "joi": "^17.4.2",
     "jsonwebtoken": "^8.5.1",
     "module-alias": "^2.2.2",

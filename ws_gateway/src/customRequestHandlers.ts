@@ -1,6 +1,8 @@
 import { Context } from "./types";
 import WebSocket from "ws";
 import { Msg } from "nats";
+import cuid from "cuid";
+import { confirmations, requestConfirmation } from "./confirmations";
 
 type CustomRequestHandler = (
   context: Context,
@@ -14,7 +16,15 @@ export const customRequestHandlers: Record<string, CustomRequestHandler> = {
       return;
     }
 
-    //TODO ;;;
+    const confirmation_id = cuid();
+
+    await requestConfirmation(confirmation_id, context, {
+      event: "bot-create-confirmation",
+      data: {
+        confirmation_id,
+        bot: data.bot,
+      },
+    });
 
     return {};
   },
