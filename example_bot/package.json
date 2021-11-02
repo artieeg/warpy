@@ -1,0 +1,12 @@
+{
+  "name": "example_bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start:dev": "ts-node-dev -r tsconfig-paths/register ./src/main.ts --watch ./src --exit-child"
+  },
+  "dependencies": {
+    "@warpy/api": "1.0.0"
+  }
+}

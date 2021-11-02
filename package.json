@@ -10,6 +10,7 @@
     "clipper",
     "loadtest",
     "warpy",
+    "example_bot",
     "media",
     "ws_gateway",
     "warpykit-sdk-node"

@@ -6,9 +6,10 @@ import { jwt } from "@ws_gateway/utils";
 
 export const onAuth: Handler = async (data, context, rid) => {
   const { token } = data;
-  const user = jwt.verifyAccessToken(token);
+  const { user, isBot } = jwt.verifyAccessToken(token);
 
   context.user = user;
+  context.isBot = isBot;
 
   const [_req_sub, listenRequest] = MessageService.subscribeForRequests(
     user,
@@ -37,26 +38,26 @@ export const onAuth: Handler = async (data, context, rid) => {
     }
   );
 
-  const response = await MessageService.sendBackendRequest(
-    "user.whoami-request",
-    {
-      id: Math.random().toString(),
-      user,
-    }
-  );
+  if (!isBot) {
+    const response = await MessageService.sendBackendRequest(
+      "user.whoami-request",
+      {
+        id: Math.random().toString(),
+        user,
+      }
+    );
 
-  console.log("whoami response", response);
-
-  context.ws.send(
-    JSON.stringify({
-      rid,
-      event: "response",
-      data: {
-        user: response.user,
-        following: response.following,
-      },
-    })
-  );
+    context.ws.send(
+      JSON.stringify({
+        rid,
+        event: "response",
+        data: {
+          user: response.user,
+          following: response.following,
+        },
+      })
+    );
+  }
 
   listenRequest();
   listenEvent();

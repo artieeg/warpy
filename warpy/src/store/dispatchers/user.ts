@@ -23,7 +23,7 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
 
     const {user, following} = await api.user.auth(token);
 
-    if (!user || !following) {
+    if (!user) {
       set({
         isLoadingUser: false,
         exists: false,
@@ -34,7 +34,8 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
 
     set({
       user,
-      following,
+      exists: true,
+      following: following || [],
       isLoadingUser: false,
     });
   },

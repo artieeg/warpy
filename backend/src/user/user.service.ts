@@ -39,8 +39,8 @@ export class UserService {
       sub: 'DEV_ACCOUNT',
     });
 
-    const accessToken = this.tokenService.createToken(user.id, '1d');
-    const refreshToken = this.tokenService.createToken(user.id, '1y');
+    const accessToken = this.tokenService.createToken(user.id, false, '1d');
+    const refreshToken = this.tokenService.createToken(user.id, false, '1y');
 
     await this.refreshTokenEntity.create(refreshToken);
 

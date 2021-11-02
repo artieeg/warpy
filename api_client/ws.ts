@@ -7,6 +7,7 @@ import { IUserAPI, UserAPI } from "./user_api";
 import { IGifsAPI, GifsAPI } from "./gifs_api";
 import { APIObserver, IAPIObserver } from "./api_observer";
 import { BotDevAPI, IBotDevAPI } from "./bot_dev_api";
+import { BotAPI, IBotAPI } from "./bot_api";
 
 interface IAPIClient {
   observer: IAPIObserver;
@@ -15,6 +16,7 @@ interface IAPIClient {
   feed: IFeedAPI;
   media: IMediaAPI;
   botDev: IBotDevAPI;
+  bot: IBotAPI;
   notification: INotificationAPI;
   gifs: IGifsAPI;
   close: () => void;
@@ -22,6 +24,7 @@ interface IAPIClient {
 
 export const APIClient = (socket: WebSocketConn): IAPIClient => ({
   observer: APIObserver(socket),
+  bot: BotAPI(socket),
   user: UserAPI(socket),
   botDev: BotDevAPI(socket),
   stream: StreamAPI(socket),
