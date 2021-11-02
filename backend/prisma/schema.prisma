@@ -69,9 +69,14 @@ model Report {
 }
 
 model Participant {
-  id            String    @id @default(cuid())
-  user_id       String    @unique
-  user          User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  id String @id @default(cuid())
+
+  user_id String @unique
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  bot_id String      @unique
+  bot    BotInstance @relation(fields: [bot_id], references: [id], onDelete: Cascade)
+
   stream_id     String?
   stream        Stream?   @relation(name: "participant", fields: [stream_id], references: [id], onDelete: Cascade)
   role          String
@@ -169,6 +174,15 @@ model Bot {
   avatar     String
   creator_id String
   creator    DeveloperAccount @relation(name: "bot_creator", fields: [creator_id], references: [id], onDelete: Cascade)
+  instances  BotInstance[]    @relation(name: "bot_instance")
+}
+
+model BotInstance {
+  id     String @id @default(cuid())
+  bot_id String
+  bot    Bot    @relation(name: "bot_instance", fields: [bot_id], references: [id], onDelete: Cascade)
+
+  participant Participant?
 }
 
 model DeveloperAccount {

@@ -3,10 +3,12 @@
   "workspaces": [
     "lib",
     "api_client",
+    "bot_api_client",
     "backend_2",
     "media-client",
     "backend",
     "clipper",
+    "loadtest",
     "warpy",
     "media",
     "ws_gateway",

@@ -8,16 +8,19 @@ export interface IBaseParticipant extends IEntity {
   isRaisingHand?: boolean;
   audioEnabled?: boolean;
   videoEnabled?: boolean;
+  isBot: boolean;
 }
 
 export interface IParticipant extends IBaseUser, IBaseParticipant {}
 
+/*
 export class Participant extends BaseUser implements IParticipant {
   role: Roles;
   stream: string | null;
   isRaisingHand?: boolean;
   recvNodeId?: string;
   sendNodeId?: string;
+  isBot: boolean;
 
   constructor(data: IParticipant) {
     super(data);
@@ -35,3 +38,4 @@ export class Participant extends BaseUser implements IParticipant {
     });
   }
 }
+*/
