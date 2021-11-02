@@ -61,3 +61,8 @@ export interface IBotDevConfirmation {
     name: string;
   };
 }
+
+export interface IBotInvitation {
+  stream: string;
+  inviteDetailsToken: string;
+}

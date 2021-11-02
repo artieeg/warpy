@@ -104,3 +104,7 @@ export interface IGifsResponse {
   next: string;
   gifs: string[];
 }
+
+export interface IBotAuthResponse {
+  status: "ok" | "error";
+}

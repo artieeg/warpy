@@ -57,6 +57,16 @@ export const onAuth: Handler = async (data, context, rid) => {
         },
       })
     );
+  } else {
+    context.ws.send(
+      JSON.stringify({
+        rid,
+        event: "response",
+        data: {
+          status: "ok",
+        },
+      })
+    );
   }
 
   listenRequest();
