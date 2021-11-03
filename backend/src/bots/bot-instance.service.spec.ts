@@ -18,6 +18,8 @@ describe('Bot Instance Service', () => {
   const bot = 'bot0';
   const stream = 'stream';
 
+  const botInstanceId = 'bot0_instance';
+
   const sendNodeId = 'node0';
   const recvNodeId = 'node1';
 
@@ -48,8 +50,8 @@ describe('Bot Instance Service', () => {
 
     botInstanceService = m.get(BotInstanceService);
 
+    mockedBotInstanceEntity.create.mockResolvedValue(botInstanceId);
     mockedParticipantEntity.create.mockResolvedValue(botParticipant);
-
     mockedMediaService.createPermissionToken.mockReturnValue(
       mockedMediaPermissionToken,
     );
@@ -92,7 +94,7 @@ describe('Bot Instance Service', () => {
       await botInstanceService.createBotInstance(bot, 'test');
 
       expect(mockedParticipantEntity.create).toBeCalledWith({
-        bot_id: bot,
+        bot_id: botInstanceId,
         stream,
         recvNodeId,
         sendNodeId,
