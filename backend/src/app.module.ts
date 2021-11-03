@@ -26,7 +26,11 @@ import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    BotsModule,
+    ConfigModule.forRoot({
+      load: [configuration],
+      isGlobal: true,
+    }),
+    MediaModule,
     DeveloperAccountModule,
     GifModule,
     FeedModule,
@@ -34,11 +38,11 @@ import { UserModule } from './user/user.module';
     TokenModule,
     StreamModule,
     UserReportModule,
-    MediaModule,
     StreamModule,
     StreamBlockModule,
     NatsModule,
     ParticipantModule,
+    BotsModule,
     BlockModule,
     InviteModule,
     ChatModule,
@@ -47,9 +51,6 @@ import { UserModule } from './user/user.module';
     FollowModule,
     NotificationModule,
     EventEmitterModule.forRoot(),
-    ConfigModule.forRoot({
-      load: [configuration],
-    }),
   ],
   controllers: [AppController],
   providers: [AppService],

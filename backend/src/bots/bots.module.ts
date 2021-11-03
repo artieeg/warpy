@@ -5,6 +5,7 @@ import { ParticipantModule } from '@backend_2/participant/participant.module';
 import { PrismaModule } from '@backend_2/prisma/prisma.module';
 import { TokenModule } from '@backend_2/token/token.module';
 import { Module } from '@nestjs/common';
+import { BotInstanceController } from './bot-instance.controller';
 import { BotInstanceEntity } from './bot-instance.entity';
 import { BotInstanceService } from './bot-instance.service';
 import { BotsController } from './bots.controller';
@@ -20,8 +21,8 @@ import { BotsService } from './bots.service';
     MessageModule,
     TokenModule,
   ],
-  providers: [BotsService, BotInstanceEntity, BotInstanceService, BotsEntity],
-  controllers: [BotsController],
+  providers: [BotsService, BotInstanceService, BotInstanceEntity, BotsEntity],
+  controllers: [BotInstanceController, BotsController],
   exports: [],
 })
 export class BotsModule {}
