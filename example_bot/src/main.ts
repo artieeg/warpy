@@ -12,6 +12,10 @@ const main = async () => {
   if (status !== "ok") {
     console.log("bot auth failed");
   }
+
+  api.bot.onInvite((data) => {
+    console.log("new invite", data);
+  });
 };
 
 socket.onopen = () => {

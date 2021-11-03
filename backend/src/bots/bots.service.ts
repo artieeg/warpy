@@ -37,7 +37,7 @@ export class BotsService {
       });
 
     const id = await this.botEntity.create(name, botname, avatar, devAccountId);
-    const token = this.tokenService.createToken(id, true);
+    const token = this.tokenService.createAuthToken(id, true);
 
     return { id, confimed: confirmation.confirmed, token };
   }

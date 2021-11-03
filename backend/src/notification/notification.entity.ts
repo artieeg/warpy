@@ -27,15 +27,19 @@ export class NotificationEntity {
   }
 
   async createFromInvite(user_id: string, invite_id: string) {
+    const isBot = user_id.slice(0, 3) === 'bot';
+
     const notification = await this.prisma.notification.create({
       data: {
-        user_id,
+        user_id: isBot ? null : user_id,
+        bot_id: isBot ? user_id : null,
         invite_id,
       },
       include: {
         invite: {
           include: {
-            invitee: true,
+            user_invitee: true,
+            bot_invitee: true,
             inviter: true,
             stream: true,
           },
@@ -55,7 +59,8 @@ export class NotificationEntity {
       include: {
         invite: {
           include: {
-            invitee: true,
+            user_invitee: true,
+            bot_invitee: true,
             inviter: true,
             stream: true,
           },
@@ -74,7 +79,8 @@ export class NotificationEntity {
       include: {
         invite: {
           include: {
-            invitee: true,
+            user_invitee: true,
+            bot_invitee: true,
             inviter: true,
             stream: true,
           },

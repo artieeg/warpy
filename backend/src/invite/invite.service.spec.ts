@@ -1,9 +1,15 @@
+import { NoPermissionError } from '@backend_2/errors';
 import { mockedEventEmitter } from '@backend_2/events/events.service.mock';
 import { FollowEntity } from '@backend_2/follow/follow.entity';
 import { mockedFollowEntity } from '@backend_2/follow/follow.entity.mock';
+import { MessageService } from '@backend_2/message/message.service';
+import { mockedMessageService } from '@backend_2/message/message.service.mock';
+import { StreamEntity } from '@backend_2/stream/stream.entity';
+import { mockedStreamEntity } from '@backend_2/stream/stream.entity.mock';
 import {
   createFollowRecord,
   createInviteFixture,
+  createStreamFixture,
 } from '@backend_2/__fixtures__';
 import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -24,6 +30,10 @@ describe('InviteService', () => {
       .useValue(mockedEventEmitter)
       .overrideProvider(InviteEntity)
       .useValue(mockedInviteEntity)
+      .overrideProvider(StreamEntity)
+      .useValue(mockedStreamEntity)
+      .overrideProvider(MessageService)
+      .useValue(mockedMessageService)
       .compile();
 
     inviteService = m.get(InviteService);
@@ -42,6 +52,44 @@ describe('InviteService', () => {
       'notification.invite.create',
       invite,
     );
+  });
+
+  it('sends a message with invite to a bot', async () => {
+    const inviter = 'user1';
+    const stream = 'stream0';
+    const invitee = 'bot_testbot0';
+
+    mockedStreamEntity.findById.mockResolvedValueOnce(
+      createStreamFixture({ id: stream, owner: inviter }),
+    );
+
+    await inviteService.createStreamInvite({ inviter, stream, invitee });
+
+    expect(mockedMessageService.sendMessage).toBeCalledWith(invitee, {
+      event: 'bot-invite',
+      data: {
+        stream,
+        inviteDetailsToken: expect.anything(),
+      },
+    });
+  });
+
+  it('checks so only stream hosts can invite a bot', () => {
+    const anotherUser = 'user0';
+    const inviter = 'user1';
+    const stream = 'stream0';
+
+    mockedStreamEntity.findById.mockResolvedValueOnce(
+      createStreamFixture({ id: stream, owner: anotherUser }),
+    );
+
+    expect(
+      inviteService.createStreamInvite({
+        inviter,
+        invitee: 'bot_testbot0',
+        stream,
+      }),
+    ).rejects.toThrowError(NoPermissionError);
   });
 
   it('sends an invite delete notification', async () => {

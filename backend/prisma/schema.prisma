@@ -71,11 +71,11 @@ model Report {
 model Participant {
   id String @id @default(cuid())
 
-  user_id String @unique
-  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id String? @unique
+  user    User?   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
-  bot_id String      @unique
-  bot    BotInstance @relation(fields: [bot_id], references: [id], onDelete: Cascade)
+  bot_id String?      @unique
+  bot    BotInstance? @relation(fields: [bot_id], references: [id], onDelete: Cascade)
 
   stream_id     String?
   stream        Stream?   @relation(name: "participant", fields: [stream_id], references: [id], onDelete: Cascade)
@@ -143,8 +143,11 @@ model Invite {
   stream_id String
   stream    Stream @relation(name: "invites", fields: [stream_id], references: [id], onDelete: Cascade)
 
-  invitee_id String
-  invitee    User   @relation(name: "invitee", fields: [invitee_id], references: [id], onDelete: Cascade)
+  user_invitee_id String?
+  user_invitee    User?   @relation(name: "invitee", fields: [user_invitee_id], references: [id], onDelete: Cascade)
+
+  bot_invitee_id String?
+  bot_invitee    Bot?   @relation(name: "bot_invitee", fields: [bot_invitee_id], references: [id], onDelete: Cascade)
 
   inviter_id   String
   inviter      User          @relation(name: "inviter", fields: [inviter_id], references: [id], onDelete: Cascade)
@@ -158,8 +161,11 @@ model Notification {
 
   hasBeenSeen Boolean @default(false)
 
-  user_id String
-  user    User   @relation(name: "notifications", fields: [user_id], references: [id], onDelete: Cascade)
+  user_id String?
+  user    User?   @relation(name: "notifications", fields: [user_id], references: [id], onDelete: Cascade)
+
+  bot_id String?
+  bot    Bot?   @relation(name: "bot_notifications", fields: [bot_id], references: [id], onDelete: Cascade)
 
   invite_id String? @unique
   invite    Invite? @relation(fields: [invite_id], references: [id], onDelete: Cascade)
@@ -175,6 +181,9 @@ model Bot {
   creator_id String
   creator    DeveloperAccount @relation(name: "bot_creator", fields: [creator_id], references: [id], onDelete: Cascade)
   instances  BotInstance[]    @relation(name: "bot_instance")
+  invitee Invite[] @relation(name: "bot_invitee")
+
+  notifications Notification[]    @relation(name: "bot_notifications")
 }
 
 model BotInstance {

@@ -1,3 +1,4 @@
+import { TokenService } from '@backend_2/token/token.service';
 import { forwardRef, Module } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { BlockModule } from '../block/block.module';
@@ -17,6 +18,7 @@ import { ParticipantService } from './participant.service';
     StreamBlockModule,
     forwardRef(() => BlockModule),
     MessageModule,
+    TokenService,
     //EventEmitterModule.forRoot(),
   ],
   providers: [ParticipantService, ParticipantEntity],

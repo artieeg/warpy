@@ -9,7 +9,7 @@ describe('TokenService', () => {
   });
 
   it('creates a new jwt token', () => {
-    const token = tokenService.createToken('test', false, '1y');
+    const token = tokenService.createAuthToken('test', false, '1y');
 
     expect(token).toBeTruthy();
   });

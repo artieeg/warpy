@@ -108,3 +108,9 @@ export interface IGifsResponse {
 export interface IBotAuthResponse {
   status: "ok" | "error";
 }
+
+export interface IBotJoinResponse {
+  sendMedia: any;
+  recvMedia: any;
+  mediaPermissionToken: string;
+}
