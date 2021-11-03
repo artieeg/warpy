@@ -34,7 +34,7 @@ export class BotInstanceService {
     const botInstanceId = await this.botInstanceEntity.create(bot);
 
     const botParticipant = await this.participantEntity.create({
-      bot_id: bot,
+      bot_id: botInstanceId,
       stream,
       audioEnabled: false,
       videoEnabled: false,
