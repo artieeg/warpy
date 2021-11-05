@@ -7,6 +7,7 @@ import { FollowModule } from '@backend_2/follow/follow.module';
 import { StreamModule } from '@backend_2/stream/stream.module';
 import { MessageModule } from '@backend_2/message/message.module';
 import { TokenModule } from '@backend_2/token/token.module';
+import { BotsModule } from '@backend_2/bots/bots.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { TokenModule } from '@backend_2/token/token.module';
     FollowModule,
     MessageModule,
     TokenModule,
+    BotsModule,
   ],
   providers: [InviteEntity, InviteService],
   controllers: [InviteController],

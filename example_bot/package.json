@@ -8,6 +8,9 @@
   },
   "dependencies": {
     "@warpy/api": "1.0.0",
+    "@warpykit-sdk/client": "1.0.0",
+    "mediasoup-client": "^3.6.43",
+    "mediasoup-client-aiortc": "^3.6.3",
     "ws": "^8.2.3"
   }
 }

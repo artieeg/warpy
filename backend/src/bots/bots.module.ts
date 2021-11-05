@@ -23,6 +23,6 @@ import { BotsService } from './bots.service';
   ],
   providers: [BotsService, BotInstanceService, BotInstanceEntity, BotsEntity],
   controllers: [BotInstanceController, BotsController],
-  exports: [],
+  exports: [BotsEntity],
 })
 export class BotsModule {}

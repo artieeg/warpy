@@ -8097,7 +8097,7 @@ mediasoup-client-aiortc@^3.6.3:
     sdp-transform "^2.14.0"
     uuid "^7.0.3"
 
-mediasoup-client@^3.6.2:
+mediasoup-client@^3.6.2, mediasoup-client@^3.6.43:
   version "3.6.43"
   resolved "https://registry.yarnpkg.com/mediasoup-client/-/mediasoup-client-3.6.43.tgz#ac1d64d4ec63fba498e16d945b96858686aaf27c"
   integrity sha512-fieD9iLlLpyKMaW7EdE8RjOLonQYUoKHwDKHecwCZLXmP2RIwizTJN6NLXCOyappWX7rJNk95BgbLbJSxT28Xw==

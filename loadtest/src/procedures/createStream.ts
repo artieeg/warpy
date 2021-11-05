@@ -35,7 +35,7 @@ export const createStream = async (record: UserRecord) => {
   );
 
   const { invite } = await api.stream.invite(
-    "bot_ckvikis9u000143mi084y051g",
+    "bot_ckvkmdw9x000111qv9gqndsih",
     stream
   );
 

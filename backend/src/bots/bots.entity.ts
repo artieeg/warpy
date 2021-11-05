@@ -42,4 +42,10 @@ export class BotsEntity {
 
     return id;
   }
+
+  async getMany(): Promise<IUser[]> {
+    const bots = await this.prismaService.bot.findMany({});
+
+    return bots.map(BotsEntity.toBotDTO);
+  }
 }

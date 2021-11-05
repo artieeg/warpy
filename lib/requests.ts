@@ -267,3 +267,8 @@ export interface IMediaToggleRequest {
   videoEnabled?: boolean;
   audioEnabled?: boolean;
 }
+
+export interface IBotJoin {
+  user: string;
+  inviteDetailsToken: string;
+}

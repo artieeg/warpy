@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, useWindowDimensions} from 'react-native';
 import {IUser} from '@warpy/lib';
 import {Avatar} from './Avatar';
 import {Text} from './Text';
@@ -40,15 +40,17 @@ export const UserInviteOption = ({user}: IUserInviteProps) => {
     }
   }, [invited]);
 
+  const {width} = useWindowDimensions();
+
   return (
     <View style={styles.wrapper}>
-      <View style={styles.user}>
+      <View style={[styles.user, {width: width - 160}]}>
         <Avatar user={user} />
-        <View style={styles.info}>
-          <Text weight="bold">{user.username}</Text>
-          <Text
-            weight="bold"
-            size="small">{`${user.first_name} ${user.last_name}`}</Text>
+        <View style={[styles.info]}>
+          <Text size="small" weight="bold">
+            {user.username}
+          </Text>
+          <Text weight="bold" size="xsmall">{`${user.first_name}`}</Text>
         </View>
       </View>
       <Checkbox visible={invited} onToggle={() => setInvited(prev => !prev)} />

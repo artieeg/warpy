@@ -249,6 +249,15 @@ const handlers: Record<string, HandlerConfig> = {
     subject: "participant.media-toggle",
   },
 
+  "bot-stream-join": {
+    schema: joi.object({
+      inviteDetailsToken: joi.string().required(),
+    }),
+    kind: "request",
+    auth: true,
+    subject: "bot.join",
+  },
+
   confirmation: {
     schema: joi.object({
       confirmation_id: joi.string().max(64).required(),

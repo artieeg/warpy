@@ -6,7 +6,7 @@ import * as jwt from 'jsonwebtoken';
 export class TokenService {
   constructor(private configService: ConfigService) {}
 
-  createToken(data: any, params: jwt.SignOptions) {
+  createToken(data: any, params?: jwt.SignOptions) {
     const secret = this.configService.get<string>('accessJwtSecret');
 
     return jwt.sign(data, secret, params);
@@ -17,6 +17,6 @@ export class TokenService {
   }
 
   createAuthToken(sub: string, isBot: boolean, expiresIn?: string) {
-    return this.createToken({ sub, isBot }, { expiresIn });
+    return this.createToken({ sub, isBot }, expiresIn && { expiresIn });
   }
 }

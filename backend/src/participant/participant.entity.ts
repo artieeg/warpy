@@ -41,7 +41,7 @@ export class ParticipantEntity {
       throw new Error('Participant is null');
     }
 
-    if (!data.user) {
+    if (!data.user && !data.bot) {
       throw new Error("Participant's user data is null");
     }
 

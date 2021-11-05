@@ -1,3 +1,4 @@
+import { BotsEntity } from '@backend_2/bots/bots.entity';
 import { NoPermissionError } from '@backend_2/errors';
 import { FollowEntity } from '@backend_2/follow/follow.entity';
 import { MessageService } from '@backend_2/message/message.service';
@@ -17,6 +18,7 @@ export class InviteService {
     private streamEntity: StreamEntity,
     private messageService: MessageService,
     private tokenService: TokenService,
+    private botEntity: BotsEntity,
   ) {}
 
   private async inviteRealUser(
@@ -91,9 +93,10 @@ export class InviteService {
   }
 
   async getInviteSuggestions(user: string, _stream: string): Promise<IUser[]> {
-    const [followed, following] = await Promise.all([
+    const [followed, following, bots] = await Promise.all([
       this.followEntity.getFollowed(user),
       this.followEntity.getFollowers(user),
+      this.botEntity.getMany(),
     ]);
 
     const suggestions: IUser[] = [
@@ -112,6 +115,6 @@ export class InviteService {
       suggestions.map((user) => [user.id, user]),
     );
 
-    return Array.from(uniqueSuggestionMap.values());
+    return [...bots, ...Array.from(uniqueSuggestionMap.values())];
   }
 }
