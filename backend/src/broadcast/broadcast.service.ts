@@ -162,7 +162,7 @@ export class BroadcastService {
     const ids = await this.participant.getIdsByStream(participant.stream);
 
     const message = this.messageService.encodeMessage({
-      event: 'new-viewer',
+      event: 'new-participant',
       data: {
         stream: participant.stream,
         viewer: participant,

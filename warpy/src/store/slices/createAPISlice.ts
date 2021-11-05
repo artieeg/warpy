@@ -20,7 +20,7 @@ export const createAPISlice = (
     const store = get();
     const {api} = store;
 
-    api.stream.onNewViewer(data => {
+    api.stream.onNewParticipant(data => {
       store.dispatchViewerAdd(data.viewer);
     });
 
