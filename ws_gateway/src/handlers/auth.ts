@@ -64,6 +64,7 @@ export const onAuth: Handler = async (data, context, rid) => {
         event: "response",
         data: {
           status: "ok",
+          bot: user,
         },
       })
     );

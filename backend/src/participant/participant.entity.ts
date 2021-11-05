@@ -47,7 +47,10 @@ export class ParticipantEntity {
 
     let user = data.user
       ? UserEntity.toUserDTO(data.user, false)
-      : BotInstanceEntity.toBotInstanceDTO(data.bot);
+      : BotInstanceEntity.toBotInstanceDTO({
+          ...data.bot,
+          id: data.bot_id,
+        });
 
     return {
       ...user,
@@ -219,8 +222,10 @@ export class ParticipantEntity {
   }
 
   async getById(user: string): Promise<IFullParticipant | null> {
+    const isBot = user.slice(0, 3) === 'bot';
+
     const participant = await this.prisma.participant.findUnique({
-      where: { user_id: user },
+      where: isBot ? { bot_id: user } : { user_id: user },
       include: {
         user: true,
 

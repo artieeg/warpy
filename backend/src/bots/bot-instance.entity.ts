@@ -2,6 +2,7 @@ import { PrismaService } from '@backend_2/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { Bot, BotInstance } from '@prisma/client';
 import { IUser } from '@warpy/lib';
+import cuid from 'cuid';
 
 @Injectable()
 export class BotInstanceEntity {
@@ -19,7 +20,7 @@ export class BotInstanceEntity {
     }
 
     return {
-      id: data.bot_id,
+      id: data.id,
       last_name: data.bot.name,
       first_name: data.bot.name,
       username: data.bot.botname,
@@ -33,6 +34,7 @@ export class BotInstanceEntity {
     const { id } = await this.prismaService.botInstance.create({
       data: {
         bot_id,
+        id: 'bot_instance_' + cuid(),
       },
       select: {
         id: true,

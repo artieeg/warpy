@@ -32,6 +32,7 @@ export interface IChatMessagesEvent {
 
 export interface IUserKickedEvent {
   user: string;
+  stream: string;
 }
 
 export interface INotificationEvent {

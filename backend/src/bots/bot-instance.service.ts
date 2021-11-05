@@ -23,14 +23,6 @@ export class BotInstanceService {
     const nodes = await this.mediaService.getSendRecvNodeIds();
     const { stream } = this.tokenService.decodeToken(invitationToken);
 
-    const mediaPermissionToken = this.mediaService.createPermissionToken({
-      room: stream,
-      user: bot,
-      audio: true,
-      video: true,
-      ...nodes,
-    });
-
     const botInstanceId = await this.botInstanceEntity.create(bot);
 
     const botParticipant = await this.participantEntity.create({
@@ -42,9 +34,17 @@ export class BotInstanceService {
       ...nodes,
     });
 
+    const mediaPermissionToken = this.mediaService.createPermissionToken({
+      room: stream,
+      user: botInstanceId,
+      audio: true,
+      video: true,
+      ...nodes,
+    });
+
     const [sendMedia, recvMedia] = await Promise.all([
       this.mediaService.createSendTransport({
-        speaker: bot,
+        speaker: botInstanceId,
         roomId: stream,
       }),
       this.mediaService.getViewerParams(nodes.recvNodeId, bot, stream),

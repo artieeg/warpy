@@ -171,8 +171,10 @@ export class ParticipantService {
       throw new NoPermissionError();
     }
 
-    await this.media.removeUserFromNodes(userToKickData);
-    await this.streamBlockEntity.create(stream, userToKick);
+    try {
+      await this.media.removeUserFromNodes(userToKickData);
+      await this.streamBlockEntity.create(stream, userToKick);
+    } catch (e) {}
 
     this.eventEmitter.emit('participant.kicked', userToKickData);
   }

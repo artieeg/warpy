@@ -107,6 +107,7 @@ export interface IGifsResponse {
 
 export interface IBotAuthResponse {
   status: "ok" | "error";
+  bot: string; //Bot id
 }
 
 export interface IBotJoinResponse {

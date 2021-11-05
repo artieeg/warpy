@@ -52,6 +52,7 @@ export class BroadcastService {
       event: 'user-kicked',
       data: {
         user: id,
+        stream,
       },
     });
 

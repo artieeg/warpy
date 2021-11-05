@@ -36,7 +36,7 @@ const main = async () => {
     logLevel: "debug",
   });
 
-  const { status } = await api.bot.auth(config.token);
+  const { status, bot } = await api.bot.auth(config.token);
 
   console.log({ status });
   if (status !== "ok") {
@@ -49,9 +49,7 @@ const main = async () => {
       data.inviteDetailsToken
     );
 
-    let mediaClient: MediaClient;
-
-    mediaClient = new MediaClient(
+    const mediaClient = new MediaClient(
       new Device({
         handlerFactory: worker.createHandlerFactory(),
       }),
@@ -80,6 +78,7 @@ const main = async () => {
       isProducer: true,
     });
 
+    /*
     const stream = await getAudioStream();
 
     const audioProducer = await mediaClient.sendMediaStream(
@@ -87,7 +86,17 @@ const main = async () => {
       sendMedia,
       sendTransport
     );
-    console.log(audioProducer);
+    */
+
+    api.stream.onUserKick(({ user, stream: kickedFrom }) => {
+      console.log(user, kickedFrom, bot);
+      if (user === bot && data.stream === kickedFrom) {
+        console.log(`kicked from ${kickedFrom}`);
+
+        //audioProducer.close();
+        sendTransport.close();
+      }
+    });
   });
 };
 
