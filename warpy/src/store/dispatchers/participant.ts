@@ -5,7 +5,7 @@ import {IStore} from '../useStore';
 
 export interface IParticipantDispatchers {
   dispatchViewersFetch: () => Promise<void>;
-  dispatchViewerAdd: (viewer: IParticipant) => void;
+  dispatchParticipantAdd: (viewer: IParticipant) => void;
   dispatchStreamerAdd: (streamer: IParticipant) => void;
   dispatchStreamers: (streamers: IParticipant[]) => void;
   dispatchRaisedHand: (user: IParticipant) => void;
@@ -79,11 +79,15 @@ export const createParticipantDispatchers: StoreSlice<IParticipantDispatchers> =
       );
     },
 
-    dispatchViewerAdd(viewer) {
+    dispatchParticipantAdd(user) {
       set(
         produce<IStore>(state => {
           state.totalParticipantCount++;
-          state.viewers[viewer.id] = viewer;
+          if (user.role === 'viewer') {
+            state.viewers[user.id] = user;
+          } else if (user.role === 'streamer' || user.role === 'speaker') {
+            state.streamers[user.id] = user;
+          }
         }),
       );
     },

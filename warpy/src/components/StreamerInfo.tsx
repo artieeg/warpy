@@ -11,7 +11,7 @@ interface IStreamerInfoProps {
 export const StreamerInfo = (props: IStreamerInfoProps) => {
   const {data} = props;
 
-  const name = useMemo(() => `${data.first_name} ${data.last_name}`, []);
+  const name = useMemo(() => `${data.first_name}`, []);
   return (
     <View style={styles.wrapper}>
       <Avatar user={data} />

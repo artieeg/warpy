@@ -19,7 +19,7 @@ export const UserWithRaisedHand = (props: IRaisedHandInfo) => {
     api.stream.setRole(data.id, 'speaker');
   }, [api, data.id]);
 
-  const name = `${data.first_name} ${data.last_name}`;
+  const name = `${data.first_name}`;
   return (
     <View style={styles.wrapper}>
       <Avatar user={data} />

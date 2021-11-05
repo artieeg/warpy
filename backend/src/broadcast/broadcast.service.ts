@@ -165,7 +165,7 @@ export class BroadcastService {
       event: 'new-participant',
       data: {
         stream: participant.stream,
-        viewer: participant,
+        participant: participant,
       },
     });
 

@@ -15,6 +15,7 @@ import {
   Roles,
   IParticipantRoleChangeEvent,
   IMediaToggleEvent,
+  INewParticipantEvent,
 } from "@warpy/lib";
 
 export interface IStreamAPI {
@@ -39,7 +40,7 @@ export interface IStreamAPI {
   setRole: (userToUpdate: string, role: Roles) => void;
   allowSpeaker: (speaker: string) => any;
   onReactionsUpdate: EventHandler<IReactionsUpdate>;
-  onNewParticipant: EventHandler;
+  onNewParticipant: EventHandler<INewParticipantEvent>;
   onNewRaisedHand: EventHandler;
   onUserLeft: EventHandler;
   onParticipantRoleChange: EventHandler<IParticipantRoleChangeEvent>;

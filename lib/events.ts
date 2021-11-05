@@ -66,3 +66,7 @@ export interface IBotInviteEvent {
   stream: string;
   inviteDetailsToken: string;
 }
+
+export interface INewParticipantEvent {
+  participant: IParticipant;
+}

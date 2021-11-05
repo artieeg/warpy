@@ -129,8 +129,6 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
 
   return (
     <BaseSlideModal {...props} style={styles.modal}>
-      <InviteUserButton onPress={() => dispatchModalOpen('invite')} />
-
       <SectionList
         style={styles.horizontalPadding}
         sections={data}

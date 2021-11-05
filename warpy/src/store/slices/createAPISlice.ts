@@ -21,7 +21,7 @@ export const createAPISlice = (
     const {api} = store;
 
     api.stream.onNewParticipant(data => {
-      store.dispatchViewerAdd(data.viewer);
+      store.dispatchParticipantAdd(data.participant);
     });
 
     api.stream.onActiveSpeaker(data => {
