@@ -23,7 +23,7 @@ export class BotInstanceService {
     const nodes = await this.mediaService.getSendRecvNodeIds();
     const { stream } = this.tokenService.decodeToken(invitationToken);
 
-    const botInstanceId = await this.botInstanceEntity.create(bot);
+    const botInstanceId = await this.botInstanceEntity.create(bot, stream);
 
     const botParticipant = await this.participantEntity.create({
       bot_id: botInstanceId,

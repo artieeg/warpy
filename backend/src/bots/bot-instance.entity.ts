@@ -30,10 +30,11 @@ export class BotInstanceEntity {
     };
   }
 
-  async create(bot_id: string) {
+  async create(bot_id: string, stream_id: string) {
     const { id } = await this.prismaService.botInstance.create({
       data: {
         bot_id,
+        stream_id,
         id: 'bot_instance_' + cuid(),
       },
       select: {

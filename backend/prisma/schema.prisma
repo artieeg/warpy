@@ -75,7 +75,7 @@ model Participant {
   user    User?   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   bot_id String?      @unique
-  bot    BotInstance? @relation(fields: [bot_id], references: [id], onDelete: Cascade)
+  bot    BotInstance? @relation(fields: [bot_id], references: [id])
 
   stream_id     String?
   stream        Stream?   @relation(name: "participant", fields: [stream_id], references: [id], onDelete: Cascade)
@@ -118,6 +118,7 @@ model Stream {
   participants Participant[] @relation(name: "participant")
   blocks       StreamBlock[] @relation(name: "blocks")
   invites      Invite[]      @relation(name: "invites")
+  bots         BotInstance[]      @relation(name: "bot_instances_stream")
   reactions    Int
 }
 
@@ -190,6 +191,9 @@ model BotInstance {
   id     String @id @default(cuid())
   bot_id String
   bot    Bot    @relation(name: "bot_instance", fields: [bot_id], references: [id], onDelete: Cascade)
+
+  stream_id     String?
+  stream        Stream?   @relation(name: "bot_instances_stream", fields: [stream_id], references: [id], onDelete: Cascade)
 
   participant Participant?
 }
