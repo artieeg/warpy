@@ -44,4 +44,15 @@ export class BotInstanceEntity {
 
     return id;
   }
+
+  async getBotInstances(bot_id: string) {
+    const bots = await this.prismaService.botInstance.findMany({
+      where: { bot_id },
+    });
+
+    return bots.map((bot) => ({
+      botInstanceId: bot.id,
+      stream: bot.stream_id,
+    }));
+  }
 }

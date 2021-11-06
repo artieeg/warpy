@@ -4,7 +4,7 @@ import { MessageModule } from '@backend_2/message/message.module';
 import { ParticipantModule } from '@backend_2/participant/participant.module';
 import { PrismaModule } from '@backend_2/prisma/prisma.module';
 import { TokenModule } from '@backend_2/token/token.module';
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { BotInstanceController } from './bot-instance.controller';
 import { BotInstanceEntity } from './bot-instance.entity';
 import { BotInstanceService } from './bot-instance.service';
@@ -16,13 +16,13 @@ import { BotsService } from './bots.service';
   imports: [
     PrismaModule,
     MediaModule,
-    ParticipantModule,
+    forwardRef(() => ParticipantModule),
     DeveloperAccountModule,
     MessageModule,
     TokenModule,
   ],
   providers: [BotsService, BotInstanceService, BotInstanceEntity, BotsEntity],
   controllers: [BotInstanceController, BotsController],
-  exports: [BotsEntity],
+  exports: [BotsEntity, BotInstanceEntity],
 })
 export class BotsModule {}

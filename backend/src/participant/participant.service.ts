@@ -1,3 +1,4 @@
+import { BotInstanceEntity } from '@backend_2/bots/bot-instance.entity';
 import {
   NoPermissionError,
   StreamNotFound,
@@ -16,6 +17,7 @@ import { ParticipantEntity } from './participant.entity';
 @Injectable()
 export class ParticipantService {
   constructor(
+    private botInstanceEntity: BotInstanceEntity,
     private eventEmitter: EventEmitter2,
     private media: MediaService,
     private streamBlocks: StreamBlockService,
@@ -63,6 +65,20 @@ export class ParticipantService {
 
   async getStreamParticipants(stream: string) {
     return this.participant.getIdsByStream(stream);
+  }
+
+  async deleteBotParticipant(bot: string) {
+    const instances = await this.botInstanceEntity.getBotInstances(bot);
+
+    const promises = instances.map(async ({ botInstanceId, stream }) => {
+      await this.participant.deleteParticipant(botInstanceId);
+      this.eventEmitter.emit('participant.delete', {
+        user: botInstanceId,
+        stream,
+      });
+    });
+
+    await Promise.all(promises);
   }
 
   async deleteParticipant(user: string) {

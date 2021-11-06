@@ -245,8 +245,10 @@ export class ParticipantEntity {
   }
 
   async deleteParticipant(id: string): Promise<void> {
+    const isBot = id.slice(0, 3) === 'bot';
+
     await this.prisma.participant.delete({
-      where: { user_id: id },
+      where: isBot ? { bot_id: id } : { user_id: id },
     });
   }
 

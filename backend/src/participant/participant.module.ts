@@ -1,3 +1,4 @@
+import { BotsModule } from '@backend_2/bots/bots.module';
 import { TokenService } from '@backend_2/token/token.service';
 import { forwardRef, Module } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
@@ -17,6 +18,7 @@ import { ParticipantService } from './participant.service';
     MediaModule,
     StreamBlockModule,
     forwardRef(() => BlockModule),
+    BotsModule,
     MessageModule,
     TokenService,
     //EventEmitterModule.forRoot(),
