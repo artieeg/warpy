@@ -21,7 +21,7 @@ export const UserInviteOption = ({user}: IUserInviteProps) => {
   const onInviteUser = useCallback(async () => {
     if (stream) {
       const {invite} = await api.stream.invite(user.id, stream);
-      setInvite(invite.id);
+      setInvite(invite?.id);
     }
   }, [user.id]);
 
