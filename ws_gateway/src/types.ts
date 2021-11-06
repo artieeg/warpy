@@ -17,6 +17,7 @@ export type Context = {
   user?: string;
   ws: WebSocket;
   sub?: Subscription;
+  isBot?: boolean;
   batchedChatMessages: IChatMessage[];
   messageSendInterval?: ReturnType<typeof setInterval>;
 };

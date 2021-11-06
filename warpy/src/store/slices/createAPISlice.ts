@@ -20,8 +20,8 @@ export const createAPISlice = (
     const store = get();
     const {api} = store;
 
-    api.stream.onNewViewer(data => {
-      store.dispatchViewerAdd(data.viewer);
+    api.stream.onNewParticipant(data => {
+      store.dispatchParticipantAdd(data.participant);
     });
 
     api.stream.onActiveSpeaker(data => {
@@ -45,6 +45,13 @@ export const createAPISlice = (
         audio: data.audioEnabled,
       });
       console.log(`${data.user} toggled media`, data);
+    });
+
+    api.botDev.onCreateBotConfirmRequest(({confirmation_id, bot}) => {
+      get().dispatchModalOpen('bot-confirm', {
+        botConfirmData: bot,
+        botConfirmId: confirmation_id,
+      });
     });
 
     api.media.onNewTrack(async data => {

@@ -1,18 +1,16 @@
 {
-  "name": "bots",
+  "name": "example_bot",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "npx nodemon -x ts-node index.ts"
+    "start:dev": "ts-node-dev -r tsconfig-paths/register ./src/main.ts --watch ./src --exit-child"
   },
   "dependencies": {
     "@warpy/api": "1.0.0",
-    "@warpy/lib": "1.0.0",
     "@warpykit-sdk/client": "1.0.0",
-    "mediasoup-client": "^3.6.2",
+    "mediasoup-client": "^3.6.43",
     "mediasoup-client-aiortc": "^3.6.3",
-    "unique-names-generator": "^4.6.0",
-    "ws": "^8.1.0"
+    "ws": "^8.2.3"
   }
 }

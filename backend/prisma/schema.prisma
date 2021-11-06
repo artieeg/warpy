@@ -38,7 +38,8 @@ model User {
   inviter Invite[] @relation(name: "inviter")
   invitee Invite[] @relation(name: "invitee")
 
-  notifications Notification[] @relation(name: "notifications")
+  notifications Notification[]    @relation(name: "notifications")
+  developer     DeveloperAccount? @relation(name: "developer")
 
   //Stream Stream[]
   @@map(name: "Users")
@@ -68,9 +69,14 @@ model Report {
 }
 
 model Participant {
-  id            String    @id @default(cuid())
-  user_id       String    @unique
-  user          User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  id String @id @default(cuid())
+
+  user_id String? @unique
+  user    User?   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  bot_id String?      @unique
+  bot    BotInstance? @relation(fields: [bot_id], references: [id])
+
   stream_id     String?
   stream        Stream?   @relation(name: "participant", fields: [stream_id], references: [id], onDelete: Cascade)
   role          String
@@ -80,8 +86,8 @@ model Participant {
   joined_at     DateTime  @default(now())
   left_at       DateTime?
 
-  videoEnabled  Boolean   @default(false)
-  audioEnabled  Boolean   @default(false)
+  videoEnabled Boolean @default(false)
+  audioEnabled Boolean @default(false)
 
   recvNodeId String
   sendNodeId String?
@@ -112,6 +118,7 @@ model Stream {
   participants Participant[] @relation(name: "participant")
   blocks       StreamBlock[] @relation(name: "blocks")
   invites      Invite[]      @relation(name: "invites")
+  bots         BotInstance[]      @relation(name: "bot_instances_stream")
   reactions    Int
 }
 
@@ -137,8 +144,11 @@ model Invite {
   stream_id String
   stream    Stream @relation(name: "invites", fields: [stream_id], references: [id], onDelete: Cascade)
 
-  invitee_id String
-  invitee    User   @relation(name: "invitee", fields: [invitee_id], references: [id], onDelete: Cascade)
+  user_invitee_id String?
+  user_invitee    User?   @relation(name: "invitee", fields: [user_invitee_id], references: [id], onDelete: Cascade)
+
+  bot_invitee_id String?
+  bot_invitee    Bot?   @relation(name: "bot_invitee", fields: [bot_invitee_id], references: [id], onDelete: Cascade)
 
   inviter_id   String
   inviter      User          @relation(name: "inviter", fields: [inviter_id], references: [id], onDelete: Cascade)
@@ -152,11 +162,46 @@ model Notification {
 
   hasBeenSeen Boolean @default(false)
 
-  user_id String
-  user    User   @relation(name: "notifications", fields: [user_id], references: [id], onDelete: Cascade)
+  user_id String?
+  user    User?   @relation(name: "notifications", fields: [user_id], references: [id], onDelete: Cascade)
+
+  bot_id String?
+  bot    Bot?   @relation(name: "bot_notifications", fields: [bot_id], references: [id], onDelete: Cascade)
 
   invite_id String? @unique
   invite    Invite? @relation(fields: [invite_id], references: [id], onDelete: Cascade)
 
   created_at DateTime @default(now())
+}
+
+model Bot {
+  id         String           @id @default(cuid())
+  name       String           @unique
+  botname    String           @unique
+  avatar     String
+  creator_id String
+  creator    DeveloperAccount @relation(name: "bot_creator", fields: [creator_id], references: [id], onDelete: Cascade)
+  instances  BotInstance[]    @relation(name: "bot_instance")
+  invitee Invite[] @relation(name: "bot_invitee")
+
+  notifications Notification[]    @relation(name: "bot_notifications")
+}
+
+model BotInstance {
+  id     String @id @default(cuid())
+  bot_id String
+  bot    Bot    @relation(name: "bot_instance", fields: [bot_id], references: [id], onDelete: Cascade)
+
+  stream_id     String?
+  stream        Stream?   @relation(name: "bot_instances_stream", fields: [stream_id], references: [id], onDelete: Cascade)
+
+  participant Participant?
+}
+
+model DeveloperAccount {
+  id      String @id @default(cuid())
+  user_id String @unique
+  user    User   @relation(name: "developer", fields: [user_id], references: [id], onDelete: Cascade)
+
+  bots Bot[] @relation(name: "bot_creator")
 }

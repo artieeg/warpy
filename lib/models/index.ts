@@ -7,3 +7,4 @@ export * from "./message";
 export * from "./block";
 export * from "./invite";
 export * from "./notification";
+export * from "./bot";

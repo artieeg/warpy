@@ -26,6 +26,7 @@ export type Modal =
   | 'reactions'
   | 'reports'
   | 'invite'
+  | 'bot-confirm'
   | 'chat';
 
 export type DURATION = 'LONG' | 'SHORT';

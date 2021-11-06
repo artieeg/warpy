@@ -7,15 +7,18 @@ import {Text} from './Text';
 export interface IBaseModalProps extends ViewProps {
   title?: string;
   visible: boolean;
+  disableHideHandler?: boolean;
   children?: React.ReactNode;
 }
 
 export const BaseSlideModal = (props: IBaseModalProps) => {
-  const {visible, children, title, style} = props;
+  const {visible, disableHideHandler, children, title, style} = props;
   const dispatchModalClose = useStore.use.dispatchModalClose();
 
   return (
     <Modal
+      backdropColor="#909090"
+      backdropOpacity={0.1}
       removeClippedSubviews={false}
       hideModalContentWhileAnimating
       useNativeDriver
@@ -28,11 +31,17 @@ export const BaseSlideModal = (props: IBaseModalProps) => {
       swipeThreshold={100}
       animationIn="slideInUp"
       animationOut="slideOutDown"
-      hasBackdrop={false}
+      hasBackdrop
+      statusBarTranslucent
       style={styles.modalStyle}
       isVisible={visible}>
-      <View style={[styles.wrapper, style]}>
-        <View style={styles.handler} />
+      <View
+        style={[
+          styles.wrapper,
+          !disableHideHandler && styles.handlerPadding,
+          style,
+        ]}>
+        {!disableHideHandler && <View style={styles.handler} />}
         {title && (
           <Text weight="bold" style={[styles.title, styles.horizontalPadding]}>
             {title}
@@ -49,13 +58,17 @@ const styles = StyleSheet.create({
   modalStyle: {
     margin: 0,
   },
+  handlerPadding: {
+    paddingTop: 40,
+  },
   wrapper: {
     backgroundColor: '#000',
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    paddingTop: 40,
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
   },
   horizontalPadding: {
     paddingHorizontal: 20,

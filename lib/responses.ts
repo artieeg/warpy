@@ -81,7 +81,8 @@ export interface IUserBlockResponse {
 }
 
 export interface IInviteResponse {
-  invite: IInvite;
+  /** Returns null if bot's invited, returns IInvite object if user's invited*/
+  invite?: IInvite;
 }
 
 export interface IInviteSuggestionsResponse {
@@ -103,4 +104,15 @@ export interface INotificationsPage {
 export interface IGifsResponse {
   next: string;
   gifs: string[];
+}
+
+export interface IBotAuthResponse {
+  status: "ok" | "error";
+  bot: string; //Bot id
+}
+
+export interface IBotJoinResponse {
+  sendMedia: any;
+  recvMedia: any;
+  mediaPermissionToken: string;
 }

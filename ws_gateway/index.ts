@@ -9,6 +9,7 @@ import {
   onAuth,
   onRecvTracksRequest,
   onConnectTransport,
+  onConfirmation,
 } from "@ws_gateway/handlers";
 import { Roles } from "@warpy/lib";
 
@@ -246,6 +247,23 @@ const handlers: Record<string, HandlerConfig> = {
     kind: "request",
     auth: true,
     subject: "participant.media-toggle",
+  },
+
+  "bot-stream-join": {
+    schema: joi.object({
+      inviteDetailsToken: joi.string().required(),
+    }),
+    kind: "request",
+    auth: true,
+    subject: "bot.join",
+  },
+
+  confirmation: {
+    schema: joi.object({
+      confirmation_id: joi.string().max(64).required(),
+      flag: joi.boolean().required(),
+    }),
+    customHandler: onConfirmation,
   },
 
   auth: {

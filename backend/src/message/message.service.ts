@@ -5,6 +5,10 @@ import { NatsService } from '../nats/nats.service';
 export class MessageService {
   constructor(private nc: NatsService) {}
 
+  decodeMessage<T = any>(data: Uint8Array): T {
+    return this.nc.jc.decode(data) as T;
+  }
+
   encodeMessage(data: any): Uint8Array {
     return this.nc.jc.encode(data);
   }
@@ -15,5 +19,15 @@ export class MessageService {
 
   send(user: string, message: Uint8Array) {
     this.nc.publish(`reply.user.${user}`, message);
+  }
+
+  async request<T>(user: string, request: any) {
+    const response = await this.nc.request<T>(
+      `request.user.${user}`,
+      this.encodeMessage(request),
+      { timeout: 90000 },
+    );
+
+    return response;
   }
 }

@@ -13,7 +13,7 @@ interface IRaisedHandInfo {
 export const UserProducer = (props: IRaisedHandInfo) => {
   const {data} = props;
   const {id, role} = data;
-  const name = `${data.first_name} ${data.last_name}`;
+  const name = `${data.first_name}`;
 
   const api = useStore.use.api();
 

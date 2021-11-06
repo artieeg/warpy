@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { Bot, User } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { IUser } from '@warpy/lib';
 
@@ -12,7 +12,7 @@ export class UserEntity {
   static toUserDTO(data: User, includeDetails = false): IUser {
     return {
       id: data.id,
-      last_name: data.last_name,
+      last_name: data?.last_name,
       first_name: data.first_name,
       username: data.username,
       avatar: data.avatar,

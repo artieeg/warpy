@@ -1,11 +1,13 @@
+import { BotInstanceEntity } from '@backend_2/bots/bot-instance.entity';
 import { Injectable } from '@nestjs/common';
-import { Participant, User } from '@prisma/client';
+import { Bot, BotInstance, Participant, User } from '@prisma/client';
 import { IParticipant, Roles } from '@warpy/lib';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserEntity } from '../user/user.entity';
 
 export type CreateNewParticipant = {
-  user_id: string;
+  user_id?: string;
+  bot_id?: string;
   role?: Roles;
   stream?: string;
   recvNodeId: string;
@@ -29,6 +31,7 @@ export class ParticipantEntity {
     data:
       | (Participant & {
           user?: User;
+          bot?: BotInstance & { bot?: Bot };
           videoEnabled?: boolean;
           audioEnabled?: boolean;
         })
@@ -38,17 +41,25 @@ export class ParticipantEntity {
       throw new Error('Participant is null');
     }
 
-    if (!data.user) {
+    if (!data.user && !data.bot) {
       throw new Error("Participant's user data is null");
     }
 
+    let user = data.user
+      ? UserEntity.toUserDTO(data.user, false)
+      : BotInstanceEntity.toBotInstanceDTO({
+          ...data.bot,
+          id: data.bot_id,
+        });
+
     return {
-      ...UserEntity.toUserDTO(data.user, false),
+      ...user,
       stream: data.stream_id,
       role: data.role as Roles,
       isRaisingHand: data.isRaisingHand,
       audioEnabled: data.audioEnabled,
       videoEnabled: data.videoEnabled,
+      isBot: !!data.bot?.bot,
     };
   }
 
@@ -70,6 +81,7 @@ export class ParticipantEntity {
 
   async create({
     user_id,
+    bot_id,
     role,
     stream,
     recvNodeId,
@@ -81,14 +93,19 @@ export class ParticipantEntity {
         stream_id: stream,
         role: role || 'viewer',
         isRaisingHand: false,
-        user_id: user_id,
+        user_id,
+        bot_id,
         audioEnabled,
         videoEnabled,
-        //id: user_id,
         recvNodeId,
       },
       include: {
         user: true,
+        bot: {
+          include: {
+            bot: true,
+          },
+        },
       },
     });
 
@@ -106,6 +123,11 @@ export class ParticipantEntity {
       },
       include: {
         user: true,
+        bot: {
+          include: {
+            bot: true,
+          },
+        },
       },
     });
 
@@ -134,6 +156,11 @@ export class ParticipantEntity {
       },
       include: {
         user: true,
+        bot: {
+          include: {
+            bot: true,
+          },
+        },
       },
       data,
     });
@@ -159,6 +186,11 @@ export class ParticipantEntity {
       where: { user_id: { in: ids } },
       include: {
         user: true,
+        bot: {
+          include: {
+            bot: true,
+          },
+        },
       },
     });
 
@@ -174,6 +206,11 @@ export class ParticipantEntity {
       },
       include: {
         user: true,
+        bot: {
+          include: {
+            bot: true,
+          },
+        },
       },
     });
 
@@ -185,9 +222,19 @@ export class ParticipantEntity {
   }
 
   async getById(user: string): Promise<IFullParticipant | null> {
+    const isBot = user.slice(0, 3) === 'bot';
+
     const participant = await this.prisma.participant.findUnique({
-      where: { user_id: user },
-      include: { user: true },
+      where: isBot ? { bot_id: user } : { user_id: user },
+      include: {
+        user: true,
+
+        bot: {
+          include: {
+            bot: true,
+          },
+        },
+      },
     });
 
     if (!participant) {
@@ -198,8 +245,10 @@ export class ParticipantEntity {
   }
 
   async deleteParticipant(id: string): Promise<void> {
+    const isBot = id.slice(0, 3) === 'bot';
+
     await this.prisma.participant.delete({
-      where: { user_id: id },
+      where: isBot ? { bot_id: id } : { user_id: id },
     });
   }
 
@@ -215,7 +264,15 @@ export class ParticipantEntity {
   async getByStream(streamId: string): Promise<IParticipant[]> {
     const participants = await this.prisma.participant.findMany({
       where: { stream_id: streamId },
-      include: { user: true },
+      include: {
+        user: true,
+
+        bot: {
+          include: {
+            bot: true,
+          },
+        },
+      },
     });
 
     return participants.map(ParticipantEntity.toParticipantClientDTO);
@@ -283,6 +340,11 @@ export class ParticipantEntity {
       },
       include: {
         user: true,
+        bot: {
+          include: {
+            bot: true,
+          },
+        },
       },
     });
 
@@ -291,7 +353,14 @@ export class ParticipantEntity {
 
   async getViewersPage(stream: string, page: number): Promise<IParticipant[]> {
     const participants = await this.prisma.participant.findMany({
-      include: { user: true },
+      include: {
+        user: true,
+        bot: {
+          include: {
+            bot: true,
+          },
+        },
+      },
       where: {
         stream_id: stream,
         role: 'viewer',
@@ -322,6 +391,11 @@ export class ParticipantEntity {
       },
       include: {
         user: true,
+        bot: {
+          include: {
+            bot: true,
+          },
+        },
       },
     });
 
@@ -336,6 +410,11 @@ export class ParticipantEntity {
       },
       include: {
         user: true,
+        bot: {
+          include: {
+            bot: true,
+          },
+        },
       },
     });
 

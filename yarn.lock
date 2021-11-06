@@ -2356,10 +2356,10 @@
   dependencies:
     eventemitter2 "6.4.4"
 
-"@nestjs/microservices@^8.0.9":
-  version "8.0.9"
-  resolved "https://registry.yarnpkg.com/@nestjs/microservices/-/microservices-8.0.9.tgz#74b2c8df654e4ab09a6fc9a66c78dbcfb0b519f8"
-  integrity sha512-VSWWoI7gmyAfZP8j/QHukgpn1RKRoylOUj0cI1VTAdCFfj7sz+gmci9aw8abLaXFGy/ooje2V4ND8eT655cIDw==
+"@nestjs/microservices@^8.1.2":
+  version "8.1.2"
+  resolved "https://registry.yarnpkg.com/@nestjs/microservices/-/microservices-8.1.2.tgz#c621b10ee60a8cde978001c0ba05ffd8cada3994"
+  integrity sha512-7BnKIa3+w6a/1vJO5euE+RTP6ejwlpGRdoAQ64BTpReHxboFzX7C4Zb6cnM84x1AIl/xe8x+fDoUztxJn4LSiA==
   dependencies:
     iterare "1.2.1"
     json-socket "0.3.0"
@@ -8097,10 +8097,10 @@ mediasoup-client-aiortc@^3.6.3:
     sdp-transform "^2.14.0"
     uuid "^7.0.3"
 
-mediasoup-client@^3.6.2:
-  version "3.6.37"
-  resolved "https://registry.yarnpkg.com/mediasoup-client/-/mediasoup-client-3.6.37.tgz#3b6481deb1fff79de7d0c950206f72a273c9ca45"
-  integrity sha512-mGP2FNphHLwZApxUMSdWvLYlq6RICQssLFdvcUFIOVmO32++1ZW7eZNBv2oRtpnUY+4t4mPr7K3pOgTxxPyl/A==
+mediasoup-client@^3.6.2, mediasoup-client@^3.6.43:
+  version "3.6.43"
+  resolved "https://registry.yarnpkg.com/mediasoup-client/-/mediasoup-client-3.6.43.tgz#ac1d64d4ec63fba498e16d945b96858686aaf27c"
+  integrity sha512-fieD9iLlLpyKMaW7EdE8RjOLonQYUoKHwDKHecwCZLXmP2RIwizTJN6NLXCOyappWX7rJNk95BgbLbJSxT28Xw==
   dependencies:
     "@types/debug" "^4.1.7"
     "@types/events" "^3.0.0"
@@ -11762,10 +11762,10 @@ ws@^7, ws@^7.4.5, ws@^7.5.2:
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.3.tgz#160835b63c7d97bfab418fc1b8a9fced2ac01a74"
   integrity sha512-kQ/dHIzuLrS6Je9+uv81ueZomEwH0qVYstcAQ4/Z93K8zeko9gtAbttJWzoC5ukqXY1PpoouV3+VSOqEAFt5wg==
 
-ws@^8.1.0:
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.1.0.tgz#75e5ec608f66d3d3934ec6dbc4ebc8a34a68638c"
-  integrity sha512-0UWlCD2s3RSclw8FN+D0zDTUyMO+1kHwJQQJzkgUh16S8d3NYON0AKCEQPffE0ez4JyRFu76QDA9KR5bOG/7jw==
+ws@^8.1.0, ws@^8.2.3:
+  version "8.2.3"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.2.3.tgz#63a56456db1b04367d0b721a0b80cae6d8becbba"
+  integrity sha512-wBuoj1BDpC6ZQ1B7DWQBYVLphPWkm8i9Y0/3YdHjHKHiohOJ1ws+3OccDWtH+PoC9DZD5WOTrJvNbWvjS6JWaA==
 
 xcode@^2.0.0:
   version "2.1.0"

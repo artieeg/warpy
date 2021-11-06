@@ -32,6 +32,7 @@ export interface IChatMessagesEvent {
 
 export interface IUserKickedEvent {
   user: string;
+  stream: string;
 }
 
 export interface INotificationEvent {
@@ -51,4 +52,22 @@ export interface IMediaToggleEvent {
   stream: string;
   videoEnabled?: boolean;
   audioEnabled?: boolean;
+}
+
+export interface IBotDevConfirmation {
+  confirmation_id: string;
+  bot: {
+    botname: string;
+    avatar: string;
+    name: string;
+  };
+}
+
+export interface IBotInviteEvent {
+  stream: string;
+  inviteDetailsToken: string;
+}
+
+export interface INewParticipantEvent {
+  participant: IParticipant;
 }

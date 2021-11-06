@@ -31,6 +31,7 @@ export const createParticipantFixture = (
   data: Partial<IFullParticipant>,
 ): IFullParticipant => ({
   ...createUserFixture(data),
+  isBot: false,
   stream: 'test-stream-id',
   role: 'viewer',
   isRaisingHand: false,

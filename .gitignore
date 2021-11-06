@@ -6,4 +6,5 @@ node_modules
 *.webm
 *.ogg
 *.mp4
+*.mp3
 yarn-error.log

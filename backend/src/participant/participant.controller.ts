@@ -29,7 +29,13 @@ export class ParticipantController {
 
   @MessagePattern('user.disconnected')
   async onUserDisconnect({ user }: IUserDisconnected) {
-    await this.participant.deleteParticipant(user);
+    const isBot = user.slice(0, 3) === 'bot';
+
+    if (isBot) {
+      await this.participant.deleteBotParticipant(user);
+    } else {
+      await this.participant.deleteParticipant(user);
+    }
   }
 
   @MessagePattern('viewers.get')

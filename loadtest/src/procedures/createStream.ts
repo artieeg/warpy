@@ -34,6 +34,13 @@ export const createStream = async (record: UserRecord) => {
     mediaPermissionsToken
   );
 
+  const { invite } = await api.stream.invite(
+    "bot_ckvkmdw9x000111qv9gqndsih",
+    stream
+  );
+
+  console.log("sent invite", invite);
+
   await record.sendDevice.load({
     routerRtpCapabilities,
   });

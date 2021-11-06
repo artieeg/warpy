@@ -1,7 +1,9 @@
 import { BlockModule } from '@backend_2/block/block.module';
+import { BotsModule } from '@backend_2/bots/bots.module';
 import { BroadcastModule } from '@backend_2/broadcast/broadcast.module';
 import { ChatModule } from '@backend_2/chat/chat.module';
 import { configuration } from '@backend_2/config/configuration';
+import { DeveloperAccountModule } from '@backend_2/developer_account/developer_account.module';
 import { FeedModule } from '@backend_2/feed/feed.module';
 import { FollowModule } from '@backend_2/follow/follow.module';
 import { InviteModule } from '@backend_2/invite/invite.module';
@@ -21,6 +23,8 @@ import { Test } from '@nestjs/testing';
 
 export const testModuleBuilder = Test.createTestingModule({
   imports: [
+    BotsModule,
+    DeveloperAccountModule,
     FeedModule,
     UserModule,
     StreamModule,

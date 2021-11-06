@@ -133,10 +133,18 @@ export const StreamOverlay = () => {
         />
 
         <View pointerEvents="box-none" style={styles.topButtons}>
-          {top.map(item => item)}
+          {top.map((item, index) => {
+            item.key = `${role}+${index.toString()}`;
+
+            return item;
+          })}
         </View>
         <View pointerEvents="box-none" style={styles.bottomButtons}>
-          {bottom.map(item => item)}
+          {bottom.map((item, index) => {
+            item.key = `${role}+${index.toString()}`;
+
+            return item;
+          })}
         </View>
       </Animated.View>
       <IconButton

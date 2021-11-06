@@ -2,7 +2,7 @@ import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Button} from '@app/components';
 import {StreamOverlay} from '@app/components/StreamOverlay';
-import {Room} from '@app/components/Streams';
+import {Room} from '@app/components/Room';
 import {useNewStreamController} from '@app/hooks/useNewStreamController';
 
 export const NewStream = () => {

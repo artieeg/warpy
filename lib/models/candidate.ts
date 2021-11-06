@@ -1,4 +1,6 @@
-import { Participant } from "./participant";
+//import { Participant } from "./participant";
+
+import { IParticipant } from ".";
 
 export interface IStream {
   id: string;
@@ -10,5 +12,5 @@ export interface IStream {
 
 export interface ICandidate extends IStream {
   participants: number;
-  speakers: Participant[];
+  speakers: IParticipant[];
 }

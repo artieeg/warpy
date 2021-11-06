@@ -14,29 +14,23 @@ services:
       - 9999:9999
 
   redis:
-    image: redis:6.2.4-alpine
+    image:
+      redis:6.2.4-alpine
       #ports:
       #- 6379:6379
 
   backend:
     image: node:16.0.0-alpine
-    env_file: 
+    env_file:
       - dev_env/backend.env
       - dev_env/backend.external_apis.env
     ports:
       - 9229:9229
+      - 3000:3000
     volumes:
       - ./:/warpy
     working_dir: /warpy/backend
-    command: yarn start:nodemon
-
-      #backend:
-      #image: node:16.0.0-alpine
-      #env_file: dev_env/backend.env
-      #volumes:
-      #- ./:/warpy
-      #working_dir: /warpy/backend
-      #command: yarn start:dev
+    command: yarn start:dev
 
   postgres:
     image: postgres:13-alpine

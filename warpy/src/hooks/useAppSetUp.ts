@@ -49,10 +49,10 @@ export const useAppSetUp = () => {
   }, [navigation, api]);
 
   useEffect(() => {
-    if (tokenLoadError || (!userExists && !isLoadingUser)) {
+    if (tokenLoadError || (userExists === false && isLoadingUser === false)) {
       navigation.navigate('SignUpName');
     }
-  }, [tokenLoadError]);
+  }, [tokenLoadError, userExists, isLoadingUser]);
 
   useEffect(() => {
     if (accessToken) {
