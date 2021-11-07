@@ -7,7 +7,7 @@ import {
 import { StreamBlockEntity } from '@backend_2/stream-block/stream-block.entity';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { IJoinStreamResponse, Roles } from '@warpy/lib';
+import { IJoinStreamResponse, IRoleUpdateEvent, Roles } from '@warpy/lib';
 import { BlockService } from '../block/block.service';
 import { MediaService } from '../media/media.service';
 import { MessageService } from '../message/message.service';
@@ -246,6 +246,40 @@ export class ParticipantService {
     });
 
     this.eventEmitter.emit('participant.role-change', updatedUser);
+  }
+
+  /** expendable & ugly, TODO: rewrite during #130*/
+  async returnToViewer(user: string) {
+    const { recvNodeId } = await this.participant.getById(user);
+
+    const data = await this.participant.updateOne(user, {
+      role: 'viewer',
+      sendNodeId: null,
+      audioEnabled: false,
+      videoEnabled: false,
+      isRaisingHand: false,
+    });
+
+    let response: IRoleUpdateEvent = {
+      role: 'viewer',
+    } as any;
+
+    response['mediaPermissionToken'] = this.media.createPermissionToken({
+      audio: false,
+      video: false,
+      sendNodeId: null,
+      recvNodeId,
+      user: user,
+      room: data.stream,
+    });
+
+    this.messageService.sendMessage(user, {
+      event: 'role-change',
+      data: response,
+    });
+    console.log('updated role', data);
+
+    this.eventEmitter.emit('participant.role-change', data);
   }
 
   async setMediaEnabled(

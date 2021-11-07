@@ -44,6 +44,14 @@ const handlers: Record<string, HandlerConfig> = {
       speaker: joi.string().max(64).required(),
     }),
   },
+
+  "return-to-viewer": {
+    subject: "participant.return-to-viewer",
+    kind: "event",
+    auth: true,
+    schema: joi.object({}),
+  },
+
   "new-track": {
     subject: "media.track.send",
     kind: "event",
