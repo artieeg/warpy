@@ -78,7 +78,6 @@ const main = async () => {
       isProducer: true,
     });
 
-    /*
     const stream = await getAudioStream();
 
     const audioProducer = await mediaClient.sendMediaStream(
@@ -86,7 +85,6 @@ const main = async () => {
       sendMedia,
       sendTransport
     );
-    */
 
     api.stream.onUserKick(({ user, stream: kickedFrom }) => {
       console.log(user, kickedFrom, bot);

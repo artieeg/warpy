@@ -49,6 +49,8 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
       set({role});
     }
 
+    get().dispatchToastMessage(`You are a ${role} now`);
+
     if (role === 'viewer') {
       get().dispatchProducerClose(['audio', 'video']);
     } else if (role === 'speaker') {
