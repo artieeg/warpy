@@ -9,10 +9,8 @@ import {ClapButton} from './ClapsButton';
 import {IconButton} from './IconButton';
 import {InviteButton} from './InviteButton';
 import {RaiseHandButton} from './RaiseHandButton';
-import {ReactionCanvas} from './ReactionCanvas';
 import {ReactionEmitter} from './ReactionEmitter';
 import {ShowParticipantsButton} from './ShowParticipantsButton';
-import {Speakers} from './Speakers';
 import {StopStream} from './StopStream';
 import {SwitchCameraButton} from './SwitchCameraButton';
 import {ToggleCameraButton} from './ToggleCameraButton';
@@ -26,8 +24,6 @@ export const StreamOverlay = () => {
 
   const gradientHeightStyle = {height: useWindowDimensions().height / 3.4};
   const role = useStore.use.role();
-
-  const videoStreams = useVideoStreams({forceLocalStream: true});
 
   const opacity = useRef(new Animated.Value(1));
 

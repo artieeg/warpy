@@ -57,7 +57,7 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
 
     if (oldRole === 'streamer' && role === 'speaker') {
       return;
-    } else {
+    } else if (role !== 'viewer') {
       const kind = role === 'speaker' ? 'audio' : 'video';
       await get().dispatchMediaSend(mediaPermissionToken, [kind]);
     }

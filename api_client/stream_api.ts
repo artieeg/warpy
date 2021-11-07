@@ -33,6 +33,7 @@ export interface IStreamAPI {
     stream: string,
     page: number
   ) => Promise<IRequestViewersResponse>;
+  returnToViewer: () => void;
   raiseHand: () => any;
   invite: (invitee: string, stream: string) => Promise<IInviteResponse>;
   cancelInvite: (invite_id: string) => Promise<ICancelInviteResponse>;
@@ -79,6 +80,7 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
   getViewers: (stream, page) =>
     socket.request("request-viewers", { stream, page }),
   raiseHand: () => socket.publish("raise-hand", {}),
+  returnToViewer: () => socket.publish("return-to-viewer", {}),
   setRole: (userToUpdate, role) =>
     socket.publish("set-role", { userToUpdate, role }),
   allowSpeaker: (speaker) => socket.publish("speaker-allow", { speaker }),
