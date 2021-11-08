@@ -158,8 +158,9 @@ export class BroadcastService {
     this.broadcast(ids, message);
   }
 
-  @OnEvent('participant.new')
+  @OnEvent('participant.new', { async: true })
   async broadcastNewParticipant(participant: IParticipant) {
+    console.log('new participant', participant.id);
     const ids = await this.participant.getIdsByStream(participant.stream);
 
     const message = this.messageService.encodeMessage({
