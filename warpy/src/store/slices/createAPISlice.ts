@@ -28,11 +28,11 @@ export const createAPISlice = (
       store.dispatchAudioLevelsUpdate(data.speakers);
     });
 
-    api.stream.onNewRaisedHand(data => {
+    api.stream.onRaiseHandUpdate(data => {
       const participant = data.viewer;
-      participant.isRaisingHand = true;
+      console.log({participant});
 
-      store.dispatchRaisedHand(participant);
+      store.dispatchParticipantRaisedHand(participant);
     });
 
     api.stream.onRoleUpdate(async ({mediaPermissionToken, media, role}) => {

@@ -11,7 +11,7 @@ export const createStream = async (record: UserRecord) => {
   const response = await api.stream.create(title, hub);
 
   //Allow speaking after 5 seconds;
-  api.stream.onNewRaisedHand((data) => {
+  api.stream.onRaiseHandUpdate((data) => {
     const { viewer } = data;
 
     setTimeout(() => {

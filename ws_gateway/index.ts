@@ -34,7 +34,9 @@ const handlers: Record<string, HandlerConfig> = {
     subject: "user.raise-hand",
     kind: "event",
     auth: true,
-    schema: joi.object({}),
+    schema: joi.object({
+      flag: joi.boolean().required(),
+    }),
   },
   "speaker-allow": {
     subject: "speaker.allow",

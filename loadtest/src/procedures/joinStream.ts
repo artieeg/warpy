@@ -86,12 +86,12 @@ export const joinStream = async (streamId: string, record: UserRecord) => {
   record.stream = streamId;
   record.role = "viewer";
 
-  api.stream.onNewViewer(async ({ viewer }) => {
-    await api.user.follow(viewer.id);
+  api.stream.onNewParticipant(async ({ participant }) => {
+    await api.user.follow(participant.id);
     //await api.user.block(viewer.id);
 
     setTimeout(async () => {
-      await api.user.unfollow(viewer.id);
+      await api.user.unfollow(participant.id);
     }, 1000);
   });
 

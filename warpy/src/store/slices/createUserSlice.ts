@@ -8,9 +8,11 @@ export interface IUserSlice {
   isLoadingUser: boolean;
   exists: boolean;
   following: string[];
+  isRaisingHand: boolean;
 }
 
 export const createUserSlice: StoreSlice<IUserSlice> = () => ({
+  isRaisingHand: false,
   user: null,
   role: null,
   isLoadingUser: true,

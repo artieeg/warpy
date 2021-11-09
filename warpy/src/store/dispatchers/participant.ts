@@ -8,7 +8,7 @@ export interface IParticipantDispatchers {
   dispatchParticipantAdd: (viewer: IParticipant) => void;
   dispatchStreamerAdd: (streamer: IParticipant) => void;
   dispatchStreamers: (streamers: IParticipant[]) => void;
-  dispatchRaisedHand: (user: IParticipant) => void;
+  dispatchParticipantRaisedHand: (user: IParticipant) => void;
   dispatchParticipantRemove: (user: string) => void;
   dispatchMediaToggle: (
     user: string,
@@ -67,14 +67,16 @@ export const createParticipantDispatchers: StoreSlice<IParticipantDispatchers> =
       });
     },
 
-    dispatchRaisedHand(user) {
+    dispatchParticipantRaisedHand(user) {
       set(
         produce<IStore>(state => {
-          delete state.viewers[user.id];
-          state.viewersWithRaisedHands[user.id] = {
-            ...user,
-            isRaisingHand: true,
-          };
+          if (user.isRaisingHand) {
+            delete state.viewers[user.id];
+            state.viewersWithRaisedHands[user.id] = user;
+          } else {
+            state.viewers[user.id] = user;
+            delete state.viewersWithRaisedHands[user.id];
+          }
         }),
       );
     },
