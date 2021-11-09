@@ -32,7 +32,7 @@ export const createAPISlice = (
       const participant = data.viewer;
       participant.isRaisingHand = true;
 
-      store.dispatchRaisedHand(participant);
+      store.dispatchParticipantRaisedHand(participant);
     });
 
     api.stream.onRoleUpdate(async ({mediaPermissionToken, media, role}) => {

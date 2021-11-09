@@ -8,6 +8,7 @@ export interface IUserDispatchers {
     sendMediaParams?: any,
   ) => Promise<void>;
   dispatchUserLoadData: (token: string) => Promise<void>;
+  dispatchUserHandRaiseToggle: () => void;
 }
 
 export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
@@ -63,5 +64,19 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
       const kind = role === 'speaker' ? 'audio' : 'video';
       await get().dispatchMediaSend(mediaPermissionToken, [kind]);
     }
+  },
+
+  async dispatchUserHandRaiseToggle() {
+    const {api, isRaisingHand} = get();
+
+    if (isRaisingHand) {
+      //api.stream.lowerHand();
+    } else {
+      api.stream.raiseHand();
+    }
+
+    set({
+      isRaisingHand: !isRaisingHand,
+    });
   },
 });

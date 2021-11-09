@@ -1,17 +1,21 @@
 import {useStore} from '@app/store';
 import React from 'react';
 import {StyleSheet} from 'react-native';
+import shallow from 'zustand/shallow';
 import {IconButton} from './IconButton';
+import {IconButtonToggle} from './IconButtonToggle';
 
 export const RaiseHandButton = () => {
-  const api = useStore.use.api();
+  const [isRaisingHand, dispatchUserHandRaiseToggle] = useStore(
+    state => [state.isRaisingHand, state.dispatchUserHandRaiseToggle],
+    shallow,
+  );
 
   return (
-    <IconButton
-      onPress={() => api.stream.raiseHand()}
-      color="#ffffff"
-      name="hand"
-      size={30}
+    <IconButtonToggle
+      enabled={isRaisingHand}
+      onToggle={dispatchUserHandRaiseToggle}
+      icon="hand"
       style={styles.hand}
     />
   );
