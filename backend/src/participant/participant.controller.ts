@@ -54,8 +54,8 @@ export class ParticipantController {
   }
 
   @MessagePattern('user.raise-hand')
-  async onRaiseHand({ user }: IRaiseHand) {
-    await this.participant.setRaiseHand(user, true);
+  async onRaiseHand({ user, flag }: IRaiseHand) {
+    await this.participant.setRaiseHand(user, flag);
   }
 
   @MessagePattern('participant.set-permissions')

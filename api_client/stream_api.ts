@@ -35,6 +35,7 @@ export interface IStreamAPI {
   ) => Promise<IRequestViewersResponse>;
   returnToViewer: () => void;
   raiseHand: () => any;
+  lowerHand: () => any;
   invite: (invitee: string, stream: string) => Promise<IInviteResponse>;
   cancelInvite: (invite_id: string) => Promise<ICancelInviteResponse>;
   getInviteSuggestions: (stream: string) => Promise<IInviteSuggestionsResponse>;
@@ -42,7 +43,7 @@ export interface IStreamAPI {
   allowSpeaker: (speaker: string) => any;
   onReactionsUpdate: EventHandler<IReactionsUpdate>;
   onNewParticipant: EventHandler<INewParticipantEvent>;
-  onNewRaisedHand: EventHandler;
+  onRaiseHandUpdate: EventHandler;
   onUserLeft: EventHandler;
   onParticipantRoleChange: EventHandler<IParticipantRoleChangeEvent>;
   onRoleUpdate: EventHandler<IRoleUpdateEvent>;
@@ -79,13 +80,20 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
   join: (stream) => socket.request("join-stream", { stream }),
   getViewers: (stream, page) =>
     socket.request("request-viewers", { stream, page }),
-  raiseHand: () => socket.publish("raise-hand", {}),
+  lowerHand: () =>
+    socket.publish("raise-hand", {
+      flag: false,
+    }),
+  raiseHand: () =>
+    socket.publish("raise-hand", {
+      flag: true,
+    }),
   returnToViewer: () => socket.publish("return-to-viewer", {}),
   setRole: (userToUpdate, role) =>
     socket.publish("set-role", { userToUpdate, role }),
   allowSpeaker: (speaker) => socket.publish("speaker-allow", { speaker }),
   onNewParticipant: (handler) => socket.on("new-participant", handler),
-  onNewRaisedHand: (handler) => socket.on("raise-hand", handler),
+  onRaiseHandUpdate: (handler) => socket.on("raise-hand", handler),
   onUserLeft: (handler) => socket.on("user-left", handler),
   onParticipantRoleChange: (handler) =>
     socket.on("participant-role-change", handler),

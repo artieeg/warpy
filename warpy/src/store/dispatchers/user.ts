@@ -70,7 +70,7 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
     const {api, isRaisingHand} = get();
 
     if (isRaisingHand) {
-      //api.stream.lowerHand();
+      api.stream.lowerHand();
     } else {
       api.stream.raiseHand();
     }

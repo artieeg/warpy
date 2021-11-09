@@ -135,6 +135,7 @@ export interface IUserDisconnected {
 
 export interface IRaiseHand {
   user: string;
+  flag: boolean;
 }
 
 export interface IRequestFeed {

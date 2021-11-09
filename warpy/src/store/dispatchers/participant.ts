@@ -70,11 +70,13 @@ export const createParticipantDispatchers: StoreSlice<IParticipantDispatchers> =
     dispatchParticipantRaisedHand(user) {
       set(
         produce<IStore>(state => {
-          delete state.viewers[user.id];
-          state.viewersWithRaisedHands[user.id] = {
-            ...user,
-            isRaisingHand: true,
-          };
+          if (user.isRaisingHand) {
+            delete state.viewers[user.id];
+            state.viewersWithRaisedHands[user.id] = user;
+          } else {
+            state.viewers[user.id] = user;
+            delete state.viewersWithRaisedHands[user.id];
+          }
         }),
       );
     },

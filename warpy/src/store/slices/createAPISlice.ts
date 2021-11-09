@@ -28,9 +28,9 @@ export const createAPISlice = (
       store.dispatchAudioLevelsUpdate(data.speakers);
     });
 
-    api.stream.onNewRaisedHand(data => {
+    api.stream.onRaiseHandUpdate(data => {
       const participant = data.viewer;
-      participant.isRaisingHand = true;
+      console.log({participant});
 
       store.dispatchParticipantRaisedHand(participant);
     });
