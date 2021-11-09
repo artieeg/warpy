@@ -31,7 +31,7 @@ export const RaiseHandButton = () => {
           {
             rotate: rotation.current.interpolate({
               inputRange: [0, 1],
-              outputRange: ['0deg', '-25deg'],
+              outputRange: ['-25deg', '0deg'],
             }),
           },
         ],
