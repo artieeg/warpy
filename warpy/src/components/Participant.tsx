@@ -16,7 +16,7 @@ export const ParticipantDisplay = (props: IParticipantProps) => {
   return (
     <View style={styles.wrapper}>
       <Avatar user={data} style={styles.avatar} />
-      <Text style={styles.name} size="xsmall" weight="bold">
+      <Text numberOfLines={1} style={styles.name} size="xsmall" weight="bold">
         {name}
       </Text>
     </View>
@@ -29,9 +29,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  avatar: {
-    marginRight: 12,
-  },
+  avatar: {},
   name: {
     marginTop: 6,
   },

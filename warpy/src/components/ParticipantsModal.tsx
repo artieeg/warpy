@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  useWindowDimensions,
 } from 'react-native';
 import {BaseSlideModal} from './BaseSlideModal';
 import {ParticipantDisplay} from './Participant';
@@ -50,6 +51,9 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
       }),
     [viewers, producers, usersRaisingHand, streamer],
   );
+
+  const columnWidth = (useWindowDimensions().width - 40) / 4;
+  const columnWidthStyle = useMemo(() => ({width: columnWidth}), [columnWidth]);
 
   //TODO: Separate components
   const renderSection = (sectionData: any) => {
@@ -112,6 +116,7 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
             numColumns={4}
             renderItem={({item: flatListItem}) => (
               <TouchableOpacity
+                style={columnWidthStyle}
                 onLongPress={() => {
                   onOpenActions(flatListItem.id);
                 }}

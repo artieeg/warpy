@@ -1,6 +1,6 @@
 import React from 'react';
 import {IUser} from '@app/models';
-import {StyleSheet, Image} from 'react-native';
+import {StyleSheet, Image, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 
 interface IAvatarProps {
@@ -24,14 +24,26 @@ export const Avatar = (props: IAvatarProps) => {
   }
 
   return (
-    <FastImage
-      style={[styles.avatar, styles[size || 'medium'], style]}
-      source={{uri: avatar}}
-    />
+    <View>
+      <FastImage
+        style={[styles.avatar, styles[size || 'medium'], style]}
+        source={{uri: avatar}}
+      />
+      <View style={styles.hack} />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  hack: {
+    zIndex: 10,
+    borderRadius: 40,
+    borderWidth: 1,
+    borderColor: 'transparent',
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+  },
   avatar: {
     overflow: 'hidden',
     borderRadius: 40,
