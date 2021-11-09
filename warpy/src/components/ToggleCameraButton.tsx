@@ -1,7 +1,7 @@
 import {useStore} from '@app/store';
 import React from 'react';
 import shallow from 'zustand/shallow';
-import {IconButton} from './IconButton';
+import {IconButtonToggle} from './IconButtonToggle';
 
 export const ToggleCameraButton = () => {
   const [videoEnabled, dispatchVideoToggle] = useStore(
@@ -10,11 +10,10 @@ export const ToggleCameraButton = () => {
   );
 
   return (
-    <IconButton
-      onPress={() => dispatchVideoToggle()}
-      color="#ffffff"
-      name={videoEnabled ? 'video' : 'video-off'}
-      size={30}
+    <IconButtonToggle
+      onToggle={dispatchVideoToggle}
+      enabled={videoEnabled}
+      icon={videoEnabled ? 'video' : 'video-off'}
     />
   );
 };
