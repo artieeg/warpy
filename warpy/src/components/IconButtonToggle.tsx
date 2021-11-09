@@ -1,7 +1,6 @@
 import React, {useEffect, useRef} from 'react';
-import {View, StyleSheet, Animated} from 'react-native';
+import {StyleSheet, Animated} from 'react-native';
 import {Icon} from './Icon';
-import {IconButton} from './IconButton';
 import {RoundButton} from './RoundButton';
 
 export interface IIconButtonToggleProps {
@@ -20,7 +19,7 @@ export const IconButtonToggle = (props: IIconButtonToggleProps) => {
   useEffect(() => {
     Animated.timing(color.current, {
       toValue: enabled ? 100 : 0,
-      duration: 100,
+      duration: 200,
       useNativeDriver: false,
     }).start();
   }, [enabled]);
@@ -61,6 +60,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: 'center',
+    backgroundColor: 'transparent',
     borderRadius: 45,
     justifyContent: 'center',
     width: 50,

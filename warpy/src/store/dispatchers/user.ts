@@ -45,9 +45,9 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
     const oldRole = get().role;
 
     if (sendMediaParams) {
-      set({sendMediaParams, role});
+      set({sendMediaParams, role, isRaisingHand: false});
     } else {
-      set({role});
+      set({role, isRaisingHand: false});
     }
 
     get().dispatchToastMessage(`You are a ${role} now`);
