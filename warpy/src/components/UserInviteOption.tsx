@@ -48,9 +48,11 @@ export const UserInviteOption = ({user}: IUserInviteProps) => {
         <Avatar user={user} />
         <View style={[styles.info]}>
           <Text size="small" weight="bold">
+            {user.first_name}
+          </Text>
+          <Text color="info" weight="bold" size="xsmall">
             {user.username}
           </Text>
-          <Text weight="bold" size="xsmall">{`${user.first_name}`}</Text>
         </View>
       </View>
       <Checkbox visible={invited} onToggle={() => setInvited(prev => !prev)} />

@@ -38,7 +38,7 @@ export const BaseSlideModal = (props: IBaseModalProps) => {
       <View
         style={[
           styles.wrapper,
-          !disableHideHandler && styles.handlerPadding,
+          !disableHideHandler ? styles.handlerPadding : styles.noHandlerPadding,
           style,
         ]}>
         {!disableHideHandler && <View style={styles.handler} />}
@@ -58,6 +58,9 @@ const styles = StyleSheet.create({
   modalStyle: {
     margin: 0,
   },
+  noHandlerPadding: {
+    paddingTop: 20,
+  },
   handlerPadding: {
     paddingTop: 40,
   },
@@ -67,8 +70,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    borderTopLeftRadius: 18,
-    borderTopRightRadius: 18,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
   },
   horizontalPadding: {
     paddingHorizontal: 20,

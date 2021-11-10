@@ -3,8 +3,16 @@ import {SearchInput} from './SearchInput';
 
 export const UserSearchInput = ({
   onChangeText,
+  style,
 }: {
+  style?: any;
   onChangeText: (text: string) => void;
 }) => {
-  return <SearchInput onChangeText={onChangeText} placeholder="search" />;
+  return (
+    <SearchInput
+      style={style}
+      onChangeText={onChangeText}
+      placeholder="search"
+    />
+  );
 };
