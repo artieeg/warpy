@@ -12,6 +12,7 @@ import {RTCView} from 'react-native-webrtc';
 import {useStore} from '@app/store';
 import shallow from 'zustand/shallow';
 import {AudioRoomParticipant} from './AudioRoomParticipant';
+import {ReactionCanvas} from './ReactionCanvas';
 
 interface IStreamsProps {
   forceLocalStream?: boolean;

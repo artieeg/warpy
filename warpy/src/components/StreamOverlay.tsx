@@ -1,4 +1,3 @@
-import {useVideoStreams} from '@app/hooks/useVideoStreams';
 import {useStore} from '@app/store';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, useWindowDimensions, Animated} from 'react-native';
@@ -58,7 +57,7 @@ export const StreamOverlay = () => {
           <StopStream />,
         ],
         bottom: [
-          <ReactionEmitter disabled={false} />,
+          <ReactionEmitter />,
           <ToggleCameraButton />,
           <ToggleMicButton />,
           <ChatButton />,
@@ -76,7 +75,7 @@ export const StreamOverlay = () => {
           <EmptyItem />,
         ],
         bottom: [
-          <ReactionEmitter disabled={false} />,
+          <ReactionEmitter />,
           <ClapButton />,
           <ToggleMicButton />,
           <ChatButton />,
@@ -94,7 +93,7 @@ export const StreamOverlay = () => {
           <EmptyItem />,
         ],
         bottom: [
-          <ReactionEmitter disabled />,
+          <ReactionEmitter />,
           <ClapButton />,
           <RaiseHandButton />,
           <ChatButton />,

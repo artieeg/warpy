@@ -174,7 +174,7 @@ const getListData = ({
   viewers: IParticipant[];
 }) => [
   {
-    title: 'Stream by',
+    title: 'Host',
     data: [
       {
         list: [streamer!],
@@ -193,7 +193,7 @@ const getListData = ({
     ],
   },
   {
-    title: 'Speakers',
+    title: 'Streamers',
     data: [
       {
         list: speakers,

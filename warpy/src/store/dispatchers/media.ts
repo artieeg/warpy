@@ -9,6 +9,7 @@ export interface IMediaDispatchers {
   dispatchMediaSend: (
     permissions: string,
     tracks: MediaKind[],
+    startSending?: boolean,
   ) => Promise<void>;
   dispatchInitViewer: (
     permissions: string,
@@ -58,9 +59,8 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
     }
 
     if (kind === 'video') {
-      console.log('setting video');
       set({
-        videoEnabled: !params?.enabled,
+        videoEnabled: !!params?.enabled,
         video: {
           stream: mediaStream,
           track: mediaStream.getVideoTracks()[0],
@@ -68,7 +68,7 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
       });
     } else {
       set({
-        audioEnabled: !params?.enabled,
+        audioEnabled: !!params?.enabled,
         audio: {
           stream: mediaStream,
           track: mediaStream.getAudioTracks()[0],
@@ -121,7 +121,7 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
 
     audio?.stream
       .getAudioTracks()
-      .forEach(audio => (audio.enabled = audioEnabled));
+      .forEach(audio => (audio.enabled = !audioEnabled));
 
     set({
       audioEnabled: !audioEnabled,
@@ -134,14 +134,14 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
     await api.stream.toggleMedia({videoEnabled});
     video?.stream
       .getVideoTracks()
-      .forEach(video => (video.enabled = videoEnabled));
+      .forEach(video => (video.enabled = !videoEnabled));
 
     set({
       videoEnabled: !videoEnabled,
     });
   },
 
-  async dispatchMediaSend(permissions, tracks) {
+  async dispatchMediaSend(permissions, tracks, startSending) {
     const {mediaClient, stream, sendMediaParams, sendDevice} = get();
 
     if (!mediaClient) {
@@ -176,7 +176,7 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
     tracks.forEach(async kind => {
       let media = get()[kind];
       if (!media) {
-        await get().dispatchMediaRequest(kind);
+        await get().dispatchMediaRequest(kind, {enabled: !!startSending});
 
         media = get()[kind];
       }

@@ -48,7 +48,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
 
     set({recvTransport});
 
-    await dispatchMediaSend(mediaPermissionsToken, ['audio', 'video']);
+    await dispatchMediaSend(mediaPermissionsToken, ['audio', 'video'], true);
   },
 
   async dispatchStreamJoin(stream) {

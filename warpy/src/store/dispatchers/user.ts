@@ -59,10 +59,17 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
     }
 
     if (oldRole === 'streamer' && role === 'speaker') {
-      return;
+      set({
+        videoEnabled: false,
+      });
     } else if (role !== 'viewer') {
       const kind = role === 'speaker' ? 'audio' : 'video';
       await get().dispatchMediaSend(mediaPermissionToken, [kind]);
+    } else {
+      set({
+        videoEnabled: false,
+        audioEnabled: false,
+      });
     }
   },
 

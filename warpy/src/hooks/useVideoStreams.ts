@@ -19,11 +19,7 @@ export const useVideoStreams = ({
   const role = useStore.use.role();
 
   const streams = useMemo(() => {
-    if (
-      localVideoStream &&
-      (role === 'streamer' || forceLocalStream) &&
-      !videoEnabled
-    ) {
+    if (localVideoStream && videoEnabled) {
       return [localVideoStream, ...videoStreams];
     } else {
       return videoStreams;

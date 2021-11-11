@@ -8,7 +8,7 @@ interface IStreamerInfoProps {
   data: IParticipant;
 }
 
-export const StreamerInfo = (props: IStreamerInfoProps) => {
+export const StreamerInfo = React.memo((props: IStreamerInfoProps) => {
   const {data} = props;
 
   const name = useMemo(() => `${data.first_name}`, []);
@@ -19,11 +19,13 @@ export const StreamerInfo = (props: IStreamerInfoProps) => {
         <Text weight="bold" size="small">
           {name}
         </Text>
-        <Text size="small">Some test bio to fill the space</Text>
+        <Text weight="bold" color="info" ellipsizeMode="tail" size="small">
+          Some test bio to fill the space
+        </Text>
       </View>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   wrapper: {
