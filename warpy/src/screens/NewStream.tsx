@@ -1,16 +1,32 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Button} from '@app/components';
 import {StreamOverlay} from '@app/components/StreamOverlay';
 import {Room} from '@app/components/Room';
 import {useNewStreamController} from '@app/hooks/useNewStreamController';
+import {useStore} from '@app/store';
 
 export const NewStream = () => {
   const {streamId, onStart} = useNewStreamController();
 
+  const set = useStore.use.set();
+
+  useEffect(() => {
+    set({
+      audioEnabled: true,
+      videoEnabled: true,
+    });
+
+    return () =>
+      set({
+        audioEnabled: false,
+        videoEnabled: false,
+      });
+  }, []);
+
   return (
     <View style={styles.wrapper}>
-      <Room forceLocalStream />
+      <Room />
 
       {streamId && <StreamOverlay />}
 

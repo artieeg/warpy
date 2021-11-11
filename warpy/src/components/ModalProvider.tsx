@@ -48,10 +48,7 @@ export const ModalProvider = () => {
         onHide={() => dispatchModalClose()}
       />
 
-      <InviteModal
-        visible={modal === 'invite'}
-        onHide={() => dispatchModalClose()}
-      />
+      <InviteModal />
     </>
   );
 };

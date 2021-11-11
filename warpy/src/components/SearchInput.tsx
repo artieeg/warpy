@@ -3,7 +3,11 @@ import {StyleSheet, TextInput, TextInputProps} from 'react-native';
 
 export const SearchInput = (props: TextInputProps) => {
   return (
-    <TextInput {...props} style={styles.input} placeholderTextColor="#fff" />
+    <TextInput
+      {...props}
+      style={[styles.input, props.style]}
+      placeholderTextColor="#fff"
+    />
   );
 };
 
@@ -13,8 +17,7 @@ const styles = StyleSheet.create({
     height: 50,
     //marginHorizontal: 20,
     borderRadius: 25,
-    marginVertical: 10,
-    backgroundColor: '#202020',
+    backgroundColor: '#373131',
     color: '#fff',
     fontFamily: 'MontserratAlternates-ExtraBold',
   },
