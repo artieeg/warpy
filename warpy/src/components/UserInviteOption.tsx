@@ -1,10 +1,10 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, useWindowDimensions} from 'react-native';
 import {IUser} from '@warpy/lib';
 import {Avatar} from './Avatar';
 import {Text} from './Text';
 import {Checkbox} from './Checkbox';
-import {useStore} from '@app/store';
+import {useStoreShallow} from '@app/store';
 
 interface IUserInviteProps {
   user: IUser;
@@ -13,32 +13,17 @@ interface IUserInviteProps {
 export const UserInviteOption = ({user}: IUserInviteProps) => {
   const [invited, setInvited] = useState(false);
 
-  const api = useStore.use.api();
-  const stream = useStore.use.stream();
-
-  const [invite, setInvite] = useState<string>();
-
-  const onInviteUser = useCallback(async () => {
-    if (stream) {
-      const {invite} = await api.stream.invite(user.id, stream);
-      setInvite(invite?.id);
-    }
-  }, [user.id]);
-
-  const onCancelInvite = useCallback(async () => {
-    if (invite) {
-      console.log('cancelling invite', invite);
-      await api.stream.cancelInvite(invite);
-    }
-  }, [user.id, invite]);
+  const [dispatchPendingInvite, dispatchCancelInvite] = useStoreShallow(
+    state => [state.dispatchPendingInvite, state.dispatchCancelInvite],
+  );
 
   useEffect(() => {
     if (invited) {
-      onInviteUser();
+      dispatchPendingInvite(user.id);
     } else {
-      onCancelInvite();
+      dispatchCancelInvite(user.id);
     }
-  }, [invited]);
+  }, [invited, user.id]);
 
   const {width} = useWindowDimensions();
 

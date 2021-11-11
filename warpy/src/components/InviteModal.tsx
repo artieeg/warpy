@@ -13,7 +13,10 @@ export const InviteModal = (props: IBaseModalProps) => {
     searchedUsers,
     inviteSuggestions,
     isLoading,
+    visible,
     setSearchQuery,
+    pendingInviteCount,
+    sendPendingInvites,
   } = useInviteModalController();
 
   const modalStyle = {
@@ -21,7 +24,11 @@ export const InviteModal = (props: IBaseModalProps) => {
   };
 
   return (
-    <BaseSlideModal {...props} disableHideHandler style={modalStyle}>
+    <BaseSlideModal
+      {...props}
+      visible={visible}
+      disableHideHandler
+      style={modalStyle}>
       <View style={styles.header}>
         <UserSearchInput
           style={styles.input}
@@ -43,7 +50,19 @@ export const InviteModal = (props: IBaseModalProps) => {
           data={inviteSuggestions}
         />
       )}
-      <TextButton title="invite 2 people" style={styles.button} />
+      <View style={styles.button}>
+        <TextButton
+          onPress={sendPendingInvites}
+          disabled={pendingInviteCount === 0}
+          title={
+            pendingInviteCount === 0
+              ? 'select people to invite'
+              : `invite ${pendingInviteCount} ${
+                  pendingInviteCount === 1 ? 'person' : 'people'
+                }`
+          }
+        />
+      </View>
     </BaseSlideModal>
   );
 };
@@ -64,6 +83,8 @@ const styles = StyleSheet.create({
   },
   button: {
     position: 'absolute',
+    paddingBottom: 15,
+    backgroundColor: '#000',
     bottom: 0,
     left: 30,
     right: 30,

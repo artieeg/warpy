@@ -1,4 +1,4 @@
-import create, {GetState, SetState} from 'zustand';
+import create, {GetState, SetState, StateSelector} from 'zustand';
 import {IAPISlice, createAPISlice} from './slices/createAPISlice';
 import {IFeedSlice, createFeedSlice} from './slices/createFeedSlice';
 import {
@@ -57,6 +57,12 @@ import {
   createParticipantSlice,
   IParticipantSlice,
 } from './slices/createParticipantSlice';
+import {createInviteSlice, IInviteSlice} from './slices/createInviteSlice';
+import {
+  createInviteDispatchers,
+  IInviteDispatchers,
+} from './dispatchers/invites';
+import shallow from 'zustand/shallow';
 
 interface Selectors<StoreType> {
   use: {
@@ -82,6 +88,7 @@ export interface IStore
     IFeedSlice,
     IUserSlice,
     IFollowingSlice,
+    IInviteSlice,
     IMediaSlice,
     IDeviceSlice,
     IChatSlice,
@@ -105,6 +112,7 @@ export interface IStore
     IParticipantSlice,
     IParticipantDispatchers,
     IToastDispatchers,
+    IInviteDispatchers,
     IAPISlice {
   set: SetState<IStore>;
   get: GetState<IStore>;
@@ -113,7 +121,9 @@ export interface IStore
 export const useStore = createSelectorHooks<IStore>(
   create<IStore>((set, get): IStore => {
     return {
+      ...createInviteDispatchers(set, get),
       ...createModalSlice(set, get),
+      ...createInviteSlice(set, get),
       ...createAudioLevelSlice(set, get),
       ...createStreamSlice(set, get),
       ...createSignUpSlice(set, get),
@@ -146,3 +156,7 @@ export const useStore = createSelectorHooks<IStore>(
     };
   }),
 );
+
+export function useStoreShallow<U>(selector: StateSelector<IStore, U>) {
+  return useStore(selector, shallow);
+}

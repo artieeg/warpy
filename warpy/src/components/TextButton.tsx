@@ -20,7 +20,10 @@ export const TextButton = (props: ITextButtonProps) => {
           props.disabled && styles.disabled,
           props.style,
         ]}>
-        <Text size="small" color="dark" weight="bold">
+        <Text
+          size="small"
+          color={props.disabled ? 'white' : 'dark'}
+          weight="bold">
           {props.title}
         </Text>
       </View>

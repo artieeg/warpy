@@ -6,7 +6,7 @@ import {Text} from './Text';
 
 export interface IBaseModalProps extends ViewProps {
   title?: string;
-  visible: boolean;
+  visible?: boolean;
   disableHideHandler?: boolean;
   children?: React.ReactNode;
 }
