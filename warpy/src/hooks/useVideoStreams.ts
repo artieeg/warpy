@@ -3,11 +3,7 @@ import {useRemoteStreams} from '.';
 import {useStore} from '@app/store';
 import shallow from 'zustand/shallow';
 
-export const useVideoStreams = ({
-  forceLocalStream,
-}: {
-  forceLocalStream?: boolean;
-}) => {
+export const useVideoStreams = () => {
   const [videoEnabled, localVideoData] = useStore(
     state => [state.videoEnabled, state.video],
     shallow,
@@ -15,8 +11,6 @@ export const useVideoStreams = ({
   const localVideoStream = localVideoData?.stream;
 
   const {videoStreams} = useRemoteStreams();
-
-  const role = useStore.use.role();
 
   const streams = useMemo(() => {
     if (localVideoStream && videoEnabled) {

@@ -1,10 +1,4 @@
-import {
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  useWindowDimensions,
-  View,
-} from 'react-native';
+import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
 import {useVideoStreams} from '@app/hooks/useVideoStreams';
 import React, {useMemo} from 'react';
@@ -12,14 +6,9 @@ import {RTCView} from 'react-native-webrtc';
 import {useStore} from '@app/store';
 import shallow from 'zustand/shallow';
 import {AudioRoomParticipant} from './AudioRoomParticipant';
-import {ReactionCanvas} from './ReactionCanvas';
 
-interface IStreamsProps {
-  forceLocalStream?: boolean;
-}
-
-export const Room = ({forceLocalStream}: IStreamsProps) => {
-  const streams = useVideoStreams({forceLocalStream});
+export const Room = () => {
+  const streams = useVideoStreams();
 
   const {width, height} = useWindowDimensions();
 

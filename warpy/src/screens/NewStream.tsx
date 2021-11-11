@@ -26,7 +26,7 @@ export const NewStream = () => {
 
   return (
     <View style={styles.wrapper}>
-      <Room forceLocalStream />
+      <Room />
 
       {streamId && <StreamOverlay />}
 
