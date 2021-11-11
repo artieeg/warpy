@@ -11,7 +11,8 @@ interface IStreamerInfoProps {
 export const StreamerInfo = React.memo((props: IStreamerInfoProps) => {
   const {data} = props;
 
-  const name = useMemo(() => `${data.first_name}`, []);
+  const [name, username] = useMemo(() => [data.first_name, data.username], []);
+
   return (
     <View style={styles.wrapper}>
       <Avatar user={data} />
@@ -20,7 +21,7 @@ export const StreamerInfo = React.memo((props: IStreamerInfoProps) => {
           {name}
         </Text>
         <Text weight="bold" color="info" ellipsizeMode="tail" size="small">
-          Some test bio to fill the space
+          {username}
         </Text>
       </View>
     </View>
