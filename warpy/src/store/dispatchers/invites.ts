@@ -24,6 +24,10 @@ export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
     );
 
     await Promise.all(promises);
+
+    set({
+      pendingInviteUserIds: [],
+    });
   },
 
   dispatchPendingInvite(user) {
