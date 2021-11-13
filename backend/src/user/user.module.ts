@@ -1,3 +1,5 @@
+import { FollowModule } from '@backend_2/follow/follow.module';
+import { StreamModule } from '@backend_2/stream/stream.module';
 import { Module } from '@nestjs/common';
 import { ParticipantModule } from '../participant/participant.module';
 import { PrismaModule } from '../prisma/prisma.module';
@@ -7,7 +9,13 @@ import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
 
 @Module({
-  imports: [PrismaModule, TokenModule, ParticipantModule],
+  imports: [
+    PrismaModule,
+    FollowModule,
+    StreamModule,
+    TokenModule,
+    ParticipantModule,
+  ],
   controllers: [UserController],
   providers: [UserEntity, UserService],
   exports: [UserEntity, UserService],

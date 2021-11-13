@@ -298,8 +298,8 @@ export class ParticipantEntity {
   }
 
   async getCurrentStreamFor(user: string): Promise<string | null> {
-    const result = await this.prisma.participant.findUnique({
-      where: { user_id: user },
+    const result = await this.prisma.participant.findFirst({
+      where: { user_id: user, hasLeftStream: false },
       select: { stream_id: true },
     });
 
