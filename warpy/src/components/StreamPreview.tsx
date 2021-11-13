@@ -1,32 +1,41 @@
 import {Stream} from '@app/models';
-import React from 'react';
-import Video from 'react-native-video';
+import React, {useCallback} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Avatar} from './Avatar';
 import {ViewersCountPreview} from './ViewersCountPreview';
 import {StreamPreviewTitle} from './StreamPreviewTitle';
+import {useNavigation} from '@react-navigation/native';
+import Video from 'react-native-video';
 
 interface IStreamPreviewProps {
   stream: Stream;
-  onPress: () => any;
   style: any;
 }
 
 export const StreamPreview = React.memo((props: IStreamPreviewProps) => {
-  const {style, stream, onPress} = props;
+  const {style, stream} = props;
   const {preview} = stream;
+  const navigation = useNavigation();
+
+  const onPress = useCallback(() => {
+    navigation.navigate('Stream', {stream});
+  }, [navigation]);
 
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={[styles.wrapper, style]}>
-        <View
-          repeat
-          muted
-          paused={false}
-          resizeMode="cover"
-          source={{uri: preview}}
-          style={styles.video}
-        />
+        {preview && (
+          <Video
+            repeat
+            muted
+            paused={false}
+            resizeMode="cover"
+            source={{uri: preview}}
+            style={styles.video}
+          />
+        )}
+
+        {!preview && <View style={styles.video} />}
         <View style={styles.info}>
           <StreamPreviewTitle>{stream.title}</StreamPreviewTitle>
           <View style={styles.participants}>

@@ -1,5 +1,4 @@
 export * from './Splash';
-export * from './DevSignUp';
 export * from './Feed';
 export * from './NewStream';
 export * from './Stream';
@@ -8,3 +7,4 @@ export * from './SignUpName';
 export * from './SignUpUsername';
 export * from './SignUpAvatar';
 export * from './Loading';
+export * from './Settings';
