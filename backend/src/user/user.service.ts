@@ -17,6 +17,10 @@ export class UserService {
     return this.user.search(text);
   }
 
+  async update(user: string, params: Partial<IUser>) {
+    await this.user.update(user, params);
+  }
+
   async getById(user: string): Promise<IUser> {
     const data = await this.user.findById(user, true);
 

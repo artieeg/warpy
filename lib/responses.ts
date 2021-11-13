@@ -116,3 +116,8 @@ export interface IBotJoinResponse {
   recvMedia: any;
   mediaPermissionToken: string;
 }
+
+export interface IUserUpdateResponse {
+  status: "ok" | "error";
+  message?: string;
+}

@@ -14,14 +14,14 @@ interface ITextProps extends TextProps {
 }
 
 export const Text = (props: ITextProps) => {
-  const {children, color, weight, size, style} = props;
+  const {color, weight, size, style} = props;
 
   return (
     <BaseText
       {...props}
       style={[
         textStyles[color || 'bright'],
-        textStyles[weight || 'regular'],
+        textStyles[weight || 'bold'],
         textStyles[size || 'medium'],
         style,
       ]}
@@ -46,7 +46,7 @@ export const textStyles = StyleSheet.create({
     color: '#F97971',
   },
   info: {
-    color: '#474141',
+    color: '#7B7B7B', //'#474141',
   },
   regular: {
     fontFamily: 'MontserratAlternates-Regular',

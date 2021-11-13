@@ -1,3 +1,4 @@
+import { IUser } from "./models";
 import { MediaDirection, MediaKind, MediaServiceRole, Roles } from "./types";
 
 export interface ITransportOptions {
@@ -272,4 +273,9 @@ export interface IMediaToggleRequest {
 export interface IBotJoin {
   user: string;
   inviteDetailsToken: string;
+}
+
+export interface IUserUpdateRequest {
+  user: string;
+  data: Partial<IUser>;
 }

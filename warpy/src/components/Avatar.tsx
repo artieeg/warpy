@@ -6,7 +6,7 @@ import FastImage from 'react-native-fast-image';
 interface IAvatarProps {
   user: IUser;
   style?: any;
-  size?: 'small' | 'medium' | 'large';
+  size?: keyof typeof sizeStyles;
   useRNImage?: boolean;
 }
 
@@ -17,7 +17,7 @@ export const Avatar = (props: IAvatarProps) => {
   if (useRNImage) {
     return (
       <Image
-        style={[styles.avatar, styles[size || 'medium'], style]}
+        style={[styles.avatar, sizeStyles[size || 'medium'], style]}
         source={{uri: avatar}}
       />
     );
@@ -26,7 +26,7 @@ export const Avatar = (props: IAvatarProps) => {
   return (
     <View>
       <FastImage
-        style={[styles.avatar, styles[size || 'medium'], style]}
+        style={[styles.avatar, sizeStyles[size || 'medium'], style]}
         source={{uri: avatar}}
       />
       <View style={styles.hack} />
@@ -34,21 +34,7 @@ export const Avatar = (props: IAvatarProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  hack: {
-    zIndex: 10,
-    borderRadius: 40,
-    borderWidth: 1,
-    borderColor: 'transparent',
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-  },
-  avatar: {
-    overflow: 'hidden',
-    borderRadius: 40,
-    backgroundColor: '#303030',
-  },
+const sizeStyles = StyleSheet.create({
   small: {
     width: 40,
     height: 40,
@@ -60,5 +46,26 @@ const styles = StyleSheet.create({
   large: {
     width: 80,
     height: 80,
+  },
+  xlarge: {
+    width: 100,
+    height: 100,
+  },
+});
+
+const styles = StyleSheet.create({
+  hack: {
+    zIndex: 10,
+    borderRadius: 60,
+    borderWidth: 1,
+    borderColor: 'transparent',
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+  },
+  avatar: {
+    overflow: 'hidden',
+    borderRadius: 60,
+    backgroundColor: '#303030',
   },
 });

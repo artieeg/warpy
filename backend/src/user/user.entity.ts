@@ -21,6 +21,15 @@ export class UserEntity {
     };
   }
 
+  async update(user: string, data: Partial<User>) {
+    await this.prisma.user.update({
+      where: {
+        id: user,
+      },
+      data,
+    });
+  }
+
   async createNewUser(data: NewUserParams): Promise<IUser> {
     const user = await this.prisma.user.create({
       data,

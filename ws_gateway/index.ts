@@ -172,6 +172,18 @@ const handlers: Record<string, HandlerConfig> = {
     subject: "user.invite",
   },
 
+  "update-user": {
+    schema: joi.object({
+      data: {
+        username: joi.string().max(16).optional(),
+        first_name: joi.string().max(32).optional(),
+      },
+    }),
+    kind: "request",
+    auth: true,
+    subject: "user.update",
+  },
+
   "invite-suggestions": {
     schema: joi.object({
       stream: joi.string().max(64).required(),
