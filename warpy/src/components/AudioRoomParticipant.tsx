@@ -31,7 +31,7 @@ export const AudioRoomParticipant = ({data}: {data: IParticipant}) => {
         volume={userAudioLevel || 0}
         minScale={1}
         onDoneSpeaking={() => dispatchAudioLevelDelete(data.id)}>
-        <Avatar size="large" user={data} style={styles.avatar} />
+        <Avatar useRNImage size="large" user={data} style={styles.avatar} />
       </AudioLevelIndicator>
       <Text weight="bold" size="xsmall">
         {data.first_name}

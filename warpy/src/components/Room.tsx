@@ -41,6 +41,7 @@ export const Room = () => {
         {streams.map((stream, i) => (
           <RTCView
             style={mediaStyles[streams.length - 1][i]}
+            mirror={true}
             objectFit="cover"
             streamURL={stream.toURL()}
           />
