@@ -1,9 +1,8 @@
-import {User} from '@app/models';
-import {Roles} from '@warpy/lib';
+import {IUser, Roles} from '@warpy/lib';
 import {StoreSlice} from '../types';
 
 export interface IUserSlice {
-  user: User | null;
+  user: IUser | null;
   role: Roles | null;
   isLoadingUser: boolean;
   exists: boolean;

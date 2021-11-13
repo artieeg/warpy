@@ -28,3 +28,4 @@ export * from './Notification';
 export * from './OpenHomeButton';
 export * from './AudioRoomParticipant';
 export * from './ScreenHeader';
+export * from './SettingsTextEdit';

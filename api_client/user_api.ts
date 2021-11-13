@@ -2,9 +2,11 @@ import {
   IFollowResponse,
   INewUserResponse,
   IUnfollowResponse,
+  IUser,
   IUserBlockResponse,
   IUserDeleteResponse,
   IUserSearchResponse,
+  IUserUpdateResponse,
   IWhoAmIResponse,
 } from "@warpy/lib";
 import { WebSocketConn } from "./connection";
@@ -16,6 +18,7 @@ export interface IUserAPI {
   follow: (userToFollow: string) => Promise<IFollowResponse>;
   unfollow: (userToUnfollow: string) => Promise<IUnfollowResponse>;
   search: (textToSearch: string) => Promise<IUserSearchResponse>;
+  update: (field: keyof IUser, value: string) => Promise<IUserUpdateResponse>;
   report: (
     userToReport: string,
     reportReasonId: string
@@ -37,6 +40,7 @@ export const UserAPI = (socket: WebSocketConn): IUserAPI => ({
   auth: (token) => socket.request("auth", { token }),
   delete: () => socket.request("delete-user", {}),
   search: (textToSearch) => socket.request("search-user", { textToSearch }),
+  update: (field, value) => socket.request("update-user", { field, value }),
   follow: (userToFollow) => socket.request("user-follow", { userToFollow }),
   block: (userToBlock: string) => socket.request("block-user", { userToBlock }),
   report: (reportedUserId, reportReasonId) =>
