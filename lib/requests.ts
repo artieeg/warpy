@@ -279,3 +279,8 @@ export interface IUserUpdateRequest {
   user: string;
   data: Partial<IUser>;
 }
+
+export interface IUserRequest {
+  user: string;
+  id: string;
+}
