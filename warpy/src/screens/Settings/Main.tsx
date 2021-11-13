@@ -21,16 +21,22 @@ export const MainSettingsScreen = () => {
           tap to change{'\n'}your pfp
         </Text>
       </View>
-      <SettingsTextEdit placeholder="name" field="last_name" />
-      <SettingsTextEdit placeholder="username" field="username" />
+      <View style={styles.padding}>
+        <SettingsTextEdit placeholder="name" field="first_name" />
+        <SettingsTextEdit placeholder="username" field="username" />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  padding: {
+    paddingHorizontal: 30,
+  },
   avatarContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 20,
   },
   wrapper: {
     backgroundColor: '#000',

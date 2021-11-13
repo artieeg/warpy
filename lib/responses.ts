@@ -119,5 +119,5 @@ export interface IBotJoinResponse {
 
 export interface IUserUpdateResponse {
   status: "ok" | "error";
-  message: string;
+  message?: string;
 }

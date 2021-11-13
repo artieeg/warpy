@@ -40,7 +40,8 @@ export const UserAPI = (socket: WebSocketConn): IUserAPI => ({
   auth: (token) => socket.request("auth", { token }),
   delete: () => socket.request("delete-user", {}),
   search: (textToSearch) => socket.request("search-user", { textToSearch }),
-  update: (field, value) => socket.request("update-user", { field, value }),
+  update: (field, value) =>
+    socket.request("update-user", { data: { [field]: value } }),
   follow: (userToFollow) => socket.request("user-follow", { userToFollow }),
   block: (userToBlock: string) => socket.request("block-user", { userToBlock }),
   report: (reportedUserId, reportReasonId) =>

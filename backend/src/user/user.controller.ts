@@ -8,6 +8,8 @@ import {
   IUserDeleteResponse,
   IUserSearchRequest,
   IUserSearchResponse,
+  IUserUpdateRequest,
+  IUserUpdateResponse,
   IWhoAmIRequest,
   IWhoAmIResponse,
 } from '@warpy/lib';
@@ -26,6 +28,25 @@ export class UserController {
       user: data,
       following: [],
     };
+  }
+
+  @MessagePattern('user.update')
+  async onUserUpdate({
+    user,
+    data,
+  }: IUserUpdateRequest): Promise<IUserUpdateResponse> {
+    try {
+      await this.userService.update(user, data);
+
+      return {
+        status: 'ok',
+      };
+    } catch (e) {
+      return {
+        status: 'error',
+        message: "we can't use this value",
+      };
+    }
   }
 
   @UseFilters(ExceptionFilter)
