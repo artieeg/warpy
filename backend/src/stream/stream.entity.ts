@@ -19,14 +19,14 @@ export class StreamEntity {
     };
   }
 
-  async findById(id: string): Promise<IStream> {
+  async findById(id: string): Promise<IStream | null> {
     const data = await this.prisma.stream.findUnique({
       where: {
         id,
       },
     });
 
-    return StreamEntity.toStreamDTO(data);
+    return data ? StreamEntity.toStreamDTO(data) : null;
   }
 
   async create(data: CreateNewStream): Promise<IStream> {

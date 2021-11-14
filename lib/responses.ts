@@ -121,3 +121,14 @@ export interface IUserUpdateResponse {
   status: "ok" | "error";
   message?: string;
 }
+
+export interface IUserInfoResponse {
+  user: IUser;
+  stream?: {
+    id: string;
+    title: string;
+    participants: number;
+  };
+  isFollower: boolean;
+  isFollowed: boolean;
+}

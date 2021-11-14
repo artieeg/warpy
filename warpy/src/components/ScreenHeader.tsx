@@ -19,6 +19,7 @@ export const ScreenHeader = () => {
       Feed: '/feed',
       Notifications: '/news',
       MainSettingsScreen: '/you',
+      User: '/user',
     };
 
     return titles[route.name as keyof typeof titles];

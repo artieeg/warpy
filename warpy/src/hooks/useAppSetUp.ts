@@ -2,9 +2,12 @@ import {useStore} from '@app/store';
 import {useNavigation} from '@react-navigation/native';
 import {useEffect} from 'react';
 import shallow from 'zustand/shallow';
+import {navigation} from '@app/navigation';
 
 export const useAppSetUp = () => {
-  const navigation = useNavigation();
+  const n = useNavigation();
+
+  navigation.current = n;
 
   const loadTokens = useStore.use.loadTokens();
   const accessToken = useStore.use.access();
@@ -39,18 +42,18 @@ export const useAppSetUp = () => {
 
   useEffect(() => {
     if (user) {
-      navigation.navigate('Feed');
+      n.navigate('Feed');
       useStore.getState().dispatchNotificationsFetchUnread();
     }
-  }, [user, navigation]);
+  }, [user, n]);
 
   useEffect(() => {
     loadTokens();
-  }, [navigation, api]);
+  }, [n, api]);
 
   useEffect(() => {
     if (tokenLoadError || (userExists === false && isLoadingUser === false)) {
-      navigation.navigate('SignUpName');
+      n.navigate('SignUpName');
     }
   }, [tokenLoadError, userExists, isLoadingUser]);
 

@@ -35,6 +35,10 @@ const colorStyles = StyleSheet.create({
     backgroundColor: '#F9F871',
     borderColor: '#F9F871',
   },
+  info: {
+    backgroundColor: '#7B7B7B',
+    borderColor: '#7B7B7B',
+  },
   important: {
     backgroundColor: '#F97971',
     borderColor: '#F97971',
@@ -48,7 +52,7 @@ const styles = StyleSheet.create({
   button: {
     alignSelf: 'baseline',
     paddingHorizontal: 25,
-    paddingVertical: 6,
+    paddingVertical: 10,
     borderRadius: 36,
     alignItems: 'center',
     justifyContent: 'center',

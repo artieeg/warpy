@@ -48,6 +48,7 @@
     "redux": "^4.1.0",
     "redux-thunk": "^2.3.0",
     "use-async-effect": "^2.2.3",
+    "use-async-memo": "^1.2.3",
     "use-debounce": "^7.0.0",
     "zustand": "^3.5.7",
     "zustand-persist": "^0.3.1"

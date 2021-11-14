@@ -5,6 +5,7 @@ import {
   IUser,
   IUserBlockResponse,
   IUserDeleteResponse,
+  IUserInfoResponse,
   IUserSearchResponse,
   IUserUpdateResponse,
   IWhoAmIResponse,
@@ -24,6 +25,7 @@ export interface IUserAPI {
     reportReasonId: string
   ) => Promise<INewUserResponse>;
   block: (userToBlock: string) => Promise<IUserBlockResponse>;
+  get: (id: string) => Promise<IUserInfoResponse>;
 }
 
 export interface INewUser {
@@ -38,6 +40,7 @@ export interface INewUser {
 export const UserAPI = (socket: WebSocketConn): IUserAPI => ({
   create: (data: INewUser) => socket.request("new-user", data),
   auth: (token) => socket.request("auth", { token }),
+  get: (id) => socket.request("get-user", { id }),
   delete: () => socket.request("delete-user", {}),
   search: (textToSearch) => socket.request("search-user", { textToSearch }),
   update: (field, value) =>

@@ -87,4 +87,21 @@ export class FollowEntity {
 
     return followed.map((data) => data.followed_id);
   }
+
+  async isFollowing(
+    follower_id: string,
+    followed_id: string,
+  ): Promise<boolean> {
+    const record = await this.prisma.followRecord.findFirst({
+      where: {
+        follower_id,
+        followed_id,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return !!record;
+  }
 }

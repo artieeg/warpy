@@ -6,6 +6,8 @@ import {
   INewUserResponse,
   IUserDelete,
   IUserDeleteResponse,
+  IUserInfoResponse,
+  IUserRequest,
   IUserSearchRequest,
   IUserSearchResponse,
   IUserUpdateRequest,
@@ -18,6 +20,15 @@ import { UserService } from './user.service';
 @Controller()
 export class UserController {
   constructor(private userService: UserService) {}
+
+  @UseFilters(ExceptionFilter)
+  @MessagePattern('user.get')
+  async onUserRequest({ user, id }: IUserRequest): Promise<IUserInfoResponse> {
+    console.log(user, id)
+    const data = await this.userService.getUserInfo(id, user);
+
+    return data;
+  }
 
   @UseFilters(ExceptionFilter)
   @MessagePattern('user.whoami-request')

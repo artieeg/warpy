@@ -10,6 +10,7 @@ import {
   SignUpUsername,
   MainSettingsScreen,
   Splash,
+  User,
   Stream,
   Loading,
 } from './src/screens';
@@ -26,12 +27,14 @@ const App = () => {
     Splash,
     SignUpName,
     SignUpUsername,
+    Loading,
     SignUpAvatar,
     Feed,
     NewStream,
     Stream,
     Notifications,
     MainSettingsScreen,
+    User,
   };
 
   return (
@@ -44,8 +47,8 @@ const App = () => {
         </Stack.Navigator>
       </NavigationContainer>
 
-      <ToastProvider />
       <ModalProvider />
+      <ToastProvider />
     </>
   );
 };

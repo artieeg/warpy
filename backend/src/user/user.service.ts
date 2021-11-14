@@ -1,6 +1,14 @@
 import { UserNotFound } from '@backend_2/errors';
+import { FollowEntity } from '@backend_2/follow/follow.entity';
+import { ParticipantEntity } from '@backend_2/participant/participant.entity';
+import { StreamEntity } from '@backend_2/stream/stream.entity';
 import { Injectable } from '@nestjs/common';
-import { INewUser, INewUserResponse, IUser } from '@warpy/lib';
+import {
+  INewUser,
+  INewUserResponse,
+  IUser,
+  IUserInfoResponse,
+} from '@warpy/lib';
 import { RefreshTokenEntity } from '../token/refresh-token.entity';
 import { TokenService } from '../token/token.service';
 import { UserEntity } from './user.entity';
@@ -11,7 +19,41 @@ export class UserService {
     private user: UserEntity,
     private tokenService: TokenService,
     private refreshTokenEntity: RefreshTokenEntity,
+    private followEntity: FollowEntity,
+    private participantEntity: ParticipantEntity,
+    private streamEntity: StreamEntity,
   ) {}
+
+  async getUserInfo(id: string, requester: string): Promise<IUserInfoResponse> {
+    const [user, currentStreamId, isFollowed, isFollower] = await Promise.all([
+      this.user.findById(id, false),
+      this.participantEntity.getCurrentStreamFor(id),
+      this.followEntity.isFollowing(requester, id),
+      this.followEntity.isFollowing(id, requester),
+    ]);
+
+    const response = {
+      user,
+      isFollowed,
+      isFollower,
+    };
+
+    if (currentStreamId) {
+      const stream = await this.streamEntity.findById(currentStreamId);
+
+      console.log({ currentStreamId, stream });
+
+      if (stream) {
+        response['stream'] = {
+          title: stream.title,
+          id: stream.id,
+          participants: await this.participantEntity.count(currentStreamId),
+        };
+      }
+    }
+
+    return response as any;
+  }
 
   async search(text: string): Promise<IUser[]> {
     return this.user.search(text);
