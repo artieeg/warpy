@@ -1,9 +1,11 @@
+import {useStore} from '@app/store';
 import React from 'react';
-import {View, StyleSheet, useWindowDimensions} from 'react-native';
+import {View, StyleSheet, useWindowDimensions, TextInput} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {HostNewStreamButton} from './HostNewStreamButton';
 import {InviteButton} from './InviteButton';
 import {SwitchCameraButton} from './SwitchCameraButton';
+import {textStyles} from './Text';
 import {ToggleCameraButton} from './ToggleCameraButton';
 import {ToggleMicButton} from './ToggleMicButton';
 
@@ -17,6 +19,7 @@ export const useNewStreamPanelController = () => {
 
 export const NewStreamPanel = () => {
   const {gradientHeightStyle} = useNewStreamPanelController();
+  const set = useStore.use.set();
 
   return (
     <View style={styles.wrapper}>
@@ -34,6 +37,13 @@ export const NewStreamPanel = () => {
         start={{x: 0, y: 0}}
         end={{x: 0, y: 0.8}}
         colors={['#050505fa', '#05050500']}
+      />
+
+      <TextInput
+        onChangeText={v => set({title: v})}
+        style={styles.titleInput}
+        placeholder="stream title"
+        placeholderTextColor={textStyles.info.color}
       />
 
       <View pointerEvents="box-none" style={styles.bottomButtons}>
@@ -76,5 +86,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  titleInput: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
+    right: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    ...textStyles.white,
+    ...textStyles.bold,
+    ...textStyles.medium,
   },
 });
