@@ -5,6 +5,7 @@ import {
   IUser,
   IUserBlockResponse,
   IUserDeleteResponse,
+  IUserInfoResponse,
   IUserSearchResponse,
   IUserUpdateResponse,
   IWhoAmIResponse,
@@ -24,7 +25,7 @@ export interface IUserAPI {
     reportReasonId: string
   ) => Promise<INewUserResponse>;
   block: (userToBlock: string) => Promise<IUserBlockResponse>;
-  get: (id: string) => Promise<void>;
+  get: (id: string) => Promise<IUserInfoResponse>;
 }
 
 export interface INewUser {
