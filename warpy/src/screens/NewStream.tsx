@@ -1,15 +1,32 @@
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Button} from '@app/components';
 import {StreamOverlay} from '@app/components/StreamOverlay';
 import {Room} from '@app/components/Room';
-import {useNewStreamController} from '@app/hooks/useNewStreamController';
 import {useStore} from '@app/store';
+import shallow from 'zustand/shallow';
 
-export const NewStream = () => {
-  const {streamId, onStart} = useNewStreamController();
+export const useNewStreamController = () => {
+  const [title, setTitle] = useState('test stream');
+  const [hub, setHub] = useState('60ec569668b42c003304630b');
+  const [streamId, set, dispatchCreateStream, dispatchMediaRequest] = useStore(
+    state => [
+      state.stream,
+      state.set,
+      state.dispatchStreamCreate,
+      state.dispatchMediaRequest,
+    ],
+    shallow,
+  );
 
-  const set = useStore.use.set();
+  useEffect(() => {
+    dispatchMediaRequest('audio', {enabled: true});
+    dispatchMediaRequest('video', {enabled: true});
+  }, []);
+
+  const onStart = useCallback(() => {
+    dispatchCreateStream(title, hub);
+  }, [title, hub]);
 
   useEffect(() => {
     set({
@@ -23,6 +40,12 @@ export const NewStream = () => {
         videoEnabled: false,
       });
   }, []);
+
+  return {onStart, streamId, setTitle, setHub};
+};
+
+export const NewStream = () => {
+  const {streamId, onStart} = useNewStreamController();
 
   return (
     <View style={styles.wrapper}>
