@@ -3,7 +3,7 @@ import { IUser } from "./user";
 
 export interface IInvite {
   id: string;
-  stream: IStream;
+  stream: IStream | null;
   invitee: IUser;
   inviter: IUser;
 }

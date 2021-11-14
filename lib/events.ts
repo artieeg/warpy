@@ -71,3 +71,7 @@ export interface IBotInviteEvent {
 export interface INewParticipantEvent {
   participant: IParticipant;
 }
+
+export interface IStreamIdAvailable {
+  id: string;
+}

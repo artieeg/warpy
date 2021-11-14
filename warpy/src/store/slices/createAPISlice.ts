@@ -3,6 +3,7 @@ import {APIClient, WebSocketConn} from '@warpy/api';
 import config from '@app/config';
 import {IStore} from '../useStore';
 import produce from 'immer';
+import {Alert} from 'react-native';
 
 export interface IAPISlice {
   api: APIClient;
@@ -19,6 +20,10 @@ export const createAPISlice = (
   createAPISubscriptions: () => {
     const store = get();
     const {api} = store;
+
+    api.stream.onStreamIdAvailable(({id}) => {
+      Alert.alert('stream id', id);
+    });
 
     api.stream.onNewParticipant(data => {
       store.dispatchParticipantAdd(data.participant);

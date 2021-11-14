@@ -16,6 +16,7 @@ import {
   IParticipantRoleChangeEvent,
   IMediaToggleEvent,
   INewParticipantEvent,
+  IStreamIdAvailable,
 } from "@warpy/lib";
 
 export interface IStreamAPI {
@@ -51,6 +52,7 @@ export interface IStreamAPI {
   onChatMessages: EventHandler<IChatMessagesEvent>;
   onUserKick: EventHandler<IUserKickedEvent>;
   onMediaToggle: EventHandler<IMediaToggleEvent>;
+  onStreamIdAvailable: EventHandler<IStreamIdAvailable>;
 }
 
 export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
@@ -95,6 +97,7 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
   onNewParticipant: (handler) => socket.on("new-participant", handler),
   onRaiseHandUpdate: (handler) => socket.on("raise-hand", handler),
   onUserLeft: (handler) => socket.on("user-left", handler),
+  onStreamIdAvailable: (handler) => socket.on("stream-id-available", handler),
   onParticipantRoleChange: (handler) =>
     socket.on("participant-role-change", handler),
   onActiveSpeaker: (handler) => socket.on("active-speaker", handler),

@@ -15,9 +15,12 @@ export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
   async dispatchSendPendingInvites() {
     const {pendingInviteUserIds, api, stream} = get();
 
+    console.log(pendingInviteUserIds);
+
     const promises = pendingInviteUserIds.map(userToInvite =>
       api.stream.invite(userToInvite, stream),
     );
+    console.log(promises.length);
 
     await Promise.all(promises);
 

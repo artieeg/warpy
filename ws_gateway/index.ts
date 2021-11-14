@@ -165,7 +165,7 @@ const handlers: Record<string, HandlerConfig> = {
   "invite-user": {
     schema: joi.object({
       invitee: joi.string().max(64).required(),
-      stream: joi.string().max(64).optional(),
+      stream: joi.string().allow(null).max(64).optional(),
     }),
     kind: "request",
     auth: true,

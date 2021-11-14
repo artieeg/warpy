@@ -20,7 +20,7 @@ export class InviteEntity {
   ): IInvite {
     return {
       id: data.id,
-      stream: StreamEntity.toStreamDTO(data.stream),
+      stream: data.stream ? StreamEntity.toStreamDTO(data.stream) : null,
       invitee: data.user_invitee
         ? UserEntity.toUserDTO(data.user_invitee)
         : BotsEntity.toBotDTO(data.bot_invitee),
@@ -35,11 +35,11 @@ export class InviteEntity {
         inviter_id,
       },
       select: {
-        inviter_id: true,
+        user_invitee_id: true,
       },
     });
 
-    return invites.map(({ inviter_id }) => inviter_id);
+    return invites.map(({ user_invitee_id }) => user_invitee_id);
   }
 
   async create({
