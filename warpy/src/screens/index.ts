@@ -8,3 +8,4 @@ export * from './SignUpUsername';
 export * from './SignUpAvatar';
 export * from './Loading';
 export * from './Settings';
+export * from './User';

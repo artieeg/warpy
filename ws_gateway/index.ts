@@ -174,9 +174,7 @@ const handlers: Record<string, HandlerConfig> = {
 
   "get-user": {
     schema: joi.object({
-      data: {
-        id: joi.string().max(32).optional(),
-      },
+      id: joi.string().max(32).required(),
     }),
     kind: "request",
     auth: true,

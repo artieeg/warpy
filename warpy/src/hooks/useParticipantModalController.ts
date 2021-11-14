@@ -1,5 +1,6 @@
+import {navigation} from '@app/navigation';
 import {useStore} from '@app/store';
-import {useMemo} from 'react';
+import {useCallback, useMemo} from 'react';
 import shallow from 'zustand/shallow';
 import {useStreamParticipant} from './useStreamParticipant';
 
@@ -10,6 +11,7 @@ export const useParticipantModalController = () => {
     following,
     dispatchFollowingAdd,
     dispatchFollowingRemove,
+    dispatchModalClose,
   ] = useStore(
     state => [
       state.modalCurrent,
@@ -17,9 +19,15 @@ export const useParticipantModalController = () => {
       state.following,
       state.dispatchFollowingAdd,
       state.dispatchFollowingRemove,
+      state.dispatchModalClose,
     ],
     shallow,
   );
+
+  const onOpenProfile = useCallback(() => {
+    dispatchModalClose();
+    navigation.current?.navigate('User', {id: modalSelectedUser});
+  }, [modalSelectedUser]);
 
   const visible = currentModal === 'participant-info';
   const isFollowing = useMemo(
@@ -46,5 +54,6 @@ export const useParticipantModalController = () => {
     participant,
     isFollowing,
     onToggleFollow,
+    onOpenProfile,
   };
 };
