@@ -141,8 +141,8 @@ model FollowRecord {
 model Invite {
   id String @id @default(cuid())
 
-  stream_id String
-  stream    Stream @relation(name: "invites", fields: [stream_id], references: [id], onDelete: Cascade)
+  stream_id String?
+  stream    Stream? @relation(name: "invites", fields: [stream_id], references: [id], onDelete: Cascade)
 
   user_invitee_id String?
   user_invitee    User?   @relation(name: "invitee", fields: [user_invitee_id], references: [id], onDelete: Cascade)

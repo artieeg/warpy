@@ -24,7 +24,7 @@ export class InviteService {
   private async inviteRealUser(
     inviter: string,
     invitee: string,
-    stream: string,
+    stream?: string,
   ) {
     const invite = await this.inviteEntity.create({
       invitee,

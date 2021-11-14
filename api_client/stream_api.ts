@@ -36,7 +36,7 @@ export interface IStreamAPI {
   returnToViewer: () => void;
   raiseHand: () => any;
   lowerHand: () => any;
-  invite: (invitee: string, stream: string) => Promise<IInviteResponse>;
+  invite: (invitee: string, stream: string | null) => Promise<IInviteResponse>;
   cancelInvite: (invite_id: string) => Promise<ICancelInviteResponse>;
   getInviteSuggestions: (stream: string) => Promise<IInviteSuggestionsResponse>;
   setRole: (userToUpdate: string, role: Roles) => void;

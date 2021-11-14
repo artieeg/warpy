@@ -35,7 +35,7 @@ export class InviteEntity {
   }: {
     invitee: string;
     inviter: string;
-    stream: string;
+    stream?: string;
   }): Promise<IInvite> {
     const isBot = invitee.slice(0, 3) === 'bot';
 
