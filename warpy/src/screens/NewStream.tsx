@@ -5,10 +5,9 @@ import {StreamOverlay} from '@app/components/StreamOverlay';
 import {Room} from '@app/components/Room';
 import {useStore} from '@app/store';
 import shallow from 'zustand/shallow';
+import {NewStreamPanel} from '@app/components/NewStreamPanel';
 
 export const useNewStreamController = () => {
-  const [title, setTitle] = useState('test stream');
-  const [hub, setHub] = useState('60ec569668b42c003304630b');
   const [streamId, set, dispatchCreateStream, dispatchMediaRequest] = useStore(
     state => [
       state.stream,
@@ -24,10 +23,6 @@ export const useNewStreamController = () => {
     dispatchMediaRequest('video', {enabled: true});
   }, []);
 
-  const onStart = useCallback(() => {
-    dispatchCreateStream(title, hub);
-  }, [title, hub]);
-
   useEffect(() => {
     set({
       audioEnabled: true,
@@ -41,11 +36,11 @@ export const useNewStreamController = () => {
       });
   }, []);
 
-  return {onStart, streamId, setTitle, setHub};
+  return {streamId};
 };
 
 export const NewStream = () => {
-  const {streamId, onStart} = useNewStreamController();
+  const {streamId} = useNewStreamController();
 
   return (
     <View style={styles.wrapper}>
@@ -53,11 +48,7 @@ export const NewStream = () => {
 
       {streamId && <StreamOverlay />}
 
-      {!streamId && (
-        <View style={styles.startStreamButton}>
-          <Button onPress={onStart} title="Start" />
-        </View>
-      )}
+      {!streamId && <NewStreamPanel />}
     </View>
   );
 };
