@@ -39,13 +39,17 @@ export class UserService {
     };
 
     if (currentStreamId) {
-      const stream = await this.streamEntity.findById(id);
+      const stream = await this.streamEntity.findById(currentStreamId);
 
-      response['stream'] = {
-        title: stream.title,
-        id: stream.id,
-        participants: await this.participantEntity.count(currentStreamId),
-      };
+      console.log({ currentStreamId, stream });
+
+      if (stream) {
+        response['stream'] = {
+          title: stream.title,
+          id: stream.id,
+          participants: await this.participantEntity.count(currentStreamId),
+        };
+      }
     }
 
     return response as any;

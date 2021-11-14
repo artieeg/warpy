@@ -24,6 +24,7 @@ export class UserController {
   @UseFilters(ExceptionFilter)
   @MessagePattern('user.get')
   async onUserRequest({ user, id }: IUserRequest): Promise<IUserInfoResponse> {
+    console.log(user, id)
     const data = await this.userService.getUserInfo(id, user);
 
     return data;
