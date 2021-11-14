@@ -5,8 +5,8 @@ import { MessageService } from '@backend_2/message/message.service';
 import { StreamEntity } from '@backend_2/stream/stream.entity';
 import { TokenService } from '@backend_2/token/token.service';
 import { Injectable } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { IInvite, IUser } from '@warpy/lib';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { IInvite, IStream, IUser } from '@warpy/lib';
 import { InviteEntity } from './invite.entity';
 
 @Injectable()
@@ -81,11 +81,18 @@ export class InviteService {
     }
   }
 
+  @OnEvent('stream.created')
+  async notifyAboutStreamId({ stream: { owner, id } }: { stream: IStream }) {
+    const invitedUserIds =
+      await this.inviteEntity.findUsersInvitedToDraftedStream(owner);
+
+    invitedUserIds.forEach((user) => {
+      this.eventEmitter.emit('invite.stream-id-available', { id, user });
+    });
+  }
+
   async deleteInvite(user: string, invite_id: string) {
-    const { notification_id, invitee_id } = await this.inviteEntity.delete(
-      invite_id,
-      user,
-    );
+    const { notification_id } = await this.inviteEntity.delete(invite_id, user);
 
     if (notification_id) {
       this.eventEmitter.emit('notification.cancel', notification_id);

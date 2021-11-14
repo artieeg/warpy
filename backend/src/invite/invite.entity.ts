@@ -28,6 +28,20 @@ export class InviteEntity {
     };
   }
 
+  async findUsersInvitedToDraftedStream(inviter_id: string) {
+    const invites = await this.prisma.invite.findMany({
+      where: {
+        stream_id: null,
+        inviter_id,
+      },
+      select: {
+        inviter_id: true,
+      },
+    });
+
+    return invites.map(({ inviter_id }) => inviter_id);
+  }
+
   async create({
     invitee,
     inviter,

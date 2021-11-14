@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
 import { NatsService } from '../nats/nats.service';
 
 @Injectable()
@@ -19,6 +20,16 @@ export class MessageService {
 
   send(user: string, message: Uint8Array) {
     this.nc.publish(`reply.user.${user}`, message);
+  }
+
+  @OnEvent('invite.stream-id-available')
+  async notifyAboutStreamId({ id, user }: { id: string; user: string }) {
+    this.sendMessage(user, {
+      event: 'stream-id-available',
+      data: {
+        id,
+      },
+    });
   }
 
   async request<T>(user: string, request: any) {
