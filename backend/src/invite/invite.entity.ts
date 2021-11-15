@@ -28,11 +28,36 @@ export class InviteEntity {
     };
   }
 
+  async declineInvite(invite_id: string, user: string) {
+    await this.prisma.invite.updateMany({
+      where: {
+        id: invite_id,
+        user_invitee_id: user,
+      },
+      data: {
+        declined: true,
+      },
+    });
+  }
+
+  async acceptInvite(invite_id: string, user: string) {
+    await this.prisma.invite.updateMany({
+      where: {
+        id: invite_id,
+        user_invitee_id: user,
+      },
+      data: {
+        accepted: true,
+      },
+    });
+  }
+
   async findUsersInvitedToDraftedStream(inviter_id: string) {
     const invites = await this.prisma.invite.findMany({
       where: {
         stream_id: null,
         inviter_id,
+        accepted: true,
       },
       select: {
         user_invitee_id: true,

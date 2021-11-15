@@ -21,6 +21,14 @@ export class InviteService {
     private botEntity: BotsEntity,
   ) {}
 
+  async declineInvite(invite: string, user: string) {
+    await this.inviteEntity.declineInvite(invite, user);
+  }
+
+  async acceptInvite(invite: string, user: string) {
+    await this.inviteEntity.acceptInvite(invite, user);
+  }
+
   private async inviteRealUser(
     inviter: string,
     invitee: string,

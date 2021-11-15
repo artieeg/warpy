@@ -154,6 +154,9 @@ model Invite {
   inviter      User          @relation(name: "inviter", fields: [inviter_id], references: [id], onDelete: Cascade)
   notification Notification?
 
+  accepted Boolean @default(false)
+  declined Boolean @default(false)
+
   @@unique([id, inviter_id], name: "inviter_index")
 }
 
