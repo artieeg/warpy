@@ -5,7 +5,7 @@ import {StoreSlice} from '../types';
 export interface IModalSlice {
   modalCurrent: Modal | null;
   modalSelectedUser: string | null;
-  modalInvite: IInvite | null;
+  modalInvite: (IInvite & {notification: string}) | null;
   modalBotConfirmData: IBot | null;
   modalBotConfirmId: string | null;
 }

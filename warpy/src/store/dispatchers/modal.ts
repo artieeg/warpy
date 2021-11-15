@@ -6,7 +6,7 @@ type OpenModalParams = {
   selectedUser?: string;
   botConfirmId?: string;
   botConfirmData?: IBot;
-  invite?: IInvite;
+  invite?: IInvite & {notification: string};
 };
 
 export interface IModalDispatchers {
