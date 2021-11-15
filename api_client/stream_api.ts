@@ -25,6 +25,7 @@ export interface IStreamAPI {
   react: (stream: string, emoji: string) => void;
   stop: (stream: string) => any;
   sendChatMessage: (message: string) => Promise<ISendMessageResponse>;
+  sendInviteAction: (invite: string, action: "accept" | "decline") => void;
   kickUser: (userToKick: string) => void;
   toggleMedia: (payload: {
     audioEnabled?: boolean;
@@ -76,6 +77,8 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
     socket.request("invite-suggestions", { stream }),
   kickUser: (userToKick) => socket.publish("kick-user", { userToKick }),
   stop: (stream) => socket.publish("stream-stop", { stream }),
+  sendInviteAction: (invite, action) =>
+    socket.publish("invite-action", { invite, action }),
   react: (stream, emoji) => socket.publish("reaction", { stream, emoji }),
   sendChatMessage: (message: string) =>
     socket.request("new-chat-message", { message }),

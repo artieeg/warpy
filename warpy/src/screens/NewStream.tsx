@@ -8,32 +8,14 @@ import shallow from 'zustand/shallow';
 import {NewStreamPanel} from '@app/components/NewStreamPanel';
 
 export const useNewStreamController = () => {
-  const [streamId, set, dispatchCreateStream, dispatchMediaRequest] = useStore(
-    state => [
-      state.stream,
-      state.set,
-      state.dispatchStreamCreate,
-      state.dispatchMediaRequest,
-    ],
+  const [streamId, dispatchMediaRequest] = useStore(
+    state => [state.stream, state.dispatchMediaRequest],
     shallow,
   );
 
   useEffect(() => {
     dispatchMediaRequest('audio', {enabled: true});
     dispatchMediaRequest('video', {enabled: true});
-  }, []);
-
-  useEffect(() => {
-    set({
-      audioEnabled: true,
-      videoEnabled: true,
-    });
-
-    return () =>
-      set({
-        audioEnabled: false,
-        videoEnabled: false,
-      });
   }, []);
 
   return {streamId};

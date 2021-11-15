@@ -1,20 +1,25 @@
 import React from 'react';
 import {View, StyleSheet, ViewProps} from 'react-native';
 import {IUser} from '@warpy/lib';
-import {Avatar} from './Avatar';
+import {Avatar, IAvatarProps} from './Avatar';
 import {Text} from './Text';
 
 interface UserGeneralInfoProps extends ViewProps {
   user: IUser;
+  avatar?: Partial<IAvatarProps>;
 }
 
-export const UserGeneralInfo = ({user, style}: UserGeneralInfoProps) => {
+export const UserGeneralInfo = ({
+  user,
+  style,
+  avatar,
+}: UserGeneralInfoProps) => {
   return (
     <View style={[styles.avatarAndUserInfo, style]}>
-      <Avatar size="large" user={user} />
+      <Avatar size="large" {...avatar} user={user} />
       <View style={styles.userInfo}>
         <Text weight="bold">{user.first_name}</Text>
-        <Text color="info" weight="bold" size="xsmall">
+        <Text color="info" weight="bold" size="small">
           {user.username}
         </Text>
       </View>

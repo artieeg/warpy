@@ -8,6 +8,7 @@ import {Reactions} from './Reactions';
 import {UserActionSheet} from './UserActionSheet';
 import {InviteModal} from './InviteModal';
 import {BotConfirmModal} from './BotConfirmModal';
+import {InvitedToStreamModal} from './InvitedToStreamModal';
 
 export const ModalProvider = () => {
   const modal = useStore.use.modalCurrent();
@@ -19,6 +20,7 @@ export const ModalProvider = () => {
     <>
       <BotConfirmModal />
       <ParticipantInfoModal />
+      <InvitedToStreamModal />
 
       <ParticipantsModal
         onHide={() => dispatchModalClose()}

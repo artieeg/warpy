@@ -26,6 +26,7 @@ export type Modal =
   | 'reactions'
   | 'reports'
   | 'invite'
+  | 'stream-invite'
   | 'bot-confirm'
   | 'chat';
 

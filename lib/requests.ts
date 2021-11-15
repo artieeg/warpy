@@ -284,3 +284,9 @@ export interface IUserRequest {
   user: string;
   id: string;
 }
+
+export interface IInviteActionRequest {
+  user: string;
+  invite: string;
+  action: "accept" | "decline";
+}

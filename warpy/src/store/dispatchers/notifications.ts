@@ -47,6 +47,12 @@ export const createNotificationDispatchers: StoreSlice<INotificaionDispatchers> 
     },
 
     dispatchNotificationAdd(notification) {
+      if (notification.invite) {
+        get().dispatchModalOpen('stream-invite', {
+          invite: notification.invite,
+        });
+      }
+
       set({notifications: [notification, ...get().notifications]});
     },
 

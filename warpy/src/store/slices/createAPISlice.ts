@@ -4,6 +4,7 @@ import config from '@app/config';
 import {IStore} from '../useStore';
 import produce from 'immer';
 import {Alert} from 'react-native';
+import {navigation} from '@app/navigation';
 
 export interface IAPISlice {
   api: APIClient;
@@ -22,7 +23,7 @@ export const createAPISlice = (
     const {api} = store;
 
     api.stream.onStreamIdAvailable(({id}) => {
-      Alert.alert('stream id', id);
+      navigation.current?.navigate('Stream', {stream: {id}});
     });
 
     api.stream.onNewParticipant(data => {
