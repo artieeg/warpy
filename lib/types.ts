@@ -21,3 +21,5 @@ export type Reaction = {
   user: string;
   emoji: string;
 };
+
+export type InviteStates = "unknown" | "accepted" | "declined";

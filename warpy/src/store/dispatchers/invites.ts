@@ -1,5 +1,6 @@
 import {navigation} from '@app/navigation';
 import produce from 'immer';
+import {IInvite, InviteStates} from '@warpy/lib';
 import {StoreSlice} from '../types';
 import {IStore} from '../useStore';
 
@@ -8,6 +9,7 @@ export interface IInviteDispatchers {
   dispatchCancelInvite: (user: string) => Promise<void>;
   dispatchSendPendingInvites: () => Promise<void>;
   dispatchInviteAction: (action: 'accept' | 'decline') => Promise<void>;
+  dispatchInviteStateUpdate: (invite: string, state: InviteStates) => void;
 }
 
 export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
@@ -33,6 +35,20 @@ export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
     get().dispatchModalClose();
   },
 
+  dispatchInviteStateUpdate(invite, value) {
+    set(
+      produce<IStore>(state => {
+        if (state.sentInvites[invite]) {
+          state.sentInvites[invite] = {
+            ...state.sentInvites[invite],
+            accepted: value === 'accepted',
+            declined: value === 'declined',
+          };
+        }
+      }),
+    );
+  },
+
   async dispatchSendPendingInvites() {
     const {pendingInviteUserIds, api, stream} = get();
 
@@ -43,10 +59,17 @@ export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
     );
     console.log(promises.length);
 
-    await Promise.all(promises);
+    const responses = await Promise.all(promises);
 
     set({
       pendingInviteUserIds: [],
+      sentInvites: responses.reduce((result, response) => {
+        if (response.invite) {
+          result[response.invite.id] = response.invite;
+        }
+
+        return result;
+      }, {} as Record<string, IInvite>),
     });
   },
 

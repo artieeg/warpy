@@ -25,29 +25,43 @@ export class InviteEntity {
         ? UserEntity.toUserDTO(data.user_invitee)
         : BotsEntity.toBotDTO(data.bot_invitee),
       inviter: UserEntity.toUserDTO(data.inviter),
+      accepted: data.accepted,
+      declined: data.declined,
     };
   }
 
   async declineInvite(invite_id: string, user: string) {
-    await this.prisma.invite.updateMany({
+    return this.prisma.invite.update({
       where: {
-        id: invite_id,
-        user_invitee_id: user,
+        invitee_index: {
+          id: invite_id,
+          user_invitee_id: user,
+        },
       },
       data: {
         declined: true,
+      },
+      select: {
+        inviter_id: true,
+        id: true,
       },
     });
   }
 
   async acceptInvite(invite_id: string, user: string) {
-    await this.prisma.invite.updateMany({
+    return this.prisma.invite.update({
       where: {
-        id: invite_id,
-        user_invitee_id: user,
+        invitee_index: {
+          id: invite_id,
+          user_invitee_id: user,
+        },
       },
       data: {
         accepted: true,
+      },
+      select: {
+        inviter_id: true,
+        id: true,
       },
     });
   }

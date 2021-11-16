@@ -22,8 +22,14 @@ export const createAPISlice = (
     const store = get();
     const {api} = store;
 
+    api.stream.onInviteStateUpdate(data => {
+      get().dispatchInviteStateUpdate(data.id, data.state);
+    });
+
     api.stream.onStreamIdAvailable(({id}) => {
-      navigation.current?.navigate('Stream', {stream: {id}});
+      setTimeout(() => {
+        navigation.current?.navigate('Stream', {stream: {id}});
+      }, 500);
     });
 
     api.stream.onNewParticipant(data => {

@@ -6,7 +6,7 @@ import { StreamEntity } from '@backend_2/stream/stream.entity';
 import { TokenService } from '@backend_2/token/token.service';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
-import { IInvite, IStream, IUser } from '@warpy/lib';
+import { IInvite, InviteStates, IStream, IUser } from '@warpy/lib';
 import { InviteEntity } from './invite.entity';
 
 @Injectable()
@@ -21,12 +21,32 @@ export class InviteService {
     private botEntity: BotsEntity,
   ) {}
 
+  private sendInviteState(id: string, inviter: string, state: InviteStates) {
+    this.messageService.sendMessage(inviter, {
+      event: 'invite-state-update',
+      data: {
+        id,
+        state,
+      },
+    });
+  }
+
   async declineInvite(invite: string, user: string) {
-    await this.inviteEntity.declineInvite(invite, user);
+    const { id, inviter_id } = await this.inviteEntity.declineInvite(
+      invite,
+      user,
+    );
+
+    this.sendInviteState(id, inviter_id, 'declined');
   }
 
   async acceptInvite(invite: string, user: string) {
-    await this.inviteEntity.acceptInvite(invite, user);
+    const { id, inviter_id } = await this.inviteEntity.acceptInvite(
+      invite,
+      user,
+    );
+
+    this.sendInviteState(id, inviter_id, 'accepted');
   }
 
   private async inviteRealUser(

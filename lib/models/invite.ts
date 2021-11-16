@@ -6,4 +6,6 @@ export interface IInvite {
   stream: IStream | null;
   invitee: IUser;
   inviter: IUser;
+  accepted: boolean;
+  declined: boolean;
 }

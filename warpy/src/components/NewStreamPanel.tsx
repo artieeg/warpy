@@ -1,9 +1,10 @@
 import {useStore} from '@app/store';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {View, StyleSheet, useWindowDimensions, TextInput} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {HostNewStreamButton} from './HostNewStreamButton';
 import {InviteButton} from './InviteButton';
+import {PendingInvites} from './PendingInvites';
 import {SwitchCameraButton} from './SwitchCameraButton';
 import {textStyles} from './Text';
 import {ToggleCameraButton} from './ToggleCameraButton';
@@ -45,6 +46,8 @@ export const NewStreamPanel = () => {
         placeholder="stream title"
         placeholderTextColor={textStyles.info.color}
       />
+
+      <PendingInvites style={styles.pendingInvites} />
 
       <View pointerEvents="box-none" style={styles.bottomButtons}>
         <ToggleCameraButton />
@@ -98,5 +101,10 @@ const styles = StyleSheet.create({
     ...textStyles.white,
     ...textStyles.bold,
     ...textStyles.medium,
+  },
+  pendingInvites: {
+    position: 'absolute',
+    right: 20,
+    bottom: 80,
   },
 });

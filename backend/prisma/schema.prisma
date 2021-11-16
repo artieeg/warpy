@@ -158,6 +158,7 @@ model Invite {
   declined Boolean @default(false)
 
   @@unique([id, inviter_id], name: "inviter_index")
+  @@unique([id, user_invitee_id], name: "invitee_index")
 }
 
 model Notification {
