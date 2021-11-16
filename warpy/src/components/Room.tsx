@@ -1,7 +1,7 @@
 import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
 import {useVideoStreams} from '@app/hooks/useVideoStreams';
-import React, {useMemo} from 'react';
+import React, {useMemo, useRef} from 'react';
 import {RTCView} from 'react-native-webrtc';
 import {useStore} from '@app/store';
 import shallow from 'zustand/shallow';

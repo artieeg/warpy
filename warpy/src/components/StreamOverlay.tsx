@@ -57,7 +57,7 @@ export const StreamOverlay = () => {
           <StopStream />,
         ],
         bottom: [
-          <ReactionEmitter />,
+          <ReactionEmitter disabled={!isVisible} />,
           <ToggleCameraButton />,
           <ToggleMicButton />,
           <ChatButton />,
@@ -75,7 +75,7 @@ export const StreamOverlay = () => {
           <EmptyItem />,
         ],
         bottom: [
-          <ReactionEmitter />,
+          <ReactionEmitter disabled={!isVisible} />,
           <ClapButton />,
           <ToggleMicButton />,
           <ChatButton />,
@@ -93,7 +93,7 @@ export const StreamOverlay = () => {
           <EmptyItem />,
         ],
         bottom: [
-          <ReactionEmitter />,
+          <ReactionEmitter disabled={!isVisible} />,
           <ClapButton />,
           <RaiseHandButton />,
           <ChatButton />,
