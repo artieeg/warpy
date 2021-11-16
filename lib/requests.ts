@@ -1,5 +1,11 @@
 import { IUser } from "./models";
-import { MediaDirection, MediaKind, MediaServiceRole, Roles } from "./types";
+import {
+  MediaDirection,
+  MediaKind,
+  MediaServiceRole,
+  Roles,
+  UserList,
+} from "./types";
 
 export interface ITransportOptions {
   id: string;
@@ -289,4 +295,10 @@ export interface IInviteActionRequest {
   user: string;
   invite: string;
   action: "accept" | "decline";
+}
+
+export interface IUserListRequest {
+  user: string;
+  list: UserList;
+  page: number;
 }

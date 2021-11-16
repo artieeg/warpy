@@ -9,3 +9,4 @@ export * from './SignUpAvatar';
 export * from './Loading';
 export * from './Settings';
 export * from './User';
+export * from './UserList';

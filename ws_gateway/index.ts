@@ -182,6 +182,16 @@ const handlers: Record<string, HandlerConfig> = {
     subject: "user.invite",
   },
 
+  "user-list": {
+    schema: joi.object({
+      list: joi.string().allow("following", "followers", "blocked").required(),
+      page: joi.number().min(0).required(),
+    }),
+    kind: "request",
+    auth: true,
+    subject: "user.get-list",
+  },
+
   "get-user": {
     schema: joi.object({
       id: joi.string().max(32).required(),

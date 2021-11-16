@@ -11,6 +11,7 @@ import {
   MainSettingsScreen,
   Splash,
   User,
+  UserListScreen,
   Stream,
   Loading,
 } from './src/screens';
@@ -35,6 +36,7 @@ const App = () => {
     Notifications,
     MainSettingsScreen,
     User,
+    UserListScreen,
   };
 
   return (

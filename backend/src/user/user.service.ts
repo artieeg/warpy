@@ -104,4 +104,16 @@ export class UserService {
   async deleteUser(user: string) {
     await this.user.delete(user);
   }
+
+  async getFollowers(user: string, page: number): Promise<IUser[]> {
+    const followers = await this.followEntity.getFollowers(user);
+
+    return followers.map((f) => f.follower);
+  }
+
+  async getFollowing(user: string, page: number): Promise<IUser[]> {
+    const following = await this.followEntity.getFollowed(user);
+
+    return following.map((f) => f.followed);
+  }
 }

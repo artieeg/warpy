@@ -6,6 +6,7 @@ import {View, StyleSheet, ScrollView} from 'react-native';
 import {IUser} from '@warpy/lib';
 import {useNavigation} from '@react-navigation/native';
 import {SettingItemButton} from '@app/components/SettingItemButton';
+import {navigation} from '@app/navigation';
 
 export const MainSettingsScreen = () => {
   const user: IUser = useStore(store => store.user as IUser);
@@ -67,7 +68,8 @@ const getItems = ({
     color: '#F9B271',
     icon: 'account-group',
     title: "people i'm following",
-    onPress: () => console.log('not implemented'),
+    onPress: () =>
+      navigation.current?.navigate('UserListScreen', {mode: 'following'}),
   },
   following: {
     color: '#71B8F9',

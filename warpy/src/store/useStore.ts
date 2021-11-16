@@ -63,6 +63,14 @@ import {
   IInviteDispatchers,
 } from './dispatchers/invites';
 import shallow from 'zustand/shallow';
+import {
+  createUserListSlice,
+  IUserListSlice,
+} from './slices/createUserListSlice';
+import {
+  createUserListDispatchers,
+  IUserListDispatchers,
+} from './dispatchers/user_list';
 
 interface Selectors<StoreType> {
   use: {
@@ -110,7 +118,9 @@ export interface IStore
     INotificaionDispatchers,
     IReactionDispatchers,
     IParticipantSlice,
+    IUserListDispatchers,
     IParticipantDispatchers,
+    IUserListSlice,
     IToastDispatchers,
     IInviteDispatchers,
     IAPISlice {
@@ -122,6 +132,7 @@ export const useStore = createSelectorHooks<IStore>(
   create<IStore>((set, get): IStore => {
     return {
       ...createInviteDispatchers(set, get),
+      ...createUserListDispatchers(set, get),
       ...createModalSlice(set, get),
       ...createInviteSlice(set, get),
       ...createAudioLevelSlice(set, get),
@@ -132,6 +143,7 @@ export const useStore = createSelectorHooks<IStore>(
       ...createNotificationSlice(set, get),
       ...createUserSlice(set, get),
       ...createFollowingSlice(set, get),
+      ...createUserListSlice(set, get),
       ...createMediaSlice(set, get),
       ...createDeviceSlice(),
       ...createChatSlice(set, get),
