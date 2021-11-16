@@ -1,12 +1,15 @@
 import { Controller } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import {
+  IInviteActionRequest,
   ICancelInviteRequest,
   ICancelInviteResponse,
   IInviteRequest,
   IInviteResponse,
   IInviteSuggestionsRequest,
   IInviteSuggestionsResponse,
+  IStream,
 } from '@warpy/lib';
 import { InviteService } from './invite.service';
 
@@ -42,6 +45,15 @@ export class InviteController {
     return {
       suggestions,
     };
+  }
+
+  @MessagePattern('invite.action')
+  async onInviteAccept({ user, invite, action }: IInviteActionRequest) {
+    if (action === 'accept') {
+      await this.inviteService.acceptInvite(invite, user);
+    } else {
+      await this.inviteService.declineInvite(invite, user);
+    }
   }
 
   @MessagePattern('user.cancel-invite')

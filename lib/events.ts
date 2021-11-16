@@ -1,5 +1,5 @@
 import { IChatMessage, INotification, IParticipant } from "./models";
-import { Roles } from "./types";
+import { InviteStates, Roles } from "./types";
 
 export interface IRoleUpdateEvent {
   stream: string;
@@ -70,4 +70,13 @@ export interface IBotInviteEvent {
 
 export interface INewParticipantEvent {
   participant: IParticipant;
+}
+
+export interface IStreamIdAvailable {
+  id: string;
+}
+
+export interface IInviteStateUpdate {
+  id: string;
+  state: InviteStates;
 }

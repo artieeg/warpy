@@ -9,5 +9,5 @@ export interface IStreamSlice {
 export const createStreamSlice: StoreSlice<IStreamSlice> = () => ({
   stream: null,
   isStreamOwner: false,
-  title: null,
+  title: 'test title',
 });

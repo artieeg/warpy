@@ -27,7 +27,7 @@ export const MainSettingsScreen = () => {
       <ScreenHeader />
       <ScrollView>
         <View style={styles.avatarContainer}>
-          <Avatar user={user} size="xlarge" />
+          <Avatar user={user} size="xxlarge" />
           <Text
             weight="bold"
             size="small"

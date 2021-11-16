@@ -116,8 +116,11 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
   },
 
   async dispatchAudioToggle() {
-    const {api, audio, audioEnabled} = get();
-    await api.stream.toggleMedia({audioEnabled});
+    const {api, stream, audio, audioEnabled} = get();
+
+    if (stream) {
+      await api.stream.toggleMedia({audioEnabled});
+    }
 
     audio?.stream
       .getAudioTracks()
@@ -129,9 +132,12 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
   },
 
   async dispatchVideoToggle() {
-    const {api, video, videoEnabled} = get();
+    const {api, stream, video, videoEnabled} = get();
 
-    await api.stream.toggleMedia({videoEnabled});
+    if (stream) {
+      await api.stream.toggleMedia({videoEnabled});
+    }
+
     video?.stream
       .getVideoTracks()
       .forEach(video => (video.enabled = !videoEnabled));

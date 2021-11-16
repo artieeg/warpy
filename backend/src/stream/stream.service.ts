@@ -4,6 +4,7 @@ import {
   UserNotFound,
 } from '@backend_2/errors';
 import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { INewStreamResponse } from '@warpy/lib';
 import { MediaService } from '../media/media.service';
 import { ParticipantEntity } from '../participant/participant.entity';
@@ -17,6 +18,7 @@ export class StreamService {
     private participantEntity: ParticipantEntity,
     private userEntity: UserEntity,
     private mediaService: MediaService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async createNewStream(
@@ -69,6 +71,8 @@ export class StreamService {
       owner,
       stream.id,
     );
+
+    this.eventEmitter.emit('stream.created', { stream });
 
     return {
       stream: stream.id,

@@ -4,7 +4,7 @@ import {StoreSlice} from '../types';
 import {IParticipantWithMedia} from '@app/types';
 
 export interface IStreamDispatchers {
-  dispatchStreamCreate: (title: string, hub: string) => Promise<void>;
+  dispatchStreamCreate: () => Promise<void>;
   dispatchStreamJoin: (stream: string) => Promise<void>;
 }
 
@@ -12,8 +12,12 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
   set,
   get,
 ) => ({
-  async dispatchStreamCreate(title, hub) {
-    const {api, dispatchMediaSend, dispatchInitViewer} = get();
+  async dispatchStreamCreate() {
+    const {api, dispatchMediaSend, title, dispatchInitViewer} = get();
+
+    if (!title) {
+      return;
+    }
 
     const {
       stream,
@@ -22,7 +26,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       count,
       mediaPermissionsToken,
       recvMediaParams,
-    } = await api.stream.create(title, hub);
+    } = await api.stream.create(title, '60ec569668b42c003304630b');
 
     set({
       stream,

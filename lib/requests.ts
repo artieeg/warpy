@@ -213,7 +213,7 @@ export interface IUserBlockRequest {
 
 export interface IInviteRequest {
   invitee: string;
-  stream: string;
+  stream?: string;
   user: string;
 }
 
@@ -283,4 +283,10 @@ export interface IUserUpdateRequest {
 export interface IUserRequest {
   user: string;
   id: string;
+}
+
+export interface IInviteActionRequest {
+  user: string;
+  invite: string;
+  action: "accept" | "decline";
 }

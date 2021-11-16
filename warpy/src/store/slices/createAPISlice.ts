@@ -3,6 +3,8 @@ import {APIClient, WebSocketConn} from '@warpy/api';
 import config from '@app/config';
 import {IStore} from '../useStore';
 import produce from 'immer';
+import {Alert} from 'react-native';
+import {navigation} from '@app/navigation';
 
 export interface IAPISlice {
   api: APIClient;
@@ -19,6 +21,16 @@ export const createAPISlice = (
   createAPISubscriptions: () => {
     const store = get();
     const {api} = store;
+
+    api.stream.onInviteStateUpdate(data => {
+      get().dispatchInviteStateUpdate(data.id, data.state);
+    });
+
+    api.stream.onStreamIdAvailable(({id}) => {
+      setTimeout(() => {
+        navigation.current?.navigate('Stream', {stream: {id}});
+      }, 500);
+    });
 
     api.stream.onNewParticipant(data => {
       store.dispatchParticipantAdd(data.participant);

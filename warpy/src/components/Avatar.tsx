@@ -3,7 +3,7 @@ import {IUser} from '@app/models';
 import {StyleSheet, Image, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 
-interface IAvatarProps {
+export interface IAvatarProps {
   user: IUser;
   style?: any;
   size?: keyof typeof sizeStyles;
@@ -44,10 +44,14 @@ const sizeStyles = StyleSheet.create({
     height: 50,
   },
   large: {
+    width: 60,
+    height: 60,
+  },
+  xlarge: {
     width: 80,
     height: 80,
   },
-  xlarge: {
+  xxlarge: {
     width: 100,
     height: 100,
   },

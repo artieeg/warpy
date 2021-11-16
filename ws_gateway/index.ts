@@ -47,6 +47,16 @@ const handlers: Record<string, HandlerConfig> = {
     }),
   },
 
+  "invite-action": {
+    subject: "invite.action",
+    kind: "event",
+    auth: true,
+    schema: joi.object({
+      invite: joi.string().max(64).required(),
+      action: joi.allow("accept", "decline").required(),
+    }),
+  },
+
   "return-to-viewer": {
     subject: "participant.return-to-viewer",
     kind: "event",
@@ -165,7 +175,7 @@ const handlers: Record<string, HandlerConfig> = {
   "invite-user": {
     schema: joi.object({
       invitee: joi.string().max(64).required(),
-      stream: joi.string().max(64).required(),
+      stream: joi.string().allow(null).max(64).optional(),
     }),
     kind: "request",
     auth: true,

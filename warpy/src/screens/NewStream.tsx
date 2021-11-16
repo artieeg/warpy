@@ -1,28 +1,28 @@
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Button} from '@app/components';
 import {StreamOverlay} from '@app/components/StreamOverlay';
 import {Room} from '@app/components/Room';
-import {useNewStreamController} from '@app/hooks/useNewStreamController';
 import {useStore} from '@app/store';
+import shallow from 'zustand/shallow';
+import {NewStreamPanel} from '@app/components/NewStreamPanel';
 
-export const NewStream = () => {
-  const {streamId, onStart} = useNewStreamController();
-
-  const set = useStore.use.set();
+export const useNewStreamController = () => {
+  const [streamId, dispatchMediaRequest] = useStore(
+    state => [state.stream, state.dispatchMediaRequest],
+    shallow,
+  );
 
   useEffect(() => {
-    set({
-      audioEnabled: true,
-      videoEnabled: true,
-    });
-
-    return () =>
-      set({
-        audioEnabled: false,
-        videoEnabled: false,
-      });
+    dispatchMediaRequest('audio', {enabled: true});
+    dispatchMediaRequest('video', {enabled: true});
   }, []);
+
+  return {streamId};
+};
+
+export const NewStream = () => {
+  const {streamId} = useNewStreamController();
 
   return (
     <View style={styles.wrapper}>
@@ -30,11 +30,7 @@ export const NewStream = () => {
 
       {streamId && <StreamOverlay />}
 
-      {!streamId && (
-        <View style={styles.startStreamButton}>
-          <Button onPress={onStart} title="Start" />
-        </View>
-      )}
+      {!streamId && <NewStreamPanel />}
     </View>
   );
 };

@@ -48,7 +48,10 @@ const InviteNotification = ({notification}: INotificationProps) => {
             </Text>
           </View>
           <Text size="xsmall" color="white" weight="bold">
-            invited you to join the {invite.stream.title} live stream
+            {invite.stream?.title &&
+              `invited you to join the ${invite.stream.title} live stream`}
+
+            {!invite.stream?.title && `invited you to join their future room`}
           </Text>
         </View>
       </View>

@@ -20,12 +20,65 @@ export class InviteEntity {
   ): IInvite {
     return {
       id: data.id,
-      stream: StreamEntity.toStreamDTO(data.stream),
+      stream: data.stream ? StreamEntity.toStreamDTO(data.stream) : null,
       invitee: data.user_invitee
         ? UserEntity.toUserDTO(data.user_invitee)
         : BotsEntity.toBotDTO(data.bot_invitee),
       inviter: UserEntity.toUserDTO(data.inviter),
+      accepted: data.accepted,
+      declined: data.declined,
     };
+  }
+
+  async declineInvite(invite_id: string, user: string) {
+    return this.prisma.invite.update({
+      where: {
+        invitee_index: {
+          id: invite_id,
+          user_invitee_id: user,
+        },
+      },
+      data: {
+        declined: true,
+      },
+      select: {
+        inviter_id: true,
+        id: true,
+      },
+    });
+  }
+
+  async acceptInvite(invite_id: string, user: string) {
+    return this.prisma.invite.update({
+      where: {
+        invitee_index: {
+          id: invite_id,
+          user_invitee_id: user,
+        },
+      },
+      data: {
+        accepted: true,
+      },
+      select: {
+        inviter_id: true,
+        id: true,
+      },
+    });
+  }
+
+  async findUsersInvitedToDraftedStream(inviter_id: string) {
+    const invites = await this.prisma.invite.findMany({
+      where: {
+        stream_id: null,
+        inviter_id,
+        accepted: true,
+      },
+      select: {
+        user_invitee_id: true,
+      },
+    });
+
+    return invites.map(({ user_invitee_id }) => user_invitee_id);
   }
 
   async create({
@@ -35,7 +88,7 @@ export class InviteEntity {
   }: {
     invitee: string;
     inviter: string;
-    stream: string;
+    stream?: string;
   }): Promise<IInvite> {
     const isBot = invitee.slice(0, 3) === 'bot';
 

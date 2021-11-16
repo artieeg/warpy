@@ -16,6 +16,8 @@ import {
   IParticipantRoleChangeEvent,
   IMediaToggleEvent,
   INewParticipantEvent,
+  IStreamIdAvailable,
+  IInviteStateUpdate,
 } from "@warpy/lib";
 
 export interface IStreamAPI {
@@ -24,6 +26,7 @@ export interface IStreamAPI {
   react: (stream: string, emoji: string) => void;
   stop: (stream: string) => any;
   sendChatMessage: (message: string) => Promise<ISendMessageResponse>;
+  sendInviteAction: (invite: string, action: "accept" | "decline") => void;
   kickUser: (userToKick: string) => void;
   toggleMedia: (payload: {
     audioEnabled?: boolean;
@@ -36,7 +39,7 @@ export interface IStreamAPI {
   returnToViewer: () => void;
   raiseHand: () => any;
   lowerHand: () => any;
-  invite: (invitee: string, stream: string) => Promise<IInviteResponse>;
+  invite: (invitee: string, stream: string | null) => Promise<IInviteResponse>;
   cancelInvite: (invite_id: string) => Promise<ICancelInviteResponse>;
   getInviteSuggestions: (stream: string) => Promise<IInviteSuggestionsResponse>;
   setRole: (userToUpdate: string, role: Roles) => void;
@@ -47,10 +50,12 @@ export interface IStreamAPI {
   onUserLeft: EventHandler;
   onParticipantRoleChange: EventHandler<IParticipantRoleChangeEvent>;
   onRoleUpdate: EventHandler<IRoleUpdateEvent>;
+  onInviteStateUpdate: EventHandler<IInviteStateUpdate>;
   onActiveSpeaker: EventHandler<IActiveSpeakerEvent>;
   onChatMessages: EventHandler<IChatMessagesEvent>;
   onUserKick: EventHandler<IUserKickedEvent>;
   onMediaToggle: EventHandler<IMediaToggleEvent>;
+  onStreamIdAvailable: EventHandler<IStreamIdAvailable>;
 }
 
 export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
@@ -74,6 +79,8 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
     socket.request("invite-suggestions", { stream }),
   kickUser: (userToKick) => socket.publish("kick-user", { userToKick }),
   stop: (stream) => socket.publish("stream-stop", { stream }),
+  sendInviteAction: (invite, action) =>
+    socket.publish("invite-action", { invite, action }),
   react: (stream, emoji) => socket.publish("reaction", { stream, emoji }),
   sendChatMessage: (message: string) =>
     socket.request("new-chat-message", { message }),
@@ -93,8 +100,10 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
     socket.publish("set-role", { userToUpdate, role }),
   allowSpeaker: (speaker) => socket.publish("speaker-allow", { speaker }),
   onNewParticipant: (handler) => socket.on("new-participant", handler),
+  onInviteStateUpdate: (handler) => socket.on("invite-state-update", handler),
   onRaiseHandUpdate: (handler) => socket.on("raise-hand", handler),
   onUserLeft: (handler) => socket.on("user-left", handler),
+  onStreamIdAvailable: (handler) => socket.on("stream-id-available", handler),
   onParticipantRoleChange: (handler) =>
     socket.on("participant-role-change", handler),
   onActiveSpeaker: (handler) => socket.on("active-speaker", handler),
