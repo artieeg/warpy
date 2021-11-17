@@ -35,12 +35,14 @@ export class UserController {
 
   @UseFilters(ExceptionFilter)
   @MessagePattern('user.whoami-request')
-  async onUserGet({ user }: IWhoAmIRequest): Promise<IWhoAmIResponse> {
-    const data = await this.userService.getById(user);
+  async onUserGet({ user: userId }: IWhoAmIRequest): Promise<IWhoAmIResponse> {
+    const { user, following } = await this.userService.getById(userId);
+
+    console.log('whoami', { user, following });
 
     return {
-      user: data,
-      following: [],
+      user,
+      following,
     };
   }
 

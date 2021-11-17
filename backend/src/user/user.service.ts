@@ -63,14 +63,17 @@ export class UserService {
     await this.user.update(user, params);
   }
 
-  async getById(user: string): Promise<IUser> {
+  async getById(user: string): Promise<{user: IUser, following: string[]}> {
     const data = await this.user.findById(user, true);
 
     if (!data) {
       throw new UserNotFound();
     }
 
-    return data;
+    return {
+      user: data,
+      following: await this.followEntity.getFollowedUserIds(user),
+    };
   }
 
   async createDevUser(data: INewUser): Promise<INewUserResponse> {
