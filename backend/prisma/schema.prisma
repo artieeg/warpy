@@ -53,6 +53,8 @@ model UserBlock {
 
   blocker_id String
   blocker    User   @relation(name: "blocker", fields: [blocker_id], references: [id], onDelete: Cascade)
+
+  @@unique([blocked_id, blocker_id], name: "blocked_index")
 }
 
 model Report {

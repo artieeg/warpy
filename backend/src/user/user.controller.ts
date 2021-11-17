@@ -4,9 +4,12 @@ import { MessagePattern } from '@nestjs/microservices';
 import {
   INewUser,
   INewUserResponse,
+  IUser,
   IUserDelete,
   IUserDeleteResponse,
   IUserInfoResponse,
+  IUserListRequest,
+  IUserListResponse,
   IUserRequest,
   IUserSearchRequest,
   IUserSearchResponse,
@@ -24,7 +27,7 @@ export class UserController {
   @UseFilters(ExceptionFilter)
   @MessagePattern('user.get')
   async onUserRequest({ user, id }: IUserRequest): Promise<IUserInfoResponse> {
-    console.log(user, id)
+    console.log(user, id);
     const data = await this.userService.getUserInfo(id, user);
 
     return data;
@@ -32,12 +35,14 @@ export class UserController {
 
   @UseFilters(ExceptionFilter)
   @MessagePattern('user.whoami-request')
-  async onUserGet({ user }: IWhoAmIRequest): Promise<IWhoAmIResponse> {
-    const data = await this.userService.getById(user);
+  async onUserGet({ user: userId }: IWhoAmIRequest): Promise<IWhoAmIResponse> {
+    const { user, following } = await this.userService.getById(userId);
+
+    console.log('whoami', { user, following });
 
     return {
-      user: data,
-      following: [],
+      user,
+      following,
     };
   }
 
@@ -86,5 +91,28 @@ export class UserController {
     const users = await this.userService.search(textToSearch);
 
     return { users };
+  }
+
+  @UseFilters(ExceptionFilter)
+  @MessagePattern('user.get-list')
+  async onGetList({
+    user,
+    page,
+    list,
+  }: IUserListRequest): Promise<IUserListResponse> {
+    let users: IUser[];
+
+    if (list === 'followers') {
+      users = await this.userService.getFollowing(user, page);
+    } else if (list === 'following') {
+      users = await this.userService.getFollowers(user, page);
+    } else {
+      users = await this.userService.getBlockedUsers(user, page);
+    }
+
+    return {
+      list,
+      users,
+    };
   }
 }

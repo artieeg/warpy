@@ -7,6 +7,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {Avatar} from './Avatar';
 import {useAppUser} from '@app/hooks';
 import {OpenHomeButton} from './OpenHomeButton';
+import {UserList} from '../../../lib';
 
 export const ScreenHeader = () => {
   const user = useAppUser();
@@ -14,16 +15,26 @@ export const ScreenHeader = () => {
 
   const route = useRoute();
 
+  //Used to pick the correct title when the app's on the UserListScreen
+  const userListScreenMode: UserList = (route.params as any)?.mode as any;
+
   const title = useMemo(() => {
+    const userListScreenTitles = {
+      following: '/following',
+      followers: '/followers',
+      blocked: '/blocked',
+    };
+
     const titles = {
       Feed: '/feed',
       Notifications: '/news',
       MainSettingsScreen: '/you',
       User: '/user',
+      UserListScreen: userListScreenTitles[userListScreenMode],
     };
 
     return titles[route.name as keyof typeof titles];
-  }, [route.name]);
+  }, [route.name, userListScreenMode]);
 
   const onOpenSettings = useCallback(() => {
     navigation.navigate('MainSettingsScreen');

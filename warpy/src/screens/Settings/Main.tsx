@@ -1,20 +1,18 @@
 import {Avatar, SettingsTextEdit, Text} from '@app/components';
 import {ScreenHeader} from '@app/components/ScreenHeader';
 import {useStore} from '@app/store';
-import React, {useCallback, useMemo} from 'react';
+import React, {useMemo} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
 import {IUser} from '@warpy/lib';
-import {useNavigation} from '@react-navigation/native';
 import {SettingItemButton} from '@app/components/SettingItemButton';
+import {navigation} from '@app/navigation';
 
 export const MainSettingsScreen = () => {
   const user: IUser = useStore(store => store.user as IUser);
-  const navigation = useNavigation();
 
   const settings = useMemo(
     () =>
       getItems({
-        onNavigate: screen => navigation.navigate(screen),
         onFeedback: () => console.log('not implemented'),
         onLogOut: () => console.log('not implemented'),
         onDeleteAccount: () => console.log('not implemented'),
@@ -51,14 +49,12 @@ export const MainSettingsScreen = () => {
 };
 
 type SettingItemsParams = {
-  onNavigate: (screen: string) => any;
   onFeedback: () => any;
   onLogOut: () => any;
   onDeleteAccount: () => any;
 };
 
 const getItems = ({
-  onNavigate,
   onFeedback,
   onLogOut,
   onDeleteAccount,
@@ -67,13 +63,15 @@ const getItems = ({
     color: '#F9B271',
     icon: 'account-group',
     title: "people i'm following",
-    onPress: () => console.log('not implemented'),
+    onPress: () =>
+      navigation.current?.navigate('UserListScreen', {mode: 'following'}),
   },
   following: {
     color: '#71B8F9',
     icon: 'account-group',
     title: 'my followers',
-    onPress: () => console.log('not implemented'),
+    onPress: () =>
+      navigation.current?.navigate('UserListScreen', {mode: 'followers'}),
   },
   feedback: {
     color: '#F6F971',
@@ -91,7 +89,8 @@ const getItems = ({
     color: '#71F1F9',
     icon: 'account-cancel',
     title: 'blocked users',
-    onPress: () => console.log('not implemented'),
+    onPress: () =>
+      navigation.current?.navigate('UserListScreen', {mode: 'blocked'}),
   },
   logout: {
     color: '#F97971',

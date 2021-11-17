@@ -23,3 +23,5 @@ export type Reaction = {
 };
 
 export type InviteStates = "unknown" | "accepted" | "declined";
+
+export type UserList = "blocked" | "following" | "followers";

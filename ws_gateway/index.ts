@@ -164,6 +164,14 @@ const handlers: Record<string, HandlerConfig> = {
       reportReasonId: joi.string().max(64).required(),
     }),
   },
+  "unblock-user": {
+    subject: "user.unblock",
+    kind: "request",
+    auth: true,
+    schema: joi.object({
+      userToUnblock: joi.string().max(64).required(),
+    }),
+  },
   "block-user": {
     subject: "user.block",
     kind: "request",
@@ -180,6 +188,16 @@ const handlers: Record<string, HandlerConfig> = {
     kind: "request",
     auth: true,
     subject: "user.invite",
+  },
+
+  "user-list": {
+    schema: joi.object({
+      list: joi.string().allow("following", "followers", "blocked").required(),
+      page: joi.number().min(0).required(),
+    }),
+    kind: "request",
+    auth: true,
+    subject: "user.get-list",
   },
 
   "get-user": {

@@ -112,7 +112,11 @@ describe('UserService', () => {
   });
 
   it('returns user if it exists', () => {
-    expect(userService.getById(testUser.id)).resolves.toEqual(testUser);
+    expect(userService.getById(testUser.id)).resolves.toEqual(
+      expect.objectContaining({
+        user: testUser,
+      }),
+    );
   });
 
   it('getById throws an error if user is null', async () => {

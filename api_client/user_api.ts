@@ -6,9 +6,12 @@ import {
   IUserBlockResponse,
   IUserDeleteResponse,
   IUserInfoResponse,
+  IUserListResponse,
   IUserSearchResponse,
   IUserUpdateResponse,
   IWhoAmIResponse,
+  IUserUnblockResponse,
+  UserList,
 } from "@warpy/lib";
 import { WebSocketConn } from "./connection";
 
@@ -25,7 +28,9 @@ export interface IUserAPI {
     reportReasonId: string
   ) => Promise<INewUserResponse>;
   block: (userToBlock: string) => Promise<IUserBlockResponse>;
+  unblock: (userToUnblock: string) => Promise<IUserUnblockResponse>;
   get: (id: string) => Promise<IUserInfoResponse>;
+  fetchUserList: (list: UserList, page?: number) => Promise<IUserListResponse>;
 }
 
 export interface INewUser {
@@ -47,8 +52,12 @@ export const UserAPI = (socket: WebSocketConn): IUserAPI => ({
     socket.request("update-user", { data: { [field]: value } }),
   follow: (userToFollow) => socket.request("user-follow", { userToFollow }),
   block: (userToBlock: string) => socket.request("block-user", { userToBlock }),
+  unblock: (userToUnblock: string) =>
+    socket.request("unblock-user", { userToUnblock }),
   report: (reportedUserId, reportReasonId) =>
     socket.request("report-user", { reportedUserId, reportReasonId }),
   unfollow: (userToUnfollow) =>
     socket.request("user-unfollow", { userToUnfollow }),
+  fetchUserList: (list, page = 0) =>
+    socket.request("user-list", { list, page }),
 });

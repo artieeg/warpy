@@ -44,10 +44,13 @@ export class BlockEntity {
     return id;
   }
 
-  async deleteById(id: string) {
+  async deleteByUsers(blocker_id: string, blocked_id: string) {
     await this.prisma.userBlock.delete({
       where: {
-        id,
+        blocked_index: {
+          blocked_id,
+          blocker_id,
+        },
       },
     });
   }

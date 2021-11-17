@@ -1,3 +1,4 @@
+import { BlockEntity } from '@backend_2/block/block.entity';
 import { UserNotFound } from '@backend_2/errors';
 import { FollowEntity } from '@backend_2/follow/follow.entity';
 import { ParticipantEntity } from '@backend_2/participant/participant.entity';
@@ -22,6 +23,7 @@ export class UserService {
     private followEntity: FollowEntity,
     private participantEntity: ParticipantEntity,
     private streamEntity: StreamEntity,
+    private blockEntity: BlockEntity,
   ) {}
 
   async getUserInfo(id: string, requester: string): Promise<IUserInfoResponse> {
@@ -63,14 +65,17 @@ export class UserService {
     await this.user.update(user, params);
   }
 
-  async getById(user: string): Promise<IUser> {
+  async getById(user: string): Promise<{ user: IUser; following: string[] }> {
     const data = await this.user.findById(user, true);
 
     if (!data) {
       throw new UserNotFound();
     }
 
-    return data;
+    return {
+      user: data,
+      following: await this.followEntity.getFollowedUserIds(user),
+    };
   }
 
   async createDevUser(data: INewUser): Promise<INewUserResponse> {
@@ -103,5 +108,23 @@ export class UserService {
 
   async deleteUser(user: string) {
     await this.user.delete(user);
+  }
+
+  async getFollowers(user: string, page: number): Promise<IUser[]> {
+    const followers = await this.followEntity.getFollowers(user);
+
+    return followers.map((f) => f.follower);
+  }
+
+  async getFollowing(user: string, page: number): Promise<IUser[]> {
+    const following = await this.followEntity.getFollowed(user);
+
+    return following.map((f) => f.followed);
+  }
+
+  async getBlockedUsers(user: string, page: number): Promise<IUser[]> {
+    const blocked = await this.blockEntity.getBlockedUsers(user);
+
+    return blocked.map((record) => record.blocked);
   }
 }

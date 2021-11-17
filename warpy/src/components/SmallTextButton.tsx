@@ -14,19 +14,21 @@ export const SmallTextButton = (props: IButtonProps) => {
   const {onPress, style, title, outline, color} = props;
 
   return (
-    <TouchableWithoutFeedback onPress={onPress}>
-      <View
-        style={[
-          styles.button,
-          colorStyles[color || 'main'],
-          outline ? styles.outline : null,
-          style,
-        ]}>
-        <Text weight="bold" color={outline ? 'button' : 'dark'} size="xsmall">
-          {title}
-        </Text>
-      </View>
-    </TouchableWithoutFeedback>
+    <View>
+      <TouchableWithoutFeedback onPress={onPress}>
+        <View
+          style={[
+            styles.button,
+            colorStyles[color || 'main'],
+            outline ? styles.outline : null,
+            style,
+          ]}>
+          <Text weight="bold" color={outline ? 'button' : 'dark'} size="xsmall">
+            {title}
+          </Text>
+        </View>
+      </TouchableWithoutFeedback>
+    </View>
   );
 };
 

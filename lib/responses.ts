@@ -7,6 +7,7 @@ import {
   IUser,
   INotification,
 } from "./models";
+import { UserList } from "./types";
 
 export interface INewStreamResponse {
   stream: string;
@@ -131,4 +132,13 @@ export interface IUserInfoResponse {
   };
   isFollower: boolean;
   isFollowed: boolean;
+}
+
+export interface IUserListResponse {
+  list: UserList;
+  users: IUser[];
+}
+
+export interface IUserUnblockResponse {
+  status: string;
 }
