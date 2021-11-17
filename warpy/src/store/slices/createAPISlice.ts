@@ -28,7 +28,19 @@ export const createAPISlice = (
 
     api.stream.onStreamIdAvailable(({id}) => {
       setTimeout(() => {
-        navigation.current?.navigate('Stream', {stream: {id}});
+        if (get().modalCurrent === 'stream-invite') {
+          set(
+            produce<IStore>(state => {
+              if (state.modalInvite?.stream) {
+                state.modalInvite.stream.id = id;
+              } else if (state.modalInvite) {
+                state.modalInvite.stream = {id} as any; //🤡
+              }
+            }),
+          );
+        } else {
+          navigation.current?.navigate('Stream', {stream: {id}});
+        }
       }, 500);
     });
 
