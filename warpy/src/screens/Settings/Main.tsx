@@ -89,7 +89,8 @@ const getItems = ({
     color: '#71F1F9',
     icon: 'account-cancel',
     title: 'blocked users',
-    onPress: () => console.log('not implemented'),
+    onPress: () =>
+      navigation.current?.navigate('UserListScreen', {mode: 'blocked'}),
   },
   logout: {
     color: '#F97971',

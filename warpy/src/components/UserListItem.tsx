@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {IUser, UserList} from '@warpy/lib';
 import {UserGeneralInfo} from './UserGeneralInfo';
@@ -37,6 +37,33 @@ const FollowingItemAction = ({user}: ActionProps) => {
   );
 };
 
+const BlockItemAction = ({user}: ActionProps) => {
+  const [isBlocked, setBlocked] = useState(true);
+  const api = useStore.use.api();
+
+  const mounted = useRef(false);
+
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
+    }
+
+    if (isBlocked) {
+      api.user.block(user.id);
+    } else {
+      api.user.unblock(user.id);
+    }
+  }, [isBlocked]);
+
+  return (
+    <SmallTextButton
+      title={isBlocked ? 'unblock' : 'block'}
+      onPress={() => setBlocked(prev => !prev)}
+    />
+  );
+};
+
 export const UserListItem = ({user, list}: BaseUserListItemProps) => {
   return (
     <View style={styles.wrapper}>
@@ -44,6 +71,8 @@ export const UserListItem = ({user, list}: BaseUserListItemProps) => {
       {(list === 'followers' || list === 'following') && (
         <FollowingItemAction user={user} />
       )}
+
+      {list === 'blocked' && <BlockItemAction user={user} />}
     </View>
   );
 };
