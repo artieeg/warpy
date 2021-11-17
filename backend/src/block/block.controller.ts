@@ -7,6 +7,18 @@ import { BlockService } from './block.service';
 export class BlockController {
   constructor(private blockService: BlockService) {}
 
+  @MessagePattern('user.unblock')
+  async onUserUnblock({
+    user,
+    userToBlock,
+  }: IUserBlockRequest): Promise<IUserBlockResponse> {
+    await this.blockService.unblockUser(user, userToBlock);
+
+    return {
+      status: 'ok',
+    };
+  }
+
   @MessagePattern('user.block')
   async onUserBlock({
     user,

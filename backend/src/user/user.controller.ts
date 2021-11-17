@@ -107,7 +107,7 @@ export class UserController {
     } else if (list === 'following') {
       users = await this.userService.getFollowers(user, page);
     } else {
-      users = [];
+      users = await this.userService.getBlockedUsers(user, page);
     }
 
     return {

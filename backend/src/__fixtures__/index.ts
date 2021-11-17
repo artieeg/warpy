@@ -1,7 +1,7 @@
 import { IFollow } from '@backend_2/follow/follow.entity';
 import { IFullParticipant } from '@backend_2/participant/participant.entity';
 import { IInvite, INotification, IStream } from '@warpy/lib';
-import { IConnectRecvTransportParams, IParticipant, IUser } from '@warpy/lib';
+import { IConnectRecvTransportParams, IUser } from '@warpy/lib';
 
 export const createStreamFixture = (data: Partial<IStream>): IStream => {
   return {
@@ -69,6 +69,8 @@ export const createInviteFixture = (data: Partial<IInvite>): IInvite => ({
   inviter: createUserFixture({ id: '2' }),
   id: 'test',
   stream: createStreamFixture({}),
+  accepted: false,
+  declined: false,
   ...data,
 });
 

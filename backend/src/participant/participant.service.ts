@@ -47,7 +47,6 @@ export class ParticipantService {
       recvNodeId: permissions.recvNodeId,
     });
 
-    console.log("listeners: ", this.eventEmitter.listeners('participant.new'))
     this.eventEmitter.emit('participant.new', viewer);
 
     const [recvMediaParams, speakers, raisedHands, count] = await Promise.all([

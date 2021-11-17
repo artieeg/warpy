@@ -13,6 +13,10 @@ export class BlockService {
     private blockEntity: BlockEntity,
   ) {}
 
+  async unblockUser(blocker: string, blocked: string) {
+    await this.blockEntity.deleteByUsers(blocker, blocked);
+  }
+
   async blockUser(blocker: string, blocked: string) {
     const blockId = await this.blockEntity.create({
       blocker,

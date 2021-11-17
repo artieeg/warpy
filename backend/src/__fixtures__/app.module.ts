@@ -23,6 +23,10 @@ import { Test } from '@nestjs/testing';
 
 export const testModuleBuilder = Test.createTestingModule({
   imports: [
+    ConfigModule.forRoot({
+      load: [configuration],
+      isGlobal: true,
+    }),
     BotsModule,
     DeveloperAccountModule,
     FeedModule,
