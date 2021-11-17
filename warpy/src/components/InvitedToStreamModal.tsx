@@ -26,7 +26,7 @@ export const InvitedToStreamModal = () => {
         <UserGeneralInfo style={styles.info} user={modalInviter} />
       )}
 
-      {stream && (
+      {stream?.title && (
         <>
           <Text size="small" color="info">
             to join the room
@@ -35,7 +35,7 @@ export const InvitedToStreamModal = () => {
         </>
       )}
 
-      {!stream && <Text color="info">to join their new room</Text>}
+      {!stream?.title && <Text color="info">to join their new room</Text>}
 
       <View style={styles.actions}>
         <SmallTextButton
