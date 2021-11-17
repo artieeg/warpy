@@ -138,3 +138,7 @@ export interface IUserListResponse {
   list: UserList;
   users: IUser[];
 }
+
+export interface IUserUnblockResponse {
+  status: string;
+}

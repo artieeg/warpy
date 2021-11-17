@@ -1,6 +1,10 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { IUserBlockRequest, IUserBlockResponse } from '@warpy/lib';
+import {
+  IUserBlockRequest,
+  IUserBlockResponse,
+  IUserUnblockResponse,
+} from '@warpy/lib';
 import { BlockService } from './block.service';
 
 @Controller()
@@ -11,7 +15,7 @@ export class BlockController {
   async onUserUnblock({
     user,
     userToBlock,
-  }: IUserBlockRequest): Promise<IUserBlockResponse> {
+  }: IUserBlockRequest): Promise<IUserUnblockResponse> {
     await this.blockService.unblockUser(user, userToBlock);
 
     return {

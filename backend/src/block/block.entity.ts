@@ -49,7 +49,7 @@ export class BlockEntity {
       where: {
         blocked_index: {
           blocked_id,
-          blocked_id,
+          blocker_id,
         },
       },
     });

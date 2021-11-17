@@ -164,6 +164,14 @@ const handlers: Record<string, HandlerConfig> = {
       reportReasonId: joi.string().max(64).required(),
     }),
   },
+  "unblock-user": {
+    subject: "user.unblock",
+    kind: "request",
+    auth: true,
+    schema: joi.object({
+      userToUnblock: joi.string().max(64).required(),
+    }),
+  },
   "block-user": {
     subject: "user.block",
     kind: "request",
