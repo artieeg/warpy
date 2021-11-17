@@ -7,7 +7,6 @@ import {UserList} from '@warpy/lib';
 import useAsyncEffect from 'use-async-effect';
 import {ScreenHeader} from '@app/components';
 import {UserListItem} from '@app/components/UserListItem';
-import {SmallTextButton} from '@app/components/SmallTextButton';
 
 export const UserListScreen = () => {
   const route: any = useRoute();
@@ -30,14 +29,9 @@ export const UserListScreen = () => {
       <FlatList
         contentContainerStyle={styles.container}
         data={list}
-        ItemSeparatorComponent={() => <View style={{height: 10}} />}
+        ItemSeparatorComponent={() => <View style={{height: 15}} />}
         renderItem={({item}) => {
-          return (
-            <UserListItem
-              user={item}
-              action={<SmallTextButton title="unfollow" />}
-            />
-          );
+          return <UserListItem key={item.id} user={item} list={mode} />;
         }}
       />
     </View>
