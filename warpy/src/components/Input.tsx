@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, TextInput, TextInputProps} from 'react-native';
 
-export const SearchInput = (props: TextInputProps) => {
+export const Input = (props: TextInputProps) => {
   return (
     <TextInput
       {...props}

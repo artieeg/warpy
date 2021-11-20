@@ -9,9 +9,11 @@ import {useAvailableAwards} from '@app/hooks';
 import {useCoinBalance} from '@app/hooks/useCoinBalance';
 import {CoinBalance} from './CoinBalance';
 import {TextButton} from './TextButton';
+import {Input} from './Input';
 
 export const AwardPickerModal = (props: IBaseModalProps) => {
   const [pickedAwardId, setPickedAwardId] = useState<string>();
+  const [awardMessage, setAwardMessage] = useState('');
 
   const [api, visible, recipent, dispatchSendAward] = useStore(
     useCallback(
@@ -54,6 +56,12 @@ export const AwardPickerModal = (props: IBaseModalProps) => {
           balance={coinBalanceResponse?.balance}
           style={styles.balance}
         />
+        <Input
+          placeholder="award message (optional)"
+          style={styles.message}
+          onChangeText={setAwardMessage}
+        />
+
         <FlatList
           contentContainerStyle={styles.containerStyle}
           numColumns={4}
@@ -117,5 +125,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 30,
     right: 30,
+  },
+  message: {
+    marginTop: 20,
   },
 });
