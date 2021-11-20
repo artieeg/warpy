@@ -6,5 +6,6 @@ export interface IAward {
   sender: IUser;
   recipent: IUser;
   award: IAwardModel;
+  message: string;
   created_at: string;
 }

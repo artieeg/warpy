@@ -23,10 +23,11 @@ export class AwardController {
     user,
     recipent,
     award_id,
+    message,
   }: ISendAwardRequest): Promise<ISendAwardResponse> {
     console.log({ user, recipent, award_id });
 
-    await this.awardService.sendAward(user, recipent, award_id);
+    await this.awardService.sendAward(user, recipent, award_id, message);
 
     return {
       status: 'ok',

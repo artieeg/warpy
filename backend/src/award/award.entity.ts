@@ -14,15 +14,22 @@ export class AwardEntity {
       sender: UserEntity.toUserDTO(data.sender),
       recipent: UserEntity.toUserDTO(data.recipent),
       award: AwardModelEntity.toAwardModelDTO(data.award),
+      message: data.message,
       created_at: data.created_at,
     };
   }
 
-  async create(sender_id: string, recipent_id: string, award_id: string) {
+  async create(
+    sender_id: string,
+    recipent_id: string,
+    award_id: string,
+    message: string,
+  ) {
     const award = await this.prisma.award.create({
       data: {
         sender_id,
         recipent_id,
+        message,
         award_id,
       },
       include: {

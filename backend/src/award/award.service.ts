@@ -18,7 +18,12 @@ export class AwardService {
     return this.awardModelEntity.getAvailableAwards();
   }
 
-  async sendAward(sender: string, recipent: string, award_id: string) {
+  async sendAward(
+    sender: string,
+    recipent: string,
+    award_id: string,
+    message: string,
+  ) {
     //Fetch award model to see the price
     const awardModel = await this.awardModelEntity.find(award_id);
 
@@ -27,7 +32,12 @@ export class AwardService {
     }
 
     await this.coinBalanceEntity.updateBalance(sender, -awardModel.price);
-    const award = await this.awardEntity.create(sender, recipent, award_id);
+    const award = await this.awardEntity.create(
+      sender,
+      recipent,
+      award_id,
+      message,
+    );
 
     this.events.emit('award.sent', { award });
   }

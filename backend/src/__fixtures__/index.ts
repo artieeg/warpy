@@ -106,5 +106,6 @@ export const createAwardFixture = (data: Partial<IAward>): IAward => ({
   recipent: createUserFixture({ id: 'recipent' }),
   award: createAwardModelFixture({ id: 'award' }),
   created_at: new Date().toISOString(),
+  message: 'test',
   ...data,
 });

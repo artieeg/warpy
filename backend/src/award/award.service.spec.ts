@@ -34,7 +34,7 @@ describe('AwardService', () => {
 
   describe('sending an award', () => {
     const createdAwardRecord = createAwardFixture({});
-    const { sender, recipent, award } = createdAwardRecord;
+    const { sender, message, recipent, award } = createdAwardRecord;
 
     beforeAll(async () => {
       mockedAwardEntity.create.mockResolvedValue(createdAwardRecord);
@@ -43,17 +43,18 @@ describe('AwardService', () => {
     });
 
     it('creates a database record', async () => {
-      await awardService.sendAward(sender.id, recipent.id, award.id);
+      await awardService.sendAward(sender.id, recipent.id, award.id, message);
 
       expect(mockedAwardEntity.create).toBeCalledWith(
         sender.id,
         recipent.id,
         award.id,
+        message,
       );
     });
 
     it('emits an event with the newly created award', async () => {
-      await awardService.sendAward(sender.id, recipent.id, award.id);
+      await awardService.sendAward(sender.id, recipent.id, award.id, message);
 
       expect(mockedEventEmitter.emit).toBeCalledWith('award.sent', {
         award: createdAwardRecord,
@@ -63,12 +64,12 @@ describe('AwardService', () => {
     it('checks senders coin balance', () => {
       mockedCoinBalanceEntity.check.mockResolvedValueOnce(false);
       expect(
-        awardService.sendAward(sender.id, recipent.id, award.id),
+        awardService.sendAward(sender.id, recipent.id, award.id, message),
       ).rejects.toThrowError(NotEnoughCoins);
     });
 
     it('deducts coins from the senders balance', async () => {
-      await awardService.sendAward(sender.id, recipent.id, award.id);
+      await awardService.sendAward(sender.id, recipent.id, award.id, message);
 
       expect(mockedCoinBalanceEntity.updateBalance).toBeCalledWith(
         sender.id,

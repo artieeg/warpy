@@ -238,6 +238,8 @@ model CoinBalance {
 model Award {
   id      String @id @default(cuid())
 
+  message String @default("")
+
   sender_id String 
   sender    User   @relation(name: "award_sender", fields: [sender_id], references: [id], onDelete: Cascade)
 

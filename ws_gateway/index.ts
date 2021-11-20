@@ -59,6 +59,7 @@ const handlers: Record<string, HandlerConfig> = {
     kind: "request",
     auth: true,
     schema: joi.object({
+      message: joi.string().max(128).required(),
       award_id: joi.string().max(64).required(),
       recipent: joi.string().max(64).required(),
     }),
