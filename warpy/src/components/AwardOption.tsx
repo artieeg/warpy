@@ -6,14 +6,16 @@ import FastImage from 'react-native-fast-image';
 
 interface AwardOptionProps {
   award: IAwardModel;
+  picked: boolean;
+  onPick: () => void;
 }
 
-export const AwardOption = ({award}: AwardOptionProps) => {
+export const AwardOption = ({award, picked, onPick}: AwardOptionProps) => {
   const {price, media} = award;
 
   return (
-    <TouchableOpacity style={styles.wrapper}>
-      <View style={styles.mediaContainer}>
+    <TouchableOpacity style={[styles.wrapper]} onPress={onPick}>
+      <View style={[styles.mediaContainer, picked && styles.picked]}>
         <FastImage source={{uri: media}} style={styles.media} />
       </View>
       <Text size="xsmall" style={styles.price}>
@@ -42,5 +44,8 @@ const styles = StyleSheet.create({
   price: {
     flex: 1,
     marginTop: 5,
+  },
+  picked: {
+    backgroundColor: '#F9F871',
   },
 });

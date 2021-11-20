@@ -1,5 +1,5 @@
 import {useStore} from '@app/store';
-import React, {useCallback} from 'react';
+import React, {useCallback, useState} from 'react';
 import {FlatList, StyleSheet, useWindowDimensions, View} from 'react-native';
 import shallow from 'zustand/shallow';
 import {BaseSlideModal, IBaseModalProps} from './BaseSlideModal';
@@ -8,9 +8,12 @@ import {AwardOption} from './AwardOption';
 import {useAvailableAwards} from '@app/hooks';
 import {useCoinBalance} from '@app/hooks/useCoinBalance';
 import {CoinBalance} from './CoinBalance';
+import {TextButton} from './TextButton';
 
 export const AwardPickerModal = (props: IBaseModalProps) => {
-  const [api, visible, username] = useStore(
+  const [pickedAwardId, setPickedAwardId] = useState<string>();
+
+  const [api, visible, username, dispatchSendAward] = useStore(
     useCallback(
       state => [
         state.api,
@@ -18,7 +21,7 @@ export const AwardPickerModal = (props: IBaseModalProps) => {
         state.modalUserToAward
           ? state.streamers[state.modalUserToAward]?.username
           : null,
-        state.awardModels,
+        state.dispatchSendAward,
       ],
       [],
     ),
@@ -59,10 +62,28 @@ export const AwardPickerModal = (props: IBaseModalProps) => {
           data={awardsResponse?.awards}
           renderItem={({item}) => (
             <View style={[cellStyle, styles.cell]}>
-              <AwardOption award={item} />
+              <AwardOption
+                onPick={() =>
+                  setPickedAwardId(prev =>
+                    prev === item.id ? undefined : item.id,
+                  )
+                }
+                picked={pickedAwardId === item.id}
+                award={item}
+              />
             </View>
           )}
         />
+
+        <View style={styles.button}>
+          <TextButton
+            onPress={() => pickedAwardId && dispatchSendAward(pickedAwardId)}
+            disabled={!pickedAwardId}
+            title={
+              pickedAwardId ? 'send the award' : 'select the award to send'
+            }
+          />
+        </View>
       </View>
     </BaseSlideModal>
   );
@@ -71,6 +92,7 @@ export const AwardPickerModal = (props: IBaseModalProps) => {
 const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 20,
+    flex: 1,
   },
   cell: {
     //alignItems: 'center',
@@ -84,5 +106,14 @@ const styles = StyleSheet.create({
   },
   containerStyle: {
     paddingTop: 20,
+    paddingBottom: 60,
+  },
+  button: {
+    position: 'absolute',
+    paddingBottom: 15,
+    backgroundColor: '#000',
+    bottom: 0,
+    left: 30,
+    right: 30,
   },
 });
