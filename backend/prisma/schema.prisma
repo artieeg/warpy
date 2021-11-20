@@ -211,3 +211,10 @@ model DeveloperAccount {
 
   bots Bot[] @relation(name: "bot_creator")
 }
+
+model AwardItem {
+  id      String @id @default(cuid())
+  title String
+  media String
+  price Int
+}
