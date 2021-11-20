@@ -1,4 +1,5 @@
 import {StoreSlice} from '../types';
+import {IAward} from '@warpy/lib';
 
 export interface IAwardsDispatchers {
   dispatchSendAward: (
@@ -6,12 +7,20 @@ export interface IAwardsDispatchers {
     recipent: string,
     message: string,
   ) => Promise<void>;
+
+  dispatchAwardDisplayQueueAppend: (award: IAward) => void;
 }
 
 export const createAwardsDispatchers: StoreSlice<IAwardsDispatchers> = (
-  _set,
+  set,
   get,
 ) => ({
+  dispatchAwardDisplayQueueAppend(award) {
+    set({
+      awardDisplayQueue: [...get().awardDisplayQueue, award],
+    });
+  },
+
   async dispatchSendAward(award, recipent, message) {
     const {status} = await get().api.awards.send(award, recipent, message);
 

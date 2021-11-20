@@ -22,6 +22,10 @@ export const createAPISlice = (
     const store = get();
     const {api} = store;
 
+    api.awards.onNewAward(({award}) => {
+      get().dispatchAwardDisplayQueueAppend(award);
+    });
+
     api.stream.onInviteStateUpdate(data => {
       get().dispatchInviteStateUpdate(data.id, data.state);
     });
