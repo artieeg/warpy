@@ -21,4 +21,12 @@ export class AwardModelEntity {
 
     return awards.map(AwardModelEntity.toAwardModelDTO);
   }
+
+  async find(id: string) {
+    return AwardModelEntity.toAwardModelDTO(
+      await this.prisma.awardItem.findUnique({
+        where: { id },
+      }),
+    );
+  }
 }

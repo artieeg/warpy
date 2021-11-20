@@ -1,8 +1,12 @@
+import { CoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity';
+import { mockedCoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity.mock';
+import { mockedEventEmitter } from '@backend_2/events/events.service.mock';
 import {
   createAwardFixture,
   createAwardModelFixture,
 } from '@backend_2/__fixtures__';
 import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
+import EventEmitter from 'events';
 import { AwardModelEntity } from './award-model.entity';
 import { mockedAwardModelEntity } from './award-model.entity.mock';
 import { AwardEntity } from './award.entity';
@@ -18,6 +22,10 @@ describe('AwardService', () => {
       .useValue(mockedAwardModelEntity)
       .overrideProvider(AwardEntity)
       .useValue(mockedAwardEntity)
+      .overrideProvider(EventEmitter)
+      .useValue(mockedEventEmitter)
+      .overrideProvider(CoinBalanceEntity)
+      .useValue(mockedCoinBalanceEntity)
       .compile();
 
     awardService = m.get(AwardService);
@@ -29,6 +37,7 @@ describe('AwardService', () => {
 
     beforeAll(async () => {
       mockedAwardEntity.create.mockResolvedValue(createdAwardRecord);
+      mockedAwardModelEntity.find.mockResolvedValue(award);
     });
 
     it('creates a database record', async () => {
@@ -41,11 +50,31 @@ describe('AwardService', () => {
       );
     });
 
-    it.todo('emits an event with the newly created award');
+    it('emits an event with the newly created award', async () => {
+      await awardService.sendAward(sender.id, recipent.id, award.id);
 
-    it.todo('checks senders coin balance');
+      expect(mockedEventEmitter.emit).toBeCalledWith('award.sent', {
+        award: mockedAwardEntity,
+      });
+    });
 
-    it.todo('deducts coins from the senders balance');
+    it('checks senders coin balance', async () => {
+      await awardService.sendAward(sender.id, recipent.id, award.id);
+
+      expect(mockedCoinBalanceEntity.check).toBeCalledWith(
+        sender.id,
+        award.price,
+      );
+    });
+
+    it('deducts coins from the senders balance', async () => {
+      await awardService.sendAward(sender.id, recipent.id, award.id);
+
+      expect(mockedCoinBalanceEntity.updateBalance).toBeCalledWith(
+        sender.id,
+        award.price,
+      );
+    });
   });
 
   it('fetches available awards', async () => {
