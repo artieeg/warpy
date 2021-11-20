@@ -9,6 +9,7 @@ import {UserActionSheet} from './UserActionSheet';
 import {InviteModal} from './InviteModal';
 import {BotConfirmModal} from './BotConfirmModal';
 import {InvitedToStreamModal} from './InvitedToStreamModal';
+import {AwardPickerModal} from './AwardPickerModal';
 
 export const ModalProvider = () => {
   const modal = useStore.use.modalCurrent();
@@ -21,6 +22,7 @@ export const ModalProvider = () => {
       <BotConfirmModal />
       <ParticipantInfoModal />
       <InvitedToStreamModal />
+      <AwardPickerModal />
 
       <ParticipantsModal
         onHide={() => dispatchModalClose()}

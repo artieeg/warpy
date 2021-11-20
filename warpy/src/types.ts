@@ -21,6 +21,7 @@ export interface IParticipantWithMedia extends IParticipant {
 
 export type Modal =
   | 'user-actions'
+  | 'award'
   | 'participant-info'
   | 'participants'
   | 'reactions'
