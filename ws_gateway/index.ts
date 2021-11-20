@@ -54,6 +54,16 @@ const handlers: Record<string, HandlerConfig> = {
     schema: joi.object({}),
   },
 
+  "send-award": {
+    subject: "awards.send-award",
+    kind: "request",
+    auth: true,
+    schema: joi.object({
+      award_id: joi.string().max(64).required(),
+      recipent: joi.string().max(64).required(),
+    }),
+  },
+
   "get-coin-balance": {
     subject: "user.get-coin-balance",
     kind: "request",

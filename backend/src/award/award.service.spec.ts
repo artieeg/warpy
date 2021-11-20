@@ -1,12 +1,13 @@
 import { CoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity';
 import { mockedCoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity.mock';
+import { NotEnoughCoins } from '@backend_2/errors';
 import { mockedEventEmitter } from '@backend_2/events/events.service.mock';
 import {
   createAwardFixture,
   createAwardModelFixture,
 } from '@backend_2/__fixtures__';
 import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
-import EventEmitter from 'events';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AwardModelEntity } from './award-model.entity';
 import { mockedAwardModelEntity } from './award-model.entity.mock';
 import { AwardEntity } from './award.entity';
@@ -22,7 +23,7 @@ describe('AwardService', () => {
       .useValue(mockedAwardModelEntity)
       .overrideProvider(AwardEntity)
       .useValue(mockedAwardEntity)
-      .overrideProvider(EventEmitter)
+      .overrideProvider(EventEmitter2)
       .useValue(mockedEventEmitter)
       .overrideProvider(CoinBalanceEntity)
       .useValue(mockedCoinBalanceEntity)
@@ -38,6 +39,7 @@ describe('AwardService', () => {
     beforeAll(async () => {
       mockedAwardEntity.create.mockResolvedValue(createdAwardRecord);
       mockedAwardModelEntity.find.mockResolvedValue(award);
+      mockedCoinBalanceEntity.check.mockResolvedValue(true);
     });
 
     it('creates a database record', async () => {
@@ -54,17 +56,15 @@ describe('AwardService', () => {
       await awardService.sendAward(sender.id, recipent.id, award.id);
 
       expect(mockedEventEmitter.emit).toBeCalledWith('award.sent', {
-        award: mockedAwardEntity,
+        award: createdAwardRecord,
       });
     });
 
-    it('checks senders coin balance', async () => {
-      await awardService.sendAward(sender.id, recipent.id, award.id);
-
-      expect(mockedCoinBalanceEntity.check).toBeCalledWith(
-        sender.id,
-        award.price,
-      );
+    it('checks senders coin balance', () => {
+      mockedCoinBalanceEntity.check.mockResolvedValueOnce(false);
+      expect(
+        awardService.sendAward(sender.id, recipent.id, award.id),
+      ).rejects.toThrowError(NotEnoughCoins);
     });
 
     it('deducts coins from the senders balance', async () => {
@@ -72,7 +72,7 @@ describe('AwardService', () => {
 
       expect(mockedCoinBalanceEntity.updateBalance).toBeCalledWith(
         sender.id,
-        award.price,
+        -award.price,
       );
     });
   });

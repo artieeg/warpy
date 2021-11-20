@@ -1,12 +1,25 @@
 import {StoreSlice} from '../types';
 
 export interface IAwardsDispatchers {
-  dispatchSendAward: (awardId: string) => Promise<void>;
+  dispatchSendAward: (award: string, recipent: string) => Promise<void>;
 }
 
 export const createAwardsDispatchers: StoreSlice<IAwardsDispatchers> = (
-  set,
+  _set,
   get,
 ) => ({
-  async dispatchSendAward(id) {},
+  async dispatchSendAward(award, recipent) {
+    const {status} = await get().api.awards.send(award, recipent);
+
+    if (status === 'error') {
+      return; ///error handling
+    }
+
+    get().dispatchToastMessage(
+      'Your award has been just sent, it will arrive shortly',
+      'LONG',
+    );
+
+    get().dispatchModalClose();
+  },
 });

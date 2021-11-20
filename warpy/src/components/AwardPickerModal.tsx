@@ -13,14 +13,12 @@ import {TextButton} from './TextButton';
 export const AwardPickerModal = (props: IBaseModalProps) => {
   const [pickedAwardId, setPickedAwardId] = useState<string>();
 
-  const [api, visible, username, dispatchSendAward] = useStore(
+  const [api, visible, recipent, dispatchSendAward] = useStore(
     useCallback(
       state => [
         state.api,
         state.modalCurrent === 'award',
-        state.modalUserToAward
-          ? state.streamers[state.modalUserToAward]?.username
-          : null,
+        state.modalUserToAward ? state.streamers[state.modalUserToAward] : null,
         state.dispatchSendAward,
       ],
       [],
@@ -50,7 +48,7 @@ export const AwardPickerModal = (props: IBaseModalProps) => {
       title="send award">
       <View style={styles.wrapper}>
         <Text size="xsmall" color="info">
-          to @{username}
+          to @{recipent?.username}
         </Text>
         <CoinBalance
           balance={coinBalanceResponse?.balance}
@@ -77,7 +75,11 @@ export const AwardPickerModal = (props: IBaseModalProps) => {
 
         <View style={styles.button}>
           <TextButton
-            onPress={() => pickedAwardId && dispatchSendAward(pickedAwardId)}
+            onPress={() =>
+              pickedAwardId &&
+              recipent &&
+              dispatchSendAward(pickedAwardId, recipent.id)
+            }
             disabled={!pickedAwardId}
             title={
               pickedAwardId ? 'send the award' : 'select the award to send'
