@@ -1,6 +1,10 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { IGetAvailableAwardsResponse } from '../../../lib';
+import {
+  IGetAvailableAwardsResponse,
+  ISendAwardRequest,
+  ISendAwardResponse,
+} from '@warpy/lib';
 import { AwardService } from './award.service';
 
 @Controller()
@@ -12,5 +16,14 @@ export class AwardController {
     const awards = await this.awardService.getAvailableAwards();
 
     return { awards };
+  }
+
+  @MessagePattern('awards.send-award')
+  async sendAward({
+    user,
+    recipent,
+    award_id,
+  }: ISendAwardRequest): Promise<ISendAwardResponse> {
+    return { status: 'ok' };
   }
 }

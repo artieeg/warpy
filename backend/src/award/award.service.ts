@@ -8,4 +8,6 @@ export class AwardService {
   async getAvailableAwards() {
     return this.awardModelEntity.getAvailableAwards();
   }
+
+  async sendAward(sender: string, recipent: string, award_id: string) {}
 }

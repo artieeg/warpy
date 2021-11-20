@@ -40,6 +40,9 @@ model User {
 
   balance CoinBalance? @relation(name: "coin_balance")
 
+  award_sender Award[] @relation(name: "award_sender")
+  award_recipent Award[] @relation(name: "award_recipent")
+
   notifications Notification[]    @relation(name: "notifications")
   developer     DeveloperAccount? @relation(name: "developer")
 
@@ -219,6 +222,8 @@ model AwardItem {
   title String
   media String
   price Int
+
+  awarded Award[] @relation(name: "awarded")
 }
 
 model CoinBalance {
@@ -228,4 +233,17 @@ model CoinBalance {
   user    User   @relation(name: "coin_balance", fields: [user_id], references: [id], onDelete: Cascade)
 
   balance Int
+}
+
+model Award {
+  id      String @id @default(cuid())
+
+  sender_id String 
+  sender    User   @relation(name: "award_sender", fields: [sender_id], references: [id], onDelete: Cascade)
+
+  recipent_id String 
+  recipent    User   @relation(name: "award_recipent", fields: [recipent_id], references: [id], onDelete: Cascade)
+
+  award_id String 
+  award    AwardItem   @relation(name: "awarded", fields: [award_id], references: [id], onDelete: Cascade)
 }
