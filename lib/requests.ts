@@ -306,3 +306,9 @@ export interface IUserListRequest {
 export interface IGetCoinBalanceRequest {
   user: string;
 }
+
+export interface ISendAwardRequest {
+  user: string;
+  award_id: string;
+  recipent: string;
+}

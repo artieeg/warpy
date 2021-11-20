@@ -246,4 +246,6 @@ model Award {
 
   award_id String 
   award    AwardItem   @relation(name: "awarded", fields: [award_id], references: [id], onDelete: Cascade)
+
+  created_at  DateTime      @default(now())
 }

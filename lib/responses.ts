@@ -151,3 +151,7 @@ export interface ICoinBalanceResponse {
 export interface IGetAvailableAwardsResponse {
   awards: IAwardModel[];
 }
+
+export interface ISendAwardResponse {
+  status: "ok" | "error";
+}
