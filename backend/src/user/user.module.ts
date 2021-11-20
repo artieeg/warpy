@@ -1,4 +1,5 @@
 import { BlockModule } from '@backend_2/block/block.module';
+import { CoinBalanceModule } from '@backend_2/coin-balance/coin-balance.module';
 import { FollowModule } from '@backend_2/follow/follow.module';
 import { StreamModule } from '@backend_2/stream/stream.module';
 import { Module } from '@nestjs/common';
@@ -17,6 +18,7 @@ import { UserService } from './user.service';
     TokenModule,
     ParticipantModule,
     BlockModule,
+    CoinBalanceModule,
   ],
   controllers: [UserController],
   providers: [UserEntity, UserService],

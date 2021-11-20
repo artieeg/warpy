@@ -142,3 +142,7 @@ export interface IUserListResponse {
 export interface IUserUnblockResponse {
   status: string;
 }
+
+export interface ICoinBalanceResponse {
+  balance: number;
+}

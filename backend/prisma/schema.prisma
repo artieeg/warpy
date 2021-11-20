@@ -38,6 +38,8 @@ model User {
   inviter Invite[] @relation(name: "inviter")
   invitee Invite[] @relation(name: "invitee")
 
+  balance CoinBalance? @relation(name: "coin_balance")
+
   notifications Notification[]    @relation(name: "notifications")
   developer     DeveloperAccount? @relation(name: "developer")
 
@@ -217,4 +219,13 @@ model AwardItem {
   title String
   media String
   price Int
+}
+
+model CoinBalance {
+  id      String @id @default(cuid())
+
+  user_id String @unique
+  user    User   @relation(name: "coin_balance", fields: [user_id], references: [id], onDelete: Cascade)
+
+  balance Int
 }

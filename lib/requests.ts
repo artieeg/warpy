@@ -302,3 +302,7 @@ export interface IUserListRequest {
   list: UserList;
   page: number;
 }
+
+export interface IGetCoinBalanceRequest {
+  user: string;
+}

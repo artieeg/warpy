@@ -8,10 +8,12 @@ import { IGifsAPI, GifsAPI } from "./gifs_api";
 import { APIObserver, IAPIObserver } from "./api_observer";
 import { BotDevAPI, IBotDevAPI } from "./bot_dev_api";
 import { BotAPI, IBotAPI } from "./bot_api";
+import { CoinBalanceAPI, ICoinBalanceAPI } from "./coin_balance_api";
 
 interface IAPIClient {
   observer: IAPIObserver;
   user: IUserAPI;
+  coin_balance: ICoinBalanceAPI;
   stream: IStreamAPI;
   feed: IFeedAPI;
   media: IMediaAPI;
@@ -24,6 +26,7 @@ interface IAPIClient {
 
 export const APIClient = (socket: WebSocketConn): IAPIClient => ({
   observer: APIObserver(socket),
+  coin_balance: CoinBalanceAPI(socket),
   bot: BotAPI(socket),
   user: UserAPI(socket),
   botDev: BotDevAPI(socket),

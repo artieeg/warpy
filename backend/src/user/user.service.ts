@@ -1,4 +1,5 @@
 import { BlockEntity } from '@backend_2/block/block.entity';
+import { CoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity';
 import { UserNotFound } from '@backend_2/errors';
 import { FollowEntity } from '@backend_2/follow/follow.entity';
 import { ParticipantEntity } from '@backend_2/participant/participant.entity';
@@ -23,6 +24,7 @@ export class UserService {
     private followEntity: FollowEntity,
     private participantEntity: ParticipantEntity,
     private streamEntity: StreamEntity,
+    private coinBalanceEntity: CoinBalanceEntity,
     private blockEntity: BlockEntity,
   ) {}
 
@@ -89,6 +91,8 @@ export class UserService {
       avatar,
       sub: 'DEV_ACCOUNT',
     });
+
+    await this.coinBalanceEntity.createCoinBalance(user.id, 2000);
 
     const accessToken = this.tokenService.createAuthToken(user.id, false, '1d');
     const refreshToken = this.tokenService.createAuthToken(
