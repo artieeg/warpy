@@ -86,7 +86,7 @@ export const AwardPickerModal = (props: IBaseModalProps) => {
             onPress={() =>
               pickedAwardId &&
               recipent &&
-              dispatchSendAward(pickedAwardId, recipent.id)
+              dispatchSendAward(pickedAwardId, recipent.id, awardMessage)
             }
             disabled={!pickedAwardId}
             title={
