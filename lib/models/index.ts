@@ -1,4 +1,5 @@
 export * from "./entity";
+export * from "./award_modal";
 export * from "./user";
 export * from "./participant";
 export * from "./candidate";

@@ -47,6 +47,13 @@ const handlers: Record<string, HandlerConfig> = {
     }),
   },
 
+  "get-available-awards": {
+    subject: "awards.get-available",
+    kind: "request",
+    auth: true,
+    schema: joi.object({}),
+  },
+
   "get-coin-balance": {
     subject: "user.get-coin-balance",
     kind: "request",

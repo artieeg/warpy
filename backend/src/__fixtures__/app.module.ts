@@ -1,3 +1,4 @@
+import { AwardModule } from '@backend_2/award/award.module';
 import { BlockModule } from '@backend_2/block/block.module';
 import { BotsModule } from '@backend_2/bots/bots.module';
 import { BroadcastModule } from '@backend_2/broadcast/broadcast.module';
@@ -29,6 +30,7 @@ export const testModuleBuilder = Test.createTestingModule({
       isGlobal: true,
     }),
     BotsModule,
+    AwardModule,
     CoinBalanceModule,
     DeveloperAccountModule,
     FeedModule,

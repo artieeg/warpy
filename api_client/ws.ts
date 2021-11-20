@@ -9,9 +9,11 @@ import { APIObserver, IAPIObserver } from "./api_observer";
 import { BotDevAPI, IBotDevAPI } from "./bot_dev_api";
 import { BotAPI, IBotAPI } from "./bot_api";
 import { CoinBalanceAPI, ICoinBalanceAPI } from "./coin_balance_api";
+import { IAwardsAPI, AwardsAPI } from "./awards_api";
 
 interface IAPIClient {
   observer: IAPIObserver;
+  awards: IAwardsAPI;
   user: IUserAPI;
   coin_balance: ICoinBalanceAPI;
   stream: IStreamAPI;
@@ -28,6 +30,7 @@ export const APIClient = (socket: WebSocketConn): IAPIClient => ({
   observer: APIObserver(socket),
   coin_balance: CoinBalanceAPI(socket),
   bot: BotAPI(socket),
+  awards: AwardsAPI(socket),
   user: UserAPI(socket),
   botDev: BotDevAPI(socket),
   stream: StreamAPI(socket),
