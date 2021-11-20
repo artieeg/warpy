@@ -9,12 +9,19 @@ export interface IAwardsDispatchers {
   ) => Promise<void>;
 
   dispatchAwardDisplayQueueAppend: (award: IAward) => void;
+  dispatchAwardDisplayQueueNext: () => void;
 }
 
 export const createAwardsDispatchers: StoreSlice<IAwardsDispatchers> = (
   set,
   get,
 ) => ({
+  dispatchAwardDisplayQueueNext() {
+    set({
+      awardDisplayCurrent: get().awardDisplayCurrent + 1,
+    });
+  },
+
   dispatchAwardDisplayQueueAppend(award) {
     set({
       awardDisplayQueue: [...get().awardDisplayQueue, award],
