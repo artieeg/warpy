@@ -2,10 +2,12 @@ import {useStore} from '@app/store';
 import React, {useCallback} from 'react';
 import {FlatList, StyleSheet, useWindowDimensions, View} from 'react-native';
 import shallow from 'zustand/shallow';
-import {useQuery} from 'react-query';
 import {BaseSlideModal, IBaseModalProps} from './BaseSlideModal';
 import {Text} from './Text';
 import {AwardOption} from './AwardOption';
+import {useAvailableAwards} from '@app/hooks';
+import {useCoinBalance} from '@app/hooks/useCoinBalance';
+import {CoinBalance} from './CoinBalance';
 
 export const AwardPickerModal = (props: IBaseModalProps) => {
   const [api, visible, username] = useStore(
@@ -17,16 +19,14 @@ export const AwardPickerModal = (props: IBaseModalProps) => {
           ? state.streamers[state.modalUserToAward]?.username
           : null,
         state.awardModels,
-        state.dispatchFetchAvailableAwards,
       ],
       [],
     ),
     shallow,
   );
 
-  const {data} = useQuery('award-models', api.awards.getAvailable, {
-    notifyOnChangeProps: ['data'],
-  });
+  const {data: awardsResponse} = useAvailableAwards(api);
+  const {data: coinBalanceResponse} = useCoinBalance(api);
 
   const cellWidth =
     (useWindowDimensions().width - styles.wrapper.paddingHorizontal * 2) / 4;
@@ -35,7 +35,7 @@ export const AwardPickerModal = (props: IBaseModalProps) => {
 
   const cellStyle = {
     width: cellWidth,
-    height: cellWidth + 20,
+    height: cellWidth + 40,
     //overflow: 'hidden',
   };
 
@@ -49,9 +49,14 @@ export const AwardPickerModal = (props: IBaseModalProps) => {
         <Text size="xsmall" color="info">
           to @{username}
         </Text>
+        <CoinBalance
+          balance={coinBalanceResponse?.balance}
+          style={styles.balance}
+        />
         <FlatList
+          contentContainerStyle={styles.containerStyle}
           numColumns={4}
-          data={data?.awards}
+          data={awardsResponse?.awards}
           renderItem={({item}) => (
             <View style={[cellStyle, styles.cell]}>
               <AwardOption award={item} />
@@ -70,5 +75,14 @@ const styles = StyleSheet.create({
   cell: {
     //alignItems: 'center',
     //justifyContent: 'center',
+  },
+  balance: {
+    position: 'absolute',
+    right: 20,
+    top: -20,
+    borderRadius: 50,
+  },
+  containerStyle: {
+    paddingTop: 20,
   },
 });

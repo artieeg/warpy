@@ -14,3 +14,4 @@ export * from './useKickHandler';
 export * from './useUserSearch';
 export * from './useNotifications';
 export * from './useRemoteStreamController';
+export * from './useAvailableAwards';

@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   mediaContainer: {
     borderRadius: 100,
     padding: 10,
-    width: '70%',
+    width: '100%',
     aspectRatio: 1,
     backgroundColor: '#fff',
   },
