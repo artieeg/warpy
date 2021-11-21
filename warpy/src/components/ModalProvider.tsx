@@ -10,6 +10,7 @@ import {InviteModal} from './InviteModal';
 import {BotConfirmModal} from './BotConfirmModal';
 import {InvitedToStreamModal} from './InvitedToStreamModal';
 import {AwardPickerModal} from './AwardPickerModal';
+import {AwardRecipentPicker} from './AwardRecipentPicker';
 
 export const ModalProvider = () => {
   const modal = useStore.use.modalCurrent();
@@ -23,6 +24,7 @@ export const ModalProvider = () => {
       <ParticipantInfoModal />
       <InvitedToStreamModal />
       <AwardPickerModal />
+      <AwardRecipentPicker />
 
       <ParticipantsModal
         onHide={() => dispatchModalClose()}

@@ -1,13 +1,21 @@
 import {useStore} from '@app/store';
 import {IParticipant} from '@warpy/lib';
-import React from 'react';
+import React, {useCallback} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import shallow from 'zustand/shallow';
 import {AudioLevelIndicator} from './AudioLevelIndicator';
 import {Avatar} from './Avatar';
 import {Text} from './Text';
 
-export const AudioRoomParticipant = ({data}: {data: IParticipant}) => {
+interface ParticipantViewProps {
+  data: IParticipant;
+  onPress?: any;
+}
+
+export const ParticipantView = ({
+  data,
+  onPress: providedOnPress,
+}: ParticipantViewProps) => {
   const [userAudioLevel, dispatchModalOpen, dispatchAudioLevelDelete] =
     useStore(
       state => [
@@ -18,15 +26,27 @@ export const AudioRoomParticipant = ({data}: {data: IParticipant}) => {
       shallow,
     );
 
+  const onLongPress = useCallback(() => {
+    if (providedOnPress) {
+      providedOnPress();
+    } else {
+      dispatchModalOpen('user-actions', {selectedUser: data.id});
+    }
+  }, [providedOnPress]);
+
+  const onPress = useCallback(() => {
+    if (providedOnPress) {
+      providedOnPress();
+    } else {
+      dispatchModalOpen('participant-info', {selectedUser: data.id});
+    }
+  }, [providedOnPress]);
+
   return (
     <TouchableOpacity
       style={{...styles.wrapper}}
-      onLongPress={() => {
-        dispatchModalOpen('user-actions', {selectedUser: data.id});
-      }}
-      onPress={() => {
-        dispatchModalOpen('participant-info', {selectedUser: data.id});
-      }}>
+      onLongPress={onLongPress}
+      onPress={onPress}>
       <AudioLevelIndicator
         volume={userAudioLevel || 0}
         minScale={1}
