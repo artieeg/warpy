@@ -6,8 +6,10 @@ export const AwardButton = () => {
   const [dispatchModalOpen, streamHasOneSpeaker, id] = useStoreShallow(
     state => [
       state.dispatchModalOpen,
-      Object.keys(state.streamers).length === 1,
-      state.streamers[Object.keys(state.streamers)[0]]?.id,
+      Object.keys(state.streamers).filter(
+        streamer => streamer !== state.user!.id,
+      ).length === 1,
+      Object.keys(state.streamers).find(id => id !== state.user!.id),
     ],
   );
 

@@ -5,13 +5,17 @@ import {BaseSlideModal} from './BaseSlideModal';
 import {ParticipantView} from './ParticipantView';
 
 export const AwardRecipentPicker = () => {
-  const [visible, streamers, dispatchModalOpen] = useStoreShallow(state => [
+  const [visible, streamers, dispatchModalOpen, us] = useStoreShallow(state => [
     state.modalCurrent === 'award-recipent',
     state.streamers,
     state.dispatchModalOpen,
+    state.user?.id,
   ]);
 
-  const users = useMemo(() => Object.values(streamers), [streamers]);
+  const users = useMemo(
+    () => Object.values(streamers).filter(streamer => streamer.id !== us),
+    [streamers, us],
+  );
   const {width} = useWindowDimensions();
   const cellStyle = useMemo(
     () => ({
