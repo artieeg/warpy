@@ -6,6 +6,7 @@ import {Room} from '@app/components/Room';
 import {useStore} from '@app/store';
 import shallow from 'zustand/shallow';
 import {NewStreamPanel} from '@app/components/NewStreamPanel';
+import {AwardDisplay} from '@app/components/AwardDisplay';
 
 export const useNewStreamController = () => {
   const [streamId, dispatchMediaRequest] = useStore(
@@ -29,6 +30,7 @@ export const NewStream = () => {
       <Room />
 
       {streamId && <StreamOverlay />}
+      {streamId && <AwardDisplay />}
 
       {!streamId && <NewStreamPanel />}
     </View>

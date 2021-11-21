@@ -49,7 +49,7 @@ export const AwardDisplay = () => {
             />
             <Text style={{textAlign: 'center'}}>
               <Text color="yellow">@{award.sender.username}</Text> sent{' '}
-              <Text color="yellow">@{award.award.title}</Text> award to{' '}
+              <Text color="yellow">{award.award.title}</Text> award to{' '}
               <Text color="yellow">@{award.recipent.username}</Text>
             </Text>
             {award.message.length > 0 && <Text italic>{award.message}</Text>}
