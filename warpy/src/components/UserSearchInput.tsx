@@ -1,5 +1,5 @@
 import React from 'react';
-import {SearchInput} from './SearchInput';
+import {Input} from './Input';
 
 export const UserSearchInput = ({
   onChangeText,
@@ -9,10 +9,6 @@ export const UserSearchInput = ({
   onChangeText: (text: string) => void;
 }) => {
   return (
-    <SearchInput
-      style={style}
-      onChangeText={onChangeText}
-      placeholder="search"
-    />
+    <Input style={style} onChangeText={onChangeText} placeholder="search" />
   );
 };

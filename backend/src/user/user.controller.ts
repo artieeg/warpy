@@ -103,9 +103,9 @@ export class UserController {
     let users: IUser[];
 
     if (list === 'followers') {
-      users = await this.userService.getFollowing(user, page);
-    } else if (list === 'following') {
       users = await this.userService.getFollowers(user, page);
+    } else if (list === 'following') {
+      users = await this.userService.getFollowing(user, page);
     } else {
       users = await this.userService.getBlockedUsers(user, page);
     }

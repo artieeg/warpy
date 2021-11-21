@@ -3,10 +3,12 @@ import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AwardModule } from './award/award.module';
 import { BlockModule } from './block/block.module';
 import { BotsModule } from './bots/bots.module';
 import { BroadcastModule } from './broadcast/broadcast.module';
 import { ChatModule } from './chat/chat.module';
+import { CoinBalanceModule } from './coin-balance/coin-balance.module';
 import { configuration } from './config/configuration';
 import { DeveloperAccountModule } from './developer_account/developer_account.module';
 import { FeedModule } from './feed/feed.module';
@@ -30,6 +32,8 @@ import { UserModule } from './user/user.module';
       load: [configuration],
       isGlobal: true,
     }),
+    CoinBalanceModule,
+    AwardModule,
     BroadcastModule,
     MediaModule,
     DeveloperAccountModule,

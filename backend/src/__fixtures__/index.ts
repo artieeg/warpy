@@ -1,6 +1,12 @@
 import { IFollow } from '@backend_2/follow/follow.entity';
 import { IFullParticipant } from '@backend_2/participant/participant.entity';
-import { IInvite, INotification, IStream } from '@warpy/lib';
+import {
+  IAward,
+  IAwardModel,
+  IInvite,
+  INotification,
+  IStream,
+} from '@warpy/lib';
 import { IConnectRecvTransportParams, IUser } from '@warpy/lib';
 
 export const createStreamFixture = (data: Partial<IStream>): IStream => {
@@ -81,5 +87,25 @@ export const createNotificationFixture = (
   hasBeenSeen: false,
   created_at: 1000,
   user_id: 'test2',
+  ...data,
+});
+
+export const createAwardModelFixture = (
+  data: Partial<IAwardModel>,
+): IAwardModel => ({
+  id: 'test',
+  title: 'test award',
+  media: 'example.com/media',
+  price: 100,
+  ...data,
+});
+
+export const createAwardFixture = (data: Partial<IAward>): IAward => ({
+  id: 'test',
+  sender: createUserFixture({ id: 'sender' }),
+  recipent: createUserFixture({ id: 'recipent' }),
+  award: createAwardModelFixture({ id: 'award' }),
+  created_at: new Date().toISOString(),
+  message: 'test',
   ...data,
 });

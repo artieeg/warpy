@@ -10,3 +10,4 @@ export * from './notifications';
 export * from './reaction';
 export * from './participant';
 export * from './toast';
+export * from './awards';

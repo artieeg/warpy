@@ -14,11 +14,15 @@ import {
   UserListScreen,
   Stream,
   Loading,
+  MyAwardsDisplay,
 } from './src/screens';
 import {StatusBar} from 'react-native';
+import {QueryClient, QueryClientProvider} from 'react-query';
 import {ModalProvider, ToastProvider} from '@app/components';
 
 const Stack = createStackNavigator();
+
+const queryClient = new QueryClient();
 
 const App = () => {
   StatusBar.setTranslucent(true);
@@ -29,6 +33,7 @@ const App = () => {
     SignUpName,
     SignUpUsername,
     Loading,
+    MyAwardsDisplay,
     SignUpAvatar,
     Feed,
     NewStream,
@@ -40,7 +45,7 @@ const App = () => {
   };
 
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <NavigationContainer>
         <Stack.Navigator headerMode="none">
           {Object.keys(screens).map(name => (
@@ -51,7 +56,7 @@ const App = () => {
 
       <ModalProvider />
       <ToastProvider />
-    </>
+    </QueryClientProvider>
   );
 };
 

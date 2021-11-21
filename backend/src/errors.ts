@@ -87,3 +87,12 @@ export class NotADeveloper extends BaseError {
     this.message = 'Not a developer';
   }
 }
+
+export class NotEnoughCoins extends BaseError {
+  constructor() {
+    super('Not enough coins');
+
+    this.name = 'NotEnoughCoins';
+    this.message = 'Not enough coins';
+  }
+}

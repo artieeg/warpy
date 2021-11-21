@@ -1,9 +1,10 @@
 import {Modal} from '@app/types';
-import {IBot, IInvite, IStream, IUser} from '@warpy/lib';
+import {IBot, IInvite} from '@warpy/lib';
 import {StoreSlice} from '../types';
 
 type OpenModalParams = {
   selectedUser?: string;
+  userToAward?: string;
   botConfirmId?: string;
   botConfirmData?: IBot;
   invite?: IInvite & {notification: string};
@@ -33,6 +34,7 @@ export const createModalDispatchers: StoreSlice<IModalDispatchers> = (
       modalSelectedUser: params?.selectedUser || null,
       modalBotConfirmData: params?.botConfirmData || null,
       modalBotConfirmId: params?.botConfirmId || null,
+      modalUserToAward: params?.userToAward || null,
       modalInvite: params?.invite || null,
     });
   },

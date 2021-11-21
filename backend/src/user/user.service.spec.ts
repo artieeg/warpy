@@ -17,6 +17,8 @@ import { mockedStreamEntity } from '@backend_2/stream/stream.entity.mock';
 import { mockedFollowEntity } from '@backend_2/follow/follow.entity.mock';
 import { when } from 'jest-when';
 import { FollowEntity } from '@backend_2/follow/follow.entity';
+import { CoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity';
+import { mockedCoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity.mock';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -27,6 +29,8 @@ describe('UserService', () => {
     const moduleRef = await testModuleBuilder
       .overrideProvider(UserEntity)
       .useValue(mockedUserEntity)
+      .overrideProvider(CoinBalanceEntity)
+      .useValue(mockedCoinBalanceEntity)
       .overrideProvider(TokenService)
       .useValue(mockedTokenService)
       .overrideProvider(RefreshTokenEntity)
@@ -144,6 +148,13 @@ describe('UserService', () => {
       access: mockedTokenService.testTokenValue,
       refresh: mockedTokenService.testTokenValue,
     });
+  });
+
+  describe('creating user', async () => {
+    it.todo('creates coin balance');
+    it.todo('creates account via google');
+    it.todo('creates account via apple');
+    it.todo('creates account via twitter');
   });
 
   it('searches user', async () => {

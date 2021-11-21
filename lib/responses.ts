@@ -6,6 +6,8 @@ import {
   IInvite,
   IUser,
   INotification,
+  IAwardModel,
+  IAward,
 } from "./models";
 import { UserList } from "./types";
 
@@ -141,4 +143,20 @@ export interface IUserListResponse {
 
 export interface IUserUnblockResponse {
   status: string;
+}
+
+export interface ICoinBalanceResponse {
+  balance: number;
+}
+
+export interface IGetAvailableAwardsResponse {
+  awards: IAwardModel[];
+}
+
+export interface ISendAwardResponse {
+  status: "ok" | "error";
+}
+
+export interface IReceivedAwardsResponse {
+  awards: IAward[];
 }

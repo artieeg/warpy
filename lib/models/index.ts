@@ -1,4 +1,5 @@
 export * from "./entity";
+export * from "./award_model";
 export * from "./user";
 export * from "./participant";
 export * from "./candidate";
@@ -8,3 +9,5 @@ export * from "./block";
 export * from "./invite";
 export * from "./notification";
 export * from "./bot";
+export * from "./coin_balance";
+export * from "./award";

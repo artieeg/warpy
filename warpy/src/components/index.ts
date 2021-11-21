@@ -29,3 +29,5 @@ export * from './OpenHomeButton';
 export * from './AudioRoomParticipant';
 export * from './ScreenHeader';
 export * from './SettingsTextEdit';
+export * from './Input';
+export * from './AwardFeedItem';

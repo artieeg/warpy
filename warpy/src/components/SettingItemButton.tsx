@@ -21,7 +21,7 @@ export const SettingItemButton = (props: SettingItemButtonProps) => {
           size={20}
           style={[styles.icon, {backgroundColor: props.color}]}
         />
-        <Text size="small" style={[{color: props.color}]}>
+        <Text size="xsmall" style={[{color: props.color}]}>
           {props.title}
         </Text>
       </View>

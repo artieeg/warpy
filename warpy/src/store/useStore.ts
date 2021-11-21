@@ -52,6 +52,8 @@ import {
   IParticipantDispatchers,
   IToastDispatchers,
   createToastDispatchers,
+  IAwardsDispatchers,
+  createAwardsDispatchers,
 } from './dispatchers';
 import {
   createParticipantSlice,
@@ -71,6 +73,8 @@ import {
   createUserListDispatchers,
   IUserListDispatchers,
 } from './dispatchers/user_list';
+import {createAwardsSlice, IAwardsSlice} from './slices/createAwardsSlice';
+import {useCallback} from 'react';
 
 interface Selectors<StoreType> {
   use: {
@@ -97,6 +101,7 @@ export interface IStore
     IUserSlice,
     IFollowingSlice,
     IInviteSlice,
+    IAwardsSlice,
     IMediaSlice,
     IDeviceSlice,
     IChatSlice,
@@ -121,6 +126,7 @@ export interface IStore
     IUserListDispatchers,
     IParticipantDispatchers,
     IUserListSlice,
+    IAwardsDispatchers,
     IToastDispatchers,
     IInviteDispatchers,
     IAPISlice {
@@ -135,6 +141,8 @@ export const useStore = createSelectorHooks<IStore>(
       ...createUserListDispatchers(set, get),
       ...createModalSlice(set, get),
       ...createInviteSlice(set, get),
+      ...createAwardsDispatchers(set, get),
+      ...createAwardsSlice(set, get),
       ...createAudioLevelSlice(set, get),
       ...createStreamSlice(set, get),
       ...createSignUpSlice(set, get),
@@ -170,5 +178,5 @@ export const useStore = createSelectorHooks<IStore>(
 );
 
 export function useStoreShallow<U>(selector: StateSelector<IStore, U>) {
-  return useStore(selector, shallow);
+  return useStore(useCallback(selector, []), shallow);
 }

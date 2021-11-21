@@ -38,6 +38,11 @@ model User {
   inviter Invite[] @relation(name: "inviter")
   invitee Invite[] @relation(name: "invitee")
 
+  balance CoinBalance? @relation(name: "coin_balance")
+
+  award_sender Award[] @relation(name: "award_sender")
+  award_recipent Award[] @relation(name: "award_recipent")
+
   notifications Notification[]    @relation(name: "notifications")
   developer     DeveloperAccount? @relation(name: "developer")
 
@@ -210,4 +215,39 @@ model DeveloperAccount {
   user    User   @relation(name: "developer", fields: [user_id], references: [id], onDelete: Cascade)
 
   bots Bot[] @relation(name: "bot_creator")
+}
+
+model AwardItem {
+  id      String @id @default(cuid())
+  title String
+  media String
+  price Int
+
+  awarded Award[] @relation(name: "awarded")
+}
+
+model CoinBalance {
+  id      String @id @default(cuid())
+
+  user_id String @unique
+  user    User   @relation(name: "coin_balance", fields: [user_id], references: [id], onDelete: Cascade)
+
+  balance Int
+}
+
+model Award {
+  id      String @id @default(cuid())
+
+  message String @default("")
+
+  sender_id String 
+  sender    User   @relation(name: "award_sender", fields: [sender_id], references: [id], onDelete: Cascade)
+
+  recipent_id String 
+  recipent    User   @relation(name: "award_recipent", fields: [recipent_id], references: [id], onDelete: Cascade)
+
+  award_id String 
+  award    AwardItem   @relation(name: "awarded", fields: [award_id], references: [id], onDelete: Cascade)
+
+  created_at  DateTime      @default(now())
 }

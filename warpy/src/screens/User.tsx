@@ -1,6 +1,7 @@
 import {ScreenHeader, Text} from '@app/components';
 import {IconButton} from '@app/components/IconButton';
 import {SmallTextButton} from '@app/components/SmallTextButton';
+import {UserAwardsPreview} from '@app/components/UserAwardsPreview';
 import {UserGeneralInfo} from '@app/components/UserGeneralInfo';
 import {useStore} from '@app/store';
 import {useRoute} from '@react-navigation/native';
@@ -90,6 +91,16 @@ export const User = () => {
             />
           </View>
         </View>
+
+        {user?.id && (
+          <>
+            <Text size="small" color="info">
+              recent awards
+            </Text>
+            <UserAwardsPreview user={user.id} />
+          </>
+        )}
+
         {stream && (
           <>
             <Text size="small" color="info">

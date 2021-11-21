@@ -5,6 +5,7 @@ import {StreamOverlay} from './StreamOverlay';
 import {Room} from './Room';
 import {useRemoteStreamController} from '@app/hooks';
 import {ReactionCanvas} from './ReactionCanvas';
+import {AwardDisplay} from './AwardDisplay';
 
 interface IRemoteStreamProps {
   stream: Stream;
@@ -18,6 +19,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
     <View style={styles.wrapper}>
       <Room />
       <ReactionCanvas />
+      <AwardDisplay />
       <StreamOverlay />
     </View>
   );

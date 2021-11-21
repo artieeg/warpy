@@ -302,3 +302,18 @@ export interface IUserListRequest {
   list: UserList;
   page: number;
 }
+
+export interface IGetCoinBalanceRequest {
+  user: string;
+}
+
+export interface ISendAwardRequest {
+  user: string;
+  message: string;
+  award_id: string;
+  recipent: string;
+}
+
+export interface IFetchReceivedAwardsRequest {
+  target: string;
+}

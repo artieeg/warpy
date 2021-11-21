@@ -5,7 +5,7 @@ import {useGifs} from '@app/hooks/useGifs';
 import FastImage from 'react-native-fast-image';
 import {AvatarOption} from '@app/components/AvatarOption';
 import {useStore} from '@app/store';
-import {SearchInput} from '@app/components/SearchInput';
+import {Input} from '@app/components';
 import {ConfirmButton} from '@app/components/ConfirmButton';
 import {useNavigation} from '@react-navigation/native';
 
@@ -39,7 +39,7 @@ export const SignUpAvatar = () => {
           </Text>
         </View>
       </View>
-      <SearchInput
+      <Input
         onChangeText={text => setSearch(text)}
         placeholder="search gifs via Tenor"
       />

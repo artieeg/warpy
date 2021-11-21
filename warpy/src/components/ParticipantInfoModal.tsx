@@ -5,6 +5,7 @@ import {SmallTextButton} from './SmallTextButton';
 import {useParticipantModalController} from '@app/hooks/useParticipantModalController';
 import {IconButton} from './IconButton';
 import {UserGeneralInfo} from './UserGeneralInfo';
+import {UserAwardsPreview} from './UserAwardsPreview';
 
 export const ParticipantInfoModal = () => {
   const {participant, onOpenProfile, visible, isFollowing, onToggleFollow} =
@@ -40,6 +41,7 @@ export const ParticipantInfoModal = () => {
               title="open profile"
             />
           </View>
+          <UserAwardsPreview user={participant.id} />
         </View>
       )}
     </BaseSlideModal>
