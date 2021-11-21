@@ -1,9 +1,10 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {View, StyleSheet} from 'react-native';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {StyleSheet, TouchableOpacity} from 'react-native';
 import {IUser, UserList} from '@warpy/lib';
 import {UserGeneralInfo} from './UserGeneralInfo';
 import {SmallTextButton} from './SmallTextButton';
 import {useStore} from '@app/store';
+import {useNavigation} from '@react-navigation/native';
 
 interface BaseUserListItemProps {
   user: IUser;
@@ -65,15 +66,21 @@ const BlockItemAction = ({user}: ActionProps) => {
 };
 
 export const UserListItem = ({user, list}: BaseUserListItemProps) => {
+  const navigation = useNavigation();
+
+  const onOpenUser = useCallback(() => {
+    navigation.navigate('User', {id: user.id});
+  }, [navigation, user]);
+
   return (
-    <View style={styles.wrapper}>
+    <TouchableOpacity onPress={onOpenUser} style={styles.wrapper}>
       <UserGeneralInfo user={user} avatar={{size: 'large'}} />
       {(list === 'followers' || list === 'following') && (
         <FollowingItemAction user={user} />
       )}
 
       {list === 'blocked' && <BlockItemAction user={user} />}
-    </View>
+    </TouchableOpacity>
   );
 };
 
