@@ -1,5 +1,7 @@
 import {StoreSlice} from '../types';
 import {IAward} from '@warpy/lib';
+import produce from 'immer';
+import {IStore} from '../useStore';
 
 export interface IAwardsDispatchers {
   dispatchSendAward: (
@@ -10,12 +12,35 @@ export interface IAwardsDispatchers {
 
   dispatchAwardDisplayQueueAppend: (award: IAward) => void;
   dispatchAwardDisplayQueueNext: () => void;
+  dispatchFetchReceivedAwards: (
+    user: string,
+    forceRefresh?: boolean,
+  ) => Promise<void>;
 }
 
 export const createAwardsDispatchers: StoreSlice<IAwardsDispatchers> = (
   set,
   get,
 ) => ({
+  async dispatchFetchReceivedAwards(user, forceRefresh) {
+    const {api, awards} = get();
+
+    console.log({awards, forceRefresh});
+    //Do not fetch awards again
+    if (awards[user] && !forceRefresh) {
+      return;
+    }
+
+    const response = await api.awards.getReceived(user);
+    console.log({response});
+
+    set(
+      produce<IStore>(state => {
+        state.awards[user] = response.awards;
+      }),
+    );
+  },
+
   dispatchAwardDisplayQueueNext() {
     set({
       awardDisplayCurrent: get().awardDisplayCurrent + 1,

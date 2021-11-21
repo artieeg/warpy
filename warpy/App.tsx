@@ -14,6 +14,7 @@ import {
   UserListScreen,
   Stream,
   Loading,
+  MyAwardsDisplay,
 } from './src/screens';
 import {StatusBar} from 'react-native';
 import {QueryClient, QueryClientProvider} from 'react-query';
@@ -32,6 +33,7 @@ const App = () => {
     SignUpName,
     SignUpUsername,
     Loading,
+    MyAwardsDisplay,
     SignUpAvatar,
     Feed,
     NewStream,

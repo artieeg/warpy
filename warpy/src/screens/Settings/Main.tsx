@@ -59,6 +59,12 @@ const getItems = ({
   onLogOut,
   onDeleteAccount,
 }: SettingItemsParams) => ({
+  received_awards: {
+    color: '#7176F9',
+    icon: 'gift',
+    title: 'my awards',
+    onPress: () => navigation.current?.navigate('MyAwardsDisplay'),
+  },
   followers: {
     color: '#F9B271',
     icon: 'account-group',
@@ -108,7 +114,7 @@ const getItems = ({
 
 const styles = StyleSheet.create({
   padding: {
-    paddingHorizontal: 30,
+    paddingHorizontal: 40,
   },
   avatarContainer: {
     alignItems: 'center',
