@@ -7,6 +7,7 @@ import {
   IUser,
   INotification,
   IAwardModel,
+  IAward,
 } from "./models";
 import { UserList } from "./types";
 
@@ -154,4 +155,8 @@ export interface IGetAvailableAwardsResponse {
 
 export interface ISendAwardResponse {
   status: "ok" | "error";
+}
+
+export interface IReceivedAwardsResponse {
+  awards: IAward[];
 }

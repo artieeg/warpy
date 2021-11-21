@@ -30,6 +30,7 @@ const handlers: Record<string, HandlerConfig> = {
       stream: joi.string().max(64).required(),
     }),
   },
+
   "raise-hand": {
     subject: "user.raise-hand",
     kind: "event",
@@ -38,12 +39,22 @@ const handlers: Record<string, HandlerConfig> = {
       flag: joi.boolean().required(),
     }),
   },
+
   "speaker-allow": {
     subject: "speaker.allow",
     kind: "event",
     auth: true,
     schema: joi.object({
       speaker: joi.string().max(64).required(),
+    }),
+  },
+
+  "get-received-awards": {
+    subject: "awards.get-received",
+    kind: "request",
+    auth: true,
+    schema: joi.object({
+      target: joi.string().max(64).required(),
     }),
   },
 
@@ -95,6 +106,7 @@ const handlers: Record<string, HandlerConfig> = {
     auth: true,
     schema: joi.object().unknown(),
   },
+
   "request-viewers": {
     subject: "viewers.get",
     kind: "request",
@@ -104,6 +116,7 @@ const handlers: Record<string, HandlerConfig> = {
       stream: joi.string().max(64).required(),
     }),
   },
+
   "stream-stop": {
     subject: "stream.stop",
     kind: "event",
@@ -112,6 +125,7 @@ const handlers: Record<string, HandlerConfig> = {
       stream: joi.string().max(64).required(),
     }),
   },
+
   "stream-new": {
     subject: "stream.create",
     kind: "request",
@@ -121,24 +135,28 @@ const handlers: Record<string, HandlerConfig> = {
       hub: joi.string().max(64).required(),
     }),
   },
+
   "request-feed": {
     subject: "feeds.get",
     kind: "request",
     auth: true,
     schema: joi.object({ page: joi.number().min(0).required() }),
   },
+
   "new-user": {
     subject: "user.create",
     kind: "request",
     auth: false,
     schema: joi.object().unknown(),
   },
+
   "delete-user": {
     subject: "user.delete",
     kind: "request",
     auth: true,
     schema: joi.object({}),
   },
+
   reaction: {
     subject: "stream.reaction",
     kind: "event",
@@ -148,6 +166,7 @@ const handlers: Record<string, HandlerConfig> = {
       emoji: joi.string().max(64).required(),
     }),
   },
+
   "user-follow": {
     subject: "user.follow",
     kind: "request",
@@ -156,6 +175,7 @@ const handlers: Record<string, HandlerConfig> = {
       userToFollow: joi.string().max(64).required(),
     }),
   },
+
   "user-unfollow": {
     subject: "user.unfollow",
     kind: "request",
@@ -164,6 +184,7 @@ const handlers: Record<string, HandlerConfig> = {
       userToUnfollow: joi.string().max(64).required(),
     }),
   },
+
   "new-chat-message": {
     subject: "stream.new-chat-message",
     kind: "request",
@@ -172,6 +193,7 @@ const handlers: Record<string, HandlerConfig> = {
       message: joi.string().max(500).required(),
     }),
   },
+
   "kick-user": {
     subject: "stream.kick-user",
     kind: "event",
@@ -180,6 +202,7 @@ const handlers: Record<string, HandlerConfig> = {
       userToKick: joi.string().max(64).required(),
     }),
   },
+
   "report-user": {
     subject: "user.report",
     kind: "request",
@@ -189,6 +212,7 @@ const handlers: Record<string, HandlerConfig> = {
       reportReasonId: joi.string().max(64).required(),
     }),
   },
+
   "unblock-user": {
     subject: "user.unblock",
     kind: "request",
@@ -197,6 +221,7 @@ const handlers: Record<string, HandlerConfig> = {
       userToUnblock: joi.string().max(64).required(),
     }),
   },
+
   "block-user": {
     subject: "user.block",
     kind: "request",
@@ -205,6 +230,7 @@ const handlers: Record<string, HandlerConfig> = {
       userToBlock: joi.string().max(64).required(),
     }),
   },
+
   "invite-user": {
     schema: joi.object({
       invitee: joi.string().max(64).required(),

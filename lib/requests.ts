@@ -313,3 +313,7 @@ export interface ISendAwardRequest {
   award_id: string;
   recipent: string;
 }
+
+export interface IFetchReceivedAwardsRequest {
+  target: string;
+}

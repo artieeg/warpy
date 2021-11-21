@@ -1,7 +1,9 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
+  IFetchReceivedAwardsRequest,
   IGetAvailableAwardsResponse,
+  IReceivedAwardsResponse,
   ISendAwardRequest,
   ISendAwardResponse,
 } from '@warpy/lib';
@@ -11,8 +13,17 @@ import { AwardService } from './award.service';
 export class AwardController {
   constructor(private awardService: AwardService) {}
 
+  @MessagePattern('awards.get-received')
+  async getReceivedAwards({
+    target,
+  }: IFetchReceivedAwardsRequest): Promise<IReceivedAwardsResponse> {
+    const awards = await this.awardService.getReceivedAwards(target);
+
+    return { awards };
+  }
+
   @MessagePattern('awards.get-available')
-  async getAwards(): Promise<IGetAvailableAwardsResponse> {
+  async getAvailableAwards(): Promise<IGetAvailableAwardsResponse> {
     const awards = await this.awardService.getAvailableAwards();
 
     return { awards };

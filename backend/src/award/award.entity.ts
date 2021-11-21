@@ -41,4 +41,17 @@ export class AwardEntity {
 
     return AwardEntity.toAwardDTO(award);
   }
+
+  async getByRecipent(id: string) {
+    const data = await this.prisma.award.findMany({
+      where: { recipent_id: id },
+      include: {
+        sender: true,
+        recipent: true,
+        award: true,
+      },
+    });
+
+    return data.map(AwardEntity.toAwardDTO);
+  }
 }

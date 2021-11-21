@@ -1,5 +1,5 @@
-import {AwardFeedItem} from '@app/components/AwardFeedItem';
-import {useStore, useStoreShallow} from '@app/store';
+import {ScreenHeader, AwardFeedItem} from '@app/components';
+import {useStoreShallow} from '@app/store';
 import React, {useEffect} from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
 
@@ -18,6 +18,7 @@ export const MyAwardsDisplay = () => {
 
   return (
     <View style={styles.wrapper}>
+      <ScreenHeader />
       <FlatList
         style={styles.container}
         data={awards}

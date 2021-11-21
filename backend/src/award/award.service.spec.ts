@@ -32,6 +32,22 @@ describe('AwardService', () => {
     awardService = m.get(AwardService);
   });
 
+  describe('fetching received awards', () => {
+    const awards = [
+      createAwardFixture({}),
+      createAwardFixture({}),
+      createAwardFixture({}),
+    ];
+
+    it('returns received awards', () => {
+      mockedAwardEntity.getByRecipent.mockResolvedValueOnce(awards);
+
+      expect(awardService.getReceivedAwards('user')).resolves.toStrictEqual(
+        awards,
+      );
+    });
+  });
+
   describe('sending an award', () => {
     const createdAwardRecord = createAwardFixture({});
     const { sender, message, recipent, award } = createdAwardRecord;

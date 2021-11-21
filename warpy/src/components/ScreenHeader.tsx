@@ -26,6 +26,7 @@ export const ScreenHeader = () => {
     };
 
     const titles = {
+      MyAwardsDisplay: '/awards',
       Feed: '/feed',
       Notifications: '/news',
       MainSettingsScreen: '/you',

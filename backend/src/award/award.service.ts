@@ -14,6 +14,10 @@ export class AwardService {
     private coinBalanceEntity: CoinBalanceEntity,
   ) {}
 
+  async getReceivedAwards(user: string) {
+    return this.awardEntity.getByRecipent(user);
+  }
+
   async getAvailableAwards() {
     return this.awardModelEntity.getAvailableAwards();
   }
