@@ -7,15 +7,15 @@ import {AudioLevelIndicator} from './AudioLevelIndicator';
 import {Avatar} from './Avatar';
 import {Text} from './Text';
 
-interface AudioRoomParticipantProps {
+interface ParticipantViewProps {
   data: IParticipant;
   onPress?: any;
 }
 
-export const AudioRoomParticipant = ({
+export const ParticipantView = ({
   data,
   onPress: providedOnPress,
-}: AudioRoomParticipantProps) => {
+}: ParticipantViewProps) => {
   const [userAudioLevel, dispatchModalOpen, dispatchAudioLevelDelete] =
     useStore(
       state => [

@@ -1,8 +1,8 @@
 import {useStoreShallow} from '@app/store';
 import React, {useMemo} from 'react';
 import {FlatList, StyleSheet, useWindowDimensions, View} from 'react-native';
-import {AudioRoomParticipant} from './AudioRoomParticipant';
 import {BaseSlideModal} from './BaseSlideModal';
+import {ParticipantView} from './ParticipantView';
 
 export const AwardRecipentPicker = () => {
   const [visible, streamers, dispatchModalOpen] = useStoreShallow(state => [
@@ -31,7 +31,7 @@ export const AwardRecipentPicker = () => {
         numColumns={3}
         renderItem={({item}) => (
           <View style={cellStyle}>
-            <AudioRoomParticipant
+            <ParticipantView
               onPress={() => dispatchModalOpen('award', {userToAward: item.id})}
               data={item}
             />

@@ -1,6 +1,5 @@
-import {useStore, useStoreShallow} from '@app/store';
+import {useStoreShallow} from '@app/store';
 import React, {useCallback} from 'react';
-import shallow from 'zustand/shallow';
 import {IconButton} from './IconButton';
 
 export const AwardButton = () => {

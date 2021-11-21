@@ -26,7 +26,7 @@ export * from './ToastProvider';
 export * from './OpenNotificationsButton';
 export * from './Notification';
 export * from './OpenHomeButton';
-export * from './AudioRoomParticipant';
+export * from './ParticipantView';
 export * from './ScreenHeader';
 export * from './SettingsTextEdit';
 export * from './Input';

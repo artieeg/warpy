@@ -5,7 +5,7 @@ import React, {useMemo, useRef} from 'react';
 import {RTCView} from 'react-native-webrtc';
 import {useStore} from '@app/store';
 import shallow from 'zustand/shallow';
-import {AudioRoomParticipant} from './AudioRoomParticipant';
+import {ParticipantView} from './ParticipantView';
 
 export const Room = () => {
   const streams = useVideoStreams();
@@ -54,7 +54,7 @@ export const Room = () => {
           contentContainerStyle={styles.listContent}
           style={styles.listC}
           data={participants}
-          renderItem={({item}) => <AudioRoomParticipant data={item} />}
+          renderItem={({item}) => <ParticipantView data={item} />}
           numColumns={3}
         />
       </View>
