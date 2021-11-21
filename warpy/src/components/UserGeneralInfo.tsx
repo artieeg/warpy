@@ -1,11 +1,11 @@
 import React from 'react';
 import {View, StyleSheet, ViewProps} from 'react-native';
-import {IUser} from '@warpy/lib';
+import {IBaseUser} from '@warpy/lib';
 import {Avatar, IAvatarProps} from './Avatar';
 import {Text} from './Text';
 
 interface UserGeneralInfoProps extends ViewProps {
-  user: IUser;
+  user: IBaseUser;
   avatar?: Partial<IAvatarProps>;
 }
 
