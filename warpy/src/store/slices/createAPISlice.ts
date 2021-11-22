@@ -45,7 +45,7 @@ export const createAPISlice = (
         } else {
           navigation.current?.navigate('Stream', {stream: {id}});
         }
-      }, 500);
+      }, 1500);
     });
 
     api.stream.onNewParticipant(data => {

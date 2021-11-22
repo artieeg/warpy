@@ -7,12 +7,24 @@ import {useStore} from '@app/store';
 import shallow from 'zustand/shallow';
 import {NewStreamPanel} from '@app/components/NewStreamPanel';
 import {AwardDisplay} from '@app/components/AwardDisplay';
+import {useRoute} from '@react-navigation/native';
 
 export const useNewStreamController = () => {
   const [streamId, dispatchMediaRequest] = useStore(
     state => [state.stream, state.dispatchMediaRequest],
     shallow,
   );
+
+  const params = useRoute().params as any;
+
+  //Cancel the start room together timeout if it exists
+  useEffect(() => {
+    return () => {
+      if (params?.startRoomTogetherTimeout) {
+        clearTimeout(params.startRoomTogetherTimeout);
+      }
+    };
+  }, [params?.startRoomTogetherTimeout]);
 
   useEffect(() => {
     dispatchMediaRequest('audio', {enabled: true});

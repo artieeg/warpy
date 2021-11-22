@@ -4,7 +4,7 @@ import {SmallTextButton} from '@app/components/SmallTextButton';
 import {UserAwardsPreview} from '@app/components/UserAwardsPreview';
 import {UserGeneralInfo} from '@app/components/UserGeneralInfo';
 import {useStore} from '@app/store';
-import {useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useCallback, useMemo} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
 import FadeInOut from 'react-native-fade-in-out';
@@ -12,19 +12,29 @@ import {useAsyncMemo} from 'use-async-memo';
 import shallow from 'zustand/shallow';
 
 export const useUserScreenController = () => {
-  const [api, following, dispatchFollowingRemove, dispatchFollowingAdd] =
-    useStore(
-      store => [
-        store.api,
-        store.following,
-        store.dispatchFollowingRemove,
-        store.dispatchFollowingAdd,
-      ],
-      shallow,
-    );
+  const [
+    api,
+    following,
+    dispatchFollowingRemove,
+    dispatchFollowingAdd,
+    dispatchPendingInvite,
+    dispatchSendPendingInvites,
+  ] = useStore(
+    store => [
+      store.api,
+      store.following,
+      store.dispatchFollowingRemove,
+      store.dispatchFollowingAdd,
+      store.dispatchPendingInvite,
+      store.dispatchSendPendingInvites,
+    ],
+    shallow,
+  );
 
   const id = (useRoute().params as any)['id'] as string;
   const data = useAsyncMemo(() => api.user.get(id), [id]);
+
+  const navigation = useNavigation();
 
   const isFollowing = useMemo(() => following.includes(id), [following, id]);
 
@@ -40,7 +50,14 @@ export const useUserScreenController = () => {
     }
   }, [id, isFollowing]);
 
-  const onStartRoomTogether = useCallback(() => {}, []);
+  const onStartRoomTogether = useCallback(async () => {
+    const startRoomTogetherTimeout = setTimeout(() => {
+      dispatchPendingInvite(id);
+      dispatchSendPendingInvites();
+    }, 400);
+
+    navigation.navigate('NewStream', {startRoomTogetherTimeout});
+  }, [navigation]);
 
   return {
     user: data?.user,
