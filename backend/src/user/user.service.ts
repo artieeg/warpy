@@ -1,3 +1,4 @@
+import { AppInviteEntity } from '@backend_2/app_invite/app-invite.entity';
 import { BlockEntity } from '@backend_2/block/block.entity';
 import { CoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity';
 import { UserNotFound } from '@backend_2/errors';
@@ -26,6 +27,7 @@ export class UserService {
     private streamEntity: StreamEntity,
     private coinBalanceEntity: CoinBalanceEntity,
     private blockEntity: BlockEntity,
+    private appInviteEntity: AppInviteEntity,
   ) {}
 
   async getUserInfo(id: string, requester: string): Promise<IUserInfoResponse> {
@@ -92,8 +94,6 @@ export class UserService {
       sub: 'DEV_ACCOUNT',
     });
 
-    await this.coinBalanceEntity.createCoinBalance(user.id, 2000);
-
     const accessToken = this.tokenService.createAuthToken(user.id, false, '1d');
     const refreshToken = this.tokenService.createAuthToken(
       user.id,
@@ -101,7 +101,11 @@ export class UserService {
       '1y',
     );
 
-    await this.refreshTokenEntity.create(refreshToken);
+    await Promise.all([
+      this.coinBalanceEntity.createCoinBalance(user.id, 2000),
+      this.appInviteEntity.create(user.id),
+      this.refreshTokenEntity.create(refreshToken),
+    ]);
 
     return {
       id: user.id,
