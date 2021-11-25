@@ -257,7 +257,7 @@ model Award {
 model AppInvite {
   id      String @id @default(cuid())
 
-  code String
+  code String @unique
 
   user_id String? @unique
   user    User?   @relation(name: "app_invite", fields: [user_id], references: [id], onDelete: Cascade)
