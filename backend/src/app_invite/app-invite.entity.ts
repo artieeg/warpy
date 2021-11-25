@@ -67,4 +67,17 @@ export class AppInviteEntity {
 
     return AppInviteEntity.toAppInviteDTO(invite);
   }
+
+  async find(user_id: string) {
+    return AppInviteEntity.toAppInviteDTO(
+      await this.prisma.appInvite.findUnique({
+        where: {
+          user_id,
+        },
+        include: {
+          user: true,
+        },
+      }),
+    );
+  }
 }

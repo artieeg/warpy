@@ -317,3 +317,7 @@ export interface ISendAwardRequest {
 export interface IFetchReceivedAwardsRequest {
   target: string;
 }
+
+export interface IAppInviteRequest {
+  user_id: string;
+}

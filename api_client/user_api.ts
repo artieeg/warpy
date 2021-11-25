@@ -12,6 +12,7 @@ import {
   IWhoAmIResponse,
   IUserUnblockResponse,
   UserList,
+  IAppInviteResponse,
 } from "@warpy/lib";
 import { WebSocketConn } from "./connection";
 
@@ -31,6 +32,7 @@ export interface IUserAPI {
   unblock: (userToUnblock: string) => Promise<IUserUnblockResponse>;
   get: (id: string) => Promise<IUserInfoResponse>;
   fetchUserList: (list: UserList, page?: number) => Promise<IUserListResponse>;
+  getAppInvite: (user: string) => Promise<IAppInviteResponse>;
 }
 
 export interface INewUser {
@@ -60,4 +62,6 @@ export const UserAPI = (socket: WebSocketConn): IUserAPI => ({
     socket.request("user-unfollow", { userToUnfollow }),
   fetchUserList: (list, page = 0) =>
     socket.request("user-list", { list, page }),
+
+  getAppInvite: (user_id) => socket.request("get-app-invite-data", { user_id }),
 });

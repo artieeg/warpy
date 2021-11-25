@@ -8,6 +8,7 @@ import {
   INotification,
   IAwardModel,
   IAward,
+  IAppInvite,
 } from "./models";
 import { UserList } from "./types";
 
@@ -159,4 +160,8 @@ export interface ISendAwardResponse {
 
 export interface IReceivedAwardsResponse {
   awards: IAward[];
+}
+
+export interface IAppInviteResponse {
+  invite: IAppInvite;
 }
