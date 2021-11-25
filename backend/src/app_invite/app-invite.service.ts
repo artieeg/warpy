@@ -8,4 +8,8 @@ export class AppInviteService {
   async get(user_id: string) {
     return this.appInviteEntity.find(user_id);
   }
+
+  async update(user_id: string) {
+    return this.appInviteEntity.updateInviteCode(user_id);
+  }
 }

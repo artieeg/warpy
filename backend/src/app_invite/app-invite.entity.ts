@@ -57,16 +57,17 @@ export class AppInviteEntity {
   }
 
   async updateInviteCode(user_id: string) {
-    const invite: AppInvite = await this.repeatUntilSuccess(() =>
-      this.prisma.appInvite.create({
+    await this.repeatUntilSuccess(() =>
+      this.prisma.appInvite.update({
+        where: {
+          user_id,
+        },
         data: {
           code: this.generateInviteCode(),
           user_id,
         },
       }),
     );
-
-    return AppInviteEntity.toAppInviteDTO(invite);
   }
 
   async find(user_id: string) {

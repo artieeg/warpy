@@ -33,6 +33,7 @@ export interface IUserAPI {
   get: (id: string) => Promise<IUserInfoResponse>;
   fetchUserList: (list: UserList, page?: number) => Promise<IUserListResponse>;
   getAppInvite: (user: string) => Promise<IAppInviteResponse>;
+  refreshAppInvite: (user: string) => Promise<{ status: string }>;
 }
 
 export interface INewUser {
@@ -64,4 +65,6 @@ export const UserAPI = (socket: WebSocketConn): IUserAPI => ({
     socket.request("user-list", { list, page }),
 
   getAppInvite: (user_id) => socket.request("get-app-invite-data", { user_id }),
+  refreshAppInvite: (user_id) =>
+    socket.request("update-app-invite-data", { user_id }),
 });

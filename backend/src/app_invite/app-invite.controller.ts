@@ -11,12 +11,18 @@ export class AppInviteController {
   async getAppInvite({
     user_id,
   }: IAppInviteRequest): Promise<IAppInviteResponse> {
-    console.log('gettting app invite for', user_id);
     const invite = await this.appInviteService.get(user_id);
     console.log({ invite });
 
     return {
       invite,
     };
+  }
+
+  @MessagePattern('app-invite.update')
+  async updateAppInvite({ user_id }) {
+    await this.appInviteService.update(user_id);
+
+    return { status: 'ok' };
   }
 }
