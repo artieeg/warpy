@@ -66,7 +66,7 @@ const handlers: Record<string, HandlerConfig> = {
   },
 
   "get-app-invite-data": {
-    subject: "app-invite-get",
+    subject: "app-invite.get",
     kind: "request",
     auth: true,
     schema: joi.object({

@@ -1,3 +1,4 @@
+import { AppInviteModule } from '@backend_2/app_invite/app-invite.module';
 import { AwardModule } from '@backend_2/award/award.module';
 import { BlockModule } from '@backend_2/block/block.module';
 import { BotsModule } from '@backend_2/bots/bots.module';
@@ -37,6 +38,7 @@ export const testModuleBuilder = Test.createTestingModule({
     UserModule,
     StreamModule,
     MessageModule,
+    AppInviteModule,
     UserReportModule,
     MediaModule,
     StreamModule,

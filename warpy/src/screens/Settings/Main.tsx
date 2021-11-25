@@ -59,6 +59,12 @@ const getItems = ({
   onLogOut,
   onDeleteAccount,
 }: SettingItemsParams) => ({
+  send_app_invite: {
+    color: '#71F9D8',
+    icon: 'invite-user',
+    title: 'invite & get coins',
+    onPress: () => navigation.current?.navigate('SendInvite'),
+  },
   received_awards: {
     color: '#7176F9',
     icon: 'gift',

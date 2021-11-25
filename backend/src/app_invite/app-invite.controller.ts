@@ -11,7 +11,9 @@ export class AppInviteController {
   async getAppInvite({
     user_id,
   }: IAppInviteRequest): Promise<IAppInviteResponse> {
+    console.log('gettting app invite for', user_id);
     const invite = await this.appInviteService.get(user_id);
+    console.log({ invite });
 
     return {
       invite,

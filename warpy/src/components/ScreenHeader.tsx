@@ -18,6 +18,11 @@ export const ScreenHeader = () => {
   //Used to pick the correct title when the app's on the UserListScreen
   const userListScreenMode: UserList = (route.params as any)?.mode as any;
 
+  const displayControls = useMemo(
+    () => !['SendInvite'].includes(route.name),
+    [route.name],
+  );
+
   const title = useMemo(() => {
     const userListScreenTitles = {
       following: '/following',
@@ -32,6 +37,7 @@ export const ScreenHeader = () => {
       MainSettingsScreen: '/you',
       User: '/user',
       UserListScreen: userListScreenTitles[userListScreenMode],
+      SendInvite: '/invite people',
     };
 
     return titles[route.name as keyof typeof titles];
@@ -71,17 +77,19 @@ export const ScreenHeader = () => {
       <Text size="large" weight="extraBold">
         {title}
       </Text>
-      <View style={styles.row}>
-        {button}
+      {displayControls && (
+        <View style={styles.row}>
+          {button}
 
-        <StartNewStreamButton
-          style={styles.headerButton}
-          onPress={onStartStream}
-        />
-        <TouchableOpacity onPress={onOpenSettings}>
-          <Avatar user={user!} />
-        </TouchableOpacity>
-      </View>
+          <StartNewStreamButton
+            style={styles.headerButton}
+            onPress={onStartStream}
+          />
+          <TouchableOpacity onPress={onOpenSettings}>
+            <Avatar user={user!} />
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
