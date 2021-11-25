@@ -36,6 +36,7 @@ export class AppInviteEntity {
     return {
       id: data.id,
       user: UserEntity.toUserDTO(data),
+      code: data.code,
     };
   }
 
