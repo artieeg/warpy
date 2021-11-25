@@ -46,6 +46,8 @@ model User {
   notifications Notification[]    @relation(name: "notifications")
   developer     DeveloperAccount? @relation(name: "developer")
 
+  app_invite     AppInvite? @relation(name: "app_invite")
+
   //Stream Stream[]
   @@map(name: "Users")
 }
@@ -250,4 +252,13 @@ model Award {
   award    AwardItem   @relation(name: "awarded", fields: [award_id], references: [id], onDelete: Cascade)
 
   created_at  DateTime      @default(now())
+}
+
+model AppInvite {
+  id      String @id @default(cuid())
+
+  code String
+
+  user_id String? @unique
+  user    User?   @relation(name: "app_invite", fields: [user_id], references: [id], onDelete: Cascade)
 }
