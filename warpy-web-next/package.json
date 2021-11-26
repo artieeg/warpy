@@ -1,4 +1,6 @@
 {
+  "name": "warpy-web-next",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "dev": "next",
@@ -6,12 +8,16 @@
     "start": "next start"
   },
   "dependencies": {
+    "@warpy/components": "1.0.0",
     "next": "latest",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-native-web": "^0.13.14"
+    "next-compose-plugins": "^2.2.1",
+    "next-transpile-modules": "^9.0.0",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "react-native-web": "0.13.14"
   },
   "devDependencies": {
-    "babel-plugin-react-native-web": "^0.13.14"
+    "babel-plugin-react-native-web": "^0.13.14",
+    "next-transpile-modules": "^9.0.0"
   }
 }

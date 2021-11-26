@@ -18,6 +18,7 @@
     "@testing-library/react-hooks": "^7.0.1",
     "@types/react-native-vector-icons": "^6.4.8",
     "@warpy/api": "1.0.0",
+    "@warpy/components": "1.0.0",
     "@warpy/lib": "1.0.0",
     "@warpykit-sdk/client": "1.0.0",
     "axios": "^0.21.1",

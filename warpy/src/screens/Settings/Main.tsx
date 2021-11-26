@@ -1,4 +1,5 @@
-import {Avatar, SettingsTextEdit, Text} from '@app/components';
+import {Avatar, SettingsTextEdit} from '@app/components';
+import {Text} from '@warpy/components';
 import {ScreenHeader} from '@app/components/ScreenHeader';
 import {useStore} from '@app/store';
 import React, {useMemo} from 'react';
