@@ -3,7 +3,7 @@ import React from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import {BaseSlideModal, IBaseModalProps} from './BaseSlideModal';
 import {IconButton} from './IconButton';
-import {TextButton} from './TextButton';
+import {TextButton} from '@warpy/components';
 import {UserInviteOption} from './UserInviteOption';
 import {UserSearchInput} from './UserSearchInput';
 

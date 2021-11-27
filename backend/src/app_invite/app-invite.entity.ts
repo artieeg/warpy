@@ -35,7 +35,7 @@ export class AppInviteEntity {
   static toAppInviteDTO(data: any): IAppInvite {
     return {
       id: data.id,
-      user: UserEntity.toUserDTO(data),
+      user: UserEntity.toUserDTO(data.user),
       code: data.code,
     };
   }
@@ -65,6 +65,19 @@ export class AppInviteEntity {
         data: {
           code: this.generateInviteCode(),
           user_id,
+        },
+      }),
+    );
+  }
+
+  async findById(id: string) {
+    return AppInviteEntity.toAppInviteDTO(
+      await this.prisma.appInvite.findUnique({
+        where: {
+          id,
+        },
+        include: {
+          user: true,
         },
       }),
     );

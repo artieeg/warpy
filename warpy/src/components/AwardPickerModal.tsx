@@ -8,7 +8,7 @@ import {AwardOption} from './AwardOption';
 import {useAvailableAwards} from '@app/hooks';
 import {useCoinBalance} from '@app/hooks/useCoinBalance';
 import {CoinBalance} from './CoinBalance';
-import {TextButton} from './TextButton';
+import {TextButton} from '@warpy/components';
 import {Input} from './Input';
 
 export const AwardPickerModal = (props: IBaseModalProps) => {

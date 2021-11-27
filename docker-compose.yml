@@ -18,6 +18,17 @@ services:
       redis:6.2.4-alpine
       #ports:
       #- 6379:6379
+      
+  web_next:
+    image: node:16.0.0-alpine
+    env_file:
+      - dev_env/web.env
+    ports:
+      - 3005:3005
+    volumes:
+      - ./:/warpy
+    working_dir: /warpy/warpy-web-next
+    command: yarn dev --port 3005
 
   backend:
     image: node:16.0.0-alpine

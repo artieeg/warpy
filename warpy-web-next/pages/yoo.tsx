@@ -5,7 +5,7 @@ import { Text } from "@warpy/components";
 export default function Yoo() {
   return (
     <View style={{ flex: 1, backgroundColor: "#000" }}>
-      <Text size="large">YOOOO</Text>
+      <Text size="large">/feed</Text>
     </View>
   );
 }

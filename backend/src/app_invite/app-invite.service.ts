@@ -5,6 +5,10 @@ import { AppInviteEntity } from './app-invite.entity';
 export class AppInviteService {
   constructor(private appInviteEntity: AppInviteEntity) {}
 
+  async getById(id: string) {
+    return this.appInviteEntity.findById(id);
+  }
+
   async get(user_id: string) {
     return this.appInviteEntity.find(user_id);
   }

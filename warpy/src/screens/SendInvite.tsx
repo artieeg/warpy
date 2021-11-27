@@ -3,7 +3,7 @@ import {useAppInviteCode} from '@app/hooks';
 import React, {useCallback} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Text} from '@app/components';
-import {TextButton} from '@app/components/TextButton';
+import {TextButton} from '@warpy/components';
 import {IconButton} from '@app/components/IconButton';
 import {useStoreShallow} from '@app/store';
 

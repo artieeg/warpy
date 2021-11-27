@@ -7,6 +7,15 @@ import { AppInviteService } from './app-invite.service';
 export class AppInviteController {
   constructor(private appInviteService: AppInviteService) {}
 
+  @MessagePattern('app-invite.get.by-id')
+  async getAppInviteById({ id }: { id: string }): Promise<IAppInviteResponse> {
+    const invite = await this.appInviteService.getById(id);
+
+    return {
+      invite,
+    };
+  }
+
   @MessagePattern('app-invite.get')
   async getAppInvite({
     user_id,

@@ -1,18 +1,23 @@
 const withTM = require("next-transpile-modules")(["@warpy/components"]);
+const path = require('path');
+const withReactSvg = require("next-react-svg");
 
-module.exports = withTM({
-  future: {
-    webpack5: true,
-  },
-  reactStrictMode: true,
-  typescript: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
-    // @todo remove this once storybook is fixed
-    // !! WARN !!
-    // ignoreBuildErrors: true,
-  },
+module.exports = withReactSvg({
+  include: path.resolve(__dirname, "public/icons/"),
+  ...withTM({
+    future: {
+      webpack5: true,
+    },
+    reactStrictMode: true,
+    typescript: {
+      // !! WARN !!
+      // Dangerously allow production builds to successfully complete even if
+      // your project has type errors.
+      // @todo remove this once storybook is fixed
+      // !! WARN !!
+      // ignoreBuildErrors: true,
+    },
+  }),
 });
 
 /*
