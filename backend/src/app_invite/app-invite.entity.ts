@@ -1,3 +1,4 @@
+import { AppInviteNotFound } from '@backend_2/errors';
 import { PrismaService } from '@backend_2/prisma/prisma.service';
 import { UserEntity } from '@backend_2/user/user.entity';
 import { Injectable } from '@nestjs/common';
@@ -68,6 +69,21 @@ export class AppInviteEntity {
         },
       }),
     );
+  }
+
+  /** Returns invite id */
+  async findByCode(code: string) {
+    try {
+      const { id } = await this.prisma.appInvite.findUnique({
+        where: {
+          code,
+        },
+      });
+
+      return id;
+    } catch (e) {
+      throw new AppInviteNotFound();
+    }
   }
 
   async findById(id: string) {

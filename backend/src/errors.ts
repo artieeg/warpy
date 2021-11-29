@@ -96,3 +96,12 @@ export class NotEnoughCoins extends BaseError {
     this.message = 'Not enough coins';
   }
 }
+
+export class AppInviteNotFound extends BaseError {
+  constructor() {
+    super('The invite not found');
+
+    this.name = 'AppInviteNotFound';
+    this.message = 'The invite not found';
+  }
+}

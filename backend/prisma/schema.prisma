@@ -47,6 +47,7 @@ model User {
   developer     DeveloperAccount? @relation(name: "developer")
 
   app_invite     AppInvite? @relation(name: "app_invite")
+  applied_app_invite AppliedAppInvite? @relation(name: "applied_app_invite")
 
   //Stream Stream[]
   @@map(name: "Users")
@@ -261,4 +262,18 @@ model AppInvite {
 
   user_id String? @unique
   user    User?   @relation(name: "app_invite", fields: [user_id], references: [id], onDelete: Cascade)
+
+  applied AppliedAppInvite[] @relation(name: "applied_invites")
+}
+
+model AppliedAppInvite {
+  id      String @id @default(cuid())
+
+  code String @unique
+
+  user_id String? @unique
+  user    User?   @relation(name: "applied_app_invite", fields: [user_id], references: [id], onDelete: Cascade)
+
+  invite_id String? @unique
+  invite    AppInvite?   @relation(name: "applied_invites", fields: [invite_id], references: [id], onDelete: Cascade)
 }

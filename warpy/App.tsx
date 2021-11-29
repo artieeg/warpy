@@ -15,6 +15,7 @@ import {
   UserListScreen,
   Stream,
   Loading,
+  InviteCodeInput,
   MyAwardsDisplay,
 } from './src/screens';
 import {StatusBar} from 'react-native';
@@ -35,6 +36,7 @@ const App = () => {
     SignUpUsername,
     Loading,
     SendInvite,
+    InviteCodeInput,
     MyAwardsDisplay,
     SignUpAvatar,
     Feed,
