@@ -74,13 +74,22 @@ export class AppInviteEntity {
   /** Returns invite id */
   async findByCode(code: string) {
     try {
-      const { id } = await this.prisma.appInvite.findUnique({
-        where: {
-          code,
-        },
-      });
+      const { id, user_id } = (
+        await this.prisma.appInvite.findMany({
+          where: {
+            code: {
+              equals: code,
+              mode: 'insensitive',
+            },
+          },
+          select: {
+            id: true,
+            user_id: true,
+          },
+        })
+      )[0];
 
-      return id;
+      return { id, user_id };
     } catch (e) {
       throw new AppInviteNotFound();
     }

@@ -7,7 +7,7 @@ export const useAppInviteCode = () => {
 
   return useQuery<IAppInviteResponse>(
     'app-invite-code',
-    async () => await api.user.getAppInvite(user),
+    async () => await api.app_invite.get(user),
     {
       notifyOnChangeProps: ['data'],
     },

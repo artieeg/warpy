@@ -65,13 +65,18 @@ const handlers: Record<string, HandlerConfig> = {
     schema: joi.object({}),
   },
 
+  "app-invite-apply": {
+    subject: "app-invite.apply",
+    kind: "request",
+    auth: true,
+    schema: joi.object({ code: joi.string().max(64).required() }),
+  },
+
   "update-app-invite-data": {
     subject: "app-invite.update",
     kind: "request",
     auth: true,
-    schema: joi.object({
-      user_id: joi.string().max(64).required(),
-    }),
+    schema: joi.object({}),
   },
 
   "get-app-invite-data": {

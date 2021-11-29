@@ -4,11 +4,12 @@ import { Module } from '@nestjs/common';
 import { AppInviteController } from './app-invite.controller';
 import { AppInviteEntity } from './app-invite.entity';
 import { AppInviteService } from './app-invite.service';
+import { AppliedAppInviteEntity } from './applied-app-invite.entity';
 
 @Module({
   imports: [PrismaModule, CoinBalanceModule],
-  providers: [AppInviteEntity, AppInviteService],
+  providers: [AppInviteEntity, AppliedAppInviteEntity, AppInviteService],
   controllers: [AppInviteController],
-  exports: [AppInviteEntity],
+  exports: [AppInviteEntity, AppliedAppInviteEntity],
 })
 export class AppInviteModule {}

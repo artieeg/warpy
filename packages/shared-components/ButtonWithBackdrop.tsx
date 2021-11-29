@@ -4,11 +4,13 @@ import {
   StyleSheet,
   TouchableWithoutFeedbackProps,
   TouchableWithoutFeedback,
+  TouchableOpacity,
 } from "react-native";
 import tinycolor from "tinycolor2";
 
 export interface ButtonWithBackdropProps extends TouchableWithoutFeedbackProps {
   color?: string;
+  textonly?: boolean;
   children: any;
 }
 
@@ -18,7 +20,7 @@ const DISABLED_BACKDROP_COLOR =
   "#" + tinycolor(DISABLED_COLOR).darken(5).toHex();
 
 export const ButtonWithBackdrop = (props: ButtonWithBackdropProps) => {
-  const { disabled, color } = props;
+  const { disabled, color, textonly } = props;
 
   const [buttonStyle, backdropStyle] = useMemo(
     () =>
@@ -46,18 +48,16 @@ export const ButtonWithBackdrop = (props: ButtonWithBackdropProps) => {
     [disabled, color]
   );
 
-  console.log({ backdropStyle, buttonStyle });
-
   return (
     <View style={props.style}>
-      <TouchableWithoutFeedback {...props} style={{}}>
-        <>
-          <View style={[{ height: 50 }]}>
-            <View style={[styles.backdrop, backdropStyle]} />
-            <View style={[styles.wrapper, buttonStyle]}>{props.children}</View>
+      <TouchableOpacity {...props} activeOpacity={1} style={{}}>
+        <View style={[{ height: 50 }]}>
+          <View style={[styles.backdrop, !textonly && backdropStyle]} />
+          <View style={[styles.wrapper, !textonly && buttonStyle]}>
+            {props.children}
           </View>
-        </>
-      </TouchableWithoutFeedback>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };

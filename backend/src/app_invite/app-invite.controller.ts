@@ -1,6 +1,10 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { IAppInviteRequest, IAppInviteResponse } from '@warpy/lib';
+import {
+  IAppInviteRequest,
+  IAppInviteResponse,
+  IInviteApplyRequest,
+} from '@warpy/lib';
 import { AppInviteService } from './app-invite.service';
 
 @Controller()
@@ -8,7 +12,12 @@ export class AppInviteController {
   constructor(private appInviteService: AppInviteService) {}
 
   @MessagePattern('app-invite.apply')
-  async applyAppInvite({ id }: { id: string }): Promise<IAppInviteResponse> {}
+  async applyAppInvite({
+    user,
+    code,
+  }: IInviteApplyRequest): Promise<{ status: string }> {
+    return await this.appInviteService.accept(user, code);
+  }
 
   @MessagePattern('app-invite.get.by-id')
   async getAppInviteById({ id }: { id: string }): Promise<IAppInviteResponse> {
@@ -32,8 +41,8 @@ export class AppInviteController {
   }
 
   @MessagePattern('app-invite.update')
-  async updateAppInvite({ user_id }) {
-    await this.appInviteService.update(user_id);
+  async updateAppInvite({ user }) {
+    await this.appInviteService.update(user);
 
     return { status: 'ok' };
   }

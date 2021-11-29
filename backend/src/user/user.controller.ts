@@ -36,14 +36,7 @@ export class UserController {
   @UseFilters(ExceptionFilter)
   @MessagePattern('user.whoami-request')
   async onUserGet({ user: userId }: IWhoAmIRequest): Promise<IWhoAmIResponse> {
-    const { user, following } = await this.userService.getById(userId);
-
-    console.log('whoami', { user, following });
-
-    return {
-      user,
-      following,
-    };
+    return this.userService.getById(userId);
   }
 
   @MessagePattern('user.update')

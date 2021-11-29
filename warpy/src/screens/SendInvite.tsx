@@ -12,7 +12,7 @@ export const SendInvite = () => {
   const {data, refetch} = useAppInviteCode();
 
   const onRefresh = useCallback(async () => {
-    await api.user.refreshAppInvite(user);
+    await api.app_invite.refresh();
 
     refetch();
   }, [api, user, refetch]);

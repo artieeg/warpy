@@ -10,6 +10,7 @@ import { BotDevAPI, IBotDevAPI } from "./bot_dev_api";
 import { BotAPI, IBotAPI } from "./bot_api";
 import { CoinBalanceAPI, ICoinBalanceAPI } from "./coin_balance_api";
 import { IAwardsAPI, AwardsAPI } from "./awards_api";
+import { IAppInviteAPI, AppInviteAPI } from "./app_invite_api";
 
 interface IAPIClient {
   observer: IAPIObserver;
@@ -23,6 +24,7 @@ interface IAPIClient {
   bot: IBotAPI;
   notification: INotificationAPI;
   gifs: IGifsAPI;
+  app_invite: IAppInviteAPI;
   close: () => void;
 }
 
@@ -39,6 +41,7 @@ export const APIClient = (socket: WebSocketConn): IAPIClient => ({
   close: () => socket.socket.close(),
   notification: NotificationAPI(socket),
   gifs: GifsAPI(socket),
+  app_invite: AppInviteAPI(socket),
 });
 
 export type APIClient = ReturnType<typeof APIClient>;

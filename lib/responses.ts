@@ -40,6 +40,7 @@ export interface IFeedResponse {
 export interface IWhoAmIResponse {
   user: IBaseUser | null;
   following: string[] | null;
+  hasActivatedAppInvite: boolean;
 }
 
 export interface INewUserResponse {

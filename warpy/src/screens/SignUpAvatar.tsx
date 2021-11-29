@@ -27,7 +27,11 @@ export const SignUpAvatar = () => {
         <Text style={styles.space} size="large" weight="extraBold">
           /join/avatar
         </Text>
-        <ConfirmButton onPress={() => navigation.navigate('Loading')} />
+        <ConfirmButton
+          onPress={() =>
+            navigation.navigate('InviteCodeInput', {mode: 'signup'})
+          }
+        />
       </View>
 
       <View style={styles.user}>

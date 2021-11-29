@@ -30,7 +30,7 @@ export const ToastProvider = () => {
           useNativeDriver: true,
         }),
       ]),
-      Animated.delay(duration === 'LONG' ? 2000 : 1000),
+      Animated.delay(duration === 'LONG' ? 3000 : 1000),
       Animated.parallel([
         Animated.timing(translateY.current, {
           toValue: 20,
