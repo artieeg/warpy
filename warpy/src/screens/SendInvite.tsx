@@ -6,6 +6,8 @@ import {Text} from '@app/components';
 import {TextButton} from '@warpy/components';
 import {IconButton} from '@app/components/IconButton';
 import {useStoreShallow} from '@app/store';
+import config from '@app/config';
+import Share from 'react-native-share';
 
 export const SendInvite = () => {
   const [api, user] = useStoreShallow(state => [state.api, state.user!.id]);
@@ -17,12 +19,20 @@ export const SendInvite = () => {
     refetch();
   }, [api, user, refetch]);
 
+  const onShare = useCallback(() => {
+    const url = `${config.domain}/invite/${data?.invite.id}`;
+
+    Share.open({
+      message: url,
+    });
+  }, [data?.invite]);
+
   return (
     <View style={styles.wrapper}>
       <ScreenHeader />
       {data && (
         <View style={styles.invite}>
-          <Text color="yellow" size="large">
+          <Text selectable color="yellow" size="large">
             {data.invite.code}
           </Text>
           <Text color="info" size="small" style={styles.info}>
@@ -37,7 +47,11 @@ export const SendInvite = () => {
           />
         </View>
       )}
-      <TextButton title="share your invite link" style={styles.button} />
+      <TextButton
+        onPress={onShare}
+        title="share your invite link"
+        style={styles.button}
+      />
     </View>
   );
 };
