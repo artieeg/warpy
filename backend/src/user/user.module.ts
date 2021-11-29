@@ -1,3 +1,4 @@
+import { AppInviteModule } from '@backend_2/app_invite/app-invite.module';
 import { BlockModule } from '@backend_2/block/block.module';
 import { CoinBalanceModule } from '@backend_2/coin-balance/coin-balance.module';
 import { FollowModule } from '@backend_2/follow/follow.module';
@@ -19,6 +20,7 @@ import { UserService } from './user.service';
     ParticipantModule,
     BlockModule,
     CoinBalanceModule,
+    AppInviteModule,
   ],
   controllers: [UserController],
   providers: [UserEntity, UserService],

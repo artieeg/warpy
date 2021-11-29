@@ -1,7 +1,7 @@
 import { APIClient } from "@warpy/api";
 import { IBaseUser, Roles } from "@warpy/lib";
 import { Device } from "mediasoup-client";
-import { MediaClient } from "@warpykit-sdk/client";
+import { MediaClient } from "@warpy/media";
 import { Consumer, Producer } from "mediasoup-client/lib/types";
 
 export type UserRecord = {

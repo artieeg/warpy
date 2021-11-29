@@ -1,6 +1,7 @@
-import {Avatar, SettingsTextEdit, Text} from '@app/components';
+import {Avatar, SettingsTextEdit} from '@app/components';
+import {Text} from '@warpy/components';
 import {ScreenHeader} from '@app/components/ScreenHeader';
-import {useStore} from '@app/store';
+import {useStore, useStoreShallow} from '@app/store';
 import React, {useMemo} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
 import {IUser} from '@warpy/lib';
@@ -8,7 +9,10 @@ import {SettingItemButton} from '@app/components/SettingItemButton';
 import {navigation} from '@app/navigation';
 
 export const MainSettingsScreen = () => {
-  const user: IUser = useStore(store => store.user as IUser);
+  const [user, hasActivatedAppInvite] = useStoreShallow(store => [
+    store.user as IUser,
+    store.hasActivatedAppInvite,
+  ]);
 
   const settings = useMemo(
     () =>
@@ -39,9 +43,11 @@ export const MainSettingsScreen = () => {
           <SettingsTextEdit placeholder="username" field="username" />
         </View>
         <View style={styles.padding}>
-          {Object.values(settings).map(item => (
-            <SettingItemButton {...item} />
-          ))}
+          {Object.entries(settings).map(([key, item]) =>
+            key === 'apply_invite' && hasActivatedAppInvite ? null : (
+              <SettingItemButton {...item} />
+            ),
+          )}
         </View>
       </ScrollView>
     </View>
@@ -59,6 +65,19 @@ const getItems = ({
   onLogOut,
   onDeleteAccount,
 }: SettingItemsParams) => ({
+  apply_invite: {
+    color: '#CD71F9',
+    icon: 'hand-coin',
+    title: 'apply invite and get coins',
+    onPress: () =>
+      navigation.current?.navigate('InviteCodeInput', {mode: 'settings'}),
+  },
+  send_app_invite: {
+    color: '#71F9D8',
+    icon: 'invite-user',
+    title: 'invite & get coins',
+    onPress: () => navigation.current?.navigate('SendInvite'),
+  },
   received_awards: {
     color: '#7176F9',
     icon: 'gift',

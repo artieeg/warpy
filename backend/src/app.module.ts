@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AppInviteModule } from './app_invite/app-invite.module';
 import { AwardModule } from './award/award.module';
 import { BlockModule } from './block/block.module';
 import { BotsModule } from './bots/bots.module';
@@ -33,6 +34,7 @@ import { UserModule } from './user/user.module';
       isGlobal: true,
     }),
     CoinBalanceModule,
+    AppInviteModule,
     AwardModule,
     BroadcastModule,
     MediaModule,

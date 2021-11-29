@@ -1,3 +1,5 @@
+import { AppInviteEntity } from '@backend_2/app_invite/app-invite.entity';
+import { AppliedAppInviteEntity } from '@backend_2/app_invite/applied-app-invite.entity';
 import { BlockEntity } from '@backend_2/block/block.entity';
 import { CoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity';
 import { UserNotFound } from '@backend_2/errors';
@@ -10,6 +12,7 @@ import {
   INewUserResponse,
   IUser,
   IUserInfoResponse,
+  IWhoAmIResponse,
 } from '@warpy/lib';
 import { RefreshTokenEntity } from '../token/refresh-token.entity';
 import { TokenService } from '../token/token.service';
@@ -26,6 +29,8 @@ export class UserService {
     private streamEntity: StreamEntity,
     private coinBalanceEntity: CoinBalanceEntity,
     private blockEntity: BlockEntity,
+    private appInviteEntity: AppInviteEntity,
+    private appliedAppInviteEntity: AppliedAppInviteEntity,
   ) {}
 
   async getUserInfo(id: string, requester: string): Promise<IUserInfoResponse> {
@@ -67,8 +72,11 @@ export class UserService {
     await this.user.update(user, params);
   }
 
-  async getById(user: string): Promise<{ user: IUser; following: string[] }> {
-    const data = await this.user.findById(user, true);
+  async getById(user: string): Promise<IWhoAmIResponse> {
+    const [data, hasActivatedAppInvite] = await Promise.all([
+      this.user.findById(user, true),
+      this.appliedAppInviteEntity.find(user),
+    ]);
 
     if (!data) {
       throw new UserNotFound();
@@ -77,6 +85,7 @@ export class UserService {
     return {
       user: data,
       following: await this.followEntity.getFollowedUserIds(user),
+      hasActivatedAppInvite: !!hasActivatedAppInvite,
     };
   }
 
@@ -92,8 +101,6 @@ export class UserService {
       sub: 'DEV_ACCOUNT',
     });
 
-    await this.coinBalanceEntity.createCoinBalance(user.id, 2000);
-
     const accessToken = this.tokenService.createAuthToken(user.id, false, '1d');
     const refreshToken = this.tokenService.createAuthToken(
       user.id,
@@ -101,7 +108,11 @@ export class UserService {
       '1y',
     );
 
-    await this.refreshTokenEntity.create(refreshToken);
+    await Promise.all([
+      this.coinBalanceEntity.createCoinBalance(user.id, 2000),
+      this.appInviteEntity.create(user.id),
+      this.refreshTokenEntity.create(refreshToken),
+    ]);
 
     return {
       id: user.id,

@@ -1,6 +1,6 @@
 import { APIClient, WebSocketConn } from "@warpy/api";
 import { Worker, createWorker } from "mediasoup-client-aiortc";
-import { MediaClient } from "@warpykit-sdk/client";
+import { MediaClient } from "@warpy/media";
 import { Device } from "mediasoup-client";
 import fs from "fs";
 import path from "path";

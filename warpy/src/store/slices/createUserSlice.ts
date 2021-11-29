@@ -8,6 +8,7 @@ export interface IUserSlice {
   exists: boolean;
   following: string[];
   isRaisingHand: boolean;
+  hasActivatedAppInvite: boolean;
 }
 
 export const createUserSlice: StoreSlice<IUserSlice> = () => ({
@@ -17,4 +18,5 @@ export const createUserSlice: StoreSlice<IUserSlice> = () => ({
   isLoadingUser: true,
   exists: false,
   following: [],
+  hasActivatedAppInvite: false,
 });

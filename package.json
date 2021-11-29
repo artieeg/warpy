@@ -1,6 +1,7 @@
 {
   "private": true,
   "workspaces": [
+    "packages/*",
     "lib",
     "api_client",
     "bot_api_client",
@@ -10,22 +11,25 @@
     "clipper",
     "loadtest",
     "warpy",
+    "warpy-web-next",
     "example_bot",
     "media",
-    "ws_gateway",
-    "warpykit-sdk-node"
+    "ws_gateway"
   ],
   "nohoist": [
     "**"
   ],
   "_moduleAliases": {
     "@app": "./warpy/src",
+    "@web": "./warpy-web-next/src",
     "@backend_2": "./backend/src",
     "@ws_gateway": "./ws_gateway/src",
     "@media": "./media/src",
     "@bots_api": "./bots-api/src",
-    "@warpykit": "./warpykit-sdk-node/src",
-    "@clipper": "./clipper/src"
+    "@clipper": "./clipper/src",
+    "@warpy/lib": "./lib",
+    "@warpy/media": "./media-client",
+    "@warpy/components": "./packages/shared-components"
   },
   "dependencies": {
     "cross-env": "^7.0.3",

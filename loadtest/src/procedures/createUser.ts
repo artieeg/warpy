@@ -6,7 +6,7 @@ import {
   uniqueNamesGenerator,
 } from "unique-names-generator";
 import { createDevice } from "../media";
-import { MediaClient } from "@warpykit-sdk/client";
+import { MediaClient } from "@warpy/media";
 
 export const createUser = async (): Promise<UserRecord> => {
   const api = await createAPIClient("ws://127.0.0.1:9999/ws");

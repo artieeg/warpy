@@ -1,4 +1,4 @@
-import {MediaClient} from '@warpykit-sdk/client';
+import {MediaClient} from '@warpy/media';
 import {MediaStream, MediaStreamTrack} from 'react-native-webrtc';
 import {Transport, Producer} from 'mediasoup-client/lib/types';
 import {StoreSlice} from '../types';

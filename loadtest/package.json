@@ -9,7 +9,7 @@
   "dependencies": {
     "@warpy/api": "1.0.0",
     "@warpy/lib": "1.0.0",
-    "@warpykit-sdk/client": "1.0.0",
+    "@warpy/media": "1.0.0",
     "mediasoup-client": "^3.6.2",
     "mediasoup-client-aiortc": "^3.6.3",
     "unique-names-generator": "^4.6.0",

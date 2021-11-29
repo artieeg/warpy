@@ -1,4 +1,4 @@
-import { MediaClient } from "@warpykit-sdk/client";
+import { MediaClient } from "@warpy/media";
 import { getMediaStream } from "../media";
 import { UserRecord } from "../types";
 

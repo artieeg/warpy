@@ -96,3 +96,30 @@ export class NotEnoughCoins extends BaseError {
     this.message = 'Not enough coins';
   }
 }
+
+export class AppInviteNotFound extends BaseError {
+  constructor() {
+    super('The invite not found');
+
+    this.name = 'AppInviteNotFound';
+    this.message = 'The invite not found';
+  }
+}
+
+export class AppInviteAlreadyAccepted extends BaseError {
+  constructor() {
+    super('The invite has been already accepted');
+
+    this.name = 'AppInviteAlreadyAccepted';
+    this.message = 'The invite has been already accepted';
+  }
+}
+
+export class CantInviteYourself extends BaseError {
+  constructor() {
+    super('You cant invite yourself');
+
+    this.name = 'CantInviteYourself';
+    this.message = 'You cant invite yourself';
+  }
+}

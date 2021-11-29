@@ -7,8 +7,14 @@ export const Loading = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    const {api, setToken, signUpAvatar, signUpUsername, signUpName} =
-      useStore.getState();
+    const {
+      api,
+      dispatchToastMessage,
+      setToken,
+      signUpAvatar,
+      signUpUsername,
+      signUpName,
+    } = useStore.getState();
 
     api.user
       .create({
@@ -22,6 +28,8 @@ export const Loading = () => {
       .then(async ({refresh, access}) => {
         await setToken(access, 'access');
         await setToken(refresh, 'refresh');
+
+        dispatchToastMessage('welcome to warpy!');
 
         navigation.reset({
           index: 0,

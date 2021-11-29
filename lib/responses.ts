@@ -8,6 +8,7 @@ import {
   INotification,
   IAwardModel,
   IAward,
+  IAppInvite,
 } from "./models";
 import { UserList } from "./types";
 
@@ -39,6 +40,7 @@ export interface IFeedResponse {
 export interface IWhoAmIResponse {
   user: IBaseUser | null;
   following: string[] | null;
+  hasActivatedAppInvite: boolean;
 }
 
 export interface INewUserResponse {
@@ -159,4 +161,8 @@ export interface ISendAwardResponse {
 
 export interface IReceivedAwardsResponse {
   awards: IAward[];
+}
+
+export interface IAppInviteResponse {
+  invite: IAppInvite;
 }

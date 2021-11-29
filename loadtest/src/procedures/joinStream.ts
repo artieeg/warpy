@@ -1,5 +1,5 @@
 import { ALLOWED_EMOJI } from "@warpy/lib";
-import { MediaClient } from "@warpykit-sdk/client";
+import { MediaClient } from "@warpy/media";
 import {
   uniqueNamesGenerator,
   animals,
