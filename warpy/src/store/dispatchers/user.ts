@@ -24,6 +24,8 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
 
     const {user, following, hasActivatedAppInvite} = await api.user.auth(token);
 
+    console.log({hasActivatedAppInvite});
+
     if (!user) {
       set({
         isLoadingUser: false,

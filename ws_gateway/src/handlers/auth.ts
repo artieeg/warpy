@@ -52,8 +52,7 @@ export const onAuth: Handler = async (data, context, rid) => {
         rid,
         event: "response",
         data: {
-          user: response.user,
-          following: response.following,
+          ...response,
         },
       })
     );
