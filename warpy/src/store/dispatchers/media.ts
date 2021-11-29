@@ -2,7 +2,7 @@ import produce from 'immer';
 import {MediaKind, Transport} from 'mediasoup-client/lib/types';
 import {IStore} from '../useStore';
 import {StoreSlice} from '../types';
-import {MediaClient} from '@warpykit-sdk/client';
+import {MediaClient} from '@warpy/media';
 import {mediaDevices, MediaTrackConstraints} from 'react-native-webrtc';
 
 export interface IMediaDispatchers {

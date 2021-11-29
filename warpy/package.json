@@ -20,7 +20,7 @@
     "@warpy/api": "1.0.0",
     "@warpy/components": "1.0.0",
     "@warpy/lib": "1.0.0",
-    "@warpykit-sdk/client": "1.0.0",
+    "@warpy/media": "1.0.0",
     "axios": "^0.21.1",
     "babel-plugin-module-resolver": "^4.1.0",
     "immer": "^9.0.5",

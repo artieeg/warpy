@@ -38,6 +38,7 @@ export const ScreenHeader = () => {
       User: '/user',
       UserListScreen: userListScreenTitles[userListScreenMode],
       SendInvite: '/invite people',
+      InviteCodeInput: '/invite',
     };
 
     return titles[route.name as keyof typeof titles];

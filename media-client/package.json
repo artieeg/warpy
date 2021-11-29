@@ -1,5 +1,5 @@
 {
-  "name": "@warpykit-sdk/client",
+  "name": "@warpy/media",
   "version": "1.0.0",
   "main": "index.ts",
   "license": "MIT",
