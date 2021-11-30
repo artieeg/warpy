@@ -11,28 +11,8 @@ export class WebSocketConn {
 
   constructor(socket?: any) {
     if (socket) {
-      this._socket = socket;
+      this.socket = socket;
     }
-    /*
-    this.socket = socket;
-
-    this.socket.onopen = () => {
-      this.onopen && this.onopen();
-    };
-    this.socket.onclose = () => {
-      console.log("closed");
-      this.onclose && this.onclose();
-    };
-    this.socket.onerror = (error: any) => {
-      console.error("Socket Error:", error);
-      this.onerror && this.onerror(error);
-    };
-    this.socket.onmessage = (message: any) => {
-      const { event, rid, data } = JSON.parse(message.data);
-
-      this.observer.emit(rid ? rid : event, data);
-    };
-    */
   }
 
   set socket(instance: any) {

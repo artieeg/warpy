@@ -1,9 +1,9 @@
-import {Stream} from '@app/models';
+import {ICandidate} from '@warpy/lib';
 import {StoreSlice} from '../types';
 
 export interface IFeedSlice {
   latestFeedPage: number;
-  feed: Stream[];
+  feed: ICandidate[];
   isFeedLoading: boolean;
 }
 
