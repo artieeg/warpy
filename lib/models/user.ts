@@ -5,6 +5,7 @@ export interface IBaseUser extends IEntity {
   first_name: string;
   username: string;
   avatar: string;
+  isAnon: boolean;
 }
 
 export interface IUser extends IBaseUser {
@@ -12,6 +13,7 @@ export interface IUser extends IBaseUser {
   sub: string | null;
 }
 
+/*
 export class BaseUser implements IBaseUser {
   id: string;
   last_name: string;
@@ -37,3 +39,4 @@ export class BaseUser implements IBaseUser {
     });
   }
 }
+*/

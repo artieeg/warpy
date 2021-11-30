@@ -1,13 +1,6 @@
-import React, { createRef, useRef } from "react";
-import {
-  View,
-  ScrollView,
-  StyleSheet,
-  Pressable,
-  useWindowDimensions,
-} from "react-native";
+import React, { createRef } from "react";
+import { View, ScrollView, StyleSheet, Pressable } from "react-native";
 import { Text, ButtonWithBackdrop } from "@warpy/components";
-import { useRouter } from "next/dist/client/router";
 import { NextPageContext } from "next";
 import { runNATSRequest } from "../../modules/comms";
 import GooglePlay from "../../public/icons/google-play.svg";
@@ -20,12 +13,7 @@ type InviteProps = {
 };
 
 export default function Invite({ invite }: InviteProps) {
-  const { id } = useRouter().query;
-
   const ref = createRef<ScrollView>();
-  const isScrolling = useRef(false);
-
-  const { height } = useWindowDimensions();
 
   return (
     <View style={{ height: "100%" }}>
@@ -161,6 +149,8 @@ const styles = StyleSheet.create({
 });
 
 export async function getServerSideProps(context: NextPageContext) {
+  console.log("ip", context.req.socket.address);
+
   const { invite } = await runNATSRequest("app-invite.get.by-id", {
     id: context.query.id,
   });

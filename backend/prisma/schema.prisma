@@ -11,14 +11,15 @@ generator client {
 
 model User {
   id          String        @id @default(cuid())
-  username    String
-  first_name  String
-  last_name   String
-  avatar      String
-  email       String
-  sub         String
+  username    String?
+  first_name  String?
+  last_name   String?
+  avatar      String?
+  email       String?
+  sub         String?
   created_at  DateTime      @default(now())
   participant Participant[]
+  is_anon     Boolean       @default(false)
 
   sent_reports     Report[] @relation(name: "sent_reports")
   received_reports Report[] @relation(name: "received_reports")

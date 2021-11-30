@@ -7,6 +7,7 @@ import {
   IUser,
   IUserDelete,
   IUserDeleteResponse,
+  IUserDisconnected,
   IUserInfoResponse,
   IUserListRequest,
   IUserListResponse,
@@ -59,6 +60,12 @@ export class UserController {
   }
 
   @UseFilters(ExceptionFilter)
+  @MessagePattern('user.create.anonymous')
+  async onAnonUserCreate(): Promise<INewUserResponse> {
+    return this.userService.createAnonUser();
+  }
+
+  @UseFilters(ExceptionFilter)
   @MessagePattern('user.create')
   async onUserCreate(data: INewUser): Promise<INewUserResponse> {
     if (process.env.NODE !== 'production' && data.kind === 'dev') {
@@ -107,5 +114,14 @@ export class UserController {
       list,
       users,
     };
+  }
+
+  @MessagePattern('user.disconnected')
+  async onUserDisconnect({ user }: IUserDisconnected) {
+    const isAnonUser = user.slice(0, 9) === 'anon_user';
+
+    if (isAnonUser) {
+      await this.userService.deleteUser(user);
+    }
   }
 }
