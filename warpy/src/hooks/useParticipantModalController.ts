@@ -1,5 +1,5 @@
 import {navigation} from '@app/navigation';
-import {useStore} from '@app/store';
+import {useStore} from '@warpy/store';
 import {useCallback, useMemo} from 'react';
 import shallow from 'zustand/shallow';
 import {useStreamParticipant} from './useStreamParticipant';

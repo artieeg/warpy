@@ -1,4 +1,4 @@
-import {useStore} from '@app/store';
+import {useStore} from '@warpy/store';
 import React from 'react';
 import {View, TouchableOpacity, useWindowDimensions} from 'react-native';
 import FastImage from 'react-native-fast-image';

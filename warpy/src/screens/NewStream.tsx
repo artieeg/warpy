@@ -3,7 +3,7 @@ import {View, StyleSheet} from 'react-native';
 import {Button} from '@app/components';
 import {StreamOverlay} from '@app/components/StreamOverlay';
 import {Room} from '@app/components/Room';
-import {useStore} from '@app/store';
+import {useStore} from '@warpy/store';
 import shallow from 'zustand/shallow';
 import {NewStreamPanel} from '@app/components/NewStreamPanel';
 import {AwardDisplay} from '@app/components/AwardDisplay';

@@ -1,4 +1,4 @@
-import {useStore} from '@app/store';
+import {useStore} from '@warpy/store';
 import React from 'react';
 import shallow from 'zustand/shallow';
 import {IconButtonToggle} from './IconButtonToggle';

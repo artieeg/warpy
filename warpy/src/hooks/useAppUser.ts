@@ -1,5 +1,5 @@
 import {IUser} from '@app/models';
-import {useStore} from '@app/store';
+import {useStore} from '@warpy/store';
 
 export const useAppUser = (): IUser => {
   const user = useStore.use.user();

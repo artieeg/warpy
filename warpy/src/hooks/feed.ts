@@ -1,4 +1,4 @@
-import {useStore} from '@app/store';
+import {useStore} from '@warpy/store';
 import {useEffect} from 'react';
 import shallow from 'zustand/shallow';
 

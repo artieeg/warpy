@@ -1,4 +1,4 @@
-import {useStore} from '@app/store';
+import {useStore} from '@warpy/store';
 
 export const useStreamProducers = () => {
   const streamers = useStore(state => state.streamers);

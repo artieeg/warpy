@@ -2,7 +2,7 @@ import {ScreenHeader, textStyles} from '@app/components';
 import React, {useCallback, useState} from 'react';
 import {View, StyleSheet, TextInput} from 'react-native';
 import {Text, TextButton} from '@warpy/components';
-import {useStore, useStoreShallow} from '@app/store';
+import {useStore, useStoreShallow} from '@warpy/store';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
 export const useInviteCodeInputController = () => {

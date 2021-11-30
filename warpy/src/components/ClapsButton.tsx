@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {useStore} from '@app/store';
+import {useStore} from '@warpy/store';
 import React from 'react';
 import {Reaction} from './Reaction';
 import {RoundButton} from './RoundButton';

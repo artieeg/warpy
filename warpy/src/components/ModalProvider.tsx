@@ -1,5 +1,5 @@
 import React from 'react';
-import {useStore} from '@app/store';
+import {useStore} from '@warpy/store';
 import {ParticipantsModal} from './ParticipantsModal';
 import {ParticipantInfoModal} from './ParticipantInfoModal';
 import {ReportActionSheet} from './ReportActionSheet';

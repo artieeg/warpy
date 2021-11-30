@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Text, textStyles} from './Text';
 import {View, StyleSheet, TextInput} from 'react-native';
 import {IUser, IUserUpdateResponse} from '@warpy/lib';
-import {useStore} from '@app/store';
+import {useStore} from '@warpy/store';
 import shallow from 'zustand/shallow';
 import {useDebounce} from 'use-debounce/lib';
 import FadeInOut from 'react-native-fade-in-out';

@@ -1,4 +1,4 @@
-import {useStore} from '@app/store';
+import {useStore} from '@warpy/store';
 import {useNavigation} from '@react-navigation/native';
 import {useEffect} from 'react';
 

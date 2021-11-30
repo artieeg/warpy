@@ -1,4 +1,4 @@
-import {useStore} from '@app/store';
+import {useStore} from '@warpy/store';
 import React from 'react';
 import {StyleSheet, View, ViewProps} from 'react-native';
 import Modal from 'react-native-modal';

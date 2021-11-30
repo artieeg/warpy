@@ -1,6 +1,6 @@
 import React, {useMemo} from 'react';
 import {View, ViewProps} from 'react-native';
-import {useStore} from '@app/store';
+import {useStore} from '@warpy/store';
 import {InvitedUser} from './InvitedUser';
 import {IInvite, InviteStates, IUser} from '@warpy/lib';
 

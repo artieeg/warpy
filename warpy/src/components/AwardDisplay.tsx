@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {useStoreShallow} from '@app/store';
+import {useStoreShallow} from '@warpy/store';
 import {View, StyleSheet, useWindowDimensions} from 'react-native';
 import FadeInOut from 'react-native-fade-in-out';
 import FastImage from 'react-native-fast-image';

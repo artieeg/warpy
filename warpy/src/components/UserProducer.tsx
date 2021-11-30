@@ -2,7 +2,7 @@ import React from 'react';
 import {Avatar} from './Avatar';
 import {StyleSheet, View} from 'react-native';
 import {Text} from './Text';
-import {useStore} from '@app/store';
+import {useStore} from '@warpy/store';
 import {IParticipant} from '@warpy/lib';
 import {IconButton} from './IconButton';
 

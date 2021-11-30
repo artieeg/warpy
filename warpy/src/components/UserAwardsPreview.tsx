@@ -1,4 +1,4 @@
-import {useStoreShallow} from '@app/store';
+import {useStoreShallow} from '@warpy/store';
 import React, {useEffect, useMemo} from 'react';
 import {View, StyleSheet, ViewProps} from 'react-native';
 import FastImage from 'react-native-fast-image';

@@ -1,0 +1,16 @@
+{
+  "name": "@warpy/store",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "license": "MIT",
+  "dependencies": {
+    "zustand": "^3.5.7",
+    "immer": "^9.0.5",
+    "@types/node": "^16.3.3",
+    "cross-env": "^7.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.9",
+    "ts-node": "^10.0.0"
+  }
+}

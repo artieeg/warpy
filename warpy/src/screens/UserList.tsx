@@ -1,5 +1,5 @@
-import {useStore} from '@app/store';
-import {FetchNextFn} from '@app/store/dispatchers/user_list';
+import {useStore} from '@warpy/store';
+import {FetchNextFn} from '@warpy/store/dispatchers/user_list';
 import {useRoute} from '@react-navigation/native';
 import React, {useRef} from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';

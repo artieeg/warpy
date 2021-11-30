@@ -1,4 +1,4 @@
-import {useStore} from '@app/store';
+import {useStore} from '@warpy/store';
 import {useWindowDimensions} from 'react-native';
 import shallow from 'zustand/shallow';
 import {useInviteSuggestions} from './useInviteSuggestions';

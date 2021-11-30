@@ -1,4 +1,4 @@
-import {useStore} from '@app/store';
+import {useStore} from '@warpy/store';
 import React, {useCallback, useRef} from 'react';
 import {FlatList, StyleSheet} from 'react-native';
 import {BaseSlideModal, IBaseModalProps} from './BaseSlideModal';

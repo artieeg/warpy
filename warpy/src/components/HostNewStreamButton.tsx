@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet} from 'react-native';
 import {textStyles} from './Text';
 import {IconButton} from './IconButton';
-import {useStore} from '@app/store';
+import {useStore} from '@warpy/store';
 
 export const HostNewStreamButton = () => {
   const dispatchCreateStream = useStore.use.dispatchStreamCreate();

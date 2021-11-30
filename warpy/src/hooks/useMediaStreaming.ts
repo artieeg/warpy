@@ -1,7 +1,7 @@
 import {MediaStream} from 'react-native-webrtc';
 import {MediaKind} from 'mediasoup-client/lib/types';
 import {useEffect} from 'react';
-import {useStore} from '@app/store';
+import {useStore} from '@warpy/store';
 import shallow from 'zustand/shallow';
 
 export const useMediaStreaming = ({

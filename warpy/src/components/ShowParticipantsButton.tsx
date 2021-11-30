@@ -1,4 +1,4 @@
-import {useStore} from '@app/store';
+import {useStore} from '@warpy/store';
 import React from 'react';
 import {RoundButton} from './RoundButton';
 import {Text} from './Text';

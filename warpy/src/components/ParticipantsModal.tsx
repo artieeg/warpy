@@ -18,7 +18,7 @@ import {
   useStreamViewers,
 } from '@app/hooks';
 import {InviteUserButton} from './InviteUserButton';
-import {useStore} from '@app/store';
+import {useStore} from '@warpy/store';
 import {IParticipant} from '@warpy/lib';
 import {UserProducer} from './UserProducer';
 
