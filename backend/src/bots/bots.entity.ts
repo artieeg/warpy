@@ -21,6 +21,7 @@ export class BotsEntity {
       avatar: data.avatar,
       email: null,
       sub: null,
+      isAnon: false,
     };
   }
 

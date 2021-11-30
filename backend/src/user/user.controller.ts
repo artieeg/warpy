@@ -2,6 +2,7 @@ import { ExceptionFilter } from '@backend_2/rpc-exception.filter';
 import { Controller, UseFilters } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
+  ICreateAnonUserResponse,
   INewUser,
   INewUserResponse,
   IUser,
@@ -61,7 +62,7 @@ export class UserController {
 
   @UseFilters(ExceptionFilter)
   @MessagePattern('user.create.anonymous')
-  async onAnonUserCreate(): Promise<INewUserResponse> {
+  async onAnonUserCreate(): Promise<ICreateAnonUserResponse> {
     return this.userService.createAnonUser();
   }
 

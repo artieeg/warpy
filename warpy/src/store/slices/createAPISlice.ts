@@ -1,24 +1,27 @@
 import {GetState, SetState} from 'zustand';
 import {APIClient, WebSocketConn} from '@warpy/api';
-import config from '@app/config';
 import {IStore} from '../useStore';
 import produce from 'immer';
-import {Alert} from 'react-native';
-import {navigation} from '@app/navigation';
+
+type APISubscriptionParams = {
+  onStreamIdAvailable: (id: string) => void;
+};
 
 export interface IAPISlice {
   api: APIClient;
-  createAPISubscriptions: () => void;
+  connect: (addr: string) => void;
+  createAPISubscriptions: (params: APISubscriptionParams) => void;
 }
-
-const socket = new WebSocketConn(new WebSocket(config.WS));
 
 export const createAPISlice = (
   set: SetState<IStore>,
   get: GetState<IStore>,
 ): IAPISlice => ({
-  api: APIClient(socket),
-  createAPISubscriptions: () => {
+  api: APIClient(new WebSocketConn()),
+  connect: addr => {
+    get().api.conn.socket = new WebSocket(addr);
+  },
+  createAPISubscriptions: ({onStreamIdAvailable}) => {
     const store = get();
     const {api} = store;
 
@@ -43,7 +46,7 @@ export const createAPISlice = (
             }),
           );
         } else {
-          navigation.current?.navigate('Stream', {stream: {id}});
+          onStreamIdAvailable(id);
         }
       }, 1500);
     });

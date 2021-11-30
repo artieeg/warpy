@@ -3,13 +3,17 @@ import { nanoid } from "nanoid";
 
 export class WebSocketConn {
   observer = new EventEmitter();
-  socket: any;
+  _socket: any;
   //onmessage?: (message: any) => any;
   onopen?: () => any;
   onclose?: () => any;
   onerror?: (e: any) => any;
 
-  constructor(socket: any) {
+  constructor(socket?: any) {
+    if (socket) {
+      this._socket = socket;
+    }
+    /*
     this.socket = socket;
 
     this.socket.onopen = () => {
@@ -28,10 +32,32 @@ export class WebSocketConn {
 
       this.observer.emit(rid ? rid : event, data);
     };
+    */
+  }
+
+  set socket(instance: any) {
+    this._socket = instance;
+
+    this._socket.onopen = () => {
+      this.onopen && this.onopen();
+    };
+    this._socket.onclose = () => {
+      console.log("closed");
+      this.onclose && this.onclose();
+    };
+    this._socket.onerror = (error: any) => {
+      console.error("_Socket Error:", error);
+      this.onerror && this.onerror(error);
+    };
+    this._socket.onmessage = (message: any) => {
+      const { event, rid, data } = JSON.parse(message.data);
+
+      this.observer.emit(rid ? rid : event, data);
+    };
   }
 
   send(message: any) {
-    this.socket.send(message);
+    this._socket.send(message);
   }
 
   publish(event: string, data: any) {
@@ -40,7 +66,7 @@ export class WebSocketConn {
       data,
     };
 
-    this.socket.send(JSON.stringify(payload));
+    this._socket.send(JSON.stringify(payload));
   }
 
   request(event: string, data: any) {
@@ -54,7 +80,7 @@ export class WebSocketConn {
 
     return new Promise<any>((resolve) => {
       this.observer.once(rid, (response) => resolve(response));
-      this.socket.send(JSON.stringify(payload));
+      this._socket.send(JSON.stringify(payload));
     });
   }
 

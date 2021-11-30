@@ -3,6 +3,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useEffect} from 'react';
 import shallow from 'zustand/shallow';
 import {navigation} from '@app/navigation';
+import config from '@app/config';
 
 export const useAppSetUp = () => {
   const n = useNavigation();
@@ -15,6 +16,7 @@ export const useAppSetUp = () => {
 
   const [
     createAPISubscriptions,
+    connect,
     userExists,
     isLoadingUser,
     api,
@@ -23,6 +25,7 @@ export const useAppSetUp = () => {
   ] = useStore(
     state => [
       state.createAPISubscriptions,
+      state.connect,
       state.exists,
       state.isLoadingUser,
       state.api,
@@ -33,7 +36,12 @@ export const useAppSetUp = () => {
   );
 
   useEffect(() => {
-    createAPISubscriptions();
+    connect(config.WS);
+
+    createAPISubscriptions({
+      onStreamIdAvailable: id =>
+        navigation.current?.navigate('Stream', {stream: {id}}),
+    });
 
     return () => {
       api.observer.removeAllListeners();

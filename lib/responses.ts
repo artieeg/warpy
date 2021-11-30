@@ -166,3 +166,8 @@ export interface IReceivedAwardsResponse {
 export interface IAppInviteResponse {
   invite: IAppInvite;
 }
+
+export interface ICreateAnonUserResponse {
+  id: string;
+  access: string;
+}
