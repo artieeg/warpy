@@ -26,7 +26,7 @@ export class WebSocketConn {
       this.onclose && this.onclose();
     };
     this._socket.onerror = (error: any) => {
-      console.error("_Socket Error:", error);
+      console.error("Socket Error:", error);
       this.onerror && this.onerror(error);
     };
     this._socket.onmessage = (message: any) => {

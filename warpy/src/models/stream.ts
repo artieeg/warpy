@@ -1,4 +1,4 @@
-import {IParticipant, Participant} from './participant';
+import {IParticipant} from './participant';
 
 export interface IStream {
   id: string;
