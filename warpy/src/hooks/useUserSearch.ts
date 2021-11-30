@@ -1,5 +1,5 @@
 import {IUser} from '@warpy/lib';
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 import {useState, useEffect, useCallback} from 'react';
 import {useDebounce} from 'use-debounce';
 

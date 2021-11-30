@@ -1,5 +1,5 @@
 import {ScreenHeader, AwardFeedItem} from '@app/components';
-import {useStoreShallow} from '@warpy/store';
+import {useStoreShallow} from '@app/store';
 import React, {useEffect} from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
 

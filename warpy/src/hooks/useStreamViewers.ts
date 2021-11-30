@@ -1,5 +1,5 @@
 import shallow from 'zustand/shallow';
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 import {useMemo} from 'react';
 import {IParticipant} from '@warpy/lib';
 

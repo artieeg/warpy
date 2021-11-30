@@ -4,7 +4,7 @@ import {IUser} from '@warpy/lib';
 import {Avatar} from './Avatar';
 import {Text} from './Text';
 import {Checkbox} from './Checkbox';
-import {useStoreShallow} from '@warpy/store';
+import {useStoreShallow} from '@app/store';
 
 interface IUserInviteProps {
   user: IUser;

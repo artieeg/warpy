@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 import {useDebounce} from 'use-debounce/lib';
 import {Keyboard} from 'react-native';
 

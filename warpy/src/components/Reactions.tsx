@@ -3,7 +3,7 @@ import {BaseSlideModal} from './BaseSlideModal';
 import {FlatList, StyleSheet, useWindowDimensions, View} from 'react-native';
 import {ReactionButton} from './ReactionButton';
 import {reactionCodes} from './Reaction';
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 
 const ReactionContainer = (props: any) => {
   const {width} = useWindowDimensions();

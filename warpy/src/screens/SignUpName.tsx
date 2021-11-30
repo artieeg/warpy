@@ -3,7 +3,7 @@ import {StyleSheet, View} from 'react-native';
 import {Text} from '@app/components';
 import {SignUpInput} from '@app/components/SignUpInput';
 import {ConfirmButton} from '@app/components/ConfirmButton';
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 import {useNavigation} from '@react-navigation/native';
 
 export const SignUpName = () => {

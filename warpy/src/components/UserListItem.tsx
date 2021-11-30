@@ -3,7 +3,7 @@ import {StyleSheet, TouchableOpacity} from 'react-native';
 import {IUser, UserList} from '@warpy/lib';
 import {UserGeneralInfo} from './UserGeneralInfo';
 import {SmallTextButton} from './SmallTextButton';
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 import {useNavigation} from '@react-navigation/native';
 
 interface BaseUserListItemProps {

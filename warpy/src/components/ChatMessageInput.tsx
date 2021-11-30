@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {View, TextInput, StyleSheet} from 'react-native';
 import {textStyles} from './Text';
 import {SendMessageButton} from './SendMessageButton';
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 
 export const ChatMessageInput = () => {
   const [message, setMessage] = useState('');

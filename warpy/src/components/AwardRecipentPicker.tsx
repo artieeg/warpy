@@ -1,4 +1,4 @@
-import {useStoreShallow} from '@warpy/store';
+import {useStoreShallow} from '@app/store';
 import React, {useMemo} from 'react';
 import {FlatList, StyleSheet, useWindowDimensions, View} from 'react-native';
 import {BaseSlideModal} from './BaseSlideModal';

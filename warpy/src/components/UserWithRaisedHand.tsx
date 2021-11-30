@@ -3,7 +3,7 @@ import {Avatar} from './Avatar';
 import {StyleSheet, View} from 'react-native';
 import {Text} from './Text';
 import {SmallTextButton} from './SmallTextButton';
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 import {IParticipant} from '@warpy/lib';
 
 interface IRaisedHandInfo {

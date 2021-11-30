@@ -1,4 +1,4 @@
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 import {useCallback, useEffect, useState} from 'react';
 import {MediaStream} from 'react-native-webrtc';
 

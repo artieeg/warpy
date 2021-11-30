@@ -44,8 +44,6 @@ const reactions = {
   '1f525': (props: SvgProps) => <Fire {...props} />,
 };
 
-export const reactionCodes = Object.keys(reactions);
-
 export interface IReactionProps {
   code: string;
   size?: number;

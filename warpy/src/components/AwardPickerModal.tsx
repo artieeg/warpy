@@ -1,4 +1,4 @@
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 import React, {useCallback, useState} from 'react';
 import {FlatList, StyleSheet, useWindowDimensions, View} from 'react-native';
 import shallow from 'zustand/shallow';

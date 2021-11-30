@@ -4,7 +4,7 @@ import {Text} from '@app/components';
 import {useGifs} from '@app/hooks/useGifs';
 import FastImage from 'react-native-fast-image';
 import {AvatarOption} from '@app/components/AvatarOption';
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 import {Input} from '@app/components';
 import {ConfirmButton} from '@app/components/ConfirmButton';
 import {useNavigation} from '@react-navigation/native';

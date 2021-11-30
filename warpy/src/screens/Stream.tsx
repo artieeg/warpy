@@ -1,5 +1,5 @@
 import {RemoteStream} from '@app/components';
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 import React, {useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 

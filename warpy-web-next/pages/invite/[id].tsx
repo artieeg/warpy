@@ -3,13 +3,14 @@ import { View, ScrollView, StyleSheet, Pressable } from "react-native";
 import { Text, ButtonWithBackdrop } from "@warpy/components";
 import { NextPageContext } from "next";
 import { runNATSRequest } from "../../modules/comms";
+import { IAppInvite } from "@warpy/lib";
 import GooglePlay from "../../public/icons/google-play.svg";
 import AppStore from "../../public/icons/app-store.svg";
 import ChevronDown from "../../public/icons/chevron-down.svg";
 import Heart from "../../public/icons/heart.svg";
 
 type InviteProps = {
-  invite: any;
+  invite: IAppInvite;
 };
 
 export default function Invite({ invite }: InviteProps) {
@@ -149,8 +150,6 @@ const styles = StyleSheet.create({
 });
 
 export async function getServerSideProps(context: NextPageContext) {
-  console.log("ip", context.req.socket.address);
-
   const { invite } = await runNATSRequest("app-invite.get.by-id", {
     id: context.query.id,
   });

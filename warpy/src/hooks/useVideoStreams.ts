@@ -1,6 +1,6 @@
 import {useMemo} from 'react';
 import {useRemoteStreams} from '.';
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 import shallow from 'zustand/shallow';
 
 export const useVideoStreams = () => {

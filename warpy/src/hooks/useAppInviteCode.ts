@@ -1,6 +1,6 @@
 import {useQuery} from 'react-query';
 import {IAppInviteResponse} from '@warpy/lib';
-import {useStoreShallow} from '@warpy/store';
+import {useStoreShallow} from '@app/store';
 
 export const useAppInviteCode = () => {
   const [api, user] = useStoreShallow(state => [state.api, state.user!.id]);

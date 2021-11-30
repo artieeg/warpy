@@ -1,7 +1,7 @@
 import React from 'react';
 import {REPORT_REASONS} from '@warpy/lib';
 import {ActionSheet, IActionSheetProps} from './ActionSheet';
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 
 interface IReportActionSheetProps extends Omit<IActionSheetProps, 'actions'> {
   user: string | null;

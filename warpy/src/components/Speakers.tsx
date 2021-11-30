@@ -1,7 +1,7 @@
 import React from 'react';
 import {Speaker} from './Speaker';
 import {StyleSheet, View} from 'react-native';
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 import shallow from 'zustand/shallow';
 
 interface ISpeakersProps {

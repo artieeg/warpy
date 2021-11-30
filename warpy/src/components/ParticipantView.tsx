@@ -1,4 +1,4 @@
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 import {IParticipant} from '@warpy/lib';
 import React, {useCallback} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';

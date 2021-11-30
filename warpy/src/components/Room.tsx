@@ -3,7 +3,7 @@ import {FlatList} from 'react-native-gesture-handler';
 import {useVideoStreams} from '@app/hooks/useVideoStreams';
 import React, {useMemo, useRef} from 'react';
 import {RTCView} from 'react-native-webrtc';
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 import shallow from 'zustand/shallow';
 import {ParticipantView} from './ParticipantView';
 

@@ -1,4 +1,4 @@
-import {useStoreShallow} from '@warpy/store';
+import {useStoreShallow} from '@app/store';
 import React, {useCallback} from 'react';
 import {IconButton} from './IconButton';
 

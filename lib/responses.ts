@@ -9,6 +9,7 @@ import {
   IAwardModel,
   IAward,
   IAppInvite,
+  IStream,
 } from "./models";
 import { UserList } from "./types";
 
@@ -170,4 +171,8 @@ export interface IAppInviteResponse {
 export interface ICreateAnonUserResponse {
   id: string;
   access: string;
+}
+
+export interface IStreamGetResponse {
+  stream: IStream;
 }

@@ -1,4 +1,4 @@
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Icon} from './Icon';

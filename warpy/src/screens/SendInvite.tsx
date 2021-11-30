@@ -5,7 +5,7 @@ import {View, StyleSheet} from 'react-native';
 import {Text} from '@app/components';
 import {TextButton} from '@warpy/components';
 import {IconButton} from '@app/components/IconButton';
-import {useStoreShallow} from '@warpy/store';
+import {useStoreShallow} from '@app/store';
 import config from '@app/config';
 import Share from 'react-native-share';
 

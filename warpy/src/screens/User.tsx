@@ -3,7 +3,7 @@ import {IconButton} from '@app/components/IconButton';
 import {SmallTextButton} from '@app/components/SmallTextButton';
 import {UserAwardsPreview} from '@app/components/UserAwardsPreview';
 import {UserGeneralInfo} from '@app/components/UserGeneralInfo';
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useCallback, useMemo} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';

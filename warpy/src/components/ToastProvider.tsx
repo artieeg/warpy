@@ -1,4 +1,4 @@
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 import React, {useEffect, useRef} from 'react';
 import {StyleSheet, Animated} from 'react-native';
 import {Text} from './Text';

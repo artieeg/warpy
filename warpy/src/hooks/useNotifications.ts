@@ -1,4 +1,4 @@
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 import {useCallback, useEffect} from 'react';
 
 export const useNotifications = () => {

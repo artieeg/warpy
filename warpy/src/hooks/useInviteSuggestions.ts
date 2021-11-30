@@ -1,4 +1,4 @@
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 import {IUser} from '@warpy/lib';
 import {useEffect, useState} from 'react';
 

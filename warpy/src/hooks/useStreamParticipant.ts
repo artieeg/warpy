@@ -1,4 +1,4 @@
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 import shallow from 'zustand/shallow';
 import {IParticipant} from '@warpy/lib';
 

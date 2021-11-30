@@ -1,5 +1,12 @@
-const withTM = require("next-transpile-modules")(["@warpy/components"]);
-const path = require('path');
+const withTM = require("next-transpile-modules")([
+  "@warpy/components",
+  "@warpy/lib",
+  "@warpy/store",
+  "@warpy/media",
+  "@warpy/api",
+  "react-native-webrtc",
+]);
+const path = require("path");
 const withReactSvg = require("next-react-svg");
 
 module.exports = withReactSvg({

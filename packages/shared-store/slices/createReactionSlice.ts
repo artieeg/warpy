@@ -1,5 +1,5 @@
-import {reactionCodes} from '@app/components/Reaction';
-import {StoreSlice} from '../types';
+import { reactionCodes } from "@warpy/lib";
+import { StoreSlice } from "../types";
 
 export interface IReactionSlice {
   reaction: string;

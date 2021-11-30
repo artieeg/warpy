@@ -1,4 +1,4 @@
-import {useStore} from '@warpy/store';
+import {useStore} from '@app/store';
 import React, {useMemo} from 'react';
 import {View, StyleSheet, useWindowDimensions, TextInput} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
