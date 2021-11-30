@@ -1,4 +1,4 @@
-import {StoreSlice} from '../types';
+import { StoreSlice } from "../types";
 
 export interface IStreamSlice {
   stream: string | null;
@@ -9,5 +9,5 @@ export interface IStreamSlice {
 export const createStreamSlice: StoreSlice<IStreamSlice> = () => ({
   stream: null,
   isStreamOwner: false,
-  title: 'test title',
+  title: "",
 });

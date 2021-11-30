@@ -92,7 +92,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       recvTransport
     );
 
-    set({
+    const update = {
       stream,
       recvTransport,
       totalParticipantCount: count,
@@ -105,6 +105,8 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
           const videoConsumer = consumers.find(
             (c) => c.appData.user === p.id && c.kind === "video"
           );
+
+          console.log({ audioConsumer, videoConsumer });
 
           return {
             ...p,
@@ -125,6 +127,9 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       ),
       viewersWithRaisedHands: arrayToMap<IParticipant>(raisedHands),
       role: "viewer",
-    });
+    };
+
+    console.log(update);
+    set(update as any);
   },
 });

@@ -173,6 +173,13 @@ const handlers: Record<string, HandlerConfig> = {
     schema: joi.object().unknown(),
   },
 
+  "new-anon-user": {
+    subject: "user.create.anon",
+    kind: "request",
+    auth: false,
+    schema: joi.object({}),
+  },
+
   "delete-user": {
     subject: "user.delete",
     kind: "request",

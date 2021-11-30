@@ -61,7 +61,7 @@ export class UserController {
   }
 
   @UseFilters(ExceptionFilter)
-  @MessagePattern('user.create.anonymous')
+  @MessagePattern('user.create.anon')
   async onAnonUserCreate(): Promise<ICreateAnonUserResponse> {
     return this.userService.createAnonUser();
   }

@@ -13,6 +13,7 @@
     "@warpy/api": "1.0.0",
     "@warpy/store": "1.0.0",
     "nats": "^2.4.0",
+    "zustand": "^3.5.7",
     "next": "latest",
     "next-compose-plugins": "^2.2.1",
     "next-fonts": "^1.5.1",

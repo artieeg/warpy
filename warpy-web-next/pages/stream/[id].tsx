@@ -5,18 +5,23 @@ import Head from "next/head";
 import { runNATSRequest } from "../../modules/comms";
 import { IStream } from "@warpy/lib";
 import { IStore } from "@warpy/store";
+import { useStore, useStoreShallow } from "../../modules/store";
+import { StreamContent } from "../../modules/stream/content";
 
 type StreamProps = {
   stream: IStream;
-  store: IStore;
+  initialStore: IStore;
 };
 
-export default function Stream({ store }: StreamProps) {
+export default function Stream({ initialStore }: StreamProps) {
+  const { title } = initialStore;
+
   return (
     <View style={styles.wrapper}>
       <Head>
-        <title>{store.title}</title>
+        <title>{title}</title>
       </Head>
+      {typeof window !== "undefined" && <StreamContent />}
     </View>
   );
 }
@@ -34,12 +39,13 @@ export async function getServerSideProps(context: NextPageContext) {
   });
 
   const store: Partial<IStore> = {
+    stream: stream.id,
     title: stream.title,
   };
 
   return {
     props: {
-      store,
+      initialStore: store,
     },
   };
 }

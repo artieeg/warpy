@@ -1,4 +1,4 @@
-import {Device} from 'mediasoup-client';
+import { Device, detectDevice } from "mediasoup-client";
 
 export interface IDeviceSlice {
   recvDevice: Device;
@@ -6,6 +6,6 @@ export interface IDeviceSlice {
 }
 
 export const createDeviceSlice = (): IDeviceSlice => ({
-  recvDevice: new Device({handlerName: 'ReactNative'}),
-  sendDevice: new Device({handlerName: 'ReactNative'}),
+  recvDevice: new Device({ handlerName: detectDevice() }),
+  sendDevice: new Device({ handlerName: detectDevice() }),
 });
