@@ -21,9 +21,9 @@ export const StreamContent = () => {
     }, 800);
   }, [id]);
 
-  console.log({ totalParticipantCount });
+  console.log({ streamers });
 
-  const videoStreams = useMemo(
+  const streams = useMemo(
     () =>
       Object.values(streamers)
         .map((p) => {
@@ -37,35 +37,58 @@ export const StreamContent = () => {
     [streamers]
   );
 
-  const ref = createRef<any>();
+  const videoViewRefs = useMemo(
+    () => [
+      createRef<any>(),
+      createRef<any>(),
+      createRef<any>(),
+      createRef<any>(),
+    ],
+    []
+  );
 
   useEffect(() => {
-    if (videoStreams.length > 0) {
-      console.log(videoStreams[0]);
-      ref.current.srcObject = videoStreams[0];
-    }
-  }, [videoStreams]);
+    streams.forEach((stream: any, index: number) => {
+      videoViewRefs[index].current.srcObject = stream;
+    });
+  }, [streams]);
 
   const { width, height } = useWindowDimensions();
 
+  const mediaStyle = {
+    width: streams.length > 2 ? width / 2 : width,
+    height: streams.length > 1 ? height / 2 : height,
+  };
+
+  const fullWidthMediaStyle = { ...mediaStyle, width };
+
+  const mediaStyles = [
+    [mediaStyle],
+    [mediaStyle, mediaStyle],
+    [mediaStyle, mediaStyle, fullWidthMediaStyle],
+  ];
+
+  console.log({ streams });
+
   return (
     <View style={styles.body}>
-      <video
-        className="video"
-        style={{
-          width,
-          height,
-          position: "absolute",
-          left: 0,
-          top: 0,
-          zIndex: -1,
-        }}
-        ref={ref}
-        autoPlay
-        playsInline
-        muted
-        controls={false}
-      />
+      {streams.map((_: any, index: any) => (
+        <video
+          className="video"
+          style={{
+            ...mediaStyles[streams.length - 1][index],
+            position: "absolute",
+            left: 0,
+            top: 0,
+            zIndex: -1,
+          }}
+          ref={videoViewRefs[index]}
+          autoPlay
+          playsInline
+          muted
+          controls={false}
+        />
+      ))}
       <TextButton style={styles.button} title="get the app & join" />
     </View>
   );
