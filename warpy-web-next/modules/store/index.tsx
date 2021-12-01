@@ -1,16 +1,11 @@
-import { createContext, useCallback, useContext, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { StateSelector } from "zustand";
 import { createNewStore, IStore } from "@warpy/store";
 import shallow from "zustand/shallow";
 
-export const StoreContext = createContext(null);
+//export const StoreContext = createContext(null);
 
-export const StoreProvider = ({ children, store }) => {
-  return (
-    <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
-  );
-};
-
+/*
 export function useStore<U>(
   selector?: StateSelector<IStore, U>,
   eqFn?: any
@@ -20,6 +15,29 @@ export function useStore<U>(
 
   return values;
 }
+ */
+
+import createContext from "zustand/context";
+const Context = createContext<IStore>();
+
+export const useStore = Context.useStore;
+export const useStoreApi = Context.useStoreApi;
+
+export const StoreProvider = ({ children, data }: any) => {
+  return (
+    <Context.Provider
+      createStore={() => {
+        if (typeof window !== "undefined") {
+          return createHydratedStore(data);
+        } else {
+          return null;
+        }
+      }}
+    >
+      {children}
+    </Context.Provider>
+  );
+};
 
 export function useStoreShallow<U>(selector: StateSelector<IStore, U>) {
   return useStore(useCallback(selector, []), shallow);
@@ -27,7 +45,7 @@ export function useStoreShallow<U>(selector: StateSelector<IStore, U>) {
 
 let store: any;
 
-export const useHydrate = (values: Partial<IStore>) => {
+export const createHydratedStore = (values: Partial<IStore>) => {
   console.log("typeof window", typeof window);
   if (typeof window === "undefined") {
     return;

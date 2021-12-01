@@ -65,6 +65,10 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
   async dispatchStreamJoin(stream) {
     const { api, dispatchInitViewer } = get();
 
+    set({
+      totalParticipantCount: 3,
+    });
+
     const {
       mediaPermissionsToken,
       recvMediaParams,
@@ -129,7 +133,6 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       role: "viewer",
     };
 
-    console.log(update);
     set(update as any);
   },
 });

@@ -17,3 +17,7 @@
 .notch-padding {
   padding-top: env(safe-area-inset-top)
 }
+
+.video {
+  object-fit: cover;
+}

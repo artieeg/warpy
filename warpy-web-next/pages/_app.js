@@ -1,13 +1,13 @@
 import * as React from "react";
 import Head from "next/head";
 import "./global.css";
-import {StoreProvider, useHydrate} from '../modules/store';
+import {StoreProvider} from '../modules/store';
 
 function MyApp({ Component, pageProps }) {
-  const store = useHydrate(pageProps.initialStore);
+  //const store = useHydrate(pageProps.initialStore);
 
   return (
-    <StoreProvider store={store}>
+    <StoreProvider data={pageProps.initialStore}>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
