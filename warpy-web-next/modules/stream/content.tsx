@@ -3,7 +3,11 @@ import { View, StyleSheet, useWindowDimensions } from "react-native";
 import { useStore, useStoreApi, useStoreShallow } from "../store";
 import { Text, TextButton } from "@warpy/components";
 
-export const StreamContent = () => {
+type ContentProps = {
+  rid: string;
+};
+
+export const StreamContent = ({ rid }: ContentProps) => {
   const streamers = useStore((state) => state.streamers);
 
   const [title, id, dispatchStreamJoin, totalParticipantCount] = useStore(
@@ -20,8 +24,6 @@ export const StreamContent = () => {
       dispatchStreamJoin(id);
     }, 800);
   }, [id]);
-
-  console.log({ streamers });
 
   const streams = useMemo(
     () =>
@@ -67,8 +69,6 @@ export const StreamContent = () => {
     [mediaStyle, mediaStyle],
     [mediaStyle, mediaStyle, fullWidthMediaStyle],
   ];
-
-  console.log({ streams });
 
   return (
     <View style={styles.body}>

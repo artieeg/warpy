@@ -1,19 +1,17 @@
-import React, { useLayoutEffect } from "react";
+import React from "react";
 import { View, StyleSheet } from "react-native";
 import { NextPageContext } from "next";
 import Head from "next/head";
 import { runNATSRequest } from "../../modules/comms";
-import { IStream } from "@warpy/lib";
 import { IStore } from "@warpy/store";
-import { useStore, useStoreShallow } from "../../modules/store";
 import { StreamContent } from "../../modules/stream/content";
 
 type StreamProps = {
-  stream: IStream;
+  rid: string;
   initialStore: IStore;
 };
 
-export default function Stream({ initialStore }: StreamProps) {
+export default function Stream({ initialStore, rid }: StreamProps) {
   const { title } = initialStore;
 
   return (
@@ -21,7 +19,8 @@ export default function Stream({ initialStore }: StreamProps) {
       <Head>
         <title>{title}</title>
       </Head>
-      {typeof window !== "undefined" && <StreamContent />}
+
+      {typeof window !== "undefined" && <StreamContent rid={rid} />}
     </View>
   );
 }
@@ -34,8 +33,10 @@ const styles = StyleSheet.create({
 });
 
 export async function getServerSideProps(context: NextPageContext) {
+  const { id: streamId, rid } = context.query;
+
   const { stream } = await runNATSRequest("stream.get", {
-    stream: context.query.id,
+    stream: streamId,
   });
 
   const store: Partial<IStore> = {
@@ -46,6 +47,7 @@ export async function getServerSideProps(context: NextPageContext) {
   return {
     props: {
       initialStore: store,
-    },
+      rid,
+    } as StreamProps,
   };
 }
