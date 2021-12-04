@@ -1,4 +1,4 @@
-import create, { GetState, SetState, StateSelector } from "zustand";
+import create, { GetState, SetState } from "zustand";
 import { IAPISlice, createAPISlice } from "./slices/createAPISlice";
 import { IFeedSlice, createFeedSlice } from "./slices/createFeedSlice";
 import {

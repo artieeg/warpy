@@ -1,39 +1,39 @@
 import {ScreenHeader, textStyles} from '@app/components';
-import {useAppInviteCode} from '@app/hooks';
 import React, {useCallback} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Text} from '@app/components';
 import {TextButton} from '@warpy/components';
 import {IconButton} from '@app/components/IconButton';
-import {useStoreShallow} from '@app/store';
+import {useStore, useStoreShallow} from '@app/store';
 import config from '@app/config';
 import Share from 'react-native-share';
 
 export const SendInvite = () => {
-  const [api, user] = useStoreShallow(state => [state.api, state.user!.id]);
-  const {data, refetch} = useAppInviteCode();
+  const [api, user, appInvite] = useStoreShallow(state => [
+    state.api,
+    state.user!.id,
+    state.appInvite,
+  ]);
 
   const onRefresh = useCallback(async () => {
-    await api.app_invite.refresh();
-
-    refetch();
-  }, [api, user, refetch]);
+    useStore.getState().dispatchAppInviteUpdate();
+  }, [api, user]);
 
   const onShare = useCallback(() => {
-    const url = `${config.domain}/invite/${data?.invite.id}`;
+    const url = `${config.domain}/invite/${appInvite?.id}`;
 
     Share.open({
       message: url,
     });
-  }, [data?.invite]);
+  }, [appInvite]);
 
   return (
     <View style={styles.wrapper}>
       <ScreenHeader />
-      {data && (
+      {appInvite && (
         <View style={styles.invite}>
           <Text selectable color="yellow" size="large">
-            {data.invite.code}
+            {appInvite.code}
           </Text>
           <Text color="info" size="small" style={styles.info}>
             both you & your signed up{'\n'}friend will get 3000 coins!

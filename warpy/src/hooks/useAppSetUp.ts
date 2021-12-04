@@ -22,6 +22,7 @@ export const useAppSetUp = () => {
     api,
     user,
     dispatchUserLoadData,
+    dispatchFetchAppInvite,
   ] = useStore(
     state => [
       state.createAPISubscriptions,
@@ -31,6 +32,7 @@ export const useAppSetUp = () => {
       state.api,
       state.user,
       state.dispatchUserLoadData,
+      state.dispatchFetchAppInvite,
     ],
     shallow,
   );
@@ -51,7 +53,9 @@ export const useAppSetUp = () => {
   useEffect(() => {
     if (user) {
       n.navigate('Feed');
+
       useStore.getState().dispatchNotificationsFetchUnread();
+      useStore.getState().dispatchFetchAppInvite();
     }
   }, [user, n]);
 

@@ -10,12 +10,34 @@ export interface IInviteDispatchers {
   dispatchSendPendingInvites: () => Promise<void>;
   dispatchInviteAction: (action: "accept" | "decline") => Promise<void>;
   dispatchInviteStateUpdate: (invite: string, state: InviteStates) => void;
+  dispatchFetchAppInvite: () => Promise<void>;
+  dispatchAppInviteUpdate: () => Promise<void>;
 }
 
 export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
   set,
   get
 ) => ({
+  async dispatchAppInviteUpdate() {
+    const { api } = get();
+
+    const { invite } = await api.app_invite.refresh();
+
+    set({
+      appInvite: invite,
+    });
+  },
+
+  async dispatchFetchAppInvite() {
+    const { api } = get();
+
+    const { invite: appInvite } = await api.app_invite.get(get().user!.id);
+
+    set({
+      appInvite,
+    });
+  },
+
   async dispatchInviteAction(action) {
     const { api, modalInvite } = get();
 
