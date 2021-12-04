@@ -1,7 +1,16 @@
-import React, { createRef, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  createRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { View, StyleSheet, useWindowDimensions } from "react-native";
 import { useStore, useStoreApi, useStoreShallow } from "../store";
 import { Text, TextButton } from "@warpy/components";
+import Link from "next/link";
+import Router from "next/dist/client/router";
 
 type ContentProps = {
   rid: string;
@@ -22,7 +31,7 @@ export const StreamContent = ({ rid }: ContentProps) => {
   useEffect(() => {
     setTimeout(() => {
       dispatchStreamJoin(id);
-    }, 800);
+    }, 1000);
   }, [id]);
 
   const streams = useMemo(
@@ -70,6 +79,12 @@ export const StreamContent = ({ rid }: ContentProps) => {
     [mediaStyle, mediaStyle, fullWidthMediaStyle],
   ];
 
+  //const router = useRouter();
+
+  const onOpenInvite = useCallback(() => {
+    Router.push(`/invite/${rid}`);
+  }, [rid]);
+
   return (
     <View style={styles.body}>
       {streams.map((_: any, index: any) => (
@@ -89,7 +104,11 @@ export const StreamContent = ({ rid }: ContentProps) => {
           controls={false}
         />
       ))}
-      <TextButton style={styles.button} title="get the app & join" />
+      <TextButton
+        onPress={onOpenInvite}
+        style={styles.button}
+        title="get the app & join"
+      />
     </View>
   );
 };

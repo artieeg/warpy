@@ -154,7 +154,13 @@ export async function getServerSideProps(context: NextPageContext) {
     id: context.query.id,
   });
 
+  console.log({ invite, id: context.query.id });
+
   return {
-    props: { invite },
+    props: {
+      invite,
+      title: `@${invite.user.username} invites you to join warpy!`,
+      description: "join the new live social experience",
+    },
   };
 }

@@ -12,15 +12,9 @@ type StreamProps = {
 };
 
 export default function Stream({ initialStore, rid }: StreamProps) {
-  const { title } = initialStore;
-
   return (
     <View style={styles.wrapper}>
-      <Head>
-        <title>{title}</title>
-      </Head>
-
-      {typeof window !== "undefined" && <StreamContent rid={rid} />}
+      <StreamContent rid={rid} />
     </View>
   );
 }
@@ -46,6 +40,8 @@ export async function getServerSideProps(context: NextPageContext) {
 
   return {
     props: {
+      title: stream.title,
+      description: "join this stream",
       initialStore: store,
       rid,
     } as StreamProps,
