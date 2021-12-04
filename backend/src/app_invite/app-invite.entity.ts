@@ -58,7 +58,7 @@ export class AppInviteEntity {
   }
 
   async updateInviteCode(user_id: string) {
-    await this.repeatUntilSuccess(() =>
+    const invite: AppInvite = await this.repeatUntilSuccess(() =>
       this.prisma.appInvite.update({
         where: {
           user_id,
@@ -69,6 +69,8 @@ export class AppInviteEntity {
         },
       }),
     );
+
+    return AppInviteEntity.toAppInviteDTO(invite);
   }
 
   /** Returns invite id */
