@@ -7,11 +7,17 @@ import {useUserSearch} from './useUserSearch';
 export const useInviteModalController = () => {
   const {users: searchedUsers, isLoading, setSearch} = useUserSearch();
   const inviteSuggestions = useInviteSuggestions();
-  const [pendingInviteCount, visible, sendPendingInvites] = useStore(
+  const [
+    pendingInviteCount,
+    visible,
+    sendPendingInvites,
+    shouldDisplayInviteButton,
+  ] = useStore(
     state => [
       state.pendingInviteUserIds.length,
       state.modalCurrent === 'invite',
       state.dispatchSendPendingInvites,
+      !!state.stream,
     ],
     shallow,
   );
@@ -27,5 +33,6 @@ export const useInviteModalController = () => {
     searchedUsers,
     inviteSuggestions,
     sendPendingInvites,
+    shouldDisplayInviteButton,
   };
 };

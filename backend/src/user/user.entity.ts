@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Bot, User } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { IUser } from '@warpy/lib';
+import cuid from 'cuid';
 
 type NewUserParams = Omit<User, 'id' | 'created_at'>;
 
@@ -12,12 +13,13 @@ export class UserEntity {
   static toUserDTO(data: User, includeDetails = false): IUser {
     return {
       id: data.id,
-      last_name: data?.last_name,
+      last_name: data.last_name,
       first_name: data.first_name,
       username: data.username,
       avatar: data.avatar,
       sub: includeDetails ? data.sub : null,
       email: includeDetails ? data.email : null,
+      isAnon: data.is_anon,
     };
   }
 
@@ -28,6 +30,20 @@ export class UserEntity {
       },
       data,
     });
+  }
+
+  async createAnonUser(): Promise<string> {
+    const { id } = await this.prisma.user.create({
+      data: {
+        id: `user_anon_${cuid()}`,
+        is_anon: true,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return id;
   }
 
   async createNewUser(data: NewUserParams): Promise<IUser> {

@@ -3,7 +3,7 @@ import { WebSocketConn } from "./connection";
 
 export interface IAppInviteAPI {
   apply: (code: string) => Promise<{ status: string }>;
-  refresh: () => Promise<{ status: string }>;
+  refresh: () => Promise<IAppInviteResponse>;
   get: (user: string) => Promise<IAppInviteResponse>;
 }
 

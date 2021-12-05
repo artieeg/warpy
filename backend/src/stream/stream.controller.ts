@@ -5,6 +5,7 @@ import {
   INewStream,
   INewStreamResponse,
   IStopStream,
+  IStreamGetRequest,
 } from '@warpy/lib';
 import { StreamService } from './stream.service';
 
@@ -31,5 +32,12 @@ export class StreamController {
   @MessagePattern('stream.new-preview')
   async onNewStreamPreview({ stream, preview }: INewPreviewEvent) {
     await this.streamService.setStreamPreview(stream, preview);
+  }
+
+  @MessagePattern('stream.get')
+  async onStreamGet({ stream }: IStreamGetRequest) {
+    const data = await this.streamService.get(stream);
+
+    return { stream: data };
   }
 }

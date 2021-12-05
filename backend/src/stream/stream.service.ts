@@ -21,6 +21,12 @@ export class StreamService {
     private eventEmitter: EventEmitter2,
   ) {}
 
+  async get(id: string) {
+    const stream = await this.streamEntity.findById(id);
+
+    return stream;
+  }
+
   async createNewStream(
     owner: string,
     title: string,

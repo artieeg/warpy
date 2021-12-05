@@ -1,18 +1,17 @@
-import {MediaClient} from '@warpy/media';
-import {MediaStream, MediaStreamTrack} from 'react-native-webrtc';
-import {Transport, Producer} from 'mediasoup-client/lib/types';
-import {StoreSlice} from '../types';
+import { MediaClient } from "@warpy/media";
+import { Transport, Producer } from "mediasoup-client/lib/types";
+import { StoreSlice } from "../types";
 
 export interface IMediaSlice {
   mediaClient?: MediaClient;
   video?: {
-    stream: MediaStream;
-    track: MediaStreamTrack;
+    stream: any;
+    track: any;
     producer?: Producer;
   };
   audio?: {
-    stream: MediaStream;
-    track: MediaStreamTrack;
+    stream: any;
+    track: any;
     producer?: Producer;
   };
   audioEnabled: boolean;

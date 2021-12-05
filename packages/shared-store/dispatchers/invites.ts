@@ -1,23 +1,45 @@
-import {navigation} from '@app/navigation';
-import produce from 'immer';
-import {IInvite, InviteStates} from '@warpy/lib';
-import {StoreSlice} from '../types';
-import {IStore} from '../useStore';
+//import { navigation } from "@app/navigation";
+import produce from "immer";
+import { IInvite, InviteStates } from "@warpy/lib";
+import { StoreSlice } from "../types";
+import { IStore } from "../useStore";
 
 export interface IInviteDispatchers {
   dispatchPendingInvite: (user: string) => void;
   dispatchCancelInvite: (user: string) => Promise<void>;
   dispatchSendPendingInvites: () => Promise<void>;
-  dispatchInviteAction: (action: 'accept' | 'decline') => Promise<void>;
+  dispatchInviteAction: (action: "accept" | "decline") => Promise<void>;
   dispatchInviteStateUpdate: (invite: string, state: InviteStates) => void;
+  dispatchFetchAppInvite: () => Promise<void>;
+  dispatchAppInviteUpdate: () => Promise<void>;
 }
 
 export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
   set,
-  get,
+  get
 ) => ({
+  async dispatchAppInviteUpdate() {
+    const { api } = get();
+
+    const { invite } = await api.app_invite.refresh();
+
+    set({
+      appInvite: invite,
+    });
+  },
+
+  async dispatchFetchAppInvite() {
+    const { api } = get();
+
+    const { invite: appInvite } = await api.app_invite.get(get().user!.id);
+
+    set({
+      appInvite,
+    });
+  },
+
   async dispatchInviteAction(action) {
-    const {api, modalInvite} = get();
+    const { api, modalInvite } = get();
 
     if (!modalInvite) return;
 
@@ -26,10 +48,13 @@ export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
     //If the stream had begun already
     //else the api.strea.onStreamIdAvailable
     //will fire after the host starts the room
-    if (modalInvite.stream?.id) {
-      navigation.current?.navigate('Stream', {
+    if (modalInvite.stream?.id && action === "accept") {
+      console.log("yo fix this");
+      /*
+      navigation.current?.navigate("Stream", {
         stream: modalInvite.stream,
       });
+      */
     }
 
     get().dispatchModalClose();
@@ -37,25 +62,25 @@ export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
 
   dispatchInviteStateUpdate(invite, value) {
     set(
-      produce<IStore>(state => {
+      produce<IStore>((state) => {
         if (state.sentInvites[invite]) {
           state.sentInvites[invite] = {
             ...state.sentInvites[invite],
-            accepted: value === 'accepted',
-            declined: value === 'declined',
+            accepted: value === "accepted",
+            declined: value === "declined",
           };
         }
-      }),
+      })
     );
   },
 
   async dispatchSendPendingInvites() {
-    const {pendingInviteUserIds, api, stream} = get();
+    const { pendingInviteUserIds, api, stream } = get();
 
     console.log(pendingInviteUserIds);
 
-    const promises = pendingInviteUserIds.map(userToInvite =>
-      api.stream.invite(userToInvite, stream),
+    const promises = pendingInviteUserIds.map((userToInvite) =>
+      api.stream.invite(userToInvite, stream)
     );
     console.log(promises.length);
 
@@ -75,14 +100,14 @@ export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
 
   dispatchPendingInvite(user) {
     set(
-      produce<IStore>(state => {
+      produce<IStore>((state) => {
         state.pendingInviteUserIds.push(user);
-      }),
+      })
     );
   },
 
   async dispatchCancelInvite(user) {
-    const {api, sentInvites} = get();
+    const { api, sentInvites } = get();
 
     const sentInviteId = sentInvites[user]?.id;
 
@@ -91,13 +116,13 @@ export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
     }
 
     set(
-      produce<IStore>(state => {
+      produce<IStore>((state) => {
         state.pendingInviteUserIds = state.pendingInviteUserIds.filter(
-          id => id !== user,
+          (id) => id !== user
         );
 
         delete state.sentInvites[user];
-      }),
+      })
     );
   },
 });

@@ -42,8 +42,8 @@ export class AppInviteController {
 
   @MessagePattern('app-invite.update')
   async updateAppInvite({ user }) {
-    await this.appInviteService.update(user);
+    const invite = await this.appInviteService.update(user);
 
-    return { status: 'ok' };
+    return { invite };
   }
 }

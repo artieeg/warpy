@@ -1,11 +1,20 @@
 import * as React from "react";
 import Head from "next/head";
 import "./global.css";
+import {config} from '../config';
+import { StoreProvider } from "../modules/store";
 
-function MyApp({ Component, pageProps }) {
+function AppWrapper(props) {
+  const { title, description } = props.pageProps;
+
   return (
     <>
       <Head>
+        <title>{title}</title>
+        <meta name="og:title" content={title} />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
         <meta
@@ -18,9 +27,22 @@ function MyApp({ Component, pageProps }) {
           content="black-translucent"
         ></meta>
       </Head>
-      <Component {...pageProps} />
+
+    {config.isBrowser && (
+      <MyApp {...props}/>
+    )}
     </>
   );
 }
 
-export default MyApp;
+function MyApp({ Component, pageProps }) {
+  //const store = useHydrate(pageProps.initialStore);
+
+  return (
+    <StoreProvider data={pageProps.initialStore}>
+      <Component {...pageProps} />
+    </StoreProvider>
+  );
+}
+
+export default AppWrapper;

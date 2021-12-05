@@ -1,19 +1,19 @@
-import produce from 'immer';
-import {MediaKind, Transport} from 'mediasoup-client/lib/types';
-import {IStore} from '../useStore';
-import {StoreSlice} from '../types';
-import {MediaClient} from '@warpy/media';
-import {mediaDevices, MediaTrackConstraints} from 'react-native-webrtc';
+import produce from "immer";
+import { MediaKind, Transport } from "mediasoup-client/lib/types";
+import { IStore } from "../useStore";
+import { StoreSlice } from "../types";
+import { MediaClient } from "@warpy/media";
+import { container } from "../container";
 
 export interface IMediaDispatchers {
   dispatchMediaSend: (
     permissions: string,
     tracks: MediaKind[],
-    startSending?: boolean,
+    startSending?: boolean
   ) => Promise<void>;
   dispatchInitViewer: (
     permissions: string,
-    recvMediaParams: any,
+    recvMediaParams: any
   ) => Promise<void>;
   dispatchAudioToggle: () => Promise<void>;
   dispatchVideoToggle: () => Promise<void>;
@@ -21,17 +21,17 @@ export interface IMediaDispatchers {
   dispatchProducerClose: (producers: MediaKind[]) => void;
   dispatchMediaRequest: (
     kind: MediaKind,
-    params?: {enabled?: boolean},
+    params?: { enabled?: boolean }
   ) => Promise<void>;
 }
 
 export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
   set,
-  get,
+  get
 ) => ({
   async dispatchMediaRequest(kind, params) {
-    const videoContstraints: MediaTrackConstraints = {
-      facingMode: 'user',
+    const videoContstraints: any = {
+      facingMode: "user",
       mandatory: {
         minWidth: 720,
         minHeight: 1080,
@@ -41,11 +41,11 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
     };
 
     //getUserMedia returns boolean | MediaStream
-    const mediaStream = await mediaDevices.getUserMedia({
+    const mediaStream = await container.mediaDevices.getUserMedia({
       audio: {
         sampleRate: 48000,
       } as any,
-      video: kind === 'video' ? videoContstraints : false,
+      video: kind === "video" ? videoContstraints : false,
     });
 
     //F
@@ -54,11 +54,15 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
     }
 
     if (!params?.enabled) {
-      mediaStream.getAudioTracks().forEach(track => (track.enabled = false));
-      mediaStream.getVideoTracks().forEach(track => (track.enabled = false));
+      mediaStream
+        .getAudioTracks()
+        .forEach((track: any) => (track.enabled = false));
+      mediaStream
+        .getVideoTracks()
+        .forEach((track: any) => (track.enabled = false));
     }
 
-    if (kind === 'video') {
+    if (kind === "video") {
       set({
         videoEnabled: !!params?.enabled,
         video: {
@@ -78,7 +82,7 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
   },
 
   async dispatchInitViewer(permissions, recvMediaParams) {
-    const {api, recvDevice, sendDevice} = get();
+    const { api, recvDevice, sendDevice } = get();
 
     if (!recvDevice.loaded) {
       await recvDevice.load({
@@ -90,7 +94,7 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
       recvDevice,
       sendDevice,
       api,
-      permissions,
+      permissions
     );
 
     set({
@@ -102,12 +106,12 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
 
   dispatchProducerClose(producers) {
     set(
-      produce<IStore>(state => {
-        producers.forEach(producer => {
+      produce<IStore>((state) => {
+        producers.forEach((producer) => {
           state[producer]?.producer?.close();
           state[producer] = undefined;
         });
-      }),
+      })
     );
   },
 
@@ -116,15 +120,15 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
   },
 
   async dispatchAudioToggle() {
-    const {api, stream, audio, audioEnabled} = get();
+    const { api, stream, audio, audioEnabled } = get();
 
     if (stream) {
-      await api.stream.toggleMedia({audioEnabled});
+      await api.stream.toggleMedia({ audioEnabled });
     }
 
     audio?.stream
       .getAudioTracks()
-      .forEach(audio => (audio.enabled = !audioEnabled));
+      .forEach((audio) => (audio.enabled = !audioEnabled));
 
     set({
       audioEnabled: !audioEnabled,
@@ -132,15 +136,15 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
   },
 
   async dispatchVideoToggle() {
-    const {api, stream, video, videoEnabled} = get();
+    const { api, stream, video, videoEnabled } = get();
 
     if (stream) {
-      await api.stream.toggleMedia({videoEnabled});
+      await api.stream.toggleMedia({ videoEnabled: !videoEnabled });
     }
 
     video?.stream
       .getVideoTracks()
-      .forEach(video => (video.enabled = !videoEnabled));
+      .forEach((video) => (video.enabled = !videoEnabled));
 
     set({
       videoEnabled: !videoEnabled,
@@ -148,16 +152,16 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
   },
 
   async dispatchMediaSend(permissions, tracks, startSending) {
-    const {mediaClient, stream, sendMediaParams, sendDevice} = get();
+    const { mediaClient, stream, sendMediaParams, sendDevice } = get();
 
     if (!mediaClient) {
       return;
     }
 
-    const {routerRtpCapabilities, sendTransportOptions} = sendMediaParams;
+    const { routerRtpCapabilities, sendTransportOptions } = sendMediaParams;
 
     if (!sendDevice.loaded) {
-      await sendDevice.load({routerRtpCapabilities});
+      await sendDevice.load({ routerRtpCapabilities });
     }
 
     mediaClient.permissionsToken = permissions;
@@ -169,20 +173,20 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
       sendTransport = await mediaClient.createTransport({
         roomId: stream!,
         device: sendDevice,
-        direction: 'send',
+        direction: "send",
         options: {
           sendTransportOptions,
         },
         isProducer: true,
       });
 
-      set({sendTransport});
+      set({ sendTransport });
     }
 
-    tracks.forEach(async kind => {
+    tracks.forEach(async (kind) => {
       let media = get()[kind];
       if (!media) {
-        await get().dispatchMediaRequest(kind, {enabled: !!startSending});
+        await get().dispatchMediaRequest(kind, { enabled: !!startSending });
 
         media = get()[kind];
       }
@@ -192,13 +196,13 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
         const producer = await mediaClient.sendMediaStream(
           track,
           kind,
-          sendTransport as Transport,
+          sendTransport as Transport
         );
 
         set(
-          produce<IStore>(state => {
+          produce<IStore>((state) => {
             state[kind]!.producer = producer;
-          }),
+          })
         );
       }
     });

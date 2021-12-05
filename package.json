@@ -29,7 +29,8 @@
     "@clipper": "./clipper/src",
     "@warpy/lib": "./lib",
     "@warpy/media": "./media-client",
-    "@warpy/components": "./packages/shared-components"
+    "@warpy/components": "./packages/shared-components",
+    "@warpy/store": "./packages/shared-store"
   },
   "dependencies": {
     "cross-env": "^7.0.3",

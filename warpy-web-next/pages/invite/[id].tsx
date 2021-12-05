@@ -1,31 +1,20 @@
-import React, { createRef, useRef } from "react";
-import {
-  View,
-  ScrollView,
-  StyleSheet,
-  Pressable,
-  useWindowDimensions,
-} from "react-native";
+import React, { createRef } from "react";
+import { View, ScrollView, StyleSheet, Pressable } from "react-native";
 import { Text, ButtonWithBackdrop } from "@warpy/components";
-import { useRouter } from "next/dist/client/router";
 import { NextPageContext } from "next";
 import { runNATSRequest } from "../../modules/comms";
+import { IAppInvite } from "@warpy/lib";
 import GooglePlay from "../../public/icons/google-play.svg";
 import AppStore from "../../public/icons/app-store.svg";
 import ChevronDown from "../../public/icons/chevron-down.svg";
 import Heart from "../../public/icons/heart.svg";
 
 type InviteProps = {
-  invite: any;
+  invite: IAppInvite;
 };
 
 export default function Invite({ invite }: InviteProps) {
-  const { id } = useRouter().query;
-
   const ref = createRef<ScrollView>();
-  const isScrolling = useRef(false);
-
-  const { height } = useWindowDimensions();
 
   return (
     <View style={{ height: "100%" }}>
@@ -165,7 +154,13 @@ export async function getServerSideProps(context: NextPageContext) {
     id: context.query.id,
   });
 
+  console.log({ invite, id: context.query.id });
+
   return {
-    props: { invite },
+    props: {
+      invite,
+      title: `@${invite.user.username} invites you to join warpy!`,
+      description: "join the new live social experience",
+    },
   };
 }

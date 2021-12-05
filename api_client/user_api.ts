@@ -12,11 +12,13 @@ import {
   IWhoAmIResponse,
   IUserUnblockResponse,
   UserList,
+  ICreateAnonUserResponse,
 } from "@warpy/lib";
 import { WebSocketConn } from "./connection";
 
 export interface IUserAPI {
   create: (data: INewUser) => Promise<INewUserResponse>;
+  createAnonUser: () => Promise<ICreateAnonUserResponse>;
   auth: (token: string) => Promise<IWhoAmIResponse>;
   delete: () => Promise<IUserDeleteResponse>;
   follow: (userToFollow: string) => Promise<IFollowResponse>;
@@ -44,6 +46,7 @@ export interface INewUser {
 
 export const UserAPI = (socket: WebSocketConn): IUserAPI => ({
   create: (data: INewUser) => socket.request("new-user", data),
+  createAnonUser: () => socket.request("new-anon-user", {}),
   auth: (token) => socket.request("auth", { token }),
   get: (id) => socket.request("get-user", { id }),
   delete: () => socket.request("delete-user", {}),

@@ -13,6 +13,7 @@ import { IAwardsAPI, AwardsAPI } from "./awards_api";
 import { IAppInviteAPI, AppInviteAPI } from "./app_invite_api";
 
 interface IAPIClient {
+  conn: WebSocketConn;
   observer: IAPIObserver;
   awards: IAwardsAPI;
   user: IUserAPI;
@@ -29,6 +30,7 @@ interface IAPIClient {
 }
 
 export const APIClient = (socket: WebSocketConn): IAPIClient => ({
+  conn: socket,
   observer: APIObserver(socket),
   coin_balance: CoinBalanceAPI(socket),
   bot: BotAPI(socket),

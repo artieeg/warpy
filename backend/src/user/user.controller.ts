@@ -2,11 +2,13 @@ import { ExceptionFilter } from '@backend_2/rpc-exception.filter';
 import { Controller, UseFilters } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
+  ICreateAnonUserResponse,
   INewUser,
   INewUserResponse,
   IUser,
   IUserDelete,
   IUserDeleteResponse,
+  IUserDisconnected,
   IUserInfoResponse,
   IUserListRequest,
   IUserListResponse,
@@ -59,6 +61,12 @@ export class UserController {
   }
 
   @UseFilters(ExceptionFilter)
+  @MessagePattern('user.create.anon')
+  async onAnonUserCreate(): Promise<ICreateAnonUserResponse> {
+    return this.userService.createAnonUser();
+  }
+
+  @UseFilters(ExceptionFilter)
   @MessagePattern('user.create')
   async onUserCreate(data: INewUser): Promise<INewUserResponse> {
     if (process.env.NODE !== 'production' && data.kind === 'dev') {
@@ -108,4 +116,15 @@ export class UserController {
       users,
     };
   }
+
+  /*
+  @MessagePattern('user.disconnected')
+  async onUserDisconnect({ user }: IUserDisconnected) {
+    const isAnonUser = user.slice(0, 9) === 'anon_user';
+
+    if (isAnonUser) {
+      await this.userService.deleteUser(user);
+    }
+  }
+  */
 }

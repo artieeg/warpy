@@ -32,7 +32,7 @@ module.exports = async () => {
       path.resolve(__dirname, '../lib'),
       path.resolve(__dirname, '../api_client'),
       path.resolve(__dirname, '../media-client'),
-      path.resolve(__dirname, '../packages/shared-components'),
+      path.resolve(__dirname, '../packages/'),
     ],
   };
 };

@@ -1,7 +1,14 @@
-import {IParticipant} from '@warpy/lib';
-import {arrayToMap} from '@app/utils';
-import {StoreSlice} from '../types';
-import {IParticipantWithMedia} from '@app/types';
+import { IParticipant, IParticipantWithMedia } from "@warpy/lib";
+import { StoreSlice } from "../types";
+
+export function arrayToMap<T>(array: T[]) {
+  const result: Record<string, T> = {};
+  array.forEach((item) => {
+    result[(item as any).id] = item;
+  });
+
+  return result;
+}
 
 export interface IStreamDispatchers {
   dispatchStreamCreate: () => Promise<void>;
@@ -10,10 +17,10 @@ export interface IStreamDispatchers {
 
 export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
   set,
-  get,
+  get
 ) => ({
   async dispatchStreamCreate() {
-    const {api, dispatchMediaSend, title, dispatchInitViewer} = get();
+    const { api, dispatchMediaSend, title, dispatchInitViewer } = get();
 
     if (!title) {
       return;
@@ -26,7 +33,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       count,
       mediaPermissionsToken,
       recvMediaParams,
-    } = await api.stream.create(title, '60ec569668b42c003304630b');
+    } = await api.stream.create(title, "60ec569668b42c003304630b");
 
     set({
       stream,
@@ -35,7 +42,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       streamers: arrayToMap<IParticipant>(speakers),
       totalParticipantCount: count,
       isStreamOwner: true,
-      role: 'streamer',
+      role: "streamer",
     });
 
     await dispatchInitViewer(mediaPermissionsToken, recvMediaParams);
@@ -43,20 +50,20 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
     const recvTransport = await get().mediaClient!.createTransport({
       roomId: stream,
       device: get().recvDevice,
-      direction: 'recv',
+      direction: "recv",
       options: {
         recvTransportOptions: recvMediaParams.recvTransportOptions,
       },
       isProducer: false,
     });
 
-    set({recvTransport});
+    set({ recvTransport });
 
-    await dispatchMediaSend(mediaPermissionsToken, ['audio', 'video'], true);
+    await dispatchMediaSend(mediaPermissionsToken, ["audio", "video"], true);
   },
 
   async dispatchStreamJoin(stream) {
-    const {api, dispatchInitViewer} = get();
+    const { api, dispatchInitViewer } = get();
 
     const {
       mediaPermissionsToken,
@@ -73,7 +80,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
     const recvTransport = await mediaClient?.createTransport({
       roomId: stream,
       device: get().recvDevice,
-      direction: 'recv',
+      direction: "recv",
       options: {
         recvTransportOptions: recvMediaParams.recvTransportOptions,
       },
@@ -82,7 +89,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
 
     const consumers = await mediaClient.consumeRemoteStreams(
       stream,
-      recvTransport,
+      recvTransport
     );
 
     set({
@@ -90,14 +97,16 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       recvTransport,
       totalParticipantCount: count,
       streamers: arrayToMap<IParticipantWithMedia>(
-        speakers.map(p => {
+        speakers.map((p) => {
           const audioConsumer = consumers.find(
-            c => c.appData.user === p.id && c.kind === 'audio',
+            (c) => c.appData.user === p.id && c.kind === "audio"
           );
 
           const videoConsumer = consumers.find(
-            c => c.appData.user === p.id && c.kind === 'video',
+            (c) => c.appData.user === p.id && c.kind === "video"
           );
+
+          console.log({ audioConsumer, videoConsumer });
 
           return {
             ...p,
@@ -114,10 +123,10 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
               },
             },
           };
-        }),
+        })
       ),
       viewersWithRaisedHands: arrayToMap<IParticipant>(raisedHands),
-      role: 'viewer',
+      role: "viewer",
     });
   },
 });

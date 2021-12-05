@@ -6,6 +6,7 @@ import {IconButton} from './IconButton';
 import {TextButton} from '@warpy/components';
 import {UserInviteOption} from './UserInviteOption';
 import {UserSearchInput} from './UserSearchInput';
+import {ShareStreamLinkButton} from './ShareStreamLinkButton';
 
 export const InviteModal = (props: IBaseModalProps) => {
   const {
@@ -17,6 +18,7 @@ export const InviteModal = (props: IBaseModalProps) => {
     setSearchQuery,
     pendingInviteCount,
     sendPendingInvites,
+    shouldDisplayInviteButton,
   } = useInviteModalController();
 
   const modalStyle = {
@@ -46,7 +48,18 @@ export const InviteModal = (props: IBaseModalProps) => {
 
       {searchedUsers.length === 0 && !isLoading && (
         <FlatList
-          renderItem={({item}) => <UserInviteOption user={item} />}
+          renderItem={({item, index}) => {
+            if (index === 0 && shouldDisplayInviteButton) {
+              return (
+                <>
+                  <ShareStreamLinkButton />
+                  <UserInviteOption user={item} />
+                </>
+              );
+            } else {
+              return <UserInviteOption user={item} />;
+            }
+          }}
           data={inviteSuggestions}
         />
       )}

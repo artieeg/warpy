@@ -33,6 +33,21 @@ export class UserService {
     private appliedAppInviteEntity: AppliedAppInviteEntity,
   ) {}
 
+  async createAnonUser() {
+    const anonUserId = await this.user.createAnonUser();
+
+    const accessToken = this.tokenService.createAuthToken(
+      anonUserId,
+      false,
+      '1d',
+    );
+
+    return {
+      id: anonUserId,
+      access: accessToken,
+    };
+  }
+
   async getUserInfo(id: string, requester: string): Promise<IUserInfoResponse> {
     const [user, currentStreamId, isFollowed, isFollower] = await Promise.all([
       this.user.findById(id, false),
@@ -99,6 +114,7 @@ export class UserService {
       email,
       avatar,
       sub: 'DEV_ACCOUNT',
+      is_anon: false,
     });
 
     const accessToken = this.tokenService.createAuthToken(user.id, false, '1d');

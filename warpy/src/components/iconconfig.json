@@ -565,6 +565,20 @@
       "search": [
         "hand-coin"
       ]
+    },
+    {
+      "uid": "c19f98956b8a2c910bde6021c008a48a",
+      "css": "share",
+      "code": 59432,
+      "src": "custom_icons",
+      "selected": true,
+      "svg": {
+        "path": "M875 500L583.3 208.3V375C291.7 416.7 166.7 625 125 833.3 229.2 687.5 375 620.8 583.3 620.8V791.7L875 500Z",
+        "width": 1000
+      },
+      "search": [
+        "share"
+      ]
     }
   ]
 }
