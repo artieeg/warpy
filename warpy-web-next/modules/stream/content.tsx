@@ -13,20 +13,18 @@ import Link from "next/link";
 import Router from "next/dist/client/router";
 
 type ContentProps = {
+  id: string;
   rid: string;
 };
 
-export const StreamContent = ({ rid }: ContentProps) => {
-  const streamers = useStore((state) => state.streamers);
+export const StreamContent = ({ rid, id }: ContentProps) => {
+  const [streamers, dispatchStreamJoin, mediaClient] = useStore((state) => [
+    state.streamers,
+    state.dispatchStreamJoin,
+    state.mediaClient,
+  ]);
 
-  const [title, id, dispatchStreamJoin, totalParticipantCount] = useStore(
-    (state) => [
-      state.title,
-      state.stream,
-      state.dispatchStreamJoin,
-      state.totalParticipantCount,
-    ]
-  );
+  console.log({ mediaClient });
 
   useEffect(() => {
     setTimeout(() => {
@@ -92,9 +90,6 @@ export const StreamContent = ({ rid }: ContentProps) => {
           className="video"
           style={{
             ...mediaStyles[streams.length - 1][index],
-            position: "absolute",
-            left: 0,
-            top: 0,
             zIndex: -1,
           }}
           ref={videoViewRefs[index]}
@@ -116,6 +111,8 @@ export const StreamContent = ({ rid }: ContentProps) => {
 const styles = StyleSheet.create({
   body: {
     flex: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
   button: {
     zIndex: 1,

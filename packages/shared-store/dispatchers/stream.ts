@@ -65,10 +65,6 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
   async dispatchStreamJoin(stream) {
     const { api, dispatchInitViewer } = get();
 
-    set({
-      totalParticipantCount: 3,
-    });
-
     const {
       mediaPermissionsToken,
       recvMediaParams,
@@ -96,7 +92,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       recvTransport
     );
 
-    const update = {
+    set({
       stream,
       recvTransport,
       totalParticipantCount: count,
@@ -131,8 +127,6 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       ),
       viewersWithRaisedHands: arrayToMap<IParticipant>(raisedHands),
       role: "viewer",
-    };
-
-    set(update as any);
+    });
   },
 });

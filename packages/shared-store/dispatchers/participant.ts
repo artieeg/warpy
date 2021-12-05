@@ -1,7 +1,7 @@
-import {IParticipant} from '@warpy/lib';
-import produce from 'immer';
-import {StoreSlice} from '../types';
-import {IStore} from '../useStore';
+import { IParticipant } from "@warpy/lib";
+import produce from "immer";
+import { StoreSlice } from "../types";
+import { IStore } from "../useStore";
 
 export interface IParticipantDispatchers {
   dispatchViewersFetch: () => Promise<void>;
@@ -12,52 +12,52 @@ export interface IParticipantDispatchers {
   dispatchParticipantRemove: (user: string) => void;
   dispatchMediaToggle: (
     user: string,
-    data: {video?: boolean; audio?: boolean},
+    data: { video?: boolean; audio?: boolean }
   ) => void;
 }
 
 export const createParticipantDispatchers: StoreSlice<IParticipantDispatchers> =
   (set, get) => ({
     async dispatchViewersFetch() {
-      set({isFetchingViewers: true});
+      set({ isFetchingViewers: true });
 
-      const {api} = get();
-      const {latestViewersPage: page, stream} = get();
+      const { api } = get();
+      const { latestViewersPage: page, stream } = get();
 
       if (!stream) {
         return;
       }
 
-      const {viewers} = await api.stream.getViewers(stream, page + 1);
+      const { viewers } = await api.stream.getViewers(stream, page + 1);
 
       set(
-        produce<IStore>(state => {
+        produce<IStore>((state) => {
           state.isFetchingViewers = false;
-          viewers.forEach(viewer => (state.viewers[viewer.id] = viewer));
-        }),
+          viewers.forEach((viewer) => (state.viewers[viewer.id] = viewer));
+        })
       );
     },
 
     dispatchParticipantRemove(user) {
       set(
-        produce<IStore>(state => {
+        produce<IStore>((state) => {
           state.totalParticipantCount--;
 
           delete state.viewers[user];
           delete state.viewersWithRaisedHands[user];
           delete state.streamers[user];
-        }),
+        })
       );
     },
 
     dispatchStreamerAdd(user) {
       set(
-        produce<IStore>(state => {
+        produce<IStore>((state) => {
           delete state.viewers[user.id];
           delete state.viewersWithRaisedHands[user.id];
 
           state.streamers[user.id] = user;
-        }),
+        })
       );
     },
 
@@ -69,7 +69,7 @@ export const createParticipantDispatchers: StoreSlice<IParticipantDispatchers> =
 
     dispatchParticipantRaisedHand(user) {
       set(
-        produce<IStore>(state => {
+        produce<IStore>((state) => {
           if (user.isRaisingHand) {
             delete state.viewers[user.id];
             state.viewersWithRaisedHands[user.id] = user;
@@ -77,27 +77,28 @@ export const createParticipantDispatchers: StoreSlice<IParticipantDispatchers> =
             state.viewers[user.id] = user;
             delete state.viewersWithRaisedHands[user.id];
           }
-        }),
+        })
       );
     },
 
     dispatchParticipantAdd(user) {
       set(
-        produce<IStore>(state => {
+        produce<IStore>((state) => {
           state.totalParticipantCount++;
-          if (user.role === 'viewer') {
+          if (user.role === "viewer") {
             state.viewers[user.id] = user;
-          } else if (user.role === 'streamer' || user.role === 'speaker') {
+          } else if (user.role === "streamer" || user.role === "speaker") {
             state.streamers[user.id] = user;
           }
-        }),
+        })
       );
     },
 
-    dispatchMediaToggle(user, {video, audio}) {
+    dispatchMediaToggle(user, { video, audio }) {
       set(
-        produce<IStore>(state => {
-          const {media} = state.streamers[user];
+        produce<IStore>((state) => {
+          const { media } = state.streamers[user];
+          console.log("user has this media", { media });
 
           if (!media) {
             return;
@@ -110,7 +111,7 @@ export const createParticipantDispatchers: StoreSlice<IParticipantDispatchers> =
           if (audio !== undefined && media.audio) {
             state.streamers[user].media!.audio!.active = audio;
           }
-        }),
+        })
       );
     },
   });

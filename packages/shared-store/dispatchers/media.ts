@@ -139,7 +139,7 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
     const { api, stream, video, videoEnabled } = get();
 
     if (stream) {
-      await api.stream.toggleMedia({ videoEnabled });
+      await api.stream.toggleMedia({ videoEnabled: !videoEnabled });
     }
 
     video?.stream

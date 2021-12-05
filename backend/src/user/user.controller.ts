@@ -117,6 +117,7 @@ export class UserController {
     };
   }
 
+  /*
   @MessagePattern('user.disconnected')
   async onUserDisconnect({ user }: IUserDisconnected) {
     const isAnonUser = user.slice(0, 9) === 'anon_user';
@@ -125,4 +126,5 @@ export class UserController {
       await this.userService.deleteUser(user);
     }
   }
+  */
 }

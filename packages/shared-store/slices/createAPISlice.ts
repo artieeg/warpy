@@ -69,8 +69,6 @@ export const createAPISlice = (
 
     api.stream.onRaiseHandUpdate((data) => {
       const participant = data.viewer;
-      console.log({ participant });
-
       store.dispatchParticipantRaisedHand(participant);
     });
 
@@ -95,6 +93,9 @@ export const createAPISlice = (
 
     api.media.onNewTrack(async (data) => {
       const { mediaClient, recvTransport } = get();
+
+      console.log("new track");
+      console.log({ data, mediaClient, recvTransport });
 
       if (mediaClient && recvTransport) {
         const consumer = await mediaClient.consumeRemoteStream(

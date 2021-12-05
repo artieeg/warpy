@@ -24,46 +24,30 @@ export function useStoreShallow<U>(selector: StateSelector<IStore, U>) {
 let store: any;
 
 export const createHydratedStore = (values: Partial<IStore>) => {
-  let _store =
-    store ??
-    createNewStore({
-      dependencies: {
-        mediaDevices: navigator.mediaDevices,
-      },
-      data: values,
-    });
+  if (store) {
+    return store;
+  }
 
-  if (!store) {
-    _store
-      .getState()
-      .connect("ws://localhost:9999/ws")
-      .then(async () => {
-        _store.getState().createAPISubscriptions({
-          onStreamIdAvailable: () => {},
-        });
+  store = createNewStore({
+    dependencies: {
+      mediaDevices: navigator.mediaDevices,
+    },
+    data: values,
+  });
 
-        const { access } = await _store.getState().api.user.createAnonUser();
-        console.log("created anon user", access);
-        await _store.getState().api.user.auth(access);
+  store
+    .getState()
+    .connect("ws://localhost:9999/ws")
+    .then(async () => {
+      store.getState().createAPISubscriptions({
+        onStreamIdAvailable: () => {},
       });
-  }
 
-  if (values && store) {
-    _store = createNewStore({
-      dependencies: {
-        mediaDevices: navigator.mediaDevices,
-      },
-      data: {
-        ...store.getState(),
-        ...values,
-      },
+      const { access } = await store.getState().api.user.createAnonUser();
+      console.log("created anon user", access);
+      const data = await store.getState().api.user.auth(access);
+      console.log("authed", data);
     });
 
-    store = undefined;
-  }
-
-  if (typeof window === "undefined") return _store;
-  if (!store) store = _store;
-
-  return _store;
+  return store;
 };

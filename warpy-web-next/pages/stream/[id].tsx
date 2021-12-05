@@ -8,13 +8,14 @@ import { StreamContent } from "../../modules/stream/content";
 
 type StreamProps = {
   rid: string;
+  id: string;
   initialStore: IStore;
 };
 
-export default function Stream({ initialStore, rid }: StreamProps) {
+export default function Stream({ initialStore, id, rid }: StreamProps) {
   return (
     <View style={styles.wrapper}>
-      <StreamContent rid={rid} />
+      <StreamContent id={id} rid={rid} />
     </View>
   );
 }
@@ -40,6 +41,7 @@ export async function getServerSideProps(context: NextPageContext) {
 
   return {
     props: {
+      id: stream.id,
       title: stream.title,
       description: "join this stream",
       initialStore: store,
