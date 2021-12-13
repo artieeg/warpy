@@ -18,7 +18,10 @@ export const handleRecvTracksRequest: MessageHandler<
     return;
   }
 
-  const { router, peers } = room;
+  const { peers } = room;
+
+  const router = SFUService.getRouter();
+  console.log("using router", router.id);
 
   const peer = peers[user];
 

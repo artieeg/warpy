@@ -9,7 +9,7 @@ export const handleNewEgress: MessageHandler<
 > = async (data, respond) => {
   const { ip, port, srtp, node } = data;
 
-  const localPipeTransport = await SFUService.createPipeTransport(0);
+  const localPipeTransport = await SFUService.createPipeTransport();
   await localPipeTransport.connect({ ip, port, srtpParameters: srtp });
 
   const { localIp, localPort } = localPipeTransport.tuple;

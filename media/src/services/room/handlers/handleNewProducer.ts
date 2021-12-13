@@ -1,5 +1,6 @@
 import { createNewPeer } from "@media/models";
 import { SFUService, MessageService } from "@media/services";
+import { mediaNodeTransferWorker } from "@media/services/sfu";
 import { MessageHandler, INewProducer } from "@warpy/lib";
 import { rooms } from "../rooms";
 
@@ -13,11 +14,19 @@ export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
     appData: data.appData,
   });
 
+  for (const worker of SFUService.workers) {
+    await mediaNodeTransferWorker.router.pipeToRouter({
+      producerId: pipeProducer.id,
+      router: worker.router,
+    });
+  }
+
   let room = rooms[roomId];
 
   if (!room) {
     room = {
-      router: SFUService.getPipeRouter(),
+      //router: SFUService.getPipeRouter(),
+      router: SFUService.getRouter(),
       peers: {},
       audioLevelObserver: SFUService.getAudioLevelObserver(),
     };
@@ -29,7 +38,8 @@ export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
   if (!peers[userId]) {
     const recvTransport = await SFUService.createTransport(
       "recv",
-      SFUService.getPipeRouter(),
+      SFUService.getRouter(),
+      //SFUService.getPipeRouter(),
       userId
     );
 

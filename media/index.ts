@@ -26,9 +26,6 @@ const main = async () => {
 
   SFUService.onActiveSpeakers(MessageService.sendActiveSpeakers);
 
-  console.log("Media service has started with role", process.env.ROLE);
-  console.log("Media node info", NodeInfo);
-
   if (role === "PRODUCER") {
     MessageService.sendNodeIsOnlineMessage(NodeInfo);
   } else if (role === "CONSUMER") {
