@@ -5,12 +5,17 @@ import {OpenNotificationsButton} from './OpenNotificationsButton';
 import {StartNewStreamButton} from './StartNewStreamButton';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {Avatar} from './Avatar';
-import {useAppUser} from '@app/hooks';
 import {OpenHomeButton} from './OpenHomeButton';
 import {UserList} from '../../../lib';
+import {useStore} from '@app/store';
 
 export const ScreenHeader = () => {
-  const user = useAppUser();
+  //TODO: too ugly, change someday
+  const [user, signUpAvatar] = useStore(state => [
+    state.user,
+    state.signUpAvatar,
+  ]);
+
   const navigation = useNavigation();
 
   const route = useRoute();
@@ -86,9 +91,12 @@ export const ScreenHeader = () => {
             style={styles.headerButton}
             onPress={onStartStream}
           />
-          <TouchableOpacity onPress={onOpenSettings}>
-            <Avatar user={user!} />
-          </TouchableOpacity>
+          {user && (
+            <TouchableOpacity onPress={onOpenSettings}>
+              {/* uh oh 🤡 */}
+              <Avatar user={user ? user : ({avatar: signUpAvatar} as any)} />
+            </TouchableOpacity>
+          )}
         </View>
       )}
     </View>

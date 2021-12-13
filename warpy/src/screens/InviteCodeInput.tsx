@@ -15,10 +15,17 @@ export const useInviteCodeInputController = () => {
     state.api,
     state.dispatchToastMessage,
   ]);
+  const mode = screenMode === 'signup' && code.length === 0 ? 'skip' : 'apply';
 
   const set = useStore.use.set();
 
   const onSubmit = useCallback(async () => {
+    if (code.length === 0 && mode === 'skip') {
+      navigation.navigate('Loading');
+
+      return;
+    }
+
     const {status} = await api.app_invite.apply(code);
 
     if (status !== 'ok') {
@@ -52,7 +59,7 @@ export const useInviteCodeInputController = () => {
     onSubmit,
     setCode,
     screenMode,
-    mode: screenMode === 'signup' && code.length === 0 ? 'skip' : 'apply',
+    mode,
     disabled: screenMode === 'signup' ? false : code.length === 0,
   };
 };
