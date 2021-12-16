@@ -25,7 +25,6 @@ export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
 
   if (!room) {
     room = {
-      //router: SFUService.getPipeRouter(),
       router: SFUService.getRouter(),
       peers: {},
       audioLevelObserver: SFUService.getAudioLevelObserver(),
