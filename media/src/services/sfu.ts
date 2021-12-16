@@ -18,6 +18,10 @@ import { NodeInfo } from "@media/nodeinfo";
 export const observer = new EventEmitter();
 
 let latestUsedWorkerIdx = -1;
+
+/** Worker to send/receive media to/from other media servers */
+export let mediaNodeTransferWorker: IWorker;
+
 export const workers: IWorker[] = [];
 
 export const egressPipes: EgressTransports = {};
@@ -54,25 +58,29 @@ export const startWorkers = async () => {
       threshold: -50,
     });
 
-    workers.push({ worker, router, audioLevelObserver });
+    if (i === 0) {
+      mediaNodeTransferWorker = { worker, router, audioLevelObserver };
+    } else {
+      workers.push({ worker, router, audioLevelObserver });
+    }
   }
 
   return workers;
 };
 
 export const getPipeRouter = () => {
-  return workers[0].router;
+  return mediaNodeTransferWorker.router;
 };
 
 export const getRouter = () => {
   latestUsedWorkerIdx += 1;
 
-  if (latestUsedWorkerIdx == workers.length) {
+  if (latestUsedWorkerIdx === workers.length) {
     latestUsedWorkerIdx = 0;
   }
 
-  //return workers[latestUsedWorkerIdx];
-  return workers[0].router; //TODO remove this
+  return workers[latestUsedWorkerIdx].router;
+  //return workers[0].router; //TODO remove this
 };
 
 export const getAudioLevelObserver = () => {
@@ -140,10 +148,10 @@ export const createConsumer = async (
   };
 };
 
-export const createPipeTransport = async (id: number) => {
+export const createPipeTransport = async () => {
   const { listenIps } = config.mediasoup.webRtcTransport;
 
-  const router = workers[id].router;
+  const router = mediaNodeTransferWorker.router;
 
   const transport = await router.createPipeTransport({
     listenIp: listenIps[0],
@@ -202,7 +210,7 @@ export const broadcastNewProducerToEgress = async (
 */
 
 export const tryConnectToIngress = async () => {
-  const transport = await createPipeTransport(0);
+  const transport = await createPipeTransport();
 
   pipeToIngress = transport;
 

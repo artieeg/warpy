@@ -9,6 +9,6 @@ export const ProducerSubjectEventMap = {
   "media.transport.send-transport": "new-speaker",
   "media.egress.try-connect": "new-egress",
   "media.transport.connect.producer": "connect-transport",
-  [producerJoinRoomSubject]: "join-room",
+  //[producerJoinRoomSubject]: "join-room",
   [removeUserProducers]: "remove-user-producers",
 };

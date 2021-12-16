@@ -5,14 +5,12 @@ import {IconButton} from './IconButton';
 import {useStore} from '@app/store';
 
 export const HostNewStreamButton = () => {
-  const dispatchCreateStream = useStore.use.dispatchStreamCreate();
-
   return (
     <IconButton
       name="plus"
       size={24}
       style={styles.button}
-      onPress={dispatchCreateStream}
+      onPress={() => useStore.getState().dispatchStreamCreate()}
     />
   );
 };

@@ -12,7 +12,10 @@ import { rooms } from "../rooms";
 
 const createNewRoom = (): IRoom => {
   return {
-    router: SFUService.getRouter(),
+    router:
+      role === "PRODUCER"
+        ? SFUService.mediaNodeTransferWorker.router
+        : SFUService.getRouter(),
     peers: {},
     audioLevelObserver: SFUService.getAudioLevelObserver(),
   };

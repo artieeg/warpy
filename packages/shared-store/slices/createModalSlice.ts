@@ -1,11 +1,10 @@
-import {Modal} from '@app/types';
-import {IBot, IInvite} from '@warpy/lib';
-import {StoreSlice} from '../types';
+import { IBot, IInvite } from "@warpy/lib";
+import { StoreSlice, Modal } from "../types";
 
 export interface IModalSlice {
   modalCurrent: Modal | null;
   modalSelectedUser: string | null;
-  modalInvite: (IInvite & {notification: string}) | null;
+  modalInvite: (IInvite & { notification: string }) | null;
   modalBotConfirmData: IBot | null;
   modalBotConfirmId: string | null;
   modalUserToAward: string | null;
