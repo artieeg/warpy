@@ -28,11 +28,11 @@ export const StreamCategoryOption = React.memo(
 
 const styles = StyleSheet.create({
   wrapper: {
-    height: 40,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 20,
     paddingHorizontal: 20,
+    height: 35,
     marginRight: 10,
   },
 });

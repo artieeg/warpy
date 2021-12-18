@@ -26,9 +26,11 @@ export const createFeedDispatchers: StoreSlice<IFeedDispatchers> = (
         if (isSelected) {
           state.selectedCategoryIds = [...state.selectedCategoryIds, id];
         } else {
-          state.selectedCategoryIds = state.selectedCategoryIds.filter(
-            (id0) => id0 !== id
-          );
+          if (state.selectedCategoryIds.length > 1) {
+            state.selectedCategoryIds = state.selectedCategoryIds.filter(
+              (id0) => id0 !== id
+            );
+          }
         }
       })
     );

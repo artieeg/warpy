@@ -26,32 +26,40 @@ export const StreamCategoryList = () => {
   }, [categories]);
 
   return (
-    <ScrollView
-      showsHorizontalScrollIndicator={false}
-      showsVerticalScrollIndicator={false}
-      horizontal
-      contentContainerStyle={styles.container}>
-      {categories.map((category, index) => (
-        <StreamCategoryOption
-          selected={selectedCategoryIds.includes(category.id)}
-          color={colors[index].toHexString()}
-          category={category}
-          onPress={() =>
-            useStore
-              .getState()
-              .dispatchCategoryToggle(
-                category.id,
-                !selectedCategoryIds.includes(category.id),
-              )
-          }
-        />
-      ))}
-    </ScrollView>
+    <View style={styles.wrapper}>
+      <ScrollView
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        centerContent
+        horizontal
+        contentContainerStyle={styles.container}>
+        {categories.map((category, index) => (
+          <StreamCategoryOption
+            key={category.id}
+            selected={selectedCategoryIds.includes(category.id)}
+            color={colors[index].toHexString()}
+            category={category}
+            onPress={() =>
+              useStore
+                .getState()
+                .dispatchCategoryToggle(
+                  category.id,
+                  !selectedCategoryIds.includes(category.id),
+                )
+            }
+          />
+        ))}
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
+    height: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
+  wrapper: {},
 });
