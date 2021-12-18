@@ -15,6 +15,10 @@ import { createTokenSlice, ITokenSlice } from "./slices/createTokenSlice";
 import { createToastSlice, IToastSlice } from "./slices/createToastSlice";
 import { createModalSlice, IModalSlice } from "./slices/createModalSlice";
 import {
+  IStreamCategoriesSlice,
+  createStreamCategoriesSlice,
+} from "./slices/createStreamCategoriesSlice";
+import {
   createReactionSlice,
   IReactionSlice,
 } from "./slices/createReactionSlice";
@@ -64,7 +68,6 @@ import {
   createInviteDispatchers,
   IInviteDispatchers,
 } from "./dispatchers/invites";
-import shallow from "zustand/shallow";
 import {
   createUserListSlice,
   IUserListSlice,
@@ -74,7 +77,6 @@ import {
   IUserListDispatchers,
 } from "./dispatchers/user_list";
 import { createAwardsSlice, IAwardsSlice } from "./slices/createAwardsSlice";
-import { useCallback } from "react";
 import { container } from "./container";
 
 interface Selectors<StoreType> {
@@ -98,6 +100,7 @@ function createSelectorHooks<StoreType extends State>(
 
 export interface IStore
   extends IStreamSlice,
+    IStreamCategoriesSlice,
     IFeedSlice,
     IUserSlice,
     IFollowingSlice,
@@ -150,6 +153,7 @@ export const createNewStore = (config: StoreConfig) => {
       return {
         ...config.data,
         ...createModalSlice(set, get),
+        ...createStreamCategoriesSlice(set, get),
         ...createInviteSlice(set, get),
         ...createAwardsSlice(set, get),
         ...createAudioLevelSlice(set, get),

@@ -10,6 +10,7 @@ import {
   IAward,
   IAppInvite,
   IStream,
+  IStreamCategory,
 } from "./models";
 import { UserList } from "./types";
 
@@ -42,6 +43,7 @@ export interface IWhoAmIResponse {
   user: IBaseUser | null;
   following: string[] | null;
   hasActivatedAppInvite: boolean;
+  categories: IStreamCategory[];
 }
 
 export interface INewUserResponse {
@@ -175,4 +177,8 @@ export interface ICreateAnonUserResponse {
 
 export interface IStreamGetResponse {
   stream: IStream;
+}
+
+export interface IGetCategoriesResponse {
+  categories: IStreamCategory[];
 }

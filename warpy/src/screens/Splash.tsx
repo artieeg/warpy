@@ -7,10 +7,12 @@ export const Splash = () => {
 
   return (
     <View style={styles.screen}>
+      {/* 
       <Image
         source={require('../assets/logo.png')}
         style={{width: 200, height: 200}}
       />
+        */}
     </View>
   );
 };
