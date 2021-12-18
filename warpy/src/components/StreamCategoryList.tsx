@@ -1,6 +1,6 @@
-import {useStore, useStoreShallow} from '@app/store';
+import {useStore} from '@app/store';
 import React, {useMemo} from 'react';
-import {View, StyleSheet, FlatList, ScrollView} from 'react-native';
+import {View, StyleSheet, ScrollView} from 'react-native';
 import {StreamCategoryOption} from './StreamCategoryOption';
 import tinycolor from 'tinycolor2';
 
@@ -17,7 +17,7 @@ export const StreamCategoryList = () => {
     for (let i = 1; i < categories.length; i++) {
       colors.push(
         tinycolor(colors[i - 1].toHexString()).spin(
-          (i * 360) / categories.length,
+          360 / (categories.length - 1),
         ),
       );
     }
