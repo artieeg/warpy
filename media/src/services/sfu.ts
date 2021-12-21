@@ -14,6 +14,7 @@ import { config } from "@media/config";
 import { MessageService } from ".";
 import EventEmitter from "events";
 import { NodeInfo } from "@media/nodeinfo";
+import { role } from "@media/role";
 
 export const observer = new EventEmitter();
 
@@ -84,7 +85,9 @@ export const getRouter = () => {
 };
 
 export const getAudioLevelObserver = () => {
-  return workers[0].audioLevelObserver;
+  return role === "PRODUCER"
+    ? mediaNodeTransferWorker.audioLevelObserver
+    : workers[0].audioLevelObserver;
 };
 
 export const createPlainTransport = async (router: Router) => {

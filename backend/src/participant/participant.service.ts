@@ -27,6 +27,22 @@ export class ParticipantService {
     private streamBlockEntity: StreamBlockEntity,
   ) {}
 
+  async removeUserFromStream(user: string) {
+    const userToRemove = await this.participant.getById(user);
+
+    if (userToRemove) {
+      await this.media.removeUserFromNodes(userToRemove);
+    }
+
+    const isBot = user.slice(0, 3) === 'bot';
+
+    if (isBot) {
+      await this.deleteBotParticipant(user);
+    } else {
+      await this.deleteParticipant(user);
+    }
+  }
+
   async createNewViewer(
     stream: string,
     viewerId: string,

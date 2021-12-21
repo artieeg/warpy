@@ -133,7 +133,7 @@ describe('MediaService', () => {
 
         if (p.recvNodeId) {
           expect(mockedNatsService.request).toBeCalledWith(
-            `media.peer.kick-user.${recvNodeId}`,
+            `media.peer.user-leave.${recvNodeId}`,
             expect.anything(),
             expect.anything(),
           );
@@ -141,7 +141,7 @@ describe('MediaService', () => {
 
         if (p.sendNodeId) {
           expect(mockedNatsService.request).toBeCalledWith(
-            `media.peer.kick-user.${sendNodeId}`,
+            `media.peer.user-leave.${sendNodeId}`,
             expect.anything(),
             expect.anything(),
           );

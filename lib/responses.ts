@@ -182,3 +182,7 @@ export interface IStreamGetResponse {
 export interface IGetCategoriesResponse {
   categories: IStreamCategory[];
 }
+
+export interface ILeaveStreamResponse {
+  status: "ok" | "error";
+}

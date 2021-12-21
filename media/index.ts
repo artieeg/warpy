@@ -18,7 +18,7 @@ const main = async () => {
   MessageService.on("new-speaker", RoomService.handleNewTransport);
   MessageService.on("new-egress", RoomService.handleNewEgress);
   MessageService.on("new-producer", RoomService.handleNewProducer);
-  MessageService.on("kick-user", RoomService.handleKickedUser);
+  MessageService.on("user-leave", RoomService.handleUserLeave);
   MessageService.on(
     "remove-user-producers",
     RoomService.handleRemoveUserProducers

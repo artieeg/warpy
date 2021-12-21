@@ -31,6 +31,13 @@ const handlers: Record<string, HandlerConfig> = {
     }),
   },
 
+  "leave-stream": {
+    subject: "participant.leave",
+    kind: "request",
+    auth: true,
+    schema: joi.object({}),
+  },
+
   "raise-hand": {
     subject: "user.raise-hand",
     kind: "event",

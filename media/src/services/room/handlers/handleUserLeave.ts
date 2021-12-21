@@ -1,7 +1,7 @@
 import { MessageHandler } from "@warpy/lib";
 import { rooms } from "../rooms";
 
-export const handleKickedUser: MessageHandler<
+export const handleUserLeave: MessageHandler<
   {
     user: string;
     stream: string;
@@ -11,6 +11,8 @@ export const handleKickedUser: MessageHandler<
   const { user, stream } = data;
 
   const peer = rooms[stream].peers[user];
+
+  console.log("user leaving", user, stream);
 
   if (!peer) {
     return respond({

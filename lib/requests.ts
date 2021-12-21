@@ -330,3 +330,7 @@ export interface IInviteApplyRequest {
 export interface IStreamGetRequest {
   stream: string;
 }
+
+export interface ILeaveStreamRequest {
+  user: string;
+}
