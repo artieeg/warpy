@@ -12,6 +12,8 @@ export const handleUserLeave: MessageHandler<
 
   const peer = rooms[stream].peers[user];
 
+  console.log("user leaving", user, stream);
+
   if (!peer) {
     return respond({
       user,

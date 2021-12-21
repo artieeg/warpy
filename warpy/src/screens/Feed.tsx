@@ -12,7 +12,7 @@ export const Feed = () => {
   return (
     <View style={styles.wrapper}>
       <ScreenHeader />
-      <StreamCategoryList />
+      <StreamCategoryList mode="browse-feed" />
       <FlatList
         data={feed}
         numColumns={2}
