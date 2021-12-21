@@ -1,10 +1,11 @@
 import {useStore} from '@app/store';
-import React, {useMemo} from 'react';
+import React from 'react';
 import {View, StyleSheet, useWindowDimensions, TextInput} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {HostNewStreamButton} from './HostNewStreamButton';
 import {InviteButton} from './InviteButton';
 import {PendingInvites} from './PendingInvites';
+import {StreamCategoryList} from './StreamCategoryList';
 import {SwitchCameraButton} from './SwitchCameraButton';
 import {textStyles} from './Text';
 import {ToggleCameraButton} from './ToggleCameraButton';
@@ -40,12 +41,19 @@ export const NewStreamPanel = () => {
         colors={['#050505fa', '#05050500']}
       />
 
-      <TextInput
-        onChangeText={v => set({title: v})}
-        style={styles.titleInput}
-        placeholder="stream title"
-        placeholderTextColor={textStyles.info.color}
-      />
+      <View style={styles.infoInputs}>
+        <TextInput
+          onChangeText={v => set({title: v})}
+          style={styles.titleInput}
+          placeholder="stream title"
+          placeholderTextColor={textStyles.info.color}
+        />
+
+        <StreamCategoryList
+          mode="create-stream"
+          style={styles.categoryPicker}
+        />
+      </View>
 
       <PendingInvites style={styles.pendingInvites} />
 
@@ -90,11 +98,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  titleInput: {
+  infoInputs: {
     position: 'absolute',
     top: 40,
-    left: 20,
-    right: 20,
+  },
+  categoryPicker: {
+    marginTop: 15,
+  },
+  titleInput: {
+    paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

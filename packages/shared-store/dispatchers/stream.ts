@@ -20,9 +20,15 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
   get
 ) => ({
   async dispatchStreamCreate() {
-    const { api, dispatchMediaSend, title, dispatchInitViewer } = get();
+    const {
+      streamCategory,
+      api,
+      dispatchMediaSend,
+      title,
+      dispatchInitViewer,
+    } = get();
 
-    if (!title) {
+    if (!title || !streamCategory) {
       return;
     }
 
@@ -33,7 +39,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       count,
       mediaPermissionsToken,
       recvMediaParams,
-    } = await api.stream.create(title, "60ec569668b42c003304630b");
+    } = await api.stream.create(title, streamCategory.id);
 
     set({
       stream,
@@ -105,8 +111,6 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
           const videoConsumer = consumers.find(
             (c) => c.appData.user === p.id && c.kind === "video"
           );
-
-          console.log({ audioConsumer, videoConsumer });
 
           return {
             ...p,

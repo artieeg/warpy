@@ -25,8 +25,6 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
     const { user, following, hasActivatedAppInvite, categories } =
       await api.user.auth(token);
 
-    console.log({ hasActivatedAppInvite });
-
     if (!user) {
       set({
         isLoadingUser: false,
@@ -44,6 +42,7 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
       hasActivatedAppInvite,
       following: following || [],
       isLoadingUser: false,
+      streamCategory: categories[1],
     });
   },
 
