@@ -6,6 +6,7 @@ import {
   IJoinStream,
   IJoinStreamResponse,
   IKickUserRequest,
+  ILeaveStreamRequest,
   IMediaToggleRequest,
   IRaiseHand,
   IRequestViewers,
@@ -18,6 +19,11 @@ import { ParticipantService } from './participant.service';
 @Controller()
 export class ParticipantController {
   constructor(private participant: ParticipantService) {}
+
+  @MessagePattern('participant.leave')
+  async onLeaveStream({ user }: ILeaveStreamRequest) {
+    return this.participant.removeUserFromStream(user);
+  }
 
   @MessagePattern('stream.join')
   async onNewViewer({

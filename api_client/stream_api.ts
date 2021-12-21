@@ -57,11 +57,11 @@ export interface IStreamAPI {
   onUserKick: EventHandler<IUserKickedEvent>;
   onMediaToggle: EventHandler<IMediaToggleEvent>;
   onStreamIdAvailable: EventHandler<IStreamIdAvailable>;
-  leave: (stream: string) => Promise<ILeaveStreamResponse>;
+  leave: () => Promise<ILeaveStreamResponse>;
 }
 
 export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
-  leave: (stream) => socket.request("leave-stream", { stream }),
+  leave: () => socket.request("leave-stream", {}),
   create: (title, hub) =>
     socket.request("stream-new", {
       title,

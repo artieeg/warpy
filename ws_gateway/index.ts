@@ -32,12 +32,10 @@ const handlers: Record<string, HandlerConfig> = {
   },
 
   "leave-stream": {
-    subject: "stream.leave",
+    subject: "participant.leave",
     kind: "request",
     auth: true,
-    schema: joi.object({
-      stream: joi.string().max(64).required(),
-    }),
+    schema: joi.object({}),
   },
 
   "raise-hand": {
