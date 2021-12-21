@@ -148,7 +148,7 @@ export class MediaService {
 
   private async kickFromRoom(user: string, stream: string, node: string) {
     const response = await this.nc.request(
-      `media.peer.kick-user.${node}`,
+      `media.peer.user-leave.${node}`,
       {
         user,
         stream,

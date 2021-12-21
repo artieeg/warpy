@@ -1,5 +1,5 @@
 import { NodeInfo } from "@media/nodeinfo";
 
 export const CommonSubjectEventMap = {
-  [`media.peer.kick-user.${NodeInfo.id}`]: "kick-user",
+  [`media.peer.user-leave.${NodeInfo.id}`]: "user-leave",
 };

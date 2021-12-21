@@ -1,7 +1,7 @@
 import { MessageHandler } from "@warpy/lib";
 import { rooms } from "../rooms";
 
-export const handleKickedUser: MessageHandler<
+export const handleUserLeave: MessageHandler<
   {
     user: string;
     stream: string;

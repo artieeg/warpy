@@ -7,5 +7,5 @@ export * from "./handleNewRoom";
 export * from "./handleNewTransport";
 export * from "./handleNewTrack";
 export * from "./handleRecvTracksRequest";
-export * from "./handleKickedUser";
+export * from "./handleUserLeave";
 export * from "./handleRemoveUserProducers";
