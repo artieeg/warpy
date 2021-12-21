@@ -1,6 +1,7 @@
 import { AppInviteEntity } from '@backend_2/app_invite/app-invite.entity';
 import { AppliedAppInviteEntity } from '@backend_2/app_invite/applied-app-invite.entity';
 import { BlockEntity } from '@backend_2/block/block.entity';
+import { CategoriesEntity } from '@backend_2/categories/categories.entity';
 import { CoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity';
 import { UserNotFound } from '@backend_2/errors';
 import { FollowEntity } from '@backend_2/follow/follow.entity';
@@ -21,6 +22,7 @@ import { UserEntity } from './user.entity';
 @Injectable()
 export class UserService {
   constructor(
+    private categoriesEntity: CategoriesEntity,
     private user: UserEntity,
     private tokenService: TokenService,
     private refreshTokenEntity: RefreshTokenEntity,
@@ -88,9 +90,10 @@ export class UserService {
   }
 
   async getById(user: string): Promise<IWhoAmIResponse> {
-    const [data, hasActivatedAppInvite] = await Promise.all([
+    const [data, hasActivatedAppInvite, categories] = await Promise.all([
       this.user.findById(user, true),
       this.appliedAppInviteEntity.find(user),
+      this.categoriesEntity.getAll(),
     ]);
 
     if (!data) {
@@ -101,6 +104,7 @@ export class UserService {
       user: data,
       following: await this.followEntity.getFollowedUserIds(user),
       hasActivatedAppInvite: !!hasActivatedAppInvite,
+      categories,
     };
   }
 

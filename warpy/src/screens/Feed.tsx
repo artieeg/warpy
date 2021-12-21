@@ -1,5 +1,6 @@
 import {StreamPreview} from '@app/components';
 import {ScreenHeader} from '@app/components/ScreenHeader';
+import {StreamCategoryList} from '@app/components/StreamCategoryList';
 import {useFeed, usePreviewDimensions} from '@app/hooks';
 import React from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
@@ -11,6 +12,7 @@ export const Feed = () => {
   return (
     <View style={styles.wrapper}>
       <ScreenHeader />
+      <StreamCategoryList />
       <FlatList
         data={feed}
         numColumns={2}

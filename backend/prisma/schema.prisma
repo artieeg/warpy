@@ -276,3 +276,9 @@ model AppliedAppInvite {
   invite_id String? @unique
   invite    AppInvite?   @relation(name: "applied_invites", fields: [invite_id], references: [id], onDelete: Cascade)
 }
+
+model StreamCategory {
+  id       String @id @default(cuid())
+  value    String
+  priority Int
+}

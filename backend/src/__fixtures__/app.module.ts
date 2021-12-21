@@ -3,6 +3,7 @@ import { AwardModule } from '@backend_2/award/award.module';
 import { BlockModule } from '@backend_2/block/block.module';
 import { BotsModule } from '@backend_2/bots/bots.module';
 import { BroadcastModule } from '@backend_2/broadcast/broadcast.module';
+import { CategoryModule } from '@backend_2/categories/categories.module';
 import { ChatModule } from '@backend_2/chat/chat.module';
 import { CoinBalanceModule } from '@backend_2/coin-balance/coin-balance.module';
 import { configuration } from '@backend_2/config/configuration';
@@ -30,6 +31,7 @@ export const testModuleBuilder = Test.createTestingModule({
       load: [configuration],
       isGlobal: true,
     }),
+    CategoryModule,
     BotsModule,
     AwardModule,
     CoinBalanceModule,

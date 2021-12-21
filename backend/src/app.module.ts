@@ -8,6 +8,7 @@ import { AwardModule } from './award/award.module';
 import { BlockModule } from './block/block.module';
 import { BotsModule } from './bots/bots.module';
 import { BroadcastModule } from './broadcast/broadcast.module';
+import { CategoryModule } from './categories/categories.module';
 import { ChatModule } from './chat/chat.module';
 import { CoinBalanceModule } from './coin-balance/coin-balance.module';
 import { configuration } from './config/configuration';
@@ -33,6 +34,7 @@ import { UserModule } from './user/user.module';
       load: [configuration],
       isGlobal: true,
     }),
+    CategoryModule,
     CoinBalanceModule,
     AppInviteModule,
     AwardModule,

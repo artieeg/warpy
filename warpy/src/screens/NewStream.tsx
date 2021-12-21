@@ -1,19 +1,14 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
-import {Button} from '@app/components';
 import {StreamOverlay} from '@app/components/StreamOverlay';
 import {Room} from '@app/components/Room';
 import {useStore} from '@app/store';
-import shallow from 'zustand/shallow';
 import {NewStreamPanel} from '@app/components/NewStreamPanel';
 import {AwardDisplay} from '@app/components/AwardDisplay';
 import {useRoute} from '@react-navigation/native';
 
 export const useNewStreamController = () => {
-  const [streamId, dispatchMediaRequest] = useStore(
-    state => [state.stream, state.dispatchMediaRequest],
-    shallow,
-  );
+  const streamId = useStore(state => state.stream);
 
   const params = useRoute().params as any;
 
@@ -27,8 +22,8 @@ export const useNewStreamController = () => {
   }, [params?.startRoomTogetherTimeout]);
 
   useEffect(() => {
-    dispatchMediaRequest('audio', {enabled: true});
-    dispatchMediaRequest('video', {enabled: true});
+    useStore.getState().dispatchMediaRequest('audio', {enabled: true});
+    useStore.getState().dispatchMediaRequest('video', {enabled: true});
   }, []);
 
   return {streamId};
