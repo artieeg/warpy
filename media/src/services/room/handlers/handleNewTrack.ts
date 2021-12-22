@@ -129,7 +129,10 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
     return;
   }
 
-  peer.producer[kind] = newProducer;
+  peer.producer[kind] = {
+    [SFUService.getPipeRouter().id]: newProducer,
+  };
+
   resultId = newProducer.id;
 
   MessageService.sendMessageToUser(user, {

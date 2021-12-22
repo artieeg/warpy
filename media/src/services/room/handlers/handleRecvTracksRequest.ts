@@ -20,7 +20,7 @@ export const handleRecvTracksRequest: MessageHandler<
 
   const { peers } = room;
 
-  const router = SFUService.getRouter();
+  const { router } = SFUService.getWorker();
 
   const peer = peers[user];
 
@@ -44,10 +44,9 @@ export const handleRecvTracksRequest: MessageHandler<
     }
 
     try {
-      //const { producer } = peer;
       const [audioProducer, videoProducer] = [
-        peer.producer.audio,
-        peer.producer.video,
+        peer.producer.audio[router.id],
+        peer.producer.video[router.id],
       ];
 
       if (videoProducer) {

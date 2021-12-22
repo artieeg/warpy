@@ -15,7 +15,7 @@ const createNewRoom = (): IRoom => {
     router:
       role === "PRODUCER"
         ? SFUService.mediaNodeTransferWorker.router
-        : SFUService.getRouter(),
+        : SFUService.getWorker().router,
     peers: {},
     audioLevelObserver: SFUService.getAudioLevelObserver(),
   };

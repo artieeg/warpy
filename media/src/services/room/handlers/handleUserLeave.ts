@@ -1,3 +1,4 @@
+import { closePeerProducers } from "@media/models";
 import { MessageHandler } from "@warpy/lib";
 import { rooms } from "../rooms";
 
@@ -21,8 +22,7 @@ export const handleUserLeave: MessageHandler<
     });
   }
 
-  peer.producer.video?.close();
-  peer.producer.audio?.close();
+  closePeerProducers(peer, { video: true, audio: true });
 
   peer.recvTransport?.close();
   peer.sendTransport?.close();

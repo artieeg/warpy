@@ -73,15 +73,14 @@ export const getPipeRouter = () => {
   return mediaNodeTransferWorker.router;
 };
 
-export const getRouter = () => {
+export const getWorker = () => {
   latestUsedWorkerIdx += 1;
 
   if (latestUsedWorkerIdx === workers.length) {
     latestUsedWorkerIdx = 0;
   }
 
-  return workers[latestUsedWorkerIdx].router;
-  //return workers[0].router; //TODO remove this
+  return workers[latestUsedWorkerIdx];
 };
 
 export const getAudioLevelObserver = () => {
