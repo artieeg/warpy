@@ -1,4 +1,4 @@
-import { createNewPeer } from "@media/models";
+import { closePeerProducers, createNewPeer } from "@media/models";
 import { SFUService } from "@media/services";
 import { getOptionsFromTransport } from "@media/utils";
 import {
@@ -28,10 +28,11 @@ export const handleNewTransport: MessageHandler<
 
   const peer = createNewPeer({
     sendTransport,
+    router: room.router,
   });
 
   //Close video producer if it exists
-  peer.producer.video?.close();
+  closePeerProducers(peer, { video: true });
 
   room.peers[speaker] = peer;
 
