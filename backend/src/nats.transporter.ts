@@ -21,7 +21,11 @@ export class NatsServer extends Server implements CustomTransportStrategy {
       if (response instanceof Observable) {
         response.subscribe({
           next: (value) => this.sendResponse(msg, value),
-          error: (err) => this.sendResponse(msg, err),
+          error: (err) =>
+            this.sendResponse(msg, {
+              status: 'error',
+              data: err,
+            }),
         });
       } else {
         this.sendResponse(msg, response);

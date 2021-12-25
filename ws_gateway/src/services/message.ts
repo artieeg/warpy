@@ -35,11 +35,15 @@ export const sendBackendRequest = async (
   subject: string,
   data: any
 ): Promise<any> => {
-  const response = await nc.request(subject, jc.encode(data), {
+  const nats_response = await nc.request(subject, jc.encode(data), {
     timeout: 240000, //for debug purposes
   });
 
-  return jc.decode(response.data) as any;
+  const response = jc.decode(nats_response.data) as any;
+
+  console.log(response);
+
+  return response;
 };
 
 let nc: NatsConnection;

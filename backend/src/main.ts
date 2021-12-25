@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { NatsServer } from './nats.transporter';
 import { AppModule } from './app.module';
+import { ExceptionFilter } from './rpc-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,6 +12,7 @@ async function bootstrap() {
   });
 
   app.startAllMicroservices();
+
   app.listen(3000);
 }
 

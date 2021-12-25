@@ -420,4 +420,15 @@ export class ParticipantEntity {
 
     return ParticipantEntity.toParticipantClientDTO(participant);
   }
+
+  async countUsersWithVideoEnabled(stream: string) {
+    const count = await this.prisma.participant.count({
+      where: {
+        stream_id: stream,
+        videoEnabled: true,
+      },
+    });
+
+    return count;
+  }
 }

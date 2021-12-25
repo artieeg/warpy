@@ -2,6 +2,13 @@ import { RpcException } from '@nestjs/microservices';
 
 export class BaseError extends RpcException {
   status = 'error';
+
+  /**
+   * Priority for the error
+   * 0 - ignoring the error
+   * 1 - show a toast
+   * */
+  priority: number = 1;
 }
 
 export class BannedFromStreamError extends BaseError {
@@ -9,7 +16,6 @@ export class BannedFromStreamError extends BaseError {
     super("You've been banned from this stream");
 
     this.name = 'BannedFromStreamError';
-    this.message = "You've been banned from this stream";
   }
 }
 
@@ -18,7 +24,6 @@ export class UserNotFound extends BaseError {
     super('User not found');
 
     this.name = 'UserNotFound';
-    this.message = 'Cannot find this user';
   }
 }
 
@@ -27,7 +32,6 @@ export class InternalError extends BaseError {
     super('Internal error');
 
     this.name = 'InternalError';
-    this.message = 'Something went wrong';
   }
 }
 
@@ -42,7 +46,6 @@ export class StreamHasBlockedSpeakerError extends BaseError {
     super('This user has another speaker banned');
 
     this.name = 'StreamHasBlockedSpeakerError';
-    this.message = `Can't let this user speak: they have banned ${first_name} ${last_name}`;
   }
 }
 
@@ -57,7 +60,6 @@ export class BlockedByAnotherSpeaker extends BaseError {
     super('This user has been banned by another speaker');
 
     this.name = 'BlockedByAnotherSpeaker';
-    this.message = `Can't let this user speak: they are banned by another speaker ${first_name} ${last_name}`;
   }
 }
 
@@ -66,7 +68,6 @@ export class NoPermissionError extends BaseError {
     super('No permission');
 
     this.name = 'NoPermissionError';
-    this.message = "You don't have permissions to do that";
   }
 }
 
@@ -75,7 +76,6 @@ export class StreamNotFound extends BaseError {
     super('Stream not found');
 
     this.name = 'StreamNotFound';
-    this.message = "Can't find this stream";
   }
 }
 
@@ -84,7 +84,6 @@ export class NotADeveloper extends BaseError {
     super('Not a developer');
 
     this.name = 'NotADeveloper';
-    this.message = 'Not a developer';
   }
 }
 
@@ -93,7 +92,6 @@ export class NotEnoughCoins extends BaseError {
     super('Not enough coins');
 
     this.name = 'NotEnoughCoins';
-    this.message = 'Not enough coins';
   }
 }
 
@@ -102,7 +100,6 @@ export class AppInviteNotFound extends BaseError {
     super('The invite not found');
 
     this.name = 'AppInviteNotFound';
-    this.message = 'The invite not found';
   }
 }
 
@@ -111,7 +108,6 @@ export class AppInviteAlreadyAccepted extends BaseError {
     super('The invite has been already accepted');
 
     this.name = 'AppInviteAlreadyAccepted';
-    this.message = 'The invite has been already accepted';
   }
 }
 
@@ -120,6 +116,13 @@ export class CantInviteYourself extends BaseError {
     super('You cant invite yourself');
 
     this.name = 'CantInviteYourself';
-    this.message = 'You cant invite yourself';
+  }
+}
+
+export class MaxVideoStreamers extends BaseError {
+  constructor() {
+    super('only 4 people can stream video at the same time');
+
+    this.name = 'MaxVideoStreamers';
   }
 }

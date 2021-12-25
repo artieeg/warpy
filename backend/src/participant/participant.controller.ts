@@ -1,4 +1,5 @@
-import { Controller } from '@nestjs/common';
+import { ExceptionFilter } from '@backend_2/rpc-exception.filter';
+import { Controller, UseFilters } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   IActiveSpeakersPayload,
@@ -17,6 +18,7 @@ import {
 import { ParticipantService } from './participant.service';
 
 @Controller()
+@UseFilters(ExceptionFilter)
 export class ParticipantController {
   constructor(private participant: ParticipantService) {}
 
