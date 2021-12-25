@@ -1,5 +1,6 @@
 import { BotInstanceEntity } from '@backend_2/bots/bot-instance.entity';
 import {
+  MaxVideoStreamers,
   NoPermissionError,
   StreamNotFound,
   UserNotFound,
@@ -316,6 +317,14 @@ export class ParticipantService {
     }
 
     if (videoEnabled !== undefined) {
+      const activeVideoStreamers =
+        await this.participant.countUsersWithVideoEnabled(stream);
+
+      //If the user tries to send video when there are already 4 video streamers...
+      if (activeVideoStreamers >= 4 && videoEnabled === true) {
+        throw new MaxVideoStreamers();
+      }
+
       update['videoEnabled'] = videoEnabled;
     }
 
