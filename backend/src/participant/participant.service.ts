@@ -320,9 +320,10 @@ export class ParticipantService {
       const activeVideoStreamers =
         await this.participant.countUsersWithVideoEnabled(stream);
 
-      //if (activeVideoStreamers > 4) {
-      throw new MaxVideoStreamers();
-      //}
+      //If the user tries to send video when there are already 4 video streamers...
+      if (activeVideoStreamers >= 4 && videoEnabled === true) {
+        throw new MaxVideoStreamers();
+      }
 
       update['videoEnabled'] = videoEnabled;
     }

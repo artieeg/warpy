@@ -14,36 +14,20 @@ export const useAppSetUp = () => {
   const accessToken = useStore.use.access();
   const tokenLoadError = useStore.use.tokenLoadError();
 
-  const [
-    createAPISubscriptions,
-    connect,
-    userExists,
-    isLoadingUser,
-    api,
-    user,
-    dispatchUserLoadData,
-    dispatchFetchAppInvite,
-  ] = useStore(
-    state => [
-      state.createAPISubscriptions,
-      state.connect,
-      state.exists,
-      state.isLoadingUser,
-      state.api,
-      state.user,
-      state.dispatchUserLoadData,
-      state.dispatchFetchAppInvite,
-    ],
+  const [userExists, isLoadingUser, api, user] = useStore(
+    state => [state.exists, state.isLoadingUser, state.api, state.user],
     shallow,
   );
 
   useEffect(() => {
-    connect(config.WS);
+    useStore.getState().connect(config.WS);
 
-    createAPISubscriptions({
+    useStore.getState().createAPISubscriptions({
       onStreamIdAvailable: id =>
         navigation.current?.navigate('Stream', {stream: {id}}),
     });
+
+    api.onError(error => useStore.getState().dispatchToastMessage(error.error));
 
     return () => {
       api.observer.removeAllListeners();
@@ -71,7 +55,7 @@ export const useAppSetUp = () => {
 
   useEffect(() => {
     if (accessToken) {
-      dispatchUserLoadData(accessToken);
+      useStore.getState().dispatchUserLoadData(accessToken);
     }
   }, [accessToken]);
 };

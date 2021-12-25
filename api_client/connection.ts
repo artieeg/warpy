@@ -21,14 +21,17 @@ export class WebSocketConn {
     this._socket.onopen = () => {
       this.onopen && this.onopen();
     };
+
     this._socket.onclose = () => {
       console.log("closed");
       this.onclose && this.onclose();
     };
+
     this._socket.onerror = (error: any) => {
       console.error("Socket Error:", error);
       this.onerror && this.onerror(error);
     };
+
     this._socket.onmessage = (message: any) => {
       const { event, rid, data } = JSON.parse(message.data);
 
@@ -58,8 +61,16 @@ export class WebSocketConn {
       data,
     };
 
-    return new Promise<any>((resolve) => {
-      this.observer.once(rid, (response) => resolve(response));
+    return new Promise<any>((resolve, reject) => {
+      this.observer.once(rid, (response) => {
+        if (response.status !== "error") {
+          resolve(response);
+        } else {
+          this.observer.emit("@client/error", response.data);
+
+          reject(response);
+        }
+      });
       this._socket.send(JSON.stringify(payload));
     });
   }
