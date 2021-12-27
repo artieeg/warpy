@@ -15,6 +15,10 @@ import { createTokenSlice, ITokenSlice } from "./slices/createTokenSlice";
 import { createToastSlice, IToastSlice } from "./slices/createToastSlice";
 import { createModalSlice, IModalSlice } from "./slices/createModalSlice";
 import {
+  createFriendFeedSlice,
+  IFriendFeedSlice,
+} from "./slices/createFriendFeedSlice";
+import {
   IStreamCategoriesSlice,
   createStreamCategoriesSlice,
 } from "./slices/createStreamCategoriesSlice";
@@ -117,6 +121,7 @@ export interface IStore
     ITokenSlice,
     IReactionSlice,
     INotificationSlice,
+    IFriendFeedSlice,
     IAudioLevelSlice,
     ISignUpSlice,
     IToastSlice,
@@ -152,6 +157,7 @@ export const createNewStore = (config: StoreConfig) => {
     create<IStore>((set, get): IStore => {
       return {
         ...config.data,
+        ...createFriendFeedSlice(set, get),
         ...createModalSlice(set, get),
         ...createStreamCategoriesSlice(set, get),
         ...createInviteSlice(set, get),
