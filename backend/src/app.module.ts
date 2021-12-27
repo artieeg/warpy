@@ -15,6 +15,7 @@ import { configuration } from './config/configuration';
 import { DeveloperAccountModule } from './developer_account/developer_account.module';
 import { FeedModule } from './feed/feed.module';
 import { FollowModule } from './follow/follow.module';
+import { FriendFeedModule } from './friend_feed/friend_feed.module';
 import { GifModule } from './gif/gif.module';
 import { InviteModule } from './invite/invite.module';
 import { MediaModule } from './media/media.module';
@@ -43,6 +44,7 @@ import { UserModule } from './user/user.module';
     DeveloperAccountModule,
     GifModule,
     FeedModule,
+    FriendFeedModule,
     UserModule,
     TokenModule,
     UserReportModule,

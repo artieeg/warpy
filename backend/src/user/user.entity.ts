@@ -96,4 +96,16 @@ export class UserEntity {
 
     return user ? UserEntity.toUserDTO(user) : null;
   }
+
+  async getByIds(ids: string[]): Promise<IUser[]> {
+    const data = await this.prisma.user.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+    });
+
+    return data.map((user) => UserEntity.toUserDTO(user, false));
+  }
 }
