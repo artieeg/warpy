@@ -11,7 +11,6 @@ export class FriendFeedService {
     private participant: ParticipantEntity,
     private follow: FollowEntity,
     private stream: StreamEntity,
-    private user: UserEntity,
   ) {}
 
   async getFriendFeed(user: string): Promise<IFriendFeedItem[]> {
