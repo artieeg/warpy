@@ -31,3 +31,4 @@ export * from './ScreenHeader';
 export * from './SettingsTextEdit';
 export * from './Input';
 export * from './AwardFeedItem';
+export * from './FriendFeed';

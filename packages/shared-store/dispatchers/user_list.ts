@@ -1,8 +1,8 @@
-import {UserList} from '@warpy/lib';
-import produce from 'immer';
-import {IUserListSlice} from '../slices/createUserListSlice';
-import {StoreSlice} from '../types';
-import {IStore} from '../useStore';
+import { UserList } from "@warpy/lib";
+import produce from "immer";
+import { IUserListSlice } from "../slices/createUserListSlice";
+import { StoreSlice } from "../types";
+import { IStore } from "../useStore";
 
 export type FetchNextFn = () => Promise<void>;
 
@@ -12,20 +12,21 @@ export interface IUserListDispatchers {
 
 export const createUserListDispatchers: StoreSlice<IUserListDispatchers> = (
   set,
-  get,
+  get
 ) => ({
   async dispatchFetchUserList(list) {
-    const {api} = get();
+    const { api } = get();
 
     const fn = async () => {
-      const key: keyof IUserListSlice = ('list_' + list) as any;
-      const {users} = await api.user.fetchUserList(list, get()[key].page);
+      const key: keyof IUserListSlice = ("list_" + list) as any;
+      const { users } = await api.user.fetchUserList(list, get()[key].page);
+      console.log("fetched", list, users, get()[key].page);
 
       set(
-        produce<IStore>(state => {
+        produce<IStore>((state) => {
           state[key].page++;
           state[key].list = [...state[key].list, ...users];
-        }),
+        })
       );
     };
 

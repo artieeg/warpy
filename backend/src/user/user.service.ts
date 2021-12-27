@@ -158,6 +158,7 @@ export class UserService {
 
   async getFollowing(user: string, page: number): Promise<IUser[]> {
     const following = await this.followEntity.getFollowed(user);
+    console.log({ user, following });
 
     return following.map((f) => f.followed);
   }
