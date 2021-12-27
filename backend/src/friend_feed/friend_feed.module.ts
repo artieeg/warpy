@@ -8,6 +8,6 @@ import { FriendFeedService } from './friend_feed.service';
   imports: [ParticipantModule, FollowModule, StreamModule],
   providers: [FriendFeedService],
   controllers: [],
-  exports: [],
+  exports: [FriendFeedService],
 })
 export class FriendFeedModule {}

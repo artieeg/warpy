@@ -5,6 +5,7 @@ import { CategoriesEntity } from '@backend_2/categories/categories.entity';
 import { CoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity';
 import { UserNotFound } from '@backend_2/errors';
 import { FollowEntity } from '@backend_2/follow/follow.entity';
+import { FriendFeedService } from '@backend_2/friend_feed/friend_feed.service';
 import { ParticipantEntity } from '@backend_2/participant/participant.entity';
 import { StreamEntity } from '@backend_2/stream/stream.entity';
 import { Injectable } from '@nestjs/common';
@@ -33,6 +34,7 @@ export class UserService {
     private blockEntity: BlockEntity,
     private appInviteEntity: AppInviteEntity,
     private appliedAppInviteEntity: AppliedAppInviteEntity,
+    private friendFeedService: FriendFeedService,
   ) {}
 
   async createAnonUser() {
@@ -90,11 +92,13 @@ export class UserService {
   }
 
   async getById(user: string): Promise<IWhoAmIResponse> {
-    const [data, hasActivatedAppInvite, categories] = await Promise.all([
-      this.user.findById(user, true),
-      this.appliedAppInviteEntity.find(user),
-      this.categoriesEntity.getAll(),
-    ]);
+    const [data, hasActivatedAppInvite, categories, friendFeed] =
+      await Promise.all([
+        this.user.findById(user, true),
+        this.appliedAppInviteEntity.find(user),
+        this.categoriesEntity.getAll(),
+        this.friendFeedService.getFriendFeed(user),
+      ]);
 
     if (!data) {
       throw new UserNotFound();
@@ -104,6 +108,7 @@ export class UserService {
       user: data,
       following: await this.followEntity.getFollowedUserIds(user),
       hasActivatedAppInvite: !!hasActivatedAppInvite,
+      friendFeed,
       categories,
     };
   }

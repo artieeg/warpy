@@ -11,6 +11,7 @@ import {
   IAppInvite,
   IStream,
   IStreamCategory,
+  IFriendFeedItem,
 } from "./models";
 import { UserList } from "./types";
 
@@ -43,6 +44,7 @@ export interface IWhoAmIResponse {
   user: IBaseUser | null;
   following: string[] | null;
   hasActivatedAppInvite: boolean;
+  friendFeed: IFriendFeedItem[];
   categories: IStreamCategory[];
 }
 
