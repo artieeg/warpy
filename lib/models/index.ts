@@ -13,3 +13,4 @@ export * from "./coin_balance";
 export * from "./award";
 export * from "./app_invite";
 export * from "./category";
+export * from "./friend_feed";
