@@ -1,7 +1,6 @@
 import { FollowEntity } from '@backend_2/follow/follow.entity';
 import { ParticipantEntity } from '@backend_2/participant/participant.entity';
 import { StreamEntity } from '@backend_2/stream/stream.entity';
-import { UserEntity } from '@backend_2/user/user.entity';
 import { Injectable } from '@nestjs/common';
 import { IFriendFeedItem } from '@warpy/lib';
 
@@ -27,10 +26,18 @@ export class FriendFeedService {
     const streams = await this.stream.getByIds(streamIds);
 
     //Prepare feed
-    const feed: IFriendFeedItem[] = participants.map((user) => ({
-      user,
-      stream: streams.find((s) => s.id === user.stream),
-    }));
+    const feed: IFriendFeedItem[] = participants.map((user) => {
+      const stream = streams.find((s) => s.id === user.stream);
+
+      if (stream) {
+        user.online = true;
+      }
+
+      return {
+        user,
+        stream,
+      };
+    });
 
     return feed;
   }
