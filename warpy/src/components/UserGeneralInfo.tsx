@@ -19,14 +19,6 @@ export const UserGeneralInfo = ({
     <View style={[styles.avatarAndUserInfo, style]}>
       <View>
         <Avatar size="large" {...avatar} user={user} />
-        {typeof user.online !== 'undefined' && (
-          <View
-            style={[
-              styles.indicator,
-              user.online ? styles.online : styles.offline,
-            ]}
-          />
-        )}
       </View>
       <View style={styles.userInfo}>
         <Text weight="bold">{user.first_name}</Text>
@@ -42,20 +34,6 @@ const styles = StyleSheet.create({
   avatarAndUserInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  indicator: {
-    position: 'absolute',
-    right: 0,
-    bottom: 0,
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-  },
-  offline: {
-    backgroundColor: '#71B8F9',
-  },
-  online: {
-    backgroundColor: '#BDF971',
   },
   userInfo: {
     paddingLeft: 20,

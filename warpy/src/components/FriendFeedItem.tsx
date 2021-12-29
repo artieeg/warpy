@@ -13,7 +13,6 @@ export const FriendFeedItem = ({item}: FriendFeedItemProps) => {
     <TouchableOpacity activeOpacity={0.8} style={styles.container}>
       <View>
         <Avatar user={item.user} size="large" />
-        <View style={styles.indicator} />
       </View>
 
       <Text color="info" size="xxsmall">

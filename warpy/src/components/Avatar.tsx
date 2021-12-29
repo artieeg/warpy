@@ -1,10 +1,10 @@
 import React from 'react';
-import {IUser} from '@app/models';
 import {StyleSheet, Image, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
+import {IBaseUser} from '@warpy/lib';
 
 export interface IAvatarProps {
-  user: IUser;
+  user: IBaseUser;
   style?: any;
   size?: keyof typeof sizeStyles;
   useRNImage?: boolean;
@@ -14,12 +14,22 @@ export const Avatar = (props: IAvatarProps) => {
   const {user, size, style, useRNImage} = props;
   const {avatar} = user;
 
+  const indicator =
+    typeof user.online !== 'undefined' ? (
+      <View
+        style={[styles.indicator, user.online ? styles.online : styles.offline]}
+      />
+    ) : null;
+
   if (useRNImage) {
     return (
-      <Image
-        style={[styles.avatar, sizeStyles[size || 'medium'], style]}
-        source={{uri: avatar}}
-      />
+      <View>
+        <Image
+          style={[styles.avatar, sizeStyles[size || 'medium'], style]}
+          source={{uri: avatar}}
+        />
+        {indicator}
+      </View>
     );
   }
 
@@ -29,6 +39,7 @@ export const Avatar = (props: IAvatarProps) => {
         style={[styles.avatar, sizeStyles[size || 'medium'], style]}
         source={{uri: avatar}}
       />
+      {indicator}
       <View style={styles.hack} />
     </View>
   );
@@ -71,5 +82,19 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderRadius: 60,
     backgroundColor: '#303030',
+  },
+  indicator: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+  },
+  offline: {
+    backgroundColor: '#71B8F9',
+  },
+  online: {
+    backgroundColor: '#BDF971',
   },
 });
