@@ -13,7 +13,7 @@ export class UserOnlineStatusCache implements OnModuleInit {
 
   async setUserOnline(user: string) {
     return new Promise<void>((resolve, reject) => {
-      this.client.set(user, true, (err) => {
+      this.client.set(user, true, (err: any) => {
         if (err) reject(err);
         else resolve();
       });
@@ -22,7 +22,7 @@ export class UserOnlineStatusCache implements OnModuleInit {
 
   async setUserOffline(user: string) {
     return new Promise<void>((resolve, reject) => {
-      this.client.del(user, (err) => {
+      this.client.del(user, (err: any) => {
         if (err) reject(err);
         else resolve();
       });
