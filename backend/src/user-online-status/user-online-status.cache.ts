@@ -5,6 +5,15 @@ import { RedisClient, createClient } from 'redis';
 export class UserOnlineStatusCache implements OnModuleInit {
   client: RedisClient;
 
+  getUserStatusMany(ids: string[]): Promise<(boolean | undefined)[]> {
+    return new Promise<(boolean | undefined)[]>((resolve, reject) => {
+      this.client.mget(ids, (err: any, values: boolean[]) => {
+        if (err) reject(err);
+        else resolve(values);
+      });
+    });
+  }
+
   getUserStatus(user: string) {
     return new Promise<boolean>((resolve, reject) => {
       this.client.get(user, (err: any, value?: boolean) => {

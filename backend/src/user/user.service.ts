@@ -8,6 +8,7 @@ import { FollowEntity } from '@backend_2/follow/follow.entity';
 import { FriendFeedService } from '@backend_2/friend_feed/friend_feed.service';
 import { ParticipantEntity } from '@backend_2/participant/participant.entity';
 import { StreamEntity } from '@backend_2/stream/stream.entity';
+import { UserOnlineStatusService } from '@backend_2/user-online-status/user-online-status.service';
 import { Injectable } from '@nestjs/common';
 import {
   INewUser,
@@ -35,6 +36,7 @@ export class UserService {
     private appInviteEntity: AppInviteEntity,
     private appliedAppInviteEntity: AppliedAppInviteEntity,
     private friendFeedService: FriendFeedService,
+    private userOnlineStatusService: UserOnlineStatusService,
   ) {}
 
   async createAnonUser() {
@@ -157,10 +159,19 @@ export class UserService {
   }
 
   async getFollowing(user: string, page: number): Promise<IUser[]> {
-    const following = await this.followEntity.getFollowed(user);
-    console.log({ user, following });
+    const records = await this.followEntity.getFollowed(user);
 
-    return following.map((f) => f.followed);
+    const following = records.map((f) => f.followed);
+
+    //Collect ids and check online status
+    const ids = following.map((user) => user.id);
+    const statuses = this.userOnlineStatusService.getUserStatusMany(ids);
+
+    following.forEach((user) => {
+      user.online = statuses[user.id];
+    });
+
+    return following;
   }
 
   async getBlockedUsers(user: string, page: number): Promise<IUser[]> {

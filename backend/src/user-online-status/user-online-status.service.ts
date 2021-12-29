@@ -13,7 +13,18 @@ export class UserOnlineStatusService {
     await this.cache.setUserOffline(user);
   }
 
-  async getUserOnlineStatus(user: string): Promise<boolean> {
+  async getUserStatus(user: string): Promise<boolean> {
     return await this.cache.getUserStatus(user);
+  }
+
+  async getUserStatusMany(users: string[]): Promise<Record<string, boolean>> {
+    const statuses = await this.cache.getUserStatusMany(users);
+
+    const result = {};
+    users.forEach((user, idx) => {
+      result[user] = !!statuses[idx];
+    });
+
+    return result;
   }
 }
