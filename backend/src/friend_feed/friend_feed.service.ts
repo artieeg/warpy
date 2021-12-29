@@ -39,6 +39,8 @@ export class FriendFeedService {
       };
     });
 
+    console.log({ participants, feed });
+
     return feed;
   }
 }

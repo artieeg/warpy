@@ -62,6 +62,8 @@ import {
   createToastDispatchers,
   IAwardsDispatchers,
   createAwardsDispatchers,
+  IFriendFeedDispatchers,
+  createFriendFeedDispatchers,
 } from "./dispatchers";
 import {
   createParticipantSlice,
@@ -138,6 +140,7 @@ export interface IStore
     IAwardsDispatchers,
     IToastDispatchers,
     IInviteDispatchers,
+    IFriendFeedDispatchers,
     IAPISlice {
   set: SetState<IStore>;
   get: GetState<IStore>;
@@ -149,15 +152,12 @@ type StoreConfig = {
 };
 
 export const createNewStore = (config: StoreConfig) => {
-  console.log("creaing new store");
-
   container.mediaDevices = config.dependencies?.mediaDevices;
 
   return createSelectorHooks<IStore>(
     create<IStore>((set, get): IStore => {
       return {
         ...config.data,
-        ...createFriendFeedSlice(set, get),
         ...createModalSlice(set, get),
         ...createStreamCategoriesSlice(set, get),
         ...createInviteSlice(set, get),
@@ -178,6 +178,7 @@ export const createNewStore = (config: StoreConfig) => {
         ...createToastSlice(set, get),
         ...createReactionSlice(set, get),
         ...createParticipantSlice(set, get),
+        ...createFriendFeedSlice(set, get),
         ...createUserDispatchers(set, get),
         ...createAwardsDispatchers(set, get),
         ...createInviteDispatchers(set, get),
@@ -193,6 +194,7 @@ export const createNewStore = (config: StoreConfig) => {
         ...createReactionDispatchers(set, get),
         ...createParticipantDispatchers(set, get),
         ...createToastDispatchers(set, get),
+        ...createFriendFeedDispatchers(set, get),
         set,
         get,
       };

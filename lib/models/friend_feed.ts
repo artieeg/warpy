@@ -1,7 +1,7 @@
-import { IParticipant } from "./participant";
 import { IStream } from "./candidate";
+import { IBaseUser } from "./user";
 
 export interface IFriendFeedItem {
-  user: IParticipant;
-  stream: IStream;
+  user: IBaseUser;
+  stream?: IStream;
 }

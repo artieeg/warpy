@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
+    marginRight: 10,
   },
   indicator: {
     backgroundColor: '#BDF971',

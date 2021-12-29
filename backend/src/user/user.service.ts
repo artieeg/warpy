@@ -158,14 +158,18 @@ export class UserService {
   async getFollowing(user: string, page: number): Promise<IUser[]> {
     const records = await this.followEntity.getFollowed(user);
 
+    if (records.length === 0) {
+      return [];
+    }
+
     const following = records.map((f) => f.followed);
 
     //Collect ids and check online status
     const ids = following.map((user) => user.id);
-    const statuses = await this.userOnlineStatusService.getUserStatusMany(ids);
+    const statuses = this.userOnlineStatusService.getUserStatusMany(ids);
 
     following.forEach((user) => {
-      user.online = statuses[user.id];
+      user.online = !!statuses[user.id];
     });
 
     return following;

@@ -22,7 +22,7 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
       isLoadingUser: true,
     });
 
-    const { user, following, friendFeed, hasActivatedAppInvite, categories } =
+    const { user, following, hasActivatedAppInvite, categories } =
       await api.user.auth(token);
 
     if (!user) {
@@ -43,7 +43,6 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
       following: following || [],
       isLoadingUser: false,
       streamCategory: categories[1],
-      friendFeed,
     });
   },
 
