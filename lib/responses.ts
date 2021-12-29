@@ -11,6 +11,7 @@ import {
   IAppInvite,
   IStream,
   IStreamCategory,
+  IFriendFeedItem,
 } from "./models";
 import { UserList } from "./types";
 
@@ -43,6 +44,7 @@ export interface IWhoAmIResponse {
   user: IBaseUser | null;
   following: string[] | null;
   hasActivatedAppInvite: boolean;
+  //friendFeed: IFriendFeedItem[];
   categories: IStreamCategory[];
 }
 
@@ -185,4 +187,13 @@ export interface IGetCategoriesResponse {
 
 export interface ILeaveStreamResponse {
   status: "ok" | "error";
+}
+
+export interface IUserOnlineStatusResponse {
+  user: string;
+  online: boolean;
+}
+
+export interface IFriendFeedResponse {
+  feed: IFriendFeedItem[];
 }

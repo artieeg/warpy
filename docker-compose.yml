@@ -54,14 +54,6 @@ services:
       POSTGRES_PASSWORD: warpy222
       POSTGRES_DB: warpy
 
-  ranker:
-    image: node:16.0.0-alpine
-    env_file: dev_env/ranker.env
-    volumes:
-      - ./:/warpy
-    working_dir: /warpy/ranker
-    command: yarn start:dev
-
   ws_gateway:
     image: node:16.0.0-alpine
     env_file: dev_env/ws_gateway.env

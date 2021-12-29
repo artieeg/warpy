@@ -35,17 +35,6 @@ export class ParticipantController {
     return this.participant.createNewViewer(stream, user);
   }
 
-  @MessagePattern('user.disconnected')
-  async onUserDisconnect({ user }: IUserDisconnected) {
-    const isBot = user.slice(0, 3) === 'bot';
-
-    if (isBot) {
-      await this.participant.deleteBotParticipant(user);
-    } else {
-      await this.participant.deleteParticipant(user);
-    }
-  }
-
   @MessagePattern('viewers.get')
   async onViewersRequest({
     stream,

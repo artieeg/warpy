@@ -29,6 +29,7 @@ export const createUserFixture = (data: Partial<IUser>): IUser => {
     email: null,
     sub: null,
     username: 'test_username',
+    isAnon: false,
     ...data,
   };
 };

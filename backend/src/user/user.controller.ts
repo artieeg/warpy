@@ -1,4 +1,6 @@
+import { ParticipantService } from '@backend_2/participant/participant.service';
 import { ExceptionFilter } from '@backend_2/rpc-exception.filter';
+import { UserOnlineStatusService } from '@backend_2/user-online-status/user-online-status.service';
 import { Controller, UseFilters } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
@@ -23,10 +25,14 @@ import {
 import { UserService } from './user.service';
 
 @Controller()
+@UseFilters(ExceptionFilter)
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private participantService: ParticipantService,
+    private userOnlineStatusService: UserOnlineStatusService,
+  ) {}
 
-  @UseFilters(ExceptionFilter)
   @MessagePattern('user.get')
   async onUserRequest({ user, id }: IUserRequest): Promise<IUserInfoResponse> {
     console.log(user, id);
@@ -35,10 +41,12 @@ export class UserController {
     return data;
   }
 
-  @UseFilters(ExceptionFilter)
   @MessagePattern('user.whoami-request')
-  async onUserGet({ user: userId }: IWhoAmIRequest): Promise<IWhoAmIResponse> {
-    return this.userService.getById(userId);
+  async onUserGet({ user }: IWhoAmIRequest): Promise<IWhoAmIResponse> {
+    const data = await this.userService.getById(user);
+    await this.userOnlineStatusService.setUserOnline(user);
+
+    return data;
   }
 
   @MessagePattern('user.update')
@@ -60,13 +68,11 @@ export class UserController {
     }
   }
 
-  @UseFilters(ExceptionFilter)
   @MessagePattern('user.create.anon')
   async onAnonUserCreate(): Promise<ICreateAnonUserResponse> {
     return this.userService.createAnonUser();
   }
 
-  @UseFilters(ExceptionFilter)
   @MessagePattern('user.create')
   async onUserCreate(data: INewUser): Promise<INewUserResponse> {
     if (process.env.NODE !== 'production' && data.kind === 'dev') {
@@ -74,7 +80,6 @@ export class UserController {
     }
   }
 
-  @UseFilters(ExceptionFilter)
   @MessagePattern('user.delete')
   async onUserDelete({ user }: IUserDelete): Promise<IUserDeleteResponse> {
     await this.userService.deleteUser(user);
@@ -84,7 +89,6 @@ export class UserController {
     };
   }
 
-  @UseFilters(ExceptionFilter)
   @MessagePattern('user.search')
   async onUserSearch({
     textToSearch,
@@ -94,7 +98,6 @@ export class UserController {
     return { users };
   }
 
-  @UseFilters(ExceptionFilter)
   @MessagePattern('user.get-list')
   async onGetList({
     user,
@@ -117,7 +120,6 @@ export class UserController {
     };
   }
 
-  /*
   @MessagePattern('user.disconnected')
   async onUserDisconnect({ user }: IUserDisconnected) {
     const isAnonUser = user.slice(0, 9) === 'anon_user';
@@ -125,6 +127,15 @@ export class UserController {
     if (isAnonUser) {
       await this.userService.deleteUser(user);
     }
+
+    const isBot = user.slice(0, 3) === 'bot';
+
+    if (isBot) {
+      await this.participantService.deleteBotParticipant(user);
+    } else {
+      await this.participantService.deleteParticipant(user);
+    }
+
+    await this.userOnlineStatusService.setUserOffline(user);
   }
-  */
 }

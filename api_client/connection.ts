@@ -63,7 +63,7 @@ export class WebSocketConn {
 
     return new Promise<any>((resolve, reject) => {
       this.observer.once(rid, (response) => {
-        if (response.status !== "error") {
+        if (response?.status !== "error") {
           resolve(response);
         } else {
           this.observer.emit("@client/error", response.data);

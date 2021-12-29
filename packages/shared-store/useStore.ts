@@ -15,6 +15,10 @@ import { createTokenSlice, ITokenSlice } from "./slices/createTokenSlice";
 import { createToastSlice, IToastSlice } from "./slices/createToastSlice";
 import { createModalSlice, IModalSlice } from "./slices/createModalSlice";
 import {
+  createFriendFeedSlice,
+  IFriendFeedSlice,
+} from "./slices/createFriendFeedSlice";
+import {
   IStreamCategoriesSlice,
   createStreamCategoriesSlice,
 } from "./slices/createStreamCategoriesSlice";
@@ -58,6 +62,8 @@ import {
   createToastDispatchers,
   IAwardsDispatchers,
   createAwardsDispatchers,
+  IFriendFeedDispatchers,
+  createFriendFeedDispatchers,
 } from "./dispatchers";
 import {
   createParticipantSlice,
@@ -117,6 +123,7 @@ export interface IStore
     ITokenSlice,
     IReactionSlice,
     INotificationSlice,
+    IFriendFeedSlice,
     IAudioLevelSlice,
     ISignUpSlice,
     IToastSlice,
@@ -133,6 +140,7 @@ export interface IStore
     IAwardsDispatchers,
     IToastDispatchers,
     IInviteDispatchers,
+    IFriendFeedDispatchers,
     IAPISlice {
   set: SetState<IStore>;
   get: GetState<IStore>;
@@ -144,8 +152,6 @@ type StoreConfig = {
 };
 
 export const createNewStore = (config: StoreConfig) => {
-  console.log("creaing new store");
-
   container.mediaDevices = config.dependencies?.mediaDevices;
 
   return createSelectorHooks<IStore>(
@@ -172,6 +178,7 @@ export const createNewStore = (config: StoreConfig) => {
         ...createToastSlice(set, get),
         ...createReactionSlice(set, get),
         ...createParticipantSlice(set, get),
+        ...createFriendFeedSlice(set, get),
         ...createUserDispatchers(set, get),
         ...createAwardsDispatchers(set, get),
         ...createInviteDispatchers(set, get),
@@ -187,6 +194,7 @@ export const createNewStore = (config: StoreConfig) => {
         ...createReactionDispatchers(set, get),
         ...createParticipantDispatchers(set, get),
         ...createToastDispatchers(set, get),
+        ...createFriendFeedDispatchers(set, get),
         set,
         get,
       };

@@ -181,7 +181,12 @@ export class ParticipantEntity {
     });
   }
 
-  async getByIds(ids: string[]): Promise<IParticipant[]> {
+  async getByIds(
+    ids: string[],
+    include: {
+      stream: boolean;
+    },
+  ): Promise<IParticipant[]> {
     const data = await this.prisma.participant.findMany({
       where: { user_id: { in: ids } },
       include: {
@@ -191,6 +196,7 @@ export class ParticipantEntity {
             bot: true,
           },
         },
+        ...include,
       },
     });
 

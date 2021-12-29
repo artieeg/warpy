@@ -31,6 +31,13 @@ const handlers: Record<string, HandlerConfig> = {
     }),
   },
 
+  "friend-feed-get": {
+    subject: "friend-feed.get",
+    kind: "request",
+    auth: true,
+    schema: joi.object({}),
+  },
+
   "leave-stream": {
     subject: "participant.leave",
     kind: "request",

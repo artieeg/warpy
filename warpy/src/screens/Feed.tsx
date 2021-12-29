@@ -1,4 +1,4 @@
-import {StreamPreview} from '@app/components';
+import {StreamPreview, FriendFeed} from '@app/components';
 import {ScreenHeader} from '@app/components/ScreenHeader';
 import {StreamCategoryList} from '@app/components/StreamCategoryList';
 import {useFeed, usePreviewDimensions} from '@app/hooks';
@@ -12,6 +12,7 @@ export const Feed = () => {
   return (
     <View style={styles.wrapper}>
       <ScreenHeader />
+      <FriendFeed />
       <StreamCategoryList mode="browse-feed" />
       <FlatList
         data={feed}

@@ -14,9 +14,12 @@ export const UserGeneralInfo = ({
   style,
   avatar,
 }: UserGeneralInfoProps) => {
+  console.log(user);
   return (
     <View style={[styles.avatarAndUserInfo, style]}>
-      <Avatar size="large" {...avatar} user={user} />
+      <View>
+        <Avatar size="large" {...avatar} user={user} />
+      </View>
       <View style={styles.userInfo}>
         <Text weight="bold">{user.first_name}</Text>
         <Text color="info" weight="bold" size="small">

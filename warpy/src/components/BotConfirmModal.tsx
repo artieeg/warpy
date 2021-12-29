@@ -9,7 +9,6 @@ import {useBotConfirmModalController} from '@app/hooks/useBotConfirmModalControl
 export const BotConfirmModal = () => {
   const {visible, onConfirm, onDecline, bot} = useBotConfirmModalController();
 
-  console.log('bot', bot);
   if (!bot) {
     return null;
   }

@@ -1,9 +1,7 @@
 import { BotsModule } from '@backend_2/bots/bots.module';
 import { TokenService } from '@backend_2/token/token.service';
 import { forwardRef, Module } from '@nestjs/common';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 import { BlockModule } from '../block/block.module';
-import { BlockService } from '../block/block.service';
 import { MediaModule } from '../media/media.module';
 import { MessageModule } from '../message/message.module';
 import { PrismaModule } from '../prisma/prisma.module';
@@ -21,7 +19,6 @@ import { ParticipantService } from './participant.service';
     BotsModule,
     MessageModule,
     TokenService,
-    //EventEmitterModule.forRoot(),
   ],
   providers: [ParticipantService, ParticipantEntity],
   controllers: [ParticipantController],

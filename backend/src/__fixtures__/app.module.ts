@@ -10,6 +10,7 @@ import { configuration } from '@backend_2/config/configuration';
 import { DeveloperAccountModule } from '@backend_2/developer_account/developer_account.module';
 import { FeedModule } from '@backend_2/feed/feed.module';
 import { FollowModule } from '@backend_2/follow/follow.module';
+import { FriendFeedModule } from '@backend_2/friend_feed/friend_feed.module';
 import { InviteModule } from '@backend_2/invite/invite.module';
 import { MediaModule } from '@backend_2/media/media.module';
 import { MessageModule } from '@backend_2/message/message.module';
@@ -33,6 +34,7 @@ export const testModuleBuilder = Test.createTestingModule({
     }),
     CategoryModule,
     BotsModule,
+    FriendFeedModule,
     AwardModule,
     CoinBalanceModule,
     DeveloperAccountModule,

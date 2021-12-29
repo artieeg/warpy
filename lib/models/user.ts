@@ -6,6 +6,13 @@ export interface IBaseUser extends IEntity {
   username: string;
   avatar: string;
   isAnon: boolean;
+
+  /**
+   * true = online
+   * false = offline
+   * undefined = should be omitted in UI :)
+   * */
+  online?: boolean;
 }
 
 export interface IUser extends IBaseUser {
