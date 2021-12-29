@@ -94,13 +94,11 @@ export class UserService {
   }
 
   async getById(user: string): Promise<IWhoAmIResponse> {
-    const [data, hasActivatedAppInvite, categories, friendFeed] =
-      await Promise.all([
-        this.user.findById(user, true),
-        this.appliedAppInviteEntity.find(user),
-        this.categoriesEntity.getAll(),
-        this.friendFeedService.getFriendFeed(user),
-      ]);
+    const [data, hasActivatedAppInvite, categories] = await Promise.all([
+      this.user.findById(user, true),
+      this.appliedAppInviteEntity.find(user),
+      this.categoriesEntity.getAll(),
+    ]);
 
     if (!data) {
       throw new UserNotFound();
@@ -110,7 +108,6 @@ export class UserService {
       user: data,
       following: await this.followEntity.getFollowedUserIds(user),
       hasActivatedAppInvite: !!hasActivatedAppInvite,
-      friendFeed,
       categories,
     };
   }
