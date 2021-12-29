@@ -167,8 +167,6 @@ export class UserService {
     const ids = following.map((user) => user.id);
     const statuses = await this.userOnlineStatusService.getUserStatusMany(ids);
 
-    console.log(statuses);
-
     following.forEach((user) => {
       user.online = statuses[user.id];
     });
