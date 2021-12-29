@@ -44,7 +44,7 @@ export interface IWhoAmIResponse {
   user: IBaseUser | null;
   following: string[] | null;
   hasActivatedAppInvite: boolean;
-  friendFeed: IFriendFeedItem[];
+  //friendFeed: IFriendFeedItem[];
   categories: IStreamCategory[];
 }
 
@@ -192,4 +192,8 @@ export interface ILeaveStreamResponse {
 export interface IUserOnlineStatusResponse {
   user: string;
   online: boolean;
+}
+
+export interface IFriendFeedResponse {
+  feed: IFriendFeedItem[];
 }

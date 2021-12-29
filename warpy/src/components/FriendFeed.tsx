@@ -1,10 +1,13 @@
-import {useStore} from '@app/store';
+import {useStore, useStoreShallow} from '@app/store';
 import React from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
 import {FriendFeedItem} from './FriendFeedItem';
 
 export const FriendFeed = () => {
-  const feed = useStore.use.friendFeed();
+  const [feed, following] = useStoreShallow(state => [
+    state.feed,
+    state.list_following,
+  ]);
 
   return (
     <View>

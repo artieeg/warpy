@@ -338,3 +338,7 @@ export interface ILeaveStreamRequest {
 export interface IUserStatusRequest {
   user: string;
 }
+
+export interface IFriendFeedRequest {
+  user: string;
+}

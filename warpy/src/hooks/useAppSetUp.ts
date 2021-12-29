@@ -40,6 +40,7 @@ export const useAppSetUp = () => {
 
       useStore.getState().dispatchNotificationsFetchUnread();
       useStore.getState().dispatchFetchAppInvite();
+      useStore.getState().dispatchFetchUserList('following');
     }
   }, [user, n]);
 

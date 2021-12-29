@@ -11,6 +11,7 @@ import { BotAPI, IBotAPI } from "./bot_api";
 import { CoinBalanceAPI, ICoinBalanceAPI } from "./coin_balance_api";
 import { IAwardsAPI, AwardsAPI } from "./awards_api";
 import { IAppInviteAPI, AppInviteAPI } from "./app_invite_api";
+import { FriendFeedAPI, IFriendFeedAPI } from "./friend_feed";
 
 type ErrorHandler = (error: any) => any;
 
@@ -18,6 +19,7 @@ interface IAPIClient {
   conn: WebSocketConn;
   observer: IAPIObserver;
   awards: IAwardsAPI;
+  friend_feed: IFriendFeedAPI;
   user: IUserAPI;
   coin_balance: ICoinBalanceAPI;
   stream: IStreamAPI;
@@ -36,6 +38,7 @@ export const APIClient = (socket: WebSocketConn): IAPIClient => ({
   conn: socket,
   observer: APIObserver(socket),
   coin_balance: CoinBalanceAPI(socket),
+  friend_feed: FriendFeedAPI(socket),
   bot: BotAPI(socket),
   awards: AwardsAPI(socket),
   user: UserAPI(socket),
