@@ -188,3 +188,8 @@ export interface IGetCategoriesResponse {
 export interface ILeaveStreamResponse {
   status: "ok" | "error";
 }
+
+export interface IUserOnlineStatusResponse {
+  user: string;
+  online: boolean;
+}

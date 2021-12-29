@@ -5,6 +5,15 @@ import { RedisClient, createClient } from 'redis';
 export class UserOnlineStatusCache implements OnModuleInit {
   client: RedisClient;
 
+  getUserStatus(user: string) {
+    return new Promise<boolean>((resolve, reject) => {
+      this.client.get(user, (err: any, value?: boolean) => {
+        if (err) reject(err);
+        else resolve(!!value);
+      });
+    });
+  }
+
   onModuleInit() {
     this.client = createClient({
       url: process.env.USER_ONLINE_STATUS,

@@ -12,4 +12,8 @@ export class UserOnlineStatusService {
   async setUserOffline(user: string) {
     await this.cache.setUserOffline(user);
   }
+
+  async getUserOnlineStatus(user: string): Promise<boolean> {
+    return await this.cache.getUserStatus(user);
+  }
 }
