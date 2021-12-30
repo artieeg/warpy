@@ -1,7 +1,11 @@
 import { MediaDirection, MediaKind } from "@warpy/lib";
 import { Device } from "mediasoup-client";
 import { Transport } from "mediasoup-client/lib/Transport";
-import { Consumer, ConsumerOptions } from "mediasoup-client/lib/types";
+import {
+  Consumer,
+  Producer,
+  ConsumerOptions,
+} from "mediasoup-client/lib/types";
 import { MediaStreamTrack } from "react-native-webrtc";
 import { APIClient } from "@warpy/api";
 
