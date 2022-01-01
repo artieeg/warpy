@@ -1,7 +1,7 @@
 import React from 'react';
 import {useStore} from '@app/store';
 import {ParticipantsModal} from './ParticipantsModal';
-import {ParticipantInfoModal} from './ParticipantInfoModal';
+import {UserInfoModal} from './UserInfoModal';
 import {ReportActionSheet} from './ReportActionSheet';
 import {ChatModal} from './ChatModal';
 import {Reactions} from './Reactions';
@@ -21,7 +21,7 @@ export const ModalProvider = () => {
   return (
     <>
       <BotConfirmModal />
-      <ParticipantInfoModal />
+      <UserInfoModal />
       <InvitedToStreamModal />
       <AwardPickerModal />
       <AwardRecipentPicker />

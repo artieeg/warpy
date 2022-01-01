@@ -1,13 +1,19 @@
 import React from 'react';
-import {StyleSheet, Image, View} from 'react-native';
+import {StyleSheet, Image, View, ViewProps} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {IBaseUser} from '@warpy/lib';
 
-export interface IAvatarProps {
+export interface IndicatorProps {
+  right?: number;
+  bottom?: number;
+  borderColor?: string;
+}
+
+export interface IAvatarProps extends ViewProps {
   user: IBaseUser;
-  style?: any;
   size?: keyof typeof sizeStyles;
   useRNImage?: boolean;
+  indicatorProps?: IndicatorProps;
 }
 
 export const Avatar = (props: IAvatarProps) => {
@@ -17,7 +23,15 @@ export const Avatar = (props: IAvatarProps) => {
   const indicator =
     typeof user.online !== 'undefined' ? (
       <View
-        style={[styles.indicator, user.online ? styles.online : styles.offline]}
+        style={[
+          styles.indicator,
+          {borderColor: props.indicatorProps?.borderColor || '#000000'},
+          {
+            bottom: props.indicatorProps?.bottom || 0,
+            right: props.indicatorProps?.right || 0,
+          },
+          user.online ? styles.online : styles.offline,
+        ]}
       />
     ) : null;
 
@@ -59,8 +73,8 @@ const sizeStyles = StyleSheet.create({
     height: 60,
   },
   xlarge: {
-    width: 80,
-    height: 80,
+    width: 70,
+    height: 70,
   },
   xxlarge: {
     width: 100,
@@ -87,9 +101,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     bottom: 0,
-    width: 16,
-    height: 16,
+    //width: 16,
+    //height: 16,
+    width: 19,
+    height: 19,
     borderRadius: 8,
+    borderWidth: 3,
+    borderColor: '#000000',
   },
   offline: {
     backgroundColor: '#71B8F9',

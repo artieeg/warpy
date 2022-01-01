@@ -57,7 +57,6 @@ const App = () => {
           ))}
         </Stack.Navigator>
       </NavigationContainer>
-
       <ModalProvider />
       <ToastProvider />
     </QueryClientProvider>

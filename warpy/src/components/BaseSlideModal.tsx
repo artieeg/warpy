@@ -17,8 +17,8 @@ export const BaseSlideModal = (props: IBaseModalProps) => {
 
   return (
     <Modal
-      backdropColor="#909090"
-      backdropOpacity={0.1}
+      backdropColor="#000000"
+      backdropOpacity={0.6}
       removeClippedSubviews={false}
       hideModalContentWhileAnimating
       useNativeDriver
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     paddingTop: 40,
   },
   wrapper: {
-    backgroundColor: '#000',
+    backgroundColor: '#101010',
     position: 'absolute',
     bottom: 0,
     left: 0,
@@ -85,9 +85,9 @@ const styles = StyleSheet.create({
   handler: {
     position: 'absolute',
     alignSelf: 'center',
-    width: 50,
+    width: 70,
     height: 5,
-    top: 8,
+    top: -12,
     borderRadius: 12,
     backgroundColor: '#474141',
   },

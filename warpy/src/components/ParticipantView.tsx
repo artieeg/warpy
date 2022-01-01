@@ -30,7 +30,7 @@ export const ParticipantView = ({
     if (providedOnPress) {
       providedOnPress();
     } else {
-      dispatchModalOpen('user-actions', {selectedUser: data.id});
+      dispatchModalOpen('user-actions', {selectedUser: data});
     }
   }, [providedOnPress]);
 
@@ -38,7 +38,7 @@ export const ParticipantView = ({
     if (providedOnPress) {
       providedOnPress();
     } else {
-      dispatchModalOpen('participant-info', {selectedUser: data.id});
+      dispatchModalOpen('participant-info', {selectedUser: data});
     }
   }, [providedOnPress]);
 

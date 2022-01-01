@@ -1,16 +1,26 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {IFriendFeedItem} from '@warpy/lib';
 import {Avatar} from './Avatar';
 import {Text} from './Text';
+import {useStore} from '@app/store';
 
 interface FriendFeedItemProps {
   item: IFriendFeedItem;
 }
 
 export const FriendFeedItem = ({item}: FriendFeedItemProps) => {
+  const onPress = useCallback(() => {
+    useStore.getState().dispatchModalOpen('participant-info', {
+      selectedUser: item.user,
+    });
+  }, []);
+
   return (
-    <TouchableOpacity activeOpacity={0.8} style={styles.container}>
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.8}
+      style={styles.container}>
       <View>
         <Avatar user={item.user} size="large" />
       </View>

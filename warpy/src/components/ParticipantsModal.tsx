@@ -17,7 +17,6 @@ import {
   useStreamProducers,
   useStreamViewers,
 } from '@app/hooks';
-import {InviteUserButton} from './InviteUserButton';
 import {useStore} from '@app/store';
 import {IParticipant} from '@warpy/lib';
 import {UserProducer} from './UserProducer';
@@ -26,15 +25,13 @@ interface IParticipanModalProps {
   visible: boolean;
   onHide: () => void;
   onSelectParticipant: (id: string) => any;
-  onOpenActions: (id: string) => any;
 }
 
 export const ParticipantsModal = (props: IParticipanModalProps) => {
-  const {onSelectParticipant, onOpenActions} = props;
+  const {onSelectParticipant} = props;
   const usersRaisingHand = useSpeakingRequests();
   const producers = useStreamProducers();
   const [viewers, onFetchMore] = useStreamViewers();
-  const dispatchModalOpen = useStore.use.dispatchModalOpen();
 
   const streamer = useMemo(
     () => producers.find(speaker => speaker.role === 'streamer'),
@@ -74,7 +71,9 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
             renderItem={({item: flatListItem}) => (
               <TouchableOpacity
                 onLongPress={() => {
-                  onOpenActions(flatListItem.id);
+                  useStore.getState().dispatchModalOpen('user-actions', {
+                    selectedUser: flatListItem.id,
+                  });
                 }}
                 onPress={() => {
                   onSelectParticipant(flatListItem.id);
@@ -95,7 +94,9 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
             renderItem={({item: flatListItem}) => (
               <TouchableOpacity
                 onLongPress={() => {
-                  onOpenActions(flatListItem.id);
+                  useStore.getState().dispatchModalOpen('user-actions', {
+                    selectedUser: flatListItem.id,
+                  });
                 }}
                 onPress={() => {
                   onSelectParticipant(flatListItem.id);
@@ -118,7 +119,9 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
               <TouchableOpacity
                 style={columnWidthStyle}
                 onLongPress={() => {
-                  onOpenActions(flatListItem.id);
+                  useStore.getState().dispatchModalOpen('user-actions', {
+                    selectedUser: flatListItem.id,
+                  });
                 }}
                 onPress={() => {
                   onSelectParticipant(flatListItem.id);

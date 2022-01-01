@@ -1,11 +1,15 @@
 import React from 'react';
-import {StyleSheet, TouchableWithoutFeedback, View} from 'react-native';
+import {
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+  ViewProps,
+} from 'react-native';
 import {Text} from './Text';
 
-interface IButtonProps {
+interface IButtonProps extends ViewProps {
   title: string;
   onPress?: any;
-  style?: any;
   color?: keyof typeof colorStyles;
   outline?: boolean;
 }
@@ -23,7 +27,7 @@ export const SmallTextButton = (props: IButtonProps) => {
             outline ? styles.outline : null,
             style,
           ]}>
-          <Text weight="bold" color={outline ? 'button' : 'dark'} size="xsmall">
+          <Text weight="bold" color="dark" size="xsmall">
             {title}
           </Text>
         </View>
@@ -34,16 +38,13 @@ export const SmallTextButton = (props: IButtonProps) => {
 
 const colorStyles = StyleSheet.create({
   main: {
-    backgroundColor: '#F9F871',
-    borderColor: '#F9F871',
+    backgroundColor: '#BDF971',
   },
   info: {
     backgroundColor: '#7B7B7B',
-    borderColor: '#7B7B7B',
   },
   important: {
     backgroundColor: '#F97971',
-    borderColor: '#F97971',
   },
 });
 
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   button: {
-    alignSelf: 'baseline',
+    //alignSelf: 'baseline',
     paddingHorizontal: 25,
     paddingVertical: 10,
     borderRadius: 36,

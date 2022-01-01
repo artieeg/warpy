@@ -80,7 +80,7 @@ export const User = () => {
         duration={200}
         useNativeDriver
         style={styles.padding}>
-        {!!user && <UserGeneralInfo avatar={{size: 'xlarge'}} user={user} />}
+        {!!user && <UserGeneralInfo user={user} />}
         <View style={styles.buttons}>
           <View style={[styles.actionsRow, styles.actionRowSeparator]}>
             <SmallTextButton
