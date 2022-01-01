@@ -8,9 +8,11 @@ import {useStore, useStoreShallow} from '@app/store';
 import {useModalNavigation} from '@app/hooks';
 
 export const useParticipantModalController = () => {
-  const [currentModal, modalSelectedUser, following] = useStoreShallow(
-    state => [state.modalCurrent, state.modalSelectedUser, state.following],
-  );
+  const [visible, modalSelectedUser, following] = useStoreShallow(state => [
+    state.modalCurrent === 'participant-info',
+    state.modalSelectedUser,
+    state.following,
+  ]);
 
   const navigation = useModalNavigation();
   const participant = modalSelectedUser!;
@@ -23,7 +25,6 @@ export const useParticipantModalController = () => {
     navigation.navigate('User', {id: modalSelectedUser});
   }, [modalSelectedUser]);
 
-  const visible = currentModal === 'participant-info';
   const isFollowing = useMemo(
     () => following.includes(modalSelectedUser?.id!),
     [following, modalSelectedUser],
