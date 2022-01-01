@@ -75,7 +75,7 @@ export const UserInfoModal = () => {
       {participant && (
         <View style={styles.wrapper}>
           <UserGeneralInfo
-            indicatorProps={{borderColor: '#101010'}}
+            indicatorProps={{borderColor: '#202020'}}
             style={styles.generalInfo}
             user={participant}
           />
