@@ -59,9 +59,7 @@ const styles = StyleSheet.create({
   modalStyle: {
     margin: 0,
   },
-  noHandlerPadding: {
-    paddingTop: 20,
-  },
+  noHandlerPadding: {},
   handlerPadding: {
     paddingTop: 40,
   },

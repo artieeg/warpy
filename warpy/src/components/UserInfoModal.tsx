@@ -6,6 +6,7 @@ import {UserGeneralInfo} from './UserGeneralInfo';
 import {UserAwardsPreview} from './UserAwardsPreview';
 import {useStore, useStoreShallow} from '@app/store';
 import {useModalNavigation, useUserData} from '@app/hooks';
+import {UserActions} from './UserActions';
 
 export const useParticipantModalController = () => {
   const [visible, modalSelectedUser, following] = useStoreShallow(state => [
@@ -19,19 +20,6 @@ export const useParticipantModalController = () => {
 
   const data = useUserData(participant?.id);
 
-  //const participant =
-  //  useStreamParticipant(modalSelectedUser?.id) || modalSelectedUser;
-
-  const onOpenProfile = useCallback(() => {
-    useStore.getState().dispatchModalClose();
-    navigation.navigate('User', {id: modalSelectedUser});
-  }, [modalSelectedUser]);
-
-  const isFollowing = useMemo(
-    () => following.includes(modalSelectedUser?.id!),
-    [following, modalSelectedUser],
-  );
-
   const onStartRoomTogether = useCallback(async () => {
     const startRoomTogetherTimeout = setTimeout(() => {
       useStore.getState().dispatchPendingInvite(participant.id);
@@ -41,39 +29,17 @@ export const useParticipantModalController = () => {
     navigation.navigate('NewStream', {startRoomTogetherTimeout});
   }, [navigation, participant]);
 
-  const onToggleFollow = useCallback(async () => {
-    if (!participant) {
-      return;
-    }
-
-    if (isFollowing) {
-      useStore.getState().dispatchFollowingRemove(participant.id);
-    } else {
-      useStore.getState().dispatchFollowingAdd(participant.id);
-    }
-  }, [participant, isFollowing]);
-
   return {
     visible,
     stream: data?.stream,
     participant,
-    isFollowing,
-    onToggleFollow,
-    onOpenProfile,
     onStartRoomTogether,
   };
 };
 
 export const UserInfoModal = () => {
-  const {
-    participant,
-    onOpenProfile,
-    visible,
-    onStartRoomTogether,
-    isFollowing,
-    onToggleFollow,
-    stream,
-  } = useParticipantModalController();
+  const {participant, visible, onStartRoomTogether, stream} =
+    useParticipantModalController();
 
   return (
     <BaseSlideModal style={styles.modal} visible={visible}>
@@ -89,6 +55,7 @@ export const UserInfoModal = () => {
             title="start a stream together"
           />
           <UserAwardsPreview user={participant.id} />
+          <UserActions id={participant.id} />
         </View>
       )}
     </BaseSlideModal>
@@ -97,13 +64,10 @@ export const UserInfoModal = () => {
 
 const styles = StyleSheet.create({
   wrapper: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 30,
   },
-  modal: {
-    minHeight: 300,
-    height: 300,
-    maxHeight: 300,
-  },
+  modal: {},
   actionsRow: {
     marginBottom: 10,
     flexDirection: 'row',
@@ -117,6 +81,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   generalInfo: {
-    marginBottom: 20,
+    marginBottom: 30,
   },
 });
