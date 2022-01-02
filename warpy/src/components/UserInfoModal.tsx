@@ -5,7 +5,7 @@ import {SmallTextButton} from './SmallTextButton';
 import {UserGeneralInfo} from './UserGeneralInfo';
 import {UserAwardsPreview} from './UserAwardsPreview';
 import {useStore, useStoreShallow} from '@app/store';
-import {useModalNavigation} from '@app/hooks';
+import {useModalNavigation, useUserData} from '@app/hooks';
 
 export const useParticipantModalController = () => {
   const [visible, modalSelectedUser, following] = useStoreShallow(state => [
@@ -16,6 +16,8 @@ export const useParticipantModalController = () => {
 
   const navigation = useModalNavigation();
   const participant = modalSelectedUser!;
+
+  const data = useUserData(participant?.id);
 
   //const participant =
   //  useStreamParticipant(modalSelectedUser?.id) || modalSelectedUser;
@@ -53,6 +55,7 @@ export const useParticipantModalController = () => {
 
   return {
     visible,
+    stream: data?.stream,
     participant,
     isFollowing,
     onToggleFollow,
@@ -69,6 +72,7 @@ export const UserInfoModal = () => {
     onStartRoomTogether,
     isFollowing,
     onToggleFollow,
+    stream,
   } = useParticipantModalController();
 
   return (
