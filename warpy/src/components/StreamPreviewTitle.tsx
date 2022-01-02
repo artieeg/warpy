@@ -1,5 +1,6 @@
 import React from 'react';
 import TextTicker from 'react-native-text-ticker';
+import {colors} from '../../colors';
 import {textStyles} from './Text';
 
 interface IPreviewTitleProps {
@@ -19,7 +20,7 @@ export const StreamPreviewTitle = (props: IPreviewTitleProps) => {
       style={[
         textStyles[props.size || 'xsmall'],
         textStyles.bold,
-        textStyles.bright,
+        {color: colors.white},
         style,
       ]}
       duration={props.children.length * 200}

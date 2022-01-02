@@ -11,7 +11,7 @@ export const CoinBalance = ({balance, style}: CoinBalanceProps) => {
   return (
     <View style={[styles.wrapper, style]}>
       <Icon name="plus" size={16} style={styles.coin} />
-      <Text size="xsmall" color="dark">
+      <Text size="xsmall" color="black">
         {balance}
       </Text>
       <Icon name="plus" size={16} style={styles.add} />

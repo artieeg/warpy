@@ -59,7 +59,7 @@ export const ToastProvider = () => {
     <>
       {message && (
         <Animated.View style={[styles.toast, animatedStyle]}>
-          <Text weight="bold" size="xsmall" color="dark">
+          <Text weight="bold" size="xsmall" color="black">
             {message}
           </Text>
         </Animated.View>

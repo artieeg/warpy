@@ -2,6 +2,7 @@ import {useStore} from '@app/store';
 import React from 'react';
 import {View, StyleSheet, useWindowDimensions, TextInput} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import {colors} from '../../colors';
 import {HostNewStreamButton} from './HostNewStreamButton';
 import {InviteButton} from './InviteButton';
 import {PendingInvites} from './PendingInvites';
@@ -46,7 +47,7 @@ export const NewStreamPanel = () => {
           onChangeText={v => set({title: v})}
           style={styles.titleInput}
           placeholder="stream title"
-          placeholderTextColor={textStyles.info.color}
+          placeholderTextColor={colors.boulder}
         />
 
         <StreamCategoryList
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    ...textStyles.white,
+    color: colors.white,
     ...textStyles.bold,
     ...textStyles.medium,
   },

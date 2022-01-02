@@ -27,7 +27,7 @@ export const SmallTextButton = (props: IButtonProps) => {
             outline ? styles.outline : null,
             style,
           ]}>
-          <Text weight="bold" color="dark" size="xsmall">
+          <Text weight="bold" color="black" size="xsmall">
             {title}
           </Text>
         </View>

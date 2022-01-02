@@ -49,7 +49,7 @@ export const AwardPickerModal = (props: IBaseModalProps) => {
       visible={visible}
       title="send award">
       <View style={styles.wrapper}>
-        <Text size="xsmall" color="info">
+        <Text size="xsmall" color="boulder">
           to @{recipent?.username}
         </Text>
         <CoinBalance

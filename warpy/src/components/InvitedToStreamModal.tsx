@@ -28,14 +28,14 @@ export const InvitedToStreamModal = () => {
 
       {stream?.title && (
         <>
-          <Text size="small" color="info">
+          <Text size="small" color="boulder">
             to join the room
           </Text>
           <Text>{stream.title}</Text>
         </>
       )}
 
-      {!stream?.title && <Text color="info">to join their new room</Text>}
+      {!stream?.title && <Text color="boulder">to join their new room</Text>}
 
       <View style={styles.actions}>
         <SmallTextButton

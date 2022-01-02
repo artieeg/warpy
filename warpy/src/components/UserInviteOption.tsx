@@ -35,7 +35,7 @@ export const UserInviteOption = ({user}: IUserInviteProps) => {
           <Text size="small" weight="bold">
             {user.first_name}
           </Text>
-          <Text color="info" weight="bold" size="xsmall">
+          <Text color="boulder" weight="bold" size="xsmall">
             {user.username}
           </Text>
         </View>

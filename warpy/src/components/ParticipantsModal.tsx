@@ -152,7 +152,7 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
             <TouchableWithoutFeedback>
               <Text
                 size="small"
-                color="info"
+                color="boulder"
                 weight="bold"
                 style={styles.sectionHeader}>
                 {section.title}

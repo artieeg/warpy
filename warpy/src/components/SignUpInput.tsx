@@ -1,5 +1,6 @@
 import React from 'react';
 import {TextInput, StyleSheet, TextInputProps} from 'react-native';
+import {colors} from '../../colors';
 import {textStyles} from './Text';
 
 export const SignUpInput = (props: TextInputProps) => {
@@ -7,7 +8,7 @@ export const SignUpInput = (props: TextInputProps) => {
     <TextInput
       {...props}
       placeholderTextColor="#7b7b7b"
-      style={[textStyles.bold, textStyles.white, textStyles.large]}
+      style={[textStyles.bold, {color: colors.white}, textStyles.large]}
     />
   );
 };

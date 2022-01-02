@@ -25,7 +25,7 @@ export const FriendFeedItem = ({item}: FriendFeedItemProps) => {
         <Avatar user={item.user} size="large" />
       </View>
 
-      <Text color="info" size="xxsmall">
+      <Text color="boulder" size="xxsmall">
         {item.user.username}
       </Text>
     </TouchableOpacity>

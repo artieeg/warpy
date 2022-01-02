@@ -1,8 +1,8 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
-import {textStyles} from './Text';
 import {IconButton} from './IconButton';
 import {useStore} from '@app/store';
+import {colors} from '../../colors';
 
 export const HostNewStreamButton = () => {
   return (
@@ -20,6 +20,6 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50,
     borderRadius: 25,
-    backgroundColor: textStyles.bright.color,
+    backgroundColor: colors.green,
   },
 });

@@ -35,7 +35,7 @@ export const SendInvite = () => {
           <Text selectable color="yellow" size="large">
             {appInvite.code}
           </Text>
-          <Text color="info" size="small" style={styles.info}>
+          <Text color="boulder" size="small" style={styles.info}>
             both you & your signed up{'\n'}friend will get 3000 coins!
           </Text>
           <IconButton

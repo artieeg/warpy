@@ -23,7 +23,7 @@ export const AwardFeedItem = ({award}: AwardFeedItemProps) => {
             {award.message}
           </Text>
         )}
-        <Text size="small" color="info">
+        <Text size="small" color="boulder">
           {moment(award.created_at).format('MMM. Do HH:MM')}
         </Text>
       </View>

@@ -57,7 +57,7 @@ export const ParticipantView = ({
         {data.first_name}
       </Text>
 
-      <Text weight="bold" color="info" size="xsmall">
+      <Text weight="bold" color="boulder" size="xsmall">
         {data.role}
       </Text>
     </TouchableOpacity>

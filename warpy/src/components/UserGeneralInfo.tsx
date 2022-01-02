@@ -14,7 +14,7 @@ export const UserGeneralInfo = (props: UserGeneralInfoProps) => {
       <Avatar size="xlarge" {...props} style={{}} />
       <View style={styles.userInfo}>
         <Text weight="bold">{props.user.first_name}</Text>
-        <Text color="info" weight="bold" size="small">
+        <Text color="boulder" weight="bold" size="small">
           {props.user.username}
         </Text>
       </View>

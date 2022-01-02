@@ -1,15 +1,15 @@
 import React from 'react';
 import {TextProps} from 'react-native';
 import {StyleSheet, Text as BaseText} from 'react-native';
+import {Colors, colors} from '../../colors';
 
 type TextWeight = 'regular' | 'bold' | 'light' | 'extraBold';
-type TextColor = 'dark' | 'bright' | 'info' | 'yellow' | 'alert' | 'white';
 type TextSize = 'small' | 'medium' | 'large' | 'xsmall' | 'xxsmall';
 
 interface ITextProps extends TextProps {
   weight?: TextWeight;
   size?: TextSize;
-  color?: TextColor;
+  color?: Colors;
   italic?: boolean;
   children: any;
 }
@@ -21,7 +21,7 @@ export const Text = (props: ITextProps) => {
     <BaseText
       {...props}
       style={[
-        textStyles[color || 'bright'],
+        {color: colors[color || 'green']},
         textStyles[weight || 'bold'],
         textStyles[size || 'medium'],
         italic && textStyles.italic,
@@ -33,24 +33,6 @@ export const Text = (props: ITextProps) => {
 
 export const textStyles = StyleSheet.create({
   italic: {},
-  dark: {
-    color: '#000',
-  },
-  white: {
-    color: '#fff',
-  },
-  bright: {
-    color: '#BDF971',
-  },
-  yellow: {
-    color: '#F9F871',
-  },
-  alert: {
-    color: '#F97971',
-  },
-  info: {
-    color: '#7B7B7B', //'#474141',
-  },
   regular: {
     fontFamily: 'MontserratAlternates-Regular',
   },

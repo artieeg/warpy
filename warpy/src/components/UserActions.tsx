@@ -61,7 +61,7 @@ const UserAction = (props: UserActionProps) => {
   return (
     <TouchableOpacity onPress={props.onPress}>
       <Icon name={props.icon} size={30} color={props.color} />
-      <Text size="small" color="alert">
+      <Text size="small" color="red">
         {props.title}
       </Text>
     </TouchableOpacity>

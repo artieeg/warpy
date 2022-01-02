@@ -97,7 +97,7 @@ export const User = () => {
 
         {user?.id && (
           <>
-            <Text size="small" color="info">
+            <Text size="small" color="boulder">
               recent awards
             </Text>
             <UserAwardsPreview user={user.id} />
@@ -106,7 +106,7 @@ export const User = () => {
 
         {stream && (
           <>
-            <Text size="small" color="info">
+            <Text size="small" color="boulder">
               in the room
             </Text>
             <Text>{stream.title}</Text>
