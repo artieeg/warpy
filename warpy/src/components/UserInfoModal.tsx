@@ -51,6 +51,7 @@ export const UserInfoModal = () => {
             user={participant}
           />
           <SmallTextButton
+            textColor="mine_shaft"
             onPress={onStartRoomTogether}
             title="start a stream together"
           />

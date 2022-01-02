@@ -5,6 +5,7 @@ import {
   View,
   ViewProps,
 } from 'react-native';
+import {Colors} from '../../colors';
 import {Text} from './Text';
 
 interface IButtonProps extends ViewProps {
@@ -12,6 +13,7 @@ interface IButtonProps extends ViewProps {
   onPress?: any;
   color?: keyof typeof colorStyles;
   outline?: boolean;
+  textColor?: Colors;
 }
 
 export const SmallTextButton = (props: IButtonProps) => {
@@ -27,7 +29,10 @@ export const SmallTextButton = (props: IButtonProps) => {
             outline ? styles.outline : null,
             style,
           ]}>
-          <Text weight="bold" color="black" size="xsmall">
+          <Text
+            weight="extraBold"
+            color={props.textColor || 'black'}
+            size="small">
             {title}
           </Text>
         </View>

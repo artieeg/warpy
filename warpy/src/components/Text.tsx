@@ -4,7 +4,7 @@ import {StyleSheet, Text as BaseText} from 'react-native';
 import {Colors, colors} from '../../colors';
 
 type TextWeight = 'regular' | 'bold' | 'light' | 'extraBold';
-type TextSize = 'small' | 'medium' | 'large' | 'xsmall' | 'xxsmall';
+type TextSize = 'small' | 'normal' | 'medium' | 'large' | 'xsmall' | 'xxsmall';
 
 interface ITextProps extends TextProps {
   weight?: TextWeight;
@@ -53,6 +53,9 @@ export const textStyles = StyleSheet.create({
   },
   small: {
     fontSize: 18,
+  },
+  normal: {
+    fontSize: 20,
   },
   medium: {
     fontSize: 24,

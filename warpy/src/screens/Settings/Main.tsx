@@ -1,6 +1,6 @@
 import {Avatar, SettingsTextEdit, Text} from '@app/components';
 import {ScreenHeader} from '@app/components/ScreenHeader';
-import {useStore, useStoreShallow} from '@app/store';
+import {useStoreShallow} from '@app/store';
 import React, {useMemo} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
 import {IUser} from '@warpy/lib';
