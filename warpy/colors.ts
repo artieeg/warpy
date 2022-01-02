@@ -7,6 +7,8 @@ export const colors = {
   yellow: '#F9F871',
   red: '#F97971',
   boulder: '#7b7b7b',
+  blue: '#71A7F9',
+  orange: '#F9AA71',
 };
 
 export type Colors = keyof typeof colors;
