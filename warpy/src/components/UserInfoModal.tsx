@@ -66,9 +66,10 @@ export const UserInfoModal = () => {
 const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 20,
-    paddingVertical: 30,
   },
-  modal: {},
+  modal: {
+    height: '80%',
+  },
   actionsRow: {
     marginBottom: 10,
     flexDirection: 'row',

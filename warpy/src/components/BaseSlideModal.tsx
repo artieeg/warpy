@@ -1,6 +1,6 @@
 import {useStore} from '@app/store';
-import React from 'react';
-import {StyleSheet, View, ViewProps} from 'react-native';
+import React, {useRef} from 'react';
+import {Animated, StyleSheet, View, ViewProps} from 'react-native';
 import Modal from 'react-native-modal';
 import {Text} from './Text';
 
@@ -13,7 +13,8 @@ export interface IBaseModalProps extends ViewProps {
 
 export const BaseSlideModal = (props: IBaseModalProps) => {
   const {visible, disableHideHandler, children, title, style} = props;
-  const dispatchModalClose = useStore.use.dispatchModalClose();
+
+  const translate = useRef(new Animated.Value(0));
 
   return (
     <Modal
@@ -21,11 +22,13 @@ export const BaseSlideModal = (props: IBaseModalProps) => {
       backdropOpacity={0.6}
       removeClippedSubviews={false}
       hideModalContentWhileAnimating
-      useNativeDriver
+      onSwipeMove={(p, state) => {
+        translate.current.setValue(state.dx);
+      }}
       useNativeDriverForBackdrop
       propagateSwipe={true}
       onSwipeComplete={() => {
-        dispatchModalClose();
+        useStore.getState().dispatchModalClose();
       }}
       swipeDirection={['down']}
       swipeThreshold={100}
@@ -35,11 +38,11 @@ export const BaseSlideModal = (props: IBaseModalProps) => {
       statusBarTranslucent
       style={styles.modalStyle}
       isVisible={visible}>
-      <View
+      <Animated.View
         style={[
+          {transform: [{translateY: translate.current}]},
           styles.wrapper,
-          styles.noHandlerPadding,
-          //!disableHideHandler ? styles.handlerPadding : styles.noHandlerPadding,
+          styles.handlerPadding,
           style,
         ]}>
         {!disableHideHandler && <View style={styles.handler} />}
@@ -50,7 +53,7 @@ export const BaseSlideModal = (props: IBaseModalProps) => {
         )}
 
         {children}
-      </View>
+      </Animated.View>
     </Modal>
   );
 };
@@ -61,7 +64,7 @@ const styles = StyleSheet.create({
   },
   noHandlerPadding: {},
   handlerPadding: {
-    paddingTop: 40,
+    paddingTop: 30,
   },
   wrapper: {
     backgroundColor: '#202020',

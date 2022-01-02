@@ -35,6 +35,8 @@ export const Room = () => {
     [streamers, viewers],
   );
 
+  console.log({streams});
+
   if (streams.length > 0) {
     return (
       <View style={styles.videoWrapper}>

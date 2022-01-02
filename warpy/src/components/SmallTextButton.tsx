@@ -5,7 +5,7 @@ import {
   View,
   ViewProps,
 } from 'react-native';
-import {Colors} from '../../colors';
+import {colors, Colors} from '../../colors';
 import {Text} from './Text';
 
 interface IButtonProps extends ViewProps {
@@ -43,7 +43,7 @@ export const SmallTextButton = (props: IButtonProps) => {
 
 const colorStyles = StyleSheet.create({
   main: {
-    backgroundColor: '#BDF971',
+    backgroundColor: colors.yellow,
   },
   info: {
     backgroundColor: '#7B7B7B',
