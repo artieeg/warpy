@@ -1,7 +1,8 @@
 import React from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import {IStreamCategory} from '../../../lib';
-import {Text, textStyles} from './Text';
+import {colors} from '../../colors';
+import {Text} from './Text';
 
 interface StreamCategoryOptionProps {
   category: IStreamCategory;
@@ -16,9 +17,7 @@ export const StreamCategoryOption = React.memo(
       <TouchableOpacity
         onPress={onPress}
         style={[styles.wrapper, selected && {backgroundColor: color}]}>
-        <Text
-          size="small"
-          style={[{color: selected ? textStyles.dark.color : color}]}>
+        <Text size="small" style={[{color: selected ? colors.black : color}]}>
           {category.title}
         </Text>
       </TouchableOpacity>

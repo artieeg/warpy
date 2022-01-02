@@ -16,7 +16,7 @@ export const ChatMessage = React.memo((props: IChatMessageProps) => {
       <View style={styles.wrapper}>
         <Avatar style={styles.avatar} size="small" user={sender} />
         <View style={styles.text}>
-          <Text size="xsmall" weight="bold" color="info">
+          <Text size="xsmall" weight="bold" color="boulder">
             {sender.username}
           </Text>
 

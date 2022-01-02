@@ -1,7 +1,7 @@
 import {useStore} from '@app/store';
 import {IParticipant} from '@warpy/lib';
 import React, {useCallback} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {StyleSheet, TouchableOpacity} from 'react-native';
 import shallow from 'zustand/shallow';
 import {AudioLevelIndicator} from './AudioLevelIndicator';
 import {Avatar} from './Avatar';
@@ -26,27 +26,16 @@ export const ParticipantView = ({
       shallow,
     );
 
-  const onLongPress = useCallback(() => {
-    if (providedOnPress) {
-      providedOnPress();
-    } else {
-      dispatchModalOpen('user-actions', {selectedUser: data.id});
-    }
-  }, [providedOnPress]);
-
   const onPress = useCallback(() => {
     if (providedOnPress) {
       providedOnPress();
     } else {
-      dispatchModalOpen('participant-info', {selectedUser: data.id});
+      dispatchModalOpen('participant-info', {selectedUser: data});
     }
   }, [providedOnPress]);
 
   return (
-    <TouchableOpacity
-      style={{...styles.wrapper}}
-      onLongPress={onLongPress}
-      onPress={onPress}>
+    <TouchableOpacity style={{...styles.wrapper}} onPress={onPress}>
       <AudioLevelIndicator
         volume={userAudioLevel || 0}
         minScale={1}
@@ -57,7 +46,7 @@ export const ParticipantView = ({
         {data.first_name}
       </Text>
 
-      <Text weight="bold" color="info" size="xsmall">
+      <Text weight="bold" color="boulder" size="xsmall">
         {data.role}
       </Text>
     </TouchableOpacity>

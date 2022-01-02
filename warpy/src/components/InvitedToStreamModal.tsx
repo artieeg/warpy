@@ -20,7 +20,7 @@ export const InvitedToStreamModal = () => {
 
   return (
     <BaseSlideModal visible={visible} style={styles.wrapper}>
-      <Text>invitation from</Text>
+      <Text style={styles.title}>woah, new invite! 👋</Text>
 
       {modalInviter && (
         <UserGeneralInfo style={styles.info} user={modalInviter} />
@@ -28,14 +28,18 @@ export const InvitedToStreamModal = () => {
 
       {stream?.title && (
         <>
-          <Text size="small" color="info">
-            to join the room
+          <Text size="small" color="boulder">
+            invites you to join
           </Text>
           <Text>{stream.title}</Text>
         </>
       )}
 
-      {!stream?.title && <Text color="info">to join their new room</Text>}
+      {!stream?.title && (
+        <Text size="small" color="boulder">
+          invites you to join their new room
+        </Text>
+      )}
 
       <View style={styles.actions}>
         <SmallTextButton
@@ -58,15 +62,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
   info: {
-    paddingTop: 30,
-    paddingBottom: 20,
+    paddingBottom: 10,
   },
   actionButtonSpace: {
     marginRight: 10,
   },
   actions: {
     flexDirection: 'row',
-    paddingTop: 20,
-    paddingBottom: 10,
+    paddingTop: 30,
+    paddingBottom: 30,
+  },
+  title: {
+    marginBottom: 30,
   },
 });

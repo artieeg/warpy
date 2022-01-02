@@ -4,26 +4,18 @@ import {IBaseUser} from '@warpy/lib';
 import {Avatar, IAvatarProps} from './Avatar';
 import {Text} from './Text';
 
-interface UserGeneralInfoProps extends ViewProps {
+interface UserGeneralInfoProps extends ViewProps, IAvatarProps {
   user: IBaseUser;
-  avatar?: Partial<IAvatarProps>;
 }
 
-export const UserGeneralInfo = ({
-  user,
-  style,
-  avatar,
-}: UserGeneralInfoProps) => {
-  console.log(user);
+export const UserGeneralInfo = (props: UserGeneralInfoProps) => {
   return (
-    <View style={[styles.avatarAndUserInfo, style]}>
-      <View>
-        <Avatar size="large" {...avatar} user={user} />
-      </View>
+    <View style={[styles.avatarAndUserInfo, props.style]}>
+      <Avatar size="xlarge" {...props} style={{}} />
       <View style={styles.userInfo}>
-        <Text weight="bold">{user.first_name}</Text>
-        <Text color="info" weight="bold" size="small">
-          {user.username}
+        <Text weight="bold">{props.user.first_name}</Text>
+        <Text color="boulder" weight="bold" size="small">
+          {props.user.username}
         </Text>
       </View>
     </View>

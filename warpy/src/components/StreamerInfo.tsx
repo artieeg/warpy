@@ -20,7 +20,7 @@ export const StreamerInfo = React.memo((props: IStreamerInfoProps) => {
         <Text weight="bold" size="small">
           {name}
         </Text>
-        <Text weight="bold" color="info" ellipsizeMode="tail" size="small">
+        <Text weight="bold" color="boulder" ellipsizeMode="tail" size="small">
           {username}
         </Text>
       </View>

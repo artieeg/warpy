@@ -1,9 +1,11 @@
 import {ScreenHeader, textStyles} from '@app/components';
 import React, {useCallback, useState} from 'react';
 import {View, StyleSheet, TextInput} from 'react-native';
-import {Text, TextButton} from '@warpy/components';
+import {Text} from '@app/components';
+import {TextButton} from '@warpy/components';
 import {useStore, useStoreShallow} from '@app/store';
 import {useNavigation, useRoute} from '@react-navigation/native';
+import {colors} from '../../colors';
 
 export const useInviteCodeInputController = () => {
   const screenMode = (useRoute().params as any)?.mode;
@@ -73,14 +75,14 @@ export const InviteCodeInput = () => {
       <ScreenHeader />
       <View style={styles.content}>
         {screenMode === 'signup' && (
-          <Text size="small" color="info">
+          <Text size="small" color="boulder">
             can be later added{'\n'}in the settings later
           </Text>
         )}
         <View style={styles.inputContainer}>
           <TextInput
             onChangeText={setCode}
-            placeholderTextColor={textStyles.info.color}
+            placeholderTextColor={colors.boulder}
             style={styles.input}
             placeholder="your invite code"
           />
@@ -120,7 +122,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     ...textStyles.medium,
     ...textStyles.bold,
-    ...textStyles.info,
     color: '#ffffff',
   },
   buttonWrapper: {

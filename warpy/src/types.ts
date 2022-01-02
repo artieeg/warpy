@@ -2,7 +2,6 @@ export type MediaDirection = 'send' | 'recv';
 export type ParticipantRole = 'streamer' | 'speaker' | 'viewer';
 
 export type Modal =
-  | 'user-actions'
   | 'award'
   | 'award-recipent'
   | 'participant-info'

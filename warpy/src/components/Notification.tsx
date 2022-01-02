@@ -43,7 +43,7 @@ const InviteNotification = ({notification}: INotificationProps) => {
               </Text>
               {!hasBeenSeen && <View style={styles.new} />}
             </View>
-            <Text size="xsmall" color="info" weight="bold">
+            <Text size="xsmall" color="boulder" weight="bold">
               {timeFromNow}
             </Text>
           </View>

@@ -4,9 +4,9 @@ import {useStore, useStoreShallow} from '@app/store';
 import React, {useCallback} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import Share from 'react-native-share';
+import {colors} from '../../colors';
 import {Icon} from './Icon';
 import {Text} from './Text';
-import {textStyles} from './Text';
 
 export const ShareStreamLinkButton = () => {
   const [appInvite, stream] = useStoreShallow(state => [
@@ -25,11 +25,11 @@ export const ShareStreamLinkButton = () => {
   return (
     <TouchableOpacity style={styles.wrapper} onPress={onShare}>
       <View style={styles.iconContainer}>
-        <Icon name="share" size={30} color={textStyles.bright.color} />
+        <Icon name="share" size={30} color={colors.green} />
       </View>
       <View style={styles.info}>
         <Text size="small">share a link</Text>
-        <Text color="info" size="xsmall">
+        <Text color="boulder" size="xsmall">
           and get coins
         </Text>
       </View>

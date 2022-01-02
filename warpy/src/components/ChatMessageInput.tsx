@@ -3,6 +3,7 @@ import {View, TextInput, StyleSheet} from 'react-native';
 import {textStyles} from './Text';
 import {SendMessageButton} from './SendMessageButton';
 import {useStore} from '@app/store';
+import {colors} from '../../colors';
 
 export const ChatMessageInput = () => {
   const [message, setMessage] = useState('');
@@ -18,7 +19,7 @@ export const ChatMessageInput = () => {
         style={[
           textStyles.bold,
           textStyles.xsmall,
-          textStyles.bright,
+          {color: colors.green},
           styles.input,
         ]}
         placeholderTextColor="#fff"

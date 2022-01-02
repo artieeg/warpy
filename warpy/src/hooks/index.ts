@@ -15,3 +15,6 @@ export * from './useUserSearch';
 export * from './useNotifications';
 export * from './useRemoteStreamController';
 export * from './useAvailableAwards';
+export * from './useModalNavigation';
+export * from './useUserData';
+export * from './useRouteParamUnsafe';

@@ -17,24 +17,21 @@ import {
   useStreamProducers,
   useStreamViewers,
 } from '@app/hooks';
-import {InviteUserButton} from './InviteUserButton';
 import {useStore} from '@app/store';
-import {IParticipant} from '@warpy/lib';
+import {IBaseUser, IParticipant} from '@warpy/lib';
 import {UserProducer} from './UserProducer';
 
 interface IParticipanModalProps {
   visible: boolean;
   onHide: () => void;
-  onSelectParticipant: (id: string) => any;
-  onOpenActions: (id: string) => any;
+  onSelectParticipant: (user: IBaseUser) => any;
 }
 
 export const ParticipantsModal = (props: IParticipanModalProps) => {
-  const {onSelectParticipant, onOpenActions} = props;
+  const {onSelectParticipant} = props;
   const usersRaisingHand = useSpeakingRequests();
   const producers = useStreamProducers();
   const [viewers, onFetchMore] = useStreamViewers();
-  const dispatchModalOpen = useStore.use.dispatchModalOpen();
 
   const streamer = useMemo(
     () => producers.find(speaker => speaker.role === 'streamer'),
@@ -73,9 +70,6 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
             numColumns={4}
             renderItem={({item: flatListItem}) => (
               <TouchableOpacity
-                onLongPress={() => {
-                  onOpenActions(flatListItem.id);
-                }}
                 onPress={() => {
                   onSelectParticipant(flatListItem.id);
                 }}>
@@ -94,9 +88,6 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
             data={item.list}
             renderItem={({item: flatListItem}) => (
               <TouchableOpacity
-                onLongPress={() => {
-                  onOpenActions(flatListItem.id);
-                }}
                 onPress={() => {
                   onSelectParticipant(flatListItem.id);
                 }}>
@@ -117,11 +108,8 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
             renderItem={({item: flatListItem}) => (
               <TouchableOpacity
                 style={columnWidthStyle}
-                onLongPress={() => {
-                  onOpenActions(flatListItem.id);
-                }}
                 onPress={() => {
-                  onSelectParticipant(flatListItem.id);
+                  onSelectParticipant(flatListItem);
                 }}>
                 <ParticipantDisplay data={flatListItem} />
               </TouchableOpacity>
@@ -149,7 +137,7 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
             <TouchableWithoutFeedback>
               <Text
                 size="small"
-                color="info"
+                color="boulder"
                 weight="bold"
                 style={styles.sectionHeader}>
                 {section.title}

@@ -1,6 +1,6 @@
 import {useStore} from '@app/store';
-import React from 'react';
-import {StyleSheet, View, ViewProps} from 'react-native';
+import React, {useRef} from 'react';
+import {Animated, StyleSheet, View, ViewProps} from 'react-native';
 import Modal from 'react-native-modal';
 import {Text} from './Text';
 
@@ -13,19 +13,22 @@ export interface IBaseModalProps extends ViewProps {
 
 export const BaseSlideModal = (props: IBaseModalProps) => {
   const {visible, disableHideHandler, children, title, style} = props;
-  const dispatchModalClose = useStore.use.dispatchModalClose();
+
+  const translate = useRef(new Animated.Value(0));
 
   return (
     <Modal
-      backdropColor="#909090"
-      backdropOpacity={0.1}
+      backdropColor="#000000"
+      backdropOpacity={0.6}
       removeClippedSubviews={false}
       hideModalContentWhileAnimating
-      useNativeDriver
+      onSwipeMove={(p, state) => {
+        translate.current.setValue(state.dx);
+      }}
       useNativeDriverForBackdrop
       propagateSwipe={true}
       onSwipeComplete={() => {
-        dispatchModalClose();
+        useStore.getState().dispatchModalClose();
       }}
       swipeDirection={['down']}
       swipeThreshold={100}
@@ -35,11 +38,11 @@ export const BaseSlideModal = (props: IBaseModalProps) => {
       statusBarTranslucent
       style={styles.modalStyle}
       isVisible={visible}>
-      <View
+      <Animated.View
         style={[
+          {transform: [{translateY: translate.current}]},
           styles.wrapper,
-          styles.noHandlerPadding,
-          //!disableHideHandler ? styles.handlerPadding : styles.noHandlerPadding,
+          styles.handlerPadding,
           style,
         ]}>
         {!disableHideHandler && <View style={styles.handler} />}
@@ -50,7 +53,7 @@ export const BaseSlideModal = (props: IBaseModalProps) => {
         )}
 
         {children}
-      </View>
+      </Animated.View>
     </Modal>
   );
 };
@@ -59,14 +62,12 @@ const styles = StyleSheet.create({
   modalStyle: {
     margin: 0,
   },
-  noHandlerPadding: {
-    paddingTop: 20,
-  },
+  noHandlerPadding: {},
   handlerPadding: {
-    paddingTop: 40,
+    paddingTop: 30,
   },
   wrapper: {
-    backgroundColor: '#000',
+    backgroundColor: '#202020',
     position: 'absolute',
     bottom: 0,
     left: 0,
@@ -85,9 +86,9 @@ const styles = StyleSheet.create({
   handler: {
     position: 'absolute',
     alignSelf: 'center',
-    width: 50,
+    width: 70,
     height: 5,
-    top: 8,
+    top: -12,
     borderRadius: 12,
     backgroundColor: '#474141',
   },

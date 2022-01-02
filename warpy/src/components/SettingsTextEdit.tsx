@@ -8,6 +8,7 @@ import {useDebounce} from 'use-debounce/lib';
 import FadeInOut from 'react-native-fade-in-out';
 import useAsyncEffect from 'use-async-effect';
 import {Icon} from './Icon';
+import {colors} from '../../colors';
 
 interface SettingsTextEditProps {
   placeholder: string;
@@ -39,7 +40,10 @@ export const SettingsTextEdit = (props: SettingsTextEditProps) => {
       clearTimeout(timeout.current);
     }
 
-    const response = await api.user.update(props.field, debouncedValue);
+    const response = await api.user.update(
+      props.field,
+      debouncedValue as string,
+    );
 
     setResponse(response);
 
@@ -60,7 +64,7 @@ export const SettingsTextEdit = (props: SettingsTextEditProps) => {
 
   return (
     <View>
-      <Text color="info" size="small">
+      <Text color="boulder" size="small">
         {props.placeholder}
       </Text>
       <View style={styles.row}>
@@ -69,9 +73,9 @@ export const SettingsTextEdit = (props: SettingsTextEditProps) => {
           style={[
             textStyles.bold,
             textStyles.medium,
-            response?.status === 'error' ? textStyles.alert : textStyles.bright,
+            {color: response?.status === 'error' ? colors.red : colors.green},
           ]}
-          defaultValue={value}
+          defaultValue={value as string}
           placeholder={`enter ${props.field}`}
         />
 
@@ -98,10 +102,10 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   fail: {
-    backgroundColor: textStyles.alert.color,
+    backgroundColor: colors.red,
   },
   check: {
-    backgroundColor: textStyles.bright.color,
+    backgroundColor: colors.green,
   },
   row: {
     flexDirection: 'row',

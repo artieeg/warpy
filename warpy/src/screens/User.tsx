@@ -3,36 +3,22 @@ import {IconButton} from '@app/components/IconButton';
 import {SmallTextButton} from '@app/components/SmallTextButton';
 import {UserAwardsPreview} from '@app/components/UserAwardsPreview';
 import {UserGeneralInfo} from '@app/components/UserGeneralInfo';
+import {useRouteParamsUnsafe, useUserData} from '@app/hooks';
 import {useStore} from '@app/store';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useMemo} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
 import FadeInOut from 'react-native-fade-in-out';
-import {useAsyncMemo} from 'use-async-memo';
 import shallow from 'zustand/shallow';
 
 export const useUserScreenController = () => {
-  const [
-    api,
-    following,
-    dispatchFollowingRemove,
-    dispatchFollowingAdd,
-    dispatchPendingInvite,
-    dispatchSendPendingInvites,
-  ] = useStore(
-    store => [
-      store.api,
-      store.following,
-      store.dispatchFollowingRemove,
-      store.dispatchFollowingAdd,
-      store.dispatchPendingInvite,
-      store.dispatchSendPendingInvites,
-    ],
+  const [api, following] = useStore(
+    store => [store.api, store.following],
     shallow,
   );
 
-  const id = (useRoute().params as any)['id'] as string;
-  const data = useAsyncMemo(() => api.user.get(id), [id]);
+  const {id} = useRouteParamsUnsafe();
+  const data = useUserData(id);
 
   const navigation = useNavigation();
 
@@ -44,16 +30,16 @@ export const useUserScreenController = () => {
     }
 
     if (isFollowing) {
-      dispatchFollowingRemove(id);
+      useStore.getState().dispatchFollowingRemove(id);
     } else {
-      dispatchFollowingAdd(id);
+      useStore.getState().dispatchFollowingAdd(id);
     }
   }, [id, isFollowing]);
 
   const onStartRoomTogether = useCallback(async () => {
     const startRoomTogetherTimeout = setTimeout(() => {
-      dispatchPendingInvite(id);
-      dispatchSendPendingInvites();
+      useStore.getState().dispatchPendingInvite(id);
+      useStore.getState().dispatchSendPendingInvites();
     }, 400);
 
     navigation.navigate('NewStream', {startRoomTogetherTimeout});
@@ -80,7 +66,7 @@ export const User = () => {
         duration={200}
         useNativeDriver
         style={styles.padding}>
-        {!!user && <UserGeneralInfo avatar={{size: 'xlarge'}} user={user} />}
+        {!!user && <UserGeneralInfo user={user} />}
         <View style={styles.buttons}>
           <View style={[styles.actionsRow, styles.actionRowSeparator]}>
             <SmallTextButton
@@ -111,7 +97,7 @@ export const User = () => {
 
         {user?.id && (
           <>
-            <Text size="small" color="info">
+            <Text size="small" color="boulder">
               recent awards
             </Text>
             <UserAwardsPreview user={user.id} />
@@ -120,7 +106,7 @@ export const User = () => {
 
         {stream && (
           <>
-            <Text size="small" color="info">
+            <Text size="small" color="boulder">
               in the room
             </Text>
             <Text>{stream.title}</Text>

@@ -1,13 +1,13 @@
-import {Modal} from '@app/types';
-import {IBot, IInvite} from '@warpy/lib';
-import {StoreSlice} from '../types';
+import { Modal } from "@app/types";
+import { IBaseUser, IBot, IInvite } from "@warpy/lib";
+import { StoreSlice } from "../types";
 
 type OpenModalParams = {
-  selectedUser?: string;
+  selectedUser?: IBaseUser;
   userToAward?: string;
   botConfirmId?: string;
   botConfirmData?: IBot;
-  invite?: IInvite & {notification: string};
+  invite?: IInvite & { notification: string };
 };
 
 export interface IModalDispatchers {
@@ -17,7 +17,7 @@ export interface IModalDispatchers {
 
 export const createModalDispatchers: StoreSlice<IModalDispatchers> = (
   set,
-  get,
+  get
 ) => ({
   dispatchModalClose() {
     set({

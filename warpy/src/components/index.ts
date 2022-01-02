@@ -12,7 +12,7 @@ export * from './ShowParticipantsButton';
 export * from './ParticipantsModal';
 export * from './Participant';
 export * from './BaseSlideModal';
-export * from './ParticipantInfoModal';
+export * from './UserInfoModal';
 export * from './StreamPreview';
 export * from './StartNewStreamButton';
 export * from './ViewersCountPreview';
