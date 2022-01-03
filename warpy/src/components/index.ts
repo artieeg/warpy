@@ -32,3 +32,4 @@ export * from './SettingsTextEdit';
 export * from './Input';
 export * from './AwardFeedItem';
 export * from './FriendFeed';
+export * from './SmallIconButton';

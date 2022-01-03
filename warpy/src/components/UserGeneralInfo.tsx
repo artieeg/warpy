@@ -15,7 +15,7 @@ export const UserGeneralInfo = (props: UserGeneralInfoProps) => {
       <View style={styles.userInfo}>
         <Text weight="bold">{props.user.first_name}</Text>
         <Text color="boulder" weight="bold" size="small">
-          {props.user.username}
+          @{props.user.username}
         </Text>
       </View>
     </View>

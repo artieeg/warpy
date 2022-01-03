@@ -6,7 +6,8 @@ import {UserGeneralInfo} from './UserGeneralInfo';
 import {UserAwardsPreview} from './UserAwardsPreview';
 import {useStore, useStoreShallow} from '@app/store';
 import {useModalNavigation, useUserData} from '@app/hooks';
-import {UserActions} from './UserActions';
+import {colors} from '../../colors';
+import {SmallIconButton} from './SmallIconButton';
 
 export const useParticipantModalController = () => {
   const [visible, modalSelectedUser, following] = useStoreShallow(state => [
@@ -29,7 +30,43 @@ export const useParticipantModalController = () => {
     navigation.navigate('NewStream', {startRoomTogetherTimeout});
   }, [navigation, participant]);
 
+  const onOpenProfile = useCallback(() => {
+    useStore.getState().dispatchModalClose();
+    navigation.navigate('User', {id: participant.id});
+  }, [participant.id]);
+
+  const isFollowing = useMemo(
+    () => following.includes(participant.id),
+    [following, participant.id],
+  );
+
+  const onToggleFollow = useCallback(async () => {
+    if (isFollowing) {
+      useStore.getState().dispatchFollowingRemove(participant.id);
+    } else {
+      useStore.getState().dispatchFollowingAdd(participant.id);
+    }
+  }, [participant.id, isFollowing]);
+
+  const onReport = useCallback(() => {
+    useStore.getState().dispatchModalOpen('reports');
+  }, []);
+
+  const onBlock = useCallback(() => {
+    throw new Error('Not implemented yet');
+  }, []);
+
+  const onChat = useCallback(() => {
+    throw new Error('Not implemented yet');
+  }, []);
+
   return {
+    isFollowing,
+    onToggleFollow,
+    onOpenProfile,
+    onReport,
+    onBlock,
+    onChat,
     visible,
     stream: data?.stream,
     participant,
@@ -38,7 +75,7 @@ export const useParticipantModalController = () => {
 };
 
 export const UserInfoModal = () => {
-  const {participant, visible, onStartRoomTogether, stream} =
+  const {participant, visible, onStartRoomTogether} =
     useParticipantModalController();
 
   return (
@@ -46,17 +83,48 @@ export const UserInfoModal = () => {
       {participant && (
         <View style={styles.wrapper}>
           <UserGeneralInfo
-            indicatorProps={{borderColor: '#202020'}}
+            indicatorProps={{borderColor: colors.cod_gray}}
             style={styles.generalInfo}
             user={participant}
           />
-          <SmallTextButton
-            textColor="mine_shaft"
-            onPress={onStartRoomTogether}
-            title="start a stream together"
-          />
+
           <UserAwardsPreview user={participant.id} />
-          <UserActions id={participant.id} />
+
+          <View style={styles.actions}>
+            <View style={styles.actionsRow}>
+              <SmallTextButton
+                style={styles.rowTextButton}
+                color="blue"
+                onPress={onStartRoomTogether}
+                title="follow"
+              />
+
+              <SmallTextButton
+                style={styles.rowTextButton}
+                color="green"
+                onPress={onStartRoomTogether}
+                title="chat"
+              />
+              <SmallIconButton
+                style={styles.rowButtonFinal}
+                name="flag"
+                color="red"
+              />
+            </View>
+
+            <SmallTextButton
+              color="yellow"
+              onPress={onStartRoomTogether}
+              title="start a stream together"
+            />
+          </View>
+
+          <SmallTextButton
+            color="mine_shaft"
+            textColor="white"
+            onPress={onStartRoomTogether}
+            title="see user details"
+          />
         </View>
       )}
     </BaseSlideModal>
@@ -64,6 +132,9 @@ export const UserInfoModal = () => {
 };
 
 const styles = StyleSheet.create({
+  actions: {
+    marginBottom: 30,
+  },
   wrapper: {
     paddingHorizontal: 20,
   },
@@ -73,6 +144,13 @@ const styles = StyleSheet.create({
   actionsRow: {
     marginBottom: 10,
     flexDirection: 'row',
+  },
+  rowTextButton: {
+    flex: 1,
+    marginRight: 10,
+  },
+  rowButtonFinal: {
+    marginRight: 0,
   },
   more: {
     height: 42,

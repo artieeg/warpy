@@ -8,10 +8,12 @@ import {
 import {colors, Colors} from '../../colors';
 import {Text} from './Text';
 
+type ButtonColorStyles = keyof typeof colorStyles;
+
 interface IButtonProps extends ViewProps {
   title: string;
   onPress?: any;
-  color?: keyof typeof colorStyles;
+  color?: ButtonColorStyles | Colors; //🤡
   outline?: boolean;
   textColor?: Colors;
 }
@@ -20,24 +22,25 @@ export const SmallTextButton = (props: IButtonProps) => {
   const {onPress, style, title, outline, color} = props;
 
   return (
-    <View>
-      <TouchableWithoutFeedback onPress={onPress}>
-        <View
-          style={[
-            styles.button,
-            colorStyles[color || 'main'],
-            outline ? styles.outline : null,
-            style,
-          ]}>
-          <Text
-            weight="extraBold"
-            color={props.textColor || 'black'}
-            size="small">
-            {title}
-          </Text>
-        </View>
-      </TouchableWithoutFeedback>
-    </View>
+    <TouchableWithoutFeedback onPress={onPress}>
+      <View
+        style={[
+          styles.button,
+          colorStyles[color as ButtonColorStyles] || {
+            backgroundColor: colors[color as Colors],
+          },
+          !color && colorStyles.main,
+          outline ? styles.outline : null,
+          style,
+        ]}>
+        <Text
+          weight="extraBold"
+          color={props.textColor || 'cod_gray'}
+          size="small">
+          {title}
+        </Text>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
