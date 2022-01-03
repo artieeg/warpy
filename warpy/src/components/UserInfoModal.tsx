@@ -17,36 +17,42 @@ export const useParticipantModalController = () => {
   ]);
 
   const navigation = useModalNavigation();
-  const participant = modalSelectedUser!;
+  const userId = modalSelectedUser?.id;
 
-  const data = useUserData(participant?.id);
+  const data = useUserData(userId);
 
   const onStartRoomTogether = useCallback(async () => {
+    if (!userId) return;
+
     const startRoomTogetherTimeout = setTimeout(() => {
-      useStore.getState().dispatchPendingInvite(participant.id);
+      useStore.getState().dispatchPendingInvite(userId);
       useStore.getState().dispatchSendPendingInvites();
     }, 400);
 
     navigation.navigate('NewStream', {startRoomTogetherTimeout});
-  }, [navigation, participant]);
+  }, [navigation, userId]);
 
   const onOpenProfile = useCallback(() => {
+    if (!userId) return;
+
     useStore.getState().dispatchModalClose();
-    navigation.navigate('User', {id: participant.id});
-  }, [participant.id]);
+    navigation.navigate('User', {id: userId});
+  }, [userId]);
 
   const isFollowing = useMemo(
-    () => following.includes(participant.id),
-    [following, participant.id],
+    () => (userId ? following.includes(userId) : false),
+    [following, userId],
   );
 
   const onToggleFollow = useCallback(async () => {
+    if (!userId) return;
+
     if (isFollowing) {
-      useStore.getState().dispatchFollowingRemove(participant.id);
+      useStore.getState().dispatchFollowingRemove(userId);
     } else {
-      useStore.getState().dispatchFollowingAdd(participant.id);
+      useStore.getState().dispatchFollowingAdd(userId);
     }
-  }, [participant.id, isFollowing]);
+  }, [userId, isFollowing]);
 
   const onReport = useCallback(() => {
     useStore.getState().dispatchModalOpen('reports');
@@ -69,7 +75,7 @@ export const useParticipantModalController = () => {
     onChat,
     visible,
     stream: data?.stream,
-    participant,
+    participant: modalSelectedUser,
     onStartRoomTogether,
   };
 };
@@ -139,7 +145,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   modal: {
-    height: '80%',
+    paddingBottom: 30,
   },
   actionsRow: {
     marginBottom: 10,
