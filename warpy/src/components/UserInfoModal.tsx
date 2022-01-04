@@ -1,9 +1,10 @@
 import React, {useCallback, useMemo} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {BaseSlideModal} from './BaseSlideModal';
 import {SmallTextButton} from './SmallTextButton';
 import {UserGeneralInfo} from './UserGeneralInfo';
 import {UserAwardsPreview} from './UserAwardsPreview';
+import {Text} from './Text';
 import {useStore, useStoreShallow} from '@app/store';
 import {useModalNavigation, useUserData} from '@app/hooks';
 import {colors} from '../../colors';
@@ -81,8 +82,15 @@ export const useParticipantModalController = () => {
 };
 
 export const UserInfoModal = () => {
-  const {participant, visible, onStartRoomTogether} =
-    useParticipantModalController();
+  const {
+    participant,
+    onChat,
+    onToggleFollow,
+    isFollowing,
+    visible,
+    onStartRoomTogether,
+    stream,
+  } = useParticipantModalController();
 
   return (
     <BaseSlideModal style={styles.modal} visible={visible}>
@@ -96,25 +104,44 @@ export const UserInfoModal = () => {
 
           <UserAwardsPreview user={participant.id} />
 
+          {stream && (
+            <TouchableOpacity style={styles.inTheRoomWrapper}>
+              <View style={styles.roomTextInfo}>
+                <Text size="xsmall" color="boulder">
+                  in the room
+                </Text>
+                <Text size="small" numberOfLines={1} ellipsizeMode="tail">
+                  {stream.title}
+                </Text>
+              </View>
+              <SmallIconButton
+                name="chevron-right"
+                size={30}
+                background="mine_shaft"
+                color="white"
+              />
+            </TouchableOpacity>
+          )}
+
           <View style={styles.actions}>
             <View style={styles.actionsRow}>
               <SmallTextButton
                 style={styles.rowTextButton}
                 color="blue"
-                onPress={onStartRoomTogether}
-                title="follow"
+                onPress={onToggleFollow}
+                title={isFollowing ? 'unfollow' : 'follow'}
               />
 
               <SmallTextButton
                 style={styles.rowTextButton}
                 color="green"
-                onPress={onStartRoomTogether}
+                onPress={onChat}
                 title="chat"
               />
               <SmallIconButton
                 style={styles.rowButtonFinal}
                 name="flag"
-                color="red"
+                background="red"
               />
             </View>
 
@@ -168,5 +195,15 @@ const styles = StyleSheet.create({
   },
   generalInfo: {
     marginBottom: 30,
+  },
+  inTheRoomWrapper: {
+    flexDirection: 'row',
+    marginBottom: 30,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  roomTextInfo: {
+    paddingRight: 30,
+    flex: 1,
   },
 });

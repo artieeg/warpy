@@ -5,18 +5,24 @@ import {Colors, colors} from '../../colors';
 import {Icon} from './Icon';
 
 interface SmallIconButtonProps extends IconProps {
+  background?: Colors;
   color?: Colors;
 }
 
-export const SmallIconButton = (props: SmallIconButtonProps) => {
+export const SmallIconButton = ({
+  color,
+  background,
+  ...props
+}: SmallIconButtonProps) => {
   return (
     <TouchableOpacity
       onPress={props.onPress}
-      style={[
-        styles.button,
-        {backgroundColor: colors[props.color || 'green']},
-      ]}>
-      <Icon {...props} size={30} color={colors.cod_gray} />
+      style={[styles.button, {backgroundColor: colors[background || 'green']}]}>
+      <Icon
+        {...props}
+        size={30}
+        color={color ? colors[color] : colors.cod_gray}
+      />
     </TouchableOpacity>
   );
 };
