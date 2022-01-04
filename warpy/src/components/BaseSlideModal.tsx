@@ -2,6 +2,7 @@ import {useStore} from '@app/store';
 import React, {useRef} from 'react';
 import {Animated, StyleSheet, View, ViewProps} from 'react-native';
 import Modal from 'react-native-modal';
+import {colors} from '../../colors';
 import {Text} from './Text';
 
 export interface IBaseModalProps extends ViewProps {
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
     paddingTop: 30,
   },
   wrapper: {
-    backgroundColor: '#202020',
+    backgroundColor: colors.cod_gray,
     position: 'absolute',
     bottom: 0,
     left: 0,
@@ -86,10 +87,10 @@ const styles = StyleSheet.create({
   handler: {
     position: 'absolute',
     alignSelf: 'center',
-    width: 70,
+    width: 50,
     height: 5,
     top: -12,
     borderRadius: 12,
-    backgroundColor: '#474141',
+    backgroundColor: '#909090CC',
   },
 });
