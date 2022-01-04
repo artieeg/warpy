@@ -87,7 +87,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     height: 35,
     justifyContent: 'center',
     alignItems: 'center',
