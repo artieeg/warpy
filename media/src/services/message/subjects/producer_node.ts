@@ -11,4 +11,8 @@ export const ProducerSubjectEventMap = {
   "media.transport.connect.producer": "connect-transport",
   //[producerJoinRoomSubject]: "join-room",
   [removeUserProducers]: "remove-user-producers",
+  "media.node.egress.request-media": {
+    name: "media-requested",
+    queue: `media-requests-${NodeInfo.id}`,
+  },
 };

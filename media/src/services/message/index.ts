@@ -27,11 +27,18 @@ const jc = JSONCodec();
 let nc: NatsConnection;
 
 const subscribeTo = async (subject: any) => {
-  const sub = nc.subscribe(subject);
+  let event = (SubjectEventMap as any)[subject];
+  let queue;
+
+  if (typeof event === "object") {
+    queue = event.queue;
+    event = event.name;
+  }
+
+  const sub = nc.subscribe(subject, { queue });
 
   for await (const msg of sub) {
     const message = jc.decode(msg.data) as any;
-    const event = (SubjectEventMap as any)[subject];
     eventEmitter.emit(event, message, (response: any) => {
       msg.respond(jc.encode(response));
     });
@@ -74,11 +81,7 @@ export const sendMessageToUser = (user: string, message: IMessage) => {
   nc.publish(`reply.user.${user}`, jc.encode(message));
 };
 
-type EventMap = typeof SubjectEventMap;
-
-type Event = EventMap[keyof EventMap];
-
-export const on = (event: Event, handler: MessageHandler<any, any>) => {
+export const on = (event: string, handler: MessageHandler<any, any>) => {
   eventEmitter.on(event, handler);
 };
 
@@ -111,4 +114,14 @@ export const sendNodeIsOnlineMessage = async (nodeParams: any) => {
 
 export const sendRecordRequest = async (params: IRecordRequest) => {
   nc.publish("stream.record-request", jc.encode(params));
+};
+
+export const requestMediaTracks = async (stream: string) => {
+  console.log("requesting media tracsk", { stream });
+  const response = await nc.request(
+    "media.node.egress.request-media",
+    jc.encode({ stream })
+  );
+
+  return jc.decode(response.data) as any;
 };

@@ -6,6 +6,7 @@ dotenv.config();
 import { MessageService, RoomService, SFUService } from "@media/services";
 import { role } from "@media/role";
 import { NodeInfo } from "@media/nodeinfo";
+import { handleEgressMediaRequest } from "@media/services/room";
 
 const main = async () => {
   await Promise.all([MessageService.init(), SFUService.startWorkers()]);
@@ -23,6 +24,8 @@ const main = async () => {
     "remove-user-producers",
     RoomService.handleRemoveUserProducers
   );
+
+  MessageService.on("media-requested", handleEgressMediaRequest);
 
   SFUService.onActiveSpeakers(MessageService.sendActiveSpeakers);
 

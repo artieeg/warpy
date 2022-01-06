@@ -9,3 +9,4 @@ export * from "./handleNewTrack";
 export * from "./handleRecvTracksRequest";
 export * from "./handleUserLeave";
 export * from "./handleRemoveUserProducers";
+export * from "./handleEgressMediaRequest";
