@@ -5,9 +5,13 @@ import {
   Producer,
   Consumer,
   Router,
+  RtpCapabilities,
 } from "mediasoup/lib/types";
 
+//TODO: consider using undefined instead of null
+
 export interface IPeer {
+  rtpCapabilities: RtpCapabilities | null;
   router: Router | null;
   sendTransport: Transport | null;
   recvTransport: Transport | null;
@@ -20,6 +24,7 @@ export interface IPeer {
 }
 
 export const createNewPeer = (data: Partial<IPeer>): IPeer => ({
+  rtpCapabilities: null,
   router: data.router || SFUService.getWorker().router,
   sendTransport: null,
   recvTransport: null,

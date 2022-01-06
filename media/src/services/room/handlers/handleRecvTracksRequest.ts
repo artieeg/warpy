@@ -34,8 +34,11 @@ export const handleRecvTracksRequest: MessageHandler<
     return;
   }
 
-  const consumerParams = [];
+  peer.rtpCapabilities = rtpCapabilities;
 
+  const consumerParams: any[] = [];
+
+  /* COMMENT OUT FOR DEV PURPOSES
   for (const peerId of Object.keys(peers)) {
     const peer = peers[peerId];
 
@@ -80,6 +83,7 @@ export const handleRecvTracksRequest: MessageHandler<
       continue;
     }
   }
+  */
 
   respond!({
     consumerParams,

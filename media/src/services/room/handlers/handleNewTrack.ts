@@ -107,12 +107,10 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
       }
     }
 
+    /*
     const pipeConsumers = await SFUService.createPipeConsumers(newProducer.id);
 
-    console.log("created pipe consumers");
-
     for (const [node, pipeConsumer] of Object.entries(pipeConsumers)) {
-      console.log("sending new producer of", pipeConsumer.kind, "to", node);
       MessageService.sendNewProducer(node, {
         userId: user,
         roomId,
@@ -123,9 +121,9 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
         appData: pipeConsumer.appData,
       });
     }
+    */
   } catch (e) {
     console.error("error:", e);
-    console.error("error:", e.message);
     return;
   }
 
