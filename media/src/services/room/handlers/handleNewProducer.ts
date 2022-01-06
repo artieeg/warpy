@@ -88,6 +88,8 @@ export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
         peerId
       );
 
+      console.log("sending new producer to", peerId);
+
       MessageService.sendMessageToUser(peerId, {
         event: "@media/new-track",
         data: {

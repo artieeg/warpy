@@ -1,5 +1,5 @@
-import {useStore} from '@app/store';
-import {useCallback, useEffect, useState} from 'react';
+import {useStore, useStoreShallow} from '@app/store';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import {MediaStream} from 'react-native-webrtc';
 
 interface IStreams {
@@ -8,15 +8,23 @@ interface IStreams {
 }
 
 export const useRemoteStreams = () => {
+  /*
   const [streams, setStreams] = useState<IStreams>({
     videoStreams: [],
     audioStreams: [],
   });
+  */
 
-  const streamers = useStore.use.streamers();
+  /*
+  const streamers = useStore(
+    state => state.streamers,
+    (a, b) => {
+      return JSON.stringify(a.streamers) === JSON.stringify(b.streamers);
+    },
+  );
 
-  const getStreams = useCallback(() => {
-    setStreams({
+  const streams = useMemo(() => {
+    return {
       videoStreams: Object.values(streamers)
         .map(p => {
           if (p.media?.video?.active) {
@@ -29,12 +37,15 @@ export const useRemoteStreams = () => {
       audioStreams: Object.values(streamers)
         .map(p => p.media?.audio?.track)
         .filter(s => !!s) as any,
-    });
+    };
   }, [streamers]);
 
-  useEffect(() => {
-    getStreams();
-  }, [getStreams]);
-
   return streams;
+  */
+  const [videoStreams, audioStreams] = useStoreShallow(state => [
+    state.videoTracks,
+    state.audioTracks,
+  ]);
+
+  return {videoStreams, audioStreams};
 };
