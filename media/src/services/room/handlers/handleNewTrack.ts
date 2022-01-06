@@ -107,6 +107,8 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
       }
     }
 
+    peer.rtpCapabilities = rtpCapabilities;
+
     /*
     const pipeConsumers = await SFUService.createPipeConsumers(newProducer.id);
 

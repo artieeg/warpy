@@ -1,4 +1,5 @@
 import { IMessage } from "@media/models";
+import { NodeInfo } from "@media/nodeinfo";
 import { role } from "@media/role";
 import {
   IConnectMediaServer,
@@ -120,7 +121,7 @@ export const requestMediaTracks = async (stream: string) => {
   console.log("requesting media tracsk", { stream });
   const response = await nc.request(
     "media.node.egress.request-media",
-    jc.encode({ stream })
+    jc.encode({ stream, node: NodeInfo.id })
   );
 
   return jc.decode(response.data) as any;
