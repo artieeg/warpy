@@ -38,9 +38,8 @@ export const handleRecvTracksRequest: MessageHandler<
 
   const consumerParams: any[] = [];
 
-  const response = await MessageService.requestMediaTracks(stream);
+  await MessageService.requestMediaTracks(stream);
 
-  /* COMMENT OUT FOR DEV PURPOSES
   for (const peerId of Object.keys(peers)) {
     const peer = peers[peerId];
 
@@ -85,7 +84,6 @@ export const handleRecvTracksRequest: MessageHandler<
       continue;
     }
   }
-  */
 
   respond!({
     consumerParams,

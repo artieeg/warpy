@@ -12,6 +12,7 @@ import { rooms } from "../rooms";
 
 const createNewRoom = (): IRoom => {
   return {
+    forwardingToNodeIds: [],
     router:
       role === "PRODUCER"
         ? SFUService.mediaNodeTransferWorker.router

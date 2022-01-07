@@ -42,6 +42,7 @@ export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
       router,
       peers: {},
       audioLevelObserver,
+      forwardingToNodeIds: [],
     };
     rooms[roomId] = room;
   }

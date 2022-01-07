@@ -109,8 +109,23 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
 
     peer.rtpCapabilities = rtpCapabilities;
 
+    room.forwardingToNodeIds.forEach(async (node) => {
+      const pipeConsumer = await SFUService.createPipeConsumer(
+        newProducer.id,
+        node
+      );
+
+      MessageService.sendNewProducer(node, {
+        userId: user,
+        roomId,
+        id: pipeConsumer.id,
+        kind: pipeConsumer.kind,
+        rtpParameters: pipeConsumer.rtpParameters,
+        rtpCapabilities: rtpCapabilities,
+        appData: pipeConsumer.appData,
+      });
+    });
     /*
-    const pipeConsumers = await SFUService.createPipeConsumers(newProducer.id);
 
     for (const [node, pipeConsumer] of Object.entries(pipeConsumers)) {
       MessageService.sendNewProducer(node, {
