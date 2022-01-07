@@ -98,7 +98,25 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       recvTransport
     );
 
+    const audioTracks = speakers
+      .map(
+        (p) =>
+          consumers.find((c) => c.appData.user === p.id && c.kind === "audio")
+            ?.track
+      )
+      .filter((t) => !!t);
+
+    const videoTracks = speakers
+      .map(
+        (p) =>
+          consumers.find((c) => c.appData.user === p.id && c.kind === "video")
+            ?.track
+      )
+      .filter((t) => !!t);
+
     set({
+      audioTracks,
+      videoTracks,
       stream,
       recvTransport,
       totalParticipantCount: count,
