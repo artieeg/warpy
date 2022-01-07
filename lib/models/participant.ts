@@ -13,18 +13,3 @@ export interface IBaseParticipant extends IEntity {
 }
 
 export interface IParticipant extends IBaseUser, IBaseParticipant {}
-
-export interface IParticipantWithMedia extends IParticipant {
-  media?: {
-    audio?: {
-      consumer: Consumer;
-      track: any;
-      active: boolean;
-    };
-    video?: {
-      consumer: Consumer;
-      track: any;
-      active: boolean;
-    };
-  };
-}

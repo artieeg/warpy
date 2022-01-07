@@ -1,6 +1,5 @@
-import {IParticipantWithMedia} from '@app/types';
-import {IParticipant} from '@warpy/lib';
-import {StoreSlice} from '../types';
+import { IParticipant } from "@warpy/lib";
+import { StoreSlice } from "../types";
 
 export interface IParticipantSlice {
   /** Stores latest fetched viewers page*/
@@ -15,10 +14,10 @@ export interface IParticipantSlice {
   isFetchingViewers: boolean;
 
   /** Stream viewers */
-  viewers: Record<string, IParticipantWithMedia>;
+  viewers: Record<string, IParticipant>;
 
   /** Users sending audio/video streams */
-  streamers: Record<string, IParticipantWithMedia>;
+  streamers: Record<string, IParticipant>;
 
   viewersWithRaisedHands: Record<string, IParticipant>;
 }
