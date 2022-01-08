@@ -92,6 +92,7 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
 
         MessageService.sendRecordRequest({
           stream: roomId,
+          user,
           remoteRtpPort: peer.plainTransport?.appData.remoteRtpPort,
           //remoteRtcpPort,
           localRtcpPort: peer.plainTransport?.rtcpTuple

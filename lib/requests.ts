@@ -178,6 +178,7 @@ export interface IRecordRequest {
   rtpCapabilities: any;
   rtpParameters: any;
   stream: string;
+  user: string;
 }
 
 export interface IClap {
