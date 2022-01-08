@@ -1,4 +1,4 @@
-import { SFUService } from "@media/services";
+import { MessageService, SFUService } from "@media/services";
 import {
   MessageHandler,
   IRecvTracksRequest,
@@ -34,7 +34,11 @@ export const handleRecvTracksRequest: MessageHandler<
     return;
   }
 
-  const consumerParams = [];
+  peer.rtpCapabilities = rtpCapabilities;
+
+  const consumerParams: any[] = [];
+
+  await MessageService.requestMediaTracks(stream);
 
   for (const peerId of Object.keys(peers)) {
     const peer = peers[peerId];

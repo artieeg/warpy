@@ -1,4 +1,3 @@
-import {Stream} from '@app/models';
 import React, {useCallback} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Avatar} from './Avatar';
@@ -6,16 +5,23 @@ import {ViewersCountPreview} from './ViewersCountPreview';
 import {StreamPreviewTitle} from './StreamPreviewTitle';
 import {useNavigation} from '@react-navigation/native';
 import Video from 'react-native-video';
+import {colors} from '../../colors';
+import tinycolor from 'tinycolor2';
+import {ICandidate} from '@warpy/lib';
 
 interface IStreamPreviewProps {
-  stream: Stream;
+  stream: ICandidate;
   style: any;
 }
 
-export const StreamPreview = React.memo((props: IStreamPreviewProps) => {
+export const StreamPreview = (props: IStreamPreviewProps) => {
   const {style, stream} = props;
   const {preview} = stream;
   const navigation = useNavigation();
+
+  const color = tinycolor(colors.green)
+    .spin(Math.random() * 360)
+    .toHexString();
 
   const onPress = useCallback(() => {
     navigation.navigate('Stream', {stream});
@@ -23,7 +29,7 @@ export const StreamPreview = React.memo((props: IStreamPreviewProps) => {
 
   return (
     <TouchableOpacity onPress={onPress}>
-      <View style={[styles.wrapper, style]}>
+      <View style={[styles.wrapper, style, {backgroundColor: color}]}>
         {preview && (
           <Video
             repeat
@@ -61,19 +67,17 @@ export const StreamPreview = React.memo((props: IStreamPreviewProps) => {
       </View>
     </TouchableOpacity>
   );
-});
+};
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: '#ACC3FD',
     flex: 1,
     overflow: 'hidden',
     margin: 10,
-    borderRadius: 20,
+    borderRadius: 6,
   },
   video: {
     flex: 1,
-    backgroundColor: '#5C73FD',
   },
   participants: {
     flexDirection: 'row',

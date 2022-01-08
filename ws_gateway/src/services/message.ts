@@ -6,27 +6,6 @@ if (!NATS) {
   throw new Error("No nats addr specified");
 }
 
-export const BackendEvents = {
-  "stream-stop": "stream.stop",
-  "user-disconnected": "user.disconnected",
-  "stream-new": "stream.create",
-  "whoami-request": "user.whoami-request",
-  "feed-request": "feeds.get",
-  "request-viewers": "viewers.get",
-  "join-stream": "stream.join",
-  "raise-hand": "user.raise-hand",
-  "new-user": "user.create",
-  "new-track": "media.track.send",
-  "delete-user": "user.delete",
-  "user-follow": "user.follow",
-  "user-unfollow": "user.unfollow",
-  reaction: "stream.reaction",
-  "new-chat-message": "stream.new-chat-message",
-  "kick-user": "stream.kick-user",
-  "report-user": "user.report",
-  "block-user": "user.block",
-};
-
 export const sendBackendMessage = (subject: string, data: any) => {
   nc.publish(subject, jc.encode(data));
 };

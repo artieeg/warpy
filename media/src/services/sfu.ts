@@ -165,16 +165,17 @@ export const createPipeTransport = async () => {
   return transport;
 };
 
-export const createPipeConsumers = async (producerId: string) => {
-  const pipeConsumers: PipeConsumers = {};
+export const createPipeConsumer = async (producerId: string, node: string) => {
+  const pipe = egressPipes[node];
 
-  for (const [node, pipe] of Object.entries(egressPipes)) {
-    pipeConsumers[node] = await pipe.consume({
-      producerId,
-    });
-  }
+  const pipeConsumer = await pipe.consume({
+    producerId,
+    appData: {
+      node,
+    },
+  });
 
-  return pipeConsumers;
+  return pipeConsumer;
 };
 
 /*

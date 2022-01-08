@@ -25,6 +25,7 @@ export const StreamPreviewTitle = (props: IPreviewTitleProps) => {
       ]}
       duration={props.children.length * 200}
       loop
+      useNativeDriver
       bounce
       repeatSpacer={50}
       marqueeDelay={1000}>

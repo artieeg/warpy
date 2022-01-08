@@ -8,6 +8,7 @@ export interface IRoom {
   router: Router;
   peers: Peers;
   audioLevelObserver: AudioLevelObserver;
+  forwardingToNodeIds: string[];
 }
 
 export type Rooms = Record<string, IRoom>;

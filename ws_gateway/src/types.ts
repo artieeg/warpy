@@ -20,6 +20,8 @@ export type Context = {
   isBot?: boolean;
   batchedChatMessages: IChatMessage[];
   messageSendInterval?: ReturnType<typeof setInterval>;
+  sendNodeId?: boolean;
+  recvNodeId?: boolean;
 };
 
 export type HandlerConfig = {

@@ -1,4 +1,4 @@
-import { IParticipant, IParticipantWithMedia } from "@warpy/lib";
+import { IParticipant } from "@warpy/lib";
 import { StoreSlice } from "../types";
 
 export function arrayToMap<T>(array: T[]) {
@@ -98,37 +98,41 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       recvTransport
     );
 
+    const audioTracks = speakers
+      .map((p) => {
+        const track = consumers.find(
+          (c) => c.appData.user === p.id && c.kind === "audio"
+        )?.track;
+
+        if (!track) {
+          return undefined;
+        } else {
+          return new MediaStream([track]);
+        }
+      })
+      .filter((t) => !!t);
+
+    const videoTracks = speakers
+      .map((p) => {
+        const track = consumers.find(
+          (c) => c.appData.user === p.id && c.kind === "video"
+        )?.track;
+
+        if (!track) {
+          return undefined;
+        } else {
+          return new MediaStream([track]);
+        }
+      })
+      .filter((t) => !!t);
+
     set({
+      audioTracks,
+      videoTracks,
       stream,
       recvTransport,
       totalParticipantCount: count,
-      streamers: arrayToMap<IParticipantWithMedia>(
-        speakers.map((p) => {
-          const audioConsumer = consumers.find(
-            (c) => c.appData.user === p.id && c.kind === "audio"
-          );
-
-          const videoConsumer = consumers.find(
-            (c) => c.appData.user === p.id && c.kind === "video"
-          );
-
-          return {
-            ...p,
-            media: {
-              audio: audioConsumer && {
-                consumer: audioConsumer,
-                track: new MediaStream([audioConsumer.track]),
-                active: p.audioEnabled || false,
-              },
-              video: videoConsumer && {
-                consumer: videoConsumer,
-                track: new MediaStream([videoConsumer.track]),
-                active: p.videoEnabled || false,
-              },
-            },
-          };
-        })
-      ),
+      streamers: arrayToMap<IParticipant>(speakers.map((p) => p)),
       viewersWithRaisedHands: arrayToMap<IParticipant>(raisedHands),
       role: "viewer",
     });

@@ -1,4 +1,4 @@
-import {useMemo} from 'react';
+import {useEffect, useMemo} from 'react';
 import {useRemoteStreams} from '.';
 import {useStore} from '@app/store';
 import shallow from 'zustand/shallow';
@@ -19,6 +19,10 @@ export const useVideoStreams = () => {
       return videoStreams;
     }
   }, [localVideoStream, videoStreams, videoEnabled]);
+
+  useEffect(() => {
+    console.log({videoStreams: streams});
+  }, [streams]);
 
   return streams;
 };

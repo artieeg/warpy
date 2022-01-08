@@ -107,12 +107,27 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
       }
     }
 
-    const pipeConsumers = await SFUService.createPipeConsumers(newProducer.id);
+    peer.rtpCapabilities = rtpCapabilities;
 
-    console.log("created pipe consumers");
+    room.forwardingToNodeIds.forEach(async (node) => {
+      const pipeConsumer = await SFUService.createPipeConsumer(
+        newProducer.id,
+        node
+      );
+
+      MessageService.sendNewProducer(node, {
+        userId: user,
+        roomId,
+        id: pipeConsumer.id,
+        kind: pipeConsumer.kind,
+        rtpParameters: pipeConsumer.rtpParameters,
+        rtpCapabilities: rtpCapabilities,
+        appData: pipeConsumer.appData,
+      });
+    });
+    /*
 
     for (const [node, pipeConsumer] of Object.entries(pipeConsumers)) {
-      console.log("sending new producer of", pipeConsumer.kind, "to", node);
       MessageService.sendNewProducer(node, {
         userId: user,
         roomId,
@@ -123,9 +138,9 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
         appData: pipeConsumer.appData,
       });
     }
+    */
   } catch (e) {
     console.error("error:", e);
-    console.error("error:", e.message);
     return;
   }
 

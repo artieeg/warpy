@@ -16,6 +16,8 @@ export interface IMediaSlice {
   };
   audioEnabled: boolean;
   videoEnabled: boolean;
+  audioTracks: any[];
+  videoTracks: any[];
 
   sendTransport: Transport | null;
   recvTransport: Transport | null;
@@ -37,6 +39,8 @@ export interface IMediaSlice {
 }
 
 export const createMediaSlice: StoreSlice<IMediaSlice> = (): IMediaSlice => ({
+  audioTracks: [],
+  videoTracks: [],
   sendTransport: null,
   mediaPermissionsToken: null,
   audioEnabled: false,
