@@ -63,9 +63,6 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
         (c) => c.mimeType.toLowerCase() === "video/vp8"
       );
 
-      console.log("rtp codec", codec?.mimeType);
-      console.log("client rtp params", rtpParameters);
-
       if (!codec) {
         throw new Error("Can't find codec for video");
       }
@@ -89,6 +86,8 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
 
       if (rtpConsumer) {
         peer.consumers.push(rtpConsumer);
+
+        console.log("requesting recording for", user, "in", roomId);
 
         MessageService.sendRecordRequest({
           stream: roomId,

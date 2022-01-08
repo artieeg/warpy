@@ -8,8 +8,6 @@ import { rooms } from "../rooms";
 export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
   const { userId, roomId, rtpCapabilities, kind } = data;
 
-  console.log("new producer data", data);
-
   const pipeProducer = await SFUService.pipeToIngress.produce({
     id: data.id,
     kind: data.kind,
@@ -88,8 +86,6 @@ export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
         peers[peerId],
         peerId
       );
-
-      console.log("sending new producer to", peerId);
 
       MessageService.sendMessageToUser(peerId, {
         event: "@media/new-track",
