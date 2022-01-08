@@ -53,7 +53,7 @@ const filters = [
   "[0:v]setpts=N/55/TB", //one stream -- just loop and speed up
   "[0:v]scale=-1:640[v0];[v0][1:v]hstack=inputs=2[v];[v]setpts=N/55/TB", //two streams -- stack
   "[0:v]scale=-1:640[v0];[v0][1:v]hstack=inputs=3[v];[v]setpts=N/55/TB", //three streams -- stack
-  "", //TODO
+  "[0:v]scale=640:640[v0];[v0][1:v]xstack=inputs=4:layout=0_0|w0_0|0_h0|w0_h0[v];[v]setpts=N/55/TB", //TODO
 ];
 
 const produceStreamPreview = async (id: string, sources: string[]) => {
