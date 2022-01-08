@@ -51,16 +51,13 @@ export const handleNewRoom: MessageHandler<
     return;
   }
 
-  const [sendTransport, plainTransport] = await Promise.all([
-    SFUService.createTransport("send", router, host),
-    SFUService.createPlainTransport(router),
-  ]);
+  const sendTransport = await SFUService.createTransport("send", router, host);
 
   room.peers[host] = createNewPeer({
     sendTransport,
-    plainTransport,
   });
 
+  /*
   const remoteRtpPort = SFUService.getPortForRemoteRTP();
   await plainTransport.connect({
     ip: config.mediasoup.plainRtpTransport.listenIp.ip,
@@ -68,6 +65,7 @@ export const handleNewRoom: MessageHandler<
   });
 
   plainTransport.appData.remoteRtpPort = remoteRtpPort;
+  */
 
   respond!({
     routerRtpCapabilities: rooms[roomId].router.rtpCapabilities,

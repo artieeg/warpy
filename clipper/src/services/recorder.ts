@@ -3,36 +3,51 @@ import EventEmitter from "events";
 import { IRecordRequest } from "@warpy/lib";
 import { convertStringToStream, createSdpText } from "./utils";
 
-export interface IClipRecorder {
+export type ClipRecorder = {
   filename: string;
   directory: string;
   stop: () => void;
   onRecordingStarted: (cb: any) => void;
-}
+};
 
-export interface IRecorderParams {
+type RecorderParams = {
   recordParams: IRecordRequest;
   clip: {
     duration: number;
     interval: number;
   };
-}
+};
 
 type NewClipInfo = {
+  stream: string;
+  user: string;
   directory: string;
   filename: string;
 };
 
 interface ClipRecorderManager {
-  onClipReady: (cb: (params: NewClipInfo) => any) => any;
   stop: () => void;
 }
 
-export const createClipsManager = (
-  params: IRecorderParams
+type StreamID = string;
+
+type ClipLocalStore = Record<
+  StreamID,
+  {
+    [user: string]: {
+      directory: string;
+      filename: string;
+    };
+  }
+>;
+
+export const clips: ClipLocalStore = {};
+
+export const createMediaRecorder = (
+  params: RecorderParams
 ): ClipRecorderManager => {
   const { clip } = params;
-  const observer = new EventEmitter();
+  const { stream, user } = params.recordParams;
 
   const { duration, interval } = clip;
 
@@ -43,13 +58,14 @@ export const createClipsManager = (
     const recorder = startRecordingClip(params);
 
     clipDurationTimeout = recorder.onRecordingStarted(() => {
+      console.log("recording started for user", user);
       setTimeout(() => {
         recorder.stop();
 
-        observer.emit("clip-is-ready", {
+        clips[stream][user] = {
           directory: recorder.directory,
           filename: recorder.filename,
-        });
+        };
 
         intervalBetweenClips = setTimeout(() => recordNewClip(), interval);
       }, duration);
@@ -59,8 +75,6 @@ export const createClipsManager = (
   recordNewClip();
 
   return {
-    onClipReady: (cb: (params: NewClipInfo) => any) =>
-      observer.on("clip-is-ready", cb),
     stop: () => {
       clearTimeout(clipDurationTimeout);
       clearTimeout(intervalBetweenClips);
@@ -68,7 +82,7 @@ export const createClipsManager = (
   };
 };
 
-export const startRecordingClip = (params: IRecorderParams): IClipRecorder => {
+export const startRecordingClip = (params: RecorderParams): ClipRecorder => {
   const { recordParams } = params;
 
   const { rtpParameters, remoteRtpPort } = recordParams;

@@ -1,61 +1,56 @@
-import { EventEmitter } from "events";
 import { spawn } from "child_process";
 
-type Looper = {
-  onLoopCreated: (
-    cb: (params: { directory: string; filename: string }) => any
-  ) => any;
+type LoopedVideo = {
+  directory: string;
+  filename: string;
 };
 
 export const createLoopedVideo = (
   directory: string,
   filename: string
-): Looper => {
-  const loopFileName = `preview_${filename}`;
-  const loopFilePath = directory + loopFileName;
+): Promise<LoopedVideo> => {
+  return new Promise((resolve, reject) => {
+    const loopFileName = `preview_${filename}`;
+    const loopFilePath = directory + loopFileName;
 
-  const process = spawn("ffmpeg", [
-    "-i",
-    directory + filename,
-    "-filter_complex",
-    "[0]reverse[r];[0][r]concat=n=2:v=1:a=0,setpts=N/55/TB",
-    loopFilePath,
-  ]);
+    const process = spawn("ffmpeg", [
+      "-i",
+      directory + filename,
+      "-filter_complex",
+      "[0]reverse[r];[0][r]concat=n=2:v=1:a=0,setpts=N/55/TB",
+      loopFilePath,
+    ]);
 
-  if (process.stderr) {
-    process.stderr.setEncoding("utf-8");
+    if (process.stderr) {
+      process.stderr.setEncoding("utf-8");
 
-    process.stderr.on("data", (data) => {
-      //console.log("looper [data:%o]", data);
+      process.stderr.on("data", () => {
+        //console.log("looper [data:%o]", data);
+      });
+    }
+
+    if (process.stdout) {
+      process.stdout.setEncoding("utf-8");
+
+      process.stdout.on("data", () => {
+        //console.log("looper [data:%o]", data);
+      });
+    }
+
+    process.on("message", () => {
+      //console.log("looper message:", message);
     });
-  }
 
-  if (process.stdout) {
-    process.stdout.setEncoding("utf-8");
-
-    process.stdout.on("data", (data) => {
-      //console.log("looper [data:%o]", data);
+    process.on("error", (error) => {
+      console.error("looper error:", error);
+      reject();
     });
-  }
 
-  process.on("message", (message) => {
-    //console.log("looper message:", message);
-  });
-
-  process.on("error", (error) => {
-    console.error("looper error:", error);
-  });
-
-  const observer = new EventEmitter();
-
-  process.on("close", () => {
-    observer.emit("loop-created", {
-      directory,
-      filename: loopFileName,
+    process.on("close", () => {
+      resolve({
+        directory,
+        filename,
+      });
     });
   });
-
-  return {
-    onLoopCreated: (cb) => observer.on("loop-created", cb),
-  };
 };

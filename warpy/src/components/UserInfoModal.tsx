@@ -31,6 +31,8 @@ export const useParticipantModalController = () => {
     }, 400);
 
     navigation.navigate('NewStream', {startRoomTogetherTimeout});
+
+    useStore.getState().dispatchModalClose();
   }, [navigation, userId]);
 
   const onOpenProfile = useCallback(() => {
