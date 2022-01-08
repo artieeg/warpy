@@ -6,6 +6,7 @@ dotenv.config();
 import { onRecordRequest } from "@clipper/handlers";
 import { initMessageService, onMessage } from "./src/services";
 import { initPreviewsStorage } from "@clipper/services/preview_storage";
+import { removeFile } from "@clipper/services/cleaner";
 
 const main = async () => {
   await initPreviewsStorage();

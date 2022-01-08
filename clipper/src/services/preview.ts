@@ -36,7 +36,7 @@ export const createPreviewsProducer = (
         filename: loopInfo.filename,
       });
 
-      removeFile(clipInfo.directory + clipInfo.filename);
+      //removeFile(clipInfo.directory + clipInfo.filename);
     });
   });
 
