@@ -1,3 +1,4 @@
+import { config } from "@media/config";
 import { SFUService, MessageService } from "@media/services";
 import { verifyMediaPermissions } from "@media/utils";
 import { MessageHandler, INewMediaTrack } from "@warpy/lib";
@@ -72,11 +73,27 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
         rtcpFeedback: [],
       };
 
-      const rtpConsumer = await peer.plainTransport?.consume({
+      if (!peer.plainTransport) {
+        peer.plainTransport = await SFUService.createPlainTransport(
+          room.router
+        );
+
+        const remoteRtpPort = SFUService.getPortForRemoteRTP();
+        await peer.plainTransport.connect({
+          ip: config.mediasoup.plainRtpTransport.listenIp.ip,
+          port: remoteRtpPort,
+        });
+
+        peer.plainTransport.appData.remoteRtpPort = remoteRtpPort;
+      }
+
+      const rtpConsumer = await peer.plainTransport.consume({
         producerId: newProducer.id,
         rtpCapabilities: recorderRtpCapabilities,
         paused: true,
       });
+
+      console.log({ rtpConsumer });
 
       /*
       if (!rtpConsumer) {
