@@ -8,12 +8,11 @@ import {Text} from './Text';
 import {UserGeneralInfo} from './UserGeneralInfo';
 
 export const InvitedToStreamModal = () => {
-  const [visible, modalInviter, stream, dispatchInviteAction] = useStore(
+  const [visible, modalInviter, stream] = useStore(
     state => [
       state.modalCurrent === 'stream-invite',
       state.modalInvite?.inviter,
       state.modalInvite?.stream,
-      state.dispatchInviteAction,
     ],
     shallow,
   );
@@ -43,12 +42,12 @@ export const InvitedToStreamModal = () => {
 
       <View style={styles.actions}>
         <SmallTextButton
-          onPress={() => dispatchInviteAction('accept')}
+          onPress={() => useStore.getState().dispatchInviteAction('accept')}
           style={styles.actionButtonSpace}
           title="accept"
         />
         <SmallTextButton
-          onPress={() => dispatchInviteAction('decline')}
+          onPress={() => useStore.getState().dispatchInviteAction('decline')}
           title="decline"
           color="important"
         />
