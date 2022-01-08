@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
 import { IRecordRequest } from "@warpy/lib";
 import { createLoopedVideo } from "./looper";
-import { createClipsManager } from "./recorder";
+import { clips, createMediaRecorder } from "./recorder";
 import { removeFile } from "./cleaner";
 
 type PreviewProducer = {
@@ -11,19 +11,20 @@ type PreviewProducer = {
   removePreview: (preview: any) => any;
 };
 
-export const createPreviewsProducer = (
-  params: IRecordRequest
-): PreviewProducer => {
-  const clipRecordManager = createClipsManager({
-    recordParams: params,
-    clip: {
-      duration: 3000,
-      interval: 30000,
-    },
-  });
-
+export const startProducingPreviews = (stream: string): PreviewProducer => {
   const observer = new EventEmitter();
 
+  setInterval(() => {
+    //TODO: ARRANGE VIDS
+
+    const streams = Object.values(clips[stream]);
+
+    streams.forEach(async ({ directory, filename }) => {
+      const loopedVideo = await createLoopedVideo(directory, filename);
+      console.log("looped vidoe", loopedVideo);
+    });
+  }, 10000);
+  /*
   clipRecordManager.onClipReady((clipInfo) => {
     const loopManager = createLoopedVideo(
       clipInfo.directory,
@@ -39,6 +40,7 @@ export const createPreviewsProducer = (
       //removeFile(clipInfo.directory + clipInfo.filename);
     });
   });
+  */
 
   return {
     onNewPreview: (cb) => observer.on("preview-ready", cb),
