@@ -21,6 +21,10 @@ export class InviteService {
     private botEntity: BotsEntity,
   ) {}
 
+  /**
+   * Sends invite updates to the user-inviter;
+   * Notifies when invited user has accepted or declined the invite
+   * */
   private sendInviteState(id: string, inviter: string, state: InviteStates) {
     this.messageService.sendMessage(inviter, {
       event: 'invite-state-update',
@@ -31,6 +35,9 @@ export class InviteService {
     });
   }
 
+  /**
+   * Declines the invite and notifies the inviter
+   * */
   async declineInvite(invite: string, user: string) {
     const { id, inviter_id } = await this.inviteEntity.declineInvite(
       invite,
@@ -40,6 +47,9 @@ export class InviteService {
     this.sendInviteState(id, inviter_id, 'declined');
   }
 
+  /**
+   * Accepts the invite and notifies the inviter
+   * */
   async acceptInvite(invite: string, user: string) {
     const { id, inviter_id } = await this.inviteEntity.acceptInvite(
       invite,
@@ -49,6 +59,10 @@ export class InviteService {
     this.sendInviteState(id, inviter_id, 'accepted');
   }
 
+  /**
+   * Handles inviting real user
+   * Creates invite record and sends a notification
+   * */
   private async inviteRealUser(
     inviter: string,
     invitee: string,
@@ -65,6 +79,10 @@ export class InviteService {
     return invite;
   }
 
+  /**
+   * Handles inviting bots
+   * Creates permission token to join the stream and sends it to a bot
+   * */
   private async inviteBotUser(inviter: string, bot: string, streamId: string) {
     const stream = await this.streamEntity.findById(streamId);
 
@@ -109,6 +127,11 @@ export class InviteService {
     }
   }
 
+  /**
+   * Listens to new streams
+   * When new stream is created, checks if new stream's owner has invited others
+   * Then it broadcasts stream's id to invited users
+   * */
   @OnEvent('stream.created')
   async notifyAboutStreamId({ stream: { owner, id } }: { stream: IStream }) {
     const invitedUserIds =
@@ -127,6 +150,9 @@ export class InviteService {
     }
   }
 
+  /**
+   * Creates invite suggestions from bots, followers, following
+   * */
   async getInviteSuggestions(user: string, _stream: string): Promise<IUser[]> {
     const [followed, following, bots] = await Promise.all([
       this.followEntity.getFollowed(user),
