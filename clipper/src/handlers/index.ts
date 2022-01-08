@@ -4,6 +4,7 @@ import { IRecordRequest, MessageHandler } from "@warpy/lib";
 
 export const onRecordRequest: MessageHandler<IRecordRequest> = async (data) => {
   const { stream } = data;
+  console.log("recording requested for user", data.user, "on stream", stream);
 
   if (!clips[stream]) {
     clips[stream] = {};

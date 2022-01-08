@@ -50,14 +50,14 @@ export const startProducingPreviews = (stream: string): PreviewProducer => {
 };
 
 const filters = [
-  "[0]reverse[r];[0][r]concat=n=2:v=1:a=0,setpts=N/55/TB", //one stream -- just loop and speed up
-  "[0:v][1:v]vstack=inputs=2[v]", //two streams -- stack
-  "[0:v][1:v][2:v]vstack=inputs=3[v]", //three streams -- stack
+  "[0:v]setpts=N/55/TB", //one stream -- just loop and speed up
+  "[0:v]scale=-1:640[v0];[v0][1:v]hstack=inputs=2[v];[v]setpts=N/55/TB", //two streams -- stack
+  "[0:v]scale=-1:640[v0];[v0][1:v]hstack=inputs=3[v];[v]setpts=N/55/TB", //three streams -- stack
   "", //TODO
 ];
 
 const produceStreamPreview = async (id: string, sources: string[]) => {
-  let args: string[] = [];
+  let args: string[] = ["-y"];
 
   sources.forEach((source) => {
     args.push("-i");
@@ -72,6 +72,10 @@ const produceStreamPreview = async (id: string, sources: string[]) => {
   args.push(output);
 
   const process = spawn("ffmpeg", args);
+
+  process.on("message", (data) => {
+    console.log("preview [data:%o]", data);
+  });
 
   return new Promise<string>((resolve) => {
     process.on("close", () => {

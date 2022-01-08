@@ -58,6 +58,7 @@ export const createMediaRecorder = (
     const recorder = startRecordingClip(params);
 
     clipDurationTimeout = recorder.onRecordingStarted(() => {
+      console.log("recording started for user", user);
       setTimeout(() => {
         recorder.stop();
 
