@@ -71,7 +71,7 @@ export class InviteEntity {
       where: {
         stream_id: null,
         inviter_id,
-        accepted: true,
+        //accepted: true,
       },
       select: {
         user_invitee_id: true,
