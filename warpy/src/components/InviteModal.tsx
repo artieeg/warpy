@@ -1,12 +1,43 @@
-import {useInviteModalController} from '@app/hooks/useInviteModalController';
 import React from 'react';
-import {FlatList, StyleSheet, View} from 'react-native';
+import {FlatList, StyleSheet, useWindowDimensions, View} from 'react-native';
 import {BaseSlideModal, IBaseModalProps} from './BaseSlideModal';
 import {IconButton} from './IconButton';
 import {TextButton} from '@warpy/components';
 import {UserInviteOption} from './UserInviteOption';
 import {UserSearchInput} from './UserSearchInput';
 import {ShareStreamLinkButton} from './ShareStreamLinkButton';
+import {useUserSearch, useInviteSuggestions} from '@app/hooks';
+import {useStoreShallow} from '@app/store';
+
+export const useInviteModalController = () => {
+  const {users: searchedUsers, isLoading, setSearch} = useUserSearch();
+  const inviteSuggestions = useInviteSuggestions();
+  const [
+    pendingInviteCount,
+    visible,
+    sendPendingInvites,
+    shouldDisplayInviteButton,
+  ] = useStoreShallow(state => [
+    state.pendingInviteUserIds.length,
+    state.modalCurrent === 'invite',
+    state.dispatchSendPendingInvites,
+    !!state.stream,
+  ]);
+
+  const modalHeight = useWindowDimensions().height * 0.9;
+
+  return {
+    modalHeight,
+    pendingInviteCount,
+    visible,
+    setSearchQuery: setSearch,
+    isLoading,
+    searchedUsers,
+    inviteSuggestions,
+    sendPendingInvites,
+    shouldDisplayInviteButton,
+  };
+};
 
 export const InviteModal = (props: IBaseModalProps) => {
   const {
