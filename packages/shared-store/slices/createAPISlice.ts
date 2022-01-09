@@ -13,6 +13,8 @@ export interface IAPISlice {
   createAPISubscriptions: (params: APISubscriptionParams) => void;
 }
 
+let reconnecting_interval: any;
+
 export const createAPISlice = (
   set: SetState<IStore>,
   get: GetState<IStore>
@@ -24,6 +26,22 @@ export const createAPISlice = (
 
       socket.onopen = () => {
         get().api.conn.socket = socket;
+
+        clearInterval(reconnecting_interval);
+
+        socket.onclose = () => {
+          clearInterval(reconnecting_interval);
+
+          reconnecting_interval = setInterval(() => {
+            console.log("reconnecting...");
+
+            get().connect(addr);
+          }, 1000);
+        };
+
+        socket.onerror = () => {
+          socket.close();
+        };
 
         resolve();
       };

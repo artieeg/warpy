@@ -22,15 +22,20 @@ export class WebSocketConn {
       this.onopen && this.onopen();
     };
 
+    /*
     this._socket.onclose = () => {
       console.log("closed");
       this.onclose && this.onclose();
     };
+    */
 
+    /*
     this._socket.onerror = (error: any) => {
       console.error("Socket Error:", error);
       this.onerror && this.onerror(error);
+      this._socket.close();
     };
+    */
 
     this._socket.onmessage = (message: any) => {
       const { event, rid, data } = JSON.parse(message.data);
