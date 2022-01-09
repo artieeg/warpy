@@ -32,6 +32,7 @@ interface IAPIClient {
   app_invite: IAppInviteAPI;
   close: () => void;
   onError: (handler: ErrorHandler) => void;
+  onClose: (handler: any) => void;
 }
 
 export const APIClient = (socket: WebSocketConn): IAPIClient => ({
@@ -50,6 +51,10 @@ export const APIClient = (socket: WebSocketConn): IAPIClient => ({
   notification: NotificationAPI(socket),
   gifs: GifsAPI(socket),
   app_invite: AppInviteAPI(socket),
+
+  onClose: (handler) => {
+    socket.onclose = handler;
+  },
 
   onError: (handler) => {
     socket.observer.on("@client/error", handler);
