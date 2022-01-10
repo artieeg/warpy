@@ -7,13 +7,14 @@ import {Text} from './Text';
 
 export interface IBaseModalProps extends ViewProps {
   title?: string;
+  subtitle?: string;
   visible?: boolean;
   disableHideHandler?: boolean;
   children?: React.ReactNode;
 }
 
 export const BaseSlideModal = (props: IBaseModalProps) => {
-  const {visible, disableHideHandler, children, title, style} = props;
+  const {visible, subtitle, disableHideHandler, children, title, style} = props;
 
   const translate = useRef(new Animated.Value(0));
 
@@ -53,6 +54,16 @@ export const BaseSlideModal = (props: IBaseModalProps) => {
           </Text>
         )}
 
+        {subtitle && (
+          <Text
+            weight="bold"
+            size="small"
+            color="boulder"
+            style={[styles.subtitle, styles.horizontalPadding]}>
+            {subtitle}
+          </Text>
+        )}
+
         {children}
       </Animated.View>
     </Modal>
@@ -82,6 +93,9 @@ const styles = StyleSheet.create({
   sectionHeader: {
     marginBottom: 10,
     marginTop: 20,
+  },
+  subtitle: {
+    marginTop: 3,
   },
   title: {},
   handler: {

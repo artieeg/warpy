@@ -4,7 +4,7 @@ import { StoreSlice } from "../types";
 
 type OpenModalParams = {
   selectedUser?: IBaseUser;
-  userToAward?: string;
+  userToAward?: IBaseUser;
   botConfirmId?: string;
   botConfirmData?: IBot;
   invite?: IInvite & { notification: string };

@@ -10,6 +10,7 @@ import {BotConfirmModal} from './BotConfirmModal';
 import {InvitedToStreamModal} from './InvitedToStreamModal';
 import {AwardPickerModal} from './AwardPickerModal';
 import {AwardRecipentPicker} from './AwardRecipentPicker';
+import {AwardVisualPickerModal} from './AwardVisualPickerModal';
 
 export const ModalProvider = () => {
   const modal = useStore.use.modalCurrent();
@@ -21,6 +22,7 @@ export const ModalProvider = () => {
       <InvitedToStreamModal />
       <AwardPickerModal />
       <AwardRecipentPicker />
+      <AwardVisualPickerModal />
 
       <ParticipantsModal
         onHide={() => useStore.getState().dispatchModalClose()}
