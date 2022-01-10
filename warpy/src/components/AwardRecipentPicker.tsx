@@ -36,7 +36,7 @@ export const AwardRecipentPicker = () => {
         renderItem={({item}) => (
           <View style={cellStyle}>
             <ParticipantView
-              onPress={() => dispatchModalOpen('award', {userToAward: item.id})}
+              onPress={() => dispatchModalOpen('award', {userToAward: item})}
               data={item}
             />
           </View>

@@ -7,24 +7,27 @@ import {Text} from './Text';
 
 export interface IBaseModalProps extends ViewProps {
   title?: string;
+  subtitle?: string;
   visible?: boolean;
   disableHideHandler?: boolean;
   children?: React.ReactNode;
 }
 
 export const BaseSlideModal = (props: IBaseModalProps) => {
-  const {visible, disableHideHandler, children, title, style} = props;
+  const {visible, subtitle, disableHideHandler, children, title, style} = props;
 
   const translate = useRef(new Animated.Value(0));
 
   return (
     <Modal
-      backdropColor="#000000"
+      backdropColor="#303030"
       backdropOpacity={0.6}
       removeClippedSubviews={false}
       hideModalContentWhileAnimating
-      onSwipeMove={(p, state) => {
-        translate.current.setValue(state.dx);
+      onSwipeMove={(_, state) => {
+        if (state.dx >= 0) {
+          translate.current.setValue(state.dx);
+        }
       }}
       useNativeDriverForBackdrop
       propagateSwipe={true}
@@ -53,6 +56,16 @@ export const BaseSlideModal = (props: IBaseModalProps) => {
           </Text>
         )}
 
+        {subtitle && (
+          <Text
+            weight="bold"
+            size="small"
+            color="boulder"
+            style={[styles.subtitle, styles.horizontalPadding]}>
+            {subtitle}
+          </Text>
+        )}
+
         {children}
       </Animated.View>
     </Modal>
@@ -77,11 +90,14 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
   },
   horizontalPadding: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 30,
   },
   sectionHeader: {
     marginBottom: 10,
     marginTop: 20,
+  },
+  subtitle: {
+    marginTop: 3,
   },
   title: {},
   handler: {
@@ -89,7 +105,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: 50,
     height: 5,
-    top: -12,
+    top: 8,
+    //top: -12,
     borderRadius: 12,
     backgroundColor: '#909090CC',
   },

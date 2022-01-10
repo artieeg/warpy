@@ -7,7 +7,7 @@ export interface IModalSlice {
   modalInvite: (IInvite & { notification: string }) | null;
   modalBotConfirmData: IBot | null;
   modalBotConfirmId: string | null;
-  modalUserToAward: string | null;
+  modalUserToAward: IBaseUser | null;
 }
 
 export const createModalSlice: StoreSlice<IModalSlice> = () => ({

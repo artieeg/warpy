@@ -87,6 +87,14 @@ export class NotADeveloper extends BaseError {
   }
 }
 
+export class InvalidVisual extends BaseError {
+  constructor() {
+    super('Visual should come from tenor.com');
+
+    this.name = 'InvalidVisual';
+  }
+}
+
 export class NotEnoughCoins extends BaseError {
   constructor() {
     super('Not enough coins');

@@ -12,11 +12,10 @@ interface AwardFeedItemProps {
 export const AwardFeedItem = ({award}: AwardFeedItemProps) => {
   return (
     <View style={styles.award}>
-      <FastImage source={{uri: award.award.media}} style={styles.media} />
+      <FastImage source={{uri: award.visual}} style={styles.media} />
       <View style={styles.info}>
         <Text>
-          <Text color="yellow">{award.award.title}</Text> award{'\n'}from{' '}
-          <Text color="yellow">@{award.sender.username}</Text>
+          award{'\n'}from <Text color="yellow">@{award.sender.username}</Text>
         </Text>
         {award.message.length > 0 && (
           <Text size="small" color="white" italic>

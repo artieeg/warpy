@@ -11,7 +11,7 @@ export interface IAwardsAPI {
   getAvailable: () => Promise<IGetAvailableAwardsResponse>;
   getReceived: (user: string) => Promise<IReceivedAwardsResponse>;
   send: (
-    award_id: string,
+    visual: string,
     recipent: string,
     message: string
   ) => Promise<ISendAwardResponse>;
@@ -22,7 +22,7 @@ export const AwardsAPI = (socket: WebSocketConn): IAwardsAPI => ({
   getAvailable: () => socket.request("get-available-awards", {}),
   getReceived: (user) =>
     socket.request("get-received-awards", { target: user }),
-  send: (award_id, recipent, message) =>
-    socket.request("send-award", { award_id, recipent, message }),
+  send: (visual, recipent, message) =>
+    socket.request("send-award", { visual, recipent, message }),
   onNewAward: (handler) => socket.on("new-award", handler),
 });

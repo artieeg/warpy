@@ -19,3 +19,4 @@ export * from './useModalNavigation';
 export * from './useUserData';
 export * from './useRouteParamUnsafe';
 export * from './useInviteSuggestions';
+export * from './useStyle';

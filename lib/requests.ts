@@ -311,7 +311,7 @@ export interface IGetCoinBalanceRequest {
 export interface ISendAwardRequest {
   user: string;
   message: string;
-  award_id: string;
+  visual: string;
   recipent: string;
 }
 

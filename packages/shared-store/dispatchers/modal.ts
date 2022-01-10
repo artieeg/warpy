@@ -1,10 +1,9 @@
-import { Modal } from "@app/types";
 import { IBaseUser, IBot, IInvite } from "@warpy/lib";
-import { StoreSlice } from "../types";
+import { StoreSlice, Modal } from "../types";
 
 type OpenModalParams = {
   selectedUser?: IBaseUser;
-  userToAward?: string;
+  userToAward?: IBaseUser;
   botConfirmId?: string;
   botConfirmData?: IBot;
   invite?: IInvite & { notification: string };

@@ -2,7 +2,6 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   IFetchReceivedAwardsRequest,
-  IGetAvailableAwardsResponse,
   IReceivedAwardsResponse,
   ISendAwardRequest,
   ISendAwardResponse,
@@ -22,23 +21,14 @@ export class AwardController {
     return { awards };
   }
 
-  @MessagePattern('awards.get-available')
-  async getAvailableAwards(): Promise<IGetAvailableAwardsResponse> {
-    const awards = await this.awardService.getAvailableAwards();
-
-    return { awards };
-  }
-
   @MessagePattern('awards.send-award')
   async sendAward({
     user,
     recipent,
-    award_id,
+    visual,
     message,
   }: ISendAwardRequest): Promise<ISendAwardResponse> {
-    console.log({ user, recipent, award_id });
-
-    await this.awardService.sendAward(user, recipent, award_id, message);
+    await this.awardService.sendAward(user, recipent, visual, message);
 
     return {
       status: 'ok',
