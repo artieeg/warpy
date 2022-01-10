@@ -24,7 +24,7 @@ export const BaseSlideModal = (props: IBaseModalProps) => {
       backdropOpacity={0.6}
       removeClippedSubviews={false}
       hideModalContentWhileAnimating
-      onSwipeMove={(p, state) => {
+      onSwipeMove={(_, state) => {
         if (state.dx >= 0) {
           translate.current.setValue(state.dx);
         }

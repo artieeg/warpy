@@ -1,12 +1,19 @@
 import {useStyle} from '@app/hooks';
-import {useStoreShallow} from '@app/store';
-import React, {useCallback} from 'react';
-import {FlatList, useWindowDimensions, StyleSheet, View} from 'react-native';
+import {useStore, useStoreShallow} from '@app/store';
+import React, {useCallback, useState} from 'react';
+import {
+  FlatList,
+  useWindowDimensions,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useQuery} from 'react-query';
 import {TextButton} from '@warpy/components';
 import {BaseSlideModal} from './BaseSlideModal';
 import {Input} from './Input';
+import {useDebounce} from 'use-debounce/lib';
 
 export const AwardVisualPickerModal = () => {
   const [visible, usernameToAward] = useStoreShallow(state => [
@@ -14,14 +21,25 @@ export const AwardVisualPickerModal = () => {
     state.modalUserToAward?.username,
   ]);
 
+  const [search, setSearch] = useState('');
+  const [debouncedSearch] = useDebounce(search, 300);
+
   const visuals = useQuery(
-    'award-visuals',
+    ['award-visuals', debouncedSearch],
     async () => {
+      if (debouncedSearch.length > 0) {
+        const {gifs} = await useStore
+          .getState()
+          .api.gifs.search(debouncedSearch);
+
+        return gifs;
+      }
+
       return [];
     },
     {
       initialData: SUGGESTED_VISUALS,
-      enabled: false,
+      enabled: true,
     },
   );
 
@@ -34,14 +52,19 @@ export const AwardVisualPickerModal = () => {
     backgroundColor: '#303030',
   });
 
+  const flatListStyle = useStyle({
+    height: imageWidth * 3 + 30 * 2,
+    width: '100%',
+  });
+
   const renderItem = useCallback(
-    ({item, index}: {index: number; item: string}) => {
+    ({item}: {index: number; item: string}) => {
       return (
-        <View style={styles.awardWrapper}>
+        <TouchableOpacity style={styles.awardWrapper}>
           <FastImage source={{uri: item}} style={awardVisualStyle} />
           <View style={styles.hack} />
           <View style={{width: 30}} />
-        </View>
+        </TouchableOpacity>
       );
     },
     [imageWidth],
@@ -52,8 +75,13 @@ export const AwardVisualPickerModal = () => {
       visible
       title="award visual"
       subtitle={`for ${usernameToAward}`}>
-      <Input placeholder="search gifs via tenor" style={styles.search} />
+      <Input
+        onChangeText={setSearch}
+        placeholder="search gifs via tenor"
+        style={styles.search}
+      />
       <FlatList
+        style={flatListStyle}
         contentContainerStyle={styles.awards}
         numColumns={3}
         renderItem={renderItem}
