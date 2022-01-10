@@ -87,7 +87,7 @@ export const AwardVisualPickerModal = () => {
 
   return (
     <BaseSlideModal
-      visible
+      visible={visible}
       title="award visual"
       subtitle={`for ${usernameToAward}`}>
       <Input
