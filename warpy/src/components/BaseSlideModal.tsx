@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
   },
   horizontalPadding: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 30,
   },
   sectionHeader: {
     marginBottom: 10,

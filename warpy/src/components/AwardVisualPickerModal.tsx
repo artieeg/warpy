@@ -4,7 +4,9 @@ import React, {useCallback} from 'react';
 import {FlatList, useWindowDimensions, StyleSheet, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useQuery} from 'react-query';
+import {TextButton} from '@warpy/components';
 import {BaseSlideModal} from './BaseSlideModal';
+import {Input} from './Input';
 
 export const AwardVisualPickerModal = () => {
   const [visible, usernameToAward] = useStoreShallow(state => [
@@ -23,7 +25,7 @@ export const AwardVisualPickerModal = () => {
     },
   );
 
-  const imageWidth = (useWindowDimensions().width - 20 * 4) / 3;
+  const imageWidth = (useWindowDimensions().width - 30 * 4) / 3;
   const awardVisualStyle = useStyle({
     width: imageWidth,
     height: imageWidth,
@@ -38,7 +40,7 @@ export const AwardVisualPickerModal = () => {
         <View style={styles.awardWrapper}>
           <FastImage source={{uri: item}} style={awardVisualStyle} />
           <View style={styles.hack} />
-          <View style={{width: 20}} />
+          <View style={{width: 30}} />
         </View>
       );
     },
@@ -50,12 +52,16 @@ export const AwardVisualPickerModal = () => {
       visible
       title="award visual"
       subtitle={`for ${usernameToAward}`}>
+      <Input placeholder="search gifs via tenor" style={styles.search} />
       <FlatList
         contentContainerStyle={styles.awards}
         numColumns={3}
         renderItem={renderItem}
         data={visuals.data ?? []}
       />
+      <View style={styles.button}>
+        <TextButton title="next" />
+      </View>
     </BaseSlideModal>
   );
 };
@@ -79,7 +85,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   awards: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 30,
+    paddingTop: 20,
   },
   hack: {
     zIndex: 10,
@@ -89,5 +96,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     height: '100%',
+  },
+  search: {
+    marginHorizontal: 30,
+    marginTop: 20,
+  },
+  button: {
+    paddingHorizontal: 30,
+    paddingBottom: 20,
   },
 });
