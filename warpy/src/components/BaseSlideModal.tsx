@@ -20,7 +20,7 @@ export const BaseSlideModal = (props: IBaseModalProps) => {
 
   return (
     <Modal
-      backdropColor="#000000"
+      backdropColor="#303030"
       backdropOpacity={0.6}
       removeClippedSubviews={false}
       hideModalContentWhileAnimating
@@ -103,7 +103,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: 50,
     height: 5,
-    top: -12,
+    top: 8,
+    //top: -12,
     borderRadius: 12,
     backgroundColor: '#909090CC',
   },
