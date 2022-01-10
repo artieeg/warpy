@@ -3,20 +3,20 @@ import React, {useCallback} from 'react';
 import {IconButton} from './IconButton';
 
 export const AwardButton = () => {
-  const [dispatchModalOpen, streamHasOneSpeaker, id] = useStoreShallow(
+  const [dispatchModalOpen, streamHasOneSpeaker, streamer] = useStoreShallow(
     state => [
       state.dispatchModalOpen,
       Object.keys(state.streamers).filter(
         streamer => streamer !== state.user!.id,
       ).length === 1,
-      Object.keys(state.streamers).find(id => id !== state.user!.id),
+      Object.values(state.streamers)[0],
     ],
   );
 
   const onPress = useCallback(() => {
     if (streamHasOneSpeaker) {
-      dispatchModalOpen('award', {
-        userToAward: id,
+      dispatchModalOpen('award-visual', {
+        userToAward: streamer,
       });
     } else {
       dispatchModalOpen('award-recipent');

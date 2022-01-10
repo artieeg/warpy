@@ -2,7 +2,6 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   IFetchReceivedAwardsRequest,
-  IGetAvailableAwardsResponse,
   IReceivedAwardsResponse,
   ISendAwardRequest,
   ISendAwardResponse,

@@ -15,12 +15,13 @@ import {BaseSlideModal} from './BaseSlideModal';
 import {Input} from './Input';
 import {useDebounce} from 'use-debounce/lib';
 import {colors} from '../../colors';
+import {IBaseUser} from '@warpy/lib';
 
 export const AwardVisualPickerModal = () => {
-  const [visible, picked, usernameToAward] = useStoreShallow(state => [
+  const [visible, picked, user] = useStoreShallow(state => [
     state.modalCurrent === 'award-visual',
     state.pickedAwardVisual,
-    state.modalUserToAward?.username,
+    state.modalUserToAward,
   ]);
 
   const [search, setSearch] = useState('');
@@ -86,14 +87,16 @@ export const AwardVisualPickerModal = () => {
   );
 
   const onNext = useCallback(() => {
-    useStore.getState().dispatchModalOpen('award-message');
-  }, []);
+    useStore.getState().dispatchModalOpen('award-message', {
+      userToAward: user as IBaseUser,
+    });
+  }, [user]);
 
   return (
     <BaseSlideModal
       visible={visible}
       title="award visual"
-      subtitle={`for ${usernameToAward}`}>
+      subtitle={`for ${user?.username}`}>
       <Input
         onChangeText={setSearch}
         placeholder="search gifs via tenor"

@@ -8,6 +8,8 @@ export interface IAwardsSlice {
   /** URL for a picked award visual */
   pickedAwardVisual: string | null;
 
+  awardMessage: string;
+
   awardModels: IAwardModel[];
   awardDisplayQueue: IAward[];
   awardDisplayCurrent: number;
@@ -15,6 +17,7 @@ export interface IAwardsSlice {
 
 export const createAwardsSlice: StoreSlice<IAwardsSlice> = () => ({
   pickedAwardVisual: null,
+  awardMessage: "",
   awards: {},
   awardModels: [],
   receivedAwards: [],

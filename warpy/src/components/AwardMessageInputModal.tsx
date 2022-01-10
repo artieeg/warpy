@@ -1,5 +1,5 @@
-import {useStoreShallow} from '@app/store';
-import React from 'react';
+import {useStore, useStoreShallow} from '@app/store';
+import React, {useCallback} from 'react';
 import {View, StyleSheet, TextInput} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {TextButton} from '@warpy/components';
@@ -8,16 +8,24 @@ import {BaseSlideModal} from './BaseSlideModal';
 import {textStyles} from './Text';
 
 export const AwardMessageInputModal = () => {
-  const [visible, username, visual] = useStoreShallow(state => [
+  const [visible, recipent, visual, message] = useStoreShallow(state => [
     state.modalCurrent === 'award-message',
-    state.modalSelectedUser?.username,
+    state.modalUserToAward,
     state.pickedAwardVisual,
+    state.awardMessage,
   ]);
+
+  const onSendAward = useCallback(() => {
+    console.log({visual, recipent, message});
+    if (visual && recipent && message) {
+      useStore.getState().dispatchSendAward(visual, recipent?.id, message);
+    }
+  }, [visual, recipent, message]);
 
   return (
     <BaseSlideModal
       title="award message"
-      subtitle={`for ${username}`}
+      subtitle={`for ${recipent?.username}`}
       visible={visible}>
       <View style={styles.container}>
         <View style={styles.info}>
@@ -26,12 +34,19 @@ export const AwardMessageInputModal = () => {
           )}
           <TextInput
             multiline
+            onChangeText={awardMessage =>
+              useStore.getState().set({awardMessage})
+            }
             placeholderTextColor={colors.boulder}
             style={styles.input}
             placeholder="type award message"
           />
         </View>
-        <TextButton style={styles.button} title="send the award" />
+        <TextButton
+          onPress={onSendAward}
+          style={styles.button}
+          title="send the award"
+        />
       </View>
     </BaseSlideModal>
   );
@@ -54,6 +69,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     textAlignVertical: 'top',
     flex: 1,
+    color: colors.white,
   },
   preview: {
     width: 80,

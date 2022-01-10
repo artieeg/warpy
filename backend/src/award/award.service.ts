@@ -22,6 +22,8 @@ export class AwardService {
     visual: string,
     message: string,
   ) {
+    console.log('sending', { sender, recipent, visual, message });
+
     if (!(await this.coinBalanceEntity.check(sender, 300))) {
       throw new NotEnoughCoins();
     }
