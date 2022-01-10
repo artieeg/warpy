@@ -15,7 +15,10 @@ export const AwardMessageInputModal = () => {
   ]);
 
   return (
-    <BaseSlideModal title="award message" subtitle={`for ${username}`} visible>
+    <BaseSlideModal
+      title="award message"
+      subtitle={`for ${username}`}
+      visible={visible}>
       <View style={styles.container}>
         <View style={styles.info}>
           {visual && (

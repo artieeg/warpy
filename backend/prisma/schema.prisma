@@ -221,15 +221,6 @@ model DeveloperAccount {
   bots Bot[] @relation(name: "bot_creator")
 }
 
-model AwardItem {
-  id      String @id @default(cuid())
-  title String
-  media String
-  price Int
-
-  awarded Award[] @relation(name: "awarded")
-}
-
 model CoinBalance {
   id      String @id @default(cuid())
 
@@ -250,8 +241,7 @@ model Award {
   recipent_id String 
   recipent    User   @relation(name: "award_recipent", fields: [recipent_id], references: [id], onDelete: Cascade)
 
-  award_id String 
-  award    AwardItem   @relation(name: "awarded", fields: [award_id], references: [id], onDelete: Cascade)
+  visual String
 
   created_at  DateTime      @default(now())
 }
