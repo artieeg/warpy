@@ -25,7 +25,9 @@ export const BaseSlideModal = (props: IBaseModalProps) => {
       removeClippedSubviews={false}
       hideModalContentWhileAnimating
       onSwipeMove={(p, state) => {
-        translate.current.setValue(state.dx);
+        if (state.dx >= 0) {
+          translate.current.setValue(state.dx);
+        }
       }}
       useNativeDriverForBackdrop
       propagateSwipe={true}
