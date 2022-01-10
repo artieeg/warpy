@@ -85,6 +85,10 @@ export const AwardVisualPickerModal = () => {
     [imageWidth, picked],
   );
 
+  const onNext = useCallback(() => {
+    useStore.getState().dispatchModalOpen('award-message');
+  }, []);
+
   return (
     <BaseSlideModal
       visible={visible}
@@ -103,7 +107,7 @@ export const AwardVisualPickerModal = () => {
         data={visuals.data ?? []}
       />
       <View style={styles.button}>
-        <TextButton disabled={!picked} title="next" />
+        <TextButton onPress={onNext} disabled={!picked} title="next" />
       </View>
     </BaseSlideModal>
   );

@@ -2,7 +2,7 @@ import {useStoreShallow} from '@app/store';
 import React from 'react';
 import {View, StyleSheet, TextInput} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {TextButton} from '../../../packages/shared-components';
+import {TextButton} from '@warpy/components';
 import {colors} from '../../colors';
 import {BaseSlideModal} from './BaseSlideModal';
 import {textStyles} from './Text';
