@@ -1,7 +1,6 @@
 import {useEffect, useState} from 'react';
 import {useStore} from '@app/store';
 import {useDebounce} from 'use-debounce/lib';
-import {Keyboard} from 'react-native';
 
 export const useGifs = (search: string) => {
   const [debouncedSearch] = useDebounce(search, 300);

@@ -14,10 +14,12 @@ import {TextButton} from '@warpy/components';
 import {BaseSlideModal} from './BaseSlideModal';
 import {Input} from './Input';
 import {useDebounce} from 'use-debounce/lib';
+import {colors} from '../../colors';
 
 export const AwardVisualPickerModal = () => {
-  const [visible, usernameToAward] = useStoreShallow(state => [
+  const [visible, picked, usernameToAward] = useStoreShallow(state => [
     state.modalCurrent === 'award-visual',
+    state.pickedAwardVisual,
     state.modalUserToAward?.username,
   ]);
 
@@ -35,7 +37,7 @@ export const AwardVisualPickerModal = () => {
         return gifs;
       }
 
-      return [];
+      return SUGGESTED_VISUALS;
     },
     {
       initialData: SUGGESTED_VISUALS,
@@ -50,6 +52,8 @@ export const AwardVisualPickerModal = () => {
     borderRadius: imageWidth / 2,
     overflow: 'hidden',
     backgroundColor: '#303030',
+    borderWidth: 3,
+    borderColor: 'transparent',
   });
 
   const flatListStyle = useStyle({
@@ -57,17 +61,28 @@ export const AwardVisualPickerModal = () => {
     width: '100%',
   });
 
+  const onSelectVisual = useCallback((visual: string) => {
+    useStore.getState().set({
+      pickedAwardVisual: visual,
+    });
+  }, []);
+
   const renderItem = useCallback(
     ({item}: {index: number; item: string}) => {
       return (
-        <TouchableOpacity style={styles.awardWrapper}>
-          <FastImage source={{uri: item}} style={awardVisualStyle} />
+        <TouchableOpacity
+          onPress={() => onSelectVisual(item)}
+          style={styles.awardWrapper}>
+          <FastImage
+            source={{uri: item}}
+            style={[awardVisualStyle, picked === item && styles.picked]}
+          />
           <View style={styles.hack} />
           <View style={{width: 30}} />
         </TouchableOpacity>
       );
     },
-    [imageWidth],
+    [imageWidth, picked],
   );
 
   return (
@@ -88,7 +103,7 @@ export const AwardVisualPickerModal = () => {
         data={visuals.data ?? []}
       />
       <View style={styles.button}>
-        <TextButton title="next" />
+        <TextButton disabled={!picked} title="next" />
       </View>
     </BaseSlideModal>
   );
@@ -132,5 +147,8 @@ const styles = StyleSheet.create({
   button: {
     paddingHorizontal: 30,
     paddingBottom: 20,
+  },
+  picked: {
+    borderColor: colors.green,
   },
 });
