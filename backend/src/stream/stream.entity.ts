@@ -116,11 +116,12 @@ export class StreamEntity {
   }: {
     blockedUserIds: string[];
     blockedByUserIds: string[];
-    category: string;
+    category?: string;
   }): Promise<IStream[]> {
     const streams = await this.prisma.stream.findMany({
       where: {
         live: true,
+        category,
         AND: [
           {
             owner_id: {

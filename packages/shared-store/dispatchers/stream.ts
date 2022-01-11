@@ -21,14 +21,14 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
 ) => ({
   async dispatchStreamCreate() {
     const {
-      streamCategory,
+      newStreamCategory,
       api,
       dispatchMediaSend,
       title,
       dispatchInitViewer,
     } = get();
 
-    if (!title || !streamCategory) {
+    if (!title || !newStreamCategory) {
       return;
     }
 
@@ -39,7 +39,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       count,
       mediaPermissionsToken,
       recvMediaParams,
-    } = await api.stream.create(title, streamCategory.id);
+    } = await api.stream.create(title, newStreamCategory.id);
 
     set({
       stream,

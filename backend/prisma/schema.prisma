@@ -41,13 +41,13 @@ model User {
 
   balance CoinBalance? @relation(name: "coin_balance")
 
-  award_sender Award[] @relation(name: "award_sender")
+  award_sender   Award[] @relation(name: "award_sender")
   award_recipent Award[] @relation(name: "award_recipent")
 
   notifications Notification[]    @relation(name: "notifications")
   developer     DeveloperAccount? @relation(name: "developer")
 
-  app_invite     AppInvite? @relation(name: "app_invite")
+  app_invite         AppInvite?        @relation(name: "app_invite")
   applied_app_invite AppliedAppInvite? @relation(name: "applied_app_invite")
 
   //Stream Stream[]
@@ -123,13 +123,13 @@ model Stream {
   title        String
   owner_id     String
   owner        Participant   @relation(name: "owner", fields: [owner_id], references: [user_id], onDelete: Cascade)
-  hub          String
+  category     String
   live         Boolean
   preview      String?
   participants Participant[] @relation(name: "participant")
   blocks       StreamBlock[] @relation(name: "blocks")
   invites      Invite[]      @relation(name: "invites")
-  bots         BotInstance[]      @relation(name: "bot_instances_stream")
+  bots         BotInstance[] @relation(name: "bot_instances_stream")
   reactions    Int
 }
 
@@ -159,7 +159,7 @@ model Invite {
   user_invitee    User?   @relation(name: "invitee", fields: [user_invitee_id], references: [id], onDelete: Cascade)
 
   bot_invitee_id String?
-  bot_invitee    Bot?   @relation(name: "bot_invitee", fields: [bot_invitee_id], references: [id], onDelete: Cascade)
+  bot_invitee    Bot?    @relation(name: "bot_invitee", fields: [bot_invitee_id], references: [id], onDelete: Cascade)
 
   inviter_id   String
   inviter      User          @relation(name: "inviter", fields: [inviter_id], references: [id], onDelete: Cascade)
@@ -181,7 +181,7 @@ model Notification {
   user    User?   @relation(name: "notifications", fields: [user_id], references: [id], onDelete: Cascade)
 
   bot_id String?
-  bot    Bot?   @relation(name: "bot_notifications", fields: [bot_id], references: [id], onDelete: Cascade)
+  bot    Bot?    @relation(name: "bot_notifications", fields: [bot_id], references: [id], onDelete: Cascade)
 
   invite_id String? @unique
   invite    Invite? @relation(fields: [invite_id], references: [id], onDelete: Cascade)
@@ -197,9 +197,9 @@ model Bot {
   creator_id String
   creator    DeveloperAccount @relation(name: "bot_creator", fields: [creator_id], references: [id], onDelete: Cascade)
   instances  BotInstance[]    @relation(name: "bot_instance")
-  invitee Invite[] @relation(name: "bot_invitee")
+  invitee    Invite[]         @relation(name: "bot_invitee")
 
-  notifications Notification[]    @relation(name: "bot_notifications")
+  notifications Notification[] @relation(name: "bot_notifications")
 }
 
 model BotInstance {
@@ -207,8 +207,8 @@ model BotInstance {
   bot_id String
   bot    Bot    @relation(name: "bot_instance", fields: [bot_id], references: [id], onDelete: Cascade)
 
-  stream_id     String?
-  stream        Stream?   @relation(name: "bot_instances_stream", fields: [stream_id], references: [id], onDelete: Cascade)
+  stream_id String?
+  stream    Stream? @relation(name: "bot_instances_stream", fields: [stream_id], references: [id], onDelete: Cascade)
 
   participant Participant?
 }
@@ -222,7 +222,7 @@ model DeveloperAccount {
 }
 
 model CoinBalance {
-  id      String @id @default(cuid())
+  id String @id @default(cuid())
 
   user_id String @unique
   user    User   @relation(name: "coin_balance", fields: [user_id], references: [id], onDelete: Cascade)
@@ -231,23 +231,23 @@ model CoinBalance {
 }
 
 model Award {
-  id      String @id @default(cuid())
+  id String @id @default(cuid())
 
   message String @default("")
 
-  sender_id String 
+  sender_id String
   sender    User   @relation(name: "award_sender", fields: [sender_id], references: [id], onDelete: Cascade)
 
-  recipent_id String 
+  recipent_id String
   recipent    User   @relation(name: "award_recipent", fields: [recipent_id], references: [id], onDelete: Cascade)
 
   visual String
 
-  created_at  DateTime      @default(now())
+  created_at DateTime @default(now())
 }
 
 model AppInvite {
-  id      String @id @default(cuid())
+  id String @id @default(cuid())
 
   code String @unique
 
@@ -258,13 +258,13 @@ model AppInvite {
 }
 
 model AppliedAppInvite {
-  id      String @id @default(cuid())
+  id String @id @default(cuid())
 
   user_id String? @unique
   user    User?   @relation(name: "applied_app_invite", fields: [user_id], references: [id], onDelete: Cascade)
 
-  invite_id String? @unique
-  invite    AppInvite?   @relation(name: "applied_invites", fields: [invite_id], references: [id], onDelete: Cascade)
+  invite_id String?    @unique
+  invite    AppInvite? @relation(name: "applied_invites", fields: [invite_id], references: [id], onDelete: Cascade)
 }
 
 model StreamCategory {
