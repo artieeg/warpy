@@ -1,4 +1,5 @@
 import produce from "immer";
+import { IStreamCategory } from "@warpy/lib";
 import { StoreSlice } from "../types";
 import { IStore } from "../useStore";
 
@@ -11,9 +12,23 @@ export const createFeedDispatchers: StoreSlice<IFeedDispatchers> = (
   set,
   get
 ) => ({
+  async dispatchFeedCategoryChange(category: IStreamCategory) {
+    set({
+      selectedFeedCategory: category,
+      feed: [],
+      latestFeedPage: 0,
+    });
+
+    get().dispatchFeedFetchNext();
+  },
+
   async dispatchFeedFetchNext() {
     set({ isFeedLoading: true });
-    const { feed } = await get().api.feed.get(get().latestFeedPage);
+
+    const { feed } = await get().api.feed.get({
+      page: get().latestFeedPage,
+      category: get().selectedFeedCategory?.id,
+    });
 
     set((state) => ({
       feed: [...state.feed, ...feed],

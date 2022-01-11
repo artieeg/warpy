@@ -20,7 +20,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
     return useStore.getState().categories;
   }, []);
 
-  const selectedCategoryIds = useStore(state => state.selectedCategoryIds);
+  const streamCategory = useStore(state => state.selectedFeedCategory);
 
   const colors = useMemo(() => {
     const colors = [BASE_COLOR];
@@ -37,16 +37,10 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
   }, [categories]);
 
   const onSelectOption = useCallback(
-    (streamCategory: IStreamCategory, isSelected: boolean) => {
-      if (props.mode === 'create-stream') {
-        useStore.getState().set({
-          streamCategory,
-        });
-      } else {
-        useStore
-          .getState()
-          .dispatchCategoryToggle(streamCategory.id, isSelected);
-      }
+    (value: IStreamCategory, isSelected: boolean) => {
+      useStore.getState().set({
+        selectedFeedCategory: isSelected ? value : null,
+      });
     },
     [props.mode],
   );
@@ -54,9 +48,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
   const renderItem = useCallback(
     (category: IStreamCategory, index: number) => {
       const isSelected =
-        props.mode === 'browse-feed'
-          ? selectedCategoryIds.includes(category.id)
-          : useStore.getState().streamCategory?.id === category.id;
+        useStore.getState().selectedFeedCategory?.id === category.id;
 
       return (
         <StreamCategoryOption
@@ -68,7 +60,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
         />
       );
     },
-    [categories, props.mode],
+    [categories, props.mode, streamCategory],
   );
 
   return (
