@@ -92,8 +92,15 @@ export const AwardVisualPickerModal = () => {
     });
   }, [user]);
 
+  const onClose = useCallback(() => {
+    useStore.getState().set({
+      pickedAwardVisual: null,
+    });
+  }, []);
+
   return (
     <BaseSlideModal
+      onClose={onClose}
       visible={visible}
       title="award visual"
       subtitle={`for ${user?.username}`}>

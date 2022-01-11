@@ -11,10 +11,19 @@ export interface IBaseModalProps extends ViewProps {
   visible?: boolean;
   disableHideHandler?: boolean;
   children?: React.ReactNode;
+  onClose?: () => any;
 }
 
 export const BaseSlideModal = (props: IBaseModalProps) => {
-  const {visible, subtitle, disableHideHandler, children, title, style} = props;
+  const {
+    visible,
+    subtitle,
+    onClose,
+    disableHideHandler,
+    children,
+    title,
+    style,
+  } = props;
 
   const translate = useRef(new Animated.Value(0));
 
@@ -33,6 +42,7 @@ export const BaseSlideModal = (props: IBaseModalProps) => {
       propagateSwipe={true}
       onSwipeComplete={() => {
         useStore.getState().dispatchModalClose();
+        onClose && onClose();
       }}
       swipeDirection={['down']}
       swipeThreshold={100}
