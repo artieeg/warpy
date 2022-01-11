@@ -37,10 +37,14 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
   }, [categories]);
 
   const onSelectOption = useCallback(
-    (value: IStreamCategory, isSelected: boolean) => {
+    (value: IStreamCategory) => {
+      /*
       useStore.getState().set({
         selectedFeedCategory: isSelected ? value : null,
       });
+       */
+
+      useStore.getState().dispatchFeedCategoryChange(value);
     },
     [props.mode],
   );
@@ -56,7 +60,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
           selected={isSelected}
           color={colors[index].toHexString()}
           category={category}
-          onPress={() => onSelectOption(category, !isSelected)}
+          onPress={() => onSelectOption(category)}
         />
       );
     },

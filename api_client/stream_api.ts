@@ -62,10 +62,10 @@ export interface IStreamAPI {
 
 export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
   leave: () => socket.request("leave-stream", {}),
-  create: (title, hub) =>
+  create: (title, category) =>
     socket.request("stream-new", {
       title,
-      hub,
+      category,
     }),
   toggleMedia: ({
     audioEnabled,

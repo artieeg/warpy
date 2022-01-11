@@ -49,7 +49,7 @@ export const createRecvTransport = async (params: NewRecvTransportParams) => {
 };
 
 export const getStreamIdFromFeed = async (record: UserRecord) => {
-  const { feed } = await record.api.feed.get(0);
+  const { feed } = await record.api.feed.get({ page: 0 });
 
   if (feed.length === 0) {
     throw new Error("No streams in feed");

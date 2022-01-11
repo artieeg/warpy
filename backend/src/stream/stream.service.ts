@@ -30,7 +30,7 @@ export class StreamService {
   async createNewStream(
     owner: string,
     title: string,
-    hub: string,
+    category: string,
   ): Promise<INewStreamResponse> {
     const streamer = await this.userEntity.findById(owner);
 
@@ -53,7 +53,7 @@ export class StreamService {
     const stream = await this.streamEntity.create({
       owner_id: owner,
       title,
-      hub,
+      category,
       live: true,
       preview: null,
       reactions: 0,

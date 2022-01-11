@@ -16,10 +16,14 @@ export class StreamController {
   @MessagePattern('stream.create')
   async createNewStream({
     title,
-    hub,
+    category,
     user,
   }: INewStream): Promise<INewStreamResponse> {
-    const response = await this.streamService.createNewStream(user, title, hub);
+    const response = await this.streamService.createNewStream(
+      user,
+      title,
+      category,
+    );
 
     return response;
   }
