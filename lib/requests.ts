@@ -147,7 +147,7 @@ export interface IRaiseHand {
 
 export interface IRequestFeed {
   user: string;
-  hub?: string;
+  category?: string;
 }
 
 export interface INewUser {

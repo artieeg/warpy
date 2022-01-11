@@ -112,9 +112,11 @@ export class StreamEntity {
   async get({
     blockedUserIds,
     blockedByUserIds,
+    category,
   }: {
     blockedUserIds: string[];
     blockedByUserIds: string[];
+    category: string;
   }): Promise<IStream[]> {
     const streams = await this.prisma.stream.findMany({
       where: {
