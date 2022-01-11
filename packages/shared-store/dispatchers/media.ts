@@ -161,6 +161,12 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
     const { routerRtpCapabilities, sendTransportOptions } = sendMediaParams;
 
     if (!sendDevice.loaded) {
+      //Fix orientation issue
+      routerRtpCapabilities.headerExtensions =
+        routerRtpCapabilities.headerExtensions.filter(
+          (ext: { uri: string }) => ext.uri !== "urn:3gpp:video-orientation"
+        );
+
       await sendDevice.load({ routerRtpCapabilities });
     }
 
