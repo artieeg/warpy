@@ -10,8 +10,13 @@ export class FeedController {
 
   @UseFilters(ExceptionFilter)
   @MessagePattern('feeds.get')
-  async getStreamFeed({ user }: IRequestFeed): Promise<IFeedResponse> {
-    const feed = await this.feedService.getFeed(user);
+  async getStreamFeed({
+    user,
+    category,
+  }: IRequestFeed): Promise<IFeedResponse> {
+    console.log({ user, category });
+
+    const feed = await this.feedService.getFeed(user, category);
 
     return {
       feed,

@@ -1,5 +1,5 @@
 import { APIClient } from "@warpy/api";
-import { IBaseUser, Roles } from "@warpy/lib";
+import { IBaseUser, IStreamCategory, Roles } from "@warpy/lib";
 import { Device } from "mediasoup-client";
 import { MediaClient } from "@warpy/media";
 import { Consumer, Producer } from "mediasoup-client/lib/types";
@@ -9,6 +9,8 @@ export type UserRecord = {
   api: APIClient;
   stream?: string;
   role?: Roles;
+
+  categories: IStreamCategory[];
 
   recvDevice: Device;
   sendDevice: Device;

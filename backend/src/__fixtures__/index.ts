@@ -13,7 +13,7 @@ export const createStreamFixture = (data: Partial<IStream>): IStream => {
   return {
     id: 'test-id',
     owner: 'test owner',
-    hub: 'hub',
+    category: 'hub',
     preview: 'test-preview',
     title: 'test',
     ...data,

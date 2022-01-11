@@ -1,10 +1,19 @@
 import { IFeedResponse } from "@warpy/lib";
 import { APIModule } from "./types";
 
+type FeedFetchRequest = {
+  page?: number;
+  category?: string;
+};
+
 export interface IFeedAPI {
-  get: (page: number) => Promise<IFeedResponse>;
+  get: (params: FeedFetchRequest) => Promise<IFeedResponse>;
 }
 
 export const FeedAPI: APIModule = (socket): IFeedAPI => ({
-  get: (page = 0) => socket.request("request-feed", { page }),
+  get: (params) =>
+    socket.request("request-feed", {
+      ...params,
+      page: params.page ?? 0,
+    }),
 });

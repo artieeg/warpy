@@ -22,13 +22,14 @@ export class FeedService {
     };
   }
 
-  async getFeed(user: string) {
+  async getFeed(user: string, category?: string) {
     const blockedUserIds = await this.blockEntity.getBlockedUserIds(user);
     const blockedByUserIds = await this.blockEntity.getBlockedByIds(user);
 
     const streams: IStream[] = await this.streamEntity.get({
       blockedUserIds,
       blockedByUserIds,
+      category
     });
 
     const feed = await Promise.all(

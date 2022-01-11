@@ -37,12 +37,12 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
     set({
       user,
       categories,
-      selectedCategoryIds: [categories[0].id],
       exists: true,
       hasActivatedAppInvite,
       following: following || [],
       isLoadingUser: false,
-      streamCategory: categories[1],
+      selectedFeedCategory: categories[0],
+      newStreamCategory: categories[1],
     });
   },
 

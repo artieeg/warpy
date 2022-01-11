@@ -6,7 +6,7 @@ export interface IStream {
   id: string;
   owner: string | null;
   title: string;
-  hub: string;
+  category: string;
   preview: string | null;
 }
 

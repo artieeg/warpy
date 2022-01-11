@@ -13,7 +13,7 @@ export class StreamEntity {
     return {
       id: data.id,
       owner: data.owner_id,
-      hub: data.hub,
+      category: data.category,
       title: data.title,
       preview: data.preview,
     };
@@ -112,13 +112,16 @@ export class StreamEntity {
   async get({
     blockedUserIds,
     blockedByUserIds,
+    category,
   }: {
     blockedUserIds: string[];
     blockedByUserIds: string[];
+    category?: string;
   }): Promise<IStream[]> {
     const streams = await this.prisma.stream.findMany({
       where: {
         live: true,
+        category,
         AND: [
           {
             owner_id: {
@@ -133,6 +136,8 @@ export class StreamEntity {
         ],
       },
     });
+
+    console.log({ category, streams });
 
     return streams.map(StreamEntity.toStreamDTO);
   }

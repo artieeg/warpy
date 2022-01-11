@@ -169,7 +169,7 @@ const handlers: Record<string, HandlerConfig> = {
     auth: true,
     schema: joi.object({
       title: joi.string().min(3).max(64).required(),
-      hub: joi.string().max(64).required(),
+      category: joi.string().max(64).required(),
     }),
   },
 
@@ -177,7 +177,10 @@ const handlers: Record<string, HandlerConfig> = {
     subject: "feeds.get",
     kind: "request",
     auth: true,
-    schema: joi.object({ page: joi.number().min(0).required() }),
+    schema: joi.object({
+      page: joi.number().min(0).default(0).optional(),
+      category: joi.string().max(64).default(-1).optional(),
+    }),
   },
 
   "new-user": {

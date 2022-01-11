@@ -1,7 +1,6 @@
 import { Roles } from "../types";
 import { IEntity } from "./entity";
 import { IBaseUser } from "./user";
-import { Consumer } from "mediasoup-client/lib/types";
 
 export interface IBaseParticipant extends IEntity {
   stream: string | null;

@@ -123,7 +123,7 @@ export interface IWhoAmIRequest {
 export interface INewStream {
   user: string;
   title: string;
-  hub: string;
+  category: string;
 }
 
 export interface IJoinStream {
@@ -147,7 +147,7 @@ export interface IRaiseHand {
 
 export interface IRequestFeed {
   user: string;
-  hub?: string;
+  category?: string;
 }
 
 export interface INewUser {
