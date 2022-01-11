@@ -6,9 +6,8 @@ export const createStream = async (record: UserRecord) => {
   const { user, api } = record;
 
   const title = `${user.first_name} ${user.last_name}'s stream`;
-  const hub = "test";
 
-  const response = await api.stream.create(title, hub);
+  const response = await api.stream.create(title, record.categories[2].id);
 
   //Allow speaking after 5 seconds;
   api.stream.onRaiseHandUpdate((data) => {

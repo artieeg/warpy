@@ -25,7 +25,7 @@ export const createUser = async (): Promise<UserRecord> => {
     avatar: "https://c.tenor.com/24aVYR7egHEAAAAC/cute-dog.gif",
   });
 
-  const { user } = await api.user.auth(access);
+  const { user, categories } = await api.user.auth(access);
 
   if (!user) {
     throw new Error("User is null");
@@ -33,6 +33,7 @@ export const createUser = async (): Promise<UserRecord> => {
 
   return {
     user,
+    categories,
     api,
     recvDevice: createDevice(),
     sendDevice: createDevice(),
