@@ -20,9 +20,11 @@
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-native-web": "0.13.14",
+    "tinycolor2": "^1.4.2",
     "zustand": "^3.5.7"
   },
   "devDependencies": {
+    "@types/tinycolor2": "^1.4.3",
     "autoprefixer": "^10.4.2",
     "babel-plugin-react-native-web": "^0.13.14",
     "next-react-svg": "^1.1.3",

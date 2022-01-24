@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { TextButton } from "@warpy/components";
+import tinycolor from "tinycolor2";
 
 const content = [
   "miraclous moments",
@@ -9,6 +10,8 @@ const content = [
   "unexpected encounters",
   "bright insights",
 ];
+
+const interests = ["talent shows", "adventures", "debates", "pets", "random"];
 
 export default function Index() {
   const fadingText = useRef<HTMLDivElement>();
@@ -32,8 +35,23 @@ export default function Index() {
     flick();
   }, []);
 
+  const renderInterests = React.useCallback(() => {
+    return interests.map((interest, idx) => (
+      <span
+        style={{
+          color: tinycolor("#BDF971")
+            .spin((idx + 1) * (255 / interests.length + 30))
+            .toHexString(),
+        }}
+        className="font-bold text-base text-blue mx-3"
+      >
+        {interest}
+      </span>
+    ));
+  }, []);
+
   return (
-    <div className="p-3 space-y-6 bg-black flex-col flex-1">
+    <div className="p-3 space-y-4 bg-black flex-col flex-1">
       <div>
         <div className="font-extrabold text-lg text-yellow">warpy</div>
         <div className="font-extrabold text-xxs text-boulder">
@@ -53,6 +71,16 @@ export default function Index() {
             {content[current % content.length]}
           </div>
           <div>between people interested in...</div>
+        </div>
+      </div>
+
+      <div className="-mx-3 relative flex overflow-x-hidden">
+        <div className="animate-marquee whitespace-nowrap ">
+          {renderInterests()}
+        </div>
+
+        <div className="absolute top-0 animate-marquee2 whitespace-nowrap">
+          {renderInterests()}
         </div>
       </div>
 
