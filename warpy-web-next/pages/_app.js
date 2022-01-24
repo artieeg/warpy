@@ -1,3 +1,5 @@
+import 'tailwindcss/tailwind.css';
+
 import * as React from "react";
 import Head from "next/head";
 import "./global.css";
@@ -15,7 +17,7 @@ function AppWrapper(props) {
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
 
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
         <meta name="theme-color" content="#000000" />
         <meta
           name="viewport"

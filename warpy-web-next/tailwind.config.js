@@ -9,7 +9,8 @@ module.exports = {
         sans: '"MontserratAlternates-ExtraBold", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
       },
       fontSize: {
-        xxs: ['0.625rem', '0.75rem'],
+        xxs: ['0.625rem', '0.7rem'],
+        xs: ['0.7rem', '1rem'],
       },
       colors: {
         black: "#000000",
