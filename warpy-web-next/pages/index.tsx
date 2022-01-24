@@ -3,15 +3,21 @@ import { TextButton } from "@warpy/components";
 import tinycolor from "tinycolor2";
 
 const content = [
-  "new friendships",
-  "fun memories",
-  "miraclous moments",
-  "insightful ideas",
-  "unexpected encounters",
-  "bright insights",
+  "unusual conversations 👀",
+  "new friendships 😊",
+  "miraclous moments ✨",
+  "fun memories 😂",
+  "insightful ideas 💡",
+  "unexpected encounters 🤝",
 ];
 
-const interests = ["talent shows", "adventures", "debates", "pets", "random"];
+const interests = [
+  "talent shows 🤪",
+  "adventures 🚣",
+  "debates 🏅",
+  "pets 🐕",
+  "random 🎲",
+];
 
 export default function Index() {
   const fadingText = useRef<HTMLDivElement>();
