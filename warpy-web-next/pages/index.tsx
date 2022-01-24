@@ -3,10 +3,10 @@ import { TextButton } from "@warpy/components";
 import tinycolor from "tinycolor2";
 
 const content = [
-  "miraclous moments",
   "new friendships",
   "fun memories",
-  "new ideas",
+  "miraclous moments",
+  "insightful ideas",
   "unexpected encounters",
   "bright insights",
 ];
@@ -51,7 +51,10 @@ export default function Index() {
   }, []);
 
   return (
-    <div className="p-3 space-y-4 bg-black flex-col flex-1">
+    <div className="px-3 space-y-4 bg-black flex-col flex-1">
+      <div className="rounded-full absolute -top-4 right-4 w-8 h-8 bg-gradient-to-r from-red to-orange" />
+      <div className="rounded-full absolute -top-8 -right-8 w-16 h-16 bg-gradient-to-r from-cyan-500 to-cyan-300" />
+
       <div>
         <div className="font-extrabold text-lg text-yellow">warpy</div>
         <div className="font-extrabold text-xxs text-boulder">
@@ -61,10 +64,14 @@ export default function Index() {
 
       <div>
         <div className="font-bold text-xs text-green">
-          <span className="text-yellow">warpy’s</span> is here to create
+          <span className="text-yellow">warpy </span>
+          {/*
+          <>warpy </>
+  */}
+          is here to create
           <div
             ref={fadingText}
-            className={`text-yellow transition-opacity duration-1000 ${
+            className={`text-orange transition-opacity duration-1000 ${
               visible ? "opacity-1" : "opacity-0"
             }`}
           >
