@@ -1,5 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { Req } from '@nestjs/common/decorators';
+import { UserClaimService } from './user-claim.service';
 
 type ClaimUsernameDTO = {
   username: string;
@@ -8,7 +9,7 @@ type ClaimUsernameDTO = {
 
 @Controller()
 export class UserClaimController {
-  constructor() {}
+  constructor(private userClaimService: UserClaimService) {}
 
   @Post('/user/claim')
   async onClaimUsername(
@@ -17,7 +18,8 @@ export class UserClaimController {
   ) {
     const ip: string =
       req.headers['x-forwarded-for'] ?? req.connection.remoteAddress;
-    const hash = ip.split('').reduce((hash, v) => hash + v.charCodeAt(0), 0);
+
+    await this.userClaimService.createUsernameClaim(username, phone, ip);
 
     return {
       status: 'ok',
