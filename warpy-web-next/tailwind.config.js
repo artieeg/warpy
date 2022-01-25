@@ -38,6 +38,9 @@ module.exports = {
         blue: "#71A7F9",
         orange: "#F9AA71",
       },
+      transitionProperty: {
+        'mt': 'margin-top',
+      }
     },
   },
   plugins: [],
