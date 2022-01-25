@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
+import { UserClaimController } from './user-claim.controller';
 
 @Module({
   imports: [],
   providers: [],
-  controllers: [],
-  exports: []
+  controllers: [UserClaimController],
+  exports: [],
 })
-export class UserClaimModule { }
+export class UserClaimModule {}
