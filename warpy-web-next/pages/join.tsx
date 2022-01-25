@@ -31,11 +31,11 @@ export default function Join() {
         </div>
       </div>
 
-      <div>
+      <div className="w-full">
         <input
           autoFocus
           placeholder="username"
-          className="mb-1 text-white bg-transparent placeholder-boulder bg-red-500"
+          className="mb-1 w-full text-white bg-transparent placeholder-boulder bg-red-500"
           onChange={(e) => setName(e.target.value)}
         />
         <div className="text-boulder text-xxs">
@@ -46,14 +46,13 @@ export default function Join() {
       </div>
 
       <div
-        className={`transition-opacity duration-600 ${
+        className={`w-full transition-opacity duration-600 ${
           isNameValid === true ? "opacity-1" : "opacity-0"
         }`}
       >
         <input
-          type="tel"
           placeholder="phone number"
-          className="mb-1 text-white bg-transparent placeholder-boulder bg-red-500"
+          className="mb-1 w-full text-white bg-transparent placeholder-boulder bg-red-500"
         />
         <div className="text-boulder text-xxs">
           we will text you a download link
