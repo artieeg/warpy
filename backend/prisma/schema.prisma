@@ -275,6 +275,6 @@ model StreamCategory {
 
 model UsernameClaim {
   ip_hash  Int    @id
-  phone    String
-  username String
+  phone    String @unique
+  username String @unique
 }
