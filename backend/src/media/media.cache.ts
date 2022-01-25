@@ -2,16 +2,17 @@ import { RedisClient, createClient } from 'redis';
 
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { MediaServiceRole } from '@warpy/lib';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MediaCacheService implements OnModuleInit {
   client: RedisClient;
 
-  constructor() {}
+  constructor(private configService: ConfigService) {}
 
   onModuleInit() {
     this.client = createClient({
-      url: process.env.MEDIA_SERVER_IDS,
+      url: this.configService.get('mediaServerIdsCache'),
     });
   }
 

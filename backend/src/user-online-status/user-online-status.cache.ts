@@ -1,9 +1,12 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { RedisClient, createClient } from 'redis';
 
 @Injectable()
 export class UserOnlineStatusCache implements OnModuleInit {
   client: RedisClient;
+
+  constructor(private configService: ConfigService) {}
 
   getUserStatusMany(ids: string[]): Promise<(boolean | undefined)[]> {
     return new Promise<(boolean | undefined)[]>((resolve, reject) => {
@@ -25,7 +28,7 @@ export class UserOnlineStatusCache implements OnModuleInit {
 
   onModuleInit() {
     this.client = createClient({
-      url: process.env.USER_ONLINE_STATUS,
+      url: this.configService.get('userOnlineStatusCache'),
     });
   }
 
