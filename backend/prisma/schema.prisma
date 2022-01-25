@@ -272,3 +272,9 @@ model StreamCategory {
   value    String
   priority Int
 }
+
+model UsernameClaim {
+  ip_hash  Int    @id
+  phone    String
+  username String
+}
