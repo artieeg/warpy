@@ -1,5 +1,23 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { TextButton } from "@warpy/components";
+import {
+  FacebookMessengerShareButton,
+  FacebookShareButton,
+  RedditShareButton,
+  TwitterIcon,
+  TwitterShareButton,
+} from "react-share";
+import { Facebook, FacebookMessenger, Reddit, Twitter } from "../icons";
+
+const gifs = [
+  "https://c.tenor.com/AmtGg5GiqIAAAAAC/shaquille-o-neal-excited.gif",
+  "https://c.tenor.com/_KEXdS8RXYoAAAAC/kermit-freaking-out.gif",
+  "https://c.tenor.com/rlE_CTcXPQkAAAAC/happy-dancing.gif",
+  "https://c.tenor.com/_NMzaxfKAJYAAAAC/excited-dog.gif",
+  "https://c.tenor.com/jYsU_wcUdvoAAAAC/cat-car.gif",
+  "https://c.tenor.com/Nh7N6tq8SnYAAAAd/friends-rachel-green.gif",
+  "https://c.tenor.com/BNg5I6x4wUsAAAAC/im-so-excited-freaking-cant-wait.gif",
+];
 
 export default function Join() {
   const [name, setName] = useState<string>();
@@ -12,6 +30,8 @@ export default function Join() {
   const [isPhoneInputFocused, setPhoneInputFocused] = useState(false);
 
   const validationTimeout = useRef<any>();
+
+  const [gifIdx, setGifIdx] = useState(Math.floor(Math.random() * gifs.length));
 
   useEffect(() => {
     if (!isFinished) return;
@@ -44,6 +64,15 @@ export default function Join() {
           isFinished ? "opacity-1" : "hidden opacity-0"
         }`}
       >
+        <img
+          src={gifs[gifIdx % gifs.length]}
+          className={`absolute left-0 right-0 top-0 w-full h-auto 
+transition-opacity duration-1000 max-h-2/5 delay-[5000ms] ${
+            isMoving ? "opacity-1" : "opacity-0"
+          }
+          `}
+        />
+
         <div className="items-center absolute left-0 top-0 bottom-0 right-0  flex flex-col justify-center flex-1">
           <span className="text-white text-xxs">
             ✍️ <span className="text-yellow">{name}</span>, cool & epic person
@@ -64,11 +93,24 @@ export default function Join() {
         </div>
 
         <div
-          className={`absolute bottom-3 left-3 right-3 transition-opacity duration-1000 delay-[5300ms] ${
+          className={`absolute space-y-2 items-center flex flex-col bottom-6 left-3 right-3 transition-opacity duration-1000 delay-[5300ms] ${
             isMoving ? "opacity-1" : "opacity-0"
           }`}
         >
-          <TextButton title="share with friends" />
+          <span className={`text-white text-xxs`}>share with friends</span>
+          <div className="flex row space-x-3">
+            <TwitterShareButton url="google.com" title="check this">
+              <Twitter className="w-6 h-6" fill="#ffffff" />
+            </TwitterShareButton>
+
+            <FacebookShareButton url="google.com" title="check this">
+              <Facebook className="w-6 h-6" fill="#ffffff" />
+            </FacebookShareButton>
+
+            <RedditShareButton url="google.com" title="check this">
+              <Reddit className="w-6 h-6" fill="#ffffff" />
+            </RedditShareButton>
+          </div>
         </div>
       </div>
 

@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "svgr": "svgr ./assets/svg -d ./icons --typescript --ignore-existing --svgo-config .svgorc.json"
   },
   "dependencies": {
     "@warpy/api": "1.0.0",
@@ -20,10 +21,12 @@
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-native-web": "0.13.14",
+    "react-share": "^4.4.0",
     "tinycolor2": "^1.4.2",
     "zustand": "^3.5.7"
   },
   "devDependencies": {
+    "@svgr/cli": "^6.2.0",
     "@types/tinycolor2": "^1.4.3",
     "autoprefixer": "^10.4.2",
     "babel-plugin-react-native-web": "^0.13.14",
