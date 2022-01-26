@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { TextButton } from "@warpy/components";
 import tinycolor from "tinycolor2";
+import { useRouter } from "next/dist/client/router";
 
 const content = [
   "unusual conversations 👀",
@@ -21,6 +22,8 @@ const interests = [
 
 export default function Index() {
   const fadingText = useRef<HTMLDivElement>();
+
+  const router = useRouter();
 
   const [current, setCurrent] = useState(0);
   const [visible, setVisible] = useState(false);
@@ -103,7 +106,10 @@ export default function Index() {
         </div>
       </div>
 
-      <TextButton title="reserve a username" />
+      <TextButton
+        onPress={() => router.push("/join")}
+        title="reserve a username"
+      />
     </div>
   );
 }
