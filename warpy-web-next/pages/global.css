@@ -1,3 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  font-size: 28px;
+}
+
+@font-face {
+  font-family: "MontserratAlternates-ExtraBold";
+  src: url("/fonts/MontserratAlternates-ExtraBold.ttf");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
 @font-face {
   font-family: "MontserratAlternates-Bold";
   src: url("/fonts/MontserratAlternates-Bold.ttf");

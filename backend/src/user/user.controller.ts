@@ -2,6 +2,7 @@ import { ParticipantService } from '@backend_2/participant/participant.service';
 import { ExceptionFilter } from '@backend_2/rpc-exception.filter';
 import { UserOnlineStatusService } from '@backend_2/user-online-status/user-online-status.service';
 import { Controller, UseFilters } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   ICreateAnonUserResponse,
@@ -31,6 +32,7 @@ export class UserController {
     private userService: UserService,
     private participantService: ParticipantService,
     private userOnlineStatusService: UserOnlineStatusService,
+    private configService: ConfigService,
   ) {}
 
   @MessagePattern('user.get')
@@ -75,7 +77,7 @@ export class UserController {
 
   @MessagePattern('user.create')
   async onUserCreate(data: INewUser): Promise<INewUserResponse> {
-    if (process.env.NODE !== 'production' && data.kind === 'dev') {
+    if (this.configService.get('isProduction') && data.kind === 'dev') {
       return this.userService.createDevUser(data);
     }
   }
