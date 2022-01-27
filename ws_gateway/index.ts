@@ -464,6 +464,7 @@ const main = async () => {
       const { event, data, rid } = message;
 
       try {
+        console.log(message);
         await handle({ data, event, context, rid, handler: handlers[event] });
       } catch (e) {
         console.log("failed to process", event);

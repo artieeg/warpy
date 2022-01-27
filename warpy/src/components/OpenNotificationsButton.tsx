@@ -1,7 +1,7 @@
 import {useStore} from '@app/store';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Icon} from './Icon';
+import {Bell} from './icons';
 import {IRoundButtonProps, RoundButton} from './RoundButton';
 
 export const OpenNotificationsButton = (props: IRoundButtonProps) => {
@@ -12,7 +12,7 @@ export const OpenNotificationsButton = (props: IRoundButtonProps) => {
   return (
     <RoundButton {...props} style={[style, styles.button]}>
       <>
-        <Icon name="bell" size={24} color="#BDF971" />
+        <Bell width={22} height={22} fill="#BDF971" />
         {hasUnseenNotifications && (
           <View style={styles.newNotificationsCircle} />
         )}

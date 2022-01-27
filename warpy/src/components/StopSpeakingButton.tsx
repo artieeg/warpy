@@ -1,11 +1,11 @@
 import React from 'react';
-import {Icon} from './Icon';
+import {HandWave} from './icons';
 import {IRoundButtonProps, RoundButton} from './RoundButton';
 
 export const StopSpeakingButton = (props: IRoundButtonProps) => {
   return (
     <RoundButton {...props}>
-      <Icon name="hello" size={30} color="#fff" />
+      <HandWave width={30} height={30} fill="#ffffff" />
     </RoundButton>
   );
 };
