@@ -115,6 +115,8 @@ export class UserService {
   async createDevUser(data: INewUser): Promise<INewUserResponse> {
     const { username, avatar, last_name, first_name, email } = data;
 
+    console.log("user data", data);
+
     const user = await this.user.createNewUser({
       username,
       last_name,
@@ -125,6 +127,8 @@ export class UserService {
       is_anon: false,
     });
 
+    console.log(user);
+
     const accessToken = this.tokenService.createAuthToken(user.id, false, '1d');
     const refreshToken = this.tokenService.createAuthToken(
       user.id,
@@ -132,11 +136,15 @@ export class UserService {
       '1y',
     );
 
+    console.log({accessToken, refreshToken});
+
     await Promise.all([
       this.coinBalanceEntity.createCoinBalance(user.id, 2000),
       this.appInviteEntity.create(user.id),
       this.refreshTokenEntity.create(refreshToken),
     ]);
+
+    console.log("sending")
 
     return {
       id: user.id,
