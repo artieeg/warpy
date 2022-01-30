@@ -29,6 +29,7 @@ const queryClient = new QueryClient();
 const App = () => {
   StatusBar.setTranslucent(true);
   StatusBar.setBackgroundColor('transparent');
+  StatusBar.setHidden(true);
 
   const screens = {
     Splash,
