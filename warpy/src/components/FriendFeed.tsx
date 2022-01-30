@@ -10,8 +10,6 @@ export const FriendFeed = () => {
     state.list_following.list,
   ]);
 
-  console.log({friendFeed, following});
-
   const feed: IFriendFeedItem[] = useMemo(
     () => [
       ...friendFeed,

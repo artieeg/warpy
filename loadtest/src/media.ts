@@ -53,10 +53,13 @@ export const getMediaStream = async () => {
   const file = `file:/${path.resolve(__dirname, "../test-media")}/${filename}`;
 
   const stream = await worker.getUserMedia({
+    /*
     audio: {
       source: "file",
       file,
     },
+    */
+    audio: false,
     video: {
       source: "file",
       file,

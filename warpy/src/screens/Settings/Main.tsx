@@ -132,7 +132,7 @@ const getItems = ({
 
 const styles = StyleSheet.create({
   padding: {
-    paddingHorizontal: 40,
+    paddingHorizontal: 20,
   },
   avatarContainer: {
     alignItems: 'center',
