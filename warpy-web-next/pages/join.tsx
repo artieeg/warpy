@@ -1,13 +1,17 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { TextButton } from "@warpy/components";
 import {
-  FacebookMessengerShareButton,
   FacebookShareButton,
   RedditShareButton,
-  TwitterIcon,
   TwitterShareButton,
 } from "react-share";
-import { Facebook, FacebookMessenger, Reddit, Twitter } from "../icons";
+import { Facebook, Reddit, Twitter } from "../icons";
 
 const gifs = [
   "https://c.tenor.com/AmtGg5GiqIAAAAAC/shaquille-o-neal-excited.gif",
@@ -19,9 +23,12 @@ const gifs = [
   "https://c.tenor.com/BNg5I6x4wUsAAAAC/im-so-excited-freaking-cant-wait.gif",
 ];
 
+const acks = ["CEO of cool", "a real one", "epic human"];
+
 export default function Join() {
   const [name, setName] = useState<string>();
   const [phone, setPhone] = useState<string>();
+  const ack = useMemo(() => acks[Math.floor(Math.random() * acks.length)], []);
 
   const [isFinished, setFinished] = useState(false);
   const [isMoving, setMoving] = useState(false);
@@ -75,7 +82,8 @@ transition-opacity duration-1000 max-h-2/5 delay-[5000ms] ${
 
         <div className="items-center absolute left-0 top-0 bottom-0 right-0  flex flex-col justify-center flex-1">
           <span className="text-white text-xxs">
-            ✍️ <span className="text-yellow">{name}</span>, cool & epic person
+            ✍️ <span className="text-yellow">{name}</span>
+            <>, {ack} </>
             ✍️
           </span>
           <span
@@ -97,7 +105,7 @@ transition-opacity duration-1000 max-h-2/5 delay-[5000ms] ${
             isMoving ? "opacity-1" : "opacity-0"
           }`}
         >
-          <span className={`text-white text-xxs`}>share with friends</span>
+          <span className={`text-white text-xxs`}>share with friends 🤙</span>
           <div className="flex row space-x-3">
             <TwitterShareButton url="google.com" title="check this">
               <Twitter className="w-6 h-6" fill="#ffffff" />
