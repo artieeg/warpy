@@ -25,6 +25,10 @@ export const FriendFeed = () => {
     [friendFeed, following],
   );
 
+  if (feed.length === 0) {
+    return null;
+  }
+
   return (
     <View>
       <FlatList
