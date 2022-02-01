@@ -9,8 +9,8 @@ export const SwitchCameraButton = () => {
     <IconButton
       onPress={dispatchCameraSwitch}
       color="#ffffff"
-      name="toggle-camera"
-      size={30}
+      name="refresh-1"
+      size={24}
     />
   );
 };

@@ -13,7 +13,7 @@ export const ToggleMicButton = () => {
     <IconButtonToggle
       onToggle={dispatchAudioToggle}
       enabled={audioEnabled}
-      icon={audioEnabled ? 'mic-on' : 'mic-off'}
+      icon={audioEnabled ? 'mic-on' : 'mic-on'}
     />
   );
 };

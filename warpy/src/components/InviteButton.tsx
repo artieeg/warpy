@@ -8,9 +8,9 @@ export const InviteButton = () => {
   return (
     <IconButton
       onPress={() => dispatchModalOpen('invite')}
-      name="invite-user"
+      name="user-add"
       color="#ffffff"
-      size={30}
+      size={24}
     />
   );
 };

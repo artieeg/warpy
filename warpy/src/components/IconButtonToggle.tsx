@@ -37,7 +37,7 @@ export const IconButtonToggle = (props: IIconButtonToggleProps) => {
           },
         ]}>
         <AnimatedIcon
-          size={30}
+          size={24}
           style={[
             style,
             {

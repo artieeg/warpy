@@ -146,7 +146,7 @@ export const StreamOverlay = () => {
         style={styles.visibility}
         onPress={() => setVisible(prev => !prev)}
         color="#ffffff"
-        name={isVisible ? 'eye-off' : 'eye'}
+        name={isVisible ? 'eye' : 'eye'}
         size={30}
       />
     </View>

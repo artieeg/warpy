@@ -23,5 +23,5 @@ export const AwardButton = () => {
     }
   }, [dispatchModalOpen, streamHasOneSpeaker]);
 
-  return <IconButton onPress={onPress} size={30} name="medal" color="#fff" />;
+  return <IconButton onPress={onPress} size={24} name="badge-1" color="#fff" />;
 };

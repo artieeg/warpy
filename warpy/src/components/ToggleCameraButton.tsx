@@ -13,7 +13,7 @@ export const ToggleCameraButton = () => {
     <IconButtonToggle
       onToggle={dispatchVideoToggle}
       enabled={videoEnabled}
-      icon={videoEnabled ? 'video' : 'video-off'}
+      icon={videoEnabled ? 'camera' : 'camera'}
     />
   );
 };
