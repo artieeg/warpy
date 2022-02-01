@@ -8,6 +8,7 @@ import Video from 'react-native-video';
 import {colors} from '../../colors';
 import tinycolor from 'tinycolor2';
 import {ICandidate} from '@warpy/lib';
+import {Text} from './Text';
 
 interface IStreamPreviewProps {
   stream: ICandidate;
@@ -31,19 +32,26 @@ export const StreamPreview = (props: IStreamPreviewProps) => {
     <TouchableOpacity onPress={onPress}>
       <View style={[styles.wrapper, style, {backgroundColor: color}]}>
         {preview && (
-          <Video
-            repeat
-            muted
-            paused={false}
-            resizeMode="cover"
-            source={{uri: preview}}
-            style={styles.video}
-          />
+          <>
+            <Video
+              repeat
+              muted
+              paused={false}
+              resizeMode="cover"
+              source={{uri: preview}}
+              style={styles.video}
+            />
+            <View style={styles.overlay} />
+          </>
         )}
 
-        {!preview && <View style={styles.video} />}
-        <View style={styles.info}>
-          <StreamPreviewTitle>{stream.title}</StreamPreviewTitle>
+        <View style={[styles.info, !preview && styles.centeredInfo]}>
+          <Text
+            color={!!preview ? 'white' : 'cod_gray'}
+            size="small"
+            style={styles.title}>
+            {stream.title}
+          </Text>
           <View style={styles.participants}>
             {stream.speakers.slice(0, 3).map((participant, index) => {
               const userAvatarStyle = {
@@ -81,16 +89,30 @@ const styles = StyleSheet.create({
   },
   participants: {
     flexDirection: 'row',
-    paddingHorizontal: 10,
-    paddingBottom: 10,
+  },
+  title: {
+    marginBottom: 15,
   },
   info: {
     position: 'absolute',
+    bottom: 20,
+    left: 10,
+    right: 10,
+  },
+  centeredInfo: {
     bottom: 0,
-    left: 0,
-    right: 0,
+    top: 0,
+    justifyContent: 'center',
   },
   viewersCount: {
     transform: [{translateX: -8}],
+  },
+  overlay: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    left: 0,
+    top: 0,
+    backgroundColor: '#0000004c',
   },
 });
