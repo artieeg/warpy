@@ -30,7 +30,10 @@ export const Reactions = (props: IReactionsProps) => {
   const dispatchModalClose = useStore.use.dispatchModalClose();
 
   return (
-    <BaseSlideModal visible={visible} title="pick your reaction">
+    <BaseSlideModal
+      onClose={() => dispatchModalClose()}
+      visible={visible}
+      title="pick your reaction">
       <FlatList
         style={styles.list}
         numColumns={5}

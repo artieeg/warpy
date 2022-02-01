@@ -1,14 +1,14 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Stream} from '@app/models';
 import {StreamOverlay} from './StreamOverlay';
 import {Room} from './Room';
 import {useRemoteStreamController} from '@app/hooks';
 import {ReactionCanvas} from './ReactionCanvas';
 import {AwardDisplay} from './AwardDisplay';
+import {IStream} from '@warpy/lib';
 
 interface IRemoteStreamProps {
-  stream: Stream;
+  stream: IStream;
 }
 
 export const RemoteStream = (props: IRemoteStreamProps) => {
@@ -18,7 +18,6 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   return (
     <View style={styles.wrapper}>
       <Room />
-      <ReactionCanvas />
       <AwardDisplay />
       <StreamOverlay />
     </View>

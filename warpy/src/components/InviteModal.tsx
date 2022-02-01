@@ -8,6 +8,7 @@ import {UserSearchInput} from './UserSearchInput';
 import {ShareStreamLinkButton} from './ShareStreamLinkButton';
 import {useUserSearch, useInviteSuggestions} from '@app/hooks';
 import {useStoreShallow} from '@app/store';
+import {colors} from '../../colors';
 
 export const useInviteModalController = () => {
   const {users: searchedUsers, isLoading, setSearch} = useUserSearch();
@@ -124,11 +125,13 @@ const styles = StyleSheet.create({
   },
   close: {
     backgroundColor: '#373131',
+    height: 40,
+    width: 40,
   },
   button: {
     position: 'absolute',
     paddingBottom: 15,
-    backgroundColor: '#000',
+    backgroundColor: colors.cod_gray,
     bottom: 0,
     left: 30,
     right: 30,

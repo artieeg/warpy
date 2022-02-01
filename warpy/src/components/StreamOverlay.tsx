@@ -8,6 +8,7 @@ import {ClapButton} from './ClapsButton';
 import {IconButton} from './IconButton';
 import {InviteButton} from './InviteButton';
 import {RaiseHandButton} from './RaiseHandButton';
+import {ReactionCanvas} from './ReactionCanvas';
 import {ReactionEmitter} from './ReactionEmitter';
 import {ShowParticipantsButton} from './ShowParticipantsButton';
 import {StopStream} from './StopStream';
@@ -107,9 +108,9 @@ export const StreamOverlay = () => {
   const {top, bottom} = useMemo(() => getPanelContent(), [getPanelContent]);
 
   return (
-    <View pointerEvents="box-none" style={styles.row}>
+    <View pointerEvents="auto" style={styles.row}>
       <Animated.View
-        pointerEvents="box-none"
+        pointerEvents="auto"
         style={[styles.wrapper, wrapperAnimatedStyle]}>
         <LinearGradient
           pointerEvents="none"
@@ -127,14 +128,16 @@ export const StreamOverlay = () => {
           colors={['#050505fa', '#05050500']}
         />
 
-        <View pointerEvents="box-none" style={styles.topButtons}>
+        <ReactionCanvas />
+
+        <View pointerEvents="auto" style={styles.topButtons}>
           {top.map((item, index) => {
             item.key = `${role}+${index.toString()}`;
 
             return item;
           })}
         </View>
-        <View pointerEvents="box-none" style={styles.bottomButtons}>
+        <View pointerEvents="auto" style={styles.bottomButtons}>
           {bottom.map((item, index) => {
             item.key = `${role}+${index.toString()}`;
 
