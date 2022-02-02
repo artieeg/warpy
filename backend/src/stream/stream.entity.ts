@@ -19,6 +19,19 @@ export class StreamEntity {
     };
   }
 
+  async search(text: string) {
+    const streams = await this.prisma.stream.findMany({
+      where: {
+        title: {
+          contains: text,
+          mode: 'insensitive',
+        },
+      },
+    });
+
+    return streams.map((stream) => StreamEntity.toStreamDTO(stream));
+  }
+
   async getByIds(ids: string[]): Promise<IStream[]> {
     const data = await this.prisma.stream.findMany({
       where: {

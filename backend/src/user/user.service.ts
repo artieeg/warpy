@@ -5,7 +5,6 @@ import { CategoriesEntity } from '@backend_2/categories/categories.entity';
 import { CoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity';
 import { UserNotFound } from '@backend_2/errors';
 import { FollowEntity } from '@backend_2/follow/follow.entity';
-import { FriendFeedService } from '@backend_2/friend_feed/friend_feed.service';
 import { ParticipantEntity } from '@backend_2/participant/participant.entity';
 import { StreamEntity } from '@backend_2/stream/stream.entity';
 import { UserOnlineStatusService } from '@backend_2/user-online-status/user-online-status.service';
@@ -35,7 +34,6 @@ export class UserService {
     private blockEntity: BlockEntity,
     private appInviteEntity: AppInviteEntity,
     private appliedAppInviteEntity: AppliedAppInviteEntity,
-    private friendFeedService: FriendFeedService,
     private userOnlineStatusService: UserOnlineStatusService,
   ) {}
 

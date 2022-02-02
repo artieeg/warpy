@@ -27,6 +27,12 @@ export class StreamService {
     return stream;
   }
 
+  async search(text: string) {
+    const streams = await this.streamEntity.search(text);
+
+    return streams;
+  }
+
   async createNewStream(
     owner: string,
     title: string,
