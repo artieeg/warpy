@@ -2,11 +2,11 @@ import React, {useCallback, useMemo} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Text} from './Text';
 import {OpenNotificationsButton} from './OpenNotificationsButton';
-import {StartNewStreamButton} from './StartNewStreamButton';
+import {SearchButton} from './SearchButton';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {Avatar} from './Avatar';
 import {OpenHomeButton} from './OpenHomeButton';
-import {UserList} from '../../../lib';
+import {UserList} from '@warpy/lib';
 import {useStore} from '@app/store';
 
 export const ScreenHeader = () => {
@@ -57,8 +57,8 @@ export const ScreenHeader = () => {
     navigation.navigate('Notifications');
   }, [navigation]);
 
-  const onStartStream = useCallback(() => {
-    navigation.navigate('NewStream');
+  const onSearch = useCallback(() => {
+    //navigation.navigate('NewStream');
   }, [navigation]);
 
   const onOpenFeed = useCallback(() => {
@@ -87,10 +87,7 @@ export const ScreenHeader = () => {
         <View style={styles.row}>
           {button}
 
-          <StartNewStreamButton
-            style={styles.headerButton}
-            onPress={onStartStream}
-          />
+          <SearchButton style={styles.headerButton} onPress={onSearch} />
           {user && (
             <TouchableOpacity onPress={onOpenSettings}>
               {/* uh oh 🤡 */}

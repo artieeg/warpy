@@ -12,7 +12,7 @@ export const OpenNotificationsButton = (props: IRoundButtonProps) => {
   return (
     <RoundButton {...props} style={[style, styles.button]}>
       <>
-        <Icon name="bell" size={24} color="#BDF971" />
+        <Icon name="bell" size={20} color="#BDF971" />
         {hasUnseenNotifications && (
           <View style={styles.newNotificationsCircle} />
         )}
