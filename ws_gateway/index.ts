@@ -31,7 +31,7 @@ const handlers: Record<string, HandlerConfig> = {
     }),
   },
 
-  "search-streams": {
+  "search-stream": {
     schema: joi.object({
       textToSearch: joi.string().max(64).required(),
     }),
