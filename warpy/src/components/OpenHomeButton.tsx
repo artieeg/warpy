@@ -8,7 +8,7 @@ export const OpenHomeButton = (props: IRoundButtonProps) => {
 
   return (
     <RoundButton {...props} style={[style, styles.button]}>
-      <Icon name="home" size={24} color="#BDF971" />
+      <Icon name="home" size={20} color="#BDF971" />
     </RoundButton>
   );
 };
