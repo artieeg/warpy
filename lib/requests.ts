@@ -343,3 +343,7 @@ export interface IUserStatusRequest {
 export interface IFriendFeedRequest {
   user: string;
 }
+
+export interface IStreamSearchRequest {
+  textToSearch: string;
+}

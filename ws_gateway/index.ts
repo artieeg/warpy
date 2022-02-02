@@ -31,6 +31,15 @@ const handlers: Record<string, HandlerConfig> = {
     }),
   },
 
+  "search-stream": {
+    schema: joi.object({
+      textToSearch: joi.string().max(64).required(),
+    }),
+    kind: "request",
+    auth: true,
+    subject: "stream.search",
+  },
+
   "friend-feed-get": {
     subject: "friend-feed.get",
     kind: "request",

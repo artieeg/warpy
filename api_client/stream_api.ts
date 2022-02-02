@@ -19,11 +19,13 @@ import {
   IStreamIdAvailable,
   IInviteStateUpdate,
   ILeaveStreamResponse,
+  IStreamSearchResponse,
 } from "@warpy/lib";
 
 export interface IStreamAPI {
   create: (title: string, hub: string) => Promise<INewStreamResponse>;
   join: (stream: string) => Promise<IJoinStreamResponse>;
+  search: (text: string) => Promise<IStreamSearchResponse>;
   react: (stream: string, emoji: string) => void;
   stop: (stream: string) => any;
   sendChatMessage: (message: string) => Promise<ISendMessageResponse>;
@@ -87,6 +89,7 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
   react: (stream, emoji) => socket.publish("reaction", { stream, emoji }),
   sendChatMessage: (message: string) =>
     socket.request("new-chat-message", { message }),
+  search: (textToSearch) => socket.request("search-stream", { textToSearch }),
   join: (stream) => socket.request("join-stream", { stream }),
   getViewers: (stream, page) =>
     socket.request("request-viewers", { stream, page }),

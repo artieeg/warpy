@@ -8,12 +8,12 @@ interface IStartNewSteramButtonProps {
   style: any;
 }
 
-export const StartNewStreamButton = (props: IStartNewSteramButtonProps) => {
+export const SearchButton = (props: IStartNewSteramButtonProps) => {
   const {onPress, style} = props;
 
   return (
     <RoundButton style={[style, styles.button]} onPress={onPress}>
-      <Icon name="plus" size={24} color="#BDF971" />
+      <Icon name="search" size={20} color="#BDF971" />
     </RoundButton>
   );
 };

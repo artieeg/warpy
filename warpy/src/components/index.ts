@@ -14,7 +14,6 @@ export * from './Participant';
 export * from './BaseSlideModal';
 export * from './UserInfoModal';
 export * from './StreamPreview';
-export * from './StartNewStreamButton';
 export * from './ViewersCountPreview';
 export * from './StreamPreviewTitle';
 export * from './ToggleControls';

@@ -197,3 +197,7 @@ export interface IUserOnlineStatusResponse {
 export interface IFriendFeedResponse {
   feed: IFriendFeedItem[];
 }
+
+export interface IStreamSearchResponse {
+  streams: IStream[];
+}
