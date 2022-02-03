@@ -86,12 +86,12 @@ export const useParticipantModalController = () => {
 export const UserInfoModal = () => {
   const {
     participant,
-    onChat,
     onToggleFollow,
     isFollowing,
     visible,
     onStartRoomTogether,
     stream,
+    onOpenProfile,
   } = useParticipantModalController();
 
   return (
@@ -135,14 +135,16 @@ export const UserInfoModal = () => {
               />
 
               <SmallTextButton
+                color="mine_shaft"
+                textColor="white"
+                title="details"
+                onPress={onOpenProfile}
                 style={styles.rowTextButton}
-                color="green"
-                onPress={onChat}
-                title="chat"
               />
               <SmallIconButton
                 style={styles.rowButtonFinal}
-                name="flag"
+                name="flag-1"
+                size={20}
                 background="red"
               />
             </View>
@@ -153,13 +155,6 @@ export const UserInfoModal = () => {
               title="start a stream together"
             />
           </View>
-
-          <SmallTextButton
-            color="mine_shaft"
-            textColor="white"
-            onPress={onStartRoomTogether}
-            title="see user details"
-          />
         </View>
       )}
     </BaseSlideModal>
@@ -168,7 +163,7 @@ export const UserInfoModal = () => {
 
 const styles = StyleSheet.create({
   actions: {
-    marginBottom: 30,
+    //marginBottom: 30,
   },
   wrapper: {
     paddingHorizontal: 20,

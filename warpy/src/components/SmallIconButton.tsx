@@ -20,7 +20,7 @@ export const SmallIconButton = ({
       style={[styles.button, {backgroundColor: colors[background || 'green']}]}>
       <Icon
         {...props}
-        size={30}
+        size={props.size ?? 30}
         color={color ? colors[color] : colors.cod_gray}
       />
     </TouchableOpacity>
