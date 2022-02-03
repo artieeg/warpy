@@ -13,7 +13,7 @@ import { ChatModule } from './chat/chat.module';
 import { CoinBalanceModule } from './coin-balance/coin-balance.module';
 import { configuration } from './config/configuration';
 import { DeveloperAccountModule } from './developer_account/developer_account.module';
-import { FeedModule } from './feed/feed.module';
+import { CandidateModule } from './candidate/candidate.module';
 import { FollowModule } from './follow/follow.module';
 import { FriendFeedModule } from './friend_feed/friend_feed.module';
 import { GifModule } from './gif/gif.module';
@@ -46,7 +46,7 @@ import { UserModule } from './user/user.module';
     MediaModule,
     DeveloperAccountModule,
     GifModule,
-    FeedModule,
+    CandidateModule,
     FriendFeedModule,
     UserModule,
     TokenModule,
