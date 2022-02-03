@@ -1,4 +1,4 @@
-import {Input, ScreenHeader} from '@app/components';
+import {Input, ScreenHeader, StreamFeedView} from '@app/components';
 import React, {useState} from 'react';
 import {
   View,
@@ -13,6 +13,7 @@ import {Text} from '@app/components';
 import {colors} from '../../colors';
 import {useQuery} from 'react-query';
 import {useStore} from '@app/store';
+import {UserHorizontalListItem} from '@app/components/UserHorizontalListItem';
 
 const search = async (api: APIClient, query: string) => {
   const [{users}, {streams}] = await Promise.all([
@@ -66,25 +67,18 @@ export const Search = () => {
         </View>
       )}
 
-      {/*!isLoading && (
-        <SectionList
-          style={styles.list}
-          renderItem={({item, section: {kind}}) => ()}
-          sections={[
-            {
-              title: 'people',
-              kind: 'people',
-              data: (users as any) ?? [],
-            },
-
-            {
-              title: 'streams',
-              kind: 'streams',
-              data: (streams as any) ?? [],
-            },
-          ]}
+      <View>
+        <FlatList
+          data={users}
+          renderItem={({item}) => (
+            <UserHorizontalListItem item={{user: item}} />
+          )}
+          horizontal
+          contentContainerStyle={styles.users}
         />
-      )*/}
+      </View>
+
+      <StreamFeedView feed={streams as any} />
     </View>
   );
 };
@@ -104,6 +98,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   list: {
+    flex: 1,
+  },
+  users: {paddingHorizontal: 10, marginVertical: 10},
+  streams: {
     flex: 1,
   },
 });

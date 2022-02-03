@@ -9,7 +9,7 @@ interface FriendFeedItemProps {
   item: IFriendFeedItem;
 }
 
-export const FriendFeedItem = ({item}: FriendFeedItemProps) => {
+export const UserHorizontalListItem = ({item}: FriendFeedItemProps) => {
   const onPress = useCallback(() => {
     useStore.getState().dispatchModalOpen('participant-info', {
       selectedUser: item.user,
