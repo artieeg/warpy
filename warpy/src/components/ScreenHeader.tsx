@@ -66,13 +66,23 @@ export const ScreenHeader = () => {
     navigation.navigate('Feed');
   }, [navigation]);
 
-  const button = useMemo(
+  const firstButton = useMemo(
     () =>
-      route.name === 'Feed' ? (
+      route.name === 'Feed' || route.name === 'Search' ? (
         <OpenNotificationsButton
           style={styles.headerButton}
           onPress={onOpenNotifications}
         />
+      ) : (
+        <OpenHomeButton style={styles.headerButton} onPress={onOpenFeed} />
+      ),
+    [route.name],
+  );
+
+  const secondButton = useMemo(
+    () =>
+      route.name === 'Feed' || route.name === 'Notifications' ? (
+        <SearchButton style={styles.headerButton} onPress={onSearch} />
       ) : (
         <OpenHomeButton style={styles.headerButton} onPress={onOpenFeed} />
       ),
@@ -86,9 +96,9 @@ export const ScreenHeader = () => {
       </Text>
       {displayControls && (
         <View style={styles.row}>
-          {button}
+          {firstButton}
 
-          <SearchButton style={styles.headerButton} onPress={onSearch} />
+          {secondButton}
           {user && (
             <TouchableOpacity onPress={onOpenSettings}>
               {/* uh oh 🤡 */}
