@@ -17,6 +17,7 @@ import {
   Loading,
   InviteCodeInput,
   MyAwardsDisplay,
+  Search,
 } from './src/screens';
 import {StatusBar} from 'react-native';
 import {QueryClient, QueryClientProvider} from 'react-query';
@@ -38,6 +39,7 @@ const App = () => {
     Loading,
     SendInvite,
     InviteCodeInput,
+    Search,
     MyAwardsDisplay,
     SignUpAvatar,
     Feed,

@@ -2,7 +2,7 @@ import {useStoreShallow} from '@app/store';
 import React, {useMemo} from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
 import {IFriendFeedItem} from '@warpy/lib';
-import {FriendFeedItem} from './FriendFeedItem';
+import {UserHorizontalListItem} from './UserHorizontalListItem';
 
 export const FriendFeed = () => {
   const [friendFeed, following] = useStoreShallow(state => [
@@ -33,7 +33,7 @@ export const FriendFeed = () => {
         horizontal
         data={feed}
         contentContainerStyle={styles.list}
-        renderItem={({item}) => <FriendFeedItem item={item} />}
+        renderItem={({item}) => <UserHorizontalListItem item={item} />}
       />
     </View>
   );

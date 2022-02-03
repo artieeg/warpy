@@ -3,12 +3,12 @@ import { StreamModule } from '../stream/stream.module';
 import { BlockModule } from '../block/block.module';
 import { ParticipantModule } from '../participant/participant.module';
 import { PrismaModule } from '../prisma/prisma.module';
-import { FeedController } from './feed.controller';
-import { FeedService } from './feed.service';
+import { CandidateController } from './candidate.controller';
+import { CandidateService } from './candidate.service';
 
 @Module({
   imports: [PrismaModule, BlockModule, StreamModule, ParticipantModule],
-  providers: [FeedService],
-  controllers: [FeedController],
+  providers: [CandidateService],
+  controllers: [CandidateController],
 })
-export class FeedModule {}
+export class CandidateModule {}

@@ -9,10 +9,10 @@ import {
   createStreamFixture,
 } from '@backend_2/__fixtures__';
 import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
-import { FeedService } from './feed.service';
+import { CandidateService } from './candidate.service';
 
 describe('FeedService', () => {
-  let feedService: FeedService;
+  let feedService: CandidateService;
 
   beforeAll(async () => {
     const m = await testModuleBuilder
@@ -24,7 +24,7 @@ describe('FeedService', () => {
       .useValue(mockedBlockEntity)
       .compile();
 
-    feedService = m.get(FeedService);
+    feedService = m.get(CandidateService);
   });
 
   it('gets feed', async () => {

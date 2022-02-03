@@ -30,15 +30,6 @@ export class StreamController {
     return response;
   }
 
-  @MessagePattern('stream.search')
-  async onSearch({
-    textToSearch,
-  }: IStreamSearchRequest): Promise<IStreamSearchResponse> {
-    const streams = await this.streamService.search(textToSearch);
-
-    return { streams };
-  }
-
   @MessagePattern('stream.stop')
   async stopStream({ user }: IStopStream) {
     await this.streamService.stopStream(user);

@@ -5,7 +5,7 @@ import { ParticipantEntity } from '../participant/participant.entity';
 import { StreamEntity } from '../stream/stream.entity';
 
 @Injectable()
-export class FeedService {
+export class CandidateService {
   constructor(
     @Inject(forwardRef(() => BlockEntity))
     private blockEntity: BlockEntity,
@@ -22,6 +22,17 @@ export class FeedService {
     };
   }
 
+  private getCandidatesFromStreams(streams: IStream[]): Promise<ICandidate[]> {
+    return Promise.all(streams.map((s) => this.getFeedCandidate(s)));
+  }
+
+  async search(text: string) {
+    const streams = await this.streamEntity.search(text);
+    const candidates = await this.getCandidatesFromStreams(streams);
+
+    return candidates;
+  }
+
   async getFeed(user: string, category?: string) {
     const blockedUserIds = await this.blockEntity.getBlockedUserIds(user);
     const blockedByUserIds = await this.blockEntity.getBlockedByIds(user);
@@ -29,12 +40,10 @@ export class FeedService {
     const streams: IStream[] = await this.streamEntity.get({
       blockedUserIds,
       blockedByUserIds,
-      category
+      category,
     });
 
-    const feed = await Promise.all(
-      streams.map((s) => this.getFeedCandidate(s)),
-    );
+    const feed = await this.getCandidatesFromStreams(streams);
 
     return feed;
   }

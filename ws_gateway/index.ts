@@ -37,7 +37,7 @@ const handlers: Record<string, HandlerConfig> = {
     }),
     kind: "request",
     auth: true,
-    subject: "stream.search",
+    subject: "candidate.search",
   },
 
   "friend-feed-get": {
@@ -183,7 +183,7 @@ const handlers: Record<string, HandlerConfig> = {
   },
 
   "request-feed": {
-    subject: "feeds.get",
+    subject: "candidate.get",
     kind: "request",
     auth: true,
     schema: joi.object({

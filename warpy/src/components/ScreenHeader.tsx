@@ -37,6 +37,7 @@ export const ScreenHeader = () => {
 
     const titles = {
       MyAwardsDisplay: '/awards',
+      Search: '/search',
       Feed: '/feed',
       Notifications: '/news',
       MainSettingsScreen: '/you',
@@ -58,7 +59,7 @@ export const ScreenHeader = () => {
   }, [navigation]);
 
   const onSearch = useCallback(() => {
-    //navigation.navigate('NewStream');
+    navigation.navigate('Search');
   }, [navigation]);
 
   const onOpenFeed = useCallback(() => {

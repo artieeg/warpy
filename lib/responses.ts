@@ -199,5 +199,5 @@ export interface IFriendFeedResponse {
 }
 
 export interface IStreamSearchResponse {
-  streams: IStream[];
+  streams: ICandidate[];
 }
