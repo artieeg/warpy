@@ -1,6 +1,5 @@
 import React, {useCallback, useMemo} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import {Text} from './Text';
 import {OpenNotificationsButton} from './OpenNotificationsButton';
 import {SearchButton} from './SearchButton';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -8,6 +7,7 @@ import {Avatar} from './Avatar';
 import {OpenHomeButton} from './OpenHomeButton';
 import {UserList} from '@warpy/lib';
 import {useStore} from '@app/store';
+import {ScreenTitle} from './ScreenTitle';
 
 export const ScreenHeader = () => {
   //TODO: too ugly, change someday
@@ -91,9 +91,12 @@ export const ScreenHeader = () => {
 
   return (
     <View style={styles.header}>
+      <ScreenTitle>{title}</ScreenTitle>
+      {/*
       <Text size="large" weight="extraBold">
         {title}
       </Text>
+        */}
       {displayControls && (
         <View style={styles.row}>
           {firstButton}

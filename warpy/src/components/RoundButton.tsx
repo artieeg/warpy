@@ -1,7 +1,6 @@
 import React from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import Animated, {
-  call,
   Easing,
   useAnimatedStyle,
   useSharedValue,
@@ -26,8 +25,9 @@ export const RoundButton = (props: IRoundButtonProps) => {
       withTiming(1, {duration: 100, easing: Easing.ease}),
     );
 
+    //TODO: use animated's call
     setTimeout(() => {
-      onPress();
+      onPress?.();
     }, 200);
   }, [onPress]);
 
