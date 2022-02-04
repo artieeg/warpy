@@ -1,6 +1,7 @@
 import React from 'react';
 import {TextProps} from 'react-native';
 import {StyleSheet, Text as BaseText} from 'react-native';
+import Animated from 'react-native-reanimated';
 import {Colors, colors} from '../../colors';
 
 type TextWeight = 'regular' | 'bold' | 'light' | 'extraBold';
@@ -11,24 +12,41 @@ interface ITextProps extends TextProps {
   size?: TextSize;
   color?: Colors;
   italic?: boolean;
+  style?: any;
   children: any;
+  animated?: boolean;
 }
 
 export const Text = (props: ITextProps) => {
-  const {color, italic, weight, size, style} = props;
+  const {color, italic, animated, weight, size, style} = props;
 
-  return (
-    <BaseText
-      {...props}
-      style={[
-        {color: colors[color || 'green']},
-        textStyles[weight || 'bold'],
-        textStyles[size || 'medium'],
-        italic && textStyles.italic,
-        style,
-      ]}
-    />
-  );
+  if (animated) {
+    return (
+      <Animated.Text
+        {...props}
+        style={[
+          {color: colors[color || 'green']},
+          textStyles[weight || 'bold'],
+          textStyles[size || 'medium'],
+          italic && textStyles.italic,
+          style,
+        ]}
+      />
+    );
+  } else {
+    return (
+      <BaseText
+        {...props}
+        style={[
+          {color: colors[color || 'green']},
+          textStyles[weight || 'bold'],
+          textStyles[size || 'medium'],
+          italic && textStyles.italic,
+          style,
+        ]}
+      />
+    );
+  }
 };
 
 export const textStyles = StyleSheet.create({
