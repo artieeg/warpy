@@ -1,5 +1,9 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  TouchableOpacityProps,
+} from 'react-native';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -8,14 +12,16 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-export interface IRoundButtonProps {
+export interface IRoundButtonProps extends TouchableOpacityProps {
   children?: React.ReactChild;
   style?: any;
   onPress?: any;
+  onPressIn?: any;
+  onPressOut?: any;
 }
 
 export const RoundButton = (props: IRoundButtonProps) => {
-  const {children, onPress, style} = props;
+  const {children, onPress, onPressIn, onPressOut, style} = props;
 
   const scale = useSharedValue(1);
 
@@ -25,19 +31,19 @@ export const RoundButton = (props: IRoundButtonProps) => {
       withTiming(1, {duration: 100, easing: Easing.ease}),
     );
 
-    //TODO: use animated's call
     setTimeout(() => {
-      onPress?.();
-    }, 200);
+      onPress?.(undefined);
+    }, 20);
   }, [onPress]);
 
-  const onPressIn = React.useCallback(() => {
+  const onPressInWrapper = React.useCallback(() => {
     scale.value = withTiming(0.9, {duration: 200, easing: Easing.exp});
-  }, []);
+    onPressIn?.();
+  }, [onPressIn]);
 
-  const onPressOut = React.useCallback(() => {
+  const onPressOutWrapper = React.useCallback(() => {
     scale.value = withTiming(1, {duration: 200, easing: Easing.exp});
-  }, []);
+  }, [onPressOut]);
 
   const animatedWrapperStyle = useAnimatedStyle(() => ({
     transform: [{scale: scale.value}],
@@ -46,8 +52,8 @@ export const RoundButton = (props: IRoundButtonProps) => {
   return (
     <Animated.View style={animatedWrapperStyle}>
       <TouchableOpacity
-        onPressOut={onPressOut}
-        onPressIn={onPressIn}
+        onPressOut={onPressOutWrapper}
+        onPressIn={onPressInWrapper}
         activeOpacity={1.0}
         onPress={onPressWrapper}
         style={[styles.wrapper, style]}>
