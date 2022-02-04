@@ -1,5 +1,5 @@
 import {useFocusEffect} from '@react-navigation/native';
-import React, {useRef} from 'react';
+import React, {useCallback, useRef} from 'react';
 import {View} from 'react-native';
 import Animated, {
   Easing,
@@ -23,18 +23,20 @@ export const ScreenTitle: React.FC<{}> = ({children}) => {
     backgroundColor: colors.black,
   }));
 
-  useFocusEffect(() => {
-    if (width.current !== 0) {
-      left.value = withTiming(width.current, {
-        duration: 300,
-        easing: Easing.ease,
-      });
-    }
+  useFocusEffect(
+    useCallback(() => {
+      if (width.current !== 0) {
+        left.value = withTiming(width.current, {
+          duration: 300,
+          easing: Easing.ease,
+        });
+      }
 
-    return () => {
-      left.value = 0;
-    };
-  });
+      return () => {
+        left.value = 0;
+      };
+    }, []),
+  );
 
   return (
     <View
