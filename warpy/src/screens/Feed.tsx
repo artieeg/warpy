@@ -28,8 +28,13 @@ export const Feed = () => {
     }, 2000);
   }, []);
 
+  const [categoryListHeight, setCategoryListHeight] = useState(0);
+
   const feedWrapperStyle = useAnimatedStyle(() => ({
-    marginTop: withTiming(isMinimized ? -40 : 0, {duration: 400}),
+    marginTop: withTiming(isMinimized ? -categoryListHeight - 10 : 0, {
+      duration: 400,
+    }),
+    flex: 1,
   }));
 
   return (
@@ -37,6 +42,7 @@ export const Feed = () => {
       <ScreenHeader minimized={isMinimized} />
       <FriendFeed />
       <StreamCategoryList
+        onLayout={e => setCategoryListHeight(e.nativeEvent.layout.height)}
         moveCurrentCategory={isMinimized}
         mode="browse-feed"
       />

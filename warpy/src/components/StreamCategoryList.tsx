@@ -45,7 +45,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
     }
 
     return withTiming(
-      moveCurrentCategory ? 35 - currentCategoryPosition.y : 0,
+      moveCurrentCategory ? 55 - currentCategoryPosition.y : 0,
       {
         duration: coordsDuration,
         easing: coordsEasing,
@@ -129,7 +129,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
   }));
 
   return (
-    <View style={[styles.wrapper, props.style]}>
+    <View {...props} style={[styles.wrapper, props.style]}>
       <Animated.ScrollView
         style={scrollViewStyle}
         scrollEnabled={!moveCurrentCategory}

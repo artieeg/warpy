@@ -106,8 +106,19 @@ export const ScreenHeader: React.FC<{minimized?: boolean}> = ({minimized}) => {
     }),
   }));
 
+  const headerStyle = useAnimatedStyle(() => ({
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: withTiming(minimized ? 15 : 30, {
+      duration: 300,
+      easing: Easing.ease,
+    }),
+  }));
+
   return (
-    <View style={styles.header}>
+    <Animated.View style={headerStyle}>
       <ScreenTitle>{title}</ScreenTitle>
       <Animated.View style={controlsStyle}>
         {displayControls && (
@@ -124,18 +135,12 @@ export const ScreenHeader: React.FC<{minimized?: boolean}> = ({minimized}) => {
           </View>
         )}
       </Animated.View>
-    </View>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
-  header: {
-    paddingHorizontal: 20,
-    paddingVertical: 30,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
+  header: {},
   row: {
     flexDirection: 'row',
     alignItems: 'center',
