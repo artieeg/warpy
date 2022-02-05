@@ -57,6 +57,7 @@ export const createStream = async (record: UserRecord) => {
     isProducer: true,
   });
 
+  /*
   const producers = await Promise.all([
     record.media.sendMediaStream(
       localMediaStream.getVideoTracks()[0],
@@ -67,6 +68,8 @@ export const createStream = async (record: UserRecord) => {
   ]);
 
   record.producers = producers;
+  */
+
   record.stream = response.stream;
   record.role = "streamer";
 };

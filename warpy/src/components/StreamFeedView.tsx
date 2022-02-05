@@ -15,79 +15,82 @@ interface StreamFeedViewProps
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
-export const StreamFeedView = React.memo<StreamFeedViewProps>(
-  ({data, ...rest}) => {
-    const {previewHeight, previewWidth} = usePreviewDimensions();
+export const StreamFeedView: React.FC<StreamFeedViewProps> = ({
+  data,
+  ...rest
+}) => {
+  const {previewHeight, previewWidth} = usePreviewDimensions();
 
-    const renderItem = React.useCallback(
-      ({item, index}: {item: ICandidate; index: number}) => {
-        let style: any = {
-          maxWidth: previewWidth,
-          width: previewWidth,
+  const renderItem = React.useCallback(
+    ({item, index}: {item: ICandidate; index: number}) => {
+      let style: any = {
+        maxWidth: previewWidth,
+        width: previewWidth,
+      };
+
+      if (index === 1) {
+        style = {
+          ...style,
+          height: previewHeight - 100,
+          maxHeight: previewHeight - 100,
         };
+      } else {
+        style = {...style, width: previewWidth, height: previewHeight};
+      }
 
-        if (index === 1) {
-          style = {
-            ...style,
-            height: previewHeight - 100,
-            maxHeight: previewHeight - 100,
-          };
-        } else {
-          style = {...style, width: previewWidth, height: previewHeight};
-        }
+      if (index % 2 && index !== 1) {
+        style = {...style, transform: [{translateY: -100}]};
+      }
 
-        if (index % 2 && index !== 1) {
-          style = {...style, transform: [{translateY: -100}]};
-        }
+      return <StreamPreview key={item.id} stream={item} style={style} />;
+    },
+    [],
+  );
 
-        return <StreamPreview key={item.id} stream={item} style={style} />;
-      },
-      [],
-    );
+  const count = data?.length ?? 0;
 
-    const count = data?.length ?? 0;
+  const opacity = useDerivedValue(() => {
+    return withTiming(count > 0 ? 1 : 0, {
+      duration: 300,
+      easing: Easing.ease,
+    });
+  }, [count]);
 
-    const opacity = useDerivedValue(() => {
-      return withTiming(count > 0 ? 1 : 0, {
-        duration: 300,
-        easing: Easing.ease,
-      });
-    }, [count]);
+  const wrapperStyle = useAnimatedStyle(() => ({
+    flex: 1,
+    opacity: opacity.value,
+  }));
 
-    const wrapperStyle = useAnimatedStyle(() => ({
-      flex: 1,
-      opacity: opacity.value,
-    }));
-
-    return (
-      <AnimatedFlatList
-        style={wrapperStyle}
-        {...(rest as any)}
-        data={
-          data && [
-            ...data,
-            ...data,
-            ...data,
-            ...data,
-            ...data,
-            ...data,
-            ...data,
-            ...data,
-            ...data,
-            ...data,
-            ...data,
-            ...data,
-            ...data,
-            ...data,
-            ...data,
-            ...data,
-            ...data,
-            ...data,
-          ]
-        }
-        numColumns={2}
-        renderItem={renderItem as any}
-      />
-    );
-  },
-);
+  return (
+    <AnimatedFlatList
+      {...(rest as any)}
+      style={[wrapperStyle, rest.style]}
+      data={
+        data && [
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+        ]
+      }
+      numColumns={2}
+      renderItem={renderItem as any}
+    />
+  );
+};
+//(props0, props1) => props0.data === props1.data && props1,
+//);
