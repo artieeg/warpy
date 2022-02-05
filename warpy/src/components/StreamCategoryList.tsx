@@ -14,6 +14,7 @@ import Animated, {
   Easing,
   useAnimatedStyle,
   useDerivedValue,
+  withDelay,
   withTiming,
 } from 'react-native-reanimated';
 
@@ -118,9 +119,17 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
     top: selectedCategoryY.value,
   }));
 
+  const scrollViewStyle = useAnimatedStyle(() => ({
+    opacity: withDelay(
+      moveCurrentCategory ? 0 : 200,
+      withTiming(moveCurrentCategory ? 0 : 1, {duration: 100}),
+    ),
+  }));
+
   return (
     <View style={[styles.wrapper, props.style]}>
-      <ScrollView
+      <Animated.ScrollView
+        style={scrollViewStyle}
         scrollEnabled={!moveCurrentCategory}
         onScroll={e => {
           offset.current = e.nativeEvent.contentOffset.x;
@@ -131,14 +140,13 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
         horizontal
         contentContainerStyle={styles.container}>
         {categories.map(renderItem)}
-      </ScrollView>
+      </Animated.ScrollView>
 
       {streamCategory && (
         <Animated.View style={fakeCategoryStyle}>
           <StreamCategoryOption
             selected
-            color="#ff3030"
-            //color={colors[selectedIndex.current].toHexString()}
+            color={colors[selectedIndex.current].toHexString()}
             category={streamCategory}
             onPress={() => {}}
           />
