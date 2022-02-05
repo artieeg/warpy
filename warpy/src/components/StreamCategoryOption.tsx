@@ -1,5 +1,5 @@
-import React from 'react';
-import {StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useRef} from 'react';
+import {StyleSheet, TouchableOpacity, ViewProps} from 'react-native';
 import Animated, {
   Easing,
   interpolateColor,
@@ -8,14 +8,13 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import {IStreamCategory} from '../../../lib';
-import {colors} from '../../colors';
 import {Text} from './Text';
 
-interface StreamCategoryOptionProps {
+interface StreamCategoryOptionProps extends ViewProps {
   category: IStreamCategory;
   color: string;
   selected: boolean;
-  onPress: () => any;
+  onPress: (position: {x: number; y: number; w: number}) => any;
 }
 
 export const StreamCategoryOption = React.memo(
@@ -26,6 +25,8 @@ export const StreamCategoryOption = React.memo(
         easing: Easing.ease,
       });
     }, [selected]);
+
+    const position = useRef<{x: number; y: number}>();
 
     const style = useAnimatedStyle(() => ({
       backgroundColor: interpolateColor(
@@ -45,17 +46,31 @@ export const StreamCategoryOption = React.memo(
       ),
     }));
 
+    const ref = useRef<any>();
+
     return (
-      <TouchableOpacity
-        activeOpacity={1.0}
-        onPress={onPress}
-        style={[styles.wrapper]}>
-        <Animated.View style={[styles.container, style]}>
+      <Animated.View
+        ref={ref}
+        onLayout={e => {
+          position.current = {
+            x: e.nativeEvent.layout.x,
+            y: e.nativeEvent.layout.y,
+          };
+        }}
+        style={[styles.wrapper, style]}>
+        <TouchableOpacity
+          activeOpacity={1.0}
+          onPress={() => {
+            ref.current?.measureInWindow((x: number, y: number, w: number) =>
+              onPress({x, y, w}),
+            );
+          }}
+          style={[styles.container]}>
           <Text animated size="small" style={textStyle}>
             {category.title}
           </Text>
-        </Animated.View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </Animated.View>
     );
   },
 );
@@ -63,6 +78,7 @@ export const StreamCategoryOption = React.memo(
 const styles = StyleSheet.create({
   wrapper: {
     marginRight: 10,
+    borderRadius: 20,
   },
   container: {
     alignItems: 'center',

@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList, FlatListProps} from 'react-native';
 import {ICandidate} from '@warpy/lib';
 import {usePreviewDimensions} from '@app/hooks';
 import {StreamPreview} from './StreamPreview';
@@ -10,13 +10,15 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-interface StreamFeedViewProps {
-  feed: ICandidate[];
-}
+interface StreamFeedViewProps
+  extends Omit<FlatListProps<ICandidate>, 'renderItem'> {}
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
-export const StreamFeedView: React.FC<StreamFeedViewProps> = ({feed}) => {
+export const StreamFeedView: React.FC<StreamFeedViewProps> = ({
+  data,
+  ...rest
+}) => {
   const {previewHeight, previewWidth} = usePreviewDimensions();
 
   const renderItem = React.useCallback(
@@ -45,7 +47,7 @@ export const StreamFeedView: React.FC<StreamFeedViewProps> = ({feed}) => {
     [],
   );
 
-  const count = feed?.length ?? 0;
+  const count = data?.length ?? 0;
 
   const opacity = useDerivedValue(() => {
     return withTiming(count > 0 ? 1 : 0, {
@@ -62,26 +64,29 @@ export const StreamFeedView: React.FC<StreamFeedViewProps> = ({feed}) => {
   return (
     <AnimatedFlatList
       style={wrapperStyle}
-      data={[
-        ...feed,
-        ...feed,
-        ...feed,
-        ...feed,
-        ...feed,
-        ...feed,
-        ...feed,
-        ...feed,
-        ...feed,
-        ...feed,
-        ...feed,
-        ...feed,
-        ...feed,
-        ...feed,
-        ...feed,
-        ...feed,
-        ...feed,
-        ...feed,
-      ]}
+      {...(rest as any)}
+      data={
+        data && [
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+          ...data,
+        ]
+      }
       numColumns={2}
       renderItem={renderItem as any}
     />
