@@ -6,6 +6,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {TextButton} from '@warpy/components';
 import {useNavigation} from '@react-navigation/native';
+import Animated, {useAnimatedStyle, withTiming} from 'react-native-reanimated';
 
 export const Feed = () => {
   const feed = useFeed();
@@ -27,15 +28,21 @@ export const Feed = () => {
     }, 2000);
   }, []);
 
+  const feedWrapperStyle = useAnimatedStyle(() => ({
+    marginTop: withTiming(isMinimized ? -40 : 0, {duration: 400}),
+  }));
+
   return (
     <View style={styles.wrapper}>
-      <ScreenHeader />
+      <ScreenHeader minimized={isMinimized} />
       <FriendFeed />
       <StreamCategoryList
         moveCurrentCategory={isMinimized}
         mode="browse-feed"
       />
-      <StreamFeedView data={feed} />
+      <Animated.View style={feedWrapperStyle}>
+        <StreamFeedView data={feed} />
+      </Animated.View>
       <View style={styles.startStreamButtonWrapper}>
         <TextButton onPress={onStartStream} title="start a room now" />
       </View>

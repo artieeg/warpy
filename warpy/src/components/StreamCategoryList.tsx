@@ -36,6 +36,9 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
 
   const streamCategory = useStore(state => state.selectedFeedCategory);
 
+  const coordsEasing = Easing.inOut(Easing.quad);
+  const coordsDuration = 400;
+
   const selectedCategoryY = useDerivedValue(() => {
     if (!currentCategoryPosition) {
       return 0;
@@ -44,8 +47,8 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
     return withTiming(
       moveCurrentCategory ? 35 - currentCategoryPosition.y : 0,
       {
-        duration: 200,
-        easing: Easing.ease,
+        duration: coordsDuration,
+        easing: coordsEasing,
       },
     );
   }, [currentCategoryPosition, moveCurrentCategory]);
@@ -62,8 +65,8 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
         ? width - 20 - currentCategoryPosition.w
         : currentCategoryPosition.x,
       {
-        duration: 200,
-        easing: Easing.ease,
+        duration: coordsDuration,
+        easing: coordsEasing,
       },
     );
   }, [currentCategoryPosition, moveCurrentCategory]);
@@ -114,14 +117,13 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
 
   const fakeCategoryStyle = useAnimatedStyle(() => ({
     position: 'absolute',
-    //opacity: moveCurrentCategory ? 1 : 0,
     left: selectedCategoryX.value,
     top: selectedCategoryY.value,
   }));
 
   const scrollViewStyle = useAnimatedStyle(() => ({
     opacity: withDelay(
-      moveCurrentCategory ? 0 : 200,
+      moveCurrentCategory ? 0 : coordsDuration * 0.8,
       withTiming(moveCurrentCategory ? 0 : 1, {duration: 100}),
     ),
   }));

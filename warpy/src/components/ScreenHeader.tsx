@@ -8,8 +8,14 @@ import {OpenHomeButton} from './OpenHomeButton';
 import {UserList} from '@warpy/lib';
 import {useStore} from '@app/store';
 import {ScreenTitle} from './ScreenTitle';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useDerivedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
-export const ScreenHeader = () => {
+export const ScreenHeader: React.FC<{minimized?: boolean}> = ({minimized}) => {
   //TODO: too ugly, change someday
   const [user, signUpAvatar] = useStore(state => [
     state.user,
@@ -89,27 +95,35 @@ export const ScreenHeader = () => {
     [route.name],
   );
 
+  const controlsOpacity = useDerivedValue(() => {
+    return minimized ? 0 : 1;
+  }, [minimized]);
+
+  const controlsStyle = useAnimatedStyle(() => ({
+    opacity: withTiming(controlsOpacity.value, {
+      duration: 300,
+      easing: Easing.ease,
+    }),
+  }));
+
   return (
     <View style={styles.header}>
       <ScreenTitle>{title}</ScreenTitle>
-      {/*
-      <Text size="large" weight="extraBold">
-        {title}
-      </Text>
-        */}
-      {displayControls && (
-        <View style={styles.row}>
-          {firstButton}
+      <Animated.View style={controlsStyle}>
+        {displayControls && (
+          <View style={styles.row}>
+            {firstButton}
 
-          {secondButton}
-          {user && (
-            <TouchableOpacity onPress={onOpenSettings}>
-              {/* uh oh 🤡 */}
-              <Avatar user={user ? user : ({avatar: signUpAvatar} as any)} />
-            </TouchableOpacity>
-          )}
-        </View>
-      )}
+            {secondButton}
+            {user && (
+              <TouchableOpacity onPress={onOpenSettings}>
+                {/* uh oh 🤡 */}
+                <Avatar user={user ? user : ({avatar: signUpAvatar} as any)} />
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
+      </Animated.View>
     </View>
   );
 };
