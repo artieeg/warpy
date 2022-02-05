@@ -31,7 +31,7 @@ export const StreamCategoryOption = React.memo(
       backgroundColor: interpolateColor(
         colorTransition.value,
         [0, 1],
-        ['#000000', color],
+        ['#00000000', color],
       ),
       flex: 1,
       width: '100%',

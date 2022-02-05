@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, useWindowDimensions, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 import {ICandidate} from '@warpy/lib';
 import {usePreviewDimensions} from '@app/hooks';
 import {StreamPreview} from './StreamPreview';
@@ -10,7 +10,13 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-export const StreamFeedView: React.FC<{feed: ICandidate[]}> = ({feed}) => {
+interface StreamFeedViewProps {
+  feed: ICandidate[];
+}
+
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+
+export const StreamFeedView: React.FC<StreamFeedViewProps> = ({feed}) => {
   const {previewHeight, previewWidth} = usePreviewDimensions();
 
   const renderItem = React.useCallback(
@@ -24,6 +30,7 @@ export const StreamFeedView: React.FC<{feed: ICandidate[]}> = ({feed}) => {
         style = {
           ...style,
           height: previewHeight - 100,
+          maxHeight: previewHeight - 100,
         };
       } else {
         style = {...style, width: previewWidth, height: previewHeight};
@@ -33,36 +40,50 @@ export const StreamFeedView: React.FC<{feed: ICandidate[]}> = ({feed}) => {
         style = {...style, transform: [{translateY: -100}]};
       }
 
-      return <StreamPreview stream={item} style={style} />;
+      return <StreamPreview key={item.id} stream={item} style={style} />;
     },
     [],
   );
 
-  const {height} = useWindowDimensions();
-
   const count = feed?.length ?? 0;
 
-  const coverTranslateY = useDerivedValue(() => {
-    return withTiming(count > 0 ? height : 0, {
-      duration: 400,
+  const opacity = useDerivedValue(() => {
+    return withTiming(count > 0 ? 1 : 0, {
+      duration: 300,
       easing: Easing.ease,
     });
-  }, [height, count]);
+  }, [count]);
 
-  const coverStyle = useAnimatedStyle(() => ({
-    transform: [{translateY: coverTranslateY.value}],
-    backgroundColor: '#ff3030',
-    position: 'absolute',
-    bottom: 0,
-    top: 0,
-    left: 0,
-    right: 0,
+  const wrapperStyle = useAnimatedStyle(() => ({
+    flex: 1,
+    opacity: opacity.value,
   }));
 
   return (
-    <View style={{flex: 1}}>
-      <FlatList data={feed} numColumns={2} renderItem={renderItem} />
-      <Animated.View style={coverStyle} />
-    </View>
+    <AnimatedFlatList
+      style={wrapperStyle}
+      data={[
+        ...feed,
+        ...feed,
+        ...feed,
+        ...feed,
+        ...feed,
+        ...feed,
+        ...feed,
+        ...feed,
+        ...feed,
+        ...feed,
+        ...feed,
+        ...feed,
+        ...feed,
+        ...feed,
+        ...feed,
+        ...feed,
+        ...feed,
+        ...feed,
+      ]}
+      numColumns={2}
+      renderItem={renderItem as any}
+    />
   );
 };

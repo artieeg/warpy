@@ -2,7 +2,6 @@ import React, {useCallback} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Avatar} from './Avatar';
 import {ViewersCountPreview} from './ViewersCountPreview';
-import {StreamPreviewTitle} from './StreamPreviewTitle';
 import {useNavigation} from '@react-navigation/native';
 import Video from 'react-native-video';
 import {colors} from '../../colors';
@@ -15,7 +14,7 @@ interface IStreamPreviewProps {
   style: any;
 }
 
-export const StreamPreview = (props: IStreamPreviewProps) => {
+export const StreamPreview = React.memo((props: IStreamPreviewProps) => {
   const {style, stream} = props;
   const {preview} = stream;
   const navigation = useNavigation();
@@ -29,8 +28,8 @@ export const StreamPreview = (props: IStreamPreviewProps) => {
   }, [navigation]);
 
   return (
-    <TouchableOpacity onPress={onPress}>
-      <View style={[styles.wrapper, style, {backgroundColor: color}]}>
+    <TouchableOpacity activeOpacity={1.0} onPress={onPress}>
+      <View style={[styles.wrapper, {backgroundColor: color}, style]}>
         {preview && (
           <>
             <Video
@@ -75,7 +74,7 @@ export const StreamPreview = (props: IStreamPreviewProps) => {
       </View>
     </TouchableOpacity>
   );
-};
+});
 
 const styles = StyleSheet.create({
   wrapper: {
