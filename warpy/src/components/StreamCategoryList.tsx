@@ -1,16 +1,20 @@
 import {useStore} from '@app/store';
-import React, {useCallback, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, ViewProps, useWindowDimensions} from 'react-native';
 import {StreamCategoryOption} from './StreamCategoryOption';
 import tinycolor from 'tinycolor2';
 import {IStreamCategory} from '@warpy/lib';
 import Animated, {
+  add,
   Easing,
   Extrapolate,
   interpolate,
+  multiply,
   SharedValue,
+  useAnimatedScrollHandler,
   useAnimatedStyle,
   useDerivedValue,
+  useSharedValue,
   withDelay,
   withTiming,
 } from 'react-native-reanimated';
@@ -23,14 +27,21 @@ interface StreamCategoryListProps extends ViewProps {
 }
 
 export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
-  const offset = useRef<number>(0);
+  //const xOffset = useSharedValue(0);
+
+  const streamCategory = useStore(state => state.selectedFeedCategory);
+
+  const xOffset = useSharedValue(0);
+
+  useEffect(() => {
+    xOffset.value = 0;
+  }, [streamCategory]);
+
   const selectedIndex = useRef<number>(0);
   const [currentCategoryPosition, setCurrentCategoryPosition] =
     useState<{x: number; y: number; w: number}>();
 
   const {mode, minimizationProgress} = props;
-
-  const streamCategory = useStore(state => state.selectedFeedCategory);
 
   const coordsEasing = Easing.inOut(Easing.quad);
   const coordsDuration = 400;
@@ -72,7 +83,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
         [0, 1],
         [currentCategoryPosition.x, width - 20 - currentCategoryPosition.w],
         Extrapolate.CLAMP,
-      ),
+      ), //- xOffset.value * (1 - (minimizationProgress?.value ?? 0)),
       {
         duration: coordsDuration,
         easing: coordsEasing,
@@ -128,16 +139,26 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
     position: 'absolute',
     left: selectedCategoryX.value,
     top: selectedCategoryY.value,
+    transform: [{translateX: -xOffset.value}],
+  }));
+
+  const fakeCategoryWrapper = useAnimatedStyle(() => ({
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    right: 0,
+    bottom: 0,
+    transform: [
+      {
+        translateX: withTiming(
+          xOffset.value * (minimizationProgress?.value ?? 1),
+          {duration: coordsDuration, easing: coordsEasing},
+        ),
+      },
+    ],
   }));
 
   const scrollViewStyle = useAnimatedStyle(() => ({
-    /*
-    opacity: withDelay(
-      minimizationProgress?.value === 0 ? 0 : coordsDuration * 0.8,
-      withTiming(1 - (minimizationProgress?.value ?? 0), {duration: 100}),
-    ),
-     */
-    //opacity: 1 - (minimizationProgress?.value ?? 0) * 4,
     opacity: withDelay(
       300,
       withTiming(
@@ -152,14 +173,18 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
     ),
   }));
 
+  const handler = useAnimatedScrollHandler({
+    onScroll: e => {
+      xOffset.value = e.contentOffset.x;
+    },
+  });
+
   return (
     <View {...props} style={[styles.wrapper, props.style]}>
       <Animated.ScrollView
         style={scrollViewStyle}
         //scrollEnabled={!moveCurrentCategory}
-        onScroll={e => {
-          offset.current = e.nativeEvent.contentOffset.x;
-        }}
+        onScroll={handler}
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
         centerContent
@@ -169,13 +194,15 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
       </Animated.ScrollView>
 
       {streamCategory && (
-        <Animated.View style={fakeCategoryStyle}>
-          <StreamCategoryOption
-            selected
-            color={colors[selectedIndex.current].toHexString()}
-            category={streamCategory}
-            onPress={() => {}}
-          />
+        <Animated.View pointerEvents="box-none" style={fakeCategoryWrapper}>
+          <Animated.View style={fakeCategoryStyle}>
+            <StreamCategoryOption
+              selected
+              color={colors[selectedIndex.current].toHexString()}
+              category={streamCategory}
+              onPress={() => {}}
+            />
+          </Animated.View>
         </Animated.View>
       )}
     </View>
