@@ -1,6 +1,9 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+} from '@react-navigation/stack';
 import {
   Feed,
   NewStream,
@@ -56,7 +59,13 @@ const App = () => {
       <NavigationContainer>
         <Stack.Navigator headerMode="none">
           {Object.keys(screens).map(name => (
-            <Stack.Screen name={name} component={(screens as any)[name]} />
+            <Stack.Screen
+              options={{
+                cardStyleInterpolator: CardStyleInterpolators.forNoAnimation,
+              }}
+              name={name}
+              component={(screens as any)[name]}
+            />
           ))}
         </Stack.Navigator>
       </NavigationContainer>
