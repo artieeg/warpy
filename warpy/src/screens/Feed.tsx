@@ -11,6 +11,7 @@ import Animated, {
   withTiming,
   useAnimatedScrollHandler,
   useSharedValue,
+  Easing,
 } from 'react-native-reanimated';
 
 export const Feed = () => {
@@ -56,6 +57,28 @@ export const Feed = () => {
     [categoryListHeight, height],
   );
 
+  const coverAnimationProgress = useSharedValue(0);
+  const coverX = useSharedValue(0);
+  const coverY = useSharedValue(0);
+  const coverW = useSharedValue(10);
+  const coverH = useSharedValue(10);
+
+  const {width: screenWidth, height: screenHeight} = useWindowDimensions();
+
+  const coverStyle = useAnimatedStyle(
+    () => ({
+      position: 'absolute',
+      left: coverX.value * (1 - coverAnimationProgress.value),
+      top: coverY.value * (1 - coverAnimationProgress.value),
+      borderRadius: 36,
+      width: coverW.value + screenWidth * coverAnimationProgress.value,
+      height: coverH.value + screenHeight * coverAnimationProgress.value,
+      backgroundColor: '#000000',
+      opacity: coverAnimationProgress.value,
+    }),
+    [screenWidth, screenHeight],
+  );
+
   return (
     <View style={styles.wrapper}>
       <ScreenHeader minimizationProgress={scrollY} />
@@ -68,6 +91,22 @@ export const Feed = () => {
 
       <Animated.View style={feedWrapperStyle}>
         <StreamFeedView
+          onStartCover={(x, y, w, h) => {
+            coverX.value = x;
+            coverY.value = y;
+            coverW.value = w;
+            coverH.value = h;
+
+            coverAnimationProgress.value = withTiming(
+              1,
+              {duration: 400, easing: Easing.exp},
+              () => {
+                setTimeout(() => {
+                  coverAnimationProgress.value = 0;
+                }, 500);
+              },
+            );
+          }}
           scrollEventThrottle={16}
           onScroll={handler}
           data={feed}
@@ -81,6 +120,7 @@ export const Feed = () => {
           title="start a room"
         />
       </View>
+      <Animated.View pointerEvents="box-none" style={coverStyle} />
     </View>
   );
 };
