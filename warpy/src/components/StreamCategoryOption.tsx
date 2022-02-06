@@ -18,7 +18,7 @@ interface StreamCategoryOptionProps extends ViewProps {
 }
 
 export const StreamCategoryOption = React.memo(
-  ({category, color, selected, onPress}: StreamCategoryOptionProps) => {
+  ({category, style, color, selected, onPress}: StreamCategoryOptionProps) => {
     const colorTransition = useDerivedValue(() => {
       return withTiming(selected ? 1 : 0, {
         duration: 150,
@@ -28,7 +28,7 @@ export const StreamCategoryOption = React.memo(
 
     const position = useRef<{x: number; y: number}>();
 
-    const style = useAnimatedStyle(() => ({
+    const animatedStyle = useAnimatedStyle(() => ({
       backgroundColor: interpolateColor(
         colorTransition.value,
         [0, 1],
@@ -57,7 +57,7 @@ export const StreamCategoryOption = React.memo(
             y: e.nativeEvent.layout.y,
           };
         }}
-        style={[styles.wrapper, style]}>
+        style={[styles.wrapper, animatedStyle, style]}>
         <TouchableOpacity
           activeOpacity={1.0}
           onPress={() => {

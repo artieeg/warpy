@@ -29,6 +29,9 @@ interface StreamCategoryListProps extends ViewProps {
 export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
   //const xOffset = useSharedValue(0);
 
+  const {onLayout} = props;
+  const [listWidth, setListWidth] = useState(0);
+
   const streamCategory = useStore(state => state.selectedFeedCategory);
 
   const xOffset = useSharedValue(0);
@@ -52,15 +55,10 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
     }
 
     return withTiming(
-      /*
-      minimizationProgress
-        ? 55 * minimizationProgress.value - currentCategoryPosition.y
-        : 0,
-       */
       interpolate(
         minimizationProgress?.value ?? 0,
         [0, 0.1],
-        [0, 45 - currentCategoryPosition.y],
+        [0, 35 - currentCategoryPosition.y],
         Extrapolate.CLAMP,
       ),
       {
@@ -122,6 +120,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
         <StreamCategoryOption
           key={category.id}
           selected={isSelected}
+          style={{opacity: isSelected ? 0 : 1}}
           color={colors[index].toHexString()}
           category={category}
           onPress={p => {
@@ -159,6 +158,8 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
   }));
 
   const scrollViewStyle = useAnimatedStyle(() => ({
+    opacity: 1 - (minimizationProgress?.value ?? 1),
+    /*
     opacity: withDelay(
       300,
       withTiming(
@@ -171,16 +172,31 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
         {duration: 100},
       ),
     ),
+     */
   }));
 
-  const handler = useAnimatedScrollHandler({
-    onScroll: e => {
-      xOffset.value = e.contentOffset.x;
+  const handler = useAnimatedScrollHandler(
+    {
+      onScroll: (e, ctx: any) => {
+        const prev = ctx.prev ?? 0;
+
+        xOffset.value += e.contentOffset.x - prev;
+
+        ctx.prev = e.contentOffset.x;
+        //xOffset.value += e.velocity?.x ?? 0;
+      },
     },
-  });
+    [listWidth],
+  );
 
   return (
-    <View {...props} style={[styles.wrapper, props.style]}>
+    <View
+      {...props}
+      onLayout={e => {
+        setListWidth(e.nativeEvent.layout.width);
+        onLayout?.(e);
+      }}
+      style={[styles.wrapper, props.style]}>
       <Animated.ScrollView
         style={scrollViewStyle}
         //scrollEnabled={!moveCurrentCategory}

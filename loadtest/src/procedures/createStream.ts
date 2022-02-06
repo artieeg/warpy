@@ -5,7 +5,8 @@ import { UserRecord } from "../types";
 export const createStream = async (record: UserRecord) => {
   const { user, api } = record;
 
-  const title = `${user.first_name} ${user.last_name}'s stream`;
+  //const title = `${user.first_name} ${user.last_name}'s stream`;
+  const title = "test room";
 
   const response = await api.stream.create(title, record.categories[2].id);
 

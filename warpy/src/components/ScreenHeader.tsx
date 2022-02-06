@@ -10,6 +10,8 @@ import {useStore} from '@app/store';
 import {ScreenTitle} from './ScreenTitle';
 import Animated, {
   Easing,
+  Extrapolate,
+  interpolate,
   SharedValue,
   useAnimatedStyle,
   useDerivedValue,
@@ -112,6 +114,19 @@ export const ScreenHeader: React.FC<{
         easing: Easing.ease,
       },
     ),
+    transform: [
+      {
+        scale: withTiming(
+          interpolate(
+            minimizationProgress?.value ?? 1,
+            [0, 1],
+            [1, 0.3],
+            Extrapolate.CLAMP,
+          ),
+          {duration: 300, easing: Easing.ease},
+        ),
+      },
+    ],
   }));
 
   const headerStyle = useAnimatedStyle(() => ({
@@ -120,7 +135,7 @@ export const ScreenHeader: React.FC<{
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: withTiming(
-      minimizationProgress ? 20 + (1 - minimizationProgress.value) * 10 : 30,
+      minimizationProgress ? 10 + (1 - minimizationProgress.value) * 10 : 30,
       {
         duration: 300,
         easing: Easing.ease,
@@ -128,9 +143,38 @@ export const ScreenHeader: React.FC<{
     ),
   }));
 
+  const titleStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        scale: withTiming(
+          interpolate(
+            minimizationProgress?.value ?? 1,
+            [0, 1],
+            [1, 0.75],
+            Extrapolate.CLAMP,
+          ),
+          {duration: 300, easing: Easing.ease},
+        ),
+      },
+      {
+        translateX: withTiming(
+          interpolate(
+            minimizationProgress?.value ?? 1,
+            [0, 1],
+            [0, -20],
+            Extrapolate.CLAMP,
+          ),
+          {duration: 300, easing: Easing.ease},
+        ),
+      },
+    ],
+  }));
+
   return (
     <Animated.View style={headerStyle}>
-      <ScreenTitle>{title}</ScreenTitle>
+      <Animated.View style={titleStyle}>
+        <ScreenTitle>{title}</ScreenTitle>
+      </Animated.View>
       <Animated.View style={controlsStyle}>
         {displayControls && (
           <View style={styles.row}>
