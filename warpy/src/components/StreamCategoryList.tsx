@@ -5,17 +5,14 @@ import {StreamCategoryOption} from './StreamCategoryOption';
 import tinycolor from 'tinycolor2';
 import {IStreamCategory} from '@warpy/lib';
 import Animated, {
-  add,
   Easing,
   Extrapolate,
   interpolate,
-  multiply,
   SharedValue,
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
-  withDelay,
   withTiming,
 } from 'react-native-reanimated';
 
@@ -27,28 +24,31 @@ interface StreamCategoryListProps extends ViewProps {
 }
 
 export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
-  //const xOffset = useSharedValue(0);
-
-  const {onLayout} = props;
+  const {onLayout, mode, minimizationProgress} = props;
   const [listWidth, setListWidth] = useState(0);
 
   const streamCategory = useStore(state => state.selectedFeedCategory);
 
-  const xOffset = useSharedValue(0);
+  //used to adjust absolutely positioned current category according to scroll
+  const scrollOffsetX = useSharedValue(0);
 
+  //reset scroll offset when category changes
   useEffect(() => {
-    xOffset.value = 0;
+    scrollOffsetX.value = 0;
   }, [streamCategory]);
 
+  //used to determine color of currently selected category
   const selectedIndex = useRef<number>(0);
+
+  //position of current category relative to screen
   const [currentCategoryPosition, setCurrentCategoryPosition] =
     useState<{x: number; y: number; w: number}>();
 
-  const {mode, minimizationProgress} = props;
-
+  //animation settings
   const coordsEasing = Easing.inOut(Easing.quad);
   const coordsDuration = 400;
 
+  //animate current category's y to 35 when minimizing
   const selectedCategoryY = useDerivedValue(() => {
     if (!currentCategoryPosition) {
       return 0;
@@ -68,8 +68,9 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
     );
   }, [currentCategoryPosition]);
 
-  const {width} = useWindowDimensions();
+  const screenWidth = useWindowDimensions().width;
 
+  //animate current category's x to (20 - category component's width)
   const selectedCategoryX = useDerivedValue(() => {
     if (!currentCategoryPosition) {
       return 0;
@@ -79,9 +80,12 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
       interpolate(
         minimizationProgress?.value ?? 0,
         [0, 1],
-        [currentCategoryPosition.x, width - 20 - currentCategoryPosition.w],
+        [
+          currentCategoryPosition.x,
+          screenWidth - 20 - currentCategoryPosition.w,
+        ],
         Extrapolate.CLAMP,
-      ), //- xOffset.value * (1 - (minimizationProgress?.value ?? 0)),
+      ),
       {
         duration: coordsDuration,
         easing: coordsEasing,
@@ -119,8 +123,8 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
       return (
         <StreamCategoryOption
           key={category.id}
-          selected={isSelected}
-          style={{opacity: isSelected ? 0 : 1}}
+          selected={false}
+          style={{opacity: isSelected ? 0 : 1}} //Hide selected category since we draw a fake component over it
           color={colors[index].toHexString()}
           category={category}
           onPress={p => {
@@ -134,13 +138,15 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
     [categories, mode, streamCategory],
   );
 
+  //position fake category, adjust according to scroll offset
   const fakeCategoryStyle = useAnimatedStyle(() => ({
     position: 'absolute',
     left: selectedCategoryX.value,
     top: selectedCategoryY.value,
-    transform: [{translateX: -xOffset.value}],
+    transform: [{translateX: -scrollOffsetX.value}],
   }));
 
+  //counteract the scroll offset
   const fakeCategoryWrapper = useAnimatedStyle(() => ({
     position: 'absolute',
     left: 0,
@@ -150,29 +156,16 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
     transform: [
       {
         translateX: withTiming(
-          xOffset.value * (minimizationProgress?.value ?? 1),
+          scrollOffsetX.value * (minimizationProgress?.value ?? 1),
           {duration: coordsDuration, easing: coordsEasing},
         ),
       },
     ],
   }));
 
+  //hide scroll view during minimization
   const scrollViewStyle = useAnimatedStyle(() => ({
     opacity: 1 - (minimizationProgress?.value ?? 1),
-    /*
-    opacity: withDelay(
-      300,
-      withTiming(
-        interpolate(
-          minimizationProgress?.value ?? 0,
-          [0, 0.2],
-          [1, 0],
-          Extrapolate.CLAMP,
-        ),
-        {duration: 100},
-      ),
-    ),
-     */
   }));
 
   const handler = useAnimatedScrollHandler(
@@ -180,10 +173,11 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
       onScroll: (e, ctx: any) => {
         const prev = ctx.prev ?? 0;
 
-        xOffset.value += e.contentOffset.x - prev;
+        //adjust scroll offset
+        const dx = e.contentOffset.x - prev;
+        scrollOffsetX.value += dx;
 
         ctx.prev = e.contentOffset.x;
-        //xOffset.value += e.velocity?.x ?? 0;
       },
     },
     [listWidth],
@@ -199,7 +193,6 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
       style={[styles.wrapper, props.style]}>
       <Animated.ScrollView
         style={scrollViewStyle}
-        //scrollEnabled={!moveCurrentCategory}
         onScroll={handler}
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
@@ -210,13 +203,21 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
       </Animated.ScrollView>
 
       {streamCategory && (
-        <Animated.View pointerEvents="box-none" style={fakeCategoryWrapper}>
-          <Animated.View style={fakeCategoryStyle}>
+        <Animated.View pointerEvents="none" style={fakeCategoryWrapper}>
+          <Animated.View style={fakeCategoryStyle} pointerEvents="auto">
             <StreamCategoryOption
               selected
               color={colors[selectedIndex.current].toHexString()}
               category={streamCategory}
-              onPress={() => {}}
+              onPress={() => {
+                console.log('e');
+                if (minimizationProgress) {
+                  minimizationProgress.value = withTiming(0, {
+                    duration: 400,
+                    easing: Easing.ease,
+                  });
+                }
+              }}
             />
           </Animated.View>
         </Animated.View>
