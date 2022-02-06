@@ -9,6 +9,7 @@ import Animated, {
   useDerivedValue,
   withTiming,
 } from 'react-native-reanimated';
+import {colors} from '../../colors';
 
 interface StreamFeedViewProps
   extends Omit<FlatListProps<ICandidate>, 'renderItem'> {}
@@ -59,6 +60,7 @@ export const StreamFeedView: React.FC<StreamFeedViewProps> = ({
   const wrapperStyle = useAnimatedStyle(() => ({
     flex: 1,
     opacity: opacity.value,
+    backgroundColor: colors.black,
   }));
 
   return (

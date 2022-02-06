@@ -49,7 +49,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
       interpolate(
         minimizationProgress?.value ?? 0,
         [0, 0.1],
-        [0, 55 - currentCategoryPosition.y],
+        [0, 45 - currentCategoryPosition.y],
         Extrapolate.CLAMP,
       ),
       {
@@ -138,7 +138,18 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
     ),
      */
     //opacity: 1 - (minimizationProgress?.value ?? 0) * 4,
-    opacity: interpolate(minimizationProgress?.value ?? 0, [0, 0.2], [1, 0]),
+    opacity: withDelay(
+      300,
+      withTiming(
+        interpolate(
+          minimizationProgress?.value ?? 0,
+          [0, 0.2],
+          [1, 0],
+          Extrapolate.CLAMP,
+        ),
+        {duration: 100},
+      ),
+    ),
   }));
 
   return (
@@ -181,5 +192,6 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     overflow: 'visible',
+    paddingBottom: 10,
   },
 });
