@@ -1,17 +1,14 @@
 import {useStore} from '@app/store';
 import React, {useCallback, useMemo, useRef, useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  ViewProps,
-  useWindowDimensions,
-} from 'react-native';
+import {View, StyleSheet, ViewProps, useWindowDimensions} from 'react-native';
 import {StreamCategoryOption} from './StreamCategoryOption';
 import tinycolor from 'tinycolor2';
 import {IStreamCategory} from '@warpy/lib';
 import Animated, {
   Easing,
+  Extrapolate,
+  interpolate,
+  SharedValue,
   useAnimatedStyle,
   useDerivedValue,
   withDelay,
@@ -22,8 +19,7 @@ const BASE_COLOR = tinycolor('F9AA71');
 
 interface StreamCategoryListProps extends ViewProps {
   mode?: 'create-stream' | 'browse-feed';
-  hidden?: boolean;
-  moveCurrentCategory?: boolean;
+  minimizationProgress?: SharedValue<number>;
 }
 
 export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
@@ -32,7 +28,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
   const [currentCategoryPosition, setCurrentCategoryPosition] =
     useState<{x: number; y: number; w: number}>();
 
-  const {mode, hidden, moveCurrentCategory} = props;
+  const {mode, minimizationProgress} = props;
 
   const streamCategory = useStore(state => state.selectedFeedCategory);
 
@@ -45,13 +41,23 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
     }
 
     return withTiming(
-      moveCurrentCategory ? 55 - currentCategoryPosition.y : 0,
+      /*
+      minimizationProgress
+        ? 55 * minimizationProgress.value - currentCategoryPosition.y
+        : 0,
+       */
+      interpolate(
+        minimizationProgress?.value ?? 0,
+        [0, 0.1],
+        [0, 55 - currentCategoryPosition.y],
+        Extrapolate.CLAMP,
+      ),
       {
         duration: coordsDuration,
         easing: coordsEasing,
       },
     );
-  }, [currentCategoryPosition, moveCurrentCategory]);
+  }, [currentCategoryPosition]);
 
   const {width} = useWindowDimensions();
 
@@ -61,15 +67,18 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
     }
 
     return withTiming(
-      moveCurrentCategory
-        ? width - 20 - currentCategoryPosition.w
-        : currentCategoryPosition.x,
+      interpolate(
+        minimizationProgress?.value ?? 0,
+        [0, 1],
+        [currentCategoryPosition.x, width - 20 - currentCategoryPosition.w],
+        Extrapolate.CLAMP,
+      ),
       {
         duration: coordsDuration,
         easing: coordsEasing,
       },
     );
-  }, [currentCategoryPosition, moveCurrentCategory]);
+  }, [currentCategoryPosition]);
 
   const categories = useMemo(() => {
     if (mode === 'create-stream') {
@@ -122,17 +131,21 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
   }));
 
   const scrollViewStyle = useAnimatedStyle(() => ({
+    /*
     opacity: withDelay(
-      moveCurrentCategory ? 0 : coordsDuration * 0.8,
-      withTiming(moveCurrentCategory ? 0 : 1, {duration: 100}),
+      minimizationProgress?.value === 0 ? 0 : coordsDuration * 0.8,
+      withTiming(1 - (minimizationProgress?.value ?? 0), {duration: 100}),
     ),
+     */
+    //opacity: 1 - (minimizationProgress?.value ?? 0) * 4,
+    opacity: interpolate(minimizationProgress?.value ?? 0, [0, 0.2], [1, 0]),
   }));
 
   return (
     <View {...props} style={[styles.wrapper, props.style]}>
       <Animated.ScrollView
         style={scrollViewStyle}
-        scrollEnabled={!moveCurrentCategory}
+        //scrollEnabled={!moveCurrentCategory}
         onScroll={e => {
           offset.current = e.nativeEvent.contentOffset.x;
         }}

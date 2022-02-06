@@ -10,12 +10,15 @@ import {useStore} from '@app/store';
 import {ScreenTitle} from './ScreenTitle';
 import Animated, {
   Easing,
+  SharedValue,
   useAnimatedStyle,
   useDerivedValue,
   withTiming,
 } from 'react-native-reanimated';
 
-export const ScreenHeader: React.FC<{minimized?: boolean}> = ({minimized}) => {
+export const ScreenHeader: React.FC<{
+  minimizationProgress?: SharedValue<number>;
+}> = ({minimizationProgress}) => {
   //TODO: too ugly, change someday
   const [user, signUpAvatar] = useStore(state => [
     state.user,
@@ -95,15 +98,20 @@ export const ScreenHeader: React.FC<{minimized?: boolean}> = ({minimized}) => {
     [route.name],
   );
 
+  /*
   const controlsOpacity = useDerivedValue(() => {
     return minimized ? 0 : 1;
   }, [minimized]);
+   */
 
   const controlsStyle = useAnimatedStyle(() => ({
-    opacity: withTiming(controlsOpacity.value, {
-      duration: 300,
-      easing: Easing.ease,
-    }),
+    opacity: withTiming(
+      minimizationProgress ? 1 - minimizationProgress.value : 1,
+      {
+        duration: 300,
+        easing: Easing.ease,
+      },
+    ),
   }));
 
   const headerStyle = useAnimatedStyle(() => ({
@@ -111,10 +119,13 @@ export const ScreenHeader: React.FC<{minimized?: boolean}> = ({minimized}) => {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: withTiming(minimized ? 15 : 30, {
-      duration: 300,
-      easing: Easing.ease,
-    }),
+    paddingVertical: withTiming(
+      minimizationProgress ? 20 + (1 - minimizationProgress.value) * 10 : 30,
+      {
+        duration: 300,
+        easing: Easing.ease,
+      },
+    ),
   }));
 
   return (

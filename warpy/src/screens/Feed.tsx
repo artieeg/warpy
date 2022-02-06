@@ -3,7 +3,7 @@ import {ScreenHeader} from '@app/components/ScreenHeader';
 import {StreamCategoryList} from '@app/components/StreamCategoryList';
 import {useFeed} from '@app/hooks';
 import React, {useEffect, useRef, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {TextButton} from '@warpy/components';
 import {useNavigation} from '@react-navigation/native';
 import Animated, {
@@ -17,6 +17,7 @@ import Animated, {
   interpolate,
   Extrapolation,
   runOnJS,
+  useDerivedValue,
 } from 'react-native-reanimated';
 
 export const Feed = () => {
@@ -33,10 +34,21 @@ export const Feed = () => {
 
   const [categoryListHeight, setCategoryListHeight] = useState(0);
 
+  /*
+  const minimizationProgress = useDerivedValue(() => {
+    return interpolate(scrollY.value, [0, categoryListHeight + 10], [0, 1]);
+  }, [categoryListHeight]);
+   */
+
   const feedWrapperStyle = useAnimatedStyle(() => ({
-    marginTop: withTiming(-scrollY.value, {duration: 300}),
+    //marginTop: withTiming(-scrollY.value, {duration: 300}),
+    marginTop: withTiming(-1 * scrollY.value * (categoryListHeight + 10), {
+      duration: 300,
+    }),
     flex: 1,
   }));
+
+  const {height} = useWindowDimensions();
 
   const handler = useAnimatedScrollHandler(
     {
@@ -54,30 +66,35 @@ export const Feed = () => {
           scrollY.value += dy;
         }
          */
-        scrollY.value += dy;
 
-        if (dy > 0 && scrollY.value > categoryListHeight * 0.3) {
-          //if (scrollY.value > categoryListHeight) {
-          scrollY.value = categoryListHeight;
+        if (e.contentOffset.y < height / 6) {
+          return;
         }
 
-        if (dy < 0 && scrollY.value < categoryListHeight * 0.7) {
+        scrollY.value += dy / categoryListHeight;
+
+        if (dy > 0 && scrollY.value > 0.3) {
+          //if (scrollY.value > categoryListHeight) {
+          scrollY.value = 1;
+        }
+
+        if (dy < 0 && scrollY.value < 0.7) {
           //if (scrollY.value < 0) {
           scrollY.value = 0;
         }
         //*/
       },
     },
-    [categoryListHeight],
+    [categoryListHeight, height],
   );
 
   return (
     <View style={styles.wrapper}>
-      <ScreenHeader minimized={isMinimized} />
+      <ScreenHeader minimizationProgress={scrollY} />
       <FriendFeed />
       <StreamCategoryList
+        minimizationProgress={scrollY}
         onLayout={e => setCategoryListHeight(e.nativeEvent.layout.height)}
-        moveCurrentCategory={isMinimized}
         mode="browse-feed"
       />
 
