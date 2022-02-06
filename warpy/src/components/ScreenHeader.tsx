@@ -14,7 +14,6 @@ import Animated, {
   interpolate,
   SharedValue,
   useAnimatedStyle,
-  useDerivedValue,
   withTiming,
 } from 'react-native-reanimated';
 
@@ -92,7 +91,9 @@ export const ScreenHeader: React.FC<{
 
   const secondButton = useMemo(
     () =>
-      route.name === 'Feed' || route.name === 'Notifications' ? (
+      route.name === 'Feed' ||
+      route.name === 'Notifications' ||
+      route.name === 'MainSettingsScreen' ? (
         <SearchButton style={styles.headerButton} onPress={onSearch} />
       ) : (
         <OpenHomeButton style={styles.headerButton} onPress={onOpenFeed} />
@@ -118,7 +119,7 @@ export const ScreenHeader: React.FC<{
       {
         scale: withTiming(
           interpolate(
-            minimizationProgress?.value ?? 1,
+            minimizationProgress?.value ?? 0,
             [0, 1],
             [1, 0.3],
             Extrapolate.CLAMP,
@@ -148,7 +149,7 @@ export const ScreenHeader: React.FC<{
       {
         scale: withTiming(
           interpolate(
-            minimizationProgress?.value ?? 1,
+            minimizationProgress?.value ?? 0,
             [0, 1],
             [1, 0.75],
             Extrapolate.CLAMP,
@@ -159,7 +160,7 @@ export const ScreenHeader: React.FC<{
       {
         translateX: withTiming(
           interpolate(
-            minimizationProgress?.value ?? 1,
+            minimizationProgress?.value ?? 0,
             [0, 1],
             [0, -20],
             Extrapolate.CLAMP,

@@ -203,7 +203,10 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
       </Animated.ScrollView>
 
       {streamCategory && (
-        <Animated.View pointerEvents="none" style={fakeCategoryWrapper}>
+        <Animated.View
+          key="current_category"
+          pointerEvents="none"
+          style={fakeCategoryWrapper}>
           <Animated.View style={fakeCategoryStyle} pointerEvents="auto">
             <StreamCategoryOption
               selected
