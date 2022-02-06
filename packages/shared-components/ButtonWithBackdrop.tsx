@@ -12,6 +12,7 @@ export interface ButtonWithBackdropProps extends TouchableWithoutFeedbackProps {
   color?: string;
   textonly?: boolean;
   children: any;
+  containerStyle?: any;
 }
 
 const DEFAULT_COLOR = "#F9F871";
@@ -53,7 +54,13 @@ export const ButtonWithBackdrop = (props: ButtonWithBackdropProps) => {
       <TouchableOpacity {...props} activeOpacity={1} style={{}}>
         <View style={[{ height: 50 }]}>
           <View style={[styles.backdrop, !textonly && backdropStyle]} />
-          <View style={[styles.wrapper, !textonly && buttonStyle]}>
+          <View
+            style={[
+              styles.wrapper,
+              !textonly && buttonStyle,
+              props.containerStyle,
+            ]}
+          >
             {props.children}
           </View>
         </View>

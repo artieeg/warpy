@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {StyleSheet, TouchableOpacity, ViewProps} from 'react-native';
 import Animated, {
   Easing,
@@ -25,6 +25,14 @@ export const StreamCategoryOption = React.memo(
         easing: Easing.ease,
       });
     }, [selected]);
+
+    useEffect(() => {
+      if (category.id === 'foru') {
+        ref.current?.measureInWindow((x: number, y: number, w: number) =>
+          onPress({x, y, w}),
+        );
+      }
+    }, []);
 
     const position = useRef<{x: number; y: number}>();
 

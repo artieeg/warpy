@@ -41,7 +41,7 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
       hasActivatedAppInvite,
       following: following || [],
       isLoadingUser: false,
-      selectedFeedCategory: categories[0],
+      //selectedFeedCategory: categories[0],
       newStreamCategory: categories[1],
     });
   },

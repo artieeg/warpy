@@ -108,7 +108,12 @@ export const Feed = () => {
         />
       </Animated.View>
       <View style={styles.startStreamButtonWrapper}>
-        <TextButton onPress={onStartStream} title="start a room now" />
+        <TextButton
+          style={{alignSelf: 'center'}}
+          containerStyle={{paddingHorizontal: 30}}
+          onPress={onStartStream}
+          title="start a room"
+        />
       </View>
     </View>
   );
