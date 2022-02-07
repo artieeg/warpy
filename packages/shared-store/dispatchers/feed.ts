@@ -29,6 +29,10 @@ export const createFeedDispatchers: StoreSlice<IFeedDispatchers> = (
   async dispatchFeedFetchNext() {
     set({ isFeedLoading: true });
 
+    if (!get().selectedFeedCategory) {
+      return;
+    }
+
     console.log({
       page: get().latestFeedPage,
       category: get().selectedFeedCategory?.id,

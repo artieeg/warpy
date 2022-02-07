@@ -7,7 +7,7 @@ import Animated, {
   useDerivedValue,
   withTiming,
 } from 'react-native-reanimated';
-import {IStreamCategory} from '../../../lib';
+import {IStreamCategory} from '@warpy/lib';
 import {Text} from './Text';
 
 interface StreamCategoryOptionProps extends ViewProps {
@@ -27,11 +27,13 @@ export const StreamCategoryOption = React.memo(
     }, [selected]);
 
     useEffect(() => {
-      if (category.id === 'foru') {
-        ref.current?.measureInWindow((x: number, y: number, w: number) =>
-          onPress({x, y, w}),
-        );
-      }
+      setTimeout(() => {
+        if (category.id === 'foru') {
+          ref.current?.measureInWindow((x: number, y: number, w: number) =>
+            onPress({x, y, w}),
+          );
+        }
+      }, 50);
     }, []);
 
     const position = useRef<{x: number; y: number}>();

@@ -128,6 +128,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
           color={colors[index].toHexString()}
           category={category}
           onPress={p => {
+            console.log(p);
             setCurrentCategoryPosition(p);
             selectedIndex.current = index;
             useStore.getState().dispatchFeedCategoryChange(category);

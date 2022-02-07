@@ -40,7 +40,7 @@ export class CandidateService {
     const streams: IStream[] = await this.streamEntity.get({
       blockedUserIds,
       blockedByUserIds,
-      category,
+      category: category === 'foru' ? undefined : category,
     });
 
     const feed = await this.getCandidatesFromStreams(streams);

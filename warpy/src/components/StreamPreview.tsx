@@ -1,4 +1,4 @@
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Avatar} from './Avatar';
 import {ViewersCountPreview} from './ViewersCountPreview';
@@ -8,92 +8,71 @@ import {colors} from '../../colors';
 import tinycolor from 'tinycolor2';
 import {ICandidate} from '@warpy/lib';
 import {Text} from './Text';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from 'react-native-reanimated';
 
 interface IStreamPreviewProps {
   stream: ICandidate;
   style: any;
-  onPress: (x: number, y: number, w: number, h?: number) => any;
 }
 
 export const StreamPreview = React.memo((props: IStreamPreviewProps) => {
-  const {style, stream, onPress} = props;
+  const {style, stream} = props;
   const {preview} = stream;
-  //const navigation = useNavigation();
+  const navigation = useNavigation();
 
   const color = tinycolor(colors.green)
     .spin(Math.random() * 360)
     .toHexString();
 
-  /*
   const onPress = useCallback(() => {
     navigation.navigate('Stream', {stream});
   }, [navigation]);
-   */
-
-  const ref = useRef<any>();
 
   return (
-    <>
-      <TouchableOpacity
-        ref={ref}
-        activeOpacity={1.0}
-        onPress={() => {
-          ref.current?.measureInWindow(
-            (x: number, y: number, w: number, h: number) => {
-              onPress(x, y, w, h);
-            },
-          );
-        }}>
-        <View style={[styles.wrapper, {backgroundColor: color}, style]}>
-          {preview && (
-            <>
-              <Video
-                repeat
-                muted
-                paused={false}
-                resizeMode="cover"
-                source={{uri: preview}}
-                style={styles.video}
-              />
-              <View style={styles.overlay} />
-            </>
-          )}
+    <TouchableOpacity activeOpacity={1.0} onPress={onPress}>
+      <View style={[styles.wrapper, {backgroundColor: color}, style]}>
+        {preview && (
+          <>
+            <Video
+              repeat
+              muted
+              paused={false}
+              resizeMode="cover"
+              source={{uri: preview}}
+              style={styles.video}
+            />
+            <View style={styles.overlay} />
+          </>
+        )}
 
-          <View style={[styles.info, !preview && styles.centeredInfo]}>
-            <Text
-              color={!!preview ? 'white' : 'cod_gray'}
-              size="small"
-              style={styles.title}>
-              {stream.title}
-            </Text>
-            <View style={styles.participants}>
-              {stream.speakers.slice(0, 3).map((participant, index) => {
-                const userAvatarStyle = {
-                  transform: [{translateX: -index * 3}],
-                };
+        <View style={[styles.info, !preview && styles.centeredInfo]}>
+          <Text
+            color={!!preview ? 'white' : 'cod_gray'}
+            size="small"
+            style={styles.title}>
+            {stream.title}
+          </Text>
+          <View style={styles.participants}>
+            {stream.speakers.slice(0, 3).map((participant, index) => {
+              const userAvatarStyle = {
+                transform: [{translateX: -index * 3}],
+              };
 
-                return (
-                  <Avatar
-                    size="small"
-                    style={userAvatarStyle}
-                    user={participant}
-                  />
-                );
-              })}
-              <ViewersCountPreview
-                count={stream.participants}
-                style={styles.viewersCount}
-              />
-            </View>
+              return (
+                <Avatar
+                  size="small"
+                  style={userAvatarStyle}
+                  user={participant}
+                />
+              );
+            })}
+            <ViewersCountPreview
+              count={stream.participants}
+              style={styles.viewersCount}
+            />
           </View>
         </View>
-      </TouchableOpacity>
-    </>
+      </View>
+    </TouchableOpacity>
   );
 });
 
