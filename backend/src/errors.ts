@@ -134,3 +134,11 @@ export class MaxVideoStreamers extends BaseError {
     this.name = 'MaxVideoStreamers';
   }
 }
+
+export class MailSendError extends BaseError {
+  constructor() {
+    super('failed to send mail');
+
+    this.name = 'MailSendError';
+  }
+}

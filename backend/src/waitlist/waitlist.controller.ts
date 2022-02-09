@@ -20,8 +20,10 @@ export class WaitlistController {
       res.status(400).json({});
     }
 
-    await this.waitlistService.addToWaitList(email, username);
+    try {
+      await this.waitlistService.addToWaitList(email, username);
 
-    res.status(200).json({});
+      res.status(200).json({});
+    } catch (e) {}
   }
 }

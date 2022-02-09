@@ -31,6 +31,7 @@ import { UserOnlineStatusModule } from './user-online-status/user-online-status.
 import { UserReportModule } from './user-report/user-report.module';
 import { UserModule } from './user/user.module';
 import { WaitlistModule } from './waitlist/waitlist.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { WaitlistModule } from './waitlist/waitlist.module';
     UserReportModule,
     StreamModule,
     StreamBlockModule,
+    MailModule,
     NatsModule,
     ParticipantModule,
     BotsModule,
