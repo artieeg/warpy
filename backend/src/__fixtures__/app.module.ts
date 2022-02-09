@@ -45,6 +45,7 @@ export const testModuleBuilder = Test.createTestingModule({
     AppInviteModule,
     UserReportModule,
     MediaModule,
+    WaitlistModule,
     StreamModule,
     StreamBlockModule,
     NatsModule,

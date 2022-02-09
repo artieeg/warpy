@@ -30,6 +30,7 @@ import { UserClaimModule } from './user-claim/user-claim.module';
 import { UserOnlineStatusModule } from './user-online-status/user-online-status.module';
 import { UserReportModule } from './user-report/user-report.module';
 import { UserModule } from './user/user.module';
+import { WaitlistModule } from './waitlist/waitlist.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { UserModule } from './user/user.module';
     FollowModule,
     NotificationModule,
     UserOnlineStatusModule,
+    WaitlistModule,
     EventEmitterModule.forRoot(),
   ],
   controllers: [AppController],
