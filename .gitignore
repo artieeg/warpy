@@ -8,4 +8,4 @@ node_modules
 *.mp4
 *.mp3
 yarn-error.log
-sendgrid.env
+dev_env/sendgrid.env
