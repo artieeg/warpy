@@ -1,4 +1,9 @@
-export const REQUIRED_ENV_KEYS = ['TENOR_KEY', 'TWILIO_SID', 'TWILIO_AUTH'];
+export const REQUIRED_ENV_KEYS = [
+  'TENOR_KEY',
+  'TWILIO_SID',
+  'TWILIO_AUTH',
+  'SENDGRID_API_KEY',
+];
 
 export const configuration = () => ({
   accessJwtSecret: process.env.JWT_SECRET || 'test-secret',
@@ -10,4 +15,5 @@ export const configuration = () => ({
   nats: process.env.NATS_ADDR ?? '127.0.0.1',
   twilioSID: process.env.TWILIO_SID,
   twilioAuth: process.env.TWILIO_AUTH,
+  sendGridKey: process.env.SENDGRID_API_KEY,
 });
