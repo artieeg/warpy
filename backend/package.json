@@ -34,6 +34,7 @@
     "axios": "^0.22.0",
     "bad-words": "^3.0.4",
     "cuid": "^2.1.8",
+    "email-validator": "^2.0.4",
     "jsonwebtoken": "^8.5.1",
     "nats": "^2.2.0",
     "nestjs-real-ip": "^2.0.0",
