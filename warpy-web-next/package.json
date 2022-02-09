@@ -9,6 +9,7 @@
     "svgr": "svgr ./assets/svg -d ./icons --typescript --ignore-existing --svgo-config .svgorc.json"
   },
   "dependencies": {
+    "@sendgrid/mail": "^7.6.0",
     "@warpy/api": "1.0.0",
     "@warpy/components": "1.0.0",
     "@warpy/lib": "1.0.0",
