@@ -5,5 +5,7 @@ import { Injectable } from '@nestjs/common';
 export class WaitlistEntity {
   constructor(private prisma: PrismaService) {}
 
+  //async exists(email: string): Promise<boolean> {}
+
   async add(email: string, username: string) {}
 }

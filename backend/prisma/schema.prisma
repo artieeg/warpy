@@ -278,3 +278,9 @@ model UsernameClaim {
   phone    String @unique
   username String @unique
 }
+
+model WaitlistRecord {
+  id       String @id @default(cuid())
+  username String @unique
+  email String @unique
+}

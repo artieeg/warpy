@@ -3,6 +3,7 @@ export const REQUIRED_ENV_KEYS = [
   'TWILIO_SID',
   'TWILIO_AUTH',
   'SENDGRID_API_KEY',
+  'URL',
 ];
 
 export const configuration = () => ({
@@ -16,4 +17,5 @@ export const configuration = () => ({
   twilioSID: process.env.TWILIO_SID,
   twilioAuth: process.env.TWILIO_AUTH,
   sendGridKey: process.env.SENDGRID_API_KEY,
+  url: process.env.URL,
 });
