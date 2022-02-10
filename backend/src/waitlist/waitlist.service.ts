@@ -1,8 +1,10 @@
+import { WaitlistRecordExists } from '@backend_2/errors';
 import { MailService } from '@backend_2/mail/mail.service';
 import { TokenService } from '@backend_2/token/token.service';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import fs from 'fs';
+import { WaitlistEntity } from './waitlist.entity';
 
 @Injectable()
 export class WaitlistService {
@@ -12,6 +14,7 @@ export class WaitlistService {
     private config: ConfigService,
     private mail: MailService,
     private token: TokenService,
+    private waitlistEntity: WaitlistEntity,
   ) {
     this.email_template = fs.readFileSync(
       './src/waitlist/template.html',
@@ -38,7 +41,26 @@ export class WaitlistService {
 
   async addToWaitList(email: string, username: string) {
     try {
+      const check = await this.waitlistEntity.check(email, username);
+
+      if (!check) {
+        throw new WaitlistRecordExists();
+      }
+
       await this.sendWelcomeEmail(email, username);
+
+      await this.waitlistEntity.add(email, username);
+    } catch (e) {
+      console.log('failed e');
+      throw e;
+    }
+  }
+
+  async removeFromWaitlist(token: string) {
+    try {
+      const { email } = await this.token.decodeToken(token);
+
+      await this.waitlistEntity.del(email);
     } catch (e) {
       console.log('failed e');
       throw e;

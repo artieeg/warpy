@@ -142,3 +142,11 @@ export class MailSendError extends BaseError {
     this.name = 'MailSendError';
   }
 }
+
+export class WaitlistRecordExists extends BaseError {
+  constructor() {
+    super('waitlist record exists');
+
+    this.name = 'WaitlistRecordExists';
+  }
+}
