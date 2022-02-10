@@ -1,9 +1,9 @@
-import 'tailwindcss/tailwind.css';
+import "tailwindcss/tailwind.css";
 
 import * as React from "react";
 import Head from "next/head";
 import "./global.css";
-import {config} from '../config';
+import { config } from "../config";
 import { StoreProvider } from "../modules/store";
 
 function AppWrapper(props) {
@@ -13,11 +13,17 @@ function AppWrapper(props) {
     <>
       <Head>
         <title>{title}</title>
+
+        <link rel="shortcut icon" href="/favicon.png" />
+
         <meta name="og:title" content={title} />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
 
-        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+        <meta
+          name="viewport"
+          content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
+        />
         <meta name="theme-color" content="#000000" />
         <meta name="apple-mobile-web-app-capable" content="yes"></meta>
         <meta
@@ -26,9 +32,7 @@ function AppWrapper(props) {
         ></meta>
       </Head>
 
-    {config.isBrowser && (
-      <MyApp {...props}/>
-    )}
+      {config.isBrowser && <MyApp {...props} />}
     </>
   );
 }
