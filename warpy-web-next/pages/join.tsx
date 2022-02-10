@@ -31,6 +31,7 @@ export default function Join() {
   const ack = useMemo(() => acks[Math.floor(Math.random() * acks.length)], []);
 
   const [isFinished, setFinished] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [isMoving, setMoving] = useState(false);
 
   const [nameError, setNameError] = useState("");
@@ -58,6 +59,8 @@ export default function Join() {
     }
 
     try {
+      setLoading(true);
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND}/waitlist/user`,
         {
@@ -93,6 +96,8 @@ export default function Join() {
           setEmailError("this email has been used already :(");
         }
       }
+    } finally {
+      setLoading(false);
     }
   }, [email, name]);
 
@@ -240,6 +245,7 @@ transition-opacity duration-1000 max-h-2/5 delay-[5000ms] ${
           }`}
         >
           <TextButton
+            loading={isLoading}
             disabled={email?.length <= 5}
             title="finish"
             onPress={onConfirm}
