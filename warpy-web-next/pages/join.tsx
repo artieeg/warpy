@@ -33,12 +33,16 @@ export default function Join() {
   const [isFinished, setFinished] = useState(false);
   const [isMoving, setMoving] = useState(false);
 
+  const [nameError, setNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+
   const [isNameValid, setNameValid] = useState<boolean>();
   const [isPhoneInputFocused, setEmailInputFocused] = useState(false);
 
   const validationTimeout = useRef<any>();
 
-  const [gifIdx, setGifIdx] = useState(Math.floor(Math.random() * gifs.length));
+  //TODO use memo
+  const [gifIdx] = useState(Math.floor(Math.random() * gifs.length));
 
   useEffect(() => {
     if (!isFinished) return;
@@ -48,9 +52,38 @@ export default function Join() {
     }, 100);
   }, [isFinished]);
 
-  const onConfirm = useCallback(() => {
-    setFinished(true);
-  }, []);
+  const onConfirm = useCallback(async () => {
+    if (!email || !name) {
+      return;
+    }
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND}/waitlist/user`,
+      {
+        //mode: "no-cors",
+        method: "POST",
+        headers: [["content-type", "application/json"]],
+        body: JSON.stringify({
+          email,
+          username: name,
+        }),
+      }
+    );
+
+    const json = await response.json();
+
+    if (json.field) {
+      if (json.field === "name") {
+        setNameError("this username seems to be taken :(");
+      } else if (json.field === "email") {
+        setEmailError("this email has been used already :(");
+      }
+    }
+
+    if (response.status === 200) {
+      setFinished(true);
+    }
+  }, [email, name]);
 
   useEffect(() => {
     clearTimeout(validationTimeout.current);

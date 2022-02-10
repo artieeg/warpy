@@ -18,6 +18,7 @@ async function bootstrap() {
   });
 
   app.startAllMicroservices();
+  app.enableCors();
 
   app.listen(3000);
 }

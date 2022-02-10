@@ -5,14 +5,27 @@ import { Injectable } from '@nestjs/common';
 export class WaitlistEntity {
   constructor(private prisma: PrismaService) {}
 
-  async check(email: string, username: string): Promise<boolean> {
+  async check(
+    email: string,
+    username: string,
+  ): Promise<'email' | 'username' | 'none'> {
     const record = await this.prisma.waitlistRecord.findFirst({
       where: {
         OR: [{ email }, { username }],
       },
     });
 
-    return !!record;
+    if (!record) {
+      return 'none';
+    }
+
+    if (record.email === email) {
+      return 'email';
+    }
+
+    if (record.username === username) {
+      return 'username';
+    }
   }
 
   async del(email: string) {

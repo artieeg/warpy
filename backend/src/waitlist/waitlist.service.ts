@@ -41,10 +41,10 @@ export class WaitlistService {
 
   async addToWaitList(email: string, username: string) {
     try {
-      const check = await this.waitlistEntity.check(email, username);
+      const field = await this.waitlistEntity.check(email, username);
 
-      if (!check) {
-        throw new WaitlistRecordExists();
+      if (field !== 'none') {
+        throw new WaitlistRecordExists(field);
       }
 
       await this.sendWelcomeEmail(email, username);
