@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
 import { WaitlistService } from './waitlist.service';
 import { validate } from 'email-validator';
 
@@ -24,6 +24,19 @@ export class WaitlistController {
       await this.waitlistService.addToWaitList(email, username);
 
       res.status(200).json({});
-    } catch (e) {}
+    } catch (e) {
+      res.status(400).json({});
+    }
+  }
+
+  @Get('/waitlist/unsub')
+  async onDelete(@Query('token') token: string, @Res() res: any) {
+    try {
+      await this.waitlistService.removeFromWaitlist(token);
+    } catch (e) {
+      console.log('failed to delete from waitlist', token);
+    } finally {
+      res.status(200).send('you have been removed from the waitlist');
+    }
   }
 }

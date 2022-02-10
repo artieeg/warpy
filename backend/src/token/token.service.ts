@@ -12,6 +12,12 @@ export class TokenService {
     return jwt.sign(data, secret, params);
   }
 
+  validateToken<T = any>(token: string) {
+    const secret = this.configService.get<string>('accessJwtSecret');
+
+    return jwt.verify(token, secret) as T;
+  }
+
   decodeToken<T = any>(token: string) {
     return jwt.decode(token) as T;
   }

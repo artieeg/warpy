@@ -58,8 +58,9 @@ export class WaitlistService {
 
   async removeFromWaitlist(token: string) {
     try {
-      const { email } = await this.token.decodeToken(token);
+      const { email } = this.token.validateToken(token);
 
+      console.log(email);
       await this.waitlistEntity.del(email);
     } catch (e) {
       console.log('failed e');
