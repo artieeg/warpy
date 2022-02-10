@@ -12,6 +12,7 @@ import {
   TwitterShareButton,
 } from "react-share";
 import { Facebook, Reddit, Twitter } from "../icons";
+import { validate } from "email-validator";
 
 const gifs = [
   "https://c.tenor.com/AmtGg5GiqIAAAAAC/shaquille-o-neal-excited.gif",
@@ -40,6 +41,10 @@ export default function Join() {
   const [isNameValid, setNameValid] = useState<boolean>();
   const [isPhoneInputFocused, setEmailInputFocused] = useState(false);
 
+  useEffect(() => {
+    setEmailError("");
+  }, [email]);
+
   const validationTimeout = useRef<any>();
 
   //TODO use memo
@@ -55,6 +60,11 @@ export default function Join() {
 
   const onConfirm = useCallback(async () => {
     if (!email || !name) {
+      return;
+    }
+
+    if (!validate(email)) {
+      setEmailError("this email doesn't look right 🤷");
       return;
     }
 
@@ -224,7 +234,7 @@ transition-opacity duration-1000 max-h-2/5 delay-[5000ms] ${
           />
           <div
             className={`text-boulder text-xxs ${
-              nameError ? "text-red" : "text-boulder"
+              emailError ? "text-red" : "text-boulder"
             }`}
           >
             {emailError && emailError}

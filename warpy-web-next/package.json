@@ -15,6 +15,7 @@
     "@warpy/lib": "1.0.0",
     "@warpy/store": "1.0.0",
     "axios": "^0.25.0",
+    "email-validator": "^2.0.4",
     "nats": "^2.4.0",
     "next": "latest",
     "next-compose-plugins": "^2.2.1",
