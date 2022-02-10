@@ -57,31 +57,42 @@ export default function Join() {
       return;
     }
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND}/waitlist/user`,
-      {
-        //mode: "no-cors",
-        method: "POST",
-        headers: [["content-type", "application/json"]],
-        body: JSON.stringify({
-          email,
-          username: name,
-        }),
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND}/waitlist/user`,
+        {
+          //mode: "no-cors",
+          method: "POST",
+          headers: [["content-type", "application/json"]],
+          body: JSON.stringify({
+            email,
+            username: name,
+          }),
+        }
+      );
+
+      const json = await response.json();
+      const field = json?.field;
+
+      if (field) {
+        console.log(field);
+        if (field === "username") {
+          setNameError("this username seems to be taken :(");
+        } else if (field === "email") {
+          setEmailError("this email has been used already :(");
+        }
+      } else {
+        setFinished(true);
       }
-    );
-
-    const json = await response.json();
-
-    if (json.field) {
-      if (json.field === "name") {
-        setNameError("this username seems to be taken :(");
-      } else if (json.field === "email") {
-        setEmailError("this email has been used already :(");
+    } catch (e) {
+      console.log(e);
+      if (e.response.field) {
+        if (e.response.field === "name") {
+          setNameError("this username seems to be taken :(");
+        } else if (e.response.field === "email") {
+          setEmailError("this email has been used already :(");
+        }
       }
-    }
-
-    if (response.status === 200) {
-      setFinished(true);
     }
   }, [email, name]);
 
@@ -179,11 +190,17 @@ transition-opacity duration-1000 max-h-2/5 delay-[5000ms] ${
           <div
             className={`text-boulder text-xxs transition-opacity duration-1000 transition-mt ${
               isPhoneInputFocused && "-mt-8 opacity-0"
-            }`}
+            } ${nameError ? "text-red" : "text-boulder"}`}
           >
-            pick a username that makes
-            <br />
-            you go 👍👍
+            {nameError && nameError}
+
+            {!nameError && (
+              <>
+                pick a username that makes
+                <br />
+                you go 👍👍
+              </>
+            )}
           </div>
         </div>
 
@@ -200,10 +217,20 @@ transition-opacity duration-1000 max-h-2/5 delay-[5000ms] ${
             className="mb-1 appearance-none outline-none w-full text-white bg-transparent placeholder-boulder"
             onChange={(e) => setEmail(e.target.value)}
           />
-          <div className="text-boulder text-xxs">
-            we will send you a download link
-            <br />
-            right after we lauch 😎
+          <div
+            className={`text-boulder text-xxs ${
+              nameError ? "text-red" : "text-boulder"
+            }`}
+          >
+            {emailError && emailError}
+
+            {!emailError && (
+              <>
+                we will send you a download link
+                <br />
+                right after we lauch 😎
+              </>
+            )}
           </div>
         </div>
 

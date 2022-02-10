@@ -5,16 +5,16 @@ import sendgrid from '@sendgrid/mail';
 
 @Injectable()
 export class MailService {
-  constructor(private config: ConfigService) {
+  constructor(config: ConfigService) {
     sendgrid.setApiKey(config.get('sendGridKey'));
   }
 
   async send({
-    from = 'hello@warpy.tv',
+    from = { email: 'hello@warpy.tv', name: 'warpy' },
     ...rest
   }: {
     to: string;
-    from?: string;
+    from?: { email: string; name: string };
     subject: string;
     html: string;
   }) {

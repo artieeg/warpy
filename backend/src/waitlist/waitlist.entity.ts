@@ -19,12 +19,12 @@ export class WaitlistEntity {
       return 'none';
     }
 
-    if (record.email === email) {
-      return 'email';
-    }
-
     if (record.username === username) {
       return 'username';
+    }
+
+    if (record.email === email) {
+      return 'email';
     }
   }
 
