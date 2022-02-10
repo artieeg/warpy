@@ -27,14 +27,14 @@ const acks = ["CEO of cool", "a real one", "epic human"];
 
 export default function Join() {
   const [name, setName] = useState<string>();
-  const [phone, setPhone] = useState<string>();
+  const [email, setEmail] = useState<string>();
   const ack = useMemo(() => acks[Math.floor(Math.random() * acks.length)], []);
 
   const [isFinished, setFinished] = useState(false);
   const [isMoving, setMoving] = useState(false);
 
   const [isNameValid, setNameValid] = useState<boolean>();
-  const [isPhoneInputFocused, setPhoneInputFocused] = useState(false);
+  const [isPhoneInputFocused, setEmailInputFocused] = useState(false);
 
   const validationTimeout = useRef<any>();
 
@@ -160,14 +160,15 @@ transition-opacity duration-1000 max-h-2/5 delay-[5000ms] ${
           }`}
         >
           <input
-            onFocus={() => setPhoneInputFocused(true)}
-            onBlur={() => setPhoneInputFocused(false)}
-            placeholder="phone number"
+            type="email"
+            onFocus={() => setEmailInputFocused(true)}
+            onBlur={() => setEmailInputFocused(false)}
+            placeholder="email"
             className="mb-1 appearance-none outline-none w-full text-white bg-transparent placeholder-boulder"
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <div className="text-boulder text-xxs">
-            we will text you a download link
+            we will send you a download link
             <br />
             right after we lauch 😎
           </div>
@@ -175,10 +176,14 @@ transition-opacity duration-1000 max-h-2/5 delay-[5000ms] ${
 
         <div
           className={`w-full transition-opacity duration-600 ${
-            phone?.length > 5 === true ? "opacity-1" : "opacity-0"
+            email?.length > 5 === true ? "opacity-1" : "opacity-0"
           }`}
         >
-          <TextButton title="finish" onPress={onConfirm} />
+          <TextButton
+            disabled={email?.length <= 5}
+            title="finish"
+            onPress={onConfirm}
+          />
         </div>
       </div>
     </div>
