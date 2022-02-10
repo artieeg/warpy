@@ -1,8 +1,8 @@
-import {IUser, Roles} from '@warpy/lib';
-import {StoreSlice} from '../types';
+import { IBaseUser, Roles } from "@warpy/lib";
+import { StoreSlice } from "../types";
 
 export interface IUserSlice {
-  user: IUser | null;
+  user: IBaseUser | null;
   role: Roles | null;
   isLoadingUser: boolean;
   exists: boolean;

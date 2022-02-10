@@ -1,5 +1,5 @@
-import {DURATION} from '@app/types';
-import {StoreSlice} from '../types';
+type DURATION = "LONG" | "SHORT";
+import { StoreSlice } from "../types";
 
 export interface IToastSlice {
   message: string | null;
@@ -7,7 +7,7 @@ export interface IToastSlice {
   showToastMessage: (message: string, duration?: DURATION) => void;
 }
 
-export const createToastSlice: StoreSlice<IToastSlice> = set => ({
+export const createToastSlice: StoreSlice<IToastSlice> = (set) => ({
   message: null,
   duration: null,
   showToastMessage(message, duration) {

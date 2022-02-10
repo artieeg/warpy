@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@sendgrid/mail": "^7.6.0",
+    "@typescript-eslint/eslint-plugin": "^5.11.0",
     "@warpy/api": "1.0.0",
     "@warpy/components": "1.0.0",
     "@warpy/lib": "1.0.0",

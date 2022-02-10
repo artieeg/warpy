@@ -11,4 +11,6 @@ export interface IBaseParticipant extends IEntity {
   isBot: boolean;
 }
 
-export interface IParticipant extends IBaseUser, IBaseParticipant {}
+export interface IParticipant extends IBaseUser, IBaseParticipant {
+  media: any;
+}
