@@ -12,5 +12,5 @@ export interface IBaseParticipant extends IEntity {
 }
 
 export interface IParticipant extends IBaseUser, IBaseParticipant {
-  media: any;
+  media?: any;
 }
