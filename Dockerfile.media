@@ -16,8 +16,8 @@ COPY ./media ./media
 COPY ./api_client ./api_client
 COPY ./media-client ./media-client
 
-COPY *.json .
-COPY *.lock .
+COPY *.json ./
+COPY *.lock ./
 
 RUN yarn install
 
@@ -28,6 +28,6 @@ RUN yarn install
 WORKDIR /media
 
 RUN yarn install
-COPY ./media .
+COPY ./media ./
 
 #CMD ["yarn", "start:dev:p"]
