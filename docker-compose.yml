@@ -6,13 +6,6 @@ services:
       - 6222:6222
       - 8222:8222
 
-  nginx:
-    image: warpy_nginx
-    volumes:
-      - ./dev_env/nginx.conf:/etc/nginx/nginx.conf
-    ports:
-      - 9999:9999
-
   redis:
     image:
       redis:6.2.4-alpine
