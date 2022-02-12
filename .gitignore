@@ -9,3 +9,4 @@ node_modules
 *.mp3
 yarn-error.log
 dev_env/sendgrid.env
+docker-compose.waitlist-prod.yml
