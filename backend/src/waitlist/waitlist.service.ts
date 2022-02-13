@@ -51,7 +51,8 @@ export class WaitlistService {
 
       await this.waitlistEntity.add(email, username);
     } catch (e) {
-      console.log('failed e');
+      console.log('failed e', email, username);
+      console.error(e)
       throw e;
     }
   }
