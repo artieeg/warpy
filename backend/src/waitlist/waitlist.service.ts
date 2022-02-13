@@ -17,7 +17,7 @@ export class WaitlistService {
     private waitlistEntity: WaitlistEntity,
   ) {
     this.email_template = fs.readFileSync(
-      './src/waitlist/template.html',
+      './src/waitlist/template2.html',
       'utf8',
     );
   }
