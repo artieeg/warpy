@@ -12,7 +12,7 @@ function AppWrapper(props) {
   return (
     <>
       <Head>
-        <title>{title}</title>
+        <title>{title ?? "warpy"}</title>
 
         <link rel="shortcut icon" href="/favicon.png" />
 
