@@ -113,3 +113,9 @@ export default function Index() {
     </div>
   );
 }
+
+export async function getServerSideProps() {
+  console.log("new visit", new Date());
+
+  return {};
+}

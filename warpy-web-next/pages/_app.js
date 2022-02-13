@@ -16,9 +16,9 @@ function AppWrapper(props) {
 
         <link rel="shortcut icon" href="/favicon.png" />
 
-        <meta name="og:title" content={title} />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
+        <meta name="og:title" content={title ?? "join warpy"} />
+        <meta name="twitter:title" content={title ?? "join warpy"} />
+        <meta name="twitter:description" content={description ?? "new social livestreaming platform"} />
 
         <meta
           name="viewport"
