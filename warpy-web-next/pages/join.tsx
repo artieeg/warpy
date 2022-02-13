@@ -265,3 +265,9 @@ transition-opacity duration-1000 max-h-2/5 delay-[5000ms] ${
     </div>
   );
 }
+
+export async function getServerSideProps() {
+  console.log("new visit /join", new Date());
+
+  return {};
+}
