@@ -199,13 +199,21 @@ export class ParticipantService {
     const updatedUser = await this.participant.updateOne(userToUpdate, {
       sendNodeId,
       role,
+
+      //mark video as disabled if role set to speaker or viewer
+      videoEnabled: !(role === 'speaker' || role === 'viewer')
+        ? false
+        : undefined,
+
+      //mark audio as disabled if role set to viewer
+      audioEnabled: !(role === 'viewer'),
     });
 
     //Create a permissions token
     response['mediaPermissionToken'] = this.media.createPermissionToken({
       audio: role !== 'viewer',
       video: role === 'streamer',
-      sendNodeId,
+      sendNodeId: role === 'viewer' ? null : sendNodeId,
       recvNodeId,
       user: userToUpdate,
       room: stream,
@@ -217,40 +225,6 @@ export class ParticipantService {
     });
 
     this.eventEmitter.emit('participant.role-change', updatedUser);
-  }
-
-  /** expendable & ugly, TODO: rewrite during #130*/
-  async returnToViewer(user: string) {
-    const { recvNodeId } = await this.participant.getById(user);
-
-    const data = await this.participant.updateOne(user, {
-      role: 'viewer',
-      sendNodeId: null,
-      audioEnabled: false,
-      videoEnabled: false,
-      isRaisingHand: false,
-    });
-
-    let response: IRoleUpdateEvent = {
-      role: 'viewer',
-    } as any;
-
-    response['mediaPermissionToken'] = this.media.createPermissionToken({
-      audio: false,
-      video: false,
-      sendNodeId: null,
-      recvNodeId,
-      user: user,
-      room: data.stream,
-    });
-
-    this.messageService.sendMessage(user, {
-      event: 'role-change',
-      data: response,
-    });
-    console.log('updated role', data);
-
-    this.eventEmitter.emit('participant.role-change', data);
   }
 
   async setMediaEnabled(

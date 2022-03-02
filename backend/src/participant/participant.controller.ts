@@ -43,11 +43,6 @@ export class ParticipantController {
     return { viewers };
   }
 
-  @MessagePattern('participant.return-to-viewer')
-  async onReturnToViewer({ user }: { user: string }) {
-    await this.participant.returnToViewer(user);
-  }
-
   @MessagePattern('user.raise-hand')
   async onRaiseHand({ user, flag }: IRaiseHand) {
     await this.participant.setRaiseHand(user, flag);
