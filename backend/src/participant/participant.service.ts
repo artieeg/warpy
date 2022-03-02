@@ -180,15 +180,12 @@ export class ParticipantService {
 
     let { sendNodeId, recvNodeId } = oldUserData;
 
-    //let sendNodeId = oldUserData.sendNodeId;
-    //let recvNodeId = oldUserData.recvNodeId;
-
     let response = {
       role,
     };
 
+    //If the user was viewer, assign them to a media send node
     if (oldUserData.role === 'viewer') {
-      //If the user was viewer, he hasn't been assigned to a media send node
       sendNodeId = await this.media.getSendNodeId();
 
       response['media'] = await this.media.createSendTransport({
@@ -197,11 +194,14 @@ export class ParticipantService {
       });
     }
 
+    //Update participant record with a new role
+    //and a new send node id (if changed)
     const updatedUser = await this.participant.updateOne(userToUpdate, {
       sendNodeId,
       role,
     });
 
+    //Create a permissions token
     response['mediaPermissionToken'] = this.media.createPermissionToken({
       audio: role !== 'viewer',
       video: role === 'streamer',

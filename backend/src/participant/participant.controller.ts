@@ -3,7 +3,6 @@ import { Controller, UseFilters } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   IActiveSpeakersPayload,
-  IAllowSpeakerPayload,
   IJoinStream,
   IJoinStreamResponse,
   IKickUserRequest,
@@ -13,7 +12,6 @@ import {
   IRequestViewers,
   IRequestViewersResponse,
   ISetRoleRequest,
-  IUserDisconnected,
 } from '@warpy/lib';
 import { ParticipantService } from './participant.service';
 
@@ -54,9 +52,6 @@ export class ParticipantController {
   async onRaiseHand({ user, flag }: IRaiseHand) {
     await this.participant.setRaiseHand(user, flag);
   }
-
-  @MessagePattern('participant.set-permissions')
-  async onSetPermissions() {}
 
   @MessagePattern('participant.set-role')
   async onSetRole({ user, userToUpdate, role }: ISetRoleRequest) {
