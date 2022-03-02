@@ -2,13 +2,12 @@ import { BotInstanceEntity } from '@backend_2/bots/bot-instance.entity';
 import {
   MaxVideoStreamers,
   NoPermissionError,
-  StreamNotFound,
   UserNotFound,
 } from '@backend_2/errors';
 import { StreamBlockEntity } from '@backend_2/stream-block/stream-block.entity';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { IJoinStreamResponse, IRoleUpdateEvent, Roles } from '@warpy/lib';
+import { IJoinStreamResponse, Roles } from '@warpy/lib';
 import { BlockService } from '../block/block.service';
 import { MediaService } from '../media/media.service';
 import { MessageService } from '../message/message.service';
@@ -53,8 +52,6 @@ export class ParticipantService {
       stream,
     );
 
-    console.log('viewer id', viewerId, stream);
-
     await this.streamBlocks.checkUserBanned(viewerId, stream);
 
     const viewer = await this.participant.create({
@@ -89,6 +86,7 @@ export class ParticipantService {
   async deleteBotParticipant(bot: string) {
     const instances = await this.botInstanceEntity.getBotInstances(bot);
 
+    //TODO: ???
     const promises = instances.map(async ({ botInstanceId, stream }) => {
       await this.participant.deleteParticipant(botInstanceId);
       this.eventEmitter.emit('participant.delete', {
@@ -178,21 +176,17 @@ export class ParticipantService {
 
     const oldUserData = await this.participant.getById(userToUpdate);
 
-    let { sendNodeId, recvNodeId } = oldUserData;
+    //receive new media token,
+    //sendNodeId and send transport data (if upgrading from viewer)
+    const { sendNodeId, ...rest } = await this.media.updateRole(
+      oldUserData,
+      role,
+    );
 
     let response = {
       role,
+      rest,
     };
-
-    //If the user was viewer, assign them to a media send node
-    if (oldUserData.role === 'viewer') {
-      sendNodeId = await this.media.getSendNodeId();
-
-      response['media'] = await this.media.createSendTransport({
-        roomId: stream,
-        speaker: userToUpdate,
-      });
-    }
 
     //Update participant record with a new role
     //and a new send node id (if changed)
@@ -207,16 +201,6 @@ export class ParticipantService {
 
       //mark audio as disabled if role set to viewer
       audioEnabled: !(role === 'viewer'),
-    });
-
-    //Create a permissions token
-    response['mediaPermissionToken'] = this.media.createPermissionToken({
-      audio: role !== 'viewer',
-      video: role === 'streamer',
-      sendNodeId: role === 'viewer' ? null : sendNodeId,
-      recvNodeId,
-      user: userToUpdate,
-      room: stream,
     });
 
     this.messageService.sendMessage(userToUpdate, {

@@ -10,6 +10,7 @@ import {
   INewMediaRoomData,
   INewTransportResponse,
   MediaServiceRole,
+  Roles,
 } from '@warpy/lib';
 import * as jwt from 'jsonwebtoken';
 import { NatsService } from '../nats/nats.service';
@@ -21,7 +22,7 @@ const secret = process.env.MEDIA_JWT_SECRET || 'test-secret';
 export class MediaService {
   constructor(private cache: MediaCacheService, private nc: NatsService) {}
 
-  createPermissionToken(permissions: IMediaPermissions): string {
+  private createPermissionToken(permissions: IMediaPermissions): string {
     return jwt.sign(permissions, secret, {
       expiresIn: 60,
     });
@@ -31,6 +32,34 @@ export class MediaService {
     const response = await this.nc.request('media.room.create', payload);
 
     return response as INewMediaRoomData;
+  }
+
+  async updateRole(participant: IFullParticipant, role: Roles) {
+    const { stream, id, recvNodeId, sendNodeId: prevSendNodeId } = participant;
+
+    let sendMedia: INewTransportResponse;
+    let sendNodeId = prevSendNodeId;
+
+    //If the user was viewer, assign them to a media send node
+    if (participant.role === 'viewer') {
+      sendNodeId = await this.getSendNodeId();
+
+      sendMedia = await this.createSendTransport({
+        roomId: stream,
+        speaker: id,
+      });
+    }
+
+    const token = this.createPermissionToken({
+      audio: role !== 'viewer',
+      video: role === 'streamer',
+      sendNodeId: role === 'viewer' ? null : sendNodeId,
+      recvNodeId,
+      user: id,
+      room: stream,
+    });
+
+    return { mediaPermissionToken: token, media: sendMedia, sendNodeId };
   }
 
   async createSendTransport(
@@ -62,11 +91,11 @@ export class MediaService {
     return response as IConnectRecvTransportParams;
   }
 
-  async getSendNodeId() {
+  private async getSendNodeId() {
     return this.cache.getProducerNodeId();
   }
 
-  async getRecvNodeId() {
+  private async getRecvNodeId() {
     return this.cache.getConsumerNodeId();
   }
 
