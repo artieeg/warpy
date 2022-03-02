@@ -63,11 +63,6 @@ export class ParticipantController {
     await this.participant.setRole(user, userToUpdate, role);
   }
 
-  @MessagePattern('speaker.allow')
-  async onNewSpeaker({ user, speaker }: IAllowSpeakerPayload) {
-    await this.participant.allowSpeaker(user, speaker);
-  }
-
   @MessagePattern('stream.active-speakers')
   async onActiveSpeakers({ speakers }: IActiveSpeakersPayload) {
     await this.participant.broadcastActiveSpeakers(speakers);

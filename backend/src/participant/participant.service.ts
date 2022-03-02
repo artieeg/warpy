@@ -122,56 +122,6 @@ export class ParticipantService {
     this.eventEmitter.emit('participant.raise-hand', participant);
   }
 
-  async allowSpeaker(hostId: string, newSpeakerId: string) {
-    const { stream, role } = await this.participant.getById(hostId);
-
-    if (!stream) {
-      throw new StreamNotFound();
-    }
-
-    if (role !== 'streamer') {
-      throw new NoPermissionError();
-    }
-
-    await this.blockService.isBannedBySpeaker(newSpeakerId, stream);
-
-    const speakerData = await this.participant.makeSpeaker(newSpeakerId);
-
-    if (!speakerData) {
-      throw new UserNotFound();
-    }
-
-    const media = await this.media.createSendTransport({
-      speaker: newSpeakerId,
-      roomId: stream,
-    });
-
-    const { recvNodeId } = speakerData;
-    const sendNodeId = await this.media.getSendNodeId();
-
-    await this.participant.updateOne(newSpeakerId, { sendNodeId });
-
-    const { token } = await this.media.getSpeakerPermissions(
-      newSpeakerId,
-      stream,
-      {
-        recvNodeId,
-        sendNodeId,
-      },
-    );
-
-    this.messageService.sendMessage(newSpeakerId, {
-      event: 'speaking-allowed',
-      data: {
-        stream,
-        media,
-        mediaPermissionToken: token,
-      },
-    });
-
-    this.eventEmitter.emit('participant.new-speaker', speakerData);
-  }
-
   async broadcastActiveSpeakers(
     speakers: Record<string, { user: string; volume: number }[]>,
   ) {
@@ -228,8 +178,10 @@ export class ParticipantService {
 
     const oldUserData = await this.participant.getById(userToUpdate);
 
-    let sendNodeId = oldUserData.sendNodeId;
-    let recvNodeId = oldUserData.recvNodeId;
+    let { sendNodeId, recvNodeId } = oldUserData;
+
+    //let sendNodeId = oldUserData.sendNodeId;
+    //let recvNodeId = oldUserData.recvNodeId;
 
     let response = {
       role,
