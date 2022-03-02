@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
 import { NatsModule } from '../nats/nats.module';
-import { MediaCacheService } from './media.cache';
-import { MediaController } from './media.controller';
+import { MediaBalancerModule } from './media-balancer/media-balancer.module';
 import { MediaService } from './media.service';
 
 @Module({
-  imports: [NatsModule],
-  providers: [MediaCacheService, MediaService],
+  imports: [NatsModule, MediaBalancerModule],
+  providers: [MediaService],
   exports: [MediaService],
-  controllers: [MediaController],
+  controllers: [],
 })
 export class MediaModule {}

@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 import { MediaBalancerController } from './media-balancer.controller';
 import { MediaBalancerService } from './media-balancer.service';
+import { NodeRegistryService } from './node-registry.service';
 
 @Module({
   imports: [],
-  providers: [MediaBalancerService],
+  providers: [MediaBalancerService, NodeRegistryService],
   controllers: [MediaBalancerController],
-  exports: [],
+  exports: [MediaBalancerService],
 })
 export class MediaBalancerModule {}

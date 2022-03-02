@@ -9,20 +9,22 @@ import {
   IMediaPermissions,
   INewMediaRoomData,
   INewTransportResponse,
-  MediaServiceRole,
   Roles,
 } from '@warpy/lib';
 import * as jwt from 'jsonwebtoken';
 import { NatsService } from '../nats/nats.service';
-import { MediaCacheService } from './media.cache';
+import { MediaBalancerService } from './media-balancer/media-balancer.service';
 
 const secret = process.env.MEDIA_JWT_SECRET || 'test-secret';
 
 @Injectable()
 export class MediaService {
-  constructor(private cache: MediaCacheService, private nc: NatsService) {}
+  constructor(
+    private balancer: MediaBalancerService,
+    private nc: NatsService,
+  ) {}
 
-  private createPermissionToken(permissions: IMediaPermissions): string {
+  createPermissionToken(permissions: IMediaPermissions): string {
     return jwt.sign(permissions, secret, {
       expiresIn: 60,
     });
@@ -42,7 +44,7 @@ export class MediaService {
 
     //If the user was viewer, assign them to a media send node
     if (participant.role === 'viewer') {
-      sendNodeId = await this.getSendNodeId();
+      sendNodeId = await this.balancer.getSendNodeId();
 
       sendMedia = await this.createSendTransport({
         roomId: stream,
@@ -91,18 +93,10 @@ export class MediaService {
     return response as IConnectRecvTransportParams;
   }
 
-  private async getSendNodeId() {
-    return this.cache.getProducerNodeId();
-  }
-
-  private async getRecvNodeId() {
-    return this.cache.getConsumerNodeId();
-  }
-
   async getSendRecvNodeIds() {
     return {
-      sendNodeId: await this.getSendNodeId(),
-      recvNodeId: await this.getRecvNodeId(),
+      sendNodeId: await this.balancer.getSendNodeId(),
+      recvNodeId: await this.balancer.getRecvNodeId(),
     };
   }
 
@@ -110,46 +104,37 @@ export class MediaService {
     permissions?: Partial<IMediaPermissions>,
   ): Promise<{ sendNodeId: string; recvNodeId: string }> {
     if (!permissions) {
-      return this.getSendRecvNodeIds();
+      const [sendNodeId, recvNodeId] = await Promise.all([
+        this.balancer.getSendNodeId(),
+        this.balancer.getRecvNodeId(),
+      ]);
+
+      return {
+        sendNodeId,
+        recvNodeId,
+      };
     }
 
     return {
-      sendNodeId: permissions.sendNodeId || (await this.getSendNodeId()),
-      recvNodeId: permissions.recvNodeId || (await this.getRecvNodeId()),
+      sendNodeId:
+        permissions.sendNodeId || (await this.balancer.getSendNodeId()),
+      recvNodeId:
+        permissions.recvNodeId || (await this.balancer.getRecvNodeId()),
     };
   }
 
   async getStreamerPermissions(
     user: string,
     room: string,
-    optional?: Partial<IMediaPermissions>,
+    optional: Partial<IMediaPermissions>,
   ) {
     const permissions: IMediaPermissions = {
       user,
       room,
       audio: true,
       video: true,
+      ...(await this.getNodes()),
       ...optional,
-      ...(await this.getNodes(optional)),
-    };
-
-    const token = this.createPermissionToken(permissions);
-
-    return { token, permissions };
-  }
-
-  async getSpeakerPermissions(
-    user: string,
-    room: string,
-    optional?: Partial<IMediaPermissions>,
-  ) {
-    const permissions: IMediaPermissions = {
-      user,
-      room,
-      audio: true,
-      video: false,
-      ...optional,
-      ...(await this.getNodes(optional)),
     };
 
     const token = this.createPermissionToken(permissions);
@@ -163,16 +148,12 @@ export class MediaService {
       room,
       audio: false,
       video: false,
-      recvNodeId: await this.cache.getConsumerNodeId(),
+      recvNodeId: await this.balancer.getRecvNodeId(),
     };
 
     const token = this.createPermissionToken(permissions);
 
     return { token, permissions };
-  }
-
-  async addNewMediaNode(id: string, role: MediaServiceRole) {
-    await this.cache.addNewNode(id, role);
   }
 
   private async kickFromRoom(user: string, stream: string, node: string) {

@@ -5,7 +5,8 @@ import { MediaServiceRole } from '@warpy/lib';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class MediaCacheService implements OnModuleInit {
+/** Stores arrays of online send/recv media nodes */
+export class NodeRegistryService implements OnModuleInit {
   client: RedisClient;
 
   constructor(private configService: ConfigService) {}
