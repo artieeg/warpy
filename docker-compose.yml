@@ -50,6 +50,8 @@ services:
   ws_gateway:
     image: node:16.0.0-alpine
     env_file: dev_env/ws_gateway.env
+    ports:
+      - 9999:9999
     volumes:
       - ./:/warpy
     working_dir: /warpy/ws_gateway
