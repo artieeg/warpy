@@ -342,3 +342,8 @@ export interface IFriendFeedRequest {
 export interface IStreamSearchRequest {
   textToSearch: string;
 }
+
+export interface IMediaNodeInfoRequest {
+  node: string;
+  load: number;
+}

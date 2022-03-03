@@ -78,6 +78,10 @@ export const init = async () => {
   initCommonFunctions();
 };
 
+export const send = (subject: string, data: any) => {
+  nc.publish(subject, jc.encode(data));
+};
+
 export const sendMessageToUser = (user: string, message: IMessage) => {
   nc.publish(`reply.user.${user}`, jc.encode(message));
 };

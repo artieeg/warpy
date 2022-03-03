@@ -13,6 +13,7 @@ export const configuration = () => ({
   userOnlineStatusCache:
     process.env.USER_ONLINE_STATUS ?? 'redis://127.0.0.1/7',
   mediaServerIdsCache: process.env.MEDIA_SERVER_IDS ?? 'redis://127.0.0.1/6',
+  mediaNodeInfo: process.env.MEDIA_NODE_INFO_ADDR ?? 'redis://127.0.0.1/5',
   nats: process.env.NATS_ADDR ?? '127.0.0.1',
   twilioSID: process.env.TWILIO_SID,
   twilioAuth: process.env.TWILIO_AUTH,
