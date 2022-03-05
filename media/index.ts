@@ -1,5 +1,6 @@
 import "module-alias/register";
 import dotenv from "dotenv";
+import os from "os-utils";
 
 dotenv.config();
 
@@ -41,6 +42,18 @@ const main = async () => {
       SFUService.tryConnectToIngress();
     }, 1000);
   }
+
+  setTimeout(() => {
+    setInterval(() => {
+      os.cpuUsage((load) => {
+        MessageService.send("media.node.info", {
+          load,
+          node: NodeInfo.id,
+          role: NodeInfo.role,
+        });
+      });
+    }, 2000);
+  }, 2000);
 };
 
 main();

@@ -3,7 +3,8 @@ import { Stream } from '@prisma/client';
 import { IStream } from '@warpy/lib';
 import { PrismaService } from '../prisma/prisma.service';
 
-type CreateNewStream = Omit<Stream, 'id'>;
+//type CreateNewStream = Omit<Stream, 'id'>;
+type CreateNewStream = Stream;
 
 @Injectable()
 export class StreamEntity {

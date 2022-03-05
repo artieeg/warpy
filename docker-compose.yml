@@ -50,6 +50,8 @@ services:
   ws_gateway:
     image: node:16.0.0-alpine
     env_file: dev_env/ws_gateway.env
+    ports:
+      - 9999:9999
     volumes:
       - ./:/warpy
     working_dir: /warpy/ws_gateway
@@ -58,7 +60,6 @@ services:
   media_producer:
     image: media:latest
     env_file: dev_env/media.env
-    network_mode: "host"
     depends_on:
       - "backend"
     build:
@@ -69,7 +70,6 @@ services:
   media_consumer:
     image: media:latest
     env_file: dev_env/media.env
-    network_mode: "host"
     depends_on:
       - "backend"
       - "media_producer"

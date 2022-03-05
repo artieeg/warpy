@@ -20,8 +20,8 @@ export class BotInstanceService {
     bot: string,
     invitationToken: string,
   ): Promise<IBotJoinResponse> {
-    const nodes = await this.mediaService.getSendRecvNodeIds();
     const { stream } = this.tokenService.decodeToken(invitationToken);
+    const nodes = await this.mediaService.getSendRecvNodeIds(stream);
 
     const botInstanceId = await this.botInstanceEntity.create(bot, stream);
 

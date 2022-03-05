@@ -159,11 +159,6 @@ export interface INewUser {
   kind: "dev" | "apple" | "google" | "twitter" | "facebook";
 }
 
-export interface IAllowSpeakerPayload {
-  speaker: string;
-  user: string;
-}
-
 export interface IActiveSpeakersPayload {
   speakers: Record<string, { user: string; volume: number }[]>;
 }
@@ -346,4 +341,10 @@ export interface IFriendFeedRequest {
 
 export interface IStreamSearchRequest {
   textToSearch: string;
+}
+
+export interface IMediaNodeInfoRequest {
+  node: string;
+  load: number;
+  role: string;
 }
