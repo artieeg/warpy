@@ -6,6 +6,7 @@ import {
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { INewStreamResponse } from '@warpy/lib';
+import cuid from 'cuid';
 import { MediaService } from '../media/media.service';
 import { ParticipantEntity } from '../participant/participant.entity';
 import { UserEntity } from '../user/user.entity';
@@ -38,17 +39,10 @@ export class StreamService {
       throw new UserNotFound();
     }
 
-    const stream = await this.streamEntity.create({
-      owner_id: owner,
-      title,
-      category,
-      live: true,
-      preview: null,
-      reactions: 0,
-    });
+    const stream_id = cuid();
 
     const { recvNodeId, sendNodeId } =
-      await this.mediaService.getSendRecvNodeIds(stream.id);
+      await this.mediaService.getSendRecvNodeIds(stream_id);
 
     const participant = await this.participantEntity.create({
       user_id: owner,
@@ -57,6 +51,16 @@ export class StreamService {
       sendNodeId,
       audioEnabled: true,
       videoEnabled: true,
+    });
+
+    const stream = await this.streamEntity.create({
+      id: stream_id,
+      owner_id: owner,
+      title,
+      category,
+      live: true,
+      preview: null,
+      reactions: 0,
     });
 
     await this.participantEntity.setStream(participant.id, stream.id);

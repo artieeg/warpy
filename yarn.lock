@@ -10206,6 +10206,13 @@ nats@^2.4.0:
   dependencies:
     nkeys.js "^1.0.0-9"
 
+nats@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/nats/-/nats-2.6.1.tgz#70cf96be48058028411fef48cdb5bae7ced88f1e"
+  integrity sha512-PwcSZgWS2+JDoiU1Nd25eiV6wdvZbsCrBjyGyhqcJ72+SP2mJw0A0Sz4FKiSehx3mm2A61vwvC9rhkrNAMPpAw==
+  dependencies:
+    nkeys.js "^1.0.0-9"
+
 natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"

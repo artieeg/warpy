@@ -346,4 +346,5 @@ export interface IStreamSearchRequest {
 export interface IMediaNodeInfoRequest {
   node: string;
   load: number;
+  role: string;
 }

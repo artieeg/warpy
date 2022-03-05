@@ -31,7 +31,6 @@ export class NodeInfoService implements OnModuleInit {
   }
 
   set(node: string, data: INodeInfo) {
-    console.log({ node, data });
     this.client.hset(
       node,
       'node',

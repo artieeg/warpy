@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { IMediaNodeInfoRequest, INewMediaNode } from '@warpy/lib';
+import { IMediaNodeInfoRequest, INewMediaNode, MediaServiceRole } from '@warpy/lib';
 import { NodeInfoService } from './node-info.service';
 import { NodeRegistryService } from './node-registry.service';
 
@@ -17,7 +17,7 @@ export class MediaBalancerController {
   }
 
   @MessagePattern('media.node.info')
-  async onMediaNodeInfo({ node, load }: IMediaNodeInfoRequest) {
-    this.nodeInfoService.set(node, { load });
+  async onMediaNodeInfo({ node, load, role }: IMediaNodeInfoRequest) {
+    this.nodeInfoService.set(node, { load, node, role: role as MediaServiceRole });
   }
 }

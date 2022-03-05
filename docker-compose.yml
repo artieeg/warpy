@@ -60,7 +60,6 @@ services:
   media_producer:
     image: media:latest
     env_file: dev_env/media.env
-    network_mode: "host"
     depends_on:
       - "backend"
     build:
@@ -71,7 +70,6 @@ services:
   media_consumer:
     image: media:latest
     env_file: dev_env/media.env
-    network_mode: "host"
     depends_on:
       - "backend"
       - "media_producer"
