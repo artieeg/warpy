@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { MediaServiceRole } from '@warpy/lib';
-import { NodeInfoService } from './node-info.service';
-import { NodeRegistryService } from './node-registry.service';
-import { StreamNodeAssignerService } from './stream-node-assigner.service';
+import { StreamNodeAssignerService } from './node-assigner/node-assigner.service';
+import { NodeInfoService } from './node-info/node-info.service';
+import { NodeRegistryService } from './node-registry/node-registry.service';
 
 @Injectable()
 export class MediaBalancerService {

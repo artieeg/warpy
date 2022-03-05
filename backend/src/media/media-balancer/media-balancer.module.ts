@@ -1,19 +1,13 @@
 import { Module } from '@nestjs/common';
-import { MediaBalancerController } from './media-balancer.controller';
 import { MediaBalancerService } from './media-balancer.service';
-import { NodeInfoService } from './node-info.service';
-import { NodeRegistryService } from './node-registry.service';
-import { StreamNodeAssignerService } from './stream-node-assigner.service';
+import { StreamNodeAssignerModule } from './node-assigner/node-assigner.module';
+import { NodeInfoModule } from './node-info/node-info.module';
+import { NodeRegistryModule } from './node-registry/node-registry.module';
 
 @Module({
-  imports: [],
-  providers: [
-    MediaBalancerService,
-    StreamNodeAssignerService,
-    NodeRegistryService,
-    NodeInfoService,
-  ],
-  controllers: [MediaBalancerController],
+  imports: [StreamNodeAssignerModule, NodeInfoModule, NodeRegistryModule],
+  providers: [MediaBalancerService],
+  controllers: [],
   exports: [MediaBalancerService],
 })
 export class MediaBalancerModule {}

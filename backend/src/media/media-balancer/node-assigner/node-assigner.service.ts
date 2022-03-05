@@ -2,10 +2,6 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RedisClient, createClient } from 'redis';
 
-interface INodeInfo {
-  load: number;
-}
-
 /**
  * Stores arrays of nodes, where the stream "lives"
  * */
@@ -18,6 +14,15 @@ export class StreamNodeAssignerService implements OnModuleInit {
   onModuleInit() {
     this.client = createClient({
       url: this.configService.get('mediaStreamNodeAssigner'),
+    });
+  }
+
+  del(stream: string) {
+    return new Promise<void>((resolve, reject) => {
+      this.client.del(stream, (err: any) => {
+        if (err) reject(err);
+        else resolve();
+      });
     });
   }
 

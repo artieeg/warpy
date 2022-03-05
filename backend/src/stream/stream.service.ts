@@ -100,6 +100,8 @@ export class StreamService {
     if (participant?.stream && participant?.role === 'streamer') {
       await this.streamEntity.stop(participant.stream);
       await this.participantEntity.allParticipantsLeave(participant.stream);
+
+      this.eventEmitter.emit('stream.stopped', { stream: participant.stream });
     } else if (!participant) {
       throw new UserNotFound();
     } else if (!participant.stream) {
