@@ -21,9 +21,18 @@ export class StreamNodeAssignerService implements OnModuleInit {
     });
   }
 
+  assignNode(stream: string, node: string) {
+    return new Promise<void>((resolve, reject) =>
+      this.client.sadd(stream, node, (err: any) => {
+        if (err) reject(err);
+        else resolve();
+      }),
+    );
+  }
+
   getAssignedNodes(stream: string) {
     return new Promise<string[]>((resolve, reject) => {
-      this.client.smembers(stream, (err, values) => {
+      this.client.smembers(stream, (err: any, values: any) => {
         if (err) reject(err);
         else resolve(values);
       });

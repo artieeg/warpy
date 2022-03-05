@@ -4,6 +4,7 @@ import { RedisClient, createClient } from 'redis';
 import { MediaServiceRole } from '@warpy/lib';
 
 interface INodeInfo {
+  node: string;
   load: number;
   role: MediaServiceRole;
 }
@@ -31,8 +32,17 @@ export class NodeInfoService implements OnModuleInit {
 
   set(node: string, data: INodeInfo) {
     console.log({ node, data });
-    this.client.hset(node, 'load', data.load, 'role', data.role, () => {
-      this.client.expire(node, 10);
-    });
+    this.client.hset(
+      node,
+      'node',
+      node,
+      'load',
+      data.load,
+      'role',
+      data.role,
+      () => {
+        this.client.expire(node, 10);
+      },
+    );
   }
 }
