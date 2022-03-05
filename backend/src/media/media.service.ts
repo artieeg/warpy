@@ -44,7 +44,7 @@ export class MediaService {
 
     //If the user was viewer, assign them to a media send node
     if (participant.role === 'viewer') {
-      sendNodeId = await this.balancer.getSendNodeId();
+      sendNodeId = await this.balancer.getSendNodeId(stream);
 
       sendMedia = await this.createSendTransport({
         roomId: stream,
@@ -93,20 +93,21 @@ export class MediaService {
     return response as IConnectRecvTransportParams;
   }
 
-  async getSendRecvNodeIds() {
+  async getSendRecvNodeIds(stream: string) {
     return {
-      sendNodeId: await this.balancer.getSendNodeId(),
-      recvNodeId: await this.balancer.getRecvNodeId(),
+      sendNodeId: await this.balancer.getSendNodeId(stream),
+      recvNodeId: await this.balancer.getRecvNodeId(stream),
     };
   }
 
   private async getNodes(
+    stream: string,
     permissions?: Partial<IMediaPermissions>,
   ): Promise<{ sendNodeId: string; recvNodeId: string }> {
     if (!permissions) {
       const [sendNodeId, recvNodeId] = await Promise.all([
-        this.balancer.getSendNodeId(),
-        this.balancer.getRecvNodeId(),
+        this.balancer.getSendNodeId(stream),
+        this.balancer.getRecvNodeId(stream),
       ]);
 
       return {
@@ -117,9 +118,9 @@ export class MediaService {
 
     return {
       sendNodeId:
-        permissions.sendNodeId || (await this.balancer.getSendNodeId()),
+        permissions.sendNodeId || (await this.balancer.getSendNodeId(stream)),
       recvNodeId:
-        permissions.recvNodeId || (await this.balancer.getRecvNodeId()),
+        permissions.recvNodeId || (await this.balancer.getRecvNodeId(stream)),
     };
   }
 
@@ -133,7 +134,7 @@ export class MediaService {
       room,
       audio: true,
       video: true,
-      ...(await this.getNodes()),
+      ...(await this.getNodes(room)),
       ...optional,
     };
 
@@ -148,7 +149,7 @@ export class MediaService {
       room,
       audio: false,
       video: false,
-      recvNodeId: await this.balancer.getRecvNodeId(),
+      recvNodeId: await this.balancer.getRecvNodeId(room),
     };
 
     const token = this.createPermissionToken(permissions);

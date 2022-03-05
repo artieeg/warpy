@@ -46,7 +46,11 @@ const main = async () => {
   setTimeout(() => {
     setInterval(() => {
       os.cpuUsage((load) => {
-        MessageService.send("media.node.info", { load, node: NodeInfo.id });
+        MessageService.send("media.node.info", {
+          load,
+          node: NodeInfo.id,
+          role: NodeInfo.role,
+        });
       });
     }, 2000);
   }, 2000);

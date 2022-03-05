@@ -38,8 +38,17 @@ export class StreamService {
       throw new UserNotFound();
     }
 
+    const stream = await this.streamEntity.create({
+      owner_id: owner,
+      title,
+      category,
+      live: true,
+      preview: null,
+      reactions: 0,
+    });
+
     const { recvNodeId, sendNodeId } =
-      await this.mediaService.getSendRecvNodeIds();
+      await this.mediaService.getSendRecvNodeIds(stream.id);
 
     const participant = await this.participantEntity.create({
       user_id: owner,
@@ -48,15 +57,6 @@ export class StreamService {
       sendNodeId,
       audioEnabled: true,
       videoEnabled: true,
-    });
-
-    const stream = await this.streamEntity.create({
-      owner_id: owner,
-      title,
-      category,
-      live: true,
-      preview: null,
-      reactions: 0,
     });
 
     await this.participantEntity.setStream(participant.id, stream.id);

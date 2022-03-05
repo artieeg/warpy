@@ -18,6 +18,6 @@ export class MediaBalancerController {
 
   @MessagePattern('media.node.info')
   async onMediaNodeInfo({ node, load }: IMediaNodeInfoRequest) {
-    this.nodeInfoService.write(node, { load });
+    this.nodeInfoService.set(node, { load });
   }
 }
