@@ -1,74 +1,29 @@
+import { BlockService } from '@backend_2/block/block.service';
 import { BotInstanceEntity } from '@backend_2/bots/bot-instance.entity';
 import {
   MaxVideoStreamers,
   NoPermissionError,
   UserNotFound,
 } from '@backend_2/errors';
+import { MediaService } from '@backend_2/media/media.service';
+import { MessageService } from '@backend_2/message/message.service';
 import { StreamBlockEntity } from '@backend_2/stream-block/stream-block.entity';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Roles } from '@warpy/lib';
-import { BlockService } from '../block/block.service';
-import { MediaService } from '../media/media.service';
-import { MessageService } from '../message/message.service';
-import { ParticipantEntity } from './common/participant.entity';
+import { ParticipantEntity } from './participant.entity';
 
 @Injectable()
-export class ParticipantService {
+export class ParticipantCommonService {
   constructor(
-    private botInstanceEntity: BotInstanceEntity,
-    private eventEmitter: EventEmitter2,
-    private media: MediaService,
     private participant: ParticipantEntity,
+    private botInstanceEntity: BotInstanceEntity,
+    private media: MediaService,
+    private eventEmitter: EventEmitter2,
+    private streamBlockEntity: StreamBlockEntity,
     private blockService: BlockService,
     private messageService: MessageService,
-    private streamBlockEntity: StreamBlockEntity,
   ) {}
-
-  async removeUserFromStream(user: string) {
-    const userToRemove = await this.participant.getById(user);
-
-    if (userToRemove) {
-      await this.media.removeUserFromNodes(userToRemove);
-    }
-
-    const isBot = user.slice(0, 3) === 'bot';
-
-    if (isBot) {
-      await this.deleteBotParticipant(user);
-    } else {
-      await this.deleteParticipant(user);
-    }
-  }
-
-  async getStreamParticipants(stream: string) {
-    return this.participant.getIdsByStream(stream);
-  }
-
-  async deleteBotParticipant(bot: string) {
-    const instances = await this.botInstanceEntity.getBotInstances(bot);
-
-    //TODO: ???
-    const promises = instances.map(async ({ botInstanceId, stream }) => {
-      await this.participant.deleteParticipant(botInstanceId);
-      this.eventEmitter.emit('participant.delete', {
-        user: botInstanceId,
-        stream,
-      });
-    });
-
-    await Promise.all(promises);
-  }
-
-  async deleteParticipant(user: string) {
-    const stream = await this.participant.getCurrentStreamFor(user);
-
-    this.eventEmitter.emit('participant.delete', { user, stream });
-
-    try {
-      await this.participant.deleteParticipant(user);
-    } catch (e) {}
-  }
 
   async broadcastActiveSpeakers(
     speakers: Record<string, { user: string; volume: number }[]>,
@@ -196,5 +151,50 @@ export class ParticipantService {
       videoEnabled,
       audioEnabled,
     });
+  }
+
+  async removeUserFromStream(user: string) {
+    const userToRemove = await this.participant.getById(user);
+
+    if (userToRemove) {
+      await this.media.removeUserFromNodes(userToRemove);
+    }
+
+    const isBot = user.slice(0, 3) === 'bot';
+
+    if (isBot) {
+      await this.deleteBotParticipant(user);
+    } else {
+      await this.deleteParticipant(user);
+    }
+  }
+
+  async getStreamParticipants(stream: string) {
+    return this.participant.getIdsByStream(stream);
+  }
+
+  async deleteBotParticipant(bot: string) {
+    const instances = await this.botInstanceEntity.getBotInstances(bot);
+
+    //TODO: ???
+    const promises = instances.map(async ({ botInstanceId, stream }) => {
+      await this.participant.deleteParticipant(botInstanceId);
+      this.eventEmitter.emit('participant.delete', {
+        user: botInstanceId,
+        stream,
+      });
+    });
+
+    await Promise.all(promises);
+  }
+
+  async deleteParticipant(user: string) {
+    const stream = await this.participant.getCurrentStreamFor(user);
+
+    this.eventEmitter.emit('participant.delete', { user, stream });
+
+    try {
+      await this.participant.deleteParticipant(user);
+    } catch (e) {}
   }
 }

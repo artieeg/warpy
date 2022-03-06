@@ -1,19 +1,17 @@
-import { ExceptionFilter } from '@backend_2/rpc-exception.filter';
-import { Controller, UseFilters } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
+  ILeaveStreamRequest,
+  ISetRoleRequest,
   IActiveSpeakersPayload,
   IKickUserRequest,
-  ILeaveStreamRequest,
   IMediaToggleRequest,
-  ISetRoleRequest,
 } from '@warpy/lib';
-import { ParticipantService } from './participant.service';
+import { ParticipantCommonService } from './participant-common.service';
 
 @Controller()
-@UseFilters(ExceptionFilter)
-export class ParticipantController {
-  constructor(private participant: ParticipantService) {}
+export class ParticipantCommonController {
+  constructor(private participant: ParticipantCommonService) {}
 
   @MessagePattern('participant.leave')
   async onLeaveStream({ user }: ILeaveStreamRequest) {

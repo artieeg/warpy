@@ -1,4 +1,4 @@
-import { ParticipantService } from '@backend_2/participant/participant.service';
+import { ParticipantCommonService } from '@backend_2/participant/common/participant-common.service';
 import { ExceptionFilter } from '@backend_2/rpc-exception.filter';
 import { UserOnlineStatusService } from '@backend_2/user-online-status/user-online-status.service';
 import { Controller, UseFilters } from '@nestjs/common';
@@ -30,7 +30,7 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(
     private userService: UserService,
-    private participantService: ParticipantService,
+    private participantService: ParticipantCommonService,
     private userOnlineStatusService: UserOnlineStatusService,
     private configService: ConfigService,
   ) {}
