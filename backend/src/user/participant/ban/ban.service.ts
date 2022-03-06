@@ -50,7 +50,7 @@ export class ParticipantBanService {
     }
 
     try {
-      await this.media.removeUserFromNodes(userToKickData);
+      await this.media.removeFromNodes(userToKickData);
       await this.banEntity.create(stream, userToKick);
     } catch (e) {}
 

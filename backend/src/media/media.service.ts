@@ -93,14 +93,7 @@ export class MediaService {
     return response as IConnectRecvTransportParams;
   }
 
-  async getSendRecvNodeIds(stream: string) {
-    return {
-      sendNodeId: await this.balancer.getSendNodeId(stream),
-      recvNodeId: await this.balancer.getRecvNodeId(stream),
-    };
-  }
-
-  async getStreamerToken(user: string, stream: string) {
+  async getHostToken(user: string, stream: string) {
     const [sendNodeId, recvNodeId] = await Promise.all([
       this.balancer.getSendNodeId(stream),
       this.balancer.getRecvNodeId(stream),
@@ -165,7 +158,7 @@ export class MediaService {
     return response as IKickedFromMediaRoom;
   }
 
-  async removeUserFromNodes({
+  async removeFromNodes({
     id,
     stream,
     sendNodeId,

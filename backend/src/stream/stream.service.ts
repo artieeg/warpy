@@ -42,7 +42,7 @@ export class StreamService {
     const stream_id = cuid();
 
     const { token, recvNodeId, sendNodeId } =
-      await this.mediaService.getStreamerToken(owner, stream_id);
+      await this.mediaService.getHostToken(owner, stream_id);
 
     const participant = await this.participantEntity.create({
       user_id: owner,

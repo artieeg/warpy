@@ -55,7 +55,7 @@ export class ParticipantCommonService {
     const userToRemove = await this.participant.getById(user);
 
     if (userToRemove) {
-      await this.media.removeUserFromNodes(userToRemove);
+      await this.media.removeFromNodes(userToRemove);
     }
 
     const isBot = user.slice(0, 3) === 'bot';
