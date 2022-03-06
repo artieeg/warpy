@@ -103,7 +103,7 @@ describe('MediaService', () => {
 
   it('creates viewer permissions', async () => {
     expect(
-      mediaService.getViewerPermissions('test', 'test2'),
+      mediaService.getViewerToken('test', 'test2'),
     ).resolves.toStrictEqual({
       token: expect.anything(),
       permissions: expect.objectContaining({

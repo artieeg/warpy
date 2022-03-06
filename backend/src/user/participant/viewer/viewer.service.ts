@@ -30,7 +30,7 @@ export class ViewerService {
     stream: string,
     viewerId: string,
   ): Promise<IJoinStreamResponse> {
-    const { token, permissions } = await this.media.getViewerPermissions(
+    const { token, recvNodeId } = await this.media.getViewerToken(
       viewerId,
       stream,
     );
@@ -41,13 +41,13 @@ export class ViewerService {
       user_id: viewerId,
       stream,
       role: 'viewer',
-      recvNodeId: permissions.recvNodeId,
+      recvNodeId,
     });
 
     this.eventEmitter.emit('participant.new', viewer);
 
     const [recvMediaParams, speakers, raisedHands, count] = await Promise.all([
-      this.media.getViewerParams(permissions.recvNodeId, viewerId, stream),
+      this.media.getViewerParams(recvNodeId, viewerId, stream),
       this.participant.getSpeakers(stream),
       this.participant.getWithRaisedHands(stream),
       this.participant.count(stream),

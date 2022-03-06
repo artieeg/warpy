@@ -41,8 +41,8 @@ export class StreamService {
 
     const stream_id = cuid();
 
-    const { recvNodeId, sendNodeId } =
-      await this.mediaService.getSendRecvNodeIds(stream_id);
+    const { token, recvNodeId, sendNodeId } =
+      await this.mediaService.getStreamerToken(owner, stream_id);
 
     const participant = await this.participantEntity.create({
       user_id: owner,
@@ -64,12 +64,6 @@ export class StreamService {
     });
 
     await this.participantEntity.setStream(participant.id, stream.id);
-
-    const { token } = await this.mediaService.getStreamerPermissions(
-      owner,
-      stream.id,
-      { recvNodeId, sendNodeId },
-    );
 
     const media = await this.mediaService.createNewRoom({
       roomId: stream.id,

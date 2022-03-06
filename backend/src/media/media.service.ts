@@ -100,61 +100,56 @@ export class MediaService {
     };
   }
 
-  private async getNodes(
-    stream: string,
-    permissions?: Partial<IMediaPermissions>,
-  ): Promise<{ sendNodeId: string; recvNodeId: string }> {
-    if (!permissions) {
-      const [sendNodeId, recvNodeId] = await Promise.all([
-        this.balancer.getSendNodeId(stream),
-        this.balancer.getRecvNodeId(stream),
-      ]);
+  async getStreamerToken(user: string, stream: string) {
+    const [sendNodeId, recvNodeId] = await Promise.all([
+      this.balancer.getSendNodeId(stream),
+      this.balancer.getRecvNodeId(stream),
+    ]);
 
-      return {
-        sendNodeId,
-        recvNodeId,
-      };
-    }
+    const token = this.createPermissionToken({
+      user,
+      room: stream,
+      audio: true,
+      video: true,
+      sendNodeId,
+      recvNodeId,
+    });
 
-    return {
-      sendNodeId:
-        permissions.sendNodeId || (await this.balancer.getSendNodeId(stream)),
-      recvNodeId:
-        permissions.recvNodeId || (await this.balancer.getRecvNodeId(stream)),
-    };
+    return { token, sendNodeId, recvNodeId };
   }
 
-  async getStreamerPermissions(
-    user: string,
-    room: string,
-    optional: Partial<IMediaPermissions>,
-  ) {
-    const permissions: IMediaPermissions = {
-      user,
+  async getBotToken(bot: string, room: string) {
+    const [sendNodeId, recvNodeId] = await Promise.all([
+      this.balancer.getSendNodeId(room),
+      this.balancer.getRecvNodeId(room),
+    ]);
+
+    const token = this.createPermissionToken({
+      user: bot,
       room,
       audio: true,
       video: true,
-      ...(await this.getNodes(room)),
-      ...optional,
-    };
+      sendNodeId,
+      recvNodeId,
+    });
 
-    const token = this.createPermissionToken(permissions);
-
-    return { token, permissions };
+    return { token, sendNodeId, recvNodeId };
   }
 
-  async getViewerPermissions(user: string, room: string) {
+  async getViewerToken(user: string, room: string) {
+    const recvNodeId = await this.balancer.getRecvNodeId(room);
+
     const permissions: IMediaPermissions = {
       user,
       room,
       audio: false,
       video: false,
-      recvNodeId: await this.balancer.getRecvNodeId(room),
+      recvNodeId,
     };
 
     const token = this.createPermissionToken(permissions);
 
-    return { token, permissions };
+    return { token, recvNodeId };
   }
 
   private async kickFromRoom(user: string, stream: string, node: string) {

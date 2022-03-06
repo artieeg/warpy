@@ -21,9 +21,14 @@ export class BotInstanceService {
     invitationToken: string,
   ): Promise<IBotJoinResponse> {
     const { stream } = this.tokenService.decodeToken(invitationToken);
-    const nodes = await this.mediaService.getSendRecvNodeIds(stream);
 
     const botInstanceId = await this.botInstanceEntity.create(bot, stream);
+
+    const {
+      token: mediaPermissionToken,
+      sendNodeId,
+      recvNodeId,
+    } = await this.mediaService.getBotToken(stream, botInstanceId);
 
     const botParticipant = await this.participantEntity.create({
       bot_id: botInstanceId,
@@ -31,15 +36,8 @@ export class BotInstanceService {
       audioEnabled: false,
       videoEnabled: false,
       role: 'streamer',
-      ...nodes,
-    });
-
-    const mediaPermissionToken = this.mediaService.createPermissionToken({
-      room: stream,
-      user: botInstanceId,
-      audio: true,
-      video: true,
-      ...nodes,
+      sendNodeId,
+      recvNodeId,
     });
 
     const [sendMedia, recvMedia] = await Promise.all([
@@ -47,7 +45,7 @@ export class BotInstanceService {
         speaker: botInstanceId,
         roomId: stream,
       }),
-      this.mediaService.getViewerParams(nodes.recvNodeId, bot, stream),
+      this.mediaService.getViewerParams(recvNodeId, bot, stream),
     ]);
 
     this.eventEmitter.emit('participant.new', botParticipant);
