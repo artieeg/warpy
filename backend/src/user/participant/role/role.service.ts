@@ -33,7 +33,7 @@ export class ParticipantRoleService {
 
     //receive new media token,
     //sendNodeId and send transport data (if upgrading from viewer)
-    const { sendNodeId, ...rest } = await this.media.updateRole(
+    const { sendNodeId, ...rest } = await this.media.updateMediaRole(
       oldUserData,
       role,
     );

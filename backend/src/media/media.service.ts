@@ -36,7 +36,7 @@ export class MediaService {
     return response as INewMediaRoomData;
   }
 
-  async updateRole(participant: IFullParticipant, role: Roles) {
+  async updateMediaRole(participant: IFullParticipant, role: Roles) {
     const { stream, id, recvNodeId, sendNodeId: prevSendNodeId } = participant;
 
     let sendMedia: INewTransportResponse;
