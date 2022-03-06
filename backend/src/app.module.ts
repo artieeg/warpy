@@ -23,7 +23,6 @@ import { NatsModule } from './nats/nats.module';
 import { NotificationModule } from './notification/notification.module';
 import { ParticipantModule } from './participant/participant.module';
 import { ReactionModule } from './reaction/reaction.module';
-import { StreamBlockModule } from './stream-block/stream-block.module';
 import { StreamModule } from './stream/stream.module';
 import { TokenModule } from './token/token.module';
 import { UserOnlineStatusModule } from './user-online-status/user-online-status.module';
@@ -52,7 +51,6 @@ import { MailModule } from './mail/mail.module';
     TokenModule,
     UserReportModule,
     StreamModule,
-    StreamBlockModule,
     MailModule,
     NatsModule,
     ParticipantModule,

@@ -1,11 +1,6 @@
 import { BotInstanceEntity } from '@backend_2/bots/bot-instance.entity';
-import {
-  MaxVideoStreamers,
-  NoPermissionError,
-  UserNotFound,
-} from '@backend_2/errors';
+import { MaxVideoStreamers } from '@backend_2/errors';
 import { MediaService } from '@backend_2/media/media.service';
-import { StreamBlockEntity } from '@backend_2/stream-block/stream-block.entity';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ParticipantEntity } from './participant.entity';
@@ -17,39 +12,7 @@ export class ParticipantCommonService {
     private botInstanceEntity: BotInstanceEntity,
     private media: MediaService,
     private eventEmitter: EventEmitter2,
-    private streamBlockEntity: StreamBlockEntity,
   ) {}
-
-  async kickUser(userToKick: string, moderatorId: string) {
-    const moderator = await this.participant.getById(moderatorId);
-
-    if (!moderator) {
-      throw new UserNotFound();
-    }
-
-    if (moderator.role !== 'streamer') {
-      throw new NoPermissionError();
-    }
-
-    const userToKickData = await this.participant.getById(userToKick);
-
-    if (!userToKickData) {
-      throw new UserNotFound();
-    }
-
-    const stream = moderator.stream;
-
-    if (userToKickData.stream !== stream) {
-      throw new NoPermissionError();
-    }
-
-    try {
-      await this.media.removeUserFromNodes(userToKickData);
-      await this.streamBlockEntity.create(stream, userToKick);
-    } catch (e) {}
-
-    this.eventEmitter.emit('participant.kicked', userToKickData);
-  }
 
   async setMediaEnabled(
     user: string,
