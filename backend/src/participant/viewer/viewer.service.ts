@@ -14,6 +14,18 @@ export class ViewerService {
     private participant: ParticipantEntity,
   ) {}
 
+  async setRaiseHand(user: string, flag: boolean) {
+    const participant = await this.participant.setRaiseHand(user, flag);
+
+    this.eventEmitter.emit('participant.raise-hand', participant);
+  }
+
+  async getViewers(stream: string, page: number) {
+    const viewers = await this.participant.getViewersPage(stream, page);
+
+    return viewers;
+  }
+
   async createNewViewer(
     stream: string,
     viewerId: string,

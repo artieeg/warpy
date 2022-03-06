@@ -7,11 +7,10 @@ import {
 import { StreamBlockEntity } from '@backend_2/stream-block/stream-block.entity';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { IJoinStreamResponse, Roles } from '@warpy/lib';
+import { Roles } from '@warpy/lib';
 import { BlockService } from '../block/block.service';
 import { MediaService } from '../media/media.service';
 import { MessageService } from '../message/message.service';
-import { StreamBlockService } from '../stream-block/stream-block.service';
 import { ParticipantEntity } from './common/participant.entity';
 
 @Injectable()
@@ -20,7 +19,6 @@ export class ParticipantService {
     private botInstanceEntity: BotInstanceEntity,
     private eventEmitter: EventEmitter2,
     private media: MediaService,
-    private streamBlocks: StreamBlockService,
     private participant: ParticipantEntity,
     private blockService: BlockService,
     private messageService: MessageService,
@@ -70,18 +68,6 @@ export class ParticipantService {
     try {
       await this.participant.deleteParticipant(user);
     } catch (e) {}
-  }
-
-  async getViewers(stream: string, page: number) {
-    const viewers = await this.participant.getViewersPage(stream, page);
-
-    return viewers;
-  }
-
-  async setRaiseHand(user: string, flag: boolean) {
-    const participant = await this.participant.setRaiseHand(user, flag);
-
-    this.eventEmitter.emit('participant.raise-hand', participant);
   }
 
   async broadcastActiveSpeakers(

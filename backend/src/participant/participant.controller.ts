@@ -6,9 +6,6 @@ import {
   IKickUserRequest,
   ILeaveStreamRequest,
   IMediaToggleRequest,
-  IRaiseHand,
-  IRequestViewers,
-  IRequestViewersResponse,
   ISetRoleRequest,
 } from '@warpy/lib';
 import { ParticipantService } from './participant.service';
@@ -21,21 +18,6 @@ export class ParticipantController {
   @MessagePattern('participant.leave')
   async onLeaveStream({ user }: ILeaveStreamRequest) {
     return this.participant.removeUserFromStream(user);
-  }
-
-  @MessagePattern('viewers.get')
-  async onViewersRequest({
-    stream,
-    page,
-  }: IRequestViewers): Promise<IRequestViewersResponse> {
-    const viewers = await this.participant.getViewers(stream, page);
-
-    return { viewers };
-  }
-
-  @MessagePattern('user.raise-hand')
-  async onRaiseHand({ user, flag }: IRaiseHand) {
-    await this.participant.setRaiseHand(user, flag);
   }
 
   @MessagePattern('participant.set-role')
