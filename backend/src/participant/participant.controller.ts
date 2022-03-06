@@ -3,8 +3,6 @@ import { Controller, UseFilters } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   IActiveSpeakersPayload,
-  IJoinStream,
-  IJoinStreamResponse,
   IKickUserRequest,
   ILeaveStreamRequest,
   IMediaToggleRequest,
@@ -14,27 +12,15 @@ import {
   ISetRoleRequest,
 } from '@warpy/lib';
 import { ParticipantService } from './participant.service';
-import { ViewerService } from './viewer/viewer.service';
 
 @Controller()
 @UseFilters(ExceptionFilter)
 export class ParticipantController {
-  constructor(
-    private participant: ParticipantService,
-    private viewer: ViewerService,
-  ) {}
+  constructor(private participant: ParticipantService) {}
 
   @MessagePattern('participant.leave')
   async onLeaveStream({ user }: ILeaveStreamRequest) {
     return this.participant.removeUserFromStream(user);
-  }
-
-  @MessagePattern('stream.join')
-  async onNewViewer({
-    stream,
-    user,
-  }: IJoinStream): Promise<IJoinStreamResponse> {
-    return this.viewer.createNewViewer(stream, user);
   }
 
   @MessagePattern('viewers.get')
