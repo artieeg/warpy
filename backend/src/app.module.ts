@@ -25,8 +25,6 @@ import { ParticipantModule } from './participant/participant.module';
 import { ReactionModule } from './reaction/reaction.module';
 import { StreamModule } from './stream/stream.module';
 import { TokenModule } from './token/token.module';
-import { UserOnlineStatusModule } from './user-online-status/user-online-status.module';
-import { UserReportModule } from './user-report/user-report.module';
 import { UserModule } from './user/user.module';
 import { WaitlistModule } from './waitlist/waitlist.module';
 import { MailModule } from './mail/mail.module';
@@ -49,7 +47,6 @@ import { MailModule } from './mail/mail.module';
     FriendFeedModule,
     UserModule,
     TokenModule,
-    UserReportModule,
     StreamModule,
     MailModule,
     NatsModule,
@@ -61,7 +58,6 @@ import { MailModule } from './mail/mail.module';
     ReactionModule,
     FollowModule,
     NotificationModule,
-    UserOnlineStatusModule,
     WaitlistModule,
     EventEmitterModule.forRoot(),
   ],

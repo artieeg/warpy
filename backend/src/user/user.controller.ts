@@ -1,6 +1,5 @@
 import { ParticipantCommonService } from '@backend_2/participant/common/participant-common.service';
 import { ExceptionFilter } from '@backend_2/rpc-exception.filter';
-import { UserOnlineStatusService } from '@backend_2/user-online-status/user-online-status.service';
 import { Controller, UseFilters } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
@@ -23,6 +22,7 @@ import {
   IWhoAmIRequest,
   IWhoAmIResponse,
 } from '@warpy/lib';
+import { UserOnlineStatusService } from './online-status/user-online-status.service';
 import { UserService } from './user.service';
 
 @Controller()

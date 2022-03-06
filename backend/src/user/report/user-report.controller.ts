@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { IUserReportRequest, IUserReportResponse } from '../../../lib';
+import { IUserReportRequest, IUserReportResponse } from '@warpy/lib';
 import { UserReportService } from './user-report.service';
 
 @Controller()
