@@ -1,9 +1,17 @@
 import { Module } from '@nestjs/common';
+import { ActiveSpeakerModule } from './active-speaker/active-speaker.module';
 import { ParticipantCommonModule } from './common/participant-common.module';
+import { ParticipantEntity } from './common/participant.entity';
+import { ParticipantRoleModule } from './role/role.module';
 import { ViewerModule } from './viewer/viewer.module';
 
 @Module({
-  imports: [ViewerModule, ParticipantCommonModule],
+  imports: [
+    ViewerModule,
+    ActiveSpeakerModule,
+    ParticipantRoleModule,
+    ParticipantCommonModule,
+  ],
   providers: [],
   controllers: [],
   exports: [ViewerModule, ParticipantCommonModule],

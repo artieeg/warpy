@@ -1,4 +1,3 @@
-import { BlockService } from '@backend_2/block/block.service';
 import { BotInstanceEntity } from '@backend_2/bots/bot-instance.entity';
 import {
   MaxVideoStreamers,
@@ -6,11 +5,9 @@ import {
   UserNotFound,
 } from '@backend_2/errors';
 import { MediaService } from '@backend_2/media/media.service';
-import { MessageService } from '@backend_2/message/message.service';
 import { StreamBlockEntity } from '@backend_2/stream-block/stream-block.entity';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Roles } from '@warpy/lib';
 import { ParticipantEntity } from './participant.entity';
 
 @Injectable()
@@ -21,20 +18,7 @@ export class ParticipantCommonService {
     private media: MediaService,
     private eventEmitter: EventEmitter2,
     private streamBlockEntity: StreamBlockEntity,
-    private blockService: BlockService,
-    private messageService: MessageService,
   ) {}
-
-  async broadcastActiveSpeakers(
-    speakers: Record<string, { user: string; volume: number }[]>,
-  ) {
-    for (const stream in speakers) {
-      this.eventEmitter.emit('participant.active-speakers', {
-        stream,
-        activeSpeakers: speakers[stream],
-      });
-    }
-  }
 
   async kickUser(userToKick: string, moderatorId: string) {
     const moderator = await this.participant.getById(moderatorId);
@@ -65,55 +49,6 @@ export class ParticipantCommonService {
     } catch (e) {}
 
     this.eventEmitter.emit('participant.kicked', userToKickData);
-  }
-
-  async setRole(mod: string, userToUpdate: string, role: Roles) {
-    const moderator = await this.participant.getById(mod);
-    const { stream } = moderator;
-
-    if (moderator.role !== 'streamer') {
-      throw new NoPermissionError();
-    }
-
-    if (role !== 'viewer') {
-      await this.blockService.isBannedBySpeaker(userToUpdate, stream);
-    }
-
-    const oldUserData = await this.participant.getById(userToUpdate);
-
-    //receive new media token,
-    //sendNodeId and send transport data (if upgrading from viewer)
-    const { sendNodeId, ...rest } = await this.media.updateRole(
-      oldUserData,
-      role,
-    );
-
-    let response = {
-      role,
-      rest,
-    };
-
-    //Update participant record with a new role
-    //and a new send node id (if changed)
-    const updatedUser = await this.participant.updateOne(userToUpdate, {
-      sendNodeId,
-      role,
-
-      //mark video as disabled if role set to speaker or viewer
-      videoEnabled: !(role === 'speaker' || role === 'viewer')
-        ? false
-        : undefined,
-
-      //mark audio as disabled if role set to viewer
-      audioEnabled: !(role === 'viewer'),
-    });
-
-    this.messageService.sendMessage(userToUpdate, {
-      event: 'role-change',
-      data: response,
-    });
-
-    this.eventEmitter.emit('participant.role-change', updatedUser);
   }
 
   async setMediaEnabled(

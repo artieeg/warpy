@@ -14,11 +14,11 @@ import { ParticipantEntity } from './participant.entity';
   imports: [
     PrismaModule,
     StreamBlockModule,
-    forwardRef(() => BlockModule),
     BotsModule,
     MediaModule,
     MessageModule,
     TokenService,
+    forwardRef(() => BlockModule),
   ],
   providers: [ParticipantEntity, ParticipantCommonService],
   controllers: [ParticipantCommonController],

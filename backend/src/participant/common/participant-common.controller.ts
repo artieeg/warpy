@@ -2,7 +2,6 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   ILeaveStreamRequest,
-  ISetRoleRequest,
   IActiveSpeakersPayload,
   IKickUserRequest,
   IMediaToggleRequest,
@@ -16,16 +15,6 @@ export class ParticipantCommonController {
   @MessagePattern('participant.leave')
   async onLeaveStream({ user }: ILeaveStreamRequest) {
     return this.participant.removeUserFromStream(user);
-  }
-
-  @MessagePattern('participant.set-role')
-  async onSetRole({ user, userToUpdate, role }: ISetRoleRequest) {
-    await this.participant.setRole(user, userToUpdate, role);
-  }
-
-  @MessagePattern('stream.active-speakers')
-  async onActiveSpeakers({ speakers }: IActiveSpeakersPayload) {
-    await this.participant.broadcastActiveSpeakers(speakers);
   }
 
   @MessagePattern('stream.kick-user')
