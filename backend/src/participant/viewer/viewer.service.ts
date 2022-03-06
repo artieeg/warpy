@@ -1,8 +1,8 @@
 import { MediaService } from '@backend_2/media/media.service';
-import { StreamBlockService } from '@backend_2/stream-block/stream-block.service';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IJoinStreamResponse } from '@warpy/lib';
+import { ParticipantBanService } from '../ban/ban.service';
 import { ParticipantEntity } from '../common/participant.entity';
 
 @Injectable()
@@ -10,7 +10,7 @@ export class ViewerService {
   constructor(
     private media: MediaService,
     private eventEmitter: EventEmitter2,
-    private streamBlocks: StreamBlockService,
+    private bans: ParticipantBanService,
     private participant: ParticipantEntity,
   ) {}
 
@@ -35,7 +35,7 @@ export class ViewerService {
       stream,
     );
 
-    await this.streamBlocks.checkUserBanned(viewerId, stream);
+    await this.bans.checkUserBanned(viewerId, stream);
 
     const viewer = await this.participant.create({
       user_id: viewerId,
