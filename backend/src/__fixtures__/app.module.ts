@@ -16,7 +16,7 @@ import { MediaModule } from '@backend_2/media/media.module';
 import { MessageModule } from '@backend_2/message/message.module';
 import { NatsModule } from '@backend_2/nats/nats.module';
 import { NotificationModule } from '@backend_2/notification/notification.module';
-import { ParticipantModule } from '@backend_2/participant/participant.module';
+import { ParticipantModule } from '@backend_2/user/participant/participant.module';
 import { ReactionModule } from '@backend_2/reaction/reaction.module';
 import { StreamBlockModule } from '@backend_2/stream-block/stream-block.module';
 import { StreamModule } from '@backend_2/stream/stream.module';

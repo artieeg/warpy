@@ -3,7 +3,7 @@ import {
   StreamHasBlockedSpeakerError,
 } from '@backend_2/errors';
 import { Injectable } from '@nestjs/common';
-import { ParticipantEntity } from '@backend_2/participant/common/participant.entity';
+import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
 import { BlockEntity } from './block.entity';
 
 @Injectable()

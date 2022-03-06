@@ -1,10 +1,6 @@
-import { AppInviteEntity } from '@backend_2/app_invite/app-invite.entity';
-import { AppliedAppInviteEntity } from '@backend_2/app_invite/applied-app-invite.entity';
 import { CategoriesEntity } from '@backend_2/categories/categories.entity';
-import { CoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity';
 import { UserNotFound } from '@backend_2/errors';
-import { FollowEntity } from '@backend_2/follow/follow.entity';
-import { ParticipantEntity } from '@backend_2/participant/common/participant.entity';
+import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
 import { StreamEntity } from '@backend_2/stream/stream.entity';
 import { Injectable } from '@nestjs/common';
 import {
@@ -19,6 +15,10 @@ import { TokenService } from '../token/token.service';
 import { BlockEntity } from './block/block.entity';
 import { UserOnlineStatusService } from './online-status/user-online-status.service';
 import { UserEntity } from './user.entity';
+import { FollowEntity } from './follow/follow.entity';
+import { AppInviteEntity } from './app_invite/app-invite.entity';
+import { AppliedAppInviteEntity } from './app_invite/applied-app-invite.entity';
+import { CoinBalanceEntity } from './coin-balance/coin-balance.entity';
 
 @Injectable()
 export class UserService {

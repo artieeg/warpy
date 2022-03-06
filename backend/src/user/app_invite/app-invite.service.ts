@@ -1,10 +1,9 @@
-import { CoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity';
 import {
   AppInviteAlreadyAccepted,
-  AppInviteNotFound,
   CantInviteYourself,
 } from '@backend_2/errors';
 import { Injectable } from '@nestjs/common';
+import { CoinBalanceEntity } from '../coin-balance/coin-balance.entity';
 import { AppInviteEntity } from './app-invite.entity';
 import { AppliedAppInviteEntity } from './applied-app-invite.entity';
 

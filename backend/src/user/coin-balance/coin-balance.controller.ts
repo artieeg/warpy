@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { IGetCoinBalanceRequest } from '../../../lib';
+import { IGetCoinBalanceRequest } from '@warpy/lib';
 import { CoinBalanceService } from './coin-balance.service';
 
 @Controller()

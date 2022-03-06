@@ -1,5 +1,5 @@
 import { MediaService } from '@backend_2/media/media.service';
-import { ParticipantEntity } from '@backend_2/participant/common/participant.entity';
+import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
 import { TokenService } from '@backend_2/token/token.service';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';

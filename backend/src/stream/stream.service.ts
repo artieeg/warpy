@@ -3,12 +3,12 @@ import {
   StreamNotFound,
   UserNotFound,
 } from '@backend_2/errors';
+import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { INewStreamResponse } from '@warpy/lib';
 import cuid from 'cuid';
 import { MediaService } from '../media/media.service';
-import { ParticipantEntity } from '../participant/common/participant.entity';
 import { UserEntity } from '../user/user.entity';
 import { StreamEntity } from './stream.entity';
 

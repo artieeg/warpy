@@ -4,7 +4,7 @@ import { UserEntity } from '@backend_2/user/user.entity';
 import { Injectable } from '@nestjs/common';
 import { AppInvite } from '@prisma/client';
 import { animals, colors, uniqueNamesGenerator } from 'unique-names-generator';
-import { IAppInvite } from '../../../lib';
+import { IAppInvite } from '@warpy/lib';
 
 @Injectable()
 export class AppInviteEntity {

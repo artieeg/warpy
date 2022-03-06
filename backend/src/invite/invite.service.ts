@@ -1,9 +1,9 @@
 import { BotsEntity } from '@backend_2/bots/bots.entity';
 import { NoPermissionError } from '@backend_2/errors';
-import { FollowEntity } from '@backend_2/follow/follow.entity';
 import { MessageService } from '@backend_2/message/message.service';
 import { StreamEntity } from '@backend_2/stream/stream.entity';
 import { TokenService } from '@backend_2/token/token.service';
+import { FollowEntity } from '@backend_2/user/follow/follow.entity';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { IInvite, InviteStates, IStream, IUser } from '@warpy/lib';

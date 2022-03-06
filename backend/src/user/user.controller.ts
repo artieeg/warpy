@@ -1,4 +1,3 @@
-import { ParticipantCommonService } from '@backend_2/participant/common/participant-common.service';
 import { ExceptionFilter } from '@backend_2/rpc-exception.filter';
 import { Controller, UseFilters } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -23,6 +22,7 @@ import {
   IWhoAmIResponse,
 } from '@warpy/lib';
 import { UserOnlineStatusService } from './online-status/user-online-status.service';
+import { ParticipantCommonService } from './participant/common/participant-common.service';
 import { UserService } from './user.service';
 
 @Controller()
