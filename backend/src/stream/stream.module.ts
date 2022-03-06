@@ -1,7 +1,6 @@
 import { PrismaModule } from '@backend_2/prisma/prisma.module';
 import { UserModule } from '@backend_2/user/user.module';
 import { forwardRef, Module } from '@nestjs/common';
-import { BlockModule } from '../block/block.module';
 import { MediaModule } from '../media/media.module';
 import { ParticipantModule } from '../participant/participant.module';
 import { StreamController } from './stream.controller';
@@ -13,7 +12,6 @@ import { StreamService } from './stream.service';
     //StreamBlockModule,
     ParticipantModule,
     PrismaModule,
-    BlockModule,
     forwardRef(() => UserModule),
     MediaModule,
   ],

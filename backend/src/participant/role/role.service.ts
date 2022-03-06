@@ -1,7 +1,7 @@
-import { BlockService } from '@backend_2/block/block.service';
 import { NoPermissionError } from '@backend_2/errors';
 import { MediaService } from '@backend_2/media/media.service';
 import { MessageService } from '@backend_2/message/message.service';
+import { BlockService } from '@backend_2/user/block/block.service';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Roles } from '@warpy/lib';

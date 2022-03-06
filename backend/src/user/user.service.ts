@@ -1,6 +1,5 @@
 import { AppInviteEntity } from '@backend_2/app_invite/app-invite.entity';
 import { AppliedAppInviteEntity } from '@backend_2/app_invite/applied-app-invite.entity';
-import { BlockEntity } from '@backend_2/block/block.entity';
 import { CategoriesEntity } from '@backend_2/categories/categories.entity';
 import { CoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity';
 import { UserNotFound } from '@backend_2/errors';
@@ -17,6 +16,7 @@ import {
 } from '@warpy/lib';
 import { RefreshTokenEntity } from '../token/refresh-token.entity';
 import { TokenService } from '../token/token.service';
+import { BlockEntity } from './block/block.entity';
 import { UserOnlineStatusService } from './online-status/user-online-status.service';
 import { UserEntity } from './user.entity';
 

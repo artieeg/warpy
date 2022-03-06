@@ -1,4 +1,3 @@
-import { BlockModule } from '@backend_2/block/block.module';
 import { BotsModule } from '@backend_2/bots/bots.module';
 import { MediaModule } from '@backend_2/media/media.module';
 import { MessageModule } from '@backend_2/message/message.module';
@@ -12,11 +11,10 @@ import { ParticipantEntity } from './participant.entity';
 @Module({
   imports: [
     PrismaModule,
-    BotsModule,
+    forwardRef(() => BotsModule),
     MediaModule,
     MessageModule,
     TokenService,
-    forwardRef(() => BlockModule),
   ],
   providers: [ParticipantEntity, ParticipantCommonService],
   controllers: [ParticipantCommonController],

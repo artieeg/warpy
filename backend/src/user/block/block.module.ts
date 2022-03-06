@@ -1,6 +1,6 @@
+import { ParticipantModule } from '@backend_2/participant/participant.module';
+import { PrismaModule } from '@backend_2/prisma/prisma.module';
 import { forwardRef, Module } from '@nestjs/common';
-import { ParticipantModule } from '../participant/participant.module';
-import { PrismaModule } from '../prisma/prisma.module';
 import { BlockController } from './block.controller';
 import { BlockEntity } from './block.entity';
 import { BlockService } from './block.service';

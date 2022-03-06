@@ -1,5 +1,4 @@
 import { AppInviteModule } from '@backend_2/app_invite/app-invite.module';
-import { BlockModule } from '@backend_2/block/block.module';
 import { CategoryModule } from '@backend_2/categories/categories.module';
 import { CoinBalanceModule } from '@backend_2/coin-balance/coin-balance.module';
 import { FollowModule } from '@backend_2/follow/follow.module';
@@ -9,6 +8,7 @@ import { Module } from '@nestjs/common';
 import { ParticipantModule } from '../participant/participant.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { TokenModule } from '../token/token.module';
+import { BlockModule } from './block/block.module';
 import { UserOnlineStatusModule } from './online-status/user-online-status.module';
 import { UserReportModule } from './report/user-report.module';
 import { UserController } from './user.controller';
@@ -32,6 +32,6 @@ import { UserService } from './user.service';
   ],
   controllers: [UserController],
   providers: [UserEntity, UserService],
-  exports: [UserEntity, UserService],
+  exports: [UserEntity, UserService, BlockModule],
 })
 export class UserModule {}

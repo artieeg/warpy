@@ -5,7 +5,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AppInviteModule } from './app_invite/app-invite.module';
 import { AwardModule } from './award/award.module';
-import { BlockModule } from './block/block.module';
 import { BotsModule } from './bots/bots.module';
 import { BroadcastModule } from './broadcast/broadcast.module';
 import { CategoryModule } from './categories/categories.module';
@@ -52,7 +51,6 @@ import { MailModule } from './mail/mail.module';
     NatsModule,
     ParticipantModule,
     BotsModule,
-    BlockModule,
     InviteModule,
     ChatModule,
     ReactionModule,
