@@ -5,7 +5,7 @@ import { CategoriesEntity } from '@backend_2/categories/categories.entity';
 import { CoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity';
 import { UserNotFound } from '@backend_2/errors';
 import { FollowEntity } from '@backend_2/follow/follow.entity';
-import { ParticipantEntity } from '@backend_2/participant/participant.entity';
+import { ParticipantEntity } from '@backend_2/participant/common/participant.entity';
 import { StreamEntity } from '@backend_2/stream/stream.entity';
 import { UserOnlineStatusService } from '@backend_2/user-online-status/user-online-status.service';
 import { Injectable } from '@nestjs/common';

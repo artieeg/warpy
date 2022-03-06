@@ -2,8 +2,8 @@ import { BotInstanceEntity } from '@backend_2/bots/bot-instance.entity';
 import { Injectable } from '@nestjs/common';
 import { Bot, BotInstance, Participant, User } from '@prisma/client';
 import { IParticipant, Roles } from '@warpy/lib';
-import { PrismaService } from '../prisma/prisma.service';
-import { UserEntity } from '../user/user.entity';
+import { PrismaService } from '@backend_2/prisma/prisma.service';
+import { UserEntity } from '@backend_2/user/user.entity';
 
 export type CreateNewParticipant = {
   user_id?: string;

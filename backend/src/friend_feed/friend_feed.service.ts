@@ -1,5 +1,5 @@
 import { FollowEntity } from '@backend_2/follow/follow.entity';
-import { ParticipantEntity } from '@backend_2/participant/participant.entity';
+import { ParticipantEntity } from '@backend_2/participant/common/participant.entity';
 import { StreamEntity } from '@backend_2/stream/stream.entity';
 import { Injectable } from '@nestjs/common';
 import { IFriendFeedItem } from '@warpy/lib';

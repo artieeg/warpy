@@ -1,5 +1,5 @@
 import { InternalError } from '@backend_2/errors';
-import { IFullParticipant } from '@backend_2/participant/participant.entity';
+import { IFullParticipant } from '@backend_2/participant/common/participant.entity';
 import { Injectable } from '@nestjs/common';
 import {
   ICreateTransport,

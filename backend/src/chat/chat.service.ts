@@ -1,6 +1,6 @@
 import { BlockEntity } from '@backend_2/block/block.entity';
 import { StreamNotFound, UserNotFound } from '@backend_2/errors';
-import { ParticipantEntity } from '@backend_2/participant/participant.entity';
+import { ParticipantEntity } from '@backend_2/participant/common/participant.entity';
 import { UserEntity } from '@backend_2/user/user.entity';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';

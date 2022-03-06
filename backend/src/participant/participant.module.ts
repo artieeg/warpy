@@ -4,24 +4,25 @@ import { forwardRef, Module } from '@nestjs/common';
 import { BlockModule } from '../block/block.module';
 import { MediaModule } from '../media/media.module';
 import { MessageModule } from '../message/message.module';
-import { PrismaModule } from '../prisma/prisma.module';
 import { StreamBlockModule } from '../stream-block/stream-block.module';
+import { ParticipantCommonModule } from './common/participant-common.module';
 import { ParticipantController } from './participant.controller';
-import { ParticipantEntity } from './participant.entity';
 import { ParticipantService } from './participant.service';
+import { ViewerModule } from './viewer/viewer.module';
 
 @Module({
   imports: [
-    PrismaModule,
+    ViewerModule,
     MediaModule,
     StreamBlockModule,
     forwardRef(() => BlockModule),
     BotsModule,
     MessageModule,
     TokenService,
+    ParticipantCommonModule,
   ],
-  providers: [ParticipantService, ParticipantEntity],
+  providers: [ParticipantService],
   controllers: [ParticipantController],
-  exports: [ParticipantService, ParticipantEntity],
+  exports: [ParticipantService],
 })
 export class ParticipantModule {}

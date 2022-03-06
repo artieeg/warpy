@@ -14,11 +14,15 @@ import {
   ISetRoleRequest,
 } from '@warpy/lib';
 import { ParticipantService } from './participant.service';
+import { ViewerService } from './viewer/viewer.service';
 
 @Controller()
 @UseFilters(ExceptionFilter)
 export class ParticipantController {
-  constructor(private participant: ParticipantService) {}
+  constructor(
+    private participant: ParticipantService,
+    private viewer: ViewerService,
+  ) {}
 
   @MessagePattern('participant.leave')
   async onLeaveStream({ user }: ILeaveStreamRequest) {
@@ -30,7 +34,7 @@ export class ParticipantController {
     stream,
     user,
   }: IJoinStream): Promise<IJoinStreamResponse> {
-    return this.participant.createNewViewer(stream, user);
+    return this.viewer.createNewViewer(stream, user);
   }
 
   @MessagePattern('viewers.get')

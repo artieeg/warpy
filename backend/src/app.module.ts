@@ -26,7 +26,6 @@ import { ReactionModule } from './reaction/reaction.module';
 import { StreamBlockModule } from './stream-block/stream-block.module';
 import { StreamModule } from './stream/stream.module';
 import { TokenModule } from './token/token.module';
-import { UserClaimModule } from './user-claim/user-claim.module';
 import { UserOnlineStatusModule } from './user-online-status/user-online-status.module';
 import { UserReportModule } from './user-report/user-report.module';
 import { UserModule } from './user/user.module';
@@ -42,7 +41,6 @@ import { MailModule } from './mail/mail.module';
     CategoryModule,
     CoinBalanceModule,
     AppInviteModule,
-    UserClaimModule,
     AwardModule,
     BroadcastModule,
     MediaModule,
