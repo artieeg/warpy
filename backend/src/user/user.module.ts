@@ -1,4 +1,3 @@
-import { CategoryModule } from '@backend_2/categories/categories.module';
 import { StreamModule } from '@backend_2/stream/stream.module';
 import { Module } from '@nestjs/common';
 import { PrismaModule } from '../prisma/prisma.module';
@@ -19,7 +18,6 @@ import { UserService } from './user.service';
 @Module({
   imports: [
     PrismaModule,
-    CategoryModule,
     FollowModule,
     StreamModule,
     TokenModule,

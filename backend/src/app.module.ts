@@ -6,7 +6,6 @@ import { AppService } from './app.service';
 import { AwardModule } from './award/award.module';
 import { BotsModule } from './bots/bots.module';
 import { BroadcastModule } from './broadcast/broadcast.module';
-import { CategoryModule } from './categories/categories.module';
 import { configuration } from './config/configuration';
 import { CandidateModule } from './candidate/candidate.module';
 import { GifModule } from './gif/gif.module';
@@ -28,7 +27,6 @@ import { ChatModule } from './stream/chat/chat.module';
       load: [configuration],
       isGlobal: true,
     }),
-    CategoryModule,
     AwardModule,
     BroadcastModule,
     MediaModule,

@@ -1,4 +1,3 @@
-import { CategoriesEntity } from '@backend_2/categories/categories.entity';
 import { UserNotFound } from '@backend_2/errors';
 import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
 import { StreamEntity } from '@backend_2/stream/stream.entity';
@@ -19,6 +18,7 @@ import { FollowEntity } from './follow/follow.entity';
 import { AppInviteEntity } from './app_invite/app-invite.entity';
 import { AppliedAppInviteEntity } from './app_invite/applied-app-invite.entity';
 import { CoinBalanceEntity } from './coin-balance/coin-balance.entity';
+import { CategoriesEntity } from '@backend_2/stream/categories/categories.entity';
 
 @Injectable()
 export class UserService {
