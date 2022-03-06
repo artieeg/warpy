@@ -102,16 +102,16 @@ describe('MediaService', () => {
   });
 
   it('creates viewer permissions', async () => {
-    expect(
-      mediaService.getViewerPermissions('test', 'test2'),
-    ).resolves.toStrictEqual({
-      token: expect.anything(),
-      permissions: expect.objectContaining({
-        recvNodeId,
-        user: 'test',
-        room: 'test2',
-      }),
-    });
+    expect(mediaService.getViewerToken('test', 'test2')).resolves.toStrictEqual(
+      {
+        token: expect.anything(),
+        permissions: expect.objectContaining({
+          recvNodeId,
+          user: 'test',
+          room: 'test2',
+        }),
+      },
+    );
   });
 
   it('adds new media node', async () => {
@@ -129,7 +129,7 @@ describe('MediaService', () => {
 
     await Promise.all(
       participants.map(async (p) => {
-        await mediaService.removeUserFromNodes(p);
+        await mediaService.removeFromNodes(p);
 
         if (p.recvNodeId) {
           expect(mockedNatsService.request).toBeCalledWith(
@@ -158,7 +158,7 @@ describe('MediaService', () => {
 
     mockedNatsService.request.mockResolvedValueOnce({ status: 'error' });
 
-    expect(mediaService.removeUserFromNodes(participant)).rejects.toThrowError(
+    expect(mediaService.removeFromNodes(participant)).rejects.toThrowError(
       InternalError,
     );
   });

@@ -1,5 +1,5 @@
 import { InternalError } from '@backend_2/errors';
-import { IFullParticipant } from '@backend_2/participant/participant.entity';
+import { IFullParticipant } from '@backend_2/user/participant/common/participant.entity';
 import { Injectable } from '@nestjs/common';
 import {
   ICreateTransport,
@@ -36,7 +36,7 @@ export class MediaService {
     return response as INewMediaRoomData;
   }
 
-  async updateRole(participant: IFullParticipant, role: Roles) {
+  async updateMediaRole(participant: IFullParticipant, role: Roles) {
     const { stream, id, recvNodeId, sendNodeId: prevSendNodeId } = participant;
 
     let sendMedia: INewTransportResponse;
@@ -93,68 +93,56 @@ export class MediaService {
     return response as IConnectRecvTransportParams;
   }
 
-  async getSendRecvNodeIds(stream: string) {
-    return {
-      sendNodeId: await this.balancer.getSendNodeId(stream),
-      recvNodeId: await this.balancer.getRecvNodeId(stream),
-    };
-  }
+  async getHostToken(user: string, stream: string) {
+    const [sendNodeId, recvNodeId] = await Promise.all([
+      this.balancer.getSendNodeId(stream),
+      this.balancer.getRecvNodeId(stream),
+    ]);
 
-  private async getNodes(
-    stream: string,
-    permissions?: Partial<IMediaPermissions>,
-  ): Promise<{ sendNodeId: string; recvNodeId: string }> {
-    if (!permissions) {
-      const [sendNodeId, recvNodeId] = await Promise.all([
-        this.balancer.getSendNodeId(stream),
-        this.balancer.getRecvNodeId(stream),
-      ]);
-
-      return {
-        sendNodeId,
-        recvNodeId,
-      };
-    }
-
-    return {
-      sendNodeId:
-        permissions.sendNodeId || (await this.balancer.getSendNodeId(stream)),
-      recvNodeId:
-        permissions.recvNodeId || (await this.balancer.getRecvNodeId(stream)),
-    };
-  }
-
-  async getStreamerPermissions(
-    user: string,
-    room: string,
-    optional: Partial<IMediaPermissions>,
-  ) {
-    const permissions: IMediaPermissions = {
+    const token = this.createPermissionToken({
       user,
+      room: stream,
+      audio: true,
+      video: true,
+      sendNodeId,
+      recvNodeId,
+    });
+
+    return { token, sendNodeId, recvNodeId };
+  }
+
+  async getBotToken(bot: string, room: string) {
+    const [sendNodeId, recvNodeId] = await Promise.all([
+      this.balancer.getSendNodeId(room),
+      this.balancer.getRecvNodeId(room),
+    ]);
+
+    const token = this.createPermissionToken({
+      user: bot,
       room,
       audio: true,
       video: true,
-      ...(await this.getNodes(room)),
-      ...optional,
-    };
+      sendNodeId,
+      recvNodeId,
+    });
 
-    const token = this.createPermissionToken(permissions);
-
-    return { token, permissions };
+    return { token, sendNodeId, recvNodeId };
   }
 
-  async getViewerPermissions(user: string, room: string) {
+  async getViewerToken(user: string, room: string) {
+    const recvNodeId = await this.balancer.getRecvNodeId(room);
+
     const permissions: IMediaPermissions = {
       user,
       room,
       audio: false,
       video: false,
-      recvNodeId: await this.balancer.getRecvNodeId(room),
+      recvNodeId,
     };
 
     const token = this.createPermissionToken(permissions);
 
-    return { token, permissions };
+    return { token, recvNodeId };
   }
 
   private async kickFromRoom(user: string, stream: string, node: string) {
@@ -170,7 +158,7 @@ export class MediaService {
     return response as IKickedFromMediaRoom;
   }
 
-  async removeUserFromNodes({
+  async removeFromNodes({
     id,
     stream,
     sendNodeId,

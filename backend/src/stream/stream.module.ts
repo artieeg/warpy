@@ -1,24 +1,23 @@
 import { PrismaModule } from '@backend_2/prisma/prisma.module';
 import { UserModule } from '@backend_2/user/user.module';
 import { forwardRef, Module } from '@nestjs/common';
-import { BlockModule } from '../block/block.module';
 import { MediaModule } from '../media/media.module';
-import { ParticipantModule } from '../participant/participant.module';
+import { CategoryModule } from './categories/categories.module';
+import { ChatModule } from './chat/chat.module';
 import { StreamController } from './stream.controller';
 import { StreamEntity } from './stream.entity';
 import { StreamService } from './stream.service';
 
 @Module({
   imports: [
-    //StreamBlockModule,
-    ParticipantModule,
     PrismaModule,
-    BlockModule,
+    ChatModule,
     forwardRef(() => UserModule),
     MediaModule,
+    CategoryModule,
   ],
   controllers: [StreamController],
   providers: [StreamService, StreamEntity],
-  exports: [StreamService, StreamEntity],
+  exports: [StreamService, CategoryModule, StreamEntity, ChatModule],
 })
 export class StreamModule {}

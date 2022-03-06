@@ -1,6 +1,4 @@
-import { ParticipantService } from '@backend_2/participant/participant.service';
 import { ExceptionFilter } from '@backend_2/rpc-exception.filter';
-import { UserOnlineStatusService } from '@backend_2/user-online-status/user-online-status.service';
 import { Controller, UseFilters } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
@@ -23,6 +21,8 @@ import {
   IWhoAmIRequest,
   IWhoAmIResponse,
 } from '@warpy/lib';
+import { UserOnlineStatusService } from './online-status/user-online-status.service';
+import { ParticipantCommonService } from './participant/common/participant-common.service';
 import { UserService } from './user.service';
 
 @Controller()
@@ -30,7 +30,7 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(
     private userService: UserService,
-    private participantService: ParticipantService,
+    private participantService: ParticipantCommonService,
     private userOnlineStatusService: UserOnlineStatusService,
     private configService: ConfigService,
   ) {}

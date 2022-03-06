@@ -1,4 +1,4 @@
-import { ParticipantEntity } from '@backend_2/participant/participant.entity';
+import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { IAward, IInvite, IParticipant } from '@warpy/lib';

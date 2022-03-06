@@ -1,7 +1,5 @@
-import { DeveloperAccountModule } from '@backend_2/developer_account/developer_account.module';
 import { MediaModule } from '@backend_2/media/media.module';
 import { MessageModule } from '@backend_2/message/message.module';
-import { ParticipantModule } from '@backend_2/participant/participant.module';
 import { PrismaModule } from '@backend_2/prisma/prisma.module';
 import { TokenModule } from '@backend_2/token/token.module';
 import { forwardRef, Module } from '@nestjs/common';
@@ -11,12 +9,14 @@ import { BotInstanceService } from './bot-instance.service';
 import { BotsController } from './bots.controller';
 import { BotsEntity } from './bots.entity';
 import { BotsService } from './bots.service';
+import { UserModule } from '@backend_2/user/user.module';
+import { DeveloperAccountModule } from '@backend_2/user/developer_account/developer_account.module';
 
 @Module({
   imports: [
     PrismaModule,
     MediaModule,
-    forwardRef(() => ParticipantModule),
+    forwardRef(() => UserModule),
     DeveloperAccountModule,
     MessageModule,
     TokenModule,
