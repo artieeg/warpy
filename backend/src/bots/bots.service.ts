@@ -1,6 +1,6 @@
-import { DeveloperAccountEntity } from '@backend_2/developer_account/developer_account.entity';
 import { MessageService } from '@backend_2/message/message.service';
 import { TokenService } from '@backend_2/token/token.service';
+import { DeveloperAccountEntity } from '@backend_2/user/developer_account/developer_account.entity';
 import { Injectable } from '@nestjs/common';
 import { BotConfirmResponseDTO } from './bots.dto';
 import { BotsEntity } from './bots.entity';

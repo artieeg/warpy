@@ -1,4 +1,3 @@
-import { DeveloperAccountModule } from '@backend_2/developer_account/developer_account.module';
 import { MediaModule } from '@backend_2/media/media.module';
 import { MessageModule } from '@backend_2/message/message.module';
 import { PrismaModule } from '@backend_2/prisma/prisma.module';
@@ -11,6 +10,7 @@ import { BotsController } from './bots.controller';
 import { BotsEntity } from './bots.entity';
 import { BotsService } from './bots.service';
 import { UserModule } from '@backend_2/user/user.module';
+import { DeveloperAccountModule } from '@backend_2/user/developer_account/developer_account.module';
 
 @Module({
   imports: [

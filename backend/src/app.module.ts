@@ -7,9 +7,7 @@ import { AwardModule } from './award/award.module';
 import { BotsModule } from './bots/bots.module';
 import { BroadcastModule } from './broadcast/broadcast.module';
 import { CategoryModule } from './categories/categories.module';
-import { ChatModule } from './chat/chat.module';
 import { configuration } from './config/configuration';
-import { DeveloperAccountModule } from './developer_account/developer_account.module';
 import { CandidateModule } from './candidate/candidate.module';
 import { GifModule } from './gif/gif.module';
 import { InviteModule } from './invite/invite.module';
@@ -22,6 +20,7 @@ import { TokenModule } from './token/token.module';
 import { UserModule } from './user/user.module';
 import { WaitlistModule } from './waitlist/waitlist.module';
 import { MailModule } from './mail/mail.module';
+import { ChatModule } from './stream/chat/chat.module';
 
 @Module({
   imports: [
@@ -33,7 +32,6 @@ import { MailModule } from './mail/mail.module';
     AwardModule,
     BroadcastModule,
     MediaModule,
-    DeveloperAccountModule,
     GifModule,
     CandidateModule,
     UserModule,
