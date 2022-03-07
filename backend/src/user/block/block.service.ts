@@ -16,7 +16,14 @@ export class BlockService {
   ) {}
 
   async unblockUser(blocker: string, blocked: string) {
-    await this.blockEntity.deleteByUsers(blocker, blocked);
+    await Promise.all([
+      //Update database
+      this.blockEntity.deleteByUsers(blocker, blocked),
+
+      //Reset cache
+      this.blockCacheService.delBlockedUserIds(blocker),
+      this.blockCacheService.delBlockedByUsers(blocked),
+    ]);
   }
 
   async getBlockedUserIds(user: string) {
@@ -46,10 +53,17 @@ export class BlockService {
   }
 
   async blockUser(blocker: string, blocked: string) {
-    const blockId = await this.blockEntity.create({
-      blocker,
-      blocked,
-    });
+    const [, , blockId] = await Promise.all([
+      //Reset cache
+      this.blockCacheService.delBlockedUserIds(blocker),
+      this.blockCacheService.delBlockedByUsers(blocked),
+
+      //Create db record
+      await this.blockEntity.create({
+        blocker,
+        blocked,
+      }),
+    ]);
 
     return blockId;
   }
