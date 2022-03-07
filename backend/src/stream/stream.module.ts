@@ -6,6 +6,7 @@ import { CategoryModule } from './categories/categories.module';
 import { ChatModule } from './chat/chat.module';
 import { StreamCommonModule } from './common/stream-common.module';
 import { InviteModule } from './invite/invite.module';
+import { ReactionModule } from './reaction/reaction.module';
 import { StreamController } from './stream.controller';
 import { StreamService } from './stream.service';
 
@@ -18,6 +19,7 @@ import { StreamService } from './stream.service';
     CategoryModule,
     StreamCommonModule,
     InviteModule,
+    ReactionModule,
   ],
   controllers: [StreamController],
   providers: [StreamService],
@@ -27,6 +29,7 @@ import { StreamService } from './stream.service';
     CategoryModule,
     ChatModule,
     InviteModule,
+    ReactionModule,
   ],
 })
 export class StreamModule {}

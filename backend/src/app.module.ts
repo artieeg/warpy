@@ -12,13 +12,13 @@ import { GifModule } from './gif/gif.module';
 import { MediaModule } from './media/media.module';
 import { NatsModule } from './nats/nats.module';
 import { NotificationModule } from './notification/notification.module';
-import { ReactionModule } from './reaction/reaction.module';
 import { StreamModule } from './stream/stream.module';
 import { TokenModule } from './token/token.module';
 import { UserModule } from './user/user.module';
 import { WaitlistModule } from './waitlist/waitlist.module';
 import { MailModule } from './mail/mail.module';
 import { ChatModule } from './stream/chat/chat.module';
+import { ReactionModule } from './stream/reaction/reaction.module';
 
 @Module({
   imports: [
