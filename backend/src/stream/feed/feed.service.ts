@@ -15,10 +15,15 @@ export class FeedService {
   ) {}
 
   private async getFeedCandidate(stream: IStream): Promise<ICandidate> {
+    const [total_participants, speakers] = await Promise.all([
+      this.participantEntity.count(stream.id),
+      this.participantEntity.getSpeakers(stream.id),
+    ]);
+
     return {
       ...stream,
-      participants: await this.participantEntity.count(stream.id),
-      speakers: await this.participantEntity.getSpeakers(stream.id),
+      total_participants,
+      speakers,
     };
   }
 

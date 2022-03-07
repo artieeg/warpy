@@ -66,7 +66,7 @@ export const StreamPreview = React.memo((props: IStreamPreviewProps) => {
               );
             })}
             <ViewersCountPreview
-              count={stream.participants}
+              count={stream.total_participants}
               style={styles.viewersCount}
             />
           </View>
