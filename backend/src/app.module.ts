@@ -7,7 +7,6 @@ import { AwardModule } from './award/award.module';
 import { BotsModule } from './bots/bots.module';
 import { BroadcastModule } from './broadcast/broadcast.module';
 import { configuration } from './config/configuration';
-import { CandidateModule } from './candidate/candidate.module';
 import { GifModule } from './gif/gif.module';
 import { MediaModule } from './media/media.module';
 import { NatsModule } from './nats/nats.module';
@@ -18,7 +17,6 @@ import { UserModule } from './user/user.module';
 import { WaitlistModule } from './waitlist/waitlist.module';
 import { MailModule } from './mail/mail.module';
 import { ChatModule } from './stream/chat/chat.module';
-import { ReactionModule } from './stream/reaction/reaction.module';
 
 @Module({
   imports: [
@@ -30,7 +28,6 @@ import { ReactionModule } from './stream/reaction/reaction.module';
     BroadcastModule,
     MediaModule,
     GifModule,
-    CandidateModule,
     UserModule,
     TokenModule,
     StreamModule,
@@ -38,7 +35,6 @@ import { ReactionModule } from './stream/reaction/reaction.module';
     NatsModule,
     BotsModule,
     ChatModule,
-    ReactionModule,
     NotificationModule,
     WaitlistModule,
     EventEmitterModule.forRoot(),
