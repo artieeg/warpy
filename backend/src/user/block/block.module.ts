@@ -4,10 +4,11 @@ import { forwardRef, Module } from '@nestjs/common';
 import { BlockController } from './block.controller';
 import { BlockEntity } from './block.entity';
 import { BlockService } from './block.service';
+import { BlockCacheService } from './block.cache';
 
 @Module({
   imports: [PrismaModule, forwardRef(() => ParticipantModule)],
-  providers: [BlockEntity, BlockService],
+  providers: [BlockEntity, BlockCacheService, BlockService],
   exports: [BlockEntity, BlockService],
   controllers: [BlockController],
 })
