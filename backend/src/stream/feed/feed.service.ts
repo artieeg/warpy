@@ -1,5 +1,5 @@
 import { StreamEntity } from '@backend_2/stream/common/stream.entity';
-import { BlockEntity } from '@backend_2/user/block/block.entity';
+import { BlockService } from '@backend_2/user/block/block.service';
 import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ICandidate, IStream } from '@warpy/lib';
@@ -7,8 +7,8 @@ import { ICandidate, IStream } from '@warpy/lib';
 @Injectable()
 export class FeedService {
   constructor(
-    @Inject(forwardRef(() => BlockEntity))
-    private blockEntity: BlockEntity,
+    @Inject(forwardRef(() => BlockService))
+    private blockService: BlockService,
 
     private streamEntity: StreamEntity,
     private participantEntity: ParticipantEntity,
@@ -34,8 +34,8 @@ export class FeedService {
   }
 
   async getFeed(user: string, category?: string) {
-    const blockedUserIds = await this.blockEntity.getBlockedUserIds(user);
-    const blockedByUserIds = await this.blockEntity.getBlockedByIds(user);
+    const blockedUserIds = await this.blockService.getBlockedUserIds(user);
+    const blockedByUserIds = await this.blockService.getBlockedByIds(user);
 
     const streams: IStream[] = await this.streamEntity.get({
       blockedUserIds,
