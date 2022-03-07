@@ -9,7 +9,6 @@ import { BroadcastModule } from './broadcast/broadcast.module';
 import { configuration } from './config/configuration';
 import { CandidateModule } from './candidate/candidate.module';
 import { GifModule } from './gif/gif.module';
-import { InviteModule } from './invite/invite.module';
 import { MediaModule } from './media/media.module';
 import { NatsModule } from './nats/nats.module';
 import { NotificationModule } from './notification/notification.module';
@@ -38,7 +37,6 @@ import { ChatModule } from './stream/chat/chat.module';
     MailModule,
     NatsModule,
     BotsModule,
-    InviteModule,
     ChatModule,
     ReactionModule,
     NotificationModule,

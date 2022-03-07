@@ -1,5 +1,4 @@
 import { Controller } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   IInviteActionRequest,
@@ -9,7 +8,6 @@ import {
   IInviteResponse,
   IInviteSuggestionsRequest,
   IInviteSuggestionsResponse,
-  IStream,
 } from '@warpy/lib';
 import { InviteService } from './invite.service';
 
