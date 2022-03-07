@@ -1,7 +1,7 @@
+import { StreamEntity } from '@backend_2/stream/common/stream.entity';
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ALLOWED_EMOJI, Reaction } from '@warpy/lib';
-import { StreamEntity } from '../stream/stream.entity';
 
 @Injectable()
 export class ReactionService implements OnModuleInit, OnModuleDestroy {

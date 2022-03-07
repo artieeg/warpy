@@ -4,9 +4,9 @@ import { forwardRef, Module } from '@nestjs/common';
 import { MediaModule } from '../media/media.module';
 import { CategoryModule } from './categories/categories.module';
 import { ChatModule } from './chat/chat.module';
+import { StreamCommonModule } from './common/stream-common.module';
 import { InviteModule } from './invite/invite.module';
 import { StreamController } from './stream.controller';
-import { StreamEntity } from './stream.entity';
 import { StreamService } from './stream.service';
 
 @Module({
@@ -16,14 +16,15 @@ import { StreamService } from './stream.service';
     forwardRef(() => UserModule),
     MediaModule,
     CategoryModule,
+    StreamCommonModule,
     InviteModule,
   ],
   controllers: [StreamController],
-  providers: [StreamService, StreamEntity],
+  providers: [StreamService],
   exports: [
     StreamService,
+    StreamCommonModule,
     CategoryModule,
-    StreamEntity,
     ChatModule,
     InviteModule,
   ],

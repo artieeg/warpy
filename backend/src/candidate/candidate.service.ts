@@ -1,8 +1,8 @@
+import { StreamEntity } from '@backend_2/stream/common/stream.entity';
 import { BlockEntity } from '@backend_2/user/block/block.entity';
 import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ICandidate, IStream } from '@warpy/lib';
-import { StreamEntity } from '../stream/stream.entity';
 
 @Injectable()
 export class CandidateService {

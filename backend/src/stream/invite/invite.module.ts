@@ -7,12 +7,12 @@ import { TokenModule } from '@backend_2/token/token.module';
 import { BotsModule } from '@backend_2/bots/bots.module';
 import { UserModule } from '@backend_2/user/user.module';
 import { PrismaModule } from '@backend_2/prisma/prisma.module';
-import { StreamModule } from '../stream.module';
+import { StreamCommonModule } from '../common/stream-common.module';
 
 @Module({
   imports: [
     PrismaModule,
-    forwardRef(() => StreamModule),
+    StreamCommonModule,
     forwardRef(() => UserModule),
     MessageModule,
     TokenModule,

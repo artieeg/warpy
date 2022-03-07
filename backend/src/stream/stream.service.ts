@@ -10,7 +10,7 @@ import { INewStreamResponse } from '@warpy/lib';
 import cuid from 'cuid';
 import { MediaService } from '../media/media.service';
 import { UserEntity } from '../user/user.entity';
-import { StreamEntity } from './stream.entity';
+import { StreamEntity } from './common/stream.entity';
 
 @Injectable()
 export class StreamService {
