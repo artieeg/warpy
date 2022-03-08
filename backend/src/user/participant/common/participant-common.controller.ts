@@ -11,6 +11,7 @@ export class ParticipantCommonController {
   async onLeaveStream({ user }: ILeaveStreamRequest) {
     return this.participant.removeUserFromStream(user);
   }
+
   @MessagePattern('participant.media-toggle')
   async onMediaToggle({
     user,

@@ -4,6 +4,7 @@ import {
   UserNotFound,
 } from '@backend_2/errors';
 import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
+import { EVENT_STREAM_JOINED } from '@backend_2/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { INewStreamResponse } from '@warpy/lib';
@@ -77,6 +78,7 @@ export class StreamService {
     );
 
     this.eventEmitter.emit('stream.created', { stream });
+    this.eventEmitter.emit(EVENT_STREAM_JOINED, { stream, user: owner });
 
     return {
       stream: stream.id,
