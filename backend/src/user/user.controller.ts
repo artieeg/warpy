@@ -1,6 +1,7 @@
 import { ExceptionFilter } from '@backend_2/rpc-exception.filter';
 import { Controller, UseFilters } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   ICreateAnonUserResponse,
@@ -33,6 +34,7 @@ export class UserController {
     private participantService: ParticipantCommonService,
     private userOnlineStatusService: UserOnlineStatusService,
     private configService: ConfigService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   @MessagePattern('user.get')
@@ -139,5 +141,7 @@ export class UserController {
     }
 
     await this.userOnlineStatusService.setUserOffline(user);
+
+    this.eventEmitter.emit('user.disconnected', { user });
   }
 }
