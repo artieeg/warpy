@@ -1,4 +1,8 @@
-import { EVENT_STREAM_JOINED, EVENT_USER_DISCONNECTED } from '@backend_2/utils';
+import {
+  EVENT_STREAM_JOINED,
+  EVENT_USER_CONNECTED,
+  EVENT_USER_DISCONNECTED,
+} from '@backend_2/utils';
 import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { PreviousStreamService } from './previous-stream.service';
@@ -15,5 +19,10 @@ export class PreviousStreamController {
   @OnEvent(EVENT_USER_DISCONNECTED)
   async onUserDisconnect({ user }: { user: string }) {
     await this.previousStreamService.expire(user);
+  }
+
+  @OnEvent(EVENT_USER_CONNECTED)
+  async onUserConnect({ user }: { user: string }) {
+    await this.previousStreamService.sendPreviousStream(user);
   }
 }

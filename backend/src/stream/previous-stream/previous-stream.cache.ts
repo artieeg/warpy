@@ -33,7 +33,7 @@ export class PreviousStreamCacheService {
   }
 
   async get(user: string) {
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<string | undefined>((resolve, reject) => {
       this.client.get(user, (err, value) => {
         if (err) reject(err);
         else resolve(value);

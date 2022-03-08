@@ -84,3 +84,7 @@ export interface IInviteStateUpdate {
 export interface INewAward {
   award: IAward;
 }
+
+export interface IPreviousStream {
+  stream: string;
+}
