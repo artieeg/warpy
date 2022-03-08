@@ -17,6 +17,7 @@ import { UserModule } from './user/user.module';
 import { WaitlistModule } from './waitlist/waitlist.module';
 import { MailModule } from './mail/mail.module';
 import { ChatModule } from './stream/chat/chat.module';
+import { MessageModule } from './message/message.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { ChatModule } from './stream/chat/chat.module';
     NatsModule,
     BotsModule,
     ChatModule,
+    MessageModule,
     NotificationModule,
     WaitlistModule,
     EventEmitterModule.forRoot(),

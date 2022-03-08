@@ -9,7 +9,7 @@ export class PreviousStreamService {
     return this.previousStreamCache.set(user, stream);
   }
 
-  async get(user: string) {
+  async sendPreviousStream(user: string) {
     return this.previousStreamCache.get(user);
   }
 
