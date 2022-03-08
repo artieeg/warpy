@@ -39,8 +39,10 @@ export class FeedService {
   }
 
   async getFeed(user: string, category?: string) {
-    const blockedUserIds = await this.blockService.getBlockedUserIds(user);
-    const blockedByUserIds = await this.blockService.getBlockedByIds(user);
+    const [blockedUserIds, blockedByUserIds] = await Promise.all([
+      this.blockService.getBlockedUserIds(user),
+      this.blockService.getBlockedByIds(user),
+    ]);
 
     const streams: IStream[] = await this.streamEntity.get({
       blockedUserIds,
