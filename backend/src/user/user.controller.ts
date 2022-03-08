@@ -1,5 +1,8 @@
 import { ExceptionFilter } from '@backend_2/rpc-exception.filter';
-import { EVENT_USER_DISCONNECTED } from '@backend_2/utils';
+import {
+  EVENT_USER_CONNECTED,
+  EVENT_USER_DISCONNECTED,
+} from '@backend_2/utils';
 import { Controller, UseFilters } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -50,6 +53,8 @@ export class UserController {
   async onUserGet({ user }: IWhoAmIRequest): Promise<IWhoAmIResponse> {
     const data = await this.userService.getById(user);
     await this.userOnlineStatusService.setUserOnline(user);
+
+    this.eventEmitter.emit(EVENT_USER_CONNECTED, { user });
 
     return data;
   }
