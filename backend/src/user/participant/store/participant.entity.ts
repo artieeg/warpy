@@ -107,6 +107,10 @@ export class ParticipantStore implements OnModuleInit {
     return (pipeline || this.redis).hmset(key, ...args);
   }
 
+  async update(id: string, data: Partial<IFullParticipant>) {
+    return this.write(id, data);
+  }
+
   async add(data: IFullParticipant) {
     const { stream } = data;
 
