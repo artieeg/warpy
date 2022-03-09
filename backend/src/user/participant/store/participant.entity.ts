@@ -1,7 +1,8 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { IParticipant, Roles } from '@warpy/lib';
 import { ConfigService } from '@nestjs/config';
-import IORedis, { Pipeline } from 'ioredis';
+import IORedis, { Pipeline, Pipeline } from 'ioredis';
+import { StreamNotFound } from '@backend_2/errors';
 
 export type CreateNewParticipant = {
   user_id?: string;
@@ -18,7 +19,7 @@ export interface IFullParticipant extends IParticipant {
   isBanned: boolean;
 }
 
-const PREFIX_ALL = 'all_';
+const PREFIX_VIEWERS = 'viewer_';
 const PREFIX_STREAMERS = 'streamers_';
 const PREFIX_RAISED_HANDS = 'raised_hands_';
 const PREFIX_COUNT = 'count_';
@@ -51,6 +52,20 @@ export class ParticipantStore implements OnModuleInit {
     return record;
   }
 
+  private async del(id: string, pipeline?: Pipeline) {
+    if (pipeline) {
+      return pipeline.del(id);
+    }
+
+    return this.redis.del(id);
+  }
+
+  async get(id: string) {
+    const items = await this.redis.hgetall(id);
+
+    return this.toDTO(items);
+  }
+
   private async list(ids: string[]): Promise<IFullParticipant[]> {
     const pipe = this.redis.pipeline();
 
@@ -65,9 +80,24 @@ export class ParticipantStore implements OnModuleInit {
           return null;
         }
 
-        return this.getInstanceFromArray(items);
+        return this.toDTO(items);
       })
       .filter((item) => !!item);
+  }
+
+  async deleteStreamParticipants(stream: string) {
+    const pipe = this.redis.pipeline();
+    pipe.smembers(PREFIX_STREAMERS + stream);
+    pipe.smembers(PREFIX_RAISED_HANDS + stream);
+    pipe.smembers(PREFIX_VIEWERS + stream);
+
+    const [[, streamers], [, raisedHands], [, viewers]] = await pipe.exec();
+    const ids = [...streamers, ...raisedHands, ...viewers];
+
+    const del_pipe = this.redis.pipeline();
+    ids.forEach((id) => this.del(id, del_pipe));
+
+    return del_pipe.exec();
   }
 
   /**
@@ -111,11 +141,38 @@ export class ParticipantStore implements OnModuleInit {
     return this.write(id, data);
   }
 
+  async setRaiseHand(user: string, flag: boolean) {
+    const stream = await this.redis.hget(user, 'stream');
+
+    if (!stream) {
+      throw new StreamNotFound();
+    }
+
+    const pipe = this.redis.pipeline();
+
+    if (flag) {
+      pipe.sadd(PREFIX_RAISED_HANDS + stream, user);
+      pipe.srem(PREFIX_VIEWERS + stream, user);
+    } else {
+      pipe.srem(PREFIX_RAISED_HANDS + stream, user);
+      pipe.sadd(PREFIX_VIEWERS + stream, user);
+    }
+
+    return pipe.exec();
+  }
+
+  async getViewersPage(stream: string, page: number) {
+    const all_ids = await this.redis.smembers(PREFIX_VIEWERS + stream);
+    const ids = all_ids.slice(page * 50, (page + 1) * 50);
+
+    return this.list(ids);
+  }
+
   async add(data: IFullParticipant) {
     const { stream } = data;
 
     const pipe = this.redis.pipeline();
-    pipe.sadd(PREFIX_ALL + stream);
+    pipe.sadd(PREFIX_VIEWERS + stream);
     pipe.incr(PREFIX_COUNT + stream);
     this.write(data.id, data, pipe);
 
