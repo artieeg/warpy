@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     overflow: 'hidden',
-    marginHorizontal: 10,
+    //marginHorizontal: 10,
     marginBottom: 10,
     marginTop: 0,
     borderRadius: 6,

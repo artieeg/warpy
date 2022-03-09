@@ -27,6 +27,8 @@ export const StreamFeedView: React.FC<StreamFeedViewProps> = ({
       let style: any = {
         maxWidth: previewWidth,
         width: previewWidth,
+        marginLeft: index % 2 === 1 ? 5 : 0,
+        marginRight: index % 2 === 0 ? 5 : 0,
       };
 
       if (index === 1) {
@@ -36,7 +38,11 @@ export const StreamFeedView: React.FC<StreamFeedViewProps> = ({
           maxHeight: previewHeight - 100,
         };
       } else {
-        style = {...style, width: previewWidth, height: previewHeight};
+        style = {
+          ...style,
+          width: previewWidth,
+          height: previewHeight,
+        };
       }
 
       if (index % 2 && index !== 1) {
@@ -61,6 +67,7 @@ export const StreamFeedView: React.FC<StreamFeedViewProps> = ({
     flex: 1,
     opacity: opacity.value,
     backgroundColor: colors.black,
+    marginLeft: 10,
   }));
 
   return (
