@@ -59,6 +59,14 @@ export const createAPISlice = (
       get().dispatchInviteStateUpdate(data.id, data.state);
     });
 
+    api.stream.onPreviousStream((data) => {
+      console.log("previous stream", data);
+
+      set({
+        previousStreamId: data.stream,
+      });
+    });
+
     api.stream.onStreamIdAvailable(({ id }) => {
       setTimeout(() => {
         if (get().modalCurrent === "stream-invite") {

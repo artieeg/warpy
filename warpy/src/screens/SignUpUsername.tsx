@@ -15,10 +15,9 @@ export const SignUpUsername = () => {
         /join
       </Text>
 
-      <ConfirmButton
-        onPress={() => navigation.navigate('SignUpAvatar')}
-        style={styles.confirm}
-      />
+      <View style={styles.confirm}>
+        <ConfirmButton onPress={() => navigation.navigate('SignUpAvatar')} />
+      </View>
 
       <SignUpInput
         onChangeText={text => useStore.setState({signUpUsername: text})}

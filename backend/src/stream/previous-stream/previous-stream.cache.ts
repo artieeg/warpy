@@ -25,6 +25,7 @@ export class PreviousStreamCacheService {
 
   async set(user: string, stream: string) {
     return new Promise<void>((resolve, reject) => {
+      console.log({ user, stream });
       this.client.set(user, stream, (err) => {
         if (err) reject(err);
         else resolve();

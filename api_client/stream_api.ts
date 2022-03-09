@@ -20,6 +20,7 @@ import {
   IInviteStateUpdate,
   ILeaveStreamResponse,
   IStreamSearchResponse,
+  IPreviousStream,
 } from "@warpy/lib";
 
 export interface IStreamAPI {
@@ -45,7 +46,7 @@ export interface IStreamAPI {
   cancelInvite: (invite_id: string) => Promise<ICancelInviteResponse>;
   getInviteSuggestions: (stream: string) => Promise<IInviteSuggestionsResponse>;
   setRole: (userToUpdate: string, role: Roles) => void;
-  onPreviousStream: EventHandler<IReactionsUpdate>;
+  onPreviousStream: EventHandler<IPreviousStream>;
   onReactionsUpdate: EventHandler<IReactionsUpdate>;
   onNewParticipant: EventHandler<INewParticipantEvent>;
   onRaiseHandUpdate: EventHandler;
