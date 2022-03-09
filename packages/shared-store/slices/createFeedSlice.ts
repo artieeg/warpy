@@ -1,11 +1,11 @@
-import { ICandidate } from "@warpy/lib";
+import { ICandidate, IStream } from "@warpy/lib";
 import { StoreSlice } from "../types";
 
 export interface IFeedSlice {
   selectedCategoryIds: string[];
   latestFeedPage: number;
   feed: ICandidate[];
-  previousStreamId: string | null;
+  previousStreamId: IStream | null;
   isFeedLoading: boolean;
 }
 

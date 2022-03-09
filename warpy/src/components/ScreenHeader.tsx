@@ -12,10 +12,12 @@ import Animated, {
   Easing,
   Extrapolate,
   interpolate,
+  Layout,
   SharedValue,
   useAnimatedStyle,
   withTiming,
 } from 'react-native-reanimated';
+import {InfoHeader} from './InfoHeader';
 
 export const ScreenHeader: React.FC<{
   minimizationProgress?: SharedValue<number>;
@@ -172,24 +174,29 @@ export const ScreenHeader: React.FC<{
   }));
 
   return (
-    <Animated.View style={headerStyle}>
-      <Animated.View style={titleStyle}>
-        <ScreenTitle>{title}</ScreenTitle>
-      </Animated.View>
-      <Animated.View style={controlsStyle}>
-        {displayControls && (
-          <View style={styles.row}>
-            {firstButton}
+    <Animated.View layout={Layout.duration(200)}>
+      <InfoHeader />
+      <Animated.View layout={Layout.duration(200)} style={headerStyle}>
+        <Animated.View style={titleStyle}>
+          <ScreenTitle>{title}</ScreenTitle>
+        </Animated.View>
+        <Animated.View style={controlsStyle}>
+          {displayControls && (
+            <View style={styles.row}>
+              {firstButton}
 
-            {secondButton}
-            {user && (
-              <TouchableOpacity onPress={onOpenSettings}>
-                {/* uh oh 🤡 */}
-                <Avatar user={user ? user : ({avatar: signUpAvatar} as any)} />
-              </TouchableOpacity>
-            )}
-          </View>
-        )}
+              {secondButton}
+              {user && (
+                <TouchableOpacity onPress={onOpenSettings}>
+                  {/* uh oh 🤡 */}
+                  <Avatar
+                    user={user ? user : ({avatar: signUpAvatar} as any)}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+          )}
+        </Animated.View>
       </Animated.View>
     </Animated.View>
   );
