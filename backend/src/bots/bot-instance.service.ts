@@ -1,5 +1,5 @@
 import { MediaService } from '@backend_2/media/media.service';
-import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
+import { ParticipantStore } from '@backend_2/user/participant';
 import { TokenService } from '@backend_2/token/token.service';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -14,7 +14,7 @@ export class BotInstanceService {
     private tokenService: TokenService,
     private botInstanceEntity: BotInstanceEntity,
     private eventEmitter: EventEmitter2,
-    private participantEntity: ParticipantEntity,
+    private participantEntity: ParticipantStore,
   ) {}
 
   async createBotInstance(

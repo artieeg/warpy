@@ -6,14 +6,14 @@ import {
 import { MediaService } from '@backend_2/media/media.service';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ParticipantEntity } from '../common/participant.entity';
+import { ParticipantStore } from '../store';
 import { ParticipantBanEntity } from './ban.entity';
 
 @Injectable()
 export class ParticipantBanService {
   constructor(
     private banEntity: ParticipantBanEntity,
-    private participant: ParticipantEntity,
+    private participant: ParticipantStore,
     private media: MediaService,
     private eventEmitter: EventEmitter2,
   ) {}

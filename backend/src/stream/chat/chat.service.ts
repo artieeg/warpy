@@ -1,6 +1,5 @@
 import { StreamNotFound, UserNotFound } from '@backend_2/errors';
-import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
-import { BlockEntity } from '@backend_2/user/block/block.entity';
+import { ParticipantStore } from '@backend_2/user/participant';
 import { UserEntity } from '@backend_2/user/user.entity';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -16,7 +15,7 @@ export class ChatService {
   constructor(
     private eventEmitter: EventEmitter2,
     private userEntity: UserEntity,
-    private participantEntity: ParticipantEntity,
+    private participantEntity: ParticipantStore,
     private blockService: BlockService,
   ) {}
 

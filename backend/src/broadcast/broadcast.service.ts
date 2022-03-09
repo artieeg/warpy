@@ -1,4 +1,4 @@
-import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
+import { ParticipantStore } from '@backend_2/user/participant/store';
 import { EVENT_NEW_PARTICIPANT } from '@backend_2/utils';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -8,7 +8,7 @@ import { MessageService } from '../message/message.service';
 @Injectable()
 export class BroadcastService {
   constructor(
-    private participant: ParticipantEntity,
+    private participant: ParticipantStore,
     private messageService: MessageService,
   ) {}
 

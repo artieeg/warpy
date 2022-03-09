@@ -1,6 +1,6 @@
 import { StreamEntity } from '@backend_2/stream/common/stream.entity';
 import { BlockService } from '@backend_2/user/block/block.service';
-import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
+import { ParticipantStore } from '@backend_2/user/participant/store';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ICandidate, IStream } from '@warpy/lib';
 
@@ -11,13 +11,13 @@ export class FeedService {
     private blockService: BlockService,
 
     private streamEntity: StreamEntity,
-    private participantEntity: ParticipantEntity,
+    private participantEntity: ParticipantStore,
   ) {}
 
   private async getFeedCandidate(stream: IStream): Promise<ICandidate> {
     const [total_participants, speakers] = await Promise.all([
       this.participantEntity.count(stream.id),
-      this.participantEntity.getSpeakers(stream.id),
+      this.participantEntity.getStreamers(stream.id),
     ]);
 
     return {

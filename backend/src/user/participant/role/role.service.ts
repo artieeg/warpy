@@ -5,12 +5,12 @@ import { BlockService } from '@backend_2/user/block/block.service';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Roles } from '@warpy/lib';
-import { ParticipantEntity } from '../common/participant.entity';
+import { ParticipantStore } from '../store';
 
 @Injectable()
 export class ParticipantRoleService {
   constructor(
-    private participant: ParticipantEntity,
+    private participant: ParticipantStore,
     private blockService: BlockService,
     private messageService: MessageService,
     private media: MediaService,

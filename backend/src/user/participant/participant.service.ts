@@ -3,12 +3,12 @@ import { MaxVideoStreamers } from '@backend_2/errors';
 import { MediaService } from '@backend_2/media/media.service';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ParticipantEntity } from './participant.entity';
+import { ParticipantStore } from './store';
 
 @Injectable()
-export class ParticipantCommonService {
+export class ParticipantService {
   constructor(
-    private participant: ParticipantEntity,
+    private participant: ParticipantStore,
     private botInstanceEntity: BotInstanceEntity,
     private media: MediaService,
     private eventEmitter: EventEmitter2,

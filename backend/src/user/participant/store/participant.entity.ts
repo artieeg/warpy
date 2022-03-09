@@ -1,9 +1,7 @@
-import { BotInstanceEntity } from '@backend_2/bots/bot-instance.entity';
-import { Injectable } from '@nestjs/common';
-import { Bot, BotInstance, Participant, User } from '@prisma/client';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { IParticipant, Roles } from '@warpy/lib';
-import { PrismaService } from '@backend_2/prisma/prisma.service';
-import { UserEntity } from '@backend_2/user/user.entity';
+import { ConfigService } from '@nestjs/config';
+import IORedis, { Pipeline } from 'ioredis';
 
 export type CreateNewParticipant = {
   user_id?: string;
@@ -12,19 +10,100 @@ export type CreateNewParticipant = {
   stream?: string;
   recvNodeId: string;
   sendNodeId?: string;
-  audioEnabled?: boolean;
-  videoEnabled?: boolean;
 };
 
 export interface IFullParticipant extends IParticipant {
   recvNodeId: string;
   sendNodeId: string | null;
   isBanned: boolean;
-  hasLeftStream: boolean;
 }
 
+const PREFIX_ALL = 'all_';
+const PREFIX_STREAMERS = 'STREAMERS_PREFIX';
+const PREFIX_COUNT = 'count_';
+
 @Injectable()
-export class ParticipantEntity {
+export class ParticipantStore implements OnModuleInit {
+  redis: IORedis.Redis;
+
+  constructor(private configService: ConfigService) {}
+
+  onModuleInit() {
+    this.redis = new IORedis(this.configService.get('participantStoreAddr'));
+  }
+
+  private toDTO(data: any): IFullParticipant {
+    return {
+      ...data,
+      isBot: data.isBot === 'true',
+      isBanned: data.isBanned === 'true',
+    };
+  }
+
+  private getInstanceFromArray(items: any[]): IFullParticipant {
+    let record: IFullParticipant;
+
+    for (let i = 0; i < items.length; i += 2) {
+      record[items[i]] = items[i + 1];
+    }
+
+    return record;
+  }
+
+  private async list(ids: string[]): Promise<IFullParticipant[]> {
+    const pipe = this.redis.pipeline();
+
+    for (const id of ids) {
+      pipe.hgetall(id);
+    }
+
+    const data = await pipe.exec();
+    return data
+      .map(([, items]) => {
+        if (!items) {
+          return null;
+        }
+
+        return this.getInstanceFromArray(items);
+      })
+      .filter((item) => !!item);
+  }
+
+  async getStreamers(stream: string) {
+    const ids = await this.redis.smembers(PREFIX_STREAMERS);
+
+    return this.list(ids);
+  }
+
+  private async write(
+    key: string,
+    data: Partial<IFullParticipant>,
+    pipeline?: Pipeline,
+  ) {
+    const args: string[] = [];
+    for (const key in data) {
+      args.push(key, data[key]);
+    }
+
+    return (pipeline || this.redis).hmset(key, ...args);
+  }
+
+  async create(data: IFullParticipant) {
+    const { stream } = data;
+
+    const pipe = this.redis.pipeline();
+
+    pipe.sadd(PREFIX_ALL + stream);
+    pipe.incr(PREFIX_COUNT + stream);
+    this.write(data.id, data, pipe);
+
+    await pipe.exec();
+  }
+}
+
+/*
+@Injectable()
+export class ParticipantStore {
   constructor(private prisma: PrismaService) {}
 
   static toParticipantClientDTO(
@@ -109,7 +188,7 @@ export class ParticipantEntity {
       },
     });
 
-    return ParticipantEntity.toFullParticipantDTO(data);
+    return ParticipantStore.toFullParticipantDTO(data);
   }
 
   async getByIdAndStream(
@@ -131,7 +210,7 @@ export class ParticipantEntity {
       },
     });
 
-    return ParticipantEntity.toFullParticipantDTO(data);
+    return ParticipantStore.toFullParticipantDTO(data);
   }
 
   async allParticipantsLeave(stream: string): Promise<void> {
@@ -165,7 +244,7 @@ export class ParticipantEntity {
       data,
     });
 
-    return ParticipantEntity.toParticipantClientDTO(participant);
+    return ParticipantStore.toParticipantClientDTO(participant);
   }
 
   async setStream(user_id: string, stream: string): Promise<void> {
@@ -200,7 +279,7 @@ export class ParticipantEntity {
       },
     });
 
-    return data.map(ParticipantEntity.toParticipantClientDTO);
+    return data.map(ParticipantStore.toParticipantClientDTO);
   }
 
   async makeSpeaker(user: string): Promise<IFullParticipant | null> {
@@ -224,7 +303,7 @@ export class ParticipantEntity {
       return null;
     }
 
-    return ParticipantEntity.toFullParticipantDTO(speaker);
+    return ParticipantStore.toFullParticipantDTO(speaker);
   }
 
   async getById(user: string): Promise<IFullParticipant | null> {
@@ -247,7 +326,7 @@ export class ParticipantEntity {
       return null;
     }
 
-    return ParticipantEntity.toFullParticipantDTO(participant);
+    return ParticipantStore.toFullParticipantDTO(participant);
   }
 
   async deleteParticipant(id: string): Promise<void> {
@@ -281,7 +360,7 @@ export class ParticipantEntity {
       },
     });
 
-    return participants.map(ParticipantEntity.toParticipantClientDTO);
+    return participants.map(ParticipantStore.toParticipantClientDTO);
   }
 
   async setBanStatus(user: string, isBanned: boolean): Promise<void> {
@@ -354,7 +433,7 @@ export class ParticipantEntity {
       },
     });
 
-    return participants.map(ParticipantEntity.toParticipantClientDTO);
+    return participants.map(ParticipantStore.toParticipantClientDTO);
   }
 
   async getViewersPage(stream: string, page: number): Promise<IParticipant[]> {
@@ -377,7 +456,7 @@ export class ParticipantEntity {
       take: 50,
     });
 
-    return participants.map(ParticipantEntity.toParticipantClientDTO);
+    return participants.map(ParticipantStore.toParticipantClientDTO);
   }
 
   async count(stream: string): Promise<number> {
@@ -405,7 +484,7 @@ export class ParticipantEntity {
       },
     });
 
-    return participants.map(ParticipantEntity.toParticipantClientDTO);
+    return participants.map(ParticipantStore.toParticipantClientDTO);
   }
 
   async setRaiseHand(user: string, flag: boolean): Promise<IParticipant> {
@@ -424,7 +503,7 @@ export class ParticipantEntity {
       },
     });
 
-    return ParticipantEntity.toParticipantClientDTO(participant);
+    return ParticipantStore.toParticipantClientDTO(participant);
   }
 
   async countUsersWithVideoEnabled(stream: string) {
@@ -438,3 +517,4 @@ export class ParticipantEntity {
     return count;
   }
 }
+*/

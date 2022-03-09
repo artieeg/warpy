@@ -1,5 +1,5 @@
 import { UserNotFound } from '@backend_2/errors';
-import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
+import { ParticipantStore } from '@backend_2/user/participant/store';
 import { Injectable } from '@nestjs/common';
 import {
   INewUser,
@@ -28,7 +28,7 @@ export class UserService {
     private tokenService: TokenService,
     private refreshTokenEntity: RefreshTokenEntity,
     private followEntity: FollowEntity,
-    private participantEntity: ParticipantEntity,
+    private participantEntity: ParticipantStore,
     private streamEntity: StreamEntity,
     private coinBalanceEntity: CoinBalanceEntity,
     private blockEntity: BlockEntity,
@@ -89,6 +89,10 @@ export class UserService {
 
   async update(user: string, params: Partial<IUser>) {
     await this.user.update(user, params);
+  }
+
+  async get(user: string): Promise<IUser> {
+    return this.user.findById(user);
   }
 
   async getById(user: string): Promise<IWhoAmIResponse> {

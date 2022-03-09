@@ -3,7 +3,7 @@ import {
   StreamNotFound,
   UserNotFound,
 } from '@backend_2/errors';
-import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
+import { ParticipantStore } from '@backend_2/user/participant/store';
 import { EVENT_STREAM_ENDED, EVENT_STREAM_JOINED } from '@backend_2/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -17,7 +17,7 @@ import { StreamEntity } from './common/stream.entity';
 export class StreamService {
   constructor(
     private streamEntity: StreamEntity,
-    private participantEntity: ParticipantEntity,
+    private participantEntity: ParticipantStore,
     private userEntity: UserEntity,
     private mediaService: MediaService,
     private eventEmitter: EventEmitter2,

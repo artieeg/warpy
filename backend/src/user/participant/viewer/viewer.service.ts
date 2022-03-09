@@ -1,10 +1,11 @@
 import { MediaService } from '@backend_2/media/media.service';
+import { UserService } from '@backend_2/user/user.service';
 import { EVENT_NEW_PARTICIPANT, EVENT_STREAM_JOINED } from '@backend_2/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IJoinStreamResponse } from '@warpy/lib';
 import { ParticipantBanService } from '../ban/ban.service';
-import { ParticipantEntity } from '../common/participant.entity';
+import { ParticipantStore } from '../store';
 
 @Injectable()
 export class ViewerService {
@@ -12,7 +13,8 @@ export class ViewerService {
     private media: MediaService,
     private eventEmitter: EventEmitter2,
     private bans: ParticipantBanService,
-    private participant: ParticipantEntity,
+    private participant: ParticipantStore,
+    private user: UserService,
   ) {}
 
   async setRaiseHand(user: string, flag: boolean) {
@@ -38,11 +40,16 @@ export class ViewerService {
 
     await this.bans.checkUserBanned(viewerId, stream);
 
+    const user = await this.user.get(viewerId);
+
     const viewer = await this.participant.create({
-      user_id: viewerId,
+      ...user,
       stream,
       role: 'viewer',
       recvNodeId,
+      sendNodeId: null,
+      isBanned: false,
+      isBot: false,
     });
 
     this.eventEmitter.emit(EVENT_NEW_PARTICIPANT, viewer);
@@ -50,7 +57,7 @@ export class ViewerService {
 
     const [recvMediaParams, speakers, raisedHands, count] = await Promise.all([
       this.media.getViewerParams(recvNodeId, viewerId, stream),
-      this.participant.getSpeakers(stream),
+      this.participant.getStreamers(stream),
       this.participant.getWithRaisedHands(stream),
       this.participant.count(stream),
     ]);

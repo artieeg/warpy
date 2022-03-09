@@ -1,7 +1,12 @@
-import { Module } from '@nestjs/common';
+import { BotsModule } from '@backend_2/bots/bots.module';
+import { MediaModule } from '@backend_2/media/media.module';
+import { TokenService } from '@backend_2/token/token.service';
+import { forwardRef, Module } from '@nestjs/common';
 import { ActiveSpeakerModule } from './active-speaker/active-speaker.module';
 import { ParticipantBanModule } from './ban/ban.module';
-import { ParticipantCommonModule } from './common/participant-common.module';
+import { ParticipantCommonModule } from './store';
+import { ParticipantController } from './participant.controller';
+import { ParticipantService } from './participant.service';
 import { ParticipantRoleModule } from './role/role.module';
 import { ViewerModule } from './viewer/viewer.module';
 
@@ -12,9 +17,12 @@ import { ViewerModule } from './viewer/viewer.module';
     ParticipantRoleModule,
     ParticipantBanModule,
     ParticipantCommonModule,
+    forwardRef(() => BotsModule),
+    MediaModule,
+    TokenService,
   ],
-  providers: [],
-  controllers: [],
+  providers: [ParticipantService],
+  controllers: [ParticipantController],
   exports: [ViewerModule, ParticipantCommonModule],
 })
 export class ParticipantModule {}

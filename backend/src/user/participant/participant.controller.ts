@@ -4,13 +4,11 @@ import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import { ILeaveStreamRequest, IMediaToggleRequest } from '@warpy/lib';
-import { ParticipantCommonService } from './participant-common.service';
+import { ParticipantService } from './participant.service';
 
 @Controller()
-export class ParticipantCommonController
-  implements OnUserDisconnectEventHandler
-{
-  constructor(private participant: ParticipantCommonService) {}
+export class ParticipantController implements OnUserDisconnectEventHandler {
+  constructor(private participant: ParticipantService) {}
 
   @MessagePattern('participant.leave')
   async onLeaveStream({ user }: ILeaveStreamRequest) {
@@ -31,8 +29,6 @@ export class ParticipantCommonController
 
   @OnEvent(EVENT_USER_DISCONNECTED)
   async onUserDisconnect({ user }) {
-    console.log('particiapnt controller: ', user);
-
     const isBot = user.slice(0, 3) === 'bot';
 
     if (isBot) {
