@@ -19,7 +19,8 @@ export interface IFullParticipant extends IParticipant {
 }
 
 const PREFIX_ALL = 'all_';
-const PREFIX_STREAMERS = 'STREAMERS_PREFIX';
+const PREFIX_STREAMERS = 'streamers_';
+const PREFIX_RAISED_HANDS = 'raised_hands_';
 const PREFIX_COUNT = 'count_';
 
 @Injectable()
@@ -69,10 +70,28 @@ export class ParticipantStore implements OnModuleInit {
       .filter((item) => !!item);
   }
 
+  /**
+   * Returns info about audio/video streamers
+   * */
   async getStreamers(stream: string) {
     const ids = await this.redis.smembers(PREFIX_STREAMERS + stream);
 
     return this.list(ids);
+  }
+
+  /**
+   * Returns info about participants with raised hands
+   * */
+  async getRaisedHands(stream: string) {
+    const ids = await this.redis.smembers(PREFIX_RAISED_HANDS + stream);
+
+    return this.list(ids);
+  }
+
+  async count(stream: string) {
+    const v = await this.redis.get(PREFIX_COUNT + stream);
+
+    return v ? Number.parseInt(v) : 0;
   }
 
   private async write(
