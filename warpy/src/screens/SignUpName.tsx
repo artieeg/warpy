@@ -15,15 +15,19 @@ export const SignUpName = () => {
         /join
       </Text>
 
-      <ConfirmButton
-        style={styles.confirm}
-        onPress={() => navigation.navigate('SignUpUsername')}
-      />
-
       <SignUpInput
         onChangeText={text => useStore.setState({signUpName: text})}
         placeholder="type your name"
       />
+
+      <View style={styles.confirm}>
+        <ConfirmButton
+          onPress={() => {
+            console.log('sign up name');
+            navigation.navigate('SignUpUsername');
+          }}
+        />
+      </View>
     </View>
   );
 };

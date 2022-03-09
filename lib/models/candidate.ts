@@ -11,6 +11,6 @@ export interface IStream {
 }
 
 export interface ICandidate extends IStream {
-  participants: number;
+  total_participants: number;
   speakers: IParticipant[];
 }

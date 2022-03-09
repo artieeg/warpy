@@ -1,4 +1,5 @@
 import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
+import { EVENT_NEW_PARTICIPANT } from '@backend_2/utils';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { IAward, IInvite, IParticipant } from '@warpy/lib';
@@ -175,7 +176,7 @@ export class BroadcastService {
     this.broadcast(ids, message);
   }
 
-  @OnEvent('participant.new', { async: true })
+  @OnEvent(EVENT_NEW_PARTICIPANT, { async: true })
   async broadcastNewParticipant(participant: IParticipant) {
     console.log('new participant', participant.id);
     const ids = await this.participant.getIdsByStream(participant.stream);

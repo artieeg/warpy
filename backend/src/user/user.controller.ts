@@ -1,6 +1,11 @@
 import { ExceptionFilter } from '@backend_2/rpc-exception.filter';
+import {
+  EVENT_USER_CONNECTED,
+  EVENT_USER_DISCONNECTED,
+} from '@backend_2/utils';
 import { Controller, UseFilters } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   ICreateAnonUserResponse,
@@ -21,8 +26,6 @@ import {
   IWhoAmIRequest,
   IWhoAmIResponse,
 } from '@warpy/lib';
-import { UserOnlineStatusService } from './online-status/user-online-status.service';
-import { ParticipantCommonService } from './participant/common/participant-common.service';
 import { UserService } from './user.service';
 
 @Controller()
@@ -30,9 +33,8 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(
     private userService: UserService,
-    private participantService: ParticipantCommonService,
-    private userOnlineStatusService: UserOnlineStatusService,
     private configService: ConfigService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   @MessagePattern('user.get')
@@ -46,7 +48,8 @@ export class UserController {
   @MessagePattern('user.whoami-request')
   async onUserGet({ user }: IWhoAmIRequest): Promise<IWhoAmIResponse> {
     const data = await this.userService.getById(user);
-    await this.userOnlineStatusService.setUserOnline(user);
+
+    this.eventEmitter.emit(EVENT_USER_CONNECTED, { user });
 
     return data;
   }
@@ -130,14 +133,6 @@ export class UserController {
       await this.userService.deleteUser(user);
     }
 
-    const isBot = user.slice(0, 3) === 'bot';
-
-    if (isBot) {
-      await this.participantService.deleteBotParticipant(user);
-    } else {
-      await this.participantService.deleteParticipant(user);
-    }
-
-    await this.userOnlineStatusService.setUserOffline(user);
+    this.eventEmitter.emit(EVENT_USER_DISCONNECTED, { user });
   }
 }

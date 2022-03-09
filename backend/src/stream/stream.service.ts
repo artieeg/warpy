@@ -4,13 +4,14 @@ import {
   UserNotFound,
 } from '@backend_2/errors';
 import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
+import { EVENT_STREAM_ENDED, EVENT_STREAM_JOINED } from '@backend_2/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { INewStreamResponse } from '@warpy/lib';
 import cuid from 'cuid';
 import { MediaService } from '../media/media.service';
 import { UserEntity } from '../user/user.entity';
-import { StreamEntity } from './stream.entity';
+import { StreamEntity } from './common/stream.entity';
 
 @Injectable()
 export class StreamService {
@@ -77,6 +78,10 @@ export class StreamService {
     );
 
     this.eventEmitter.emit('stream.created', { stream });
+    this.eventEmitter.emit(EVENT_STREAM_JOINED, {
+      stream: stream_id,
+      user: owner,
+    });
 
     return {
       stream: stream.id,
@@ -95,7 +100,9 @@ export class StreamService {
       await this.streamEntity.stop(participant.stream);
       await this.participantEntity.allParticipantsLeave(participant.stream);
 
-      this.eventEmitter.emit('stream.stopped', { stream: participant.stream });
+      this.eventEmitter.emit(EVENT_STREAM_ENDED, {
+        stream: participant.stream,
+      });
     } else if (!participant) {
       throw new UserNotFound();
     } else if (!participant.stream) {

@@ -6,11 +6,11 @@ import {
   IStreamSearchRequest,
   IStreamSearchResponse,
 } from '@warpy/lib';
-import { CandidateService } from './candidate.service';
+import { FeedService } from './feed.service';
 
 @Controller()
-export class CandidateController {
-  constructor(private candidateService: CandidateService) {}
+export class FeedController {
+  constructor(private candidateService: FeedService) {}
 
   @MessagePattern('candidate.search')
   async onSearch({

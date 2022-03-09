@@ -11,6 +11,7 @@ import Animated, {
   withTiming,
   useAnimatedScrollHandler,
   useSharedValue,
+  Layout,
 } from 'react-native-reanimated';
 
 export const Feed = () => {
@@ -59,19 +60,21 @@ export const Feed = () => {
   return (
     <View style={styles.wrapper}>
       <ScreenHeader minimizationProgress={scrollY} />
-      <FriendFeed />
-      <StreamCategoryList
-        minimizationProgress={scrollY}
-        onLayout={e => setCategoryListHeight(e.nativeEvent.layout.height)}
-        mode="browse-feed"
-      />
-
-      <Animated.View style={feedWrapperStyle}>
-        <StreamFeedView
-          scrollEventThrottle={16}
-          onScroll={handler}
-          data={feed}
+      <Animated.View style={{height: '100%'}} layout={Layout.duration(200)}>
+        <FriendFeed />
+        <StreamCategoryList
+          minimizationProgress={scrollY}
+          onLayout={e => setCategoryListHeight(e.nativeEvent.layout.height)}
+          mode="browse-feed"
         />
+
+        <Animated.View style={feedWrapperStyle}>
+          <StreamFeedView
+            scrollEventThrottle={16}
+            onScroll={handler}
+            data={feed}
+          />
+        </Animated.View>
       </Animated.View>
       <View style={styles.startStreamButtonWrapper}>
         <TextButton

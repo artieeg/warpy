@@ -1,5 +1,4 @@
 import { MediaModule } from '@backend_2/media/media.module';
-import { MessageModule } from '@backend_2/message/message.module';
 import { PrismaModule } from '@backend_2/prisma/prisma.module';
 import { TokenModule } from '@backend_2/token/token.module';
 import { forwardRef, Module } from '@nestjs/common';
@@ -18,7 +17,6 @@ import { DeveloperAccountModule } from '@backend_2/user/developer_account/develo
     MediaModule,
     forwardRef(() => UserModule),
     DeveloperAccountModule,
-    MessageModule,
     TokenModule,
   ],
   providers: [BotsService, BotInstanceService, BotInstanceEntity, BotsEntity],

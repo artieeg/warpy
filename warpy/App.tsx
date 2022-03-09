@@ -60,6 +60,7 @@ const App = () => {
         <Stack.Navigator headerMode="none">
           {Object.keys(screens).map(name => (
             <Stack.Screen
+              key={name}
               options={{
                 cardStyleInterpolator: CardStyleInterpolators.forNoAnimation,
               }}

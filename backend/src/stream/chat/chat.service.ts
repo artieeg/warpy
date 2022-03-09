@@ -5,8 +5,9 @@ import { UserEntity } from '@backend_2/user/user.entity';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IChatMessage } from '@warpy/lib';
-const cuid = require('cuid');
-const Filter = require('bad-words');
+import cuid from 'cuid';
+import Filter from 'bad-words';
+import { BlockService } from '@backend_2/user/block/block.service';
 
 @Injectable()
 export class ChatService {
@@ -16,7 +17,7 @@ export class ChatService {
     private eventEmitter: EventEmitter2,
     private userEntity: UserEntity,
     private participantEntity: ParticipantEntity,
-    private blockEntity: BlockEntity,
+    private blockService: BlockService,
   ) {}
 
   getFilteredMessage(message: string): string {
@@ -32,15 +33,17 @@ export class ChatService {
 
     const stream = await this.participantEntity.getCurrentStreamFor(userId);
 
-    const filteredText = this.getFilteredMessage(text);
-
     if (!stream) {
       throw new StreamNotFound();
     }
 
-    const participants = await this.participantEntity.getIdsByStream(stream);
-    const blockedByIds = await this.blockEntity.getBlockedByIds(userId);
-    const blockedIds = await this.blockEntity.getBlockedUserIds(userId);
+    const filteredText = this.getFilteredMessage(text);
+
+    const [participants, blockedByIds, blockedIds] = await Promise.all([
+      this.participantEntity.getIdsByStream(stream),
+      this.blockService.getBlockedByIds(userId),
+      this.blockService.getBlockedUserIds(userId),
+    ]);
 
     const ids = participants.filter(
       (id) => !blockedByIds.includes(id) && !blockedIds.includes(id),

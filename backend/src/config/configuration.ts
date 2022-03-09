@@ -21,4 +21,6 @@ export const configuration = () => ({
   twilioAuth: process.env.TWILIO_AUTH,
   sendGridKey: process.env.SENDGRID_API_KEY,
   url: process.env.URL,
+  blockCacheAddr: process.env.BLOCK_CACHE_ADDR,
+  previousStreamCacheAddr: process.env.PREVIOUS_STREAM_CACHE_ADDR,
 });

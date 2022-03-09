@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { StreamModule } from '../stream/stream.module';
+import { StreamCommonModule } from '../common/stream-common.module';
 import { ReactionController } from './reaction.controller';
 import { ReactionService } from './reaction.service';
 
 @Module({
-  imports: [StreamModule],
+  imports: [StreamCommonModule],
   providers: [ReactionService],
   controllers: [ReactionController],
 })

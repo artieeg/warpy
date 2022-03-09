@@ -5,6 +5,7 @@ import { ParticipantEntity } from '@backend_2/participant/participant.entity';
 import { mockedParticipantEntity } from '@backend_2/participant/participant.entity.mock';
 import { TokenService } from '@backend_2/token/token.service';
 import { mockedTokenService } from '@backend_2/token/token.service.mock';
+import { EVENT_NEW_PARTICIPANT } from '@backend_2/utils';
 import { createParticipantFixture } from '@backend_2/__fixtures__';
 import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -108,7 +109,7 @@ describe('Bot Instance Service', () => {
       await botInstanceService.createBotInstance(bot, 'test');
 
       expect(mockedEventEmitter.emit).toBeCalledWith(
-        'participant.new',
+        EVENT_NEW_PARTICIPANT,
         botParticipant,
       );
     });

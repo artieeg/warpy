@@ -5,6 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IBotJoinResponse } from '@warpy/lib';
 import { BotInstanceEntity } from './bot-instance.entity';
+import { EVENT_NEW_PARTICIPANT } from '@backend_2/utils';
 
 @Injectable()
 export class BotInstanceService {
@@ -48,7 +49,7 @@ export class BotInstanceService {
       this.mediaService.getViewerParams(recvNodeId, bot, stream),
     ]);
 
-    this.eventEmitter.emit('participant.new', botParticipant);
+    this.eventEmitter.emit(EVENT_NEW_PARTICIPANT, botParticipant);
 
     return {
       mediaPermissionToken,

@@ -18,7 +18,14 @@ interface StreamCategoryOptionProps extends ViewProps {
 }
 
 export const StreamCategoryOption = React.memo(
-  ({category, style, color, selected, onPress}: StreamCategoryOptionProps) => {
+  ({
+    category,
+    style,
+    color,
+    selected,
+    onPress,
+    ...rest
+  }: StreamCategoryOptionProps) => {
     const colorTransition = useDerivedValue(() => {
       return withTiming(selected ? 1 : 0, {
         duration: 150,
@@ -60,6 +67,7 @@ export const StreamCategoryOption = React.memo(
 
     return (
       <Animated.View
+        {...rest}
         ref={ref}
         onLayout={e => {
           position.current = {

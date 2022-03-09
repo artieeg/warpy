@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { NatsModule } from '../nats/nats.module';
 import { MessageService } from './message.service';
 
@@ -7,4 +7,5 @@ import { MessageService } from './message.service';
   providers: [MessageService],
   exports: [MessageService],
 })
+@Global()
 export class MessageModule {}
