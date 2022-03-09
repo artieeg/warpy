@@ -1,4 +1,5 @@
 import {
+  EVENT_STREAM_ENDED,
   EVENT_STREAM_JOINED,
   EVENT_USER_CONNECTED,
   EVENT_USER_DISCONNECTED,
@@ -14,6 +15,11 @@ export class PreviousStreamController {
   @OnEvent(EVENT_STREAM_JOINED)
   async onStreamJoin({ user, stream }: { user: string; stream: string }) {
     await this.previousStreamService.set(user, stream);
+  }
+
+  @OnEvent(EVENT_STREAM_ENDED)
+  async onStreamEnd({ stream }: { stream: string }) {
+    //TODO
   }
 
   @OnEvent(EVENT_USER_DISCONNECTED)

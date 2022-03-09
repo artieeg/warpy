@@ -21,8 +21,6 @@ export class PreviousStreamService {
     if (stream_id) {
       const stream = await this.streamEntity.findById(stream_id);
 
-      console.log({ stream_id, stream });
-
       if (stream) {
         this.messageService.sendMessage(user, {
           event: 'previous-stream',
