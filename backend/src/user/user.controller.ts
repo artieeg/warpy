@@ -26,7 +26,6 @@ import {
   IWhoAmIRequest,
   IWhoAmIResponse,
 } from '@warpy/lib';
-import { ParticipantCommonService } from './participant/common/participant-common.service';
 import { UserService } from './user.service';
 
 @Controller()
@@ -34,7 +33,6 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(
     private userService: UserService,
-    private participantService: ParticipantCommonService,
     private configService: ConfigService,
     private eventEmitter: EventEmitter2,
   ) {}

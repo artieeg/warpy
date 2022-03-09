@@ -1,3 +1,4 @@
+import { OnUserDisconnectEventHandler } from '@backend_2/interfaces';
 import {
   EVENT_USER_CONNECTED,
   EVENT_USER_DISCONNECTED,
@@ -9,7 +10,9 @@ import { IUserOnlineStatusResponse, IUserStatusRequest } from '@warpy/lib';
 import { UserOnlineStatusService } from './user-online-status.service';
 
 @Controller()
-export class UserOnlineStatusController {
+export class UserOnlineStatusController
+  implements OnUserDisconnectEventHandler
+{
   constructor(private userOnlineStatusService: UserOnlineStatusService) {}
 
   @OnEvent(EVENT_USER_CONNECTED)
@@ -18,7 +21,7 @@ export class UserOnlineStatusController {
   }
 
   @OnEvent(EVENT_USER_DISCONNECTED)
-  async onUserDisconnect({ user }: { user: string }) {
+  async onUserDisconnect({ user }) {
     await this.userOnlineStatusService.setUserOffline(user);
   }
 

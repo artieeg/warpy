@@ -1,3 +1,4 @@
+import { OnUserDisconnectEventHandler } from '@backend_2/interfaces';
 import { EVENT_USER_DISCONNECTED } from '@backend_2/utils';
 import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -6,7 +7,9 @@ import { ILeaveStreamRequest, IMediaToggleRequest } from '@warpy/lib';
 import { ParticipantCommonService } from './participant-common.service';
 
 @Controller()
-export class ParticipantCommonController {
+export class ParticipantCommonController
+  implements OnUserDisconnectEventHandler
+{
   constructor(private participant: ParticipantCommonService) {}
 
   @MessagePattern('participant.leave')
@@ -27,7 +30,9 @@ export class ParticipantCommonController {
   }
 
   @OnEvent(EVENT_USER_DISCONNECTED)
-  async onUserDisconnect({ user }: { user: string }) {
+  async onUserDisconnect({ user }) {
+    console.log('particiapnt controller: ', user);
+
     const isBot = user.slice(0, 3) === 'bot';
 
     if (isBot) {

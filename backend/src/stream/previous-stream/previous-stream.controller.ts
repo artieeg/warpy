@@ -1,3 +1,4 @@
+import { OnUserDisconnectEventHandler } from '@backend_2/interfaces';
 import {
   EVENT_STREAM_ENDED,
   EVENT_STREAM_JOINED,
@@ -9,7 +10,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { PreviousStreamService } from './previous-stream.service';
 
 @Controller()
-export class PreviousStreamController {
+export class PreviousStreamController implements OnUserDisconnectEventHandler {
   constructor(private previousStreamService: PreviousStreamService) {}
 
   @OnEvent(EVENT_STREAM_JOINED)
@@ -23,7 +24,7 @@ export class PreviousStreamController {
   }
 
   @OnEvent(EVENT_USER_DISCONNECTED)
-  async onUserDisconnect({ user }: { user: string }) {
+  async onUserDisconnect({ user }) {
     await this.previousStreamService.expire(user);
   }
 
