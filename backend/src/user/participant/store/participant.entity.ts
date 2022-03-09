@@ -107,11 +107,10 @@ export class ParticipantStore implements OnModuleInit {
     return (pipeline || this.redis).hmset(key, ...args);
   }
 
-  async create(data: IFullParticipant) {
+  async add(data: IFullParticipant) {
     const { stream } = data;
 
     const pipe = this.redis.pipeline();
-
     pipe.sadd(PREFIX_ALL + stream);
     pipe.incr(PREFIX_COUNT + stream);
     this.write(data.id, data, pipe);
