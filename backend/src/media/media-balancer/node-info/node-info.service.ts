@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { RedisClient, createClient } from 'redis';
 import { MediaServiceRole } from '@warpy/lib';
+import IORedis from 'ioredis';
 
 interface INodeInfo {
   node: string;
@@ -11,37 +11,30 @@ interface INodeInfo {
 
 @Injectable()
 export class NodeInfoService implements OnModuleInit {
-  client: RedisClient;
+  client: IORedis.Redis;
 
   constructor(private configService: ConfigService) {}
 
   onModuleInit() {
-    this.client = createClient({
-      url: this.configService.get('mediaNodeInfo'),
-    });
+    this.client = new IORedis(this.configService.get('mediaNodeInfo'));
   }
 
-  get(node: string) {
-    return new Promise<INodeInfo>((resolve, reject) => {
-      this.client.hgetall(node, (e, v) => {
-        if (e) reject(e);
-        else resolve(v);
-      });
-    });
+  async get(node: string): Promise<INodeInfo> {
+    const data = await this.client.hgetall(node);
+
+    return {
+      role: data.role as MediaServiceRole,
+      node: data.node,
+      load: Number.parseFloat(data.load),
+    };
   }
 
   set(node: string, data: INodeInfo) {
-    this.client.hset(
-      node,
-      'node',
-      node,
-      'load',
-      data.load,
-      'role',
-      data.role,
-      () => {
-        this.client.expire(node, 10);
-      },
-    );
+    const pipe = this.client.pipeline();
+
+    pipe.hset(node, 'node', node, 'load', data.load, 'role', data.role);
+    pipe.expire(node, 10);
+
+    return pipe.exec();
   }
 }

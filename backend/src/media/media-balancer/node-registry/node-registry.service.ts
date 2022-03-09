@@ -1,19 +1,17 @@
-import { RedisClient, createClient } from 'redis';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { MediaServiceRole } from '@warpy/lib';
 import { ConfigService } from '@nestjs/config';
+import IORedis from 'ioredis';
 
 @Injectable()
 /** Stores arrays of online send/recv media nodes */
 export class NodeRegistryService implements OnModuleInit {
-  client: RedisClient;
+  client: IORedis.Redis;
 
   constructor(private configService: ConfigService) {}
 
   onModuleInit() {
-    this.client = createClient({
-      url: this.configService.get('mediaServerIdsCache'),
-    });
+    this.client = new IORedis(this.configService.get('mediaServerIdsCache'));
   }
 
   private getSetNameFromRole(role: MediaServiceRole) {
@@ -21,22 +19,14 @@ export class NodeRegistryService implements OnModuleInit {
   }
 
   async getNodeIds(role: MediaServiceRole): Promise<string[]> {
-    return new Promise<string[]>((resolve, reject) => {
-      const setOfNodes = this.getSetNameFromRole(role);
+    const setOfNodes = this.getSetNameFromRole(role);
 
-      this.client.smembers(setOfNodes, (err, ids) => {
-        if (err) {
-          return reject(err);
-        }
-
-        resolve(ids);
-      });
-    });
+    return this.client.smembers(setOfNodes);
   }
 
   async addNewNode(node: string, role: MediaServiceRole) {
     const setOfNodes = this.getSetNameFromRole(role);
 
-    this.client.sadd(setOfNodes, node);
+    return this.client.sadd(setOfNodes, node);
   }
 }
