@@ -5,14 +5,14 @@ export interface IFeedSlice {
   selectedCategoryIds: string[];
   latestFeedPage: number;
   feed: ICandidate[];
-  previousStreamId: IStream | null;
+  previousStreamData: IStream | null;
   isFeedLoading: boolean;
 }
 
 export const createFeedSlice: StoreSlice<IFeedSlice> = () => ({
   latestFeedPage: 0,
   isFeedLoading: false,
-  previousStreamId: null,
+  previousStreamData: null,
   feed: [],
   selectedCategoryIds: [],
 });

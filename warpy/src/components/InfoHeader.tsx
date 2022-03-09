@@ -11,11 +11,13 @@ import Animated, {
 import {colors} from '../../colors';
 
 const useInfoHeaderController = () => {
-  const [previousStreamId] = useStoreShallow(store => [store.previousStreamId]);
+  const [previousStreamData] = useStoreShallow(store => [
+    store.previousStreamData,
+  ]);
 
   let mode: string | null = null;
 
-  if (previousStreamId) {
+  if (previousStreamData) {
     mode = 'previous-stream';
   }
 
@@ -23,13 +25,12 @@ const useInfoHeaderController = () => {
 
   const onPress = React.useCallback(() => {
     if (mode === 'previous-stream') {
-      console.log({previousStreamId});
-      navigation.navigate('Stream', {stream: previousStreamId});
+      navigation.navigate('Stream', {stream: previousStreamData});
     }
-  }, [mode, previousStreamId]);
+  }, [mode, previousStreamData]);
 
   return {
-    visible: !!previousStreamId,
+    visible: !!previousStreamData,
     mode,
     onPress,
   };

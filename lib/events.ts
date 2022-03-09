@@ -1,4 +1,10 @@
-import { IAward, IChatMessage, INotification, IParticipant } from "./models";
+import {
+  IAward,
+  IChatMessage,
+  INotification,
+  IParticipant,
+  IStream,
+} from "./models";
 import { InviteStates, Roles } from "./types";
 
 export interface IRoleUpdateEvent {
@@ -86,5 +92,5 @@ export interface INewAward {
 }
 
 export interface IPreviousStream {
-  stream: string;
+  stream: IStream;
 }

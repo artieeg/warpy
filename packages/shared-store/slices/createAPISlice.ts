@@ -63,7 +63,7 @@ export const createAPISlice = (
       console.log("previous stream", data);
 
       set({
-        previousStreamId: data.stream,
+        previousStreamData: data.stream,
       });
     });
 
