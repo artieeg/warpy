@@ -4,7 +4,7 @@ import {
   UserNotFound,
 } from '@backend_2/errors';
 import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
-import { EVENT_STREAM_JOINED } from '@backend_2/utils';
+import { EVENT_STREAM_ENDED, EVENT_STREAM_JOINED } from '@backend_2/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { INewStreamResponse } from '@warpy/lib';
@@ -100,7 +100,9 @@ export class StreamService {
       await this.streamEntity.stop(participant.stream);
       await this.participantEntity.allParticipantsLeave(participant.stream);
 
-      this.eventEmitter.emit('stream.stopped', { stream: participant.stream });
+      this.eventEmitter.emit(EVENT_STREAM_ENDED, {
+        stream: participant.stream,
+      });
     } else if (!participant) {
       throw new UserNotFound();
     } else if (!participant.stream) {
