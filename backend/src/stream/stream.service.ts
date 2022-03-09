@@ -78,7 +78,10 @@ export class StreamService {
     );
 
     this.eventEmitter.emit('stream.created', { stream });
-    this.eventEmitter.emit(EVENT_STREAM_JOINED, { stream, user: owner });
+    this.eventEmitter.emit(EVENT_STREAM_JOINED, {
+      stream: stream_id,
+      user: owner,
+    });
 
     return {
       stream: stream.id,
