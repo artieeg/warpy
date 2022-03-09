@@ -135,14 +135,6 @@ export class UserController {
       await this.userService.deleteUser(user);
     }
 
-    const isBot = user.slice(0, 3) === 'bot';
-
-    if (isBot) {
-      await this.participantService.deleteBotParticipant(user);
-    } else {
-      await this.participantService.deleteParticipant(user);
-    }
-
     this.eventEmitter.emit(EVENT_USER_DISCONNECTED, { user });
   }
 }
