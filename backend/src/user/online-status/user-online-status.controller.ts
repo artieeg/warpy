@@ -1,4 +1,9 @@
+import {
+  EVENT_USER_CONNECTED,
+  EVENT_USER_DISCONNECTED,
+} from '@backend_2/utils';
 import { Controller } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import { IUserOnlineStatusResponse, IUserStatusRequest } from '@warpy/lib';
 import { UserOnlineStatusService } from './user-online-status.service';
@@ -7,11 +12,21 @@ import { UserOnlineStatusService } from './user-online-status.service';
 export class UserOnlineStatusController {
   constructor(private userOnlineStatusService: UserOnlineStatusService) {}
 
+  @OnEvent(EVENT_USER_CONNECTED)
+  async onUserConnect({ user }: { user: string }) {
+    await this.userOnlineStatusService.setUserOnline(user);
+  }
+
+  @OnEvent(EVENT_USER_DISCONNECTED)
+  async onUserDisconnect({ user }: { user: string }) {
+    await this.userOnlineStatusService.setUserOffline(user);
+  }
+
   @MessagePattern('user-online-status.get')
   async onStatusRequest({
     user,
   }: IUserStatusRequest): Promise<IUserOnlineStatusResponse> {
-    const online = await this.userOnlineStatusService.getUserOnlineStatus(user);
+    const online = await this.userOnlineStatusService.getUserStatus(user);
 
     return {
       user,

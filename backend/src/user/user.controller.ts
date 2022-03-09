@@ -26,7 +26,6 @@ import {
   IWhoAmIRequest,
   IWhoAmIResponse,
 } from '@warpy/lib';
-import { UserOnlineStatusService } from './online-status/user-online-status.service';
 import { ParticipantCommonService } from './participant/common/participant-common.service';
 import { UserService } from './user.service';
 
@@ -36,7 +35,6 @@ export class UserController {
   constructor(
     private userService: UserService,
     private participantService: ParticipantCommonService,
-    private userOnlineStatusService: UserOnlineStatusService,
     private configService: ConfigService,
     private eventEmitter: EventEmitter2,
   ) {}
@@ -52,7 +50,6 @@ export class UserController {
   @MessagePattern('user.whoami-request')
   async onUserGet({ user }: IWhoAmIRequest): Promise<IWhoAmIResponse> {
     const data = await this.userService.getById(user);
-    await this.userOnlineStatusService.setUserOnline(user);
 
     this.eventEmitter.emit(EVENT_USER_CONNECTED, { user });
 
@@ -145,8 +142,6 @@ export class UserController {
     } else {
       await this.participantService.deleteParticipant(user);
     }
-
-    await this.userOnlineStatusService.setUserOffline(user);
 
     this.eventEmitter.emit(EVENT_USER_DISCONNECTED, { user });
   }
