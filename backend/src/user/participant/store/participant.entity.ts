@@ -70,7 +70,7 @@ export class ParticipantStore implements OnModuleInit {
   }
 
   async getStreamers(stream: string) {
-    const ids = await this.redis.smembers(PREFIX_STREAMERS);
+    const ids = await this.redis.smembers(PREFIX_STREAMERS + stream);
 
     return this.list(ids);
   }
