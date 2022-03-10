@@ -18,7 +18,7 @@ export class ParticipantRoleService {
   ) {}
 
   async setRole(mod: string, userToUpdate: string, role: Roles) {
-    const moderator = await this.participant.getById(mod);
+    const moderator = await this.participant.get(mod);
     const { stream } = moderator;
 
     if (moderator.role !== 'streamer') {
@@ -29,7 +29,7 @@ export class ParticipantRoleService {
       await this.blockService.isBannedBySpeaker(userToUpdate, stream);
     }
 
-    const oldUserData = await this.participant.getById(userToUpdate);
+    const oldUserData = await this.participant.get(userToUpdate);
 
     //receive new media token,
     //sendNodeId and send transport data (if upgrading from viewer)
@@ -45,7 +45,7 @@ export class ParticipantRoleService {
 
     //Update participant record with a new role
     //and a new send node id (if changed)
-    const updatedUser = await this.participant.updateOne(userToUpdate, {
+    const updatedUser = await this.participant.update(userToUpdate, {
       sendNodeId,
       role,
 

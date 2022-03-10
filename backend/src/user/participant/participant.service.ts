@@ -21,7 +21,7 @@ export class ParticipantService {
       audioEnabled,
     }: { videoEnabled?: boolean; audioEnabled?: boolean },
   ) {
-    const stream = await this.participant.getCurrentStreamFor(user);
+    const stream = await this.participant.getStreamId(user);
 
     const update = {};
 
@@ -30,8 +30,9 @@ export class ParticipantService {
     }
 
     if (videoEnabled !== undefined) {
-      const activeVideoStreamers =
-        await this.participant.countUsersWithVideoEnabled(stream);
+      const activeVideoStreamers = await this.participant.countVideoStreamers(
+        stream,
+      );
 
       //If the user tries to send video when there are already 4 video streamers...
       if (activeVideoStreamers >= 4 && videoEnabled === true) {
@@ -41,7 +42,7 @@ export class ParticipantService {
       update['videoEnabled'] = videoEnabled;
     }
 
-    await this.participant.updateOne(user, update);
+    await this.participant.update(user, update);
 
     this.eventEmitter.emit('participant.media-toggle', {
       user,
@@ -52,7 +53,7 @@ export class ParticipantService {
   }
 
   async removeUserFromStream(user: string) {
-    const userToRemove = await this.participant.getById(user);
+    const userToRemove = await this.participant.get(user);
 
     if (userToRemove) {
       await this.media.removeFromNodes(userToRemove);
@@ -68,7 +69,7 @@ export class ParticipantService {
   }
 
   async getStreamParticipants(stream: string) {
-    return this.participant.getIdsByStream(stream);
+    return this.participant.getParticipantIds(stream);
   }
 
   async deleteBotParticipant(bot: string) {
@@ -76,7 +77,7 @@ export class ParticipantService {
 
     //TODO: ???
     const promises = instances.map(async ({ botInstanceId, stream }) => {
-      await this.participant.deleteParticipant(botInstanceId);
+      await this.participant.del(botInstanceId);
       this.eventEmitter.emit('participant.delete', {
         user: botInstanceId,
         stream,
@@ -87,12 +88,11 @@ export class ParticipantService {
   }
 
   async deleteParticipant(user: string) {
-    const stream = await this.participant.getCurrentStreamFor(user);
-
-    this.eventEmitter.emit('participant.delete', { user, stream });
+    const stream = await this.participant.getStreamId(user);
 
     try {
-      await this.participant.deleteParticipant(user);
+      await this.participant.del(user);
+      this.eventEmitter.emit('participant.delete', { user, stream });
     } catch (e) {}
   }
 }

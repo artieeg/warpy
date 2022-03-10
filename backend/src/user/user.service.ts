@@ -55,7 +55,7 @@ export class UserService {
   async getUserInfo(id: string, requester: string): Promise<IUserInfoResponse> {
     const [user, currentStreamId, isFollowed, isFollower] = await Promise.all([
       this.user.findById(id, false),
-      this.participantEntity.getCurrentStreamFor(id),
+      this.participantEntity.getStreamId(id),
       this.followEntity.isFollowing(requester, id),
       this.followEntity.isFollowing(id, requester),
     ]);

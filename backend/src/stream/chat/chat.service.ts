@@ -30,7 +30,7 @@ export class ChatService {
       throw new UserNotFound();
     }
 
-    const stream = await this.participantEntity.getCurrentStreamFor(userId);
+    const stream = await this.participantEntity.getStreamId(userId);
 
     if (!stream) {
       throw new StreamNotFound();
@@ -39,7 +39,7 @@ export class ChatService {
     const filteredText = this.getFilteredMessage(text);
 
     const [participants, blockedByIds, blockedIds] = await Promise.all([
-      this.participantEntity.getIdsByStream(stream),
+      this.participantEntity.getParticipantIds(stream),
       this.blockService.getBlockedByIds(userId),
       this.blockService.getBlockedUserIds(userId),
     ]);

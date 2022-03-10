@@ -17,9 +17,7 @@ export class FriendFeedService {
     const following = await this.follow.getFollowedUserIds(user);
 
     //Check who's participating in rooms
-    const participants = await this.participant.getByIds(following, {
-      stream: true,
-    });
+    const participants = await this.participant.list(following);
 
     //Get stream
     const streamIds = [...new Set(participants.map((p) => p.stream))];

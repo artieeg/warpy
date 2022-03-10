@@ -27,7 +27,7 @@ export class ParticipantBanService {
   }
 
   async banUser(userToKick: string, moderatorId: string) {
-    const moderator = await this.participant.getById(moderatorId);
+    const moderator = await this.participant.get(moderatorId);
 
     if (!moderator) {
       throw new UserNotFound();
@@ -37,7 +37,7 @@ export class ParticipantBanService {
       throw new NoPermissionError();
     }
 
-    const userToKickData = await this.participant.getById(userToKick);
+    const userToKickData = await this.participant.get(userToKick);
 
     if (!userToKickData) {
       throw new UserNotFound();

@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { IParticipant, Roles } from '@warpy/lib';
 import { ConfigService } from '@nestjs/config';
-import IORedis, { Pipeline, Pipeline } from 'ioredis';
+import IORedis, { Pipeline } from 'ioredis';
 import { StreamNotFound } from '@backend_2/errors';
 
 export type CreateNewParticipant = {
@@ -42,22 +42,32 @@ export class ParticipantStore implements OnModuleInit {
     };
   }
 
-  private getInstanceFromArray(items: any[]): IFullParticipant {
-    let record: IFullParticipant;
+  async del(id: string) {
+    const pipe = await this.buildDelPipeline(id, {});
 
-    for (let i = 0; i < items.length; i += 2) {
-      record[items[i]] = items[i + 1];
-    }
-
-    return record;
+    return pipe.exec();
   }
 
-  private async del(id: string, pipeline?: Pipeline) {
-    if (pipeline) {
-      return pipeline.del(id);
-    }
+  private async buildDelPipeline(
+    id: string,
+    {
+      pipeline,
+      stream: streamOverrideId,
+    }: {
+      pipeline?: Pipeline;
+      stream?: string;
+    },
+  ) {
+    const pipe = pipeline || this.redis.pipeline();
 
-    return this.redis.del(id);
+    const stream = streamOverrideId ?? (await this.getStreamId(id));
+
+    pipe.del(id);
+    pipe.srem(PREFIX_VIEWERS + stream, id);
+    pipe.srem(PREFIX_STREAMERS + stream, id);
+    pipe.srem(PREFIX_RAISED_HANDS + stream, id);
+
+    return pipe;
   }
 
   async get(id: string) {
@@ -66,7 +76,7 @@ export class ParticipantStore implements OnModuleInit {
     return this.toDTO(items);
   }
 
-  private async list(ids: string[]): Promise<IFullParticipant[]> {
+  async list(ids: string[]): Promise<IFullParticipant[]> {
     const pipe = this.redis.pipeline();
 
     for (const id of ids) {
@@ -85,7 +95,21 @@ export class ParticipantStore implements OnModuleInit {
       .filter((item) => !!item);
   }
 
-  async deleteStreamParticipants(stream: string) {
+  async getStreamId(user: string) {
+    return this.redis.hget(user, 'stream');
+  }
+
+  async countVideoStreamers(stream: string) {
+    const ids = await this.redis.smembers(PREFIX_STREAMERS + stream);
+
+    const streamers = await this.list(ids);
+
+    return streamers.reduce((p, s) => {
+      return s.videoEnabled ? p + 1 : p;
+    }, 0);
+  }
+
+  async getParticipantIds(stream: string) {
     const pipe = this.redis.pipeline();
     pipe.smembers(PREFIX_STREAMERS + stream);
     pipe.smembers(PREFIX_RAISED_HANDS + stream);
@@ -94,10 +118,23 @@ export class ParticipantStore implements OnModuleInit {
     const [[, streamers], [, raisedHands], [, viewers]] = await pipe.exec();
     const ids = [...streamers, ...raisedHands, ...viewers];
 
-    const del_pipe = this.redis.pipeline();
-    ids.forEach((id) => this.del(id, del_pipe));
+    return ids;
+  }
 
-    return del_pipe.exec();
+  async deleteStreamParticipants(stream: string) {
+    const ids = await this.getParticipantIds(stream);
+
+    const pipeline = this.redis.pipeline();
+
+    //Delete indexes
+    pipeline.del(PREFIX_STREAMERS + stream);
+    pipeline.del(PREFIX_VIEWERS + stream);
+    pipeline.del(PREFIX_RAISED_HANDS + stream);
+
+    //Delete records
+    pipeline.del(...ids);
+
+    return pipeline.exec();
   }
 
   /**
