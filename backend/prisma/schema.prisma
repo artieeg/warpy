@@ -89,7 +89,6 @@ model Participant {
   bot    BotInstance? @relation(fields: [bot_id], references: [id])
 
   stream_id     String?
-  stream        Stream?   @relation(name: "participant", fields: [stream_id], references: [id], onDelete: Cascade)
   role          String
   isRaisingHand Boolean
   isBanned      Boolean   @default(false)
@@ -102,8 +101,6 @@ model Participant {
 
   recvNodeId String
   sendNodeId String?
-
-  Stream Stream[] @relation("owner")
 
   @@unique([user_id, stream_id, hasLeftStream], name: "stream_participant_index")
 }
@@ -122,11 +119,9 @@ model Stream {
   id           String        @id @default(cuid())
   title        String
   owner_id     String
-  owner        Participant   @relation(name: "owner", fields: [owner_id], references: [user_id], onDelete: Cascade)
   category     String
   live         Boolean
   preview      String?
-  participants Participant[] @relation(name: "participant")
   blocks       StreamBlock[] @relation(name: "blocks")
   invites      Invite[]      @relation(name: "invites")
   bots         BotInstance[] @relation(name: "bot_instances_stream")
