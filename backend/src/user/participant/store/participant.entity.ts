@@ -118,10 +118,12 @@ export class ParticipantStore implements OnModuleInit {
     const [[, streamers], [, raisedHands], [, viewers]] = await pipe.exec();
     const ids: string[] = [...streamers, ...raisedHands, ...viewers];
 
+    console.log({ ids, streamers, raisedHands, viewers });
+
     return ids;
   }
 
-  async deleteStreamParticipants(stream: string) {
+  async clearStreamData(stream: string) {
     const ids = await this.getParticipantIds(stream);
 
     if (ids.length === 0) {
@@ -134,6 +136,9 @@ export class ParticipantStore implements OnModuleInit {
     pipeline.del(PREFIX_STREAMERS + stream);
     pipeline.del(PREFIX_VIEWERS + stream);
     pipeline.del(PREFIX_RAISED_HANDS + stream);
+
+    //Delete participant count
+    pipeline.del(PREFIX_COUNT + stream);
 
     //Delete records
     pipeline.del(...ids);
@@ -213,7 +218,15 @@ export class ParticipantStore implements OnModuleInit {
     const { stream } = data;
 
     const pipe = this.redis.pipeline();
-    pipe.sadd(PREFIX_VIEWERS + stream);
+
+    console.log({ stream, id: data.id });
+
+    if (data.role === 'viewer') {
+      pipe.sadd(PREFIX_VIEWERS + stream, data.id);
+    } else {
+      pipe.sadd(PREFIX_STREAMERS + stream, data.id);
+    }
+
     pipe.incr(PREFIX_COUNT + stream);
     this.write(data.id, data, pipe);
 

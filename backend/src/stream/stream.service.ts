@@ -106,7 +106,7 @@ export class StreamService {
 
     if (participant?.stream && participant?.role === 'streamer') {
       await this.streamEntity.delete(participant.stream);
-      await this.participantStore.deleteStreamParticipants(participant.stream);
+      await this.participantStore.clearStreamData(participant.stream);
 
       this.eventEmitter.emit(EVENT_STREAM_ENDED, {
         stream: participant.stream,

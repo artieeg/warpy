@@ -96,7 +96,7 @@ export class ParticipantService {
     } catch (e) {}
   }
 
-  async deleteStreamParticipants(stream: string) {
-    return this.participant.deleteStreamParticipants(stream);
+  async clearStreamData(stream: string) {
+    return this.participant.clearStreamData(stream);
   }
 }

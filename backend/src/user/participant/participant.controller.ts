@@ -40,6 +40,6 @@ export class ParticipantController implements OnUserDisconnect, OnStreamEnd {
 
   @OnEvent(EVENT_STREAM_ENDED)
   async onStreamEnd({ stream }) {
-    await this.participant.deleteStreamParticipants(stream);
+    await this.participant.clearStreamData(stream);
   }
 }
