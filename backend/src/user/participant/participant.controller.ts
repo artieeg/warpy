@@ -1,5 +1,5 @@
-import { OnUserDisconnectEventHandler } from '@backend_2/interfaces';
-import { EVENT_USER_DISCONNECTED } from '@backend_2/utils';
+import { OnStreamEnd, OnUserDisconnect } from '@backend_2/interfaces';
+import { EVENT_STREAM_ENDED, EVENT_USER_DISCONNECTED } from '@backend_2/utils';
 import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
@@ -7,7 +7,7 @@ import { ILeaveStreamRequest, IMediaToggleRequest } from '@warpy/lib';
 import { ParticipantService } from './participant.service';
 
 @Controller()
-export class ParticipantController implements OnUserDisconnectEventHandler {
+export class ParticipantController implements OnUserDisconnect, OnStreamEnd {
   constructor(private participant: ParticipantService) {}
 
   @MessagePattern('participant.leave')
@@ -36,5 +36,10 @@ export class ParticipantController implements OnUserDisconnectEventHandler {
     } else {
       await this.participant.deleteParticipant(user);
     }
+  }
+
+  @OnEvent(EVENT_STREAM_ENDED)
+  async onStreamEnd({ stream }) {
+    await this.participant.deleteStreamParticipants(stream);
   }
 }

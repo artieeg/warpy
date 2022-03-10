@@ -116,13 +116,17 @@ export class ParticipantStore implements OnModuleInit {
     pipe.smembers(PREFIX_VIEWERS + stream);
 
     const [[, streamers], [, raisedHands], [, viewers]] = await pipe.exec();
-    const ids = [...streamers, ...raisedHands, ...viewers];
+    const ids: string[] = [...streamers, ...raisedHands, ...viewers];
 
     return ids;
   }
 
   async deleteStreamParticipants(stream: string) {
     const ids = await this.getParticipantIds(stream);
+
+    if (ids.length === 0) {
+      return;
+    }
 
     const pipeline = this.redis.pipeline();
 

@@ -95,4 +95,8 @@ export class ParticipantService {
       this.eventEmitter.emit('participant.delete', { user, stream });
     } catch (e) {}
   }
+
+  async deleteStreamParticipants(stream: string) {
+    return this.participant.deleteStreamParticipants(stream);
+  }
 }

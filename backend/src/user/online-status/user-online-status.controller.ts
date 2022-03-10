@@ -1,4 +1,4 @@
-import { OnUserDisconnectEventHandler } from '@backend_2/interfaces';
+import { OnUserDisconnect, OnUserDisconnect } from '@backend_2/interfaces';
 import {
   EVENT_USER_CONNECTED,
   EVENT_USER_DISCONNECTED,
@@ -10,9 +10,7 @@ import { IUserOnlineStatusResponse, IUserStatusRequest } from '@warpy/lib';
 import { UserOnlineStatusService } from './user-online-status.service';
 
 @Controller()
-export class UserOnlineStatusController
-  implements OnUserDisconnectEventHandler
-{
+export class UserOnlineStatusController implements OnUserDisconnect {
   constructor(private userOnlineStatusService: UserOnlineStatusService) {}
 
   @OnEvent(EVENT_USER_CONNECTED)

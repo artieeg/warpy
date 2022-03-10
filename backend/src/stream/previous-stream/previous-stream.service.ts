@@ -1,4 +1,5 @@
 import { MessageService } from '@backend_2/message/message.service';
+import { ParticipantStore } from '@backend_2/user/participant';
 import { Injectable } from '@nestjs/common';
 import { StreamEntity } from '../common/stream.entity';
 import { PreviousStreamCacheService } from './previous-stream.cache';
@@ -10,6 +11,10 @@ export class PreviousStreamService {
     private messageService: MessageService,
     private streamEntity: StreamEntity,
   ) {}
+
+  async clearStream(stream: string) {
+    await this.previousStreamCache.delStream(stream);
+  }
 
   async set(user: string, stream: string) {
     return this.previousStreamCache.set(user, stream);

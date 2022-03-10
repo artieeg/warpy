@@ -102,8 +102,10 @@ export class StreamService {
   async stopStream(user: string): Promise<void> {
     const participant = await this.participantStore.get(user);
 
+    console.log({ participant });
+
     if (participant?.stream && participant?.role === 'streamer') {
-      await this.streamEntity.stop(participant.stream);
+      await this.streamEntity.delete(participant.stream);
       await this.participantStore.deleteStreamParticipants(participant.stream);
 
       this.eventEmitter.emit(EVENT_STREAM_ENDED, {

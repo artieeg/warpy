@@ -1,4 +1,7 @@
+import { OnUserDisconnect } from '@backend_2/interfaces';
+import { EVENT_USER_DISCONNECTED } from '@backend_2/utils';
 import { Controller } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   INewPreviewEvent,
@@ -6,13 +9,11 @@ import {
   INewStreamResponse,
   IStopStream,
   IStreamGetRequest,
-  IStreamSearchRequest,
-  IStreamSearchResponse,
 } from '@warpy/lib';
 import { StreamService } from './stream.service';
 
 @Controller()
-export class StreamController {
+export class StreamController implements OnUserDisconnect {
   constructor(private streamService: StreamService) {}
 
   @MessagePattern('stream.create')
@@ -28,6 +29,14 @@ export class StreamController {
     );
 
     return response;
+  }
+
+  @OnEvent(EVENT_USER_DISCONNECTED)
+  async onUserDisconnect({ user }) {
+    console.log('diconencted', { user });
+    try {
+      await this.streamService.stopStream(user);
+    } catch (e) {}
   }
 
   @MessagePattern('stream.stop')
