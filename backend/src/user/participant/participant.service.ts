@@ -72,7 +72,7 @@ export class ParticipantService {
     return this.participant.getParticipantIds(stream);
   }
 
-  async deleteBotParticipant(bot: string) {
+  private async deleteBotParticipant(bot: string) {
     const instances = await this.botInstanceEntity.getBotInstances(bot);
 
     //TODO: ???
@@ -88,12 +88,28 @@ export class ParticipantService {
   }
 
   async deleteParticipant(user: string) {
+    const isBot = user.slice(0, 3) === 'bot';
+
+    if (isBot) {
+      await this.deleteBotParticipant(user);
+    } else {
+      await this.deleteUserParticipant(user);
+    }
+  }
+
+  private async deleteUserParticipant(user: string) {
     const stream = await this.participant.getStreamId(user);
+
+    if (!stream) {
+      return;
+    }
 
     try {
       await this.participant.del(user);
       this.eventEmitter.emit('participant.delete', { user, stream });
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   async clearStreamData(stream: string) {

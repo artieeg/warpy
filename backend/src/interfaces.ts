@@ -5,3 +5,7 @@ export interface OnUserDisconnect {
 export interface OnStreamEnd {
   onStreamEnd: (data: { stream: string }) => Promise<any>;
 }
+
+export interface OnParticipantLeave {
+  onParticipantLeave: (data: { user: string }) => Promise<any>;
+}
