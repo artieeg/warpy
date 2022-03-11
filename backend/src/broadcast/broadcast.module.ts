@@ -1,12 +1,13 @@
 import { UserModule } from '@backend_2/user/user.module';
 import { forwardRef, Global, Module } from '@nestjs/common';
-import {BroadcastController} from './broadcast.controller';
+import { BroadcastUserListStore } from './broadcast-user-list.store';
+import { BroadcastController } from './broadcast.controller';
 import { BroadcastService } from './broadcast.service';
 
 @Module({
   imports: [forwardRef(() => UserModule)],
   controllers: [BroadcastController],
-  providers: [BroadcastService],
+  providers: [BroadcastService, BroadcastUserListStore],
 })
 @Global()
 export class BroadcastModule {}

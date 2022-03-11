@@ -2,6 +2,7 @@ import { ParticipantStore } from '@backend_2/user/participant/store';
 import { Injectable } from '@nestjs/common';
 import { IParticipant } from '@warpy/lib';
 import { MessageService } from '../message/message.service';
+import { BroadcastUserListStore } from './broadcast-user-list.store';
 import {
   ActiveSpeakersEvent,
   AwardSentEvent,
@@ -16,6 +17,7 @@ export class BroadcastService {
   constructor(
     private participant: ParticipantStore,
     private messageService: MessageService,
+    private broadcastUserListStore: BroadcastUserListStore,
   ) {}
 
   private broadcast(ids: string[], message: Uint8Array) {
@@ -28,7 +30,7 @@ export class BroadcastService {
     videoEnabled,
     audioEnabled,
   }: MediaToggleEvent) {
-    const ids = await this.participant.getParticipantIds(stream);
+    const ids = await this.broadcastUserListStore.get(stream);
 
     const payload = this.messageService.encodeMessage({
       event: 'user-toggled-media',
@@ -46,7 +48,7 @@ export class BroadcastService {
   async broadcastKickedParticipant(participant: IParticipant) {
     const { stream, id } = participant;
 
-    const ids = await this.participant.getParticipantIds(stream);
+    const ids = await this.broadcastUserListStore.get(stream);
 
     const payload = this.messageService.encodeMessage({
       event: 'user-kicked',
@@ -71,7 +73,7 @@ export class BroadcastService {
   }
 
   async broadcastReactions({ stream, reactions }: ReactionsEvent) {
-    const ids = await this.participant.getParticipantIds(stream);
+    const ids = await this.broadcastUserListStore.get(stream);
 
     const message = this.messageService.encodeMessage({
       event: 'reactions-update',
@@ -88,7 +90,7 @@ export class BroadcastService {
     stream,
     activeSpeakers,
   }: ActiveSpeakersEvent) {
-    const ids = await this.participant.getParticipantIds(stream);
+    const ids = await this.broadcastUserListStore.get(stream);
 
     const message = this.messageService.encodeMessage({
       event: 'active-speaker',
@@ -102,7 +104,7 @@ export class BroadcastService {
   }
 
   async broadcastRoleChange(user: IParticipant) {
-    const ids = await this.participant.getParticipantIds(user.stream);
+    const ids = await this.broadcastUserListStore.get(user.stream);
 
     const message = this.messageService.encodeMessage({
       event: 'participant-role-change',
@@ -116,7 +118,7 @@ export class BroadcastService {
 
   async broadcastHandRaise(viewer: IParticipant) {
     const { stream } = viewer;
-    const ids = await this.participant.getParticipantIds(stream);
+    const ids = await this.broadcastUserListStore.get(stream);
 
     const message = this.messageService.encodeMessage({
       event: 'raise-hand',
@@ -130,7 +132,7 @@ export class BroadcastService {
   }
 
   async broadcastParticipantLeft({ user, stream }: ParticipantLeaveEvent) {
-    const ids = await this.participant.getParticipantIds(stream);
+    const ids = await this.broadcastUserListStore.get(stream);
 
     const message = this.messageService.encodeMessage({
       event: 'user-left',
@@ -144,7 +146,7 @@ export class BroadcastService {
   }
 
   async broadcastNewParticipant(participant: IParticipant) {
-    const ids = await this.participant.getParticipantIds(participant.stream);
+    const ids = await this.broadcastUserListStore.get(participant.stream);
 
     const message = this.messageService.encodeMessage({
       event: 'new-participant',
