@@ -1,5 +1,6 @@
 import { InvalidVisual, NotEnoughCoins } from '@backend_2/errors';
 import { CoinBalanceEntity } from '@backend_2/user/coin-balance/coin-balance.entity';
+import { EVENT_AWARD_SENT } from '@backend_2/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AwardEntity } from './award.entity';
@@ -44,6 +45,6 @@ export class AwardService {
       message,
     );
 
-    this.events.emit('award.sent', { award });
+    this.events.emit(EVENT_AWARD_SENT, { award });
   }
 }

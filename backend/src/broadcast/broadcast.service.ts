@@ -1,9 +1,27 @@
 import { ParticipantStore } from '@backend_2/user/participant/store';
-import { EVENT_NEW_PARTICIPANT } from '@backend_2/utils';
+import {
+  EVENT_ACTIVE_SPEAKERS,
+  EVENT_AWARD_SENT,
+  EVENT_CHAT_MESSAGE,
+  EVENT_NEW_PARTICIPANT,
+  EVENT_PARTICIPANT_KICKED,
+  EVENT_PARTICIPANT_LEAVE,
+  EVENT_RAISE_HAND,
+  EVENT_REACTIONS,
+  EVENT_ROLE_CHANGE,
+} from '@backend_2/utils';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { IAward, IParticipant } from '@warpy/lib';
+import { IParticipant } from '@warpy/lib';
 import { MessageService } from '../message/message.service';
+import {
+  ActiveSpeakersEvent,
+  AwardSentEvent,
+  ChatMessageEvent,
+  MediaToggleEvent,
+  ParticipantLeaveEvent,
+  ReactionsEvent,
+} from './types';
 
 @Injectable()
 export class BroadcastService {
@@ -16,18 +34,12 @@ export class BroadcastService {
     ids.forEach((id) => this.messageService.send(id, message));
   }
 
-  @OnEvent('participant.media-toggle')
   async broadcastMediaToggle({
     user,
     stream,
     videoEnabled,
     audioEnabled,
-  }: {
-    user: string;
-    stream: string;
-    videoEnabled?: boolean;
-    audioEnabled?: boolean;
-  }) {
+  }: MediaToggleEvent) {
     const ids = await this.participant.getParticipantIds(stream);
 
     const payload = this.messageService.encodeMessage({
@@ -43,7 +55,7 @@ export class BroadcastService {
     this.broadcast(ids, payload);
   }
 
-  @OnEvent('participant.kicked')
+  @OnEvent(EVENT_PARTICIPANT_KICKED)
   async broadcastKickedParticipant(participant: IParticipant) {
     const { stream, id } = participant;
 
@@ -60,8 +72,8 @@ export class BroadcastService {
     this.broadcast(ids, payload);
   }
 
-  @OnEvent('chat.message')
-  async broadcastChatMessage({ idsToBroadcast, message }: any) {
+  @OnEvent(EVENT_CHAT_MESSAGE)
+  async broadcastChatMessage({ idsToBroadcast, message }: ChatMessageEvent) {
     const payload = this.messageService.encodeMessage({
       event: 'chat-message',
       data: {
@@ -72,8 +84,8 @@ export class BroadcastService {
     this.broadcast(idsToBroadcast, payload);
   }
 
-  @OnEvent('reactions')
-  async broadcastReactions({ stream, reactions }: any) {
+  @OnEvent(EVENT_REACTIONS)
+  async broadcastReactions({ stream, reactions }: ReactionsEvent) {
     const ids = await this.participant.getParticipantIds(stream);
 
     const message = this.messageService.encodeMessage({
@@ -87,14 +99,11 @@ export class BroadcastService {
     this.broadcast(ids, message);
   }
 
-  @OnEvent('participant.active-speakers')
+  @OnEvent(EVENT_ACTIVE_SPEAKERS)
   async broadcastActiveSpeakers({
     stream,
     activeSpeakers,
-  }: {
-    stream: string;
-    activeSpeakers: { user: string; volume: number }[];
-  }) {
+  }: ActiveSpeakersEvent) {
     const ids = await this.participant.getParticipantIds(stream);
 
     const message = this.messageService.encodeMessage({
@@ -108,7 +117,7 @@ export class BroadcastService {
     this.broadcast(ids, message);
   }
 
-  @OnEvent('participant.role-change')
+  @OnEvent(EVENT_ROLE_CHANGE)
   async broadcastRoleChange(user: IParticipant) {
     const ids = await this.participant.getParticipantIds(user.stream);
 
@@ -122,7 +131,7 @@ export class BroadcastService {
     this.broadcast(ids, message);
   }
 
-  @OnEvent('participant.raise-hand')
+  @OnEvent(EVENT_RAISE_HAND)
   async broadcastHandRaise(viewer: IParticipant) {
     const { stream } = viewer;
     const ids = await this.participant.getParticipantIds(stream);
@@ -138,14 +147,8 @@ export class BroadcastService {
     this.broadcast(ids, message);
   }
 
-  @OnEvent('participant.delete')
-  async broadcastParticipantLeft({
-    user,
-    stream,
-  }: {
-    user: string;
-    stream: string;
-  }) {
+  @OnEvent(EVENT_PARTICIPANT_LEAVE)
+  async broadcastParticipantLeft({ user, stream }: ParticipantLeaveEvent) {
     const ids = await this.participant.getParticipantIds(stream);
 
     const message = this.messageService.encodeMessage({
@@ -159,24 +162,8 @@ export class BroadcastService {
     this.broadcast(ids, message);
   }
 
-  @OnEvent('award.sent', { async: true })
-  async broadcastNewAward({ award }: { award: IAward }) {
-    const currentStream = await this.participant.getStreamId(award.recipent.id);
-    const ids = await this.participant.getParticipantIds(currentStream);
-
-    const message = this.messageService.encodeMessage({
-      event: 'new-award',
-      data: {
-        award,
-      },
-    });
-
-    this.broadcast(ids, message);
-  }
-
   @OnEvent(EVENT_NEW_PARTICIPANT, { async: true })
   async broadcastNewParticipant(participant: IParticipant) {
-    console.log('new participant', participant.id);
     const ids = await this.participant.getParticipantIds(participant.stream);
 
     const message = this.messageService.encodeMessage({
@@ -184,6 +171,22 @@ export class BroadcastService {
       data: {
         stream: participant.stream,
         participant: participant,
+      },
+    });
+
+    this.broadcast(ids, message);
+  }
+
+  //TODO: figure out a way to pass stream id along with the award data
+  @OnEvent(EVENT_AWARD_SENT, { async: true })
+  async broadcastNewAward({ award }: AwardSentEvent) {
+    const currentStream = await this.participant.getStreamId(award.recipent.id);
+    const ids = await this.participant.getParticipantIds(currentStream);
+
+    const message = this.messageService.encodeMessage({
+      event: 'new-award',
+      data: {
+        award,
       },
     });
 

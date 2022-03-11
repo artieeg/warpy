@@ -2,6 +2,7 @@ import { CoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity';
 import { mockedCoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity.mock';
 import { NotEnoughCoins } from '@backend_2/errors';
 import { mockedEventEmitter } from '@backend_2/events/events.service.mock';
+import { EVENT_AWARD_SENT } from '@backend_2/utils';
 import {
   createAwardFixture,
   createAwardModelFixture,
@@ -72,7 +73,7 @@ describe('AwardService', () => {
     it('emits an event with the newly created award', async () => {
       await awardService.sendAward(sender.id, recipent.id, award.id, message);
 
-      expect(mockedEventEmitter.emit).toBeCalledWith('award.sent', {
+      expect(mockedEventEmitter.emit).toBeCalledWith(EVENT_AWARD_SENT, {
         award: createdAwardRecord,
       });
     });

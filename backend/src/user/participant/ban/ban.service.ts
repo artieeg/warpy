@@ -4,6 +4,7 @@ import {
   BannedFromStreamError,
 } from '@backend_2/errors';
 import { MediaService } from '@backend_2/media/media.service';
+import { EVENT_PARTICIPANT_KICKED } from '@backend_2/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ParticipantStore } from '../store';
@@ -54,6 +55,6 @@ export class ParticipantBanService {
       await this.banEntity.create(stream, userToKick);
     } catch (e) {}
 
-    this.eventEmitter.emit('participant.kicked', userToKickData);
+    this.eventEmitter.emit(EVENT_PARTICIPANT_KICKED, userToKickData);
   }
 }

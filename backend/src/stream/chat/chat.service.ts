@@ -7,6 +7,7 @@ import { IChatMessage } from '@warpy/lib';
 import cuid from 'cuid';
 import Filter from 'bad-words';
 import { BlockService } from '@backend_2/user/block/block.service';
+import { EVENT_CHAT_MESSAGE } from '@backend_2/utils';
 
 @Injectable()
 export class ChatService {
@@ -55,7 +56,10 @@ export class ChatService {
       timestamp: Date.now(),
     };
 
-    this.eventEmitter.emit('chat.message', { idsToBroadcast: ids, message });
+    this.eventEmitter.emit(EVENT_CHAT_MESSAGE, {
+      idsToBroadcast: ids,
+      message,
+    });
 
     return message;
   }

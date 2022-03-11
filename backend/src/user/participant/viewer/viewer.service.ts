@@ -1,6 +1,10 @@
 import { MediaService } from '@backend_2/media/media.service';
 import { UserService } from '@backend_2/user/user.service';
-import { EVENT_NEW_PARTICIPANT, EVENT_STREAM_JOINED } from '@backend_2/utils';
+import {
+  EVENT_NEW_PARTICIPANT,
+  EVENT_RAISE_HAND,
+  EVENT_STREAM_JOINED,
+} from '@backend_2/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IJoinStreamResponse } from '@warpy/lib';
@@ -20,7 +24,7 @@ export class ViewerService {
   async setRaiseHand(user: string, flag: boolean) {
     const participant = await this.participant.setRaiseHand(user, flag);
 
-    this.eventEmitter.emit('participant.raise-hand', participant);
+    this.eventEmitter.emit(EVENT_RAISE_HAND, participant);
   }
 
   async getViewers(stream: string, page: number) {

@@ -1,4 +1,5 @@
 import { StreamEntity } from '@backend_2/stream/common/stream.entity';
+import { EVENT_REACTIONS } from '@backend_2/utils';
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ALLOWED_EMOJI, Reaction } from '@warpy/lib';
@@ -52,7 +53,7 @@ export class ReactionService implements OnModuleInit, OnModuleDestroy {
             return;
           }
 
-          this.eventEmitter.emit('reactions', { stream, reactions });
+          this.eventEmitter.emit(EVENT_REACTIONS, { stream, reactions });
           await this.streamEntity.incReactionsCount(stream, reactions.length);
         } catch (e) {}
       },

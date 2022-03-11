@@ -1,6 +1,7 @@
 import { BotInstanceEntity } from '@backend_2/bots/bot-instance.entity';
 import { MaxVideoStreamers } from '@backend_2/errors';
 import { MediaService } from '@backend_2/media/media.service';
+import { EVENT_PARTICIPANT_LEAVE } from '@backend_2/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ParticipantStore } from './store';
@@ -78,7 +79,7 @@ export class ParticipantService {
     //TODO: ???
     const promises = instances.map(async ({ botInstanceId, stream }) => {
       await this.participant.del(botInstanceId);
-      this.eventEmitter.emit('participant.delete', {
+      this.eventEmitter.emit(EVENT_PARTICIPANT_LEAVE, {
         user: botInstanceId,
         stream,
       });
@@ -106,7 +107,7 @@ export class ParticipantService {
 
     try {
       await this.participant.del(user);
-      this.eventEmitter.emit('participant.delete', { user, stream });
+      this.eventEmitter.emit(EVENT_PARTICIPANT_LEAVE, { user, stream });
     } catch (e) {
       console.error(e);
     }
