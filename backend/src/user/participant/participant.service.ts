@@ -72,6 +72,11 @@ export class ParticipantService {
     } else {
       await this.deleteUserParticipant(user);
     }
+
+    this.eventEmitter.emit(EVENT_PARTICIPANT_LEAVE, {
+      user,
+      stream: userToRemove.stream,
+    });
   }
 
   async getStreamParticipants(stream: string) {

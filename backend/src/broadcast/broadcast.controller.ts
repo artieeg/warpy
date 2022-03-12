@@ -72,6 +72,7 @@ export class BroadcastController implements OnStreamEnd {
 
   @OnEvent(EVENT_RAISE_HAND)
   async onRaiseHand(data: IParticipant) {
+    console.log(data);
     return this.broadcast.broadcastHandRaise(data);
   }
 
