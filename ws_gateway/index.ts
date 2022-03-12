@@ -51,7 +51,9 @@ const handlers: Record<string, HandlerConfig> = {
     subject: "participant.leave",
     kind: "request",
     auth: true,
-    schema: joi.object({}),
+    schema: joi.object({
+      stream: joi.string().required(),
+    }),
   },
 
   "raise-hand": {

@@ -1,6 +1,5 @@
 import { StreamNotFound, UserNotFound } from '@backend_2/errors';
-import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
-import { BlockEntity } from '@backend_2/user/block/block.entity';
+import { ParticipantStore } from '@backend_2/user/participant';
 import { UserEntity } from '@backend_2/user/user.entity';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -8,6 +7,7 @@ import { IChatMessage } from '@warpy/lib';
 import cuid from 'cuid';
 import Filter from 'bad-words';
 import { BlockService } from '@backend_2/user/block/block.service';
+import { EVENT_CHAT_MESSAGE } from '@backend_2/utils';
 
 @Injectable()
 export class ChatService {
@@ -16,7 +16,7 @@ export class ChatService {
   constructor(
     private eventEmitter: EventEmitter2,
     private userEntity: UserEntity,
-    private participantEntity: ParticipantEntity,
+    private participantEntity: ParticipantStore,
     private blockService: BlockService,
   ) {}
 
@@ -31,7 +31,7 @@ export class ChatService {
       throw new UserNotFound();
     }
 
-    const stream = await this.participantEntity.getCurrentStreamFor(userId);
+    const stream = await this.participantEntity.getStreamId(userId);
 
     if (!stream) {
       throw new StreamNotFound();
@@ -40,7 +40,7 @@ export class ChatService {
     const filteredText = this.getFilteredMessage(text);
 
     const [participants, blockedByIds, blockedIds] = await Promise.all([
-      this.participantEntity.getIdsByStream(stream),
+      this.participantEntity.getParticipantIds(stream),
       this.blockService.getBlockedByIds(userId),
       this.blockService.getBlockedUserIds(userId),
     ]);
@@ -56,7 +56,10 @@ export class ChatService {
       timestamp: Date.now(),
     };
 
-    this.eventEmitter.emit('chat.message', { idsToBroadcast: ids, message });
+    this.eventEmitter.emit(EVENT_CHAT_MESSAGE, {
+      idsToBroadcast: ids,
+      message,
+    });
 
     return message;
   }

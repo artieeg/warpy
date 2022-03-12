@@ -1,44 +1,43 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { RedisClient, createClient } from 'redis';
+import IORedis from 'ioredis';
+
+const PREFIX_STREAM = 'stream_';
 
 @Injectable()
 export class PreviousStreamCacheService {
-  client: RedisClient;
+  client: IORedis.Redis;
 
   constructor(private configService: ConfigService) {}
 
   onModuleInit() {
-    this.client = createClient({
-      url: this.configService.get('previousStreamCacheAddr'),
-    });
+    this.client = new IORedis(
+      this.configService.get('previousStreamCacheAddr'),
+    );
+  }
+
+  async delStream(stream: string) {
+    const ids = await this.client.smembers(PREFIX_STREAM + stream);
+
+    if (ids.length > 0) {
+      this.client.del(...ids, PREFIX_STREAM + stream);
+    }
   }
 
   async expire(user: string) {
-    return new Promise<void>((resolve, reject) => {
-      this.client.expire(user, 5 * 60, (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
+    return this.client.expire(user, 5 * 60);
   }
 
   async set(user: string, stream: string) {
-    return new Promise<void>((resolve, reject) => {
-      console.log({ user, stream });
-      this.client.set(user, stream, (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
+    const pipe = this.client.pipeline();
+
+    pipe.set(user, stream);
+    pipe.sadd(PREFIX_STREAM + stream, user);
+
+    return pipe.exec();
   }
 
   async get(user: string) {
-    return new Promise<string | undefined>((resolve, reject) => {
-      this.client.get(user, (err, value) => {
-        if (err) reject(err);
-        else resolve(value);
-      });
-    });
+    return this.client.get(user);
   }
 }

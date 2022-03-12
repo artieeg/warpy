@@ -2,15 +2,16 @@ import { NoPermissionError } from '@backend_2/errors';
 import { MediaService } from '@backend_2/media/media.service';
 import { MessageService } from '@backend_2/message/message.service';
 import { BlockService } from '@backend_2/user/block/block.service';
+import { EVENT_ROLE_CHANGE } from '@backend_2/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Roles } from '@warpy/lib';
-import { ParticipantEntity } from '../common/participant.entity';
+import { ParticipantStore } from '../store';
 
 @Injectable()
 export class ParticipantRoleService {
   constructor(
-    private participant: ParticipantEntity,
+    private participant: ParticipantStore,
     private blockService: BlockService,
     private messageService: MessageService,
     private media: MediaService,
@@ -18,7 +19,7 @@ export class ParticipantRoleService {
   ) {}
 
   async setRole(mod: string, userToUpdate: string, role: Roles) {
-    const moderator = await this.participant.getById(mod);
+    const moderator = await this.participant.get(mod);
     const { stream } = moderator;
 
     if (moderator.role !== 'streamer') {
@@ -29,7 +30,7 @@ export class ParticipantRoleService {
       await this.blockService.isBannedBySpeaker(userToUpdate, stream);
     }
 
-    const oldUserData = await this.participant.getById(userToUpdate);
+    const oldUserData = await this.participant.get(userToUpdate);
 
     //receive new media token,
     //sendNodeId and send transport data (if upgrading from viewer)
@@ -45,7 +46,7 @@ export class ParticipantRoleService {
 
     //Update participant record with a new role
     //and a new send node id (if changed)
-    const updatedUser = await this.participant.updateOne(userToUpdate, {
+    const updatedUser = await this.participant.update(userToUpdate, {
       sendNodeId,
       role,
 
@@ -63,6 +64,6 @@ export class ParticipantRoleService {
       data: response,
     });
 
-    this.eventEmitter.emit('participant.role-change', updatedUser);
+    this.eventEmitter.emit(EVENT_ROLE_CHANGE, updatedUser);
   }
 }

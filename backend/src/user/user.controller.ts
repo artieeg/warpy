@@ -1,5 +1,6 @@
 import { ExceptionFilter } from '@backend_2/rpc-exception.filter';
 import {
+  EVENT_PARTICIPANT_LEAVE,
   EVENT_USER_CONNECTED,
   EVENT_USER_DISCONNECTED,
 } from '@backend_2/utils';

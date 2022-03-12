@@ -1,52 +1,34 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { RedisClient, createClient } from 'redis';
+import IORedis from 'ioredis';
 
 @Injectable()
 export class UserOnlineStatusCache implements OnModuleInit {
-  client: RedisClient;
+  client: IORedis.Redis;
 
   constructor(private configService: ConfigService) {}
 
-  getUserStatusMany(ids: string[]): Promise<(boolean | undefined)[]> {
-    return new Promise<(boolean | undefined)[]>((resolve, reject) => {
-      this.client.mget(ids, (err: any, values: boolean[]) => {
-        if (err) reject(err);
-        else resolve(values);
-      });
-    });
-  }
-
-  getUserStatus(user: string) {
-    return new Promise<boolean>((resolve, reject) => {
-      this.client.get(user, (err: any, value?: boolean) => {
-        if (err) reject(err);
-        else resolve(!!value);
-      });
-    });
-  }
-
   onModuleInit() {
-    this.client = createClient({
-      url: this.configService.get('userOnlineStatusCache'),
-    });
+    this.client = new IORedis(this.configService.get('userOnlineStatusCache'));
+  }
+
+  async getUserStatusMany(ids: string[]): Promise<boolean[]> {
+    const values = await this.client.mget(ids);
+
+    return values.map((v) => !!v);
+  }
+
+  async getUserStatus(user: string) {
+    const v = await this.client.get(user);
+
+    return !!v;
   }
 
   async setUserOnline(user: string) {
-    return new Promise<void>((resolve, reject) => {
-      this.client.set(user, true, (err: any) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
+    await this.client.set(user, 'true');
   }
 
   async setUserOffline(user: string) {
-    return new Promise<void>((resolve, reject) => {
-      this.client.del(user, (err: any) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
+    await this.client.del(user);
   }
 }

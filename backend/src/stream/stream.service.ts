@@ -3,8 +3,11 @@ import {
   StreamNotFound,
   UserNotFound,
 } from '@backend_2/errors';
-import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
-import { EVENT_STREAM_ENDED, EVENT_STREAM_JOINED } from '@backend_2/utils';
+import {
+  IFullParticipant,
+  ParticipantStore,
+} from '@backend_2/user/participant/store';
+import { EVENT_NEW_PARTICIPANT, EVENT_STREAM_ENDED } from '@backend_2/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { INewStreamResponse } from '@warpy/lib';
@@ -17,7 +20,7 @@ import { StreamEntity } from './common/stream.entity';
 export class StreamService {
   constructor(
     private streamEntity: StreamEntity,
-    private participantEntity: ParticipantEntity,
+    private participantStore: ParticipantStore,
     private userEntity: UserEntity,
     private mediaService: MediaService,
     private eventEmitter: EventEmitter2,
@@ -45,15 +48,6 @@ export class StreamService {
     const { token, recvNodeId, sendNodeId } =
       await this.mediaService.getHostToken(owner, stream_id);
 
-    const participant = await this.participantEntity.create({
-      user_id: owner,
-      role: 'streamer',
-      recvNodeId,
-      sendNodeId,
-      audioEnabled: true,
-      videoEnabled: true,
-    });
-
     const stream = await this.streamEntity.create({
       id: stream_id,
       owner_id: owner,
@@ -64,7 +58,19 @@ export class StreamService {
       reactions: 0,
     });
 
-    await this.participantEntity.setStream(participant.id, stream.id);
+    const host: IFullParticipant = {
+      ...streamer,
+      role: 'streamer',
+      recvNodeId,
+      sendNodeId,
+      audioEnabled: true,
+      videoEnabled: true,
+      isBanned: false,
+      stream: stream_id,
+      isBot: false,
+    };
+
+    await this.participantStore.add(host);
 
     const media = await this.mediaService.createNewRoom({
       roomId: stream.id,
@@ -72,21 +78,18 @@ export class StreamService {
     });
 
     const recvMediaParams = await this.mediaService.getViewerParams(
-      participant.recvNodeId,
+      host.recvNodeId,
       owner,
       stream.id,
     );
 
     this.eventEmitter.emit('stream.created', { stream });
-    this.eventEmitter.emit(EVENT_STREAM_JOINED, {
-      stream: stream_id,
-      user: owner,
-    });
+    this.eventEmitter.emit(EVENT_NEW_PARTICIPANT, host);
 
     return {
       stream: stream.id,
       media,
-      speakers: [participant],
+      speakers: [host],
       count: 1,
       mediaPermissionsToken: token,
       recvMediaParams,
@@ -94,11 +97,13 @@ export class StreamService {
   }
 
   async stopStream(user: string): Promise<void> {
-    const participant = await this.participantEntity.getById(user);
+    const participant = await this.participantStore.get(user);
+
+    console.log({ participant });
 
     if (participant?.stream && participant?.role === 'streamer') {
-      await this.streamEntity.stop(participant.stream);
-      await this.participantEntity.allParticipantsLeave(participant.stream);
+      await this.streamEntity.delete(participant.stream);
+      await this.participantStore.clearStreamData(participant.stream);
 
       this.eventEmitter.emit(EVENT_STREAM_ENDED, {
         stream: participant.stream,

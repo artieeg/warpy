@@ -1,14 +1,15 @@
 import { BotInstanceEntity } from '@backend_2/bots/bot-instance.entity';
 import { MaxVideoStreamers } from '@backend_2/errors';
 import { MediaService } from '@backend_2/media/media.service';
+import { EVENT_PARTICIPANT_LEAVE } from '@backend_2/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ParticipantEntity } from './participant.entity';
+import { ParticipantStore } from './store';
 
 @Injectable()
-export class ParticipantCommonService {
+export class ParticipantService {
   constructor(
-    private participant: ParticipantEntity,
+    private participant: ParticipantStore,
     private botInstanceEntity: BotInstanceEntity,
     private media: MediaService,
     private eventEmitter: EventEmitter2,
@@ -21,7 +22,7 @@ export class ParticipantCommonService {
       audioEnabled,
     }: { videoEnabled?: boolean; audioEnabled?: boolean },
   ) {
-    const stream = await this.participant.getCurrentStreamFor(user);
+    const stream = await this.participant.getStreamId(user);
 
     const update = {};
 
@@ -30,8 +31,9 @@ export class ParticipantCommonService {
     }
 
     if (videoEnabled !== undefined) {
-      const activeVideoStreamers =
-        await this.participant.countUsersWithVideoEnabled(stream);
+      const activeVideoStreamers = await this.participant.countVideoStreamers(
+        stream,
+      );
 
       //If the user tries to send video when there are already 4 video streamers...
       if (activeVideoStreamers >= 4 && videoEnabled === true) {
@@ -41,7 +43,7 @@ export class ParticipantCommonService {
       update['videoEnabled'] = videoEnabled;
     }
 
-    await this.participant.updateOne(user, update);
+    await this.participant.update(user, update);
 
     this.eventEmitter.emit('participant.media-toggle', {
       user,
@@ -51,8 +53,8 @@ export class ParticipantCommonService {
     });
   }
 
-  async removeUserFromStream(user: string) {
-    const userToRemove = await this.participant.getById(user);
+  async removeUserFromStream(user: string, stream?: string) {
+    const userToRemove = await this.participant.get(user);
 
     if (userToRemove) {
       await this.media.removeFromNodes(userToRemove);
@@ -61,38 +63,35 @@ export class ParticipantCommonService {
     const isBot = user.slice(0, 3) === 'bot';
 
     if (isBot) {
-      await this.deleteBotParticipant(user);
+      const instance = await this.botInstanceEntity.getBotInstante(
+        user,
+        stream,
+      );
+
+      await this.deleteUserParticipant(instance.id);
     } else {
-      await this.deleteParticipant(user);
+      await this.deleteUserParticipant(user);
     }
+
+    this.eventEmitter.emit(EVENT_PARTICIPANT_LEAVE, {
+      user,
+      stream: userToRemove.stream,
+    });
   }
 
   async getStreamParticipants(stream: string) {
-    return this.participant.getIdsByStream(stream);
+    return this.participant.getParticipantIds(stream);
   }
 
-  async deleteBotParticipant(bot: string) {
-    const instances = await this.botInstanceEntity.getBotInstances(bot);
-
-    //TODO: ???
-    const promises = instances.map(async ({ botInstanceId, stream }) => {
-      await this.participant.deleteParticipant(botInstanceId);
-      this.eventEmitter.emit('participant.delete', {
-        user: botInstanceId,
-        stream,
-      });
-    });
-
-    await Promise.all(promises);
-  }
-
-  async deleteParticipant(user: string) {
-    const stream = await this.participant.getCurrentStreamFor(user);
-
-    this.eventEmitter.emit('participant.delete', { user, stream });
-
+  private async deleteUserParticipant(user: string) {
     try {
-      await this.participant.deleteParticipant(user);
-    } catch (e) {}
+      await this.participant.del(user);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async clearStreamData(stream: string) {
+    return this.participant.clearStreamData(stream);
   }
 }

@@ -23,4 +23,6 @@ export const configuration = () => ({
   url: process.env.URL,
   blockCacheAddr: process.env.BLOCK_CACHE_ADDR,
   previousStreamCacheAddr: process.env.PREVIOUS_STREAM_CACHE_ADDR,
+  participantStoreAddr: process.env.PARTICIPANT_STORE_ADDR,
+  broadcastUserListStoreAddr: process.env.BROADCAST_USER_LIST_STORE_ADDR,
 });

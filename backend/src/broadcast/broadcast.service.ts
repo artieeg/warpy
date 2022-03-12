@@ -1,34 +1,36 @@
-import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
-import { EVENT_NEW_PARTICIPANT } from '@backend_2/utils';
+import { ParticipantStore } from '@backend_2/user/participant/store';
 import { Injectable } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
-import { IAward, IInvite, IParticipant } from '@warpy/lib';
+import { IParticipant } from '@warpy/lib';
 import { MessageService } from '../message/message.service';
+import { BroadcastUserListStore } from './broadcast-user-list.store';
+import {
+  ActiveSpeakersEvent,
+  AwardSentEvent,
+  ChatMessageEvent,
+  MediaToggleEvent,
+  ParticipantLeaveEvent,
+  ReactionsEvent,
+} from './types';
 
 @Injectable()
 export class BroadcastService {
   constructor(
-    private participant: ParticipantEntity,
+    private participant: ParticipantStore,
     private messageService: MessageService,
+    private broadcastUserListStore: BroadcastUserListStore,
   ) {}
 
   private broadcast(ids: string[], message: Uint8Array) {
     ids.forEach((id) => this.messageService.send(id, message));
   }
 
-  @OnEvent('participant.media-toggle')
   async broadcastMediaToggle({
     user,
     stream,
     videoEnabled,
     audioEnabled,
-  }: {
-    user: string;
-    stream: string;
-    videoEnabled?: boolean;
-    audioEnabled?: boolean;
-  }) {
-    const ids = await this.participant.getIdsByStream(stream);
+  }: MediaToggleEvent) {
+    const ids = await this.broadcastUserListStore.get(stream);
 
     const payload = this.messageService.encodeMessage({
       event: 'user-toggled-media',
@@ -43,11 +45,10 @@ export class BroadcastService {
     this.broadcast(ids, payload);
   }
 
-  @OnEvent('participant.kicked')
   async broadcastKickedParticipant(participant: IParticipant) {
     const { stream, id } = participant;
 
-    const ids = await this.participant.getIdsByStream(stream);
+    const ids = await this.broadcastUserListStore.get(stream);
 
     const payload = this.messageService.encodeMessage({
       event: 'user-kicked',
@@ -60,8 +61,7 @@ export class BroadcastService {
     this.broadcast(ids, payload);
   }
 
-  @OnEvent('chat.message')
-  async broadcastChatMessage({ idsToBroadcast, message }: any) {
+  async broadcastChatMessage({ idsToBroadcast, message }: ChatMessageEvent) {
     const payload = this.messageService.encodeMessage({
       event: 'chat-message',
       data: {
@@ -72,9 +72,8 @@ export class BroadcastService {
     this.broadcast(idsToBroadcast, payload);
   }
 
-  @OnEvent('reactions')
-  async broadcastReactions({ stream, reactions }: any) {
-    const ids = await this.participant.getIdsByStream(stream);
+  async broadcastReactions({ stream, reactions }: ReactionsEvent) {
+    const ids = await this.broadcastUserListStore.get(stream);
 
     const message = this.messageService.encodeMessage({
       event: 'reactions-update',
@@ -87,15 +86,11 @@ export class BroadcastService {
     this.broadcast(ids, message);
   }
 
-  @OnEvent('participant.active-speakers')
   async broadcastActiveSpeakers({
     stream,
     activeSpeakers,
-  }: {
-    stream: string;
-    activeSpeakers: { user: string; volume: number }[];
-  }) {
-    const ids = await this.participant.getIdsByStream(stream);
+  }: ActiveSpeakersEvent) {
+    const ids = await this.broadcastUserListStore.get(stream);
 
     const message = this.messageService.encodeMessage({
       event: 'active-speaker',
@@ -108,9 +103,8 @@ export class BroadcastService {
     this.broadcast(ids, message);
   }
 
-  @OnEvent('participant.role-change')
   async broadcastRoleChange(user: IParticipant) {
-    const ids = await this.participant.getIdsByStream(user.stream);
+    const ids = await this.broadcastUserListStore.get(user.stream);
 
     const message = this.messageService.encodeMessage({
       event: 'participant-role-change',
@@ -122,10 +116,10 @@ export class BroadcastService {
     this.broadcast(ids, message);
   }
 
-  @OnEvent('participant.raise-hand')
   async broadcastHandRaise(viewer: IParticipant) {
     const { stream } = viewer;
-    const ids = await this.participant.getIdsByStream(stream);
+
+    const ids = await this.broadcastUserListStore.get(stream);
 
     const message = this.messageService.encodeMessage({
       event: 'raise-hand',
@@ -138,15 +132,8 @@ export class BroadcastService {
     this.broadcast(ids, message);
   }
 
-  @OnEvent('participant.delete')
-  async broadcastParticipantLeft({
-    user,
-    stream,
-  }: {
-    user: string;
-    stream: string;
-  }) {
-    const ids = await this.participant.getIdsByStream(stream);
+  async broadcastParticipantLeft({ user, stream }: ParticipantLeaveEvent) {
+    const ids = await this.broadcastUserListStore.get(stream);
 
     const message = this.messageService.encodeMessage({
       event: 'user-left',
@@ -159,33 +146,29 @@ export class BroadcastService {
     this.broadcast(ids, message);
   }
 
-  @OnEvent('award.sent', { async: true })
-  async broadcastNewAward({ award }: { award: IAward }) {
-    const currentStream = await this.participant.getCurrentStreamFor(
-      award.recipent.id,
-    );
-    const ids = await this.participant.getIdsByStream(currentStream);
-
-    const message = this.messageService.encodeMessage({
-      event: 'new-award',
-      data: {
-        award,
-      },
-    });
-
-    this.broadcast(ids, message);
-  }
-
-  @OnEvent(EVENT_NEW_PARTICIPANT, { async: true })
   async broadcastNewParticipant(participant: IParticipant) {
-    console.log('new participant', participant.id);
-    const ids = await this.participant.getIdsByStream(participant.stream);
+    const ids = await this.broadcastUserListStore.get(participant.stream);
 
     const message = this.messageService.encodeMessage({
       event: 'new-participant',
       data: {
         stream: participant.stream,
         participant: participant,
+      },
+    });
+
+    this.broadcast(ids, message);
+  }
+
+  //TODO: figure out a way to pass stream id along with the award data
+  async broadcastNewAward({ award }: AwardSentEvent) {
+    const currentStream = await this.participant.getStreamId(award.recipent.id);
+    const ids = await this.participant.getParticipantIds(currentStream);
+
+    const message = this.messageService.encodeMessage({
+      event: 'new-award',
+      data: {
+        award,
       },
     });
 

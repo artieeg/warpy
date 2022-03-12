@@ -1,46 +1,31 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { RedisClient, createClient } from 'redis';
+import IORedis from 'ioredis';
 
 /**
  * Stores arrays of nodes, where the stream "lives"
  * */
 @Injectable()
 export class StreamNodeAssignerService implements OnModuleInit {
-  client: RedisClient;
+  client: IORedis.Redis;
 
   constructor(private configService: ConfigService) {}
 
   onModuleInit() {
-    this.client = createClient({
-      url: this.configService.get('mediaStreamNodeAssigner'),
-    });
-  }
-
-  del(stream: string) {
-    return new Promise<void>((resolve, reject) => {
-      this.client.del(stream, (err: any) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
-  }
-
-  assignNode(stream: string, node: string) {
-    return new Promise<void>((resolve, reject) =>
-      this.client.sadd(stream, node, (err: any) => {
-        if (err) reject(err);
-        else resolve();
-      }),
+    this.client = new IORedis(
+      this.configService.get('mediaStreamNodeAssigner'),
     );
   }
 
+  del(stream: string) {
+    return this.client.del(stream);
+  }
+
+  assignNode(stream: string, node: string) {
+    return this.client.sadd(stream, node);
+  }
+
   getAssignedNodes(stream: string) {
-    return new Promise<string[]>((resolve, reject) => {
-      this.client.smembers(stream, (err: any, values: any) => {
-        if (err) reject(err);
-        else resolve(values);
-      });
-    });
+    return this.client.smembers(stream);
   }
 }

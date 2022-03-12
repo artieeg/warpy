@@ -4,16 +4,17 @@ import {
   BannedFromStreamError,
 } from '@backend_2/errors';
 import { MediaService } from '@backend_2/media/media.service';
+import { EVENT_PARTICIPANT_KICKED } from '@backend_2/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ParticipantEntity } from '../common/participant.entity';
+import { ParticipantStore } from '../store';
 import { ParticipantBanEntity } from './ban.entity';
 
 @Injectable()
 export class ParticipantBanService {
   constructor(
     private banEntity: ParticipantBanEntity,
-    private participant: ParticipantEntity,
+    private participant: ParticipantStore,
     private media: MediaService,
     private eventEmitter: EventEmitter2,
   ) {}
@@ -27,7 +28,7 @@ export class ParticipantBanService {
   }
 
   async banUser(userToKick: string, moderatorId: string) {
-    const moderator = await this.participant.getById(moderatorId);
+    const moderator = await this.participant.get(moderatorId);
 
     if (!moderator) {
       throw new UserNotFound();
@@ -37,7 +38,7 @@ export class ParticipantBanService {
       throw new NoPermissionError();
     }
 
-    const userToKickData = await this.participant.getById(userToKick);
+    const userToKickData = await this.participant.get(userToKick);
 
     if (!userToKickData) {
       throw new UserNotFound();
@@ -54,6 +55,6 @@ export class ParticipantBanService {
       await this.banEntity.create(stream, userToKick);
     } catch (e) {}
 
-    this.eventEmitter.emit('participant.kicked', userToKickData);
+    this.eventEmitter.emit(EVENT_PARTICIPANT_KICKED, userToKickData);
   }
 }

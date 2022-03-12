@@ -32,18 +32,32 @@ export class BotInstanceEntity {
   }
 
   async create(bot_id: string, stream_id: string) {
-    const { id } = await this.prismaService.botInstance.create({
+    const data = await this.prismaService.botInstance.create({
       data: {
         bot_id,
         stream_id,
         id: 'bot_instance_' + cuid(),
       },
-      select: {
-        id: true,
+      include: {
+        bot: true,
       },
     });
 
-    return id;
+    return BotInstanceEntity.toBotInstanceDTO(data);
+  }
+
+  async getBotInstante(bot: string, stream: string) {
+    const data = await this.prismaService.botInstance.findFirst({
+      where: {
+        bot_id: bot,
+        stream_id: stream,
+      },
+      include: {
+        bot: true,
+      },
+    });
+
+    return BotInstanceEntity.toBotInstanceDTO(data);
   }
 
   async getBotInstances(bot_id: string) {

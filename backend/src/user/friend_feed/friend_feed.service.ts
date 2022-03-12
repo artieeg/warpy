@@ -1,5 +1,5 @@
 import { StreamEntity } from '@backend_2/stream/common/stream.entity';
-import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
+import { ParticipantStore } from '@backend_2/user/participant';
 import { Injectable } from '@nestjs/common';
 import { IFriendFeedItem } from '@warpy/lib';
 import { FollowEntity } from '../follow/follow.entity';
@@ -7,7 +7,7 @@ import { FollowEntity } from '../follow/follow.entity';
 @Injectable()
 export class FriendFeedService {
   constructor(
-    private participant: ParticipantEntity,
+    private participant: ParticipantStore,
     private follow: FollowEntity,
     private stream: StreamEntity,
   ) {}
@@ -17,9 +17,7 @@ export class FriendFeedService {
     const following = await this.follow.getFollowedUserIds(user);
 
     //Check who's participating in rooms
-    const participants = await this.participant.getByIds(following, {
-      stream: true,
-    });
+    const participants = await this.participant.list(following);
 
     //Get stream
     const streamIds = [...new Set(participants.map((p) => p.stream))];

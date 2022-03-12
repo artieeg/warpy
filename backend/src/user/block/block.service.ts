@@ -3,14 +3,14 @@ import {
   StreamHasBlockedSpeakerError,
 } from '@backend_2/errors';
 import { Injectable } from '@nestjs/common';
-import { ParticipantEntity } from '@backend_2/user/participant/common/participant.entity';
+import { ParticipantStore } from '@backend_2/user/participant';
 import { BlockEntity } from './block.entity';
 import { BlockCacheService } from './block.cache';
 
 @Injectable()
 export class BlockService {
   constructor(
-    private participantEntity: ParticipantEntity,
+    private participantEntity: ParticipantStore,
     private blockEntity: BlockEntity,
     private blockCacheService: BlockCacheService,
   ) {}
@@ -69,7 +69,7 @@ export class BlockService {
   }
 
   async isBannedBySpeaker(user: string, stream: string) {
-    const speakers = await this.participantEntity.getSpeakers(stream);
+    const speakers = await this.participantEntity.getStreamers(stream);
     const blockedByIds = await this.blockEntity.getBlockedByIds(user);
     const blockedIds = await this.blockEntity.getBlockedUserIds(user);
 

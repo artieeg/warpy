@@ -329,6 +329,7 @@ export interface IStreamGetRequest {
 
 export interface ILeaveStreamRequest {
   user: string;
+  stream: string;
 }
 
 export interface IUserStatusRequest {

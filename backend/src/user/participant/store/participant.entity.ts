@@ -1,9 +1,8 @@
-import { BotInstanceEntity } from '@backend_2/bots/bot-instance.entity';
-import { Injectable } from '@nestjs/common';
-import { Bot, BotInstance, Participant, User } from '@prisma/client';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { IParticipant, Roles } from '@warpy/lib';
-import { PrismaService } from '@backend_2/prisma/prisma.service';
-import { UserEntity } from '@backend_2/user/user.entity';
+import { ConfigService } from '@nestjs/config';
+import IORedis, { Pipeline } from 'ioredis';
+import { StreamNotFound } from '@backend_2/errors';
 
 export type CreateNewParticipant = {
   user_id?: string;
@@ -12,19 +11,246 @@ export type CreateNewParticipant = {
   stream?: string;
   recvNodeId: string;
   sendNodeId?: string;
-  audioEnabled?: boolean;
-  videoEnabled?: boolean;
 };
 
 export interface IFullParticipant extends IParticipant {
   recvNodeId: string;
   sendNodeId: string | null;
   isBanned: boolean;
-  hasLeftStream: boolean;
 }
 
+const PREFIX_VIEWERS = 'viewer_';
+const PREFIX_STREAMERS = 'streamers_';
+const PREFIX_RAISED_HANDS = 'raised_hands_';
+const PREFIX_COUNT = 'count_';
+
 @Injectable()
-export class ParticipantEntity {
+export class ParticipantStore implements OnModuleInit {
+  redis: IORedis.Redis;
+
+  constructor(private configService: ConfigService) {}
+
+  onModuleInit() {
+    this.redis = new IORedis(this.configService.get('participantStoreAddr'));
+  }
+
+  private toDTO(data: any): IFullParticipant {
+    return {
+      ...data,
+      isRaisingHand: data.isRaisingHand === 'true',
+      isBot: data.isBot === 'true',
+      isBanned: data.isBanned === 'true',
+    };
+  }
+
+  async del(id: string) {
+    const pipe = await this.buildDelPipeline(id, {});
+
+    return pipe.exec();
+  }
+
+  private async buildDelPipeline(
+    id: string,
+    {
+      pipeline,
+      stream: streamOverrideId,
+    }: {
+      pipeline?: Pipeline;
+      stream?: string;
+    },
+  ) {
+    const pipe = pipeline || this.redis.pipeline();
+
+    const stream = streamOverrideId ?? (await this.getStreamId(id));
+
+    pipe.del(id);
+    pipe.srem(PREFIX_VIEWERS + stream, id);
+    pipe.srem(PREFIX_STREAMERS + stream, id);
+    pipe.srem(PREFIX_RAISED_HANDS + stream, id);
+
+    return pipe;
+  }
+
+  async get(id: string) {
+    const items = await this.redis.hgetall(id);
+
+    return this.toDTO(items);
+  }
+
+  async delMany(ids: string[]) {
+    const pipe = this.redis.pipeline();
+    ids.forEach((id) => pipe.del(id));
+
+    return pipe.exec();
+  }
+
+  async list(ids: string[]): Promise<IFullParticipant[]> {
+    const pipe = this.redis.pipeline();
+
+    for (const id of ids) {
+      pipe.hgetall(id);
+    }
+
+    const data = await pipe.exec();
+    return data
+      .map(([, items]) => {
+        if (!items) {
+          return null;
+        }
+
+        return this.toDTO(items);
+      })
+      .filter((item) => !!item);
+  }
+
+  async getStreamId(user: string) {
+    return this.redis.hget(user, 'stream');
+  }
+
+  async countVideoStreamers(stream: string) {
+    const ids = await this.redis.smembers(PREFIX_STREAMERS + stream);
+
+    const streamers = await this.list(ids);
+
+    return streamers.reduce((p, s) => {
+      return s.videoEnabled ? p + 1 : p;
+    }, 0);
+  }
+
+  async getParticipantIds(stream: string) {
+    const pipe = this.redis.pipeline();
+    pipe.smembers(PREFIX_STREAMERS + stream);
+    pipe.smembers(PREFIX_RAISED_HANDS + stream);
+    pipe.smembers(PREFIX_VIEWERS + stream);
+
+    const [[, streamers], [, raisedHands], [, viewers]] = await pipe.exec();
+    const ids: string[] = [...streamers, ...raisedHands, ...viewers];
+
+    console.log({ ids, streamers, raisedHands, viewers });
+
+    return ids;
+  }
+
+  async clearStreamData(stream: string) {
+    const ids = await this.getParticipantIds(stream);
+
+    if (ids.length === 0) {
+      return;
+    }
+
+    const pipeline = this.redis.pipeline();
+
+    //Delete indexes
+    pipeline.del(PREFIX_STREAMERS + stream);
+    pipeline.del(PREFIX_VIEWERS + stream);
+    pipeline.del(PREFIX_RAISED_HANDS + stream);
+
+    //Delete participant count
+    pipeline.del(PREFIX_COUNT + stream);
+
+    //Delete records
+    pipeline.del(...ids);
+
+    return pipeline.exec();
+  }
+
+  /**
+   * Returns info about audio/video streamers
+   * */
+  async getStreamers(stream: string) {
+    const ids = await this.redis.smembers(PREFIX_STREAMERS + stream);
+
+    return this.list(ids);
+  }
+
+  /**
+   * Returns info about participants with raised hands
+   * */
+  async getRaisedHands(stream: string) {
+    const ids = await this.redis.smembers(PREFIX_RAISED_HANDS + stream);
+
+    return this.list(ids);
+  }
+
+  async count(stream: string) {
+    const v = await this.redis.get(PREFIX_COUNT + stream);
+
+    return v ? Number.parseInt(v) : 0;
+  }
+
+  private async write(
+    key: string,
+    data: Partial<IFullParticipant>,
+    pipeline?: Pipeline,
+  ) {
+    const args: string[] = [];
+    for (const key in data) {
+      args.push(key, data[key]);
+    }
+
+    return (pipeline || this.redis).hmset(key, ...args);
+  }
+
+  async update(id: string, data: Partial<IFullParticipant>) {
+    return this.write(id, data);
+  }
+
+  async setRaiseHand(user: string, flag: boolean) {
+    const stream = await this.redis.hget(user, 'stream');
+
+    if (!stream) {
+      throw new StreamNotFound();
+    }
+
+    const pipe = this.redis.pipeline();
+
+    if (flag) {
+      pipe.sadd(PREFIX_RAISED_HANDS + stream, user);
+      pipe.srem(PREFIX_VIEWERS + stream, user);
+    } else {
+      pipe.srem(PREFIX_RAISED_HANDS + stream, user);
+      pipe.sadd(PREFIX_VIEWERS + stream, user);
+    }
+
+    pipe.hset(user, 'isRaisingHand', flag ? 'true' : 'false');
+
+    pipe.hgetall(user);
+
+    const [, , , [, data]] = await pipe.exec();
+
+    return this.toDTO(data);
+  }
+
+  async getViewersPage(stream: string, page: number) {
+    const all_ids = await this.redis.smembers(PREFIX_VIEWERS + stream);
+    const ids = all_ids.slice(page * 50, (page + 1) * 50);
+
+    return this.list(ids);
+  }
+
+  async add(data: IFullParticipant) {
+    const { stream } = data;
+
+    const pipe = this.redis.pipeline();
+
+    console.log({ stream, id: data.id });
+
+    if (data.role === 'viewer') {
+      pipe.sadd(PREFIX_VIEWERS + stream, data.id);
+    } else {
+      pipe.sadd(PREFIX_STREAMERS + stream, data.id);
+    }
+
+    pipe.incr(PREFIX_COUNT + stream);
+    this.write(data.id, data, pipe);
+
+    await pipe.exec();
+  }
+}
+
+/*
+@Injectable()
+export class ParticipantStore {
   constructor(private prisma: PrismaService) {}
 
   static toParticipantClientDTO(
@@ -109,7 +335,7 @@ export class ParticipantEntity {
       },
     });
 
-    return ParticipantEntity.toFullParticipantDTO(data);
+    return ParticipantStore.toFullParticipantDTO(data);
   }
 
   async getByIdAndStream(
@@ -131,7 +357,7 @@ export class ParticipantEntity {
       },
     });
 
-    return ParticipantEntity.toFullParticipantDTO(data);
+    return ParticipantStore.toFullParticipantDTO(data);
   }
 
   async allParticipantsLeave(stream: string): Promise<void> {
@@ -165,7 +391,7 @@ export class ParticipantEntity {
       data,
     });
 
-    return ParticipantEntity.toParticipantClientDTO(participant);
+    return ParticipantStore.toParticipantClientDTO(participant);
   }
 
   async setStream(user_id: string, stream: string): Promise<void> {
@@ -200,7 +426,7 @@ export class ParticipantEntity {
       },
     });
 
-    return data.map(ParticipantEntity.toParticipantClientDTO);
+    return data.map(ParticipantStore.toParticipantClientDTO);
   }
 
   async makeSpeaker(user: string): Promise<IFullParticipant | null> {
@@ -224,7 +450,7 @@ export class ParticipantEntity {
       return null;
     }
 
-    return ParticipantEntity.toFullParticipantDTO(speaker);
+    return ParticipantStore.toFullParticipantDTO(speaker);
   }
 
   async getById(user: string): Promise<IFullParticipant | null> {
@@ -247,7 +473,7 @@ export class ParticipantEntity {
       return null;
     }
 
-    return ParticipantEntity.toFullParticipantDTO(participant);
+    return ParticipantStore.toFullParticipantDTO(participant);
   }
 
   async deleteParticipant(id: string): Promise<void> {
@@ -281,7 +507,7 @@ export class ParticipantEntity {
       },
     });
 
-    return participants.map(ParticipantEntity.toParticipantClientDTO);
+    return participants.map(ParticipantStore.toParticipantClientDTO);
   }
 
   async setBanStatus(user: string, isBanned: boolean): Promise<void> {
@@ -354,7 +580,7 @@ export class ParticipantEntity {
       },
     });
 
-    return participants.map(ParticipantEntity.toParticipantClientDTO);
+    return participants.map(ParticipantStore.toParticipantClientDTO);
   }
 
   async getViewersPage(stream: string, page: number): Promise<IParticipant[]> {
@@ -377,7 +603,7 @@ export class ParticipantEntity {
       take: 50,
     });
 
-    return participants.map(ParticipantEntity.toParticipantClientDTO);
+    return participants.map(ParticipantStore.toParticipantClientDTO);
   }
 
   async count(stream: string): Promise<number> {
@@ -405,7 +631,7 @@ export class ParticipantEntity {
       },
     });
 
-    return participants.map(ParticipantEntity.toParticipantClientDTO);
+    return participants.map(ParticipantStore.toParticipantClientDTO);
   }
 
   async setRaiseHand(user: string, flag: boolean): Promise<IParticipant> {
@@ -424,7 +650,7 @@ export class ParticipantEntity {
       },
     });
 
-    return ParticipantEntity.toParticipantClientDTO(participant);
+    return ParticipantStore.toParticipantClientDTO(participant);
   }
 
   async countUsersWithVideoEnabled(stream: string) {
@@ -438,3 +664,4 @@ export class ParticipantEntity {
     return count;
   }
 }
+*/
