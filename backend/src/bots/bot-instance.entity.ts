@@ -46,6 +46,20 @@ export class BotInstanceEntity {
     return BotInstanceEntity.toBotInstanceDTO(data);
   }
 
+  async getBotInstante(bot: string, stream: string) {
+    const data = await this.prismaService.botInstance.findFirst({
+      where: {
+        bot_id: bot,
+        stream_id: stream,
+      },
+      include: {
+        bot: true,
+      },
+    });
+
+    return BotInstanceEntity.toBotInstanceDTO(data);
+  }
+
   async getBotInstances(bot_id: string) {
     const bots = await this.prismaService.botInstance.findMany({
       where: { bot_id },

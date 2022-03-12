@@ -118,7 +118,9 @@ export class BroadcastService {
 
   async broadcastHandRaise(viewer: IParticipant) {
     const { stream } = viewer;
+
     const ids = await this.broadcastUserListStore.get(stream);
+    console.log({ stream, ids });
 
     const message = this.messageService.encodeMessage({
       event: 'raise-hand',

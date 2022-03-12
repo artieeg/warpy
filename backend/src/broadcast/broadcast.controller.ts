@@ -1,3 +1,4 @@
+import { OnStreamEnd } from '@backend_2/interfaces';
 import {
   EVENT_ACTIVE_SPEAKERS,
   EVENT_AWARD_SENT,
@@ -8,10 +9,12 @@ import {
   EVENT_RAISE_HAND,
   EVENT_REACTIONS,
   EVENT_ROLE_CHANGE,
+  EVENT_STREAM_ENDED,
 } from '@backend_2/utils';
 import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { IParticipant } from '@warpy/lib';
+import { BroadcastUserListStore } from './broadcast-user-list.store';
 import { BroadcastService } from './broadcast.service';
 import {
   ActiveSpeakersEvent,
@@ -23,8 +26,16 @@ import {
 } from './types';
 
 @Controller()
-export class BroadcastController {
-  constructor(private broadcast: BroadcastService) {}
+export class BroadcastController implements OnStreamEnd {
+  constructor(
+    private broadcast: BroadcastService,
+    private store: BroadcastUserListStore,
+  ) {}
+
+  @OnEvent(EVENT_STREAM_ENDED)
+  async onStreamEnd({ stream }) {
+    return this.store.deleteList(stream);
+  }
 
   @OnEvent('participant.media-toggle')
   async onMediaToggle(data: MediaToggleEvent) {
@@ -33,7 +44,10 @@ export class BroadcastController {
 
   @OnEvent(EVENT_PARTICIPANT_KICKED)
   async onParticipantKicked(data: IParticipant) {
-    return this.broadcast.broadcastKickedParticipant(data);
+    return Promise.all([
+      this.broadcast.broadcastKickedParticipant(data),
+      this.store.removeUserFromList(data.stream, data.id),
+    ]);
   }
 
   @OnEvent(EVENT_CHAT_MESSAGE)
@@ -63,12 +77,18 @@ export class BroadcastController {
 
   @OnEvent(EVENT_PARTICIPANT_LEAVE)
   async onParticipantLeave(data: ParticipantLeaveEvent) {
-    return this.broadcast.broadcastParticipantLeft(data);
+    return Promise.all([
+      this.broadcast.broadcastParticipantLeft(data),
+      this.store.removeUserFromList(data.stream, data.user),
+    ]);
   }
 
   @OnEvent(EVENT_NEW_PARTICIPANT, { async: true })
   async onBroadcastParticipant(participant: IParticipant) {
-    return this.broadcast.broadcastNewParticipant(participant);
+    return Promise.all([
+      this.broadcast.broadcastNewParticipant(participant),
+      this.store.addUserToList(participant.stream, participant.id),
+    ]);
   }
 
   @OnEvent(EVENT_AWARD_SENT, { async: true })

@@ -37,6 +37,7 @@ export class ParticipantStore implements OnModuleInit {
   private toDTO(data: any): IFullParticipant {
     return {
       ...data,
+      isRaisingHand: data.isRaisingHand === 'true',
       isBot: data.isBot === 'true',
       isBanned: data.isBanned === 'true',
     };
@@ -74,6 +75,13 @@ export class ParticipantStore implements OnModuleInit {
     const items = await this.redis.hgetall(id);
 
     return this.toDTO(items);
+  }
+
+  async delMany(ids: string[]) {
+    const pipe = this.redis.pipeline();
+    ids.forEach((id) => pipe.del(id));
+
+    return pipe.exec();
   }
 
   async list(ids: string[]): Promise<IFullParticipant[]> {
@@ -204,7 +212,13 @@ export class ParticipantStore implements OnModuleInit {
       pipe.sadd(PREFIX_VIEWERS + stream, user);
     }
 
-    return pipe.exec();
+    pipe.hset(user, 'isRaisingHand', flag ? 'true' : 'false');
+
+    pipe.hgetall(user);
+
+    const [, , , [, data]] = await pipe.exec();
+
+    return this.toDTO(data);
   }
 
   async getViewersPage(stream: string, page: number) {

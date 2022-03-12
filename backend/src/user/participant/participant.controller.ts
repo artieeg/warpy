@@ -4,12 +4,13 @@ import {
   OnUserDisconnect,
 } from '@backend_2/interfaces';
 import {
+  EVENT_PARTICIPANT_KICKED,
   EVENT_PARTICIPANT_LEAVE,
   EVENT_STREAM_ENDED,
   EVENT_USER_DISCONNECTED,
 } from '@backend_2/utils';
 import { Controller } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import { ILeaveStreamRequest, IMediaToggleRequest } from '@warpy/lib';
 import { ParticipantService } from './participant.service';
@@ -18,11 +19,15 @@ import { ParticipantService } from './participant.service';
 export class ParticipantController
   implements OnUserDisconnect, OnStreamEnd, OnParticipantLeave
 {
-  constructor(private participant: ParticipantService) {}
+  constructor(
+    private participant: ParticipantService,
+    private eventEmitter: EventEmitter2,
+  ) {}
 
   @MessagePattern('participant.leave')
-  async onLeaveStream({ user }: ILeaveStreamRequest) {
-    return this.participant.removeUserFromStream(user);
+  async onParticipantLeave({ user, stream }: ILeaveStreamRequest) {
+    await this.participant.removeUserFromStream(user, stream);
+    this.eventEmitter.emit(EVENT_PARTICIPANT_LEAVE, { user, stream });
   }
 
   @MessagePattern('participant.media-toggle')
@@ -37,17 +42,18 @@ export class ParticipantController
     });
   }
 
+  @OnEvent(EVENT_PARTICIPANT_KICKED)
+  async onUserKicked({ user }) {
+    await this.participant.removeUserFromStream(user);
+  }
+
   @OnEvent(EVENT_USER_DISCONNECTED)
   async onUserDisconnect({ user }) {
-    await this.participant.deleteParticipant(user);
+    await this.participant.removeUserFromStream(user);
   }
 
   @OnEvent(EVENT_STREAM_ENDED)
   async onStreamEnd({ stream }) {
     await this.participant.clearStreamData(stream);
-  }
-
-  async onParticipantLeave({ user }) {
-    await this.participant.deleteParticipant(user);
   }
 }

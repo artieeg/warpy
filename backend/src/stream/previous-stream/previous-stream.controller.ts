@@ -1,7 +1,8 @@
 import { OnUserDisconnect } from '@backend_2/interfaces';
+import { IFullParticipant } from '@backend_2/user/participant';
 import {
+  EVENT_NEW_PARTICIPANT,
   EVENT_STREAM_ENDED,
-  EVENT_STREAM_JOINED,
   EVENT_USER_CONNECTED,
   EVENT_USER_DISCONNECTED,
 } from '@backend_2/utils';
@@ -13,9 +14,9 @@ import { PreviousStreamService } from './previous-stream.service';
 export class PreviousStreamController implements OnUserDisconnect {
   constructor(private previousStreamService: PreviousStreamService) {}
 
-  @OnEvent(EVENT_STREAM_JOINED)
-  async onStreamJoin({ user, stream }: { user: string; stream: string }) {
-    await this.previousStreamService.set(user, stream);
+  @OnEvent(EVENT_NEW_PARTICIPANT)
+  async onStreamJoin({ id, stream }: IFullParticipant) {
+    await this.previousStreamService.set(id, stream);
   }
 
   @OnEvent(EVENT_STREAM_ENDED)
