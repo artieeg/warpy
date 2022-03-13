@@ -1,2 +1,2 @@
-export * from './participant.entity';
+export * from './participant.store';
 export * from './participant-common.module';

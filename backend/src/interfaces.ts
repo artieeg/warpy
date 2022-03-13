@@ -9,7 +9,7 @@ export interface OnStreamEnd {
 }
 
 export interface OnParticipantLeave {
-  onParticipantLeave: (data: { user: string }) => Promise<any>;
+  onParticipantLeave: (data: { user: string; stream: string }) => Promise<any>;
 }
 
 export interface OnNewUser {
