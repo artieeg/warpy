@@ -1,4 +1,4 @@
-import { EVENT_ACTIVE_SPEAKERS } from '@backend_2/utils';
+import { EVENT_ACTIVE_SPEAKERS } from '@warpy-be/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 

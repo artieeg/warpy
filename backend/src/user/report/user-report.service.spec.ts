@@ -1,4 +1,4 @@
-import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
+import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
 import { UserReportEntity } from './user-report.entity';
 import { UserReportService } from './user-report.service';
 import { mockedUserReportEntity } from './user-report.entity.mock';

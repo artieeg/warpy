@@ -1,4 +1,4 @@
-import { StreamModule } from '@backend_2/stream/stream.module';
+import { StreamModule } from '@warpy-be/stream/stream.module';
 import { Module } from '@nestjs/common';
 import { PrismaModule } from '../prisma/prisma.module';
 import { TokenModule } from '../token/token.module';

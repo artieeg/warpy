@@ -1,11 +1,11 @@
 import {
   BlockedByAnotherSpeaker,
   StreamHasBlockedSpeakerError,
-} from '@backend_2/errors';
-import { ParticipantEntity } from '@backend_2/participant/participant.entity';
-import { mockedParticipantEntity } from '@backend_2/participant/participant.entity.mock';
-import { createParticipantFixture } from '@backend_2/__fixtures__';
-import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
+} from '@warpy-be/errors';
+import { ParticipantEntity } from '@warpy-be/participant/participant.entity';
+import { mockedParticipantEntity } from '@warpy-be/participant/participant.entity.mock';
+import { createParticipantFixture } from '@warpy-be/__fixtures__';
+import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
 import { BlockEntity } from './block.entity';
 import { mockedBlockEntity } from './block.entity.mock';
 import { BlockService } from './block.service';

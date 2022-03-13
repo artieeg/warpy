@@ -1,5 +1,5 @@
-import { OnUserDisconnect } from '@backend_2/interfaces';
-import { EVENT_USER_DISCONNECTED } from '@backend_2/utils';
+import { OnUserDisconnect } from '@warpy-be/interfaces';
+import { EVENT_USER_DISCONNECTED } from '@warpy-be/utils';
 import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';

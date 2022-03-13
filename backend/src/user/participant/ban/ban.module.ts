@@ -1,5 +1,5 @@
-import { MediaModule } from '@backend_2/media/media.module';
-import { PrismaModule } from '@backend_2/prisma/prisma.module';
+import { MediaModule } from '@warpy-be/media/media.module';
+import { PrismaModule } from '@warpy-be/prisma/prisma.module';
 import { Module } from '@nestjs/common';
 import { ParticipantBanEntity } from './ban.entity';
 import { ParticipantBanService } from './ban.service';

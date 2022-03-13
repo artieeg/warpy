@@ -1,13 +1,13 @@
-import { CoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity';
-import { mockedCoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity.mock';
-import { NotEnoughCoins } from '@backend_2/errors';
-import { mockedEventEmitter } from '@backend_2/events/events.service.mock';
-import { EVENT_AWARD_SENT } from '@backend_2/utils';
+import { CoinBalanceEntity } from '@warpy-be/coin-balance/coin-balance.entity';
+import { mockedCoinBalanceEntity } from '@warpy-be/coin-balance/coin-balance.entity.mock';
+import { NotEnoughCoins } from '@warpy-be/errors';
+import { mockedEventEmitter } from '@warpy-be/events/events.service.mock';
+import { EVENT_AWARD_SENT } from '@warpy-be/utils';
 import {
   createAwardFixture,
   createAwardModelFixture,
-} from '@backend_2/__fixtures__';
-import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
+} from '@warpy-be/__fixtures__';
+import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AwardModelEntity } from './award-model.entity';
 import { mockedAwardModelEntity } from './award-model.entity.mock';

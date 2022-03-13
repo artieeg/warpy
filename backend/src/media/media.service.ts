@@ -1,5 +1,5 @@
-import { InternalError } from '@backend_2/errors';
-import { IFullParticipant } from '@backend_2/user/participant';
+import { InternalError } from '@warpy-be/errors';
+import { IFullParticipant } from '@warpy-be/user/participant';
 import { Injectable } from '@nestjs/common';
 import {
   ICreateTransport,

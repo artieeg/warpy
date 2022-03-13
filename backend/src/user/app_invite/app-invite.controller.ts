@@ -1,5 +1,5 @@
-import { OnNewUser } from '@backend_2/interfaces';
-import { EVENT_USER_CREATED } from '@backend_2/utils';
+import { OnNewUser } from '@warpy-be/interfaces';
+import { EVENT_USER_CREATED } from '@warpy-be/utils';
 import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';

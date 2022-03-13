@@ -1,5 +1,5 @@
-import { ParticipantModule } from '@backend_2/user/participant/participant.module';
-import { PrismaModule } from '@backend_2/prisma/prisma.module';
+import { ParticipantModule } from '@warpy-be/user/participant/participant.module';
+import { PrismaModule } from '@warpy-be/prisma/prisma.module';
 import { forwardRef, Module } from '@nestjs/common';
 import { BlockController } from './block.controller';
 import { BlockEntity } from './block.entity';

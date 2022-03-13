@@ -2,18 +2,18 @@ import {
   NoPermissionError,
   StreamNotFound,
   UserNotFound,
-} from '@backend_2/errors';
-import { MediaService } from '@backend_2/media/media.service';
-import { mockedMediaService } from '@backend_2/media/media.service.mock';
-import { ParticipantEntity } from '@backend_2/participant/participant.entity';
-import { mockedParticipantEntity } from '@backend_2/participant/participant.entity.mock';
-import { UserEntity } from '@backend_2/user/user.entity';
-import { mockedUserEntity } from '@backend_2/user/user.entity.mock';
+} from '@warpy-be/errors';
+import { MediaService } from '@warpy-be/media/media.service';
+import { mockedMediaService } from '@warpy-be/media/media.service.mock';
+import { ParticipantEntity } from '@warpy-be/participant/participant.entity';
+import { mockedParticipantEntity } from '@warpy-be/participant/participant.entity.mock';
+import { UserEntity } from '@warpy-be/user/user.entity';
+import { mockedUserEntity } from '@warpy-be/user/user.entity.mock';
 import {
   createParticipantFixture,
   createStreamFixture,
-} from '@backend_2/__fixtures__';
-import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
+} from '@warpy-be/__fixtures__';
+import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
 import { StreamEntity } from './stream.entity';
 import { mockedStreamEntity } from './stream.entity.mock';
 import { StreamService } from './stream.service';

@@ -1,13 +1,13 @@
-import { mockedEventEmitter } from '@backend_2/events/events.service.mock';
-import { MediaService } from '@backend_2/media/media.service';
-import { mockedMediaService } from '@backend_2/media/media.service.mock';
-import { ParticipantEntity } from '@backend_2/participant/participant.entity';
-import { mockedParticipantEntity } from '@backend_2/participant/participant.entity.mock';
-import { TokenService } from '@backend_2/token/token.service';
-import { mockedTokenService } from '@backend_2/token/token.service.mock';
-import { EVENT_NEW_PARTICIPANT } from '@backend_2/utils';
-import { createParticipantFixture } from '@backend_2/__fixtures__';
-import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
+import { mockedEventEmitter } from '@warpy-be/events/events.service.mock';
+import { MediaService } from '@warpy-be/media/media.service';
+import { mockedMediaService } from '@warpy-be/media/media.service.mock';
+import { ParticipantEntity } from '@warpy-be/participant/participant.entity';
+import { mockedParticipantEntity } from '@warpy-be/participant/participant.entity.mock';
+import { TokenService } from '@warpy-be/token/token.service';
+import { mockedTokenService } from '@warpy-be/token/token.service.mock';
+import { EVENT_NEW_PARTICIPANT } from '@warpy-be/utils';
+import { createParticipantFixture } from '@warpy-be/__fixtures__';
+import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { BotInstanceEntity } from './bot-instance.entity';
 import { mockedBotInstanceEntity } from './bot-instance.entity.mock';
@@ -108,10 +108,9 @@ describe('Bot Instance Service', () => {
     it('broadcasts the bot participant', async () => {
       await botInstanceService.createBotInstance(bot, 'test');
 
-      expect(mockedEventEmitter.emit).toBeCalledWith(
-        EVENT_NEW_PARTICIPANT,
-        botParticipant,
-      );
+      expect(mockedEventEmitter.emit).toBeCalledWith(EVENT_NEW_PARTICIPANT, {
+        participant: botParticipant,
+      });
     });
 
     it('connects bot to the send media node', async () => {

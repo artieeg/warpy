@@ -1,5 +1,5 @@
-import { InvalidVisual } from '@backend_2/errors';
-import { EVENT_AWARD_SENT } from '@backend_2/utils';
+import { InvalidVisual } from '@warpy-be/errors';
+import { EVENT_AWARD_SENT } from '@warpy-be/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AwardEntity } from './award.entity';

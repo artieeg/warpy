@@ -1,4 +1,4 @@
-import { IUser } from '@warpy/lib';
+import { IParticipant, IUser } from '@warpy/lib';
 
 export interface OnUserDisconnect {
   onUserDisconnect: (data: { user: string }) => Promise<any>;
@@ -21,4 +21,8 @@ export interface OnInviteAccepted {
     inviter: string;
     invited: string;
   }) => Promise<any>;
+}
+
+export interface OnNewParticipant {
+  onNewParticipant: ({ participant: IParticipant }) => Promise<any>;
 }

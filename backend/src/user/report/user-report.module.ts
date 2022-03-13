@@ -1,4 +1,4 @@
-import { PrismaModule } from '@backend_2/prisma/prisma.module';
+import { PrismaModule } from '@warpy-be/prisma/prisma.module';
 import { Module } from '@nestjs/common';
 import { UserReportController } from './user-report.controller';
 import { UserReportEntity } from './user-report.entity';

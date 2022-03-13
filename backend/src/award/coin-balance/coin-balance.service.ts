@@ -1,4 +1,4 @@
-import { NotEnoughCoins } from '@backend_2/errors';
+import { NotEnoughCoins } from '@warpy-be/errors';
 import { Injectable } from '@nestjs/common';
 import { IUser } from '@warpy/lib';
 import { CoinBalanceEntity } from './coin-balance.entity';

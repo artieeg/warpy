@@ -1,5 +1,5 @@
-import { IFollow } from '@backend_2/follow/follow.entity';
-import { IFullParticipant } from '@backend_2/participant/participant.entity';
+import { IFollow } from '@warpy-be/follow/follow.entity';
+import { IFullParticipant } from '@warpy-be/participant/participant.entity';
 import {
   IAward,
   IAwardModel,

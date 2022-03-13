@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
 import { WaitlistService } from './waitlist.service';
 import { validate } from 'email-validator';
-import { WaitlistRecordExists } from '@backend_2/errors';
+import { WaitlistRecordExists } from '@warpy-be/errors';
 
 type NewWaitlistRecord = {
   username: string;

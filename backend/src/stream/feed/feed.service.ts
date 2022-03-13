@@ -1,6 +1,6 @@
-import { StreamEntity } from '@backend_2/stream/common/stream.entity';
-import { BlockService } from '@backend_2/user/block/block.service';
-import { ParticipantStore } from '@backend_2/user/participant/store';
+import { StreamEntity } from '@warpy-be/stream/common/stream.entity';
+import { BlockService } from '@warpy-be/user/block/block.service';
+import { ParticipantStore } from '@warpy-be/user/participant/store';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ICandidate, IStream } from '@warpy/lib';
 

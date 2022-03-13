@@ -1,4 +1,4 @@
-import { OnStreamEnd } from '@backend_2/interfaces';
+import { OnNewParticipant, OnStreamEnd } from '@warpy-be/interfaces';
 import {
   EVENT_ACTIVE_SPEAKERS,
   EVENT_AWARD_SENT,
@@ -10,7 +10,7 @@ import {
   EVENT_REACTIONS,
   EVENT_ROLE_CHANGE,
   EVENT_STREAM_ENDED,
-} from '@backend_2/utils';
+} from '@warpy-be/utils';
 import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { IParticipant } from '@warpy/lib';
@@ -26,7 +26,7 @@ import {
 } from './types';
 
 @Controller()
-export class BroadcastController implements OnStreamEnd {
+export class BroadcastController implements OnStreamEnd, OnNewParticipant {
   constructor(
     private broadcast: BroadcastService,
     private store: BroadcastUserListStore,
@@ -85,7 +85,7 @@ export class BroadcastController implements OnStreamEnd {
   }
 
   @OnEvent(EVENT_NEW_PARTICIPANT, { async: true })
-  async onBroadcastParticipant(participant: IParticipant) {
+  async onNewParticipant({ participant }) {
     return Promise.all([
       this.broadcast.broadcastNewParticipant(participant),
       this.store.addUserToList(participant.stream, participant.id),

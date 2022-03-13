@@ -1,4 +1,4 @@
-import { ExceptionFilter } from '@backend_2/rpc-exception.filter';
+import { ExceptionFilter } from '@warpy-be/rpc-exception.filter';
 import { Controller, UseFilters } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { IClap } from '@warpy/lib';

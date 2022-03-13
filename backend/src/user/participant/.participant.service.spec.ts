@@ -1,22 +1,22 @@
-import { BlockEntity } from '@backend_2/block/block.entity';
-import { mockedBlockEntity } from '@backend_2/block/block.entity.mock';
-import { BlockService } from '@backend_2/block/block.service';
+import { BlockEntity } from '@warpy-be/block/block.entity';
+import { mockedBlockEntity } from '@warpy-be/block/block.entity.mock';
+import { BlockService } from '@warpy-be/block/block.service';
 import {
   BannedFromStreamError,
   NoPermissionError,
   StreamHasBlockedSpeakerError,
   StreamNotFound,
   UserNotFound,
-} from '@backend_2/errors';
-import { mockedEventEmitter } from '@backend_2/events/events.service.mock';
-import { mockedMediaService } from '@backend_2/media/media.service.mock';
-import { MessageService } from '@backend_2/message/message.service';
-import { mockedMessageService } from '@backend_2/message/message.service.mock';
-import { mockedBlockService } from '@backend_2/block/block.service.mock';
-import { StreamBlockEntity } from '@backend_2/stream-block/stream-block.entity';
-import { mockedStreamBlockEntity } from '@backend_2/stream-block/stream-block.entity.mock';
-import { createParticipantFixture } from '@backend_2/__fixtures__';
-import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
+} from '@warpy-be/errors';
+import { mockedEventEmitter } from '@warpy-be/events/events.service.mock';
+import { mockedMediaService } from '@warpy-be/media/media.service.mock';
+import { MessageService } from '@warpy-be/message/message.service';
+import { mockedMessageService } from '@warpy-be/message/message.service.mock';
+import { mockedBlockService } from '@warpy-be/block/block.service.mock';
+import { StreamBlockEntity } from '@warpy-be/stream-block/stream-block.entity';
+import { mockedStreamBlockEntity } from '@warpy-be/stream-block/stream-block.entity.mock';
+import { createParticipantFixture } from '@warpy-be/__fixtures__';
+import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { when } from 'jest-when';
 import { MediaService } from '../media/media.service';

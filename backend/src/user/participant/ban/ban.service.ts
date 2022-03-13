@@ -2,9 +2,9 @@ import {
   UserNotFound,
   NoPermissionError,
   BannedFromStreamError,
-} from '@backend_2/errors';
-import { MediaService } from '@backend_2/media/media.service';
-import { EVENT_PARTICIPANT_KICKED } from '@backend_2/utils';
+} from '@warpy-be/errors';
+import { MediaService } from '@warpy-be/media/media.service';
+import { EVENT_PARTICIPANT_KICKED } from '@warpy-be/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ParticipantStore } from '../store';

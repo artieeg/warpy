@@ -1,4 +1,4 @@
-import { MailSendError } from '@backend_2/errors';
+import { MailSendError } from '@warpy-be/errors';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import sendgrid from '@sendgrid/mail';

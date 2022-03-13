@@ -1,13 +1,13 @@
-import { BlockEntity } from '@backend_2/block/block.entity';
-import { mockedBlockEntity } from '@backend_2/block/block.entity.mock';
-import { StreamNotFound, UserNotFound } from '@backend_2/errors';
-import { mockedEventEmitter } from '@backend_2/events/events.service.mock';
-import { ParticipantEntity } from '@backend_2/participant/participant.entity';
-import { mockedParticipantEntity } from '@backend_2/participant/participant.entity.mock';
-import { UserEntity } from '@backend_2/user/user.entity';
-import { mockedUserEntity } from '@backend_2/user/user.entity.mock';
-import { createUserFixture } from '@backend_2/__fixtures__';
-import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
+import { BlockEntity } from '@warpy-be/block/block.entity';
+import { mockedBlockEntity } from '@warpy-be/block/block.entity.mock';
+import { StreamNotFound, UserNotFound } from '@warpy-be/errors';
+import { mockedEventEmitter } from '@warpy-be/events/events.service.mock';
+import { ParticipantEntity } from '@warpy-be/participant/participant.entity';
+import { mockedParticipantEntity } from '@warpy-be/participant/participant.entity.mock';
+import { UserEntity } from '@warpy-be/user/user.entity';
+import { mockedUserEntity } from '@warpy-be/user/user.entity.mock';
+import { createUserFixture } from '@warpy-be/__fixtures__';
+import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ChatService } from './chat.service';
 

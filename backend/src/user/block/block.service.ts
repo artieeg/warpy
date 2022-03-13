@@ -1,9 +1,9 @@
 import {
   BlockedByAnotherSpeaker,
   StreamHasBlockedSpeakerError,
-} from '@backend_2/errors';
+} from '@warpy-be/errors';
 import { Injectable } from '@nestjs/common';
-import { ParticipantStore } from '@backend_2/user/participant';
+import { ParticipantStore } from '@warpy-be/user/participant';
 import { BlockEntity } from './block.entity';
 import { BlockCacheService } from './block.cache';
 

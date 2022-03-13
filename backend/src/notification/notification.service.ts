@@ -1,4 +1,4 @@
-import { MessageService } from '@backend_2/message/message.service';
+import { MessageService } from '@warpy-be/message/message.service';
 import { Injectable } from '@nestjs/common';
 import { IInvite, INotification } from '@warpy/lib';
 import { NotificationEntity } from './notification.entity';

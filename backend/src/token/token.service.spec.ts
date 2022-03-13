@@ -1,4 +1,4 @@
-import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
+import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
 import { TokenService } from './token.service';
 
 describe('TokenService', () => {

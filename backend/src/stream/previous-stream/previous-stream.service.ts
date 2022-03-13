@@ -1,5 +1,5 @@
-import { MessageService } from '@backend_2/message/message.service';
-import { ParticipantStore } from '@backend_2/user/participant';
+import { MessageService } from '@warpy-be/message/message.service';
+import { ParticipantStore } from '@warpy-be/user/participant';
 import { Injectable } from '@nestjs/common';
 import { StreamEntity } from '../common/stream.entity';
 import { PreviousStreamCacheService } from './previous-stream.cache';

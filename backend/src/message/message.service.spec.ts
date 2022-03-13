@@ -1,6 +1,6 @@
-import { NatsService } from '@backend_2/nats/nats.service';
-import { mockedNatsService } from '@backend_2/nats/nats.services.mock';
-import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
+import { NatsService } from '@warpy-be/nats/nats.service';
+import { mockedNatsService } from '@warpy-be/nats/nats.services.mock';
+import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
 import { MessageService } from './message.service';
 
 describe('MessageService', () => {

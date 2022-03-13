@@ -2,7 +2,8 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { IParticipant, Roles } from '@warpy/lib';
 import { ConfigService } from '@nestjs/config';
 import IORedis, { Pipeline } from 'ioredis';
-import { StreamNotFound } from '@backend_2/errors';
+import { StreamNotFound } from '@warpy-be/errors';
+import { StreamParticipantIdsStoreBehaviour } from '@warpy-be/shared/stream-participant-ids-store.behaviour';
 
 export type CreateNewParticipant = {
   user_id?: string;
@@ -27,11 +28,15 @@ const PREFIX_COUNT = 'count_';
 @Injectable()
 export class ParticipantStore implements OnModuleInit {
   redis: IORedis.Redis;
+  streamParticipantIdsStoreBehaviour: StreamParticipantIdsStoreBehaviour;
 
   constructor(private configService: ConfigService) {}
 
   onModuleInit() {
     this.redis = new IORedis(this.configService.get('participantStoreAddr'));
+
+    this.streamParticipantIdsStoreBehaviour =
+      new StreamParticipantIdsStoreBehaviour(this.redis);
   }
 
   private toDTO(data: any): IFullParticipant {

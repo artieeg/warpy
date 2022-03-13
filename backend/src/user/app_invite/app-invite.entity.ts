@@ -1,6 +1,6 @@
-import { AppInviteNotFound } from '@backend_2/errors';
-import { PrismaService } from '@backend_2/prisma/prisma.service';
-import { UserEntity } from '@backend_2/user/user.entity';
+import { AppInviteNotFound } from '@warpy-be/errors';
+import { PrismaService } from '@warpy-be/prisma/prisma.service';
+import { UserEntity } from '@warpy-be/user/user.entity';
 import { Injectable } from '@nestjs/common';
 import { AppInvite } from '@prisma/client';
 import { animals, colors, uniqueNamesGenerator } from 'unique-names-generator';

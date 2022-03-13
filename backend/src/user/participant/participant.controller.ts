@@ -2,13 +2,13 @@ import {
   OnParticipantLeave,
   OnStreamEnd,
   OnUserDisconnect,
-} from '@backend_2/interfaces';
+} from '@warpy-be/interfaces';
 import {
   EVENT_PARTICIPANT_KICKED,
   EVENT_PARTICIPANT_LEAVE,
   EVENT_STREAM_ENDED,
   EVENT_USER_DISCONNECTED,
-} from '@backend_2/utils';
+} from '@warpy-be/utils';
 import { Controller } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';

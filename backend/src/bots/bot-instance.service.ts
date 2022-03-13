@@ -1,14 +1,11 @@
-import { MediaService } from '@backend_2/media/media.service';
-import {
-  IFullParticipant,
-  ParticipantStore,
-} from '@backend_2/user/participant';
-import { TokenService } from '@backend_2/token/token.service';
+import { MediaService } from '@warpy-be/media/media.service';
+import { IFullParticipant, ParticipantStore } from '@warpy-be/user/participant';
+import { TokenService } from '@warpy-be/token/token.service';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IBotJoinResponse } from '@warpy/lib';
 import { BotInstanceEntity } from './bot-instance.entity';
-import { EVENT_NEW_PARTICIPANT } from '@backend_2/utils';
+import { EVENT_NEW_PARTICIPANT } from '@warpy-be/utils';
 
 @Injectable()
 export class BotInstanceService {
@@ -55,7 +52,9 @@ export class BotInstanceService {
       this.participantEntity.add(botParticipant),
     ]);
 
-    this.eventEmitter.emit(EVENT_NEW_PARTICIPANT, botParticipant);
+    this.eventEmitter.emit(EVENT_NEW_PARTICIPANT, {
+      participant: botParticipant,
+    });
 
     return {
       mediaPermissionToken,

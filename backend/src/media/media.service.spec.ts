@@ -1,8 +1,8 @@
-import { InternalError } from '@backend_2/errors';
-import { NatsService } from '@backend_2/nats/nats.service';
-import { mockedNatsService } from '@backend_2/nats/nats.services.mock';
-import { createParticipantFixture } from '@backend_2/__fixtures__';
-import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
+import { InternalError } from '@warpy-be/errors';
+import { NatsService } from '@warpy-be/nats/nats.service';
+import { mockedNatsService } from '@warpy-be/nats/nats.services.mock';
+import { createParticipantFixture } from '@warpy-be/__fixtures__';
+import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
 import { MediaCacheService } from './media.cache';
 import { mockedMediaCache } from './media.cache.mock';
 import { MediaService } from './media.service';

@@ -1,4 +1,4 @@
-import { createUserFixture } from '@backend_2/__fixtures__';
+import { createUserFixture } from '@warpy-be/__fixtures__';
 
 export const mockedUserEntity = {
   findById: jest.fn().mockResolvedValue(createUserFixture({})),

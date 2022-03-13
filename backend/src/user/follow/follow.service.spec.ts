@@ -1,5 +1,5 @@
-import { createFollowRecord } from '@backend_2/__fixtures__';
-import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
+import { createFollowRecord } from '@warpy-be/__fixtures__';
+import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
 import { FollowEntity } from './follow.entity';
 import { mockedFollowEntity } from './follow.entity.mock';
 import { FollowService } from './follow.service';

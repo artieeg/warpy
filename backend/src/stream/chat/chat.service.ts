@@ -1,13 +1,14 @@
-import { StreamNotFound, UserNotFound } from '@backend_2/errors';
-import { ParticipantStore } from '@backend_2/user/participant';
-import { UserEntity } from '@backend_2/user/user.entity';
+import { StreamNotFound, UserNotFound } from '@warpy-be/errors';
+import { ParticipantStore } from '@warpy-be/user/participant';
+import { UserEntity } from '@warpy-be/user/user.entity';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IChatMessage } from '@warpy/lib';
+import { BlockService } from '@warpy-be/user/block/block.service';
+import { EVENT_CHAT_MESSAGE } from '@warpy-be/utils';
+
 import cuid from 'cuid';
 import Filter from 'bad-words';
-import { BlockService } from '@backend_2/user/block/block.service';
-import { EVENT_CHAT_MESSAGE } from '@backend_2/utils';
 
 @Injectable()
 export class ChatService {

@@ -1,5 +1,5 @@
-import { PrismaService } from '@backend_2/prisma/prisma.service';
-import { InviteEntity } from '@backend_2/stream/invite/invite.entity';
+import { PrismaService } from '@warpy-be/prisma/prisma.service';
+import { InviteEntity } from '@warpy-be/stream/invite/invite.entity';
 import { Injectable } from '@nestjs/common';
 import { INotification } from '@warpy/lib';
 

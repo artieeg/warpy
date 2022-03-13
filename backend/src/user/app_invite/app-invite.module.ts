@@ -1,4 +1,4 @@
-import { PrismaModule } from '@backend_2/prisma/prisma.module';
+import { PrismaModule } from '@warpy-be/prisma/prisma.module';
 import { Module } from '@nestjs/common';
 import { AppInviteController } from './app-invite.controller';
 import { AppInviteEntity } from './app-invite.entity';

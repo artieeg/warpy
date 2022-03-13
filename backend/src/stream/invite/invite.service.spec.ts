@@ -1,17 +1,17 @@
-import { NoPermissionError } from '@backend_2/errors';
-import { mockedEventEmitter } from '@backend_2/events/events.service.mock';
-import { FollowEntity } from '@backend_2/follow/follow.entity';
-import { mockedFollowEntity } from '@backend_2/follow/follow.entity.mock';
-import { MessageService } from '@backend_2/message/message.service';
-import { mockedMessageService } from '@backend_2/message/message.service.mock';
-import { StreamEntity } from '@backend_2/stream/stream.entity';
-import { mockedStreamEntity } from '@backend_2/stream/stream.entity.mock';
+import { NoPermissionError } from '@warpy-be/errors';
+import { mockedEventEmitter } from '@warpy-be/events/events.service.mock';
+import { FollowEntity } from '@warpy-be/follow/follow.entity';
+import { mockedFollowEntity } from '@warpy-be/follow/follow.entity.mock';
+import { MessageService } from '@warpy-be/message/message.service';
+import { mockedMessageService } from '@warpy-be/message/message.service.mock';
+import { StreamEntity } from '@warpy-be/stream/stream.entity';
+import { mockedStreamEntity } from '@warpy-be/stream/stream.entity.mock';
 import {
   createFollowRecord,
   createInviteFixture,
   createStreamFixture,
-} from '@backend_2/__fixtures__';
-import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
+} from '@warpy-be/__fixtures__';
+import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InviteEntity } from './invite.entity';
 import { mockedInviteEntity } from './invite.entity.mock';

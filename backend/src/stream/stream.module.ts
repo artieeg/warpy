@@ -1,5 +1,5 @@
-import { PrismaModule } from '@backend_2/prisma/prisma.module';
-import { UserModule } from '@backend_2/user/user.module';
+import { PrismaModule } from '@warpy-be/prisma/prisma.module';
+import { UserModule } from '@warpy-be/user/user.module';
 import { forwardRef, Module } from '@nestjs/common';
 import { MediaModule } from '../media/media.module';
 import { CategoryModule } from './categories/categories.module';

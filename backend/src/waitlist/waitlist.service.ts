@@ -1,6 +1,6 @@
-import { WaitlistRecordExists } from '@backend_2/errors';
-import { MailService } from '@backend_2/mail/mail.service';
-import { TokenService } from '@backend_2/token/token.service';
+import { WaitlistRecordExists } from '@warpy-be/errors';
+import { MailService } from '@warpy-be/mail/mail.service';
+import { TokenService } from '@warpy-be/token/token.service';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import fs from 'fs';

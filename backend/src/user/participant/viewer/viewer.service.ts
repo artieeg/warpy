@@ -1,6 +1,6 @@
-import { MediaService } from '@backend_2/media/media.service';
-import { UserService } from '@backend_2/user/user.service';
-import { EVENT_NEW_PARTICIPANT, EVENT_RAISE_HAND } from '@backend_2/utils';
+import { MediaService } from '@warpy-be/media/media.service';
+import { UserService } from '@warpy-be/user/user.service';
+import { EVENT_NEW_PARTICIPANT, EVENT_RAISE_HAND } from '@warpy-be/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IJoinStreamResponse } from '@warpy/lib';
@@ -53,7 +53,7 @@ export class ViewerService {
 
     await this.participant.add(viewer);
 
-    this.eventEmitter.emit(EVENT_NEW_PARTICIPANT, viewer);
+    this.eventEmitter.emit(EVENT_NEW_PARTICIPANT, { participant: viewer });
 
     const [recvMediaParams, speakers, raisedHands, count] = await Promise.all([
       this.media.getViewerParams(recvNodeId, viewerId, stream),

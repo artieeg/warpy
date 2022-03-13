@@ -22,7 +22,7 @@
   "_moduleAliases": {
     "@app": "./warpy/src",
     "@web": "./warpy-web-next/src",
-    "@backend_2": "./backend/src",
+    "@warpy-be": "./backend/src",
     "@ws_gateway": "./ws_gateway/src",
     "@media": "./media/src",
     "@bots_api": "./bots-api/src",

@@ -1,6 +1,6 @@
-import { BotsModule } from '@backend_2/bots/bots.module';
-import { MediaModule } from '@backend_2/media/media.module';
-import { TokenService } from '@backend_2/token/token.service';
+import { BotsModule } from '@warpy-be/bots/bots.module';
+import { MediaModule } from '@warpy-be/media/media.module';
+import { TokenService } from '@warpy-be/token/token.service';
 import { forwardRef, Module } from '@nestjs/common';
 import { ActiveSpeakerModule } from './active-speaker/active-speaker.module';
 import { ParticipantBanModule } from './ban/ban.module';

@@ -1,21 +1,23 @@
-import { OnUserDisconnect } from '@backend_2/interfaces';
-import { IFullParticipant } from '@backend_2/user/participant';
+import { OnNewParticipant, OnUserDisconnect } from '@warpy-be/interfaces';
+import { IFullParticipant } from '@warpy-be/user/participant';
 import {
   EVENT_NEW_PARTICIPANT,
   EVENT_STREAM_ENDED,
   EVENT_USER_CONNECTED,
   EVENT_USER_DISCONNECTED,
-} from '@backend_2/utils';
+} from '@warpy-be/utils';
 import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { PreviousStreamService } from './previous-stream.service';
 
 @Controller()
-export class PreviousStreamController implements OnUserDisconnect {
+export class PreviousStreamController
+  implements OnUserDisconnect, OnNewParticipant
+{
   constructor(private previousStreamService: PreviousStreamService) {}
 
   @OnEvent(EVENT_NEW_PARTICIPANT)
-  async onStreamJoin({ id, stream }: IFullParticipant) {
+  async onNewParticipant({ participant: { id, stream } }) {
     await this.previousStreamService.set(id, stream);
   }
 

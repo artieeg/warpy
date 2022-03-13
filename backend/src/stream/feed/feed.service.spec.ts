@@ -1,14 +1,14 @@
-import { BlockEntity } from '@backend_2/block/block.entity';
-import { mockedBlockEntity } from '@backend_2/block/block.entity.mock';
-import { ParticipantEntity } from '@backend_2/participant/participant.entity';
-import { mockedParticipantEntity } from '@backend_2/participant/participant.entity.mock';
-import { StreamEntity } from '@backend_2/stream/stream.entity';
-import { mockedStreamEntity } from '@backend_2/stream/stream.entity.mock';
+import { BlockEntity } from '@warpy-be/block/block.entity';
+import { mockedBlockEntity } from '@warpy-be/block/block.entity.mock';
+import { ParticipantEntity } from '@warpy-be/participant/participant.entity';
+import { mockedParticipantEntity } from '@warpy-be/participant/participant.entity.mock';
+import { StreamEntity } from '@warpy-be/stream/stream.entity';
+import { mockedStreamEntity } from '@warpy-be/stream/stream.entity.mock';
 import {
   createParticipantFixture,
   createStreamFixture,
-} from '@backend_2/__fixtures__';
-import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
+} from '@warpy-be/__fixtures__';
+import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
 import { CandidateService } from './candidate.service';
 
 describe('FeedService', () => {

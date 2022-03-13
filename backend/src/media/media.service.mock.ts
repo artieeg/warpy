@@ -1,4 +1,4 @@
-import { getMockedInstance } from '@backend_2/utils';
+import { getMockedInstance } from '@warpy-be/utils';
 import { MediaService } from './media.service';
 
 export const mockedMediaService = {

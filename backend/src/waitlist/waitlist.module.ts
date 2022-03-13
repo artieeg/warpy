@@ -1,6 +1,6 @@
-import { MailModule } from '@backend_2/mail/mail.module';
-import { PrismaModule } from '@backend_2/prisma/prisma.module';
-import { TokenModule } from '@backend_2/token/token.module';
+import { MailModule } from '@warpy-be/mail/mail.module';
+import { PrismaModule } from '@warpy-be/prisma/prisma.module';
+import { TokenModule } from '@warpy-be/token/token.module';
 import { Module } from '@nestjs/common';
 import { WaitlistController } from './waitlist.controller';
 import { WaitlistEntity } from './waitlist.entity';

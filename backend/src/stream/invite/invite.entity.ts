@@ -1,6 +1,6 @@
-import { BotsEntity } from '@backend_2/bots/bots.entity';
-import { PrismaService } from '@backend_2/prisma/prisma.service';
-import { UserEntity } from '@backend_2/user/user.entity';
+import { BotsEntity } from '@warpy-be/bots/bots.entity';
+import { PrismaService } from '@warpy-be/prisma/prisma.service';
+import { UserEntity } from '@warpy-be/user/user.entity';
 import { Injectable } from '@nestjs/common';
 import { Bot, Invite, Stream, User } from '@prisma/client';
 import { IInvite } from '@warpy/lib';

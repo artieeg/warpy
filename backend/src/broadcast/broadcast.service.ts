@@ -1,4 +1,4 @@
-import { ParticipantStore } from '@backend_2/user/participant/store';
+import { ParticipantStore } from '@warpy-be/user/participant/store';
 import { Injectable } from '@nestjs/common';
 import { IParticipant } from '@warpy/lib';
 import { MessageService } from '../message/message.service';

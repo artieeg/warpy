@@ -1,5 +1,5 @@
-import { UserNotFound } from '@backend_2/errors';
-import { ParticipantStore } from '@backend_2/user/participant/store';
+import { UserNotFound } from '@warpy-be/errors';
+import { ParticipantStore } from '@warpy-be/user/participant/store';
 import { Injectable } from '@nestjs/common';
 import {
   INewUser,
@@ -16,10 +16,10 @@ import { UserEntity } from './user.entity';
 import { FollowEntity } from './follow/follow.entity';
 import { AppInviteEntity } from './app_invite/app-invite.entity';
 import { AppliedAppInviteEntity } from './app_invite/applied-app-invite.entity';
-import { CategoriesEntity } from '@backend_2/stream/categories/categories.entity';
-import { StreamEntity } from '@backend_2/stream/common/stream.entity';
+import { CategoriesEntity } from '@warpy-be/stream/categories/categories.entity';
+import { StreamEntity } from '@warpy-be/stream/common/stream.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { EVENT_USER_CREATED } from '@backend_2/utils';
+import { EVENT_USER_CREATED } from '@warpy-be/utils';
 
 @Injectable()
 export class UserService {

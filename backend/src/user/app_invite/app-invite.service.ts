@@ -1,7 +1,7 @@
 import {
   AppInviteAlreadyAccepted,
   CantInviteYourself,
-} from '@backend_2/errors';
+} from '@warpy-be/errors';
 import { Injectable } from '@nestjs/common';
 import { IUser } from '@warpy/lib';
 import { AppInviteEntity } from './app-invite.entity';

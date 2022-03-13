@@ -1,4 +1,4 @@
-import { PrismaService } from '@backend_2/prisma/prisma.service';
+import { PrismaService } from '@warpy-be/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { UserBlock, User } from '@prisma/client';
 import { IUserBlock } from '@warpy/lib';

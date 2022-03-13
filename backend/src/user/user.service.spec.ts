@@ -3,22 +3,22 @@ import { UserService } from './user.service';
 import {
   createStreamFixture,
   createUserFixture,
-} from '@backend_2/__fixtures__';
-import { testModuleBuilder } from '@backend_2/__fixtures__/app.module';
+} from '@warpy-be/__fixtures__';
+import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
 import { mockedUserEntity } from './user.entity.mock';
-import { TokenService } from '@backend_2/token/token.service';
-import { mockedTokenService } from '@backend_2/token/token.service.mock';
-import { RefreshTokenEntity } from '@backend_2/token/refresh-token.entity';
-import { mockedRefreshTokenEntity } from '@backend_2/token/token.entity.mock';
-import { mockedParticipantEntity } from '@backend_2/participant/participant.entity.mock';
-import { ParticipantEntity } from '@backend_2/participant/participant.entity';
-import { StreamEntity } from '@backend_2/stream/stream.entity';
-import { mockedStreamEntity } from '@backend_2/stream/stream.entity.mock';
-import { mockedFollowEntity } from '@backend_2/follow/follow.entity.mock';
+import { TokenService } from '@warpy-be/token/token.service';
+import { mockedTokenService } from '@warpy-be/token/token.service.mock';
+import { RefreshTokenEntity } from '@warpy-be/token/refresh-token.entity';
+import { mockedRefreshTokenEntity } from '@warpy-be/token/token.entity.mock';
+import { mockedParticipantEntity } from '@warpy-be/participant/participant.entity.mock';
+import { ParticipantEntity } from '@warpy-be/participant/participant.entity';
+import { StreamEntity } from '@warpy-be/stream/stream.entity';
+import { mockedStreamEntity } from '@warpy-be/stream/stream.entity.mock';
+import { mockedFollowEntity } from '@warpy-be/follow/follow.entity.mock';
 import { when } from 'jest-when';
-import { FollowEntity } from '@backend_2/follow/follow.entity';
-import { CoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity';
-import { mockedCoinBalanceEntity } from '@backend_2/coin-balance/coin-balance.entity.mock';
+import { FollowEntity } from '@warpy-be/follow/follow.entity';
+import { CoinBalanceEntity } from '@warpy-be/coin-balance/coin-balance.entity';
+import { mockedCoinBalanceEntity } from '@warpy-be/coin-balance/coin-balance.entity.mock';
 
 describe('UserService', () => {
   let userService: UserService;
