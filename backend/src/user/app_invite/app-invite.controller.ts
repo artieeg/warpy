@@ -1,4 +1,7 @@
+import { OnNewUser } from '@backend_2/interfaces';
+import { EVENT_USER_CREATED } from '@backend_2/utils';
 import { Controller } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   IAppInviteRequest,
@@ -8,7 +11,7 @@ import {
 import { AppInviteService } from './app-invite.service';
 
 @Controller()
-export class AppInviteController {
+export class AppInviteController implements OnNewUser {
   constructor(private appInviteService: AppInviteService) {}
 
   @MessagePattern('app-invite.apply')
@@ -45,5 +48,10 @@ export class AppInviteController {
     const invite = await this.appInviteService.update(user);
 
     return { invite };
+  }
+
+  @OnEvent(EVENT_USER_CREATED)
+  async onNewUser({ user }) {
+    this.appInviteService.createAppInvite(user);
   }
 }

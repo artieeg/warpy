@@ -8,6 +8,6 @@ import { CoinBalanceService } from './coin-balance.service';
   imports: [PrismaModule],
   providers: [CoinBalanceEntity, CoinBalanceService],
   controllers: [CoinBalanceController],
-  exports: [CoinBalanceEntity],
+  exports: [CoinBalanceService],
 })
 export class CoinBalanceModule {}

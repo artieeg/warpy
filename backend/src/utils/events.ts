@@ -15,3 +15,7 @@ export const EVENT_USER_CONNECTED = 'user.connected';
 export const EVENT_CHAT_MESSAGE = 'chat.message';
 
 export const EVENT_REACTIONS = 'reactions';
+
+export const EVENT_USER_CREATED = 'user.created';
+
+export const EVENT_INVITE_ACCEPTED = 'invite.accepted';

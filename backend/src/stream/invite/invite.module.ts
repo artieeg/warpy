@@ -14,7 +14,7 @@ import { StreamCommonModule } from '../common/stream-common.module';
     StreamCommonModule,
     forwardRef(() => UserModule),
     TokenModule,
-    BotsModule,
+    forwardRef(() => BotsModule),
   ],
   providers: [InviteEntity, InviteService],
   controllers: [InviteController],

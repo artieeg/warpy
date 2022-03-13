@@ -79,10 +79,6 @@ export class ParticipantService {
     });
   }
 
-  async getStreamParticipants(stream: string) {
-    return this.participant.getParticipantIds(stream);
-  }
-
   private async deleteUserParticipant(user: string) {
     try {
       await this.participant.del(user);

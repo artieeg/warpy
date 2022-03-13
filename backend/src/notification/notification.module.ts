@@ -6,7 +6,7 @@ import { NotificationController } from './notification.controller';
 import { StreamModule } from '@backend_2/stream/stream.module';
 
 @Module({
-  imports: [PrismaModule, StreamModule],
+  imports: [PrismaModule],
   providers: [NotificationEntity, NotificationService],
   controllers: [NotificationController],
   exports: [],

@@ -1,16 +1,16 @@
-import { InvalidVisual, NotEnoughCoins } from '@backend_2/errors';
-import { CoinBalanceEntity } from '@backend_2/user/coin-balance/coin-balance.entity';
+import { InvalidVisual } from '@backend_2/errors';
 import { EVENT_AWARD_SENT } from '@backend_2/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AwardEntity } from './award.entity';
+import { CoinBalanceService } from './coin-balance/coin-balance.service';
 
 @Injectable()
 export class AwardService {
   constructor(
     private awardEntity: AwardEntity,
     private events: EventEmitter2,
-    private coinBalanceEntity: CoinBalanceEntity,
+    private coinBalanceService: CoinBalanceService,
   ) {}
 
   async getReceivedAwards(user: string) {
@@ -33,17 +33,12 @@ export class AwardService {
   ) {
     await this.validateVisual(visual);
 
-    if (!(await this.coinBalanceEntity.check(sender, 300))) {
-      throw new NotEnoughCoins();
-    }
+    await this.coinBalanceService.check(sender, 300);
 
-    await this.coinBalanceEntity.updateBalance(sender, -300);
-    const award = await this.awardEntity.create(
-      sender,
-      recipent,
-      visual,
-      message,
-    );
+    const [award] = await Promise.all([
+      this.awardEntity.create(sender, recipent, visual, message),
+      this.coinBalanceService.update(sender, -300),
+    ]);
 
     this.events.emit(EVENT_AWARD_SENT, { award });
   }

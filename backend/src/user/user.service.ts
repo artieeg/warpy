@@ -16,9 +16,10 @@ import { UserEntity } from './user.entity';
 import { FollowEntity } from './follow/follow.entity';
 import { AppInviteEntity } from './app_invite/app-invite.entity';
 import { AppliedAppInviteEntity } from './app_invite/applied-app-invite.entity';
-import { CoinBalanceEntity } from './coin-balance/coin-balance.entity';
 import { CategoriesEntity } from '@backend_2/stream/categories/categories.entity';
 import { StreamEntity } from '@backend_2/stream/common/stream.entity';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EVENT_USER_CREATED } from '@backend_2/utils';
 
 @Injectable()
 export class UserService {
@@ -30,11 +31,11 @@ export class UserService {
     private followEntity: FollowEntity,
     private participantEntity: ParticipantStore,
     private streamEntity: StreamEntity,
-    private coinBalanceEntity: CoinBalanceEntity,
     private blockEntity: BlockEntity,
     private appInviteEntity: AppInviteEntity,
     private appliedAppInviteEntity: AppliedAppInviteEntity,
     private userOnlineStatusService: UserOnlineStatusService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async createAnonUser() {
@@ -134,11 +135,11 @@ export class UserService {
       '1y',
     );
 
-    await Promise.all([
-      this.coinBalanceEntity.createCoinBalance(user.id, 2000),
-      this.appInviteEntity.create(user.id),
-      this.refreshTokenEntity.create(refreshToken),
-    ]);
+    this.eventEmitter.emit(EVENT_USER_CREATED, {
+      user,
+    });
+
+    await this.refreshTokenEntity.create(refreshToken);
 
     return {
       id: user.id,

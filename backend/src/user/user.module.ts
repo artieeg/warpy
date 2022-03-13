@@ -4,7 +4,6 @@ import { PrismaModule } from '../prisma/prisma.module';
 import { TokenModule } from '../token/token.module';
 import { AppInviteModule } from './app_invite/app-invite.module';
 import { BlockModule } from './block/block.module';
-import { CoinBalanceModule } from './coin-balance/coin-balance.module';
 import { DeveloperAccountModule } from './developer_account/developer_account.module';
 import { FollowModule } from './follow/follow.module';
 import { FriendFeedModule } from './friend_feed/friend_feed.module';
@@ -26,7 +25,6 @@ import { UserService } from './user.service';
     BlockModule,
     UserOnlineStatusModule,
     UserReportModule,
-    CoinBalanceModule,
     AppInviteModule,
     DeveloperAccountModule,
   ],
@@ -38,7 +36,6 @@ import { UserService } from './user.service';
     BlockModule,
     ParticipantModule,
     FollowModule,
-    CoinBalanceModule,
     DeveloperAccountModule,
   ],
 })

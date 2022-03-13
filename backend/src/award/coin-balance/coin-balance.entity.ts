@@ -37,19 +37,6 @@ export class CoinBalanceEntity {
     );
   }
 
-  async check(user_id: string, shouldHaveBalance: number): Promise<boolean> {
-    const { balance } = await this.prisma.coinBalance.findUnique({
-      where: {
-        user_id,
-      },
-      select: {
-        balance: true,
-      },
-    });
-
-    return balance >= shouldHaveBalance;
-  }
-
   async updateBalance(user_id: string, update: number) {
     await this.prisma.coinBalance.update({
       where: {

@@ -3,7 +3,7 @@ import {
   CantInviteYourself,
 } from '@backend_2/errors';
 import { Injectable } from '@nestjs/common';
-import { CoinBalanceEntity } from '../coin-balance/coin-balance.entity';
+import { IUser } from '@warpy/lib';
 import { AppInviteEntity } from './app-invite.entity';
 import { AppliedAppInviteEntity } from './applied-app-invite.entity';
 
@@ -11,9 +11,12 @@ import { AppliedAppInviteEntity } from './applied-app-invite.entity';
 export class AppInviteService {
   constructor(
     private appInviteEntity: AppInviteEntity,
-    private coinBalanceEntity: CoinBalanceEntity,
     private appliedInviteEntity: AppliedAppInviteEntity,
   ) {}
+
+  async createAppInvite(user: IUser) {
+    return this.appInviteEntity.create(user.id);
+  }
 
   async getById(id: string) {
     return this.appInviteEntity.findById(id);
@@ -41,11 +44,7 @@ export class AppInviteService {
       throw new CantInviteYourself();
     }
 
-    await Promise.all([
-      this.appliedInviteEntity.create(user, inviteId),
-      this.coinBalanceEntity.updateBalance(user, 3000),
-      this.coinBalanceEntity.updateBalance(inviterId, 3000),
-    ]);
+    await this.appliedInviteEntity.create(user, inviteId);
 
     return {
       status: 'ok',
