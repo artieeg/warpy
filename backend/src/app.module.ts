@@ -18,6 +18,7 @@ import { WaitlistModule } from './waitlist/waitlist.module';
 import { MailModule } from './mail/mail.module';
 import { ChatModule } from './stream/chat/chat.module';
 import { MessageModule } from './message/message.module';
+import { TimerModule } from './shared/modules/timer/timer.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { MessageModule } from './message/message.module';
       isGlobal: true,
     }),
     AwardModule,
+    TimerModule,
     BroadcastModule,
     MediaModule,
     GifModule,
