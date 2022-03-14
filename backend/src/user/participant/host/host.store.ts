@@ -2,6 +2,9 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import IORedis, { Redis } from 'ioredis';
 
+const STREAM_PREFIX = 'stream_';
+const HOST_PREFIX = 'stream_';
+
 @Injectable()
 export class HostStore implements OnModuleInit {
   redis: Redis;
@@ -13,11 +16,32 @@ export class HostStore implements OnModuleInit {
   }
 
   async setStreamHost(host: string, stream: string) {
-    await this.redis.set(host, stream);
+    const pipe = this.redis.pipeline();
+
+    pipe.set(HOST_PREFIX + host, stream);
+    pipe.set(STREAM_PREFIX + stream, host);
+
+    return pipe.exec();
   }
 
-  async delStreamHost(host: string) {
-    return this.redis.del(host);
+  async delByStream(host: string) {
+    const stream = await this.getStreamByHost(host);
+
+    const pipe = this.redis.pipeline();
+    pipe.del(HOST_PREFIX + host);
+    pipe.del(STREAM_PREFIX + stream);
+
+    return pipe.exec();
+  }
+
+  async delByHost(host: string) {
+    const stream = await this.getStreamByHost(host);
+
+    const pipe = this.redis.pipeline();
+    pipe.del(HOST_PREFIX + host);
+    pipe.del(STREAM_PREFIX + stream);
+
+    return pipe.exec();
   }
 
   async getStreamByHost(host: string) {
