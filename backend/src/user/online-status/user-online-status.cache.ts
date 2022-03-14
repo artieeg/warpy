@@ -1,34 +1,37 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import {
+  OnlineStatusStoreBehavior,
+  VAL_OFFLINE,
+  VAL_ONLINE,
+} from '@warpy-be/shared';
 import IORedis from 'ioredis';
 
 @Injectable()
 export class UserOnlineStatusCache implements OnModuleInit {
   client: IORedis.Redis;
+  onlineStatusStore: OnlineStatusStoreBehavior;
 
   constructor(private configService: ConfigService) {}
 
   onModuleInit() {
     this.client = new IORedis(this.configService.get('userOnlineStatusCache'));
+    this.onlineStatusStore = new OnlineStatusStoreBehavior(this.client);
   }
 
   async getUserStatusMany(ids: string[]): Promise<boolean[]> {
-    const values = await this.client.mget(ids);
-
-    return values.map((v) => !!v);
+    return this.onlineStatusStore.getStatusMany(ids);
   }
 
   async getUserStatus(user: string) {
-    const v = await this.client.get(user);
-
-    return !!v;
+    return this.onlineStatusStore.getStatus(user);
   }
 
   async setUserOnline(user: string) {
-    await this.client.set(user, 'true');
+    return this.onlineStatusStore.set(user, VAL_ONLINE);
   }
 
   async setUserOffline(user: string) {
-    await this.client.del(user);
+    return this.onlineStatusStore.set(user, VAL_OFFLINE);
   }
 }
