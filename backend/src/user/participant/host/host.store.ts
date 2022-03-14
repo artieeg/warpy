@@ -5,6 +5,11 @@ import IORedis, { Redis } from 'ioredis';
 const STREAM_PREFIX = 'stream_';
 const HOST_PREFIX = 'stream_';
 
+type HostDTO = {
+  stream: string;
+  status: 'online' | 'offline';
+};
+
 @Injectable()
 export class HostStore implements OnModuleInit {
   redis: Redis;
@@ -15,10 +20,27 @@ export class HostStore implements OnModuleInit {
     this.redis = new IORedis(this.config.get('streamHostAddr'));
   }
 
+  private toDTO(data: any): HostDTO {
+    return {
+      stream: data.stream,
+      status: data.status,
+    };
+  }
+
+  async setHostStatus(host: string, status: 'online' | 'offline') {
+    const data = await this.getHostData(host);
+
+    if (!data) {
+      return;
+    }
+
+    return this.redis.hset(host, 'status', status);
+  }
+
   async setStreamHost(host: string, stream: string) {
     const pipe = this.redis.pipeline();
 
-    pipe.set(HOST_PREFIX + host, stream);
+    pipe.hmset(HOST_PREFIX + host, { stream, status: 'online' });
     pipe.set(STREAM_PREFIX + stream, host);
 
     return pipe.exec();
@@ -31,6 +53,16 @@ export class HostStore implements OnModuleInit {
       .del(STREAM_PREFIX + stream);
 
     return pipe.exec();
+  }
+
+  async getHostData(host: string) {
+    const data = await this.redis.hgetall(host);
+
+    if (!data || !data.stream || !data.online) {
+      return undefined;
+    }
+
+    return this.toDTO(data);
   }
 
   async delByStream(stream: string) {
@@ -54,7 +86,7 @@ export class HostStore implements OnModuleInit {
   }
 
   async getStreamByHost(host: string) {
-    const [, value] = await this.redis.get(host);
+    const [, value] = await this.redis.hget(host, 'stream');
 
     return value as string | null;
   }
