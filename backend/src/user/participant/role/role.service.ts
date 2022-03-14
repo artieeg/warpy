@@ -41,7 +41,7 @@ export class ParticipantRoleService {
 
     let response = {
       role,
-      rest,
+      ...rest,
     };
 
     //Update participant record with a new role

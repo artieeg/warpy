@@ -192,7 +192,13 @@ export class ParticipantStore implements OnModuleInit {
   }
 
   async update(id: string, data: Partial<IFullParticipant>) {
-    return this.write(id, data);
+    const pipe = this.redis.pipeline();
+    this.write(id, data, pipe);
+    pipe.hgetall(id);
+
+    const [,[,updated]] = await pipe.exec();
+
+    return this.toDTO(updated);
   }
 
   async setRaiseHand(user: string, flag: boolean) {
