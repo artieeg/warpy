@@ -12,7 +12,21 @@ export class OnlineStatusStoreBehavior {
   ) {}
 
   async set(user: string, status: Status) {
-    return this.redis.set(this.PREFIX + user, status);
+    const key = this.PREFIX + user;
+
+    if (status === VAL_ONLINE) {
+      await this.redis
+        .pipeline()
+        .set(key, status)
+        .persist(key) //reset expire if exists
+        .exec();
+    } else {
+      await this.redis
+        .pipeline()
+        .set(key, status)
+        .expire(key, 60 * 5) //clean up after 5 minutes
+        .exec();
+    }
   }
 
   async getStatusMany(ids: string[]): Promise<boolean[]> {
@@ -24,6 +38,6 @@ export class OnlineStatusStoreBehavior {
   async getStatus(user: string) {
     const v = await this.redis.get(user);
 
-    return !!v;
+    return v === VAL_ONLINE;
   }
 }
