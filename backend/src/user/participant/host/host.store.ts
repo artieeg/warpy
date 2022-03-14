@@ -68,9 +68,9 @@ export class HostStore implements OnModuleInit {
     return this.del(stream, host);
   }
 
-  async getStreamByHost(host: string) {
+  async getStreamByHost(host: string): Promise<string | null> {
     const [, value] = await this.redis.get(host);
 
-    return value as string | null;
+    return value;
   }
 }
