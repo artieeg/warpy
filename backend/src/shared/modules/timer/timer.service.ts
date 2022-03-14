@@ -5,7 +5,7 @@ type Timer = ReturnType<typeof setTimeout>;
 
 @Injectable()
 export class TimerService {
-  timers: Record<string, Timer>;
+  private timers: Record<string, Timer>;
 
   setTimer(cb: any, delay: number) {
     const id = cuid();
