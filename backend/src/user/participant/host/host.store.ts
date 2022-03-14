@@ -24,29 +24,38 @@ export class HostStore implements OnModuleInit {
     return pipe.exec();
   }
 
-  async delByStream(host: string) {
-    const stream = await this.getStreamByHost(host);
-
-    const pipe = this.redis.pipeline();
-    pipe.del(HOST_PREFIX + host);
-    pipe.del(STREAM_PREFIX + stream);
+  private del(stream: string, host: string) {
+    const pipe = this.redis
+      .pipeline()
+      .del(HOST_PREFIX + host)
+      .del(STREAM_PREFIX + stream);
 
     return pipe.exec();
+  }
+
+  async delByStream(stream: string) {
+    const [, host] = await this.redis.get(STREAM_PREFIX + stream);
+
+    if (!host) {
+      return;
+    }
+
+    return this.del(stream, host);
   }
 
   async delByHost(host: string) {
     const stream = await this.getStreamByHost(host);
 
-    const pipe = this.redis.pipeline();
-    pipe.del(HOST_PREFIX + host);
-    pipe.del(STREAM_PREFIX + stream);
+    if (!stream) {
+      return;
+    }
 
-    return pipe.exec();
+    return this.del(stream, host);
   }
 
   async getStreamByHost(host: string) {
     const [, value] = await this.redis.get(host);
 
-    return value as string;
+    return value as string | null;
   }
 }
