@@ -2,7 +2,11 @@ import { NoPermissionError } from '@warpy-be/errors';
 import { MediaService } from '@warpy-be/media/media.service';
 import { MessageService } from '@warpy-be/message/message.service';
 import { BlockService } from '@warpy-be/user/block/block.service';
-import { EVENT_ROLE_CHANGE } from '@warpy-be/utils';
+import {
+  EVENT_ROLE_CHANGE,
+  EVENT_STREAMER_DOWNGRADED_TO_VIEWER,
+  EVENT_VIEWER_UPGRADED,
+} from '@warpy-be/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Roles } from '@warpy/lib';
@@ -64,6 +68,14 @@ export class ParticipantRoleService {
       data: response,
     });
 
-    this.eventEmitter.emit(EVENT_ROLE_CHANGE, { participant: updatedUser });
+    const dataToEmit = { participant: updatedUser };
+
+    if (role === 'viewer') {
+      this.eventEmitter.emit(EVENT_STREAMER_DOWNGRADED_TO_VIEWER, dataToEmit);
+    } else if (oldUserData.role === 'viewer') {
+      this.eventEmitter.emit(EVENT_VIEWER_UPGRADED, dataToEmit);
+    }
+
+    this.eventEmitter.emit(EVENT_ROLE_CHANGE, dataToEmit);
   }
 }
