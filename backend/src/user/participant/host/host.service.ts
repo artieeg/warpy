@@ -19,7 +19,9 @@ export class HostService {
     return this.hostStore.addPossibleHost(stream, id);
   }
 
-  async assignHost(stream: string, newHostId: string) {}
+  async assignHost(stream: string, newHostId: string) {
+    //TODO
+  }
 
   /**
    * checks if user is a host and is disconnected
@@ -38,7 +40,7 @@ export class HostService {
 
     //wait 15 seconds and check if the host has reconnected
     this.timerService.setTimer(async () => {
-      const hostHasRejoined = this.hostStore.isHostJoined(user);
+      const hostHasRejoined = await this.hostStore.isHostJoined(user);
 
       //if the user has rejoined, don't do anything else
       if (hostHasRejoined) {
