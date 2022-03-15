@@ -5,10 +5,14 @@ import {
   VAL_OFFLINE,
   VAL_ONLINE,
 } from '@warpy-be/shared';
-import IORedis, { Redis } from 'ioredis';
+import IORedis, { Pipeline, Redis } from 'ioredis';
 
 const STREAM_PREFIX = 'stream_';
-const HOST_PREFIX = 'stream_';
+const HOST_PREFIX = 'host_';
+const POSSIBLE_HOST_PREFIX = 'possible_host_';
+
+type HostDTO = { id: string; stream: string; online: boolean };
+type Runner = Redis | Pipeline;
 
 @Injectable()
 export class HostStore implements OnModuleInit {
@@ -20,6 +24,28 @@ export class HostStore implements OnModuleInit {
   onModuleInit() {
     this.redis = new IORedis(this.config.get('streamHostAddr'));
     this.hostOnlineStatus = new OnlineStatusStoreBehavior(this.redis);
+  }
+
+  async getRandomPossibleHost(stream: string) {
+    const [, host] = await this.redis.srandmember(stream);
+
+    return host as string | null;
+  }
+
+  async addPossibleHost(
+    stream: string,
+    host: string,
+    runner: Runner = this.redis,
+  ) {
+    return runner.sadd(POSSIBLE_HOST_PREFIX + stream, host);
+  }
+
+  async delPossibleHost(
+    stream: string,
+    host: string,
+    runner: Runner = this.redis,
+  ) {
+    return runner.srem(POSSIBLE_HOST_PREFIX + stream, host);
   }
 
   async setStreamHostOnlineStatus(host: string, online: boolean) {
@@ -59,7 +85,7 @@ export class HostStore implements OnModuleInit {
   }
 
   async delByHost(host: string) {
-    const stream = await this.getStreamByHost(host);
+    const { stream } = await this.getHostInfo(host);
 
     if (!stream) {
       return;
@@ -68,9 +94,18 @@ export class HostStore implements OnModuleInit {
     return this.del(stream, host);
   }
 
-  async getStreamByHost(host: string): Promise<string | null> {
-    const [, value] = await this.redis.get(host);
+  async getHostInfo(host: string): Promise<HostDTO | null> {
+    const pipe = this.redis.pipeline();
 
-    return value;
+    pipe.get(STREAM_PREFIX + host);
+    this.hostOnlineStatus.get(host, pipe);
+
+    const [[, stream], [, online]] = await pipe.exec();
+
+    return {
+      id: host,
+      stream,
+      online: online === VAL_ONLINE,
+    };
   }
 }

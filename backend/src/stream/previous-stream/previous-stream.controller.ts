@@ -1,5 +1,8 @@
-import { OnNewParticipant, OnUserDisconnect } from '@warpy-be/interfaces';
-import { IFullParticipant } from '@warpy-be/user/participant';
+import {
+  OnNewParticipant,
+  OnUserConnect,
+  OnUserDisconnect,
+} from '@warpy-be/interfaces';
 import {
   EVENT_NEW_PARTICIPANT,
   EVENT_STREAM_ENDED,
@@ -12,7 +15,7 @@ import { PreviousStreamService } from './previous-stream.service';
 
 @Controller()
 export class PreviousStreamController
-  implements OnUserDisconnect, OnNewParticipant
+  implements OnUserDisconnect, OnNewParticipant, OnUserConnect
 {
   constructor(private previousStreamService: PreviousStreamService) {}
 
@@ -32,7 +35,7 @@ export class PreviousStreamController
   }
 
   @OnEvent(EVENT_USER_CONNECTED)
-  async onUserConnect({ user }: { user: string }) {
+  async onUserConnect({ user }) {
     await this.previousStreamService.sendPreviousStream(user);
   }
 }

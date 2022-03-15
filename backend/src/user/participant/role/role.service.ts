@@ -64,6 +64,6 @@ export class ParticipantRoleService {
       data: response,
     });
 
-    this.eventEmitter.emit(EVENT_ROLE_CHANGE, updatedUser);
+    this.eventEmitter.emit(EVENT_ROLE_CHANGE, { participant: updatedUser });
   }
 }

@@ -1,4 +1,8 @@
-import { OnNewParticipant, OnStreamEnd } from '@warpy-be/interfaces';
+import {
+  OnNewParticipant,
+  OnRoleChange,
+  OnStreamEnd,
+} from '@warpy-be/interfaces';
 import {
   EVENT_ACTIVE_SPEAKERS,
   EVENT_AWARD_SENT,
@@ -26,7 +30,9 @@ import {
 } from './types';
 
 @Controller()
-export class BroadcastController implements OnStreamEnd, OnNewParticipant {
+export class BroadcastController
+  implements OnStreamEnd, OnNewParticipant, OnRoleChange
+{
   constructor(
     private broadcast: BroadcastService,
     private store: BroadcastUserListStore,
@@ -66,8 +72,8 @@ export class BroadcastController implements OnStreamEnd, OnNewParticipant {
   }
 
   @OnEvent(EVENT_ROLE_CHANGE)
-  async onRoleChange(data: IParticipant) {
-    return this.broadcast.broadcastRoleChange(data);
+  async onRoleChange({ participant }) {
+    return this.broadcast.broadcastRoleChange(participant);
   }
 
   @OnEvent(EVENT_RAISE_HAND)

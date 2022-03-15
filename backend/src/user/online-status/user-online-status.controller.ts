@@ -1,8 +1,5 @@
-import { OnUserDisconnect, OnUserDisconnect } from '@warpy-be/interfaces';
-import {
-  EVENT_USER_CONNECTED,
-  EVENT_USER_DISCONNECTED,
-} from '@warpy-be/utils';
+import { OnUserConnect, OnUserDisconnect } from '@warpy-be/interfaces';
+import { EVENT_USER_CONNECTED, EVENT_USER_DISCONNECTED } from '@warpy-be/utils';
 import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
@@ -10,11 +7,13 @@ import { IUserOnlineStatusResponse, IUserStatusRequest } from '@warpy/lib';
 import { UserOnlineStatusService } from './user-online-status.service';
 
 @Controller()
-export class UserOnlineStatusController implements OnUserDisconnect {
+export class UserOnlineStatusController
+  implements OnUserDisconnect, OnUserConnect
+{
   constructor(private userOnlineStatusService: UserOnlineStatusService) {}
 
   @OnEvent(EVENT_USER_CONNECTED)
-  async onUserConnect({ user }: { user: string }) {
+  async onUserConnect({ user }) {
     await this.userOnlineStatusService.setUserOnline(user);
   }
 
