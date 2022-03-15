@@ -1,23 +1,30 @@
 import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import {
-  OnRoleChange,
   OnStreamEnd,
+  OnStreamerDowngradeToViewer,
   OnUserConnect,
   OnUserDisconnect,
+  OnViewerUpgraded,
 } from '@warpy-be/interfaces';
 import {
-  EVENT_ROLE_CHANGE,
+  EVENT_STREAMER_DOWNGRADED_TO_VIEWER,
   EVENT_STREAM_ENDED,
   EVENT_USER_CONNECTED,
   EVENT_USER_DISCONNECTED,
+  EVENT_VIEWER_UPGRADED,
 } from '@warpy-be/utils';
 import { HostService } from './host.service';
 import { HostStore } from './host.store';
 
 @Controller()
 export class HostController
-  implements OnUserDisconnect, OnUserConnect, OnStreamEnd, OnRoleChange
+  implements
+    OnUserDisconnect,
+    OnUserConnect,
+    OnStreamEnd,
+    OnStreamerDowngradeToViewer,
+    OnViewerUpgraded
 {
   constructor(private hostStore: HostStore, private hostService: HostService) {}
 
@@ -26,9 +33,14 @@ export class HostController
     return this.hostStore.delByStream(stream);
   }
 
-  @OnEvent(EVENT_ROLE_CHANGE)
-  async onRoleChange({ participant }) {
-    this.hostService.handlePossibleHost(participant);
+  @OnEvent(EVENT_STREAMER_DOWNGRADED_TO_VIEWER)
+  async onStreamerDowngradeToViewer({ participant: { stream, id } }) {
+    return this.hostStore.delPossibleHost(stream, id);
+  }
+
+  @OnEvent(EVENT_VIEWER_UPGRADED)
+  async onViewerUpgraded({ participant: { stream, id } }) {
+    return this.hostStore.addPossibleHost(stream, id);
   }
 
   //TODO: handle stream rejoins instead

@@ -7,6 +7,10 @@ export const EVENT_ACTIVE_SPEAKERS = 'participant.active-speakers';
 export const EVENT_ROLE_CHANGE = 'participant.role-change';
 export const EVENT_RAISE_HAND = 'participant.raise-hand';
 
+export const EVENT_VIEWER_UPGRADED = 'participant.viewer.upgraded';
+export const EVENT_STREAMER_DOWNGRADED_TO_VIEWER =
+  'participant.streamer.downgraded';
+
 export const EVENT_AWARD_SENT = 'award.sent';
 
 export const EVENT_USER_DISCONNECTED = 'user.disconnected';

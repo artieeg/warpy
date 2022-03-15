@@ -35,3 +35,13 @@ export interface OnUserConnect {
 export interface OnRoleChange {
   onRoleChange: (data: { participant: IFullParticipant }) => Promise<any>;
 }
+
+export interface OnViewerUpgraded {
+  onViewerUpgraded: (data: { participant: IFullParticipant }) => Promise<any>;
+}
+
+export interface OnStreamerDowngradeToViewer {
+  onStreamerDowngradeToViewer: (data: {
+    participant: IFullParticipant;
+  }) => Promise<any>;
+}
