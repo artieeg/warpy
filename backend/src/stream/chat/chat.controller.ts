@@ -4,11 +4,13 @@ import { MessagePattern } from '@nestjs/microservices';
 import {
   OnNewParticipant,
   OnParticipantLeave,
+  OnParticipantRejoin,
   OnStreamEnd,
 } from '@warpy-be/interfaces';
 import {
   EVENT_NEW_PARTICIPANT,
   EVENT_PARTICIPANT_LEAVE,
+  EVENT_PARTICIPANT_REJOIN,
   EVENT_STREAM_ENDED,
 } from '@warpy-be/utils';
 import { INewChatMessage, ISendMessageResponse } from '@warpy/lib';
@@ -17,12 +19,24 @@ import { ChatService } from './chat.service';
 
 @Controller()
 export class ChatController
-  implements OnParticipantLeave, OnStreamEnd, OnNewParticipant
+  implements
+    OnParticipantLeave,
+    OnStreamEnd,
+    OnNewParticipant,
+    OnParticipantRejoin
 {
   constructor(
     private chatService: ChatService,
     private chatMemberStore: ChatMemberStore,
   ) {}
+
+  @OnEvent(EVENT_PARTICIPANT_REJOIN)
+  async onParticipantRejoin({ participant }) {
+    return this.chatMemberStore.addChatMember(
+      participant.stream,
+      participant.id,
+    );
+  }
 
   @OnEvent(EVENT_NEW_PARTICIPANT)
   async onNewParticipant({ participant }) {
