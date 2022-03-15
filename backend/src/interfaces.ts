@@ -45,3 +45,7 @@ export interface OnStreamerDowngradeToViewer {
     participant: IFullParticipant;
   }) => Promise<any>;
 }
+
+export interface OnParticipantRejoin {
+  onParticipantRejoin: (data: { participant: IParticipant }) => Promise<any>;
+}

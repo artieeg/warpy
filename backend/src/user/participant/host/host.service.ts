@@ -19,6 +19,16 @@ export class HostService {
     return this.hostStore.addPossibleHost(stream, id);
   }
 
+  async handleRejoinedUser(user: string) {
+    const host = await this.hostStore.getHostInfo(user);
+
+    if (!host) {
+      return;
+    }
+
+    return this.hostStore.setHostJoinedStatus(user, true);
+  }
+
   async assignHost(stream: string, newHostId: string) {
     //TODO
   }

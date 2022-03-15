@@ -3,6 +3,7 @@ export const EVENT_STREAM_ENDED = 'stream.ended';
 export const EVENT_NEW_PARTICIPANT = 'participant.new';
 export const EVENT_PARTICIPANT_LEAVE = 'participant.leave';
 export const EVENT_PARTICIPANT_KICKED = 'participant.kicked';
+export const EVENT_PARTICIPANT_REJOIN = 'participant.rejoin';
 export const EVENT_ACTIVE_SPEAKERS = 'participant.active-speakers';
 export const EVENT_ROLE_CHANGE = 'participant.role-change';
 export const EVENT_RAISE_HAND = 'participant.raise-hand';

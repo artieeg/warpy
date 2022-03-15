@@ -1,6 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import {
+  OnParticipantRejoin,
   OnStreamEnd,
   OnStreamerDowngradeToViewer,
   OnUserConnect,
@@ -8,9 +9,9 @@ import {
   OnViewerUpgraded,
 } from '@warpy-be/interfaces';
 import {
+  EVENT_PARTICIPANT_REJOIN,
   EVENT_STREAMER_DOWNGRADED_TO_VIEWER,
   EVENT_STREAM_ENDED,
-  EVENT_USER_CONNECTED,
   EVENT_USER_DISCONNECTED,
   EVENT_VIEWER_UPGRADED,
 } from '@warpy-be/utils';
@@ -21,7 +22,7 @@ import { HostStore } from './host.store';
 export class HostController
   implements
     OnUserDisconnect,
-    OnUserConnect,
+    OnParticipantRejoin,
     OnStreamEnd,
     OnStreamerDowngradeToViewer,
     OnViewerUpgraded
@@ -43,10 +44,9 @@ export class HostController
     return this.hostStore.addPossibleHost(stream, id);
   }
 
-  //TODO: handle stream rejoins instead
-  @OnEvent(EVENT_USER_CONNECTED)
-  async onUserConnect({ user }) {
-    return this.hostStore.setStreamHostOnlineStatus(user, true);
+  @OnEvent(EVENT_PARTICIPANT_REJOIN)
+  async onParticipantRejoin({ participant }) {
+    return this.hostService.handleRejoinedUser(participant.id);
   }
 
   @OnEvent(EVENT_USER_DISCONNECTED)
