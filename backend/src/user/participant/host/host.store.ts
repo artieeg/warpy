@@ -1,29 +1,34 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import {
-  OnlineStatusStoreBehavior,
-  VAL_OFFLINE,
-  VAL_ONLINE,
-} from '@warpy-be/shared';
 import IORedis, { Pipeline, Redis } from 'ioredis';
 
 const STREAM_PREFIX = 'stream_';
 const HOST_PREFIX = 'host_';
 const POSSIBLE_HOST_PREFIX = 'possible_host_';
 
-type HostDTO = { id: string; stream: string; online: boolean };
+type HostDTO = {
+  id: string;
+  stream: string;
+
+  /** false if user has to reconnect and rejoin */
+  isJoined: boolean;
+};
+
 type Runner = Redis | Pipeline;
+
+const JOINED = 'joined';
+const NOT_JOINED = 'not-joined';
+
+type JoinStatus = typeof JOINED | typeof NOT_JOINED;
 
 @Injectable()
 export class HostStore implements OnModuleInit {
   redis: Redis;
-  hostOnlineStatus: OnlineStatusStoreBehavior;
 
   constructor(private config: ConfigService) {}
 
   onModuleInit() {
     this.redis = new IORedis(this.config.get('streamHostAddr'));
-    this.hostOnlineStatus = new OnlineStatusStoreBehavior(this.redis);
   }
 
   async getRandomPossibleHost(stream: string) {
@@ -48,19 +53,15 @@ export class HostStore implements OnModuleInit {
     return runner.srem(POSSIBLE_HOST_PREFIX + stream, host);
   }
 
-  async setStreamHostOnlineStatus(host: string, online: boolean) {
-    return this.hostOnlineStatus.set(host, online ? VAL_ONLINE : VAL_OFFLINE);
-  }
-
-  async isHostOnline(host: string) {
-    return this.hostOnlineStatus.getStatus(host);
+  async setHostJoinedStatus(host: string, joined: JoinStatus) {
+    this.redis.hset(host, 'isJoined', joined);
   }
 
   async setStreamHost(host: string, stream: string) {
     const pipe = this.redis.pipeline();
 
-    pipe.set(HOST_PREFIX + host, stream);
     pipe.set(STREAM_PREFIX + stream, host);
+    pipe.hmset(HOST_PREFIX + host, { stream, isJoined: JOINED });
 
     return pipe.exec();
   }
@@ -95,17 +96,12 @@ export class HostStore implements OnModuleInit {
   }
 
   async getHostInfo(host: string): Promise<HostDTO | null> {
-    const pipe = this.redis.pipeline();
-
-    pipe.get(STREAM_PREFIX + host);
-    this.hostOnlineStatus.get(host, pipe);
-
-    const [[, stream], [, online]] = await pipe.exec();
+    const data = await this.redis.hgetall(STREAM_PREFIX + host);
 
     return {
       id: host,
-      stream,
-      online: online === VAL_ONLINE,
+      stream: data.stream,
+      isJoined: data.isJoined === JOINED,
     };
   }
 }
