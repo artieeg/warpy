@@ -1,7 +1,10 @@
 import { BotInstanceEntity } from '@warpy-be/bots/bot-instance.entity';
 import { MaxVideoStreamers } from '@warpy-be/errors';
 import { MediaService } from '@warpy-be/media/media.service';
-import { EVENT_PARTICIPANT_LEAVE } from '@warpy-be/utils';
+import {
+  EVENT_PARTICIPANT_LEAVE,
+  EVENT_PARTICIPANT_REJOIN,
+} from '@warpy-be/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ParticipantStore } from './store';
@@ -51,6 +54,33 @@ export class ParticipantService {
       videoEnabled,
       audioEnabled,
     });
+  }
+
+  async activateUser(user: string) {
+    const data = await this.participant.get(user);
+
+    if (!data) {
+      return;
+    }
+
+    await this.participant.setDeactivated(user, data.stream, false);
+    this.eventEmitter.emit(EVENT_PARTICIPANT_REJOIN, { participant: data });
+  }
+
+  async deactivateUser(user: string) {
+    const data = await this.participant.get(user);
+
+    if (!data) {
+      return;
+    }
+
+    //ignore bots
+    if (user.slice(0, 3) === 'bot') {
+      return this.removeUserFromStream(user, data.stream);
+    }
+
+    await this.participant.setDeactivated(user, data.stream, true);
+    this.eventEmitter.emit(EVENT_PARTICIPANT_LEAVE, { participant: data });
   }
 
   async removeUserFromStream(user: string, stream?: string) {

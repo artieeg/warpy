@@ -23,6 +23,7 @@ const PREFIX_VIEWERS = 'viewer_';
 const PREFIX_STREAMERS = 'streamers_';
 const PREFIX_RAISED_HANDS = 'raised_hands_';
 const PREFIX_COUNT = 'count_';
+const PREFIX_DEACTIVATED_USERS = 'deactivated_users_';
 
 @Injectable()
 export class ParticipantStore implements OnModuleInit {
@@ -103,12 +104,23 @@ export class ParticipantStore implements OnModuleInit {
       .filter((item) => !!item);
   }
 
+  async setDeactivated(user: string, stream: string, flag: boolean) {
+    if (flag) {
+      return this.redis.sadd(PREFIX_DEACTIVATED_USERS + stream, user);
+    } else {
+      return this.redis.srem(PREFIX_DEACTIVATED_USERS + stream, user);
+    }
+  }
+
   async getStreamId(user: string) {
     return this.redis.hget(user, 'stream');
   }
 
   async countVideoStreamers(stream: string) {
-    const ids = await this.redis.smembers(PREFIX_STREAMERS + stream);
+    const ids = await this.redis.sdiff(
+      PREFIX_STREAMERS + stream,
+      PREFIX_DEACTIVATED_USERS + stream,
+    );
 
     const streamers = await this.list(ids);
 
@@ -117,11 +129,19 @@ export class ParticipantStore implements OnModuleInit {
     }, 0);
   }
 
-  async getParticipantIds(stream: string) {
+  async getParticipantIds(stream: string, includeDeactivatedUsers = false) {
+    const deactivatedUserIdsKey = PREFIX_DEACTIVATED_USERS + stream;
+
     const pipe = this.redis.pipeline();
-    pipe.smembers(PREFIX_STREAMERS + stream);
-    pipe.smembers(PREFIX_RAISED_HANDS + stream);
-    pipe.smembers(PREFIX_VIEWERS + stream);
+    if (includeDeactivatedUsers) {
+      pipe.smembers(PREFIX_STREAMERS + stream);
+      pipe.smembers(PREFIX_RAISED_HANDS + stream);
+      pipe.smembers(PREFIX_VIEWERS + stream);
+    } else {
+      pipe.sdiff(PREFIX_STREAMERS + stream, deactivatedUserIdsKey);
+      pipe.sdiff(PREFIX_RAISED_HANDS + stream, deactivatedUserIdsKey);
+      pipe.sdiff(PREFIX_VIEWERS + stream, deactivatedUserIdsKey);
+    }
 
     const [[, streamers], [, raisedHands], [, viewers]] = await pipe.exec();
     const ids: string[] = [...streamers, ...raisedHands, ...viewers];
@@ -132,7 +152,7 @@ export class ParticipantStore implements OnModuleInit {
   }
 
   async clearStreamData(stream: string) {
-    const ids = await this.getParticipantIds(stream);
+    const ids = await this.getParticipantIds(stream, true);
 
     if (ids.length === 0) {
       return;
@@ -149,7 +169,7 @@ export class ParticipantStore implements OnModuleInit {
     pipeline.del(PREFIX_COUNT + stream);
 
     //Delete records
-    pipeline.del(...ids);
+    ids.forEach((id) => pipeline.del(id));
 
     return pipeline.exec();
   }
@@ -158,7 +178,10 @@ export class ParticipantStore implements OnModuleInit {
    * Returns info about audio/video streamers
    * */
   async getStreamers(stream: string) {
-    const ids = await this.redis.smembers(PREFIX_STREAMERS + stream);
+    const ids = await this.redis.sdiff(
+      PREFIX_STREAMERS + stream,
+      PREFIX_DEACTIVATED_USERS + stream,
+    );
 
     return this.list(ids);
   }
@@ -167,7 +190,10 @@ export class ParticipantStore implements OnModuleInit {
    * Returns info about participants with raised hands
    * */
   async getRaisedHands(stream: string) {
-    const ids = await this.redis.smembers(PREFIX_RAISED_HANDS + stream);
+    const ids = await this.redis.sdiff(
+      PREFIX_RAISED_HANDS + stream,
+      PREFIX_DEACTIVATED_USERS + stream,
+    );
 
     return this.list(ids);
   }
@@ -196,7 +222,7 @@ export class ParticipantStore implements OnModuleInit {
     this.write(id, data, pipe);
     pipe.hgetall(id);
 
-    const [,[,updated]] = await pipe.exec();
+    const [, [, updated]] = await pipe.exec();
 
     return this.toDTO(updated);
   }
@@ -228,7 +254,10 @@ export class ParticipantStore implements OnModuleInit {
   }
 
   async getViewersPage(stream: string, page: number) {
-    const all_ids = await this.redis.smembers(PREFIX_VIEWERS + stream);
+    const all_ids = await this.redis.sdiff(
+      PREFIX_VIEWERS + stream,
+      PREFIX_DEACTIVATED_USERS,
+    );
     const ids = all_ids.slice(page * 50, (page + 1) * 50);
 
     return this.list(ids);
