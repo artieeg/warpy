@@ -19,7 +19,7 @@ export class HostService {
     return this.hostStore.addPossibleHost(stream, id);
   }
 
-  async reassignHost(host: string) {}
+  async assignHost(stream: string, newHostId: string) {}
 
   /**
    * checks if user is a host and is disconnected
@@ -29,23 +29,24 @@ export class HostService {
     const host = await this.hostStore.getHostInfo(user);
 
     //If user is not host
-    if (!host || !host.stream || !host.online) {
+    if (!host) {
       return;
     }
 
     //make user offline
-    await this.hostStore.setStreamHostOnlineStatus(user, false);
+    await this.hostStore.setHostJoinedStatus(user, false);
 
     //wait 15 seconds and check if the host has reconnected
     this.timerService.setTimer(async () => {
-      const isOnline = await this.hostStore.isHostOnline(user);
+      const hostHasRejoined = this.hostStore.isHostJoined(user);
 
-      //if the user has reconnected, don't do anything else
-      if (!isOnline) {
+      //if the user has rejoined, don't do anything else
+      if (hostHasRejoined) {
         return;
       }
 
-      //TODO: reassign host
+      const newHostId = await this.hostStore.getRandomPossibleHost(host.stream);
+      await this.assignHost(host.stream, newHostId);
     }, 15000);
   }
 }

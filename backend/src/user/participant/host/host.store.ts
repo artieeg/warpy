@@ -53,8 +53,8 @@ export class HostStore implements OnModuleInit {
     return runner.srem(POSSIBLE_HOST_PREFIX + stream, host);
   }
 
-  async setHostJoinedStatus(host: string, joined: JoinStatus) {
-    this.redis.hset(host, 'isJoined', joined);
+  async setHostJoinedStatus(host: string, joined: boolean) {
+    this.redis.hset(host, 'isJoined', joined ? JOINED : NOT_JOINED);
   }
 
   async setStreamHost(host: string, stream: string) {
@@ -64,6 +64,12 @@ export class HostStore implements OnModuleInit {
     pipe.hmset(HOST_PREFIX + host, { stream, isJoined: JOINED });
 
     return pipe.exec();
+  }
+
+  async isHostJoined(host: string) {
+    const [, status] = await this.redis.hget(host, 'isJoined');
+
+    return status === JOINED;
   }
 
   private del(stream: string, host: string) {
