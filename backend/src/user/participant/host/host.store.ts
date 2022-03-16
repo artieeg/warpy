@@ -19,8 +19,6 @@ type Runner = Redis | Pipeline;
 const JOINED = 'joined';
 const NOT_JOINED = 'not-joined';
 
-type JoinStatus = typeof JOINED | typeof NOT_JOINED;
-
 @Injectable()
 export class HostStore implements OnModuleInit {
   redis: Redis;
@@ -32,7 +30,7 @@ export class HostStore implements OnModuleInit {
   }
 
   async getRandomPossibleHost(stream: string) {
-    const [, host] = await this.redis.srandmember(stream);
+    const host = await this.redis.srandmember(POSSIBLE_HOST_PREFIX + stream);
 
     return host as string | null;
   }
@@ -82,7 +80,7 @@ export class HostStore implements OnModuleInit {
   }
 
   async delByStream(stream: string) {
-    const [, host] = await this.redis.get(STREAM_PREFIX + stream);
+    const host = await this.redis.get(STREAM_PREFIX + stream);
 
     if (!host) {
       return;

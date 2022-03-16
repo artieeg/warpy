@@ -40,8 +40,6 @@ export class HostService {
   async tryReassignHostAfterTime(user: string) {
     const host = await this.hostStore.getHostInfo(user);
 
-    console.log('host has disconnected', host);
-
     //If user is not host
     if (!host) {
       return;
@@ -54,14 +52,17 @@ export class HostService {
     this.timerService.setTimer(async () => {
       const hostHasRejoined = await this.hostStore.isHostJoined(user);
 
-      console.log({ hostHasRejoined });
-
       //if the user has rejoined, don't do anything else
       if (hostHasRejoined) {
         return;
       }
 
       const newHostId = await this.hostStore.getRandomPossibleHost(host.stream);
+
+      if (!newHostId) {
+        return; //can't assign a new host
+      }
+
       await this.assignHost(host.stream, newHostId);
     }, 15000);
   }
