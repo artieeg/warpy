@@ -94,3 +94,7 @@ export interface INewAward {
 export interface IPreviousStream {
   stream: IStream;
 }
+
+export interface IReassignedStreamHost {
+  host: IParticipant;
+}

@@ -1,4 +1,5 @@
 import {
+  OnHostReassign,
   OnNewParticipant,
   OnRoleChange,
   OnStreamEnd,
@@ -7,6 +8,7 @@ import {
   EVENT_ACTIVE_SPEAKERS,
   EVENT_AWARD_SENT,
   EVENT_CHAT_MESSAGE,
+  EVENT_HOST_REASSIGN,
   EVENT_NEW_PARTICIPANT,
   EVENT_PARTICIPANT_KICKED,
   EVENT_PARTICIPANT_LEAVE,
@@ -31,12 +33,17 @@ import {
 
 @Controller()
 export class BroadcastController
-  implements OnStreamEnd, OnNewParticipant, OnRoleChange
+  implements OnStreamEnd, OnNewParticipant, OnRoleChange, OnHostReassign
 {
   constructor(
     private broadcast: BroadcastService,
     private store: BroadcastUserListStore,
   ) {}
+
+  @OnEvent(EVENT_HOST_REASSIGN)
+  async onHostReassign({ host }) {
+    return this.broadcast.broadcastNewHost(host);
+  }
 
   @OnEvent(EVENT_STREAM_ENDED)
   async onStreamEnd({ stream }) {

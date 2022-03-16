@@ -4,7 +4,6 @@ import {
   OnParticipantRejoin,
   OnStreamEnd,
   OnStreamerDowngradeToViewer,
-  OnUserConnect,
   OnUserDisconnect,
   OnViewerUpgraded,
 } from '@warpy-be/interfaces';
@@ -35,13 +34,13 @@ export class HostController
   }
 
   @OnEvent(EVENT_STREAMER_DOWNGRADED_TO_VIEWER)
-  async onStreamerDowngradeToViewer({ participant: { stream, id } }) {
-    return this.hostStore.delPossibleHost(stream, id);
+  async onStreamerDowngradeToViewer({ participant }) {
+    return this.hostStore.delPossibleHost(participant);
   }
 
   @OnEvent(EVENT_VIEWER_UPGRADED)
-  async onViewerUpgraded({ participant: { stream, id } }) {
-    return this.hostStore.addPossibleHost(stream, id);
+  async onViewerUpgraded({ participant }) {
+    return this.hostStore.addPossibleHost(participant);
   }
 
   @OnEvent(EVENT_PARTICIPANT_REJOIN)

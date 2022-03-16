@@ -55,5 +55,8 @@ export interface OnHostReassignFailed {
 }
 
 export interface OnHostReassign {
-  onHostReassign: (data: { stream: string; host: string }) => Promise<any>;
+  onHostReassign: (data: {
+    stream: string;
+    host: IFullParticipant;
+  }) => Promise<any>;
 }

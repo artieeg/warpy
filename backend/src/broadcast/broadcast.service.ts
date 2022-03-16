@@ -8,6 +8,7 @@ import {
   AwardSentEvent,
   ChatMessageEvent,
   MediaToggleEvent,
+  NewHostEvent,
   ParticipantLeaveEvent,
   ReactionsEvent,
 } from './types';
@@ -22,6 +23,19 @@ export class BroadcastService {
 
   private broadcast(ids: string[], message: Uint8Array) {
     ids.forEach((id) => this.messageService.send(id, message));
+  }
+
+  async broadcastNewHost({ host }: NewHostEvent) {
+    const ids = await this.broadcastUserListStore.get(host.stream);
+
+    const payload = this.messageService.encodeMessage({
+      event: 'stream-host-reassigned',
+      data: {
+        host,
+      },
+    });
+
+    this.broadcast(ids, payload);
   }
 
   async broadcastMediaToggle({

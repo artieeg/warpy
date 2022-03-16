@@ -36,7 +36,7 @@ export class StreamController implements OnHostReassignFailed, OnHostReassign {
 
   @OnEvent(EVENT_HOST_REASSIGN)
   async onHostReassign({ stream, host }) {
-    this.streamService.setStreamHost(stream, host);
+    this.streamService.setStreamHost(stream, host.id);
   }
 
   @OnEvent(EVENT_HOST_REASSIGN_FAILED)

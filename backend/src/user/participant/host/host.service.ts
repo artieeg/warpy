@@ -16,13 +16,15 @@ export class HostService {
     private eventEmitter: EventEmitter2,
   ) {}
 
-  async handlePossibleHost({ role, stream, id }: IFullParticipant) {
+  async handlePossibleHost(participant: IFullParticipant) {
+    const { role } = participant;
+
     //If user has been downgraded to viewer, remove him from the list
     if (role === 'viewer') {
-      return this.hostStore.delPossibleHost(stream, id);
+      return this.hostStore.delPossibleHost(participant);
     }
 
-    return this.hostStore.addPossibleHost(stream, id);
+    return this.hostStore.addPossibleHost(participant);
   }
 
   async handleRejoinedUser(user: string) {
@@ -62,20 +64,20 @@ export class HostService {
       }
 
       //fetch new host suggestion & delete previous host record
-      const [newHostId] = await Promise.all([
+      const [newHost] = await Promise.all([
         this.hostStore.getRandomPossibleHost(stream),
         this.hostStore.delByStream(stream),
       ]);
 
-      if (!newHostId) {
+      if (!newHost) {
         this.eventEmitter.emit(EVENT_HOST_REASSIGN_FAILED, {
           stream: stream,
         });
       } else {
-        await this.hostStore.setStreamHost(newHostId, stream);
+        await this.hostStore.setStreamHost(newHost.id, stream);
         this.eventEmitter.emit(EVENT_HOST_REASSIGN, {
           stream,
-          host: newHostId,
+          host: newHost,
         });
       }
     }, 15000);

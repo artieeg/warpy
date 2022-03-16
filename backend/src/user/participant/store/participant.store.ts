@@ -35,7 +35,7 @@ export class ParticipantStore implements OnModuleInit {
     this.redis = new IORedis(this.configService.get('participantStoreAddr'));
   }
 
-  private toDTO(data: any): IFullParticipant {
+  static toDTO(data: any): IFullParticipant {
     return {
       ...data,
       isRaisingHand: data.isRaisingHand === 'true',
@@ -75,7 +75,7 @@ export class ParticipantStore implements OnModuleInit {
   async get(id: string) {
     const items = await this.redis.hgetall(id);
 
-    return this.toDTO(items);
+    return ParticipantStore.toDTO(items);
   }
 
   async delMany(ids: string[]) {
@@ -99,7 +99,7 @@ export class ParticipantStore implements OnModuleInit {
           return null;
         }
 
-        return this.toDTO(items);
+        return ParticipantStore.toDTO(items);
       })
       .filter((item) => !!item);
   }
@@ -224,7 +224,7 @@ export class ParticipantStore implements OnModuleInit {
 
     const [, [, updated]] = await pipe.exec();
 
-    return this.toDTO(updated);
+    return ParticipantStore.toDTO(updated);
   }
 
   async setRaiseHand(user: string, flag: boolean) {
@@ -250,7 +250,7 @@ export class ParticipantStore implements OnModuleInit {
 
     const [, , , [, data]] = await pipe.exec();
 
-    return this.toDTO(data);
+    return ParticipantStore.toDTO(data);
   }
 
   async getViewersPage(stream: string, page: number) {

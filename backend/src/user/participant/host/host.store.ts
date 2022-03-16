@@ -1,20 +1,13 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import IORedis, { Pipeline, Redis } from 'ioredis';
+import IORedis, { Redis } from 'ioredis';
+import { IFullParticipant } from '..';
+import { ParticipantStore } from '../store';
 
 const STREAM_PREFIX = 'stream_';
 const HOST_PREFIX = 'host_';
-const POSSIBLE_HOST_PREFIX = 'possible_host_';
-
-type HostDTO = {
-  id: string;
-  stream: string;
-
-  /** false if user has to reconnect and rejoin */
-  isJoined: boolean;
-};
-
-type Runner = Redis | Pipeline;
+const PREFIX_POSSIBLE_HOST = 'possible_host_';
+const PREFIX_USER_INFO = 'user_info_';
 
 const JOINED = 'joined';
 const NOT_JOINED = 'not-joined';
@@ -29,26 +22,33 @@ export class HostStore implements OnModuleInit {
     this.redis = new IORedis(this.config.get('streamHostAddr'));
   }
 
-  async getRandomPossibleHost(stream: string) {
-    const host = await this.redis.srandmember(POSSIBLE_HOST_PREFIX + stream);
+  async getRandomPossibleHost(
+    stream: string,
+  ): Promise<IFullParticipant | null> {
+    const id = await this.redis.srandmember(PREFIX_POSSIBLE_HOST + stream);
+    const host = await this.getHostInfo(id);
 
-    return host as string | null;
+    return host;
   }
 
-  async addPossibleHost(
-    stream: string,
-    host: string,
-    runner: Runner = this.redis,
-  ) {
-    return runner.sadd(POSSIBLE_HOST_PREFIX + stream, host);
+  async addPossibleHost(host: IFullParticipant) {
+    const { id, stream } = host;
+
+    this.redis
+      .pipeline()
+      .sadd(PREFIX_POSSIBLE_HOST + stream, id)
+      .hmset(PREFIX_POSSIBLE_HOST, host)
+      .exec();
   }
 
-  async delPossibleHost(
-    stream: string,
-    host: string,
-    runner: Runner = this.redis,
-  ) {
-    return runner.srem(POSSIBLE_HOST_PREFIX + stream, host);
+  async delPossibleHost(host: IFullParticipant) {
+    const { id, stream } = host;
+
+    this.redis
+      .pipeline()
+      .srem(PREFIX_POSSIBLE_HOST + stream, id)
+      .del(PREFIX_USER_INFO + id)
+      .exec();
   }
 
   async setHostJoinedStatus(host: string, joined: boolean) {
@@ -103,17 +103,13 @@ export class HostStore implements OnModuleInit {
     return this.del(stream, host);
   }
 
-  async getHostInfo(host: string): Promise<HostDTO | null> {
-    const data = await this.redis.hgetall(HOST_PREFIX + host);
+  async getHostInfo(host: string): Promise<IFullParticipant | null> {
+    const data = await this.redis.hgetall(PREFIX_USER_INFO + host);
 
     if (!data) {
       return null;
     }
 
-    return {
-      id: host,
-      stream: data.stream,
-      isJoined: data.isJoined === JOINED,
-    };
+    return ParticipantStore.toDTO(data);
   }
 }

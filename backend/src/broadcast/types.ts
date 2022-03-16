@@ -1,4 +1,4 @@
-import { IAward } from '@warpy/lib';
+import { IAward, IParticipant } from '@warpy/lib';
 
 export type MediaToggleEvent = {
   user: string;
@@ -10,6 +10,10 @@ export type MediaToggleEvent = {
 export type ChatMessageEvent = {
   idsToBroadcast: string[];
   message: string;
+};
+
+export type NewHostEvent = {
+  host: IParticipant;
 };
 
 export type ReactionsEvent = {
