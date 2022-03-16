@@ -40,6 +40,8 @@ export class HostService {
   async tryReassignHostAfterTime(user: string) {
     const host = await this.hostStore.getHostInfo(user);
 
+    console.log('host has disconnected', host);
+
     //If user is not host
     if (!host) {
       return;
@@ -51,6 +53,8 @@ export class HostService {
     //wait 15 seconds and check if the host has reconnected
     this.timerService.setTimer(async () => {
       const hostHasRejoined = await this.hostStore.isHostJoined(user);
+
+      console.log({ hostHasRejoined });
 
       //if the user has rejoined, don't do anything else
       if (hostHasRejoined) {
