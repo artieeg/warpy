@@ -40,6 +40,8 @@ export class HostService {
   async tryReassignHostAfterTime(user: string) {
     const host = await this.hostStore.getHostInfo(user);
 
+    console.log({ host });
+
     //If user is not host
     if (!host) {
       return;

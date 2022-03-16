@@ -52,7 +52,11 @@ export class HostStore implements OnModuleInit {
   }
 
   async setHostJoinedStatus(host: string, joined: boolean) {
-    this.redis.hset(host, 'isJoined', joined ? JOINED : NOT_JOINED);
+    this.redis.hset(
+      HOST_PREFIX + host,
+      'isJoined',
+      joined ? JOINED : NOT_JOINED,
+    );
   }
 
   async setStreamHost(host: string, stream: string) {
@@ -65,7 +69,7 @@ export class HostStore implements OnModuleInit {
   }
 
   async isHostJoined(host: string) {
-    const [, status] = await this.redis.hget(host, 'isJoined');
+    const status = await this.redis.hget(host, 'isJoined');
 
     return status === JOINED;
   }
@@ -100,7 +104,11 @@ export class HostStore implements OnModuleInit {
   }
 
   async getHostInfo(host: string): Promise<HostDTO | null> {
-    const data = await this.redis.hgetall(STREAM_PREFIX + host);
+    const data = await this.redis.hgetall(HOST_PREFIX + host);
+
+    if (!data) {
+      return null;
+    }
 
     return {
       id: host,

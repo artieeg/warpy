@@ -459,6 +459,7 @@ const main = async () => {
   console.log("Started ws gateway service");
 
   const onUserDisconnect = (user: string) => {
+    PingPongService.removeUser(user);
     MessageService.sendBackendMessage("user.disconnected", { user });
   };
 

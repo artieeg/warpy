@@ -37,3 +37,7 @@ export const run = () => {
     });
   }, 5000);
 };
+
+export const removeUser = (user: string) => {
+  delete registry[user];
+};
