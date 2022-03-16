@@ -21,4 +21,4 @@ export const EVENT_CHAT_MESSAGE = 'chat.message';
 export const EVENT_INVITE_ACCEPTED = 'invite.accepted';
 
 export const EVENT_HOST_REASSIGN_FAILED = 'host.reassign.fail';
-export const EVNET_HOST_REASSIGN = 'host.reassign';
+export const EVENT_HOST_REASSIGN = 'host.reassign';
