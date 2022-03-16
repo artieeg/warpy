@@ -49,3 +49,11 @@ export interface OnStreamerDowngradeToViewer {
 export interface OnParticipantRejoin {
   onParticipantRejoin: (data: { participant: IParticipant }) => Promise<any>;
 }
+
+export interface OnHostReassignFailed {
+  onHostReassignFailed: (data: { stream: string }) => Promise<any>;
+}
+
+export interface OnHostReassign {
+  onHostReassign: (data: { stream: string; host: string }) => Promise<any>;
+}

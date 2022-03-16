@@ -40,8 +40,6 @@ export class HostService {
   async tryReassignHostAfterTime(user: string) {
     const host = await this.hostStore.getHostInfo(user);
 
-    console.log({ host });
-
     //If user is not host
     if (!host) {
       return;
@@ -59,10 +57,14 @@ export class HostService {
         return;
       }
 
-      const newHostId = await this.hostStore.getRandomPossibleHost(host.stream);
+      //fetch new host suggestion & delete previous host record
+      const [newHostId] = await Promise.all([
+        this.hostStore.getRandomPossibleHost(host.stream),
+        this.hostStore.delByStream(host.stream),
+      ]);
 
       if (!newHostId) {
-        return; //can't assign a new host
+        return; //can't assign a new host, TODO: emit
       }
 
       await this.assignHost(host.stream, newHostId);
