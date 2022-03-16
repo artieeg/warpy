@@ -1,8 +1,4 @@
-import {
-  NoPermissionError,
-  StreamNotFound,
-  UserNotFound,
-} from '@warpy-be/errors';
+import { StreamNotFound, UserNotFound } from '@warpy-be/errors';
 import {
   IFullParticipant,
   ParticipantStore,
@@ -96,25 +92,27 @@ export class StreamService {
     };
   }
 
+  async setStreamHost(stream: string, host: string) {
+    return this.streamEntity.setHost(stream, host);
+  }
+
+  async deleteStream(stream: string) {
+    await this.streamEntity.delete(stream);
+    this.eventEmitter.emit(EVENT_STREAM_ENDED, {
+      stream,
+    });
+  }
+
   async stopStream(user: string): Promise<void> {
-    const participant = await this.participantStore.get(user);
+    const stream = await this.streamEntity.deleteByHost(user);
 
-    console.log({ participant });
-
-    if (participant?.stream && participant?.role === 'streamer') {
-      await this.streamEntity.delete(participant.stream);
-      await this.participantStore.clearStreamData(participant.stream);
-
-      this.eventEmitter.emit(EVENT_STREAM_ENDED, {
-        stream: participant.stream,
-      });
-    } else if (!participant) {
-      throw new UserNotFound();
-    } else if (!participant.stream) {
+    if (!stream) {
       throw new StreamNotFound();
-    } else {
-      throw new NoPermissionError();
     }
+
+    this.eventEmitter.emit(EVENT_STREAM_ENDED, {
+      stream: stream,
+    });
   }
 
   async setStreamPreview(stream: string, preview: string) {

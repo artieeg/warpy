@@ -1,5 +1,8 @@
-import { OnUserDisconnect } from '@warpy-be/interfaces';
-import { EVENT_USER_DISCONNECTED } from '@warpy-be/utils';
+import { OnHostReassign, OnHostReassignFailed } from '@warpy-be/interfaces';
+import {
+  EVENT_HOST_REASSIGN,
+  EVENT_HOST_REASSIGN_FAILED,
+} from '@warpy-be/utils';
 import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
@@ -13,7 +16,7 @@ import {
 import { StreamService } from './stream.service';
 
 @Controller()
-export class StreamController implements OnUserDisconnect {
+export class StreamController implements OnHostReassignFailed, OnHostReassign {
   constructor(private streamService: StreamService) {}
 
   @MessagePattern('stream.create')
@@ -31,12 +34,14 @@ export class StreamController implements OnUserDisconnect {
     return response;
   }
 
-  @OnEvent(EVENT_USER_DISCONNECTED)
-  async onUserDisconnect({ user }) {
-    console.log('diconencted', { user });
-    try {
-      await this.streamService.stopStream(user);
-    } catch (e) {}
+  @OnEvent(EVENT_HOST_REASSIGN)
+  async onHostReassign({ stream, host }) {
+    this.streamService.setStreamHost(stream, host);
+  }
+
+  @OnEvent(EVENT_HOST_REASSIGN_FAILED)
+  async onHostReassignFailed({ stream }) {
+    this.streamService.deleteStream(stream);
   }
 
   @MessagePattern('stream.stop')

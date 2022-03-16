@@ -20,6 +20,17 @@ export class StreamEntity {
     };
   }
 
+  async setHost(stream: string, host: string) {
+    await this.prisma.stream.update({
+      where: {
+        id: stream,
+      },
+      data: {
+        owner_id: host,
+      },
+    });
+  }
+
   async search(text: string) {
     const streams = await this.prisma.stream.findMany({
       where: {
@@ -96,6 +107,22 @@ export class StreamEntity {
     });
 
     return { id, reactions };
+  }
+
+  async deleteByHost(host: string): Promise<string | undefined> {
+    const stream = await this.prisma.stream.findFirst({
+      where: { owner_id: host },
+    });
+
+    if (!stream) {
+      return undefined;
+    }
+
+    await this.prisma.stream.delete({
+      where: { id: stream.id },
+    });
+
+    return stream.id;
   }
 
   async delete(id: string): Promise<number> {
