@@ -17,11 +17,11 @@ export class HostService {
   ) {}
 
   async handlePossibleHost(participant: IFullParticipant) {
-    const { role } = participant;
+    const { role, id, stream } = participant;
 
     //If user has been downgraded to viewer, remove him from the list
     if (role === 'viewer') {
-      return this.hostStore.delPossibleHost(participant);
+      return this.hostStore.delPossibleHost(id, stream);
     }
 
     return this.hostStore.addPossibleHost(participant);
@@ -42,14 +42,12 @@ export class HostService {
    * waits for 15 seconds, if user failed to reconnect, reassings host
    * */
   async tryReassignHostAfterTime(user: string) {
-    const host = await this.hostStore.getHostInfo(user);
+    const stream = await this.hostStore.getHostedStreamId(user);
 
     //If user is not host
-    if (!host) {
-      return;
+    if (!stream) {
+      return this.hostStore.delPossibleHost(user, stream);
     }
-
-    const { stream } = host;
 
     //make user offline
     await this.hostStore.setHostJoinedStatus(user, false);
@@ -74,7 +72,7 @@ export class HostService {
           stream: stream,
         });
       } else {
-        await this.hostStore.setStreamHost(newHost.id, stream);
+        await this.hostStore.setStreamHost(newHost);
         this.eventEmitter.emit(EVENT_HOST_REASSIGN, {
           stream,
           host: newHost,

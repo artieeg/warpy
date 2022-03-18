@@ -59,6 +59,14 @@ export const createAPISlice = (
       get().dispatchInviteStateUpdate(data.id, data.state);
     });
 
+    api.stream.onHostReassign(({ host }) => {
+      if (get().user?.id === host.id) {
+        get().dispatchToastMessage("you are a new stream host");
+      } else {
+        get().dispatchToastMessage(`${host.username} is a new stream host`);
+      }
+    });
+
     api.stream.onPreviousStream((data) => {
       console.log("previous stream", data);
 

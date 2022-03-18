@@ -1,6 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import {
+  OnNewParticipant,
   OnParticipantRejoin,
   OnStreamEnd,
   OnStreamerDowngradeToViewer,
@@ -8,6 +9,7 @@ import {
   OnViewerUpgraded,
 } from '@warpy-be/interfaces';
 import {
+  EVENT_NEW_PARTICIPANT,
   EVENT_PARTICIPANT_REJOIN,
   EVENT_STREAMER_DOWNGRADED_TO_VIEWER,
   EVENT_STREAM_ENDED,
@@ -23,6 +25,7 @@ export class HostController
     OnUserDisconnect,
     OnParticipantRejoin,
     OnStreamEnd,
+    OnNewParticipant,
     OnStreamerDowngradeToViewer,
     OnViewerUpgraded
 {
@@ -33,9 +36,16 @@ export class HostController
     return this.hostStore.delByStream(stream);
   }
 
+  @OnEvent(EVENT_NEW_PARTICIPANT)
+  async onNewParticipant({ participant }) {
+    if (participant.role === 'streamer') {
+      return this.hostStore.setStreamHost(participant);
+    }
+  }
+
   @OnEvent(EVENT_STREAMER_DOWNGRADED_TO_VIEWER)
   async onStreamerDowngradeToViewer({ participant }) {
-    return this.hostStore.delPossibleHost(participant);
+    return this.hostStore.delPossibleHost(participant.id, participant.stream);
   }
 
   @OnEvent(EVENT_VIEWER_UPGRADED)
