@@ -42,7 +42,7 @@ export class BroadcastController
 
   @OnEvent(EVENT_HOST_REASSIGN)
   async onHostReassign({ host }) {
-    return this.broadcast.broadcastNewHost(host);
+    return this.broadcast.broadcastNewHost({ host });
   }
 
   @OnEvent(EVENT_STREAM_ENDED)
