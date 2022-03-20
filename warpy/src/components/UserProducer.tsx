@@ -52,7 +52,7 @@ export const UserProducer = (props: IRaisedHandInfo) => {
                 );
               }}
               size={20}
-              name={role !== 'streamer' ? 'video' : 'video-off'}
+              name={role !== 'streamer' ? 'camera' : 'camera'}
               color={role !== 'streamer' ? '#fff' : '#000'}
               style={[
                 styles.producerAction,
