@@ -3,7 +3,7 @@ import {Avatar} from './Avatar';
 import {StyleSheet, View} from 'react-native';
 import {Text} from './Text';
 import {SmallTextButton} from './SmallTextButton';
-import {useStore} from '@app/store';
+import {useStoreShallow} from '@app/store';
 import {IParticipant} from '@warpy/lib';
 
 interface IRaisedHandInfo {
@@ -13,7 +13,10 @@ interface IRaisedHandInfo {
 export const UserWithRaisedHand = (props: IRaisedHandInfo) => {
   const {data} = props;
 
-  const api = useStore.use.api();
+  const [api, isStreamOwner] = useStoreShallow(store => [
+    store.api,
+    store.isStreamOwner,
+  ]);
 
   const onAllow = useCallback(() => {
     api.stream.setRole(data.id, 'speaker');
@@ -27,7 +30,7 @@ export const UserWithRaisedHand = (props: IRaisedHandInfo) => {
         <Text weight="bold" style={styles.name} size="small">
           {name}
         </Text>
-        <SmallTextButton onPress={onAllow} title="Accept" />
+        {isStreamOwner && <SmallTextButton onPress={onAllow} title="Accept" />}
       </View>
     </View>
   );
