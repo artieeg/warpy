@@ -175,6 +175,17 @@ export class ParticipantStore implements OnModuleInit {
     return pipeline.exec();
   }
 
+  async removeParticipantFromStream(participant: string, stream: string) {
+    return this.redis
+      .pipeline()
+      .srem(PREFIX_STREAMERS + stream, participant)
+      .srem(PREFIX_VIEWERS + stream, participant)
+      .srem(PREFIX_RAISED_HANDS + stream, participant)
+      .srem(PREFIX_DEACTIVATED_USERS + stream, participant)
+      .del(participant)
+      .exec();
+  }
+
   /**
    * Returns info about audio/video streamers
    * */
@@ -265,16 +276,20 @@ export class ParticipantStore implements OnModuleInit {
   }
 
   async add(data: IFullParticipant) {
-    const { stream } = data;
+    const { stream, id } = data;
 
     const pipe = this.redis.pipeline();
 
-    console.log({ stream, id: data.id });
+    //Clear previous participant data for this user
+    const existing = await this.get(id);
+    if (existing) {
+      await this.removeParticipantFromStream(existing.id, existing.stream);
+    }
 
     if (data.role === 'viewer') {
-      pipe.sadd(PREFIX_VIEWERS + stream, data.id);
+      pipe.sadd(PREFIX_VIEWERS + stream, id);
     } else {
-      pipe.sadd(PREFIX_STREAMERS + stream, data.id);
+      pipe.sadd(PREFIX_STREAMERS + stream, id);
     }
 
     pipe.incr(PREFIX_COUNT + stream);
