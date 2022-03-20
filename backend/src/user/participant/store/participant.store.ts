@@ -106,9 +106,17 @@ export class ParticipantStore implements OnModuleInit {
 
   async setDeactivated(user: string, stream: string, flag: boolean) {
     if (flag) {
-      return this.redis.sadd(PREFIX_DEACTIVATED_USERS + stream, user);
+      return this.redis
+        .pipeline()
+        .sadd(PREFIX_DEACTIVATED_USERS + stream, user)
+        .decr(PREFIX_COUNT + stream)
+        .exec();
     } else {
-      return this.redis.srem(PREFIX_DEACTIVATED_USERS + stream, user);
+      return this.redis
+        .pipeline()
+        .srem(PREFIX_DEACTIVATED_USERS + stream, user)
+        .incr(PREFIX_COUNT + stream)
+        .exec();
     }
   }
 
