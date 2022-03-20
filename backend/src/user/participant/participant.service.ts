@@ -80,7 +80,10 @@ export class ParticipantService {
     }
 
     await this.participant.setDeactivated(user, data.stream, true);
-    this.eventEmitter.emit(EVENT_PARTICIPANT_LEAVE, { participant: data });
+    this.eventEmitter.emit(EVENT_PARTICIPANT_LEAVE, {
+      user,
+      stream: data.stream,
+    });
   }
 
   async removeUserFromStream(user: string, stream?: string) {
