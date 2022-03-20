@@ -9,7 +9,7 @@ import { ParticipantController } from './participant.controller';
 import { ParticipantService } from './participant.service';
 import { ParticipantRoleModule } from './role/role.module';
 import { ViewerModule } from './viewer/viewer.module';
-import {HostModule} from './host/host.module';
+import { HostModule } from './host/host.module';
 
 @Module({
   imports: [

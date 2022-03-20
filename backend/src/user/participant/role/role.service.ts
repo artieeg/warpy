@@ -11,6 +11,7 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Roles } from '@warpy/lib';
 import { ParticipantStore } from '../store';
+import { HostService } from '../host/host.service';
 
 @Injectable()
 export class ParticipantRoleService {
@@ -20,14 +21,31 @@ export class ParticipantRoleService {
     private messageService: MessageService,
     private media: MediaService,
     private eventEmitter: EventEmitter2,
+    private hostService: HostService,
   ) {}
 
-  async setRole(mod: string, userToUpdate: string, role: Roles) {
-    const moderator = await this.participant.get(mod);
-    const { stream } = moderator;
+  async setRole({
+    userToUpdate,
+    role,
+    mod,
+    stream: providedStream,
+  }: {
+    userToUpdate: string;
+    role: Roles;
+    mod?: string;
+    stream?: string;
+  }) {
+    let stream = providedStream;
 
-    if (moderator.role !== 'streamer') {
-      throw new NoPermissionError();
+    //check permission TODO
+    if (mod) {
+      const host = await this.hostService.getHostInfo(mod);
+
+      if (!host) {
+        throw new NoPermissionError();
+      } else {
+        stream = host.stream;
+      }
     }
 
     if (role !== 'viewer') {

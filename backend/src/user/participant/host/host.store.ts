@@ -33,6 +33,12 @@ export class HostStore implements OnModuleInit {
     return host;
   }
 
+  async getHostId(stream: string): Promise<string | undefined> {
+    const id = await this.redis.get(STREAM_PREFIX + stream);
+
+    return id;
+  }
+
   async addPossibleHost(host: IFullParticipant) {
     const { id, stream } = host;
 

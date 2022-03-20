@@ -7,6 +7,6 @@ import { HostStore } from './host.store';
   imports: [],
   providers: [HostStore, HostService],
   controllers: [HostController],
-  exports: [],
+  exports: [HostService],
 })
 export class HostModule {}

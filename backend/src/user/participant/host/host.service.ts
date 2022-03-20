@@ -16,6 +16,10 @@ export class HostService {
     private eventEmitter: EventEmitter2,
   ) {}
 
+  async getHostInfo(user: string) {
+    return this.hostStore.getHostInfo(user);
+  }
+
   async handlePossibleHost(participant: IFullParticipant) {
     const { role, id, stream } = participant;
 
@@ -72,12 +76,13 @@ export class HostService {
           stream: stream,
         });
       } else {
+        console.debug('debug: reassigned host');
         await this.hostStore.setStreamHost(newHost);
         this.eventEmitter.emit(EVENT_HOST_REASSIGN, {
           stream,
           host: newHost,
         });
       }
-    }, 15000);
+    }, 1000); //TODO: debug
   }
 }

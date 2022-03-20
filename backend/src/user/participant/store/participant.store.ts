@@ -164,6 +164,7 @@ export class ParticipantStore implements OnModuleInit {
     pipeline.del(PREFIX_STREAMERS + stream);
     pipeline.del(PREFIX_VIEWERS + stream);
     pipeline.del(PREFIX_RAISED_HANDS + stream);
+    pipeline.del(PREFIX_DEACTIVATED_USERS + stream);
 
     //Delete participant count
     pipeline.del(PREFIX_COUNT + stream);
