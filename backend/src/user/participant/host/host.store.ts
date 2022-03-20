@@ -82,6 +82,7 @@ export class HostStore implements OnModuleInit {
       .hmset(PREFIX_USER_INFO + id, participant)
       .set(PREFIX_HOSTED_STREAMS + id, stream)
       .set(PREFIX_HOST_JOIN_STATUS + id, JOINED)
+      .srem(PREFIX_POSSIBLE_HOST + stream, id)
       .exec();
   }
 
