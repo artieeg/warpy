@@ -43,6 +43,17 @@ export const createParticipantDispatchers: StoreSlice<IParticipantDispatchers> =
         produce<IStore>((state) => {
           state.totalParticipantCount--;
 
+          const media = state.streamers[user]?.media;
+
+          if (media) {
+            state.videoTracks = state.videoTracks.filter(
+              (t) => t !== media.video?.track
+            );
+            state.audioTracks = state.audioTracks.filter(
+              (t) => t !== media.audio?.track
+            );
+          }
+
           delete state.viewers[user];
           delete state.viewersWithRaisedHands[user];
           delete state.streamers[user];
@@ -106,10 +117,24 @@ export const createParticipantDispatchers: StoreSlice<IParticipantDispatchers> =
 
           if (video !== undefined && media.video) {
             state.streamers[user].media!.video!.active = video;
+            const track = state.streamers[user].media!.video!.track;
+
+            if (video) {
+              state.videoTracks = [...state.videoTracks, track];
+            } else {
+              state.videoTracks = state.videoTracks.filter((t) => t !== track);
+            }
           }
 
           if (audio !== undefined && media.audio) {
             state.streamers[user].media!.audio!.active = audio;
+            const track = state.streamers[user].media!.audio!.track;
+
+            if (audio) {
+              state.audioTracks = [...state.audioTracks, track];
+            } else {
+              state.audioTracks = state.audioTracks.filter((t) => t !== track);
+            }
           }
         })
       );
