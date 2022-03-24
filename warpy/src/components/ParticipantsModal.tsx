@@ -30,12 +30,13 @@ interface IParticipanModalProps {
 export const ParticipantsModal = (props: IParticipanModalProps) => {
   const {onSelectParticipant} = props;
   const usersRaisingHand = useSpeakingRequests();
+  const currentHostId = useStore(state => state.currentStreamHost);
   const producers = useStreamProducers();
   const [viewers, onFetchMore] = useStreamViewers();
 
   const streamer = useMemo(
-    () => producers.find(speaker => speaker.role === 'streamer'),
-    [producers],
+    () => producers.find(speaker => speaker.id === currentHostId),
+    [producers, currentHostId],
   );
 
   const data = useMemo(
@@ -56,10 +57,16 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
   const renderSection = (sectionData: any) => {
     const {item} = sectionData;
 
+    console.log({producers, currentHostId});
+
     const {kind} = item;
 
     if (kind === 'streamer') {
-      return <StreamerInfo data={item.list[0]} />;
+      if (!item.list[0]) {
+        return null;
+      } else {
+        return <StreamerInfo data={item.list[0]} />;
+      }
     }
 
     if (kind === 'raised_hands') {

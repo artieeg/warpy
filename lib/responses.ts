@@ -30,6 +30,7 @@ export interface IJoinStreamResponse {
   count: number;
   mediaPermissionsToken: string;
   recvMediaParams: IConnectRecvTransportParams;
+  host: string;
 }
 
 export interface IRequestViewersResponse {

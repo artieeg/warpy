@@ -4,14 +4,14 @@ import { StoreSlice } from "../types";
 export interface IStreamSlice {
   stream: string | null;
   title: string | null;
-  isStreamOwner: boolean;
+  currentStreamHost: string;
   newStreamCategory: IStreamCategory | null;
   selectedFeedCategory: IStreamCategory | null;
 }
 
 export const createStreamSlice: StoreSlice<IStreamSlice> = () => ({
   stream: null,
-  isStreamOwner: false,
+  currentStreamHost: "",
   title: "",
   newStreamCategory: null,
   selectedFeedCategory: null,

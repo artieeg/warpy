@@ -17,7 +17,7 @@ export const UserProducer = (props: IRaisedHandInfo) => {
 
   const [api, isStreamOwner] = useStoreShallow(store => [
     store.api,
-    store.isStreamOwner,
+    store.currentStreamHost === store.user?.id,
   ]);
 
   return (

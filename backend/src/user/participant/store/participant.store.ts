@@ -242,6 +242,19 @@ export class ParticipantStore implements OnModuleInit {
     this.write(id, data, pipe);
     pipe.hgetall(id);
 
+    const { stream, role } = data;
+
+    //update indexes if user's role has changed
+    if (role === 'speaker' || role === 'streamer') {
+      pipe.sadd(PREFIX_STREAMERS + stream, id);
+      pipe.srem(PREFIX_VIEWERS + stream, id);
+      pipe.srem(PREFIX_RAISED_HANDS + stream, id);
+    } else if (role === 'viewer') {
+      pipe.sadd(PREFIX_VIEWERS + stream, id);
+      pipe.srem(PREFIX_STREAMERS + stream, id);
+      pipe.srem(PREFIX_RAISED_HANDS + stream, id);
+    }
+
     const [, [, updated]] = await pipe.exec();
 
     return ParticipantStore.toDTO(updated);

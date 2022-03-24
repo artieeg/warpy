@@ -20,6 +20,10 @@ export class HostService {
     return this.hostStore.getHostInfo(user);
   }
 
+  async getStreamHostId(stream: string) {
+    return this.hostStore.getHostId(stream);
+  }
+
   async handlePossibleHost(participant: IFullParticipant) {
     const { role, id, stream } = participant;
 

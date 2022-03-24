@@ -64,7 +64,7 @@ export const createAPISlice = (
         get().dispatchToastMessage("you are a new stream host");
 
         set({
-          isStreamOwner: true,
+          currentStreamHost: host.id,
         });
       } else {
         get().dispatchToastMessage(`${host.username} is a new stream host`);
@@ -130,7 +130,7 @@ export const createAPISlice = (
     api.media.onNewTrack(async (data) => {
       const { mediaClient, recvTransport } = get();
 
-      console.log("new track received");
+      console.log("new track received", { mediaClient, recvTransport });
 
       if (mediaClient && recvTransport) {
         const consumer = await mediaClient.consumeRemoteStream(
@@ -159,38 +159,6 @@ export const createAPISlice = (
             },
           },
         } as any);
-
-        /*
-        set(
-          produce<IStore>((state) => {
-            state.streamers = {
-              ...state.streamers,
-              [data.user]: {
-                ...state.streamers[data.user],
-                media: {
-                  ...state.streamers[data.user],
-                  [consumer.kind]: {
-                    consumer,
-                    track: new MediaStream([consumer.track]),
-                  },
-                } as any,
-              },
-            };
-
-            /*
-            state.streamers[data.user] = {
-              ...state.streamers[data.user],
-              media: {
-                ...state.streamers[data.user],
-                [consumer.kind]: {
-                  consumer,
-                  track: new MediaStream([consumer.track]),
-                },
-              } as any,
-            };
-          })
-        );
-*/
       }
     });
 

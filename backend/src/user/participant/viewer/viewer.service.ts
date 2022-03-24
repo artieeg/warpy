@@ -6,11 +6,13 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IJoinStreamResponse } from '@warpy/lib';
 import { ParticipantBanService } from '../ban/ban.service';
 import { IFullParticipant, ParticipantStore } from '../store';
+import { HostService } from '../host/host.service';
 
 @Injectable()
 export class ViewerService {
   constructor(
     private media: MediaService,
+    private host: HostService,
     private eventEmitter: EventEmitter2,
     private bans: ParticipantBanService,
     private participant: ParticipantStore,
@@ -55,15 +57,18 @@ export class ViewerService {
 
     this.eventEmitter.emit(EVENT_NEW_PARTICIPANT, { participant: viewer });
 
-    const [recvMediaParams, speakers, raisedHands, count] = await Promise.all([
-      this.media.getViewerParams(recvNodeId, viewerId, stream),
-      this.participant.getStreamers(stream),
-      this.participant.getRaisedHands(stream),
-      this.participant.count(stream),
-    ]);
+    const [recvMediaParams, speakers, raisedHands, count, host] =
+      await Promise.all([
+        this.media.getViewerParams(recvNodeId, viewerId, stream),
+        this.participant.getStreamers(stream),
+        this.participant.getRaisedHands(stream),
+        this.participant.count(stream),
+        this.host.getStreamHostId(stream),
+      ]);
 
     return {
       speakers: speakers,
+      host,
       raisedHands: raisedHands,
       count,
       mediaPermissionsToken: token,

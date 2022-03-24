@@ -26,6 +26,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       dispatchMediaSend,
       title,
       dispatchInitViewer,
+      user,
     } = get();
 
     if (!title || !newStreamCategory) {
@@ -47,7 +48,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       sendMediaParams: mediaData,
       streamers: arrayToMap<IParticipant>(speakers),
       totalParticipantCount: count,
-      isStreamOwner: true,
+      currentStreamHost: user!.id,
       role: "streamer",
     });
 
@@ -77,6 +78,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       speakers,
       raisedHands,
       count,
+      host,
     } = await api.stream.join(stream);
 
     await dispatchInitViewer(mediaPermissionsToken, recvMediaParams);
@@ -126,10 +128,13 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       })
       .filter((t) => !!t);
 
+    console.log({ currentStreamHost: host });
+
     set({
       audioTracks,
       videoTracks,
       stream,
+      currentStreamHost: host,
       recvTransport,
       totalParticipantCount: count,
       streamers: arrayToMap<IParticipant>(speakers.map((p) => p)),
