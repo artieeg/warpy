@@ -130,8 +130,7 @@ export const createAPISlice = (
     api.media.onNewTrack(async (data) => {
       const { mediaClient, recvTransport } = get();
 
-      console.log("new track");
-      console.log({ data, mediaClient, recvTransport });
+      console.log("new track received");
 
       if (mediaClient && recvTransport) {
         const consumer = await mediaClient.consumeRemoteStream(
@@ -196,6 +195,7 @@ export const createAPISlice = (
     });
 
     api.stream.onParticipantRoleChange((data) => {
+      console.log("role change", data);
       const { user } = data;
 
       store.dispatchStreamerAdd(user);
