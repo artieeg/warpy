@@ -5,11 +5,11 @@ import { IFullParticipant } from '..';
 import { IParticipant } from '../../../../../lib';
 import { ParticipantStore } from '../store';
 
-const STREAM_PREFIX = 'stream_';
+const PREFIX_HOST_OF_STREAM = 'host_of_';
 const PREFIX_HOST_JOIN_STATUS = 'host_';
 const PREFIX_POSSIBLE_HOST = 'possible_host_';
 const PREFIX_USER_INFO = 'user_info_';
-const PREFIX_HOSTED_STREAMS = 'stream_hosted_by_';
+const PREFIX_HOSTED_STREAM = 'stream_hosted_by_';
 
 const JOINED = 'joined';
 const NOT_JOINED = 'not-joined';
@@ -24,6 +24,12 @@ export class HostStore implements OnModuleInit {
     this.redis = new IORedis(this.config.get('streamHostAddr'));
   }
 
+  async isHost(user: string) {
+    const hostedStream = await this.redis.get(PREFIX_HOSTED_STREAM + user);
+
+    return !!hostedStream;
+  }
+
   async getRandomPossibleHost(
     stream: string,
   ): Promise<IFullParticipant | null> {
@@ -34,7 +40,7 @@ export class HostStore implements OnModuleInit {
   }
 
   async getHostId(stream: string): Promise<string | undefined> {
-    const id = await this.redis.get(STREAM_PREFIX + stream);
+    const id = await this.redis.get(PREFIX_HOST_OF_STREAM + stream);
 
     return id;
   }
@@ -70,7 +76,7 @@ export class HostStore implements OnModuleInit {
   }
 
   async getHostedStreamId(user: string): Promise<string | undefined> {
-    return this.redis.get(PREFIX_HOSTED_STREAMS + user);
+    return this.redis.get(PREFIX_HOSTED_STREAM + user);
   }
 
   async setStreamHost(participant: IParticipant) {
@@ -78,9 +84,9 @@ export class HostStore implements OnModuleInit {
 
     return this.redis
       .pipeline()
-      .set(STREAM_PREFIX + stream, id)
+      .set(PREFIX_HOST_OF_STREAM + stream, id)
       .hmset(PREFIX_USER_INFO + id, participant)
-      .set(PREFIX_HOSTED_STREAMS + id, stream)
+      .set(PREFIX_HOSTED_STREAM + id, stream)
       .set(PREFIX_HOST_JOIN_STATUS + id, JOINED)
       .srem(PREFIX_POSSIBLE_HOST + stream, id)
       .exec();
@@ -91,27 +97,16 @@ export class HostStore implements OnModuleInit {
       .pipeline()
       .del(PREFIX_HOST_JOIN_STATUS + host)
       .del(PREFIX_USER_INFO + host)
-      .del(PREFIX_HOST_JOIN_STATUS + host)
-      .del(PREFIX_HOSTED_STREAMS + host)
-      .del(STREAM_PREFIX + stream);
+      .del(PREFIX_HOSTED_STREAM + host)
+      .del(PREFIX_HOST_OF_STREAM + stream);
 
     return pipe.exec();
   }
 
   async delByStream(stream: string) {
-    const host = await this.redis.get(STREAM_PREFIX + stream);
+    const host = await this.redis.get(PREFIX_HOST_OF_STREAM + stream);
 
     if (!host) {
-      return;
-    }
-
-    return this.del(stream, host);
-  }
-
-  async delByHost(host: string) {
-    const { stream } = await this.getHostInfo(host);
-
-    if (!stream) {
       return;
     }
 
