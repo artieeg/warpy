@@ -1,14 +1,14 @@
 import {
   OnParticipantLeave,
+  OnParticipantRejoin,
   OnStreamEnd,
-  OnUserConnect,
   OnUserDisconnect,
 } from '@warpy-be/interfaces';
 import {
   EVENT_PARTICIPANT_KICKED,
   EVENT_PARTICIPANT_LEAVE,
+  EVENT_PARTICIPANT_REJOIN,
   EVENT_STREAM_ENDED,
-  EVENT_USER_CONNECTED,
   EVENT_USER_DISCONNECTED,
 } from '@warpy-be/utils';
 import { Controller } from '@nestjs/common';
@@ -19,7 +19,11 @@ import { ParticipantService } from './participant.service';
 
 @Controller()
 export class ParticipantController
-  implements OnUserDisconnect, OnUserConnect, OnStreamEnd, OnParticipantLeave
+  implements
+    OnParticipantRejoin,
+    OnUserDisconnect,
+    OnStreamEnd,
+    OnParticipantLeave
 {
   constructor(
     private participant: ParticipantService,
@@ -49,9 +53,9 @@ export class ParticipantController
     await this.participant.removeUserFromStream(user);
   }
 
-  @OnEvent(EVENT_USER_CONNECTED)
-  async onUserConnect({ user }) {
-    await this.participant.activateUser(user);
+  @OnEvent(EVENT_PARTICIPANT_REJOIN)
+  async onParticipantRejoin({ participant }) {
+    await this.participant.activateUser(participant.id);
   }
 
   @OnEvent(EVENT_USER_DISCONNECTED)
