@@ -1,4 +1,4 @@
-import { Consumer, PipeTransport } from "mediasoup/lib/types";
+import { Consumer, PipeTransport } from "mediasoup/node/lib/types";
 
 export type MediaDirection = "send" | "recv";
 export type EgressTransports = Record<string, PipeTransport>;

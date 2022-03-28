@@ -1,5 +1,5 @@
-import { AudioLevelObserver } from "mediasoup/lib/AudioLevelObserver";
-import { Router } from "mediasoup/lib/Router";
+import { AudioLevelObserver } from "mediasoup/node/lib/AudioLevelObserver";
+import { Router } from "mediasoup/node/lib/Router";
 import { IPeer } from "./peer";
 
 type Peers = Record<string, IPeer>;

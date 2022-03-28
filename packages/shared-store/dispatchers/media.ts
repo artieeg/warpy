@@ -42,9 +42,7 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
 
     //getUserMedia returns boolean | MediaStream
     const mediaStream = await container.mediaDevices.getUserMedia({
-      audio: {
-        sampleRate: 48000,
-      } as any,
+      audio: true,
       video: kind === "video" ? videoContstraints : false,
     });
 

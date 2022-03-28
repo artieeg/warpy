@@ -6,7 +6,7 @@ import {
   Consumer,
   Router,
   RtpCapabilities,
-} from "mediasoup/lib/types";
+} from "mediasoup/node/lib/types";
 
 //TODO: consider using undefined instead of null
 

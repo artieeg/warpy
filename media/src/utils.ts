@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { IMediaPermissions, ITransportOptions } from "@warpy/lib";
-import { WebRtcTransport } from "mediasoup/lib/types";
+import { WebRtcTransport } from "mediasoup/node/lib/types";
 
 export const getMediaPermissions = (token: string) => {
   return jwt.verify(token, process.env.MEDIA_JWT_SECRET!) as IMediaPermissions;

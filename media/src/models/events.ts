@@ -1,5 +1,5 @@
 import { MediaDirection } from "@media/types";
-import { DtlsParameters } from "mediasoup/lib/WebRtcTransport";
+import { DtlsParameters } from "mediasoup/node/lib/WebRtcTransport";
 
 export interface IConnectTransport {
   roomId: string;

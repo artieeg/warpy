@@ -61,8 +61,9 @@ export const getMediaStream = async () => {
     */
     audio: false,
     video: {
-      source: "file",
-      file,
+      source: "device",
+      //source: "file",
+      //file,
     },
   });
 

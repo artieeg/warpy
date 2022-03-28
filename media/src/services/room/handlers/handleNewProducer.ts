@@ -2,7 +2,7 @@ import { createNewPeer } from "@media/models";
 import { SFUService, MessageService } from "@media/services";
 import { mediaNodeTransferWorker } from "@media/services/sfu";
 import { MessageHandler, INewProducer } from "@warpy/lib";
-import { Producer } from "mediasoup/lib/Producer";
+import { Producer } from "mediasoup/node/lib/Producer";
 import { rooms } from "../rooms";
 
 export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {

@@ -9,7 +9,7 @@ import {
   Router,
   RtpCapabilities,
   Transport,
-} from "mediasoup/lib/types";
+} from "mediasoup/node/lib/types";
 import { config } from "@media/config";
 import { MessageService } from ".";
 import EventEmitter from "events";
