@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { HostReassignError, StreamNotFound } from '@warpy-be/errors';
 import { TimerService } from '@warpy-be/shared';
 import {
   EVENT_HOST_REASSIGN,
   EVENT_HOST_REASSIGN_FAILED,
 } from '@warpy-be/utils';
+import { IParticipant } from '@warpy/lib';
 import { IFullParticipant } from '../store';
 import { HostStore } from './host.store';
 
@@ -45,6 +47,27 @@ export class HostService {
     return this.hostStore.setHostJoinedStatus(user, true);
   }
 
+  private async setStreamHost(stream: string, host: IParticipant) {
+    await this.hostStore.setStreamHost(host);
+    this.eventEmitter.emit(EVENT_HOST_REASSIGN, {
+      stream,
+      host,
+    });
+  }
+
+  async reassignHost(current: string, next: string) {
+    const [stream, nextHostData] = await Promise.all([
+      this.hostStore.getHostedStreamId(current),
+      this.hostStore.getHostInfo(next),
+    ]);
+
+    if (!stream || !nextHostData) {
+      throw new HostReassignError();
+    }
+
+    return this.setStreamHost(stream, nextHostData);
+  }
+
   /**
    * checks if user is a host and is disconnected
    * waits for 15 seconds, if user failed to reconnect, reassings host
@@ -80,12 +103,7 @@ export class HostService {
           stream: stream,
         });
       } else {
-        console.debug('debug: reassigned host');
-        await this.hostStore.setStreamHost(newHost);
-        this.eventEmitter.emit(EVENT_HOST_REASSIGN, {
-          stream,
-          host: newHost,
-        });
+        await this.setStreamHost(stream, newHost);
       }
     }, 1000); //TODO: debug
   }

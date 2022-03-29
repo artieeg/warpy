@@ -33,6 +33,7 @@ export interface IStreamAPI {
   sendChatMessage: (message: string) => Promise<ISendMessageResponse>;
   sendInviteAction: (invite: string, action: "accept" | "decline") => void;
   kickUser: (userToKick: string) => void;
+  reassignHost: (host: string) => void;
   toggleMedia: (payload: {
     audioEnabled?: boolean;
     videoEnabled?: boolean;
@@ -92,6 +93,7 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
   sendChatMessage: (message: string) =>
     socket.request("new-chat-message", { message }),
   search: (textToSearch) => socket.request("search-stream", { textToSearch }),
+  reassignHost: (host) => socket.request("host-reassign", { host }),
   join: (stream) => socket.request("join-stream", { stream }),
   getViewers: (stream, page) =>
     socket.request("request-viewers", { stream, page }),

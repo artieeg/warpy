@@ -1,5 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
+import { MessagePattern } from '@nestjs/microservices';
 import {
   OnNewParticipant,
   OnParticipantLeave,
@@ -18,6 +19,7 @@ import {
   EVENT_USER_DISCONNECTED,
   EVENT_VIEWER_UPGRADED,
 } from '@warpy-be/utils';
+import { IHostReassignRequest } from '@warpy/lib';
 import { HostService } from './host.service';
 import { HostStore } from './host.store';
 
@@ -33,6 +35,11 @@ export class HostController
     OnParticipantLeave
 {
   constructor(private hostStore: HostStore, private hostService: HostService) {}
+
+  @MessagePattern('host.reassign')
+  async onHostReassign({ host, user }: IHostReassignRequest) {
+    return this.hostService.reassignHost(user, host);
+  }
 
   @OnEvent(EVENT_STREAM_ENDED)
   async onStreamEnd({ stream }) {

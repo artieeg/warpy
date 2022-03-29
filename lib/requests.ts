@@ -349,3 +349,8 @@ export interface IMediaNodeInfoRequest {
   load: number;
   role: string;
 }
+
+export interface IHostReassignRequest {
+  host: string;
+  user: string;
+}

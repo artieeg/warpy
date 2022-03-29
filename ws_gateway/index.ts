@@ -40,6 +40,13 @@ const handlers: Record<string, HandlerConfig> = {
     subject: "candidate.search",
   },
 
+  "host-reassign": {
+    subject: "host.reassign",
+    kind: "request",
+    auth: true,
+    schema: joi.object({ host: joi.string().max(64).required() }),
+  },
+
   "friend-feed-get": {
     subject: "friend-feed.get",
     kind: "request",

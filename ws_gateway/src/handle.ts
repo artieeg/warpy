@@ -22,7 +22,7 @@ export const handle = async ({ data, context, rid, handler }: HandleParams) => {
   }
 
   if (auth && !context.user) {
-    console.log("not authed");
+    console.log("not authed", subject);
 
     //TODO: ws.send error
     return;

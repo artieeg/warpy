@@ -150,3 +150,11 @@ export class WaitlistRecordExists extends BaseError {
     this.name = 'WaitlistRecordExists';
   }
 }
+
+export class HostReassignError extends BaseError {
+  constructor() {
+    super('host reassign failed');
+
+    this.name = 'HostReassignError';
+  }
+}
