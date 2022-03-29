@@ -2,20 +2,23 @@ import React, {useState} from 'react';
 import {StyleSheet, FlatList} from 'react-native';
 import {IParticipant} from '@warpy/lib';
 import {BaseSlideModal, IBaseModalProps} from './BaseSlideModal';
-import {useStoreShallow} from '@app/store';
+import {useStore, useStoreShallow} from '@app/store';
 import {HostCandidate} from './HostCandidate';
 import {TextButton} from '@warpy/components';
 
 export const HostReassignModal: React.FC<IBaseModalProps> = props => {
   const [modalCurrent, hostCandidates] = useStoreShallow(state => [
     state.modalCurrent,
-    Object.values(state.streamers),
-    //Object.values(state.streamers).filter(u => u.id !== state.user!.id),
+    Object.values(state.streamers).filter(u => u.id !== state.user!.id),
   ]);
 
   const [selected, setSelected] = useState<string>();
 
-  const onHostReassign = React.useCallback(() => {}, [selected]);
+  const onHostReassign = React.useCallback(() => {
+    if (selected) {
+      useStore.getState().api.stream.reassignHost(selected);
+    }
+  }, [selected]);
 
   const onSelect = React.useCallback((id: string) => {
     setSelected(prev => {
@@ -52,7 +55,12 @@ export const HostReassignModal: React.FC<IBaseModalProps> = props => {
         contentContainerStyle={styles.container}
       />
 
-      <TextButton style={styles.button} title="reassign" disabled={!selected} />
+      <TextButton
+        onPress={onHostReassign}
+        style={styles.button}
+        title="reassign"
+        disabled={!selected}
+      />
     </BaseSlideModal>
   );
 };

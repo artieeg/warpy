@@ -61,7 +61,7 @@ export class HostService {
       this.hostStore.getHostInfo(next),
     ]);
 
-    if (!stream || !nextHostData) {
+    if ((!stream || !nextHostData) && stream === nextHostData.stream) {
       throw new HostReassignError();
     }
 
