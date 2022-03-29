@@ -6,6 +6,7 @@ export type ParticipantRole = "streamer" | "speaker" | "viewer";
 
 export type Modal =
   | "award"
+  | "host-reassign"
   | "award-message"
   | "award-visual"
   | "award-recipent"

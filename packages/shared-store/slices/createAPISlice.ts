@@ -130,8 +130,6 @@ export const createAPISlice = (
     api.media.onNewTrack(async (data) => {
       const { mediaClient, recvTransport } = get();
 
-      console.log("new track received", { mediaClient, recvTransport });
-
       if (mediaClient && recvTransport) {
         const consumer = await mediaClient.consumeRemoteStream(
           data.consumerParameters,

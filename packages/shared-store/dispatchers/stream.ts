@@ -128,8 +128,6 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       })
       .filter((t) => !!t);
 
-    console.log({ currentStreamHost: host });
-
     set({
       audioTracks,
       videoTracks,

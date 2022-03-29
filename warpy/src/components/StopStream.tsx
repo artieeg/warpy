@@ -1,4 +1,4 @@
-import {useStoreShallow} from '@app/store';
+import {useStore, useStoreShallow} from '@app/store';
 import {useNavigation} from '@react-navigation/native';
 import React, {useCallback} from 'react';
 import {IconButton} from './IconButton';
@@ -13,9 +13,13 @@ export const StopStream = () => {
       return;
     }
 
+    useStore.getState().dispatchModalOpen('host-reassign');
+
+    /*
     await api.stream.leave(stream);
 
     navigation.navigate('Feed');
+       */
   }, [navigation, api, stream]);
 
   return (

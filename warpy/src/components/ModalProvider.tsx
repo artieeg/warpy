@@ -12,6 +12,7 @@ import {AwardPickerModal} from './AwardPickerModal';
 import {AwardRecipentPicker} from './AwardRecipentPicker';
 import {AwardVisualPickerModal} from './AwardVisualPickerModal';
 import {AwardMessageInputModal} from './AwardMessageInputModal';
+import {HostReassignModal} from './HostReassignModal';
 
 export const ModalProvider = () => {
   const modal = useStore.use.modalCurrent();
@@ -25,6 +26,7 @@ export const ModalProvider = () => {
       <AwardRecipentPicker />
       <AwardVisualPickerModal />
       <AwardMessageInputModal />
+      <HostReassignModal />
 
       <ParticipantsModal
         onHide={() => useStore.getState().dispatchModalClose()}
