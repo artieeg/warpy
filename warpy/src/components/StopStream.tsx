@@ -35,12 +35,14 @@ export const StopStream = () => {
             text: 'end the room',
             onPress: async () => {
               await api.stream.stop(stream);
+              navigation.navigate('Feed');
             },
           },
           {
             text: 'just leave',
             onPress: async () => {
               await api.stream.leave(stream);
+              navigation.navigate('Feed');
             },
           },
         ],
