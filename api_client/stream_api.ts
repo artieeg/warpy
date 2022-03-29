@@ -33,7 +33,7 @@ export interface IStreamAPI {
   sendChatMessage: (message: string) => Promise<ISendMessageResponse>;
   sendInviteAction: (invite: string, action: "accept" | "decline") => void;
   kickUser: (userToKick: string) => void;
-  reassignHost: (host: string) => void;
+  reassignHost: (host: string) => Promise<void>;
   toggleMedia: (payload: {
     audioEnabled?: boolean;
     videoEnabled?: boolean;

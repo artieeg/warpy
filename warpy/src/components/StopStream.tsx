@@ -1,10 +1,15 @@
 import {useStore, useStoreShallow} from '@app/store';
 import {useNavigation} from '@react-navigation/native';
 import React, {useCallback} from 'react';
+import {Alert} from 'react-native';
 import {IconButton} from './IconButton';
 
 export const StopStream = () => {
-  const [api, stream] = useStoreShallow(store => [store.api, store.stream]);
+  const [api, stream, isHost] = useStoreShallow(store => [
+    store.api,
+    store.stream,
+    store.currentStreamHost === store.user!.id,
+  ]);
 
   const navigation = useNavigation();
 
@@ -13,13 +18,37 @@ export const StopStream = () => {
       return;
     }
 
-    useStore.getState().dispatchModalOpen('host-reassign');
-
-    /*
-    await api.stream.leave(stream);
-
-    navigation.navigate('Feed');
-       */
+    if (isHost) {
+      Alert.alert(
+        'Before you leave...',
+        'Do you want to assign a host, end the room or just leave?',
+        [
+          {
+            text: 'assign a host',
+            onPress: async () => {
+              useStore
+                .getState()
+                .dispatchModalOpen('host-reassign', {closeAfterReassign: true});
+            },
+          },
+          {
+            text: 'end the room',
+            onPress: async () => {
+              await api.stream.stop(stream);
+            },
+          },
+          {
+            text: 'just leave',
+            onPress: async () => {
+              await api.stream.leave(stream);
+            },
+          },
+        ],
+      );
+    } else {
+      await api.stream.leave(stream);
+      navigation.navigate('Feed');
+    }
   }, [navigation, api, stream]);
 
   return (

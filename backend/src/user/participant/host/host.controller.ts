@@ -36,7 +36,11 @@ export class HostController
 
   @MessagePattern('host.reassign')
   async onHostReassign({ host, user }: IHostReassignRequest) {
-    return this.hostService.reassignHost(user, host);
+    await this.hostService.reassignHost(user, host);
+
+    return {
+      host,
+    };
   }
 
   @OnEvent(EVENT_STREAM_ENDED)

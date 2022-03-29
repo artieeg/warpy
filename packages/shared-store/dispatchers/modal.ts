@@ -7,6 +7,7 @@ type OpenModalParams = {
   botConfirmId?: string;
   botConfirmData?: IBot;
   invite?: IInvite & { notification: string };
+  closeAfterReassign?: boolean;
 };
 
 export interface IModalDispatchers {
@@ -25,6 +26,7 @@ export const createModalDispatchers: StoreSlice<IModalDispatchers> = (
       modalBotConfirmId: null,
       modalBotConfirmData: null,
       modalInvite: null,
+      modalCloseAfterHostReassign: false,
     });
   },
   dispatchModalOpen(modal, params) {
@@ -35,6 +37,7 @@ export const createModalDispatchers: StoreSlice<IModalDispatchers> = (
       modalBotConfirmId: params?.botConfirmId || null,
       modalUserToAward: params?.userToAward || null,
       modalInvite: params?.invite || null,
+      modalCloseAfterHostReassign: !!params?.closeAfterReassign,
     });
   },
 });

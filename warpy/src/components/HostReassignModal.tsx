@@ -5,20 +5,32 @@ import {BaseSlideModal, IBaseModalProps} from './BaseSlideModal';
 import {useStore, useStoreShallow} from '@app/store';
 import {HostCandidate} from './HostCandidate';
 import {TextButton} from '@warpy/components';
+import {useNavigation} from '@react-navigation/native';
+import {navigation} from '@app/navigation';
 
 export const HostReassignModal: React.FC<IBaseModalProps> = props => {
-  const [modalCurrent, hostCandidates] = useStoreShallow(state => [
-    state.modalCurrent,
-    Object.values(state.streamers).filter(u => u.id !== state.user!.id),
-  ]);
+  const [api, stream, modalCurrent, hostCandidates, closeAfterReassign] =
+    useStoreShallow(state => [
+      state.api,
+      state.stream,
+      state.modalCurrent,
+      Object.values(state.streamers).filter(u => u.id !== state.user!.id),
+      state.modalCloseAfterHostReassign,
+    ]);
 
   const [selected, setSelected] = useState<string>();
 
-  const onHostReassign = React.useCallback(() => {
-    if (selected) {
-      useStore.getState().api.stream.reassignHost(selected);
+  const onHostReassign = React.useCallback(async () => {
+    if (selected && stream) {
+      await useStore.getState().api.stream.reassignHost(selected);
+
+      if (closeAfterReassign) {
+        useStore.getState().dispatchModalClose();
+        await api.stream.leave(stream);
+        navigation.current?.navigate('Feed');
+      }
     }
-  }, [selected]);
+  }, [selected, api, stream, closeAfterReassign]);
 
   const onSelect = React.useCallback((id: string) => {
     setSelected(prev => {

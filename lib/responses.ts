@@ -202,3 +202,7 @@ export interface IFriendFeedResponse {
 export interface IStreamSearchResponse {
   streams: ICandidate[];
 }
+
+export interface IHostReassignResponse {
+  host: string;
+}
