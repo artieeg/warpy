@@ -7,7 +7,6 @@ import {
   OnParticipantRejoin,
   OnStreamEnd,
   OnStreamerDowngradeToViewer,
-  OnUserDisconnect,
   OnViewerUpgraded,
 } from '@warpy-be/interfaces';
 import {
@@ -16,7 +15,6 @@ import {
   EVENT_PARTICIPANT_REJOIN,
   EVENT_STREAMER_DOWNGRADED_TO_VIEWER,
   EVENT_STREAM_ENDED,
-  EVENT_USER_DISCONNECTED,
   EVENT_VIEWER_UPGRADED,
 } from '@warpy-be/utils';
 import { IHostReassignRequest } from '@warpy/lib';
@@ -24,9 +22,9 @@ import { HostService } from './host.service';
 import { HostStore } from './host.store';
 
 @Controller()
+//OnUserDisconnect,
 export class HostController
   implements
-    OnUserDisconnect,
     OnParticipantRejoin,
     OnStreamEnd,
     OnNewParticipant,
@@ -75,12 +73,7 @@ export class HostController
     if (!isHost) {
       return this.hostStore.delPossibleHost(user, stream);
     } else {
-      return null;
+      return this.hostService.tryReassignHostAfterTime(user);
     }
-  }
-
-  @OnEvent(EVENT_USER_DISCONNECTED)
-  async onUserDisconnect({ user }) {
-    return this.hostService.tryReassignHostAfterTime(user);
   }
 }

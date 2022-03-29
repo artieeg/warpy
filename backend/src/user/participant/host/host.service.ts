@@ -47,6 +47,9 @@ export class HostService {
     return this.hostStore.setHostJoinedStatus(user, true);
   }
 
+  /**
+   * update the store and emit event
+   * */
   private async setStreamHost(stream: string, host: IParticipant) {
     await this.hostStore.setStreamHost(host);
     this.eventEmitter.emit(EVENT_HOST_REASSIGN, {
@@ -55,17 +58,31 @@ export class HostService {
     });
   }
 
+  /**
+   * Checks permissions and moves host role from one user to another
+   * */
   async reassignHost(current: string, next: string) {
-    const [stream, nextHostData] = await Promise.all([
+    const [stream, nextHostData, currentHostData] = await Promise.all([
       this.hostStore.getHostedStreamId(current),
       this.hostStore.getHostInfo(next),
+      this.hostStore.getHostInfo(current),
     ]);
 
-    if ((!stream || !nextHostData) && stream === nextHostData.stream) {
+    //checks
+    if (
+      (!stream || !nextHostData || !currentHostData) &&
+      stream === nextHostData.stream
+    ) {
       throw new HostReassignError();
     }
 
-    return this.setStreamHost(stream, nextHostData);
+    return Promise.all([
+      //because previous host hasn't left the stream, they can be picked as a host again
+      this.hostStore.addPossibleHost(currentHostData),
+
+      //set new stream host
+      this.setStreamHost(stream, nextHostData),
+    ]);
   }
 
   /**
