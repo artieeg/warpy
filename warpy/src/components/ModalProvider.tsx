@@ -1,5 +1,5 @@
 import React from 'react';
-import {useStore} from '@app/store';
+import {useStore, useStoreShallow} from '@app/store';
 import {ParticipantsModal} from './ParticipantsModal';
 import {UserInfoModal} from './UserInfoModal';
 import {ReportActionSheet} from './ReportActionSheet';
@@ -15,7 +15,14 @@ import {AwardMessageInputModal} from './AwardMessageInputModal';
 import {HostReassignModal} from './HostReassignModal';
 
 export const ModalProvider = () => {
-  const modal = useStore.use.modalCurrent();
+  const [modal, isApiConnected] = useStoreShallow(state => [
+    state.modalCurrent,
+    state.isConnected,
+  ]);
+
+  if (!isApiConnected) {
+    return null;
+  }
 
   return (
     <>

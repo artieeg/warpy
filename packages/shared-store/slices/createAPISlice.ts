@@ -9,6 +9,7 @@ type APISubscriptionParams = {
 
 export interface IAPISlice {
   api: APIClient;
+  isConnected: boolean;
   connect: (addr: string) => void;
   createAPISubscriptions: (params: APISubscriptionParams) => void;
 }
@@ -20,18 +21,21 @@ export const createAPISlice = (
   get: GetState<IStore>
 ): IAPISlice => ({
   api: APIClient(new WebSocketConn()),
+  isConnected: false,
   connect: async (addr) => {
     return new Promise((resolve) => {
       const socket = new WebSocket(addr);
 
       socket.onopen = () => {
         get().api.conn.socket = socket;
+        set({ isConnected: true });
 
         clearInterval(reconnecting_interval);
 
         socket.onclose = () => {
           clearInterval(reconnecting_interval);
 
+          set({ isConnected: false });
           reconnecting_interval = setInterval(() => {
             console.log("reconnecting...");
 
