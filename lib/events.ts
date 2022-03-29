@@ -98,3 +98,7 @@ export interface IPreviousStream {
 export interface IReassignedStreamHost {
   host: IParticipant;
 }
+
+export interface IStreamEndEvent {
+  stream: string;
+}

@@ -25,6 +25,9 @@ export const useAppSetUp = () => {
     useStore.getState().createAPISubscriptions({
       onStreamIdAvailable: id =>
         navigation.current?.navigate('Stream', {stream: {id}}),
+      onStreamEnd: () => {
+        navigation.current?.navigate('Feed');
+      },
     });
 
     api.onError(error => useStore.getState().dispatchToastMessage(error.error));

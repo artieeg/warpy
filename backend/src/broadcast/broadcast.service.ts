@@ -25,6 +25,19 @@ export class BroadcastService {
     ids.forEach((id) => this.messageService.send(id, message));
   }
 
+  async broadcastStreamEnd(stream: string) {
+    const ids = await this.broadcastUserListStore.get(stream);
+
+    const payload = this.messageService.encodeMessage({
+      event: 'stream-end',
+      data: {
+        stream,
+      },
+    });
+
+    this.broadcast(ids, payload);
+  }
+
   async broadcastNewHost({ host }: NewHostEvent) {
     const ids = await this.broadcastUserListStore.get(host.stream);
 

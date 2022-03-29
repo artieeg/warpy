@@ -22,6 +22,7 @@ import {
   IStreamSearchResponse,
   IPreviousStream,
   IReassignedStreamHost,
+  IStreamEndEvent,
 } from "@warpy/lib";
 
 export interface IStreamAPI {
@@ -62,6 +63,7 @@ export interface IStreamAPI {
   onMediaToggle: EventHandler<IMediaToggleEvent>;
   onStreamIdAvailable: EventHandler<IStreamIdAvailable>;
   onHostReassign: EventHandler<IReassignedStreamHost>;
+  onStreamEnd: EventHandler<IStreamEndEvent>;
   leave: (stream: string) => Promise<ILeaveStreamResponse>;
 }
 
@@ -122,4 +124,5 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
   onChatMessages: (handler) => socket.on("chat-messages", handler),
   onUserKick: (handler) => socket.on("user-kicked", handler),
   onMediaToggle: (handler) => socket.on("user-toggled-media", handler),
+  onStreamEnd: (handler) => socket.on("stream-end", handler),
 });

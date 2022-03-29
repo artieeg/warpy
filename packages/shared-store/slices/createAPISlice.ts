@@ -5,6 +5,7 @@ import produce from "immer";
 
 type APISubscriptionParams = {
   onStreamIdAvailable: (id: string) => void;
+  onStreamEnd: (id: string) => void;
 };
 
 export interface IAPISlice {
@@ -51,7 +52,7 @@ export const createAPISlice = (
       };
     });
   },
-  createAPISubscriptions: ({ onStreamIdAvailable }) => {
+  createAPISubscriptions: ({ onStreamIdAvailable, onStreamEnd }) => {
     const store = get();
     const { api } = store;
 
@@ -79,6 +80,11 @@ export const createAPISlice = (
       set({
         previousStreamData: data.stream,
       });
+    });
+
+    api.stream.onStreamEnd(({ stream }) => {
+      onStreamEnd(stream);
+      get().dispatchToastMessage("the stream has ended");
     });
 
     api.stream.onStreamIdAvailable(({ id }) => {

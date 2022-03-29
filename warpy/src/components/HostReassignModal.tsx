@@ -5,7 +5,6 @@ import {BaseSlideModal, IBaseModalProps} from './BaseSlideModal';
 import {useStore, useStoreShallow} from '@app/store';
 import {HostCandidate} from './HostCandidate';
 import {TextButton} from '@warpy/components';
-import {useNavigation} from '@react-navigation/native';
 import {navigation} from '@app/navigation';
 
 export const HostReassignModal: React.FC<IBaseModalProps> = props => {

@@ -47,7 +47,8 @@ export class BroadcastController
 
   @OnEvent(EVENT_STREAM_ENDED)
   async onStreamEnd({ stream }) {
-    return this.store.deleteList(stream);
+    await this.broadcast.broadcastStreamEnd(stream);
+    await this.store.deleteList(stream);
   }
 
   @OnEvent('participant.media-toggle')
