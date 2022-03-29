@@ -115,22 +115,12 @@ export class MediaClient {
     kind: MediaKind,
     sendTransport: Transport
   ): Promise<Producer> {
-    console.log("sending media stream", kind, track);
+    const producer = await sendTransport.produce({
+      track: track as any,
+      appData: { kind },
+    });
 
-    try {
-      const producer = await sendTransport.produce({
-        track: track as any,
-        appData: { kind },
-      });
-
-      console.log("new producer", producer);
-
-      return producer;
-    } catch (e) {
-      console.error(e);
-
-      throw e;
-    }
+    return producer;
   }
 
   async consumeRemoteStreams(stream: string, transport: Transport) {
