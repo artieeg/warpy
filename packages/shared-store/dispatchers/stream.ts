@@ -106,7 +106,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
           (c) => c.appData.user === p.id && c.kind === "audio"
         )?.track;
 
-        if (!track) {
+        if (!track || !p.audioEnabled) {
           return undefined;
         } else {
           return new MediaStream([track]);
@@ -120,7 +120,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
           (c) => c.appData.user === p.id && c.kind === "video"
         )?.track;
 
-        if (!track) {
+        if (!track || !p.videoEnabled) {
           return undefined;
         } else {
           return new MediaStream([track]);
@@ -135,7 +135,35 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       currentStreamHost: host,
       recvTransport,
       totalParticipantCount: count,
-      streamers: arrayToMap<IParticipant>(speakers.map((p) => p)),
+      streamers: arrayToMap<IParticipant>(
+        speakers.map((p) => {
+          const videoConsumer = consumers.find(
+            (c) => c.appData.user === p.id && c.kind === "video"
+          );
+
+          const audioConsumer = consumers.find(
+            (c) => c.appData.user === p.id && c.kind === "audio"
+          );
+
+          return {
+            ...p,
+            media: {
+              audio: audioConsumer
+                ? {
+                    consumer: audioConsumer,
+                    track: new MediaStream([audioConsumer.track]),
+                  }
+                : null,
+              video: videoConsumer
+                ? {
+                    consumer: videoConsumer,
+                    track: new MediaStream([videoConsumer.track]),
+                  }
+                : null,
+            },
+          };
+        })
+      ),
       viewersWithRaisedHands: arrayToMap<IParticipant>(raisedHands),
       role: "viewer",
     });

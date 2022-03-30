@@ -109,7 +109,6 @@ export const createParticipantDispatchers: StoreSlice<IParticipantDispatchers> =
       set(
         produce<IStore>((state) => {
           const { media } = state.streamers[user];
-          console.log("user has this media", { media });
 
           if (!media) {
             return;

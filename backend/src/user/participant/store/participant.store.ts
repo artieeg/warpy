@@ -38,6 +38,8 @@ export class ParticipantStore implements OnModuleInit {
   static toDTO(data: any): IFullParticipant {
     return {
       ...data,
+      videoEnabled: data.videoEnabled === 'true',
+      audioEnabled: data.audioEnabled === 'true',
       isRaisingHand: data.isRaisingHand === 'true',
       isBot: data.isBot === 'true',
       isBanned: data.isBanned === 'true',
