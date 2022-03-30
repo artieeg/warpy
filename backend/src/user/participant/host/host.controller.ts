@@ -22,7 +22,6 @@ import { HostService } from './host.service';
 import { HostStore } from './host.store';
 
 @Controller()
-//OnUserDisconnect,
 export class HostController
   implements
     OnParticipantRejoin,
