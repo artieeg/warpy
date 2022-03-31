@@ -139,75 +139,12 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       })
     );
 
-    /*
-    const audioTracks = speakers
-      .map((p) => {
-        const track = consumers.find(
-          (c) => c.appData.user === p.id && c.kind === "audio"
-        )?.track;
-
-        if (!track || !p.audioEnabled) {
-          return undefined;
-        } else {
-          return new MediaStream([track]);
-        }
-      })
-      .filter((t) => !!t);
-
-    const videoTracks = speakers
-      .map((p) => {
-        const track = consumers.find(
-          (c) => c.appData.user === p.id && c.kind === "video"
-        )?.track;
-
-        if (!track || !p.videoEnabled) {
-          return undefined;
-        } else {
-          return new MediaStream([track]);
-        }
-      })
-      .filter((t) => !!t);
-*/
-
     set({
-      //audioTracks,
-      //videoTracks,
       stream,
       currentStreamHost: host,
       recvTransport,
       totalParticipantCount: count,
       streamers: arrayToMap<IParticipant>(speakers),
-      /*
-      streamers: arrayToMap<IParticipant>(
-        speakers.map((p) => {
-          const videoConsumer = consumers.find(
-            (c) => c.appData.user === p.id && c.kind === "video"
-          );
-
-          const audioConsumer = consumers.find(
-            (c) => c.appData.user === p.id && c.kind === "audio"
-          );
-
-          return {
-            ...p,
-            media: {
-              audio: audioConsumer
-                ? {
-                    consumer: audioConsumer,
-                    track: new MediaStream([audioConsumer.track]),
-                  }
-                : null,
-              video: videoConsumer
-                ? {
-                    consumer: videoConsumer,
-                    track: new MediaStream([videoConsumer.track]),
-                  }
-                : null,
-            },
-          };
-        })
-      ),
-      */
       viewersWithRaisedHands: arrayToMap<IParticipant>(raisedHands),
       role: "viewer",
     });

@@ -127,7 +127,6 @@ export const createAPISlice = (
         video: data.videoEnabled,
         audio: data.audioEnabled,
       });
-      console.log(`${data.user} toggled media`, data);
     });
 
     api.botDev.onCreateBotConfirmRequest(({ confirmation_id, bot }) => {
