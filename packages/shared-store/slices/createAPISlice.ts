@@ -137,35 +137,12 @@ export const createAPISlice = (
     });
 
     api.media.onNewTrack(async (data) => {
-      const { mediaClient, recvTransport } = get();
-
-      if (mediaClient && recvTransport) {
-        const consumer = await mediaClient.consumeRemoteStream(
-          data.consumerParameters,
-          data.user,
-          recvTransport
-        );
-
-        const stream = new MediaStream([consumer.track]);
-        const key = consumer.kind === "audio" ? "audioStreams" : "videoStreams";
-
-        set(
-          produce<IStore>((state) => {
-            state[key][data.user] = {
-              consumer,
-              stream,
-              enabled: true,
-            };
-          })
-        );
-      }
+      console.log("new track data", data);
+      await get().dispatchTrackAdd(data.user, data.consumerParameters);
     });
 
     api.stream.onParticipantRoleChange((data) => {
-      console.log("role change", data);
-      const { user } = data;
-
-      store.dispatchStreamerAdd(user);
+      store.dispatchStreamerAdd(data.user);
     });
 
     api.stream.onUserLeft((data) => {

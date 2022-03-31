@@ -19,6 +19,7 @@ export interface IMediaDispatchers {
   dispatchVideoToggle: () => Promise<void>;
   dispatchCameraSwitch: () => void;
   dispatchProducerClose: (producers: MediaKind[]) => void;
+  dispatchTrackAdd: (user: string, consumerParameters: any) => Promise<void>;
   dispatchMediaRequest: (
     kind: MediaKind,
     params?: { enabled?: boolean }
@@ -29,6 +30,31 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
   set,
   get
 ) => ({
+  async dispatchTrackAdd(user, consumerParameters) {
+    const { mediaClient, recvTransport } = get();
+
+    if (mediaClient && recvTransport) {
+      const consumer = await mediaClient.consumeRemoteStream(
+        consumerParameters,
+        user,
+        recvTransport
+      );
+
+      const stream = new MediaStream([consumer.track]);
+      const key = consumer.kind === "audio" ? "audioStreams" : "videoStreams";
+
+      set(
+        produce<IStore>((state) => {
+          state[key][user] = {
+            consumer,
+            stream,
+            enabled: true,
+          };
+        })
+      );
+    }
+  },
+
   async dispatchMediaRequest(kind, params) {
     const videoContstraints: any = {
       facingMode: "user",
