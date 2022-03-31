@@ -147,26 +147,18 @@ export const createAPISlice = (
           recvTransport
         );
 
-        const track = new MediaStream([consumer.track]);
+        const stream = new MediaStream([consumer.track]);
+        const key = consumer.kind === "audio" ? "audioStreams" : "videoStreams";
 
-        const key = consumer.kind === "audio" ? "audioTracks" : "videoTracks";
-
-        set({
-          [key]: [...get()[key], track],
-          streamers: {
-            ...get().streamers,
-            [data.user]: {
-              ...get().streamers[data.user],
-              media: {
-                ...get().streamers[data.user],
-                [consumer.kind]: {
-                  consumer,
-                  track,
-                },
-              } as any,
-            },
-          },
-        } as any);
+        set(
+          produce<IStore>((state) => {
+            state[key][data.user] = {
+              consumer,
+              stream,
+              enabled: true,
+            };
+          })
+        );
       }
     });
 

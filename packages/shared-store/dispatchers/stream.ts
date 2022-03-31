@@ -1,5 +1,8 @@
 import { IParticipant } from "@warpy/lib";
+import produce from "immer";
+import { MediaStreamMap } from "../slices/createMediaSlice";
 import { StoreSlice } from "../types";
+import { IStore } from "../useStore";
 
 export function arrayToMap<T>(array: T[]) {
   const result: Record<string, T> = {};
@@ -100,6 +103,43 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       recvTransport
     );
 
+    set(
+      produce<IStore>((state) => {
+        let audioStreams: MediaStreamMap = {};
+        let videoStreams: MediaStreamMap = {};
+
+        speakers.forEach((s) => {
+          const audioConsumer = consumers.find(
+            (c) => c.appData.user === s.id && c.kind === "audio"
+          );
+
+          const videoConsumer = consumers.find(
+            (c) => c.appData.user === s.id && c.kind === "video"
+          );
+
+          if (audioConsumer) {
+            audioStreams[s.id] = {
+              consumer: audioConsumer,
+              stream: new MediaStream([audioConsumer.track]),
+              enabled: !!s.audioEnabled,
+            };
+          }
+
+          if (videoConsumer) {
+            videoStreams[s.id] = {
+              consumer: videoConsumer,
+              stream: new MediaStream([videoConsumer.track]),
+              enabled: !!s.videoEnabled,
+            };
+          }
+        });
+
+        state.audioStreams = { ...state.audioStreams, ...audioStreams };
+        state.videoStreams = { ...state.videoStreams, ...videoStreams };
+      })
+    );
+
+    /*
     const audioTracks = speakers
       .map((p) => {
         const track = consumers.find(
@@ -127,14 +167,17 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
         }
       })
       .filter((t) => !!t);
+*/
 
     set({
-      audioTracks,
-      videoTracks,
+      //audioTracks,
+      //videoTracks,
       stream,
       currentStreamHost: host,
       recvTransport,
       totalParticipantCount: count,
+      streamers: arrayToMap<IParticipant>(speakers),
+      /*
       streamers: arrayToMap<IParticipant>(
         speakers.map((p) => {
           const videoConsumer = consumers.find(
@@ -164,6 +207,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
           };
         })
       ),
+      */
       viewersWithRaisedHands: arrayToMap<IParticipant>(raisedHands),
       role: "viewer",
     });

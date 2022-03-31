@@ -43,15 +43,17 @@ export const createParticipantDispatchers: StoreSlice<IParticipantDispatchers> =
         produce<IStore>((state) => {
           state.totalParticipantCount--;
 
-          const media = state.streamers[user]?.media;
+          const video = state.videoStreams[user];
+          const audio = state.audioStreams[user];
 
-          if (media) {
-            state.videoTracks = state.videoTracks.filter(
-              (t) => t !== media.video?.track
-            );
-            state.audioTracks = state.audioTracks.filter(
-              (t) => t !== media.audio?.track
-            );
+          if (video) {
+            video.consumer.close();
+            delete state.videoStreams[user];
+          }
+
+          if (audio) {
+            audio.consumer.close();
+            delete state.audioStreams[user];
           }
 
           delete state.viewers[user];
@@ -108,32 +110,12 @@ export const createParticipantDispatchers: StoreSlice<IParticipantDispatchers> =
     dispatchMediaToggle(user, { video, audio }) {
       set(
         produce<IStore>((state) => {
-          const { media } = state.streamers[user];
-
-          if (!media) {
-            return;
+          if (video !== undefined && state.videoStreams[user]) {
+            state.videoStreams[user].enabled = video;
           }
 
-          if (video !== undefined && media.video) {
-            state.streamers[user].media!.video!.active = video;
-            const track = state.streamers[user].media!.video!.track;
-
-            if (video) {
-              state.videoTracks = [...state.videoTracks, track];
-            } else {
-              state.videoTracks = state.videoTracks.filter((t) => t !== track);
-            }
-          }
-
-          if (audio !== undefined && media.audio) {
-            state.streamers[user].media!.audio!.active = audio;
-            const track = state.streamers[user].media!.audio!.track;
-
-            if (audio) {
-              state.audioTracks = [...state.audioTracks, track];
-            } else {
-              state.audioTracks = state.audioTracks.filter((t) => t !== track);
-            }
+          if (audio !== undefined && state.audioStreams[user]) {
+            state.audioStreams[user].enabled = audio;
           }
         })
       );

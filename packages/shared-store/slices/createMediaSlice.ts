@@ -1,6 +1,15 @@
 import { MediaClient } from "@warpy/media";
-import { Transport, Producer } from "mediasoup-client/lib/types";
+import { Transport, Producer, Consumer } from "mediasoup-client/lib/types";
 import { StoreSlice } from "../types";
+
+export type MediaStreamMap = Record<
+  string,
+  {
+    consumer: Consumer;
+    stream: any;
+    enabled: boolean;
+  }
+>;
 
 export interface IMediaSlice {
   mediaClient?: MediaClient;
@@ -16,11 +25,12 @@ export interface IMediaSlice {
   };
   audioEnabled: boolean;
   videoEnabled: boolean;
-  audioTracks: any[];
-  videoTracks: any[];
 
   sendTransport: Transport | null;
   recvTransport: Transport | null;
+
+  videoStreams: MediaStreamMap;
+  audioStreams: MediaStreamMap;
 
   /**
    * Mediasoup recv params
@@ -39,8 +49,8 @@ export interface IMediaSlice {
 }
 
 export const createMediaSlice: StoreSlice<IMediaSlice> = (): IMediaSlice => ({
-  audioTracks: [],
-  videoTracks: [],
+  audioStreams: {},
+  videoStreams: {},
   sendTransport: null,
   mediaPermissionsToken: null,
   audioEnabled: false,
