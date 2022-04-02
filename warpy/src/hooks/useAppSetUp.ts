@@ -1,24 +1,22 @@
-import {useStore} from '@app/store';
+import {useStore, useStoreShallow} from '@app/store';
 import {useNavigation} from '@react-navigation/native';
 import {useEffect} from 'react';
-import shallow from 'zustand/shallow';
 import {navigation} from '@app/navigation';
 import config from '@app/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const useAppSetUp = () => {
   const n = useNavigation();
-
   navigation.current = n;
 
-  const isConnected = useStore.use.isConnected();
-  const loadTokens = useStore.use.loadTokens();
-  const accessToken = useStore.use.access();
-  const tokenLoadError = useStore.use.tokenLoadError();
-
-  const [userExists, isLoadingUser, api, user] = useStore(
-    state => [state.exists, state.isLoadingUser, state.api, state.user],
-    shallow,
+  const [userExists, isLoadingUser, api, user, isConnected] = useStoreShallow(
+    state => [
+      state.exists,
+      state.isLoadingUser,
+      state.api,
+      state.user,
+      state.isConnected,
+    ],
   );
 
   useEffect(() => {
@@ -51,14 +49,10 @@ export const useAppSetUp = () => {
   }, [user, n]);
 
   useEffect(() => {
-    loadTokens();
-  }, [n, api]);
-
-  useEffect(() => {
-    if (tokenLoadError || (userExists === false && isLoadingUser === false)) {
+    if (userExists === false && isLoadingUser === false) {
       n.navigate('SignUpName');
     }
-  }, [tokenLoadError, userExists, isLoadingUser]);
+  }, [userExists, isLoadingUser]);
 
   useEffect(() => {
     (async () => {
@@ -68,7 +62,7 @@ export const useAppSetUp = () => {
         if (token) {
           useStore.getState().dispatchUserLoadData(token);
         } else {
-          throw new Error('not implemented');
+          n.navigate('SignUpName');
         }
       }
     })();
