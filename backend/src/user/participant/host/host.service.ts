@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { HostReassignError, StreamNotFound } from '@warpy-be/errors';
+import { HostReassignError } from '@warpy-be/errors';
 import { TimerService } from '@warpy-be/shared';
 import {
   EVENT_HOST_REASSIGN,

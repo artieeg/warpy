@@ -19,7 +19,7 @@ export class WebSocketConn {
     this._socket = instance;
 
     this._socket.onopen = () => {
-      this.onopen && this.onopen();
+      this.onopen?.();
     };
 
     /*
