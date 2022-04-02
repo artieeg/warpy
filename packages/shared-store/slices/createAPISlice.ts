@@ -136,9 +136,8 @@ export const createAPISlice = (
       });
     });
 
-    api.media.onNewTrack(async (data) => {
-      console.log("new track data", data);
-      await get().dispatchTrackAdd(data.user, data.consumerParameters);
+    api.media.onNewTrack((data) => {
+      get().dispatchTrackAdd(data.user, data.consumerParameters);
     });
 
     api.stream.onParticipantRoleChange((data) => {

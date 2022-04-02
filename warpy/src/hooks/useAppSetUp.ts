@@ -4,12 +4,14 @@ import {useEffect} from 'react';
 import shallow from 'zustand/shallow';
 import {navigation} from '@app/navigation';
 import config from '@app/config';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const useAppSetUp = () => {
   const n = useNavigation();
 
   navigation.current = n;
 
+  const isConnected = useStore.use.isConnected();
   const loadTokens = useStore.use.loadTokens();
   const accessToken = useStore.use.access();
   const tokenLoadError = useStore.use.tokenLoadError();
@@ -59,8 +61,16 @@ export const useAppSetUp = () => {
   }, [tokenLoadError, userExists, isLoadingUser]);
 
   useEffect(() => {
-    if (accessToken) {
-      useStore.getState().dispatchUserLoadData(accessToken);
-    }
-  }, [accessToken]);
+    (async () => {
+      if (isConnected) {
+        const token = await AsyncStorage.getItem('access');
+
+        if (token) {
+          useStore.getState().dispatchUserLoadData(token);
+        } else {
+          throw new Error('not implemented');
+        }
+      }
+    })();
+  }, [isConnected]);
 };
