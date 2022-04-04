@@ -1,5 +1,7 @@
 import { Roles } from "@warpy/lib";
+import produce from "immer";
 import { StoreSlice } from "../types";
+import { IStore } from "../useStore";
 
 export interface IUserDispatchers {
   dispatchUserRoleUpdate: (
@@ -30,52 +32,52 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
         isLoadingUser: false,
         exists: false,
       });
-
-      return;
+    } else {
+      set({
+        user,
+        categories,
+        exists: true,
+        hasActivatedAppInvite,
+        following: following || [],
+        isLoadingUser: false,
+        //selectedFeedCategory: categories[0],
+        newStreamCategory: categories[1],
+      });
     }
-
-    set({
-      user,
-      categories,
-      exists: true,
-      hasActivatedAppInvite,
-      following: following || [],
-      isLoadingUser: false,
-      //selectedFeedCategory: categories[0],
-      newStreamCategory: categories[1],
-    });
   },
 
   async dispatchUserRoleUpdate(role, mediaPermissionToken, sendMediaParams) {
-    const oldRole = get().role;
+    set(
+      produce<IStore>((store) => {
+        const oldRole = get().role;
 
-    if (sendMediaParams) {
-      set({ sendMediaParams, role, isRaisingHand: false });
-    } else {
-      set({ role, isRaisingHand: false });
-    }
+        store.role = role;
+        store.isRaisingHand = false;
 
-    get().dispatchToastMessage(`You are a ${role} now`);
+        if (sendMediaParams) {
+          store.sendMediaParams = sendMediaParams;
+        }
 
-    if (role === "viewer") {
-      get().dispatchProducerClose(["audio", "video"]);
-    } else if (role === "speaker") {
-      get().dispatchProducerClose(["video"]);
-    }
+        get().dispatchToastMessage(`You are a ${role} now`);
 
-    if (oldRole === "streamer" && role === "speaker") {
-      set({
-        videoEnabled: false,
-      });
-    } else if (role !== "viewer") {
-      const kind = role === "speaker" ? "audio" : "video";
-      await get().dispatchMediaSend(mediaPermissionToken, [kind]);
-    } else {
-      set({
-        videoEnabled: false,
-        audioEnabled: false,
-      });
-    }
+        if (role === "viewer") {
+          get().dispatchProducerClose(["audio", "video"]);
+        } else if (role === "speaker") {
+          get().dispatchProducerClose(["video"]);
+        }
+
+        if (oldRole === "streamer" && role === "speaker") {
+          store.videoEnabled = false;
+        } else if (role !== "viewer") {
+          const kind = role === "speaker" ? "audio" : "video";
+
+          get().dispatchMediaSend(mediaPermissionToken, [kind]);
+        } else {
+          store.videoEnabled = false;
+          store.audioEnabled = false;
+        }
+      })
+    );
   },
 
   async dispatchUserHandRaiseToggle() {
