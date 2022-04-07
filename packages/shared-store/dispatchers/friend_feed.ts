@@ -9,10 +9,10 @@ export const createFriendFeedDispatchers: StoreSlice<IFriendFeedDispatchers> = (
   get
 ) => ({
   async dispatchFetchFriendFeed() {
-    const { feed } = await get().api.friend_feed.get();
+    const { feed: friendFeed } = await get().api.friend_feed.get();
 
     set({
-      friendFeed: feed,
+      friendFeed,
     });
   },
 });

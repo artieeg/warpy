@@ -1,4 +1,4 @@
-import {StoreSlice} from '../types';
+import { StoreSlice } from "../types";
 
 export interface IFollowingDispatchers {
   dispatchFollowingAdd: (newFollowedUser: string) => Promise<void>;
@@ -7,23 +7,24 @@ export interface IFollowingDispatchers {
 
 export const createFollowingDispatchers: StoreSlice<IFollowingDispatchers> = (
   set,
-  get,
+  get
 ) => ({
-  dispatchFollowingAdd: async newFollowedUser => {
-    const {api} = get();
-    await api.user.follow(newFollowedUser);
+  dispatchFollowingAdd: async (newFollowedUser) => {
+    const { api } = get();
 
-    set(state => ({
-      following: [...state.following, newFollowedUser],
+    const { followedUser } = await api.user.follow(newFollowedUser);
+
+    set((state) => ({
+      following: [...state.following, followedUser],
     }));
   },
 
-  dispatchFollowingRemove: async unfollowedUser => {
-    const {api} = get();
+  dispatchFollowingRemove: async (unfollowedUser) => {
+    const { api } = get();
     await api.user.unfollow(unfollowedUser);
 
-    set(state => ({
-      following: state.following.filter(id => id !== unfollowedUser),
+    set((state) => ({
+      following: state.following.filter((id) => id !== unfollowedUser),
     }));
   },
 });

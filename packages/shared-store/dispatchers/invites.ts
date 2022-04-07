@@ -49,7 +49,7 @@ export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
     //else the api.strea.onStreamIdAvailable
     //will fire after the host starts the room
     if (modalInvite.stream?.id && action === "accept") {
-      /*
+      /* TODO
       navigation.current?.navigate("Stream", {
         stream: modalInvite.stream,
       });
