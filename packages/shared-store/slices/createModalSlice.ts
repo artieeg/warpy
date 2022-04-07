@@ -1,10 +1,10 @@
-import { IBaseUser, IBot, IInvite } from "@warpy/lib";
+import { IBaseUser, IBot, IInviteNotification } from "@warpy/lib";
 import { StoreSlice, Modal } from "../types";
 
 export interface IModalSlice {
   modalCurrent: Modal | null;
   modalSelectedUser: IBaseUser | null;
-  modalInvite: (IInvite & { notification: string }) | null;
+  modalInvite: IInviteNotification | null;
   modalBotConfirmData: IBot | null;
   modalCloseAfterHostReassign: boolean;
   modalBotConfirmId: string | null;

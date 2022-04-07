@@ -14,11 +14,13 @@ export const createFeedDispatchers: StoreSlice<IFeedDispatchers> = (
   get
 ) => ({
   async dispatchFeedCategoryChange(category) {
-    console.log("chaging category to", { category });
+    const selectedFeedCategory =
+      get().selectedFeedCategory?.id === category.id
+        ? get().categories[0] // select "for u" category when deselecting current category
+        : category;
 
     set({
-      selectedFeedCategory:
-        get().selectedFeedCategory?.id === category.id ? null : category,
+      selectedFeedCategory,
       feed: [],
       latestFeedPage: 0,
     });
@@ -32,11 +34,6 @@ export const createFeedDispatchers: StoreSlice<IFeedDispatchers> = (
     if (!get().selectedFeedCategory) {
       return;
     }
-
-    console.log({
-      page: get().latestFeedPage,
-      category: get().selectedFeedCategory?.id,
-    });
 
     const { feed } = await get().api.feed.get({
       page: get().latestFeedPage,

@@ -1,4 +1,5 @@
 import {useStore} from '@app/store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect} from 'react';
 import {View, StyleSheet, ActivityIndicator} from 'react-native';
@@ -10,7 +11,6 @@ export const Loading = () => {
     const {
       api,
       dispatchToastMessage,
-      setToken,
       signUpAvatar,
       signUpUsername,
       signUpName,
@@ -26,8 +26,10 @@ export const Loading = () => {
         kind: 'dev',
       })
       .then(async ({refresh, access}) => {
-        await setToken(access, 'access');
-        await setToken(refresh, 'refresh');
+        await Promise.all([
+          AsyncStorage.setItem('access', access),
+          AsyncStorage.setItem('refresh', refresh),
+        ]);
 
         dispatchToastMessage('welcome to warpy!');
 

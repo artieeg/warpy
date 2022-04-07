@@ -9,3 +9,7 @@ export interface IInvite {
   accepted: boolean;
   declined: boolean;
 }
+
+export interface IInviteNotification extends IInvite {
+  notification: string;
+}

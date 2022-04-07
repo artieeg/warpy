@@ -11,7 +11,6 @@ import { createMediaSlice, IMediaSlice } from "./slices/createMediaSlice";
 import { createDeviceSlice, IDeviceSlice } from "./slices/createDeviceSlice";
 import { createChatSlice, IChatSlice } from "./slices/createChatSlice";
 import { State, UseStore } from "zustand";
-import { createTokenSlice, ITokenSlice } from "./slices/createTokenSlice";
 import { createToastSlice, IToastSlice } from "./slices/createToastSlice";
 import { createModalSlice, IModalSlice } from "./slices/createModalSlice";
 import {
@@ -120,7 +119,6 @@ export interface IStore
     IFollowingDispatchers,
     IStreamDispatchers,
     IUserDispatchers,
-    ITokenSlice,
     IReactionSlice,
     INotificationSlice,
     IFriendFeedSlice,
@@ -174,7 +172,6 @@ export const createNewStore = (config: StoreConfig) => {
         ...createMediaSlice(set, get),
         ...createDeviceSlice(),
         ...createChatSlice(set, get),
-        ...createTokenSlice(set, get),
         ...createToastSlice(set, get),
         ...createReactionSlice(set, get),
         ...createParticipantSlice(set, get),
