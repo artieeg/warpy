@@ -46,30 +46,30 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
     }
   },
 
-  async dispatchUserRoleUpdate(role, mediaPermissionToken, sendMediaParams) {
+  async dispatchUserRoleUpdate(newRole, mediaPermissionToken, sendMediaParams) {
     set(
       produce<IStore>((store) => {
         const oldRole = get().role;
 
-        store.role = role;
+        store.role = newRole;
         store.isRaisingHand = false;
 
         if (sendMediaParams) {
           store.sendMediaParams = sendMediaParams;
         }
 
-        get().dispatchToastMessage(`You are a ${role} now`);
+        get().dispatchToastMessage(`You are a ${newRole} now`);
 
-        if (role === "viewer") {
+        if (newRole === "viewer") {
           get().dispatchProducerClose(["audio", "video"]);
-        } else if (role === "speaker") {
+        } else if (newRole === "speaker") {
           get().dispatchProducerClose(["video"]);
         }
 
-        if (oldRole === "streamer" && role === "speaker") {
+        if (oldRole === "streamer" && newRole === "speaker") {
           store.videoEnabled = false;
-        } else if (role !== "viewer") {
-          const kind = role === "speaker" ? "audio" : "video";
+        } else if (newRole !== "viewer") {
+          const kind = newRole === "speaker" ? "audio" : "video";
 
           get().dispatchMediaSend(mediaPermissionToken, [kind]);
         } else {
