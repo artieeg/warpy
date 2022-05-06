@@ -3,6 +3,7 @@ import produce from "immer";
 import { IInvite, InviteStates } from "@warpy/lib";
 import { StoreSlice } from "../types";
 import { IStore } from "../useStore";
+import { container } from "../container";
 
 export interface IInviteDispatchers {
   dispatchPendingInvite: (user: string) => void;
@@ -49,11 +50,7 @@ export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
     //else the api.strea.onStreamIdAvailable
     //will fire after the host starts the room
     if (modalInvite.stream?.id && action === "accept") {
-      /* TODO
-      navigation.current?.navigate("Stream", {
-        stream: modalInvite.stream,
-      });
-      */
+      container.openStream?.(modalInvite.stream.id);
     }
 
     get().dispatchModalClose();
