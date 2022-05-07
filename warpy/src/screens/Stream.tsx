@@ -14,12 +14,16 @@ export const Stream = (props: any) => {
     });
 
     return () => {
+      //close streams
+      useStore.getState().dispatchMediaClose();
+
+      //clear stream data
       useStore.setState({
         title: null,
         stream: null,
       });
     };
-  });
+  }, []);
 
   //TODO: create remote stream slice, store title, id, etc. use in modals
 

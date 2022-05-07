@@ -20,9 +20,5 @@ export const useVideoStreams = () => {
     }
   }, [localVideoStream, videoStreams, videoEnabled]);
 
-  useEffect(() => {
-    console.log({videoStreams: streams});
-  }, [streams]);
-
   return streams;
 };

@@ -59,14 +59,21 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
   async dispatchMediaClose() {
     //TODO: check once I have the internet connection
 
-    get().video?.track.stop();
-    get().audio?.track.stop();
+    //get().video?.track.stop();
+    //get().audio?.track.stop();
 
-    get().video?.track.release();
-    get().audio?.track.release();
+    //get().video?.track.release();
+    //get().audio?.track.release();
 
     get().video?.stream.release();
     get().audio?.stream.release();
+
+    set({
+      audioEnabled: false,
+      videoEnabled: false,
+      video: undefined,
+      audio: undefined,
+    });
   },
 
   async dispatchMediaRequest(kind, params) {
@@ -166,7 +173,7 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
 
     audio?.stream
       .getAudioTracks()
-      .forEach((audio) => (audio.enabled = !audioEnabled));
+      .forEach((audio: any) => (audio.enabled = !audioEnabled));
 
     set({
       audioEnabled: !audioEnabled,
@@ -182,7 +189,7 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
 
     video?.stream
       .getVideoTracks()
-      .forEach((video) => (video.enabled = !videoEnabled));
+      .forEach((video: any) => (video.enabled = !videoEnabled));
 
     set({
       videoEnabled: !videoEnabled,

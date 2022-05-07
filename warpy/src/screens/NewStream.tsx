@@ -27,6 +27,16 @@ export const useNewStreamController = () => {
   useEffect(() => {
     dispatchMediaRequest('audio', {enabled: true});
     dispatchMediaRequest('video', {enabled: true});
+
+    //close streams
+    return () => {
+      useStore.getState().dispatchMediaClose();
+
+      useStore.setState({
+        title: null,
+        stream: null,
+      });
+    };
   }, []);
 
   return {streamId};
