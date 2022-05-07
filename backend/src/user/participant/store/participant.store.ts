@@ -2,7 +2,6 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { IParticipant, Roles } from '@warpy/lib';
 import { ConfigService } from '@nestjs/config';
 import IORedis, { Pipeline } from 'ioredis';
-import { StreamNotFound } from '@warpy-be/errors';
 
 export type CreateNewParticipant = {
   user_id?: string;
@@ -232,8 +231,15 @@ export class ParticipantStore implements OnModuleInit {
     pipeline?: Pipeline,
   ) {
     const args: string[] = [];
+
     for (const key in data) {
-      args.push(key, data[key]);
+      const value = data[key];
+
+      if (typeof value === 'boolean') {
+        args.push(key, value ? 'true' : 'false');
+      } else {
+        args.push(key, value);
+      }
     }
 
     return (pipeline || this.redis).hmset(key, ...args);
@@ -244,9 +250,11 @@ export class ParticipantStore implements OnModuleInit {
     this.write(id, data, pipe);
     pipe.hgetall(id);
 
-    const { stream, role } = data;
+    const stream = data.stream ?? (await this.redis.hget(id, 'stream'));
 
     //update indexes if user's role has changed
+    const { role } = data;
+
     if (role === 'speaker' || role === 'streamer') {
       pipe.sadd(PREFIX_STREAMERS + stream, id);
       pipe.srem(PREFIX_VIEWERS + stream, id);
@@ -257,35 +265,26 @@ export class ParticipantStore implements OnModuleInit {
       pipe.srem(PREFIX_RAISED_HANDS + stream, id);
     }
 
+    //update indexes if user has raised/lowered their hand
+    if (typeof data.isRaisingHand !== 'undefined') {
+      if (data.isRaisingHand) {
+        pipe.sadd(PREFIX_RAISED_HANDS + stream, id);
+        pipe.srem(PREFIX_VIEWERS + stream, id);
+      } else {
+        pipe.srem(PREFIX_RAISED_HANDS + stream, id);
+        pipe.sadd(PREFIX_VIEWERS + stream, id);
+      }
+    }
+
     const [, [, updated]] = await pipe.exec();
 
     return ParticipantStore.toDTO(updated);
   }
 
   async setRaiseHand(user: string, flag: boolean) {
-    const stream = await this.redis.hget(user, 'stream');
-
-    if (!stream) {
-      throw new StreamNotFound();
-    }
-
-    const pipe = this.redis.pipeline();
-
-    if (flag) {
-      pipe.sadd(PREFIX_RAISED_HANDS + stream, user);
-      pipe.srem(PREFIX_VIEWERS + stream, user);
-    } else {
-      pipe.srem(PREFIX_RAISED_HANDS + stream, user);
-      pipe.sadd(PREFIX_VIEWERS + stream, user);
-    }
-
-    pipe.hset(user, 'isRaisingHand', flag ? 'true' : 'false');
-
-    pipe.hgetall(user);
-
-    const [, , , [, data]] = await pipe.exec();
-
-    return ParticipantStore.toDTO(data);
+    return this.update(user, {
+      isRaisingHand: flag,
+    });
   }
 
   async getViewersPage(stream: string, page: number) {
