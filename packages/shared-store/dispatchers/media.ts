@@ -24,6 +24,7 @@ export interface IMediaDispatchers {
     kind: MediaKind,
     params?: { enabled?: boolean }
   ) => Promise<void>;
+  dispatchMediaClose: () => Promise<void>;
 }
 
 export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
@@ -53,6 +54,19 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
         })
       );
     }
+  },
+
+  async dispatchMediaClose() {
+    //TODO: check once I have the internet connection
+
+    get().video?.track.stop();
+    get().audio?.track.stop();
+
+    get().video?.track.release();
+    get().audio?.track.release();
+
+    get().video?.stream.release();
+    get().audio?.stream.release();
   },
 
   async dispatchMediaRequest(kind, params) {
