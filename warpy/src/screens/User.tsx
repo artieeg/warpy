@@ -76,7 +76,7 @@ export const User = () => {
             />
             <SmallTextButton
               style={[styles.actionMargin, {flex: 1}]}
-              color="important"
+              color="red"
               title="report"
             />
             <IconButton

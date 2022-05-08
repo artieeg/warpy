@@ -13,7 +13,7 @@ type ButtonColorStyles = keyof typeof colorStyles;
 interface IButtonProps extends ViewProps {
   title: string;
   onPress?: any;
-  color?: ButtonColorStyles | Colors; //🤡
+  color?: Colors;
   outline?: boolean;
   textColor?: Colors;
 }
@@ -36,7 +36,7 @@ export const SmallTextButton = (props: IButtonProps) => {
         <Text
           weight="extraBold"
           color={props.textColor || 'cod_gray'}
-          size="small">
+          size="xsmall">
           {title}
         </Text>
       </View>

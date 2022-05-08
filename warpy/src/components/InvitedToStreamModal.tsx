@@ -49,7 +49,7 @@ export const InvitedToStreamModal = () => {
         <SmallTextButton
           onPress={() => useStore.getState().dispatchInviteAction('decline')}
           title="decline"
-          color="important"
+          color="red"
         />
       </View>
     </BaseSlideModal>
