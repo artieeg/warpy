@@ -94,15 +94,17 @@ export class ParticipantStore implements OnModuleInit {
     }
 
     const data = await pipe.exec();
-    return data
+    const result = data
       .map(([, items]) => {
-        if (!items) {
+        if (Object.keys(items).length === 0) {
           return null;
         }
 
         return ParticipantStore.toDTO(items);
       })
       .filter((item) => !!item);
+
+    return result;
   }
 
   async setDeactivated(user: string, stream: string, flag: boolean) {
