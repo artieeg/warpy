@@ -27,7 +27,7 @@ export const UserAwardsPreview = ({user, style}: UserAwardsPreviewProps) => {
         lastFiveAwards.map(award => (
           <FastImage
             key={award.id}
-            source={{uri: award.award.media}}
+            source={{uri: award.visual}}
             style={styles.item}
           />
         ))}
