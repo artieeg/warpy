@@ -25,7 +25,11 @@ export const HostReassignModal: React.FC<IBaseModalProps> = props => {
 
       if (closeAfterReassign) {
         useStore.getState().dispatchModalClose();
-        await api.stream.leave(stream);
+        await useStore.getState().dispatchStreamLeave({
+          shouldStopStream: true,
+          stream,
+        });
+
         navigation.current?.navigate('Feed');
       }
     }

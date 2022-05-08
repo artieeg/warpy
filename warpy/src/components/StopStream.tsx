@@ -34,14 +34,21 @@ export const StopStream = () => {
           {
             text: 'end the room',
             onPress: async () => {
-              await api.stream.stop(stream);
+              await useStore.getState().dispatchStreamLeave({
+                shouldStopStream: true,
+                stream,
+              });
+
               navigation.navigate('Feed');
             },
           },
           {
             text: 'just leave',
             onPress: async () => {
-              await api.stream.leave(stream);
+              await useStore.getState().dispatchStreamLeave({
+                shouldStopStream: false,
+                stream,
+              });
               navigation.navigate('Feed');
             },
           },
