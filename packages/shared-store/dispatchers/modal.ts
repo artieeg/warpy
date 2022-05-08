@@ -31,6 +31,7 @@ export const createModalDispatchers: StoreSlice<IModalDispatchers> = (
   },
   dispatchModalOpen(modal, params) {
     set({
+      unseenRaisedHands: modal === "participants" ? 0 : get().unseenRaisedHands,
       modalCurrent: modal === get().modalCurrent ? null : modal,
       modalSelectedUser: params?.selectedUser || null,
       modalBotConfirmData: params?.botConfirmData || null,

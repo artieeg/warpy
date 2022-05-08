@@ -13,6 +13,8 @@ export interface IParticipantSlice {
 
   isFetchingViewers: boolean;
 
+  unseenRaisedHands: number;
+
   /** Stream viewers */
   viewers: Record<string, IParticipant>;
 
@@ -24,6 +26,7 @@ export interface IParticipantSlice {
 
 export const createParticipantSlice: StoreSlice<IParticipantSlice> = () => ({
   latestViewersPage: -1,
+  unseenRaisedHands: 0,
   isFetchingViewers: false,
   totalParticipantCount: 0,
   viewersWithRaisedHands: {},

@@ -86,9 +86,20 @@ export const createParticipantDispatchers: StoreSlice<IParticipantDispatchers> =
           if (user.isRaisingHand) {
             delete state.viewers[user.id];
             state.viewersWithRaisedHands[user.id] = user;
+
+            if (state.modalCurrent !== "participants") {
+              state.unseenRaisedHands++;
+            }
           } else {
             state.viewers[user.id] = user;
             delete state.viewersWithRaisedHands[user.id];
+
+            if (
+              state.modalCurrent !== "participants" &&
+              state.unseenRaisedHands > 0
+            ) {
+              state.unseenRaisedHands--;
+            }
           }
         })
       );

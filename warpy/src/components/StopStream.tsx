@@ -55,7 +55,10 @@ export const StopStream = () => {
         ],
       );
     } else {
-      await api.stream.leave(stream);
+      await useStore.getState().dispatchStreamLeave({
+        shouldStopStream: false,
+        stream,
+      });
       navigation.navigate('Feed');
     }
   }, [navigation, api, stream]);
