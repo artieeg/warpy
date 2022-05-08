@@ -33,7 +33,9 @@ export const FriendFeed = () => {
         horizontal
         data={feed}
         contentContainerStyle={styles.list}
-        renderItem={({item}) => <UserHorizontalListItem item={item} />}
+        renderItem={({item}) => (
+          <UserHorizontalListItem key={item.user.id} item={item} />
+        )}
       />
     </View>
   );
