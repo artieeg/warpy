@@ -4,18 +4,14 @@ import {SmallTextButton} from '@app/components/SmallTextButton';
 import {UserAwardsPreview} from '@app/components/UserAwardsPreview';
 import {UserGeneralInfo} from '@app/components/UserGeneralInfo';
 import {useRouteParamsUnsafe, useUserData} from '@app/hooks';
-import {useStore} from '@app/store';
+import {useStore, useStoreShallow} from '@app/store';
 import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useMemo} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
 import FadeInOut from 'react-native-fade-in-out';
-import shallow from 'zustand/shallow';
 
 export const useUserScreenController = () => {
-  const [api, following] = useStore(
-    store => [store.api, store.following],
-    shallow,
-  );
+  const [following] = useStoreShallow(store => [store.following]);
 
   const {id} = useRouteParamsUnsafe();
   const data = useUserData(id);
