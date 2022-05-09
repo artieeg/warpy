@@ -1,5 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
+import { OnParticipantLeave } from '@warpy-be/interfaces';
+import { EVENT_PARTICIPANT_LEAVE } from '@warpy-be/utils';
 import {
   IInviteActionRequest,
   ICancelInviteRequest,
@@ -12,8 +14,13 @@ import {
 import { InviteService } from './invite.service';
 
 @Controller()
-export class InviteController {
+export class InviteController implements OnParticipantLeave {
   constructor(private inviteService: InviteService) {}
+
+  @MessagePattern(EVENT_PARTICIPANT_LEAVE)
+  async onParticipantLeave({ user, stream }) {
+    this.inviteService.deleteUserInvites(user, stream);
+  }
 
   @MessagePattern('user.invite')
   async onNewInvite({

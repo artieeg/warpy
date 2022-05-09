@@ -1,5 +1,5 @@
-import {INotification} from '@warpy/lib';
-import {StoreSlice} from '../types';
+import { INotification } from "@warpy/lib";
+import { StoreSlice } from "../types";
 
 export interface INotificaionDispatchers {
   dispatchNotificationAdd: (notification: INotification) => void;
@@ -12,20 +12,20 @@ export interface INotificaionDispatchers {
 export const createNotificationDispatchers: StoreSlice<INotificaionDispatchers> =
   (set, get) => ({
     dispatchNotificationsReadAll() {
-      const {api, notifications} = get();
+      const { api, notifications } = get();
 
       api.notification.readAll();
 
       set({
         hasUnseenNotifications: false,
-        notifications: notifications.map(n => ({...n, hasBeenSeen: true})),
+        notifications: notifications.map((n) => ({ ...n, hasBeenSeen: true })),
       });
     },
 
     async dispatchNotificationsFetchUnread() {
-      const {api, notifications} = get();
+      const { api, notifications } = get();
 
-      const {notifications: unreadNotifications} =
+      const { notifications: unreadNotifications } =
         await api.notification.getUnread();
 
       set({
@@ -35,9 +35,9 @@ export const createNotificationDispatchers: StoreSlice<INotificaionDispatchers> 
     },
 
     async dispatchNotificationsFetchRead() {
-      const {api, notifications, notificationPage} = get();
+      const { api, notifications, notificationPage } = get();
 
-      const {notifications: unreadNotifications} =
+      const { notifications: unreadNotifications } =
         await api.notification.getRead(notificationPage);
 
       set({
@@ -48,7 +48,7 @@ export const createNotificationDispatchers: StoreSlice<INotificaionDispatchers> 
 
     dispatchNotificationAdd(notification) {
       if (notification.invite) {
-        get().dispatchModalOpen('stream-invite', {
+        get().dispatchModalOpen("stream-invite", {
           invite: {
             ...notification.invite,
             notification: notification.id,
@@ -56,7 +56,7 @@ export const createNotificationDispatchers: StoreSlice<INotificaionDispatchers> 
         });
       }
 
-      set({notifications: [notification, ...get().notifications]});
+      set({ notifications: [notification, ...get().notifications] });
     },
 
     dispatchNotificationRemove(id) {
@@ -65,7 +65,7 @@ export const createNotificationDispatchers: StoreSlice<INotificaionDispatchers> 
       }
 
       set({
-        notifications: get().notifications.filter(n => n.id !== id),
+        notifications: get().notifications.filter((n) => n.id !== id),
       });
     },
   });

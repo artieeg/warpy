@@ -43,7 +43,7 @@ export class InviteService {
    * Declines the invite and notifies the inviter
    * */
   async declineInvite(invite: string, user: string) {
-    const { id, inviter_id } = await this.inviteEntity.declineInvite(
+    const { id, inviter_id } = await this.inviteEntity.deleteByInvitee(
       invite,
       user,
     );
@@ -51,11 +51,15 @@ export class InviteService {
     this.sendInviteState(id, inviter_id, 'declined');
   }
 
+  async deleteUserInvites(user: string, stream: string) {
+    return this.inviteEntity.deleteMany(user, stream);
+  }
+
   /**
    * Accepts the invite and notifies the inviter
    * */
   async acceptInvite(invite: string, user: string) {
-    const { id, inviter_id } = await this.inviteEntity.acceptInvite(
+    const { id, inviter_id } = await this.inviteEntity.deleteByInvitee(
       invite,
       user,
     );
@@ -138,8 +142,10 @@ export class InviteService {
    * */
   @OnEvent(EVENT_STREAM_CREATED)
   async notifyAboutStreamId({ stream: { owner, id } }: { stream: IStream }) {
-    const invitedUserIds =
-      await this.inviteEntity.findUsersInvitedToDraftedStream(owner);
+    const [invitedUserIds] = await Promise.all([
+      this.inviteEntity.findUsersInvitedToDraftedStream(owner),
+      this.inviteEntity.setStreamId(owner, id),
+    ]);
 
     invitedUserIds.forEach((user) => {
       this.eventEmitter.emit(EVENT_INVITE_STREAM_ID_AVAILABLE, { id, user });
@@ -147,7 +153,10 @@ export class InviteService {
   }
 
   async deleteInvite(user: string, invite_id: string) {
-    const { notification_id } = await this.inviteEntity.delete(invite_id, user);
+    const { notification_id } = await this.inviteEntity.deleteByInviter(
+      invite_id,
+      user,
+    );
 
     if (notification_id) {
       this.eventEmitter.emit('notification.cancel', notification_id);

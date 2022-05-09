@@ -150,7 +150,12 @@ type StoreConfig = {
 };
 
 export const createNewStore = (config: StoreConfig) => {
-  container.mediaDevices = config.dependencies?.mediaDevices;
+  if (config.dependencies) {
+    const { mediaDevices, openStream } = config.dependencies;
+
+    container.mediaDevices = mediaDevices;
+    container.openStream = openStream;
+  }
 
   return createSelectorHooks<IStore>(
     create<IStore>((set, get): IStore => {

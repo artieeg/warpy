@@ -50,7 +50,7 @@ export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
     //else the api.strea.onStreamIdAvailable
     //will fire after the host starts the room
     if (modalInvite.stream?.id && action === "accept") {
-      container.openStream?.(modalInvite.stream.id);
+      container.openStream?.(modalInvite.stream);
     }
 
     get().dispatchModalClose();

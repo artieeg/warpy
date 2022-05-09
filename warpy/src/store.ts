@@ -11,6 +11,7 @@ export const useStore = createNewStore({
   dependencies: {
     mediaDevices,
     openStream: id => {
+      console.log('opening stream', id, navigation);
       navigation.current?.navigate('Stream', {
         stream: id,
       });

@@ -30,38 +30,22 @@ export class InviteEntity {
     };
   }
 
-  async declineInvite(invite_id: string, user: string) {
-    return this.prisma.invite.update({
+  async deleteMany(inviter_id: string, stream_id: string) {
+    return this.prisma.invite.deleteMany({
       where: {
-        invitee_index: {
-          id: invite_id,
-          user_invitee_id: user,
-        },
-      },
-      data: {
-        declined: true,
-      },
-      select: {
-        inviter_id: true,
-        id: true,
+        inviter_id,
+        stream_id,
       },
     });
   }
 
-  async acceptInvite(invite_id: string, user: string) {
-    return this.prisma.invite.update({
+  async setStreamId(inviter_id: string, stream_id: string) {
+    return this.prisma.invite.updateMany({
       where: {
-        invitee_index: {
-          id: invite_id,
-          user_invitee_id: user,
-        },
+        inviter_id,
       },
       data: {
-        accepted: true,
-      },
-      select: {
-        inviter_id: true,
-        id: true,
+        stream_id,
       },
     });
   }
@@ -71,7 +55,6 @@ export class InviteEntity {
       where: {
         stream_id: null,
         inviter_id,
-        //accepted: true,
       },
       select: {
         user_invitee_id: true,
@@ -110,12 +93,12 @@ export class InviteEntity {
     return InviteEntity.toInviteDTO(invite);
   }
 
-  async delete(invite_id: string, user: string) {
-    const { id, notification, user_invitee_id, bot_invitee_id } =
+  async deleteByInvitee(invite_id: string, invitee_id: string) {
+    const { id, notification, inviter_id, user_invitee_id, bot_invitee_id } =
       await this.prisma.invite.delete({
         where: {
-          inviter_index: {
-            inviter_id: user,
+          invitee_index: {
+            user_invitee_id: invitee_id,
             id: invite_id,
           },
         },
@@ -130,6 +113,33 @@ export class InviteEntity {
 
     return {
       id,
+      inviter_id,
+      invitee_id: user_invitee_id || bot_invitee_id,
+      notification_id: notification?.id,
+    };
+  }
+
+  async deleteByInviter(invite_id: string, inviter_id: string) {
+    const { id, notification, user_invitee_id, bot_invitee_id } =
+      await this.prisma.invite.delete({
+        where: {
+          inviter_index: {
+            inviter_id,
+            id: invite_id,
+          },
+        },
+        include: {
+          notification: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
+
+    return {
+      id,
+      inviter_id,
       invitee_id: user_invitee_id || bot_invitee_id,
       notification_id: notification?.id,
     };
