@@ -25,8 +25,6 @@ export class InviteEntity {
         ? UserEntity.toUserDTO(data.user_invitee)
         : BotsEntity.toBotDTO(data.bot_invitee),
       inviter: UserEntity.toUserDTO(data.inviter),
-      accepted: data.accepted,
-      declined: data.declined,
     };
   }
 

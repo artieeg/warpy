@@ -1,6 +1,6 @@
 //import { navigation } from "@app/navigation";
 import produce from "immer";
-import { IInvite, InviteStates } from "@warpy/lib";
+import { IInvite, InviteStates, ISentInvite } from "@warpy/lib";
 import { StoreSlice } from "../types";
 import { IStore } from "../useStore";
 import { container } from "../container";
@@ -62,8 +62,7 @@ export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
         if (state.sentInvites[invite]) {
           state.sentInvites[invite] = {
             ...state.sentInvites[invite],
-            accepted: value === "accepted",
-            declined: value === "declined",
+            state: value as any,
           };
         }
       })
@@ -86,11 +85,14 @@ export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
       pendingInviteUserIds: [],
       sentInvites: responses.reduce((result, response) => {
         if (response.invite) {
-          result[response.invite.id] = response.invite;
+          result[response.invite.id] = {
+            ...response.invite,
+            state: "unknown",
+          };
         }
 
         return result;
-      }, {} as Record<string, IInvite>),
+      }, {} as Record<string, ISentInvite>),
     });
   },
 
