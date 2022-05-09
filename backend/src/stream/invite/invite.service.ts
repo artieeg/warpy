@@ -8,6 +8,10 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { IInvite, InviteStates, IStream, IUser } from '@warpy/lib';
 import { InviteEntity } from './invite.entity';
+import {
+  EVENT_INVITE_STREAM_ID_AVAILABLE,
+  EVENT_STREAM_CREATED,
+} from '@warpy-be/utils';
 
 @Injectable()
 export class InviteService {
@@ -132,13 +136,13 @@ export class InviteService {
    * When new stream is created, checks if new stream's owner has invited others
    * Then it broadcasts stream's id to invited users
    * */
-  @OnEvent('stream.created')
+  @OnEvent(EVENT_STREAM_CREATED)
   async notifyAboutStreamId({ stream: { owner, id } }: { stream: IStream }) {
     const invitedUserIds =
       await this.inviteEntity.findUsersInvitedToDraftedStream(owner);
 
     invitedUserIds.forEach((user) => {
-      this.eventEmitter.emit('invite.stream-id-available', { id, user });
+      this.eventEmitter.emit(EVENT_INVITE_STREAM_ID_AVAILABLE, { id, user });
     });
   }
 

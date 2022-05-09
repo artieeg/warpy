@@ -1,3 +1,4 @@
+export const EVENT_STREAM_CREATED = 'stream.created';
 export const EVENT_STREAM_ENDED = 'stream.ended';
 
 export const EVENT_USER_CREATED = 'user.created';
@@ -22,3 +23,5 @@ export const EVENT_INVITE_ACCEPTED = 'invite.accepted';
 
 export const EVENT_HOST_REASSIGN_FAILED = 'host.reassign.fail';
 export const EVENT_HOST_REASSIGN = 'host.reassign.success';
+
+export const EVENT_INVITE_STREAM_ID_AVAILABLE = 'invite.stream-id-available';

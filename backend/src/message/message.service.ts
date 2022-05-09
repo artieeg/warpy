@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
+import { EVENT_INVITE_STREAM_ID_AVAILABLE } from '@warpy-be/utils';
 import { NatsService } from '../nats/nats.service';
 
 @Injectable()
@@ -22,7 +23,7 @@ export class MessageService {
     this.nc.publish(`reply.user.${user}`, message);
   }
 
-  @OnEvent('invite.stream-id-available')
+  @OnEvent(EVENT_INVITE_STREAM_ID_AVAILABLE)
   async notifyAboutStreamId({ id, user }: { id: string; user: string }) {
     this.sendMessage(user, {
       event: 'stream-id-available',

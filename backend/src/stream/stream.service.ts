@@ -3,7 +3,11 @@ import {
   IFullParticipant,
   ParticipantStore,
 } from '@warpy-be/user/participant/store';
-import { EVENT_NEW_PARTICIPANT, EVENT_STREAM_ENDED } from '@warpy-be/utils';
+import {
+  EVENT_NEW_PARTICIPANT,
+  EVENT_STREAM_CREATED,
+  EVENT_STREAM_ENDED,
+} from '@warpy-be/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { INewStreamResponse } from '@warpy/lib';
@@ -79,7 +83,7 @@ export class StreamService {
       stream.id,
     );
 
-    this.eventEmitter.emit('stream.created', { stream });
+    this.eventEmitter.emit(EVENT_STREAM_CREATED, { stream });
     this.eventEmitter.emit(EVENT_NEW_PARTICIPANT, { participant: host });
 
     return {
