@@ -2,6 +2,7 @@ import { MessageService } from '@warpy-be/message/message.service';
 import { Injectable } from '@nestjs/common';
 import { IInvite, INotification } from '@warpy/lib';
 import { NotificationEntity } from './notification.entity';
+import cuid from 'cuid';
 
 @Injectable()
 export class NotificationService {
@@ -20,15 +21,22 @@ export class NotificationService {
   }
 
   async createInviteNotification(invite: IInvite) {
+    /*
     const notification = await this.notificationEntity.createFromInvite(
       invite.invitee.id,
       invite.id,
     );
+    */
 
-    const { invitee } = invite;
-    const { id } = invitee;
+    const invitee_id = invite.invitee.id;
 
-    this.sendNotification(id, notification);
+    this.sendNotification(invitee_id, {
+      id: cuid(),
+      user_id: invitee_id,
+      invite,
+      hasBeenSeen: false,
+      created_at: Date.now(),
+    });
   }
 
   async readAllNotifications(user_id: string) {

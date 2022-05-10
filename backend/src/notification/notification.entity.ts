@@ -1,5 +1,4 @@
 import { PrismaService } from '@warpy-be/prisma/prisma.service';
-import { InviteEntity } from '@warpy-be/stream/invite/invite.entity';
 import { Injectable } from '@nestjs/common';
 import { INotification } from '@warpy/lib';
 
@@ -11,8 +10,10 @@ export class NotificationEntity {
     return {
       id: notification.id,
       user_id: notification.user_id,
+      /*
       invite:
         notification.invite && InviteEntity.toInviteDTO(notification.invite),
+        */
       hasBeenSeen: notification.hasBeenSeen,
       created_at: notification.created_at,
     };

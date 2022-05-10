@@ -14,21 +14,17 @@ const PREFIX_STREAM = 'stream_';
 /** Store invite data */
 const PREFIX_INVITE = 'invite_';
 
-type InviteDTO = {
-  id: string;
-  stream?: string;
-  inviter_id: string;
-  invitee_id: string;
-};
+/** Store invite ids from user */
+const PREFIX_INVITES_FROM = 'invites_from';
 
 @Injectable()
 export class InviteStore implements OnModuleInit {
-  redis: IORedis.Redis;
+  private redis: IORedis.Redis;
 
   constructor(private configService: ConfigService) {}
 
   onModuleInit() {
-    this.redis = new IORedis(this.configService.get('participantStoreAddr'));
+    this.redis = new IORedis(this.configService.get('inviteStoreAddr'));
   }
 
   private toBaseDTO(data: any): IInviteBase {
@@ -40,11 +36,12 @@ export class InviteStore implements OnModuleInit {
     };
   }
 
-  private toDTO(data: any, inviter: IUser, invitee: IUser): IInvite {
-    const stream = data.stream
-      ? StreamEntity.toStreamDTO(data.stream_id)
-      : undefined;
-
+  private toDTO(
+    data: any,
+    inviter: IUser,
+    invitee: IUser,
+    stream?: IStream,
+  ): IInvite {
     return {
       ...this.toBaseDTO(data),
       stream,
@@ -85,9 +82,11 @@ export class InviteStore implements OnModuleInit {
     //Store invite data
     pipe.hmset(PREFIX_INVITE + invite_id, invite);
 
+    pipe.sadd(PREFIX_INVITES_FROM + inviter.id, invite_id);
+
     await pipe.exec();
 
-    return this.toDTO(invite, inviter, invitee);
+    return this.toDTO(invite, inviter, invitee, stream);
   }
 
   private async getInviteBase(invite_id: string) {
@@ -96,10 +95,38 @@ export class InviteStore implements OnModuleInit {
     return this.toBaseDTO(data);
   }
 
+  async getInvitedUsers(invite_ids: string[]) {
+    const pipe = this.redis.pipeline();
+
+    invite_ids.forEach((id) => {
+      pipe.hget(PREFIX_INVITE + id, 'invited_id');
+    });
+
+    const result = await pipe.exec();
+
+    return result.filter(([err]) => !err).map(([, id]) => id);
+  }
+
+  async setStreamData(invite_ids: string[], stream: IStream) {
+    const pipe = this.redis.pipeline();
+
+    pipe.hmset(PREFIX_STREAM + stream.id, stream);
+    invite_ids.forEach((invite_id) => {
+      pipe.hset(PREFIX_INVITE + invite_id, 'stream_id', stream.id);
+    });
+
+    await pipe.exec();
+  }
+
+  /** Returns invite ids that the user has sent */
+  async getUserInviteIds(user: string): Promise<string[]> {
+    return this.redis.smembers(PREFIX_INVITES_FROM + user);
+  }
+
   async del(invite_id: string) {
-    const { inviter_id, invitee_id, stream_id } = await this.getInviteBase(
-      invite_id,
-    );
+    const data = await this.getInviteBase(invite_id);
+
+    const { inviter_id, invitee_id, stream_id } = data;
 
     const pipe = this.redis.pipeline();
 
@@ -107,7 +134,10 @@ export class InviteStore implements OnModuleInit {
     pipe.del(PREFIX_INVITE + invite_id);
     pipe.del(PREFIX_USER + invitee_id);
     pipe.del(PREFIX_USER + inviter_id);
+    pipe.del(PREFIX_INVITES_FROM + inviter_id);
 
     await pipe.exec();
+
+    return data;
   }
 }

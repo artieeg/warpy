@@ -42,6 +42,8 @@ export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
   async dispatchInviteAction(action) {
     const { api, modalInvite } = get();
 
+    console.log("modalInvite", modalInvite);
+
     if (!modalInvite) return;
 
     api.stream.sendInviteAction(modalInvite.id, action);

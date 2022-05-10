@@ -7,7 +7,6 @@ import { FollowEntity } from '@warpy-be/user/follow/follow.entity';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { IInvite, InviteStates, IStream, IUser } from '@warpy/lib';
-import { InviteEntity } from './invite.entity';
 import {
   EVENT_INVITE_STREAM_ID_AVAILABLE,
   EVENT_STREAM_CREATED,
@@ -20,7 +19,6 @@ export class InviteService {
   constructor(
     private inviteStore: InviteStore,
     private userEntity: UserEntity,
-    private inviteEntity: InviteEntity,
     private followEntity: FollowEntity,
     private eventEmitter: EventEmitter2,
     private streamEntity: StreamEntity,
@@ -46,27 +44,17 @@ export class InviteService {
   /**
    * Declines the invite and notifies the inviter
    * */
-  async declineInvite(invite: string, user: string) {
-    const { id, inviter_id } = await this.inviteEntity.deleteByInvitee(
-      invite,
-      user,
-    );
+  async declineInvite(invite: string) {
+    const { id, inviter_id } = await this.inviteStore.del(invite);
 
     this.sendInviteState(id, inviter_id, 'declined');
-  }
-
-  async deleteUserInvites(user: string, stream: string) {
-    return this.inviteEntity.deleteMany(user, stream);
   }
 
   /**
    * Accepts the invite and notifies the inviter
    * */
-  async acceptInvite(invite: string, user: string) {
-    const { id, inviter_id } = await this.inviteEntity.deleteByInvitee(
-      invite,
-      user,
-    );
+  async acceptInvite(invite: string) {
+    const { id, inviter_id } = await this.inviteStore.del(invite);
 
     this.sendInviteState(id, inviter_id, 'accepted');
   }
@@ -152,9 +140,14 @@ export class InviteService {
    * */
   @OnEvent(EVENT_STREAM_CREATED)
   async notifyAboutStreamId({ stream: { owner, id } }: { stream: IStream }) {
+    const [stream, ownedInviteIds] = await Promise.all([
+      this.streamEntity.findById(id),
+      this.inviteStore.getUserInviteIds(owner),
+    ]);
+
     const [invitedUserIds] = await Promise.all([
-      this.inviteEntity.findUsersInvitedToDraftedStream(owner),
-      this.inviteEntity.setStreamId(owner, id),
+      this.inviteStore.getInvitedUsers(ownedInviteIds),
+      this.inviteStore.setStreamData(ownedInviteIds, stream),
     ]);
 
     invitedUserIds.forEach((user) => {
@@ -162,7 +155,10 @@ export class InviteService {
     });
   }
 
-  async deleteInvite(user: string, invite_id: string) {
+  async deleteInvite(invite_id: string) {
+    await this.inviteStore.del(invite_id);
+
+    /*
     const { notification_id } = await this.inviteEntity.deleteByInviter(
       invite_id,
       user,
@@ -171,6 +167,7 @@ export class InviteService {
     if (notification_id) {
       this.eventEmitter.emit('notification.cancel', notification_id);
     }
+    */
   }
 
   /**

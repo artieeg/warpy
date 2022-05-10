@@ -1,5 +1,4 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { InviteEntity } from './invite.entity';
 import { InviteService } from './invite.service';
 import { InviteController } from './invite.controller';
 import { TokenModule } from '@warpy-be/token/token.module';
@@ -17,7 +16,7 @@ import { InviteStore } from './invite.store';
     TokenModule,
     forwardRef(() => BotsModule),
   ],
-  providers: [InviteEntity, InviteStore, InviteService],
+  providers: [InviteStore, InviteService],
   controllers: [InviteController],
   exports: [],
 })
