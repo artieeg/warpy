@@ -50,11 +50,24 @@ export class InviteService {
     this.sendInviteState(id, inviter_id, 'declined');
   }
 
+  async deleteUserInvites(user: string) {
+    const ids = await this.inviteStore.getUserInviteIds(user);
+
+    const promises = ids.map((id) => this.inviteStore.del(id));
+
+    await Promise.all(promises);
+  }
+
   /**
    * Accepts the invite and notifies the inviter
    * */
-  async acceptInvite(invite: string) {
-    const { id, inviter_id } = await this.inviteStore.del(invite);
+  async acceptInvite(invite_id: string) {
+    const { id, inviter_id, stream_id } = await this.inviteStore.get(invite_id);
+
+    //if stream has already started, delete the notification
+    if (stream_id) {
+      await this.inviteStore.del(invite_id);
+    }
 
     this.sendInviteState(id, inviter_id, 'accepted');
   }
@@ -149,6 +162,8 @@ export class InviteService {
       this.inviteStore.getInvitedUsers(ownedInviteIds),
       this.inviteStore.setStreamData(ownedInviteIds, stream),
     ]);
+
+    console.log({ invitedUserIds, ownedInviteIds });
 
     invitedUserIds.forEach((user) => {
       this.eventEmitter.emit(EVENT_INVITE_STREAM_ID_AVAILABLE, { id, user });

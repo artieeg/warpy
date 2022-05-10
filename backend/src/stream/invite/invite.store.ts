@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import { IInvite, IInviteBase, IStream, IUser } from '@warpy/lib';
 import cuid from 'cuid';
 import IORedis from 'ioredis';
-import { StreamEntity } from '../common/stream.entity';
 
 /** Store user data */
 const PREFIX_USER = 'user_';
@@ -95,11 +94,37 @@ export class InviteStore implements OnModuleInit {
     return this.toBaseDTO(data);
   }
 
+  async get(invite_id: string) {
+    const base = await this.getInviteBase(invite_id);
+
+    const pipe = this.redis.pipeline();
+
+    const { invitee_id, inviter_id, stream_id } = base;
+
+    pipe.hgetall(PREFIX_USER + invitee_id);
+    pipe.hgetall(PREFIX_USER + inviter_id);
+
+    if (stream_id) {
+      pipe.hgetall(PREFIX_STREAM + stream_id);
+    }
+
+    const data = await pipe.exec();
+
+    const [invitee, inviter, stream] = data.map(([_err, v]) => v);
+
+    return {
+      ...base,
+      invitee,
+      inviter,
+      stream,
+    };
+  }
+
   async getInvitedUsers(invite_ids: string[]) {
     const pipe = this.redis.pipeline();
 
     invite_ids.forEach((id) => {
-      pipe.hget(PREFIX_INVITE + id, 'invited_id');
+      pipe.hget(PREFIX_INVITE + id, 'invitee_id');
     });
 
     const result = await pipe.exec();
