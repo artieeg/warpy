@@ -3,15 +3,6 @@ import { IParticipant, Roles } from '@warpy/lib';
 import { ConfigService } from '@nestjs/config';
 import IORedis, { Pipeline } from 'ioredis';
 
-export type CreateNewParticipant = {
-  user_id?: string;
-  bot_id?: string;
-  role?: Roles;
-  stream?: string;
-  recvNodeId: string;
-  sendNodeId?: string;
-};
-
 export interface IFullParticipant extends IParticipant {
   recvNodeId: string;
   sendNodeId: string | null;
