@@ -7,6 +7,7 @@ import { BotsModule } from '@warpy-be/bots/bots.module';
 import { UserModule } from '@warpy-be/user/user.module';
 import { PrismaModule } from '@warpy-be/prisma/prisma.module';
 import { StreamCommonModule } from '../common/stream-common.module';
+import { InviteStore } from './invite.store';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { StreamCommonModule } from '../common/stream-common.module';
     TokenModule,
     forwardRef(() => BotsModule),
   ],
-  providers: [InviteEntity, InviteService],
+  providers: [InviteEntity, InviteStore, InviteService],
   controllers: [InviteController],
   exports: [],
 })

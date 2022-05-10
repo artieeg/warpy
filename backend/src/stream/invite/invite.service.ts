@@ -12,10 +12,14 @@ import {
   EVENT_INVITE_STREAM_ID_AVAILABLE,
   EVENT_STREAM_CREATED,
 } from '@warpy-be/utils';
+import { UserEntity } from '@warpy-be/user/user.entity';
+import { InviteStore } from './invite.store';
 
 @Injectable()
 export class InviteService {
   constructor(
+    private inviteStore: InviteStore,
+    private userEntity: UserEntity,
     private inviteEntity: InviteEntity,
     private followEntity: FollowEntity,
     private eventEmitter: EventEmitter2,
@@ -72,11 +76,17 @@ export class InviteService {
    * Creates invite record and sends a notification
    * */
   private async inviteRealUser(
-    inviter: string,
-    invitee: string,
-    stream?: string,
+    inviter_id: string,
+    invitee_id: string,
+    stream_id?: string,
   ) {
-    const invite = await this.inviteEntity.create({
+    const [inviter, invitee, stream] = await Promise.all([
+      this.userEntity.findById(inviter_id),
+      this.userEntity.findById(invitee_id),
+      stream_id && this.streamEntity.findById(stream_id),
+    ]);
+
+    const invite = await this.inviteStore.create({
       invitee,
       inviter,
       stream,

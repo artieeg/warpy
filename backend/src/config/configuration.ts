@@ -27,4 +27,5 @@ export const configuration = () => ({
   broadcastUserListStoreAddr: process.env.BROADCAST_USER_LIST_STORE_ADDR,
   chatMemberStoreAddr: process.env.CHAT_MEMBER_STORE_ADDR,
   streamHostAddr: process.env.STREAM_HOST_ADDR,
+  inviteStoreAddr: process.env.INVITE_STORE_ADDR,
 });
