@@ -52,10 +52,7 @@ export class InviteService {
 
   async deleteUserInvites(user: string) {
     const ids = await this.inviteStore.getUserInviteIds(user);
-
-    const promises = ids.map((id) => this.inviteStore.del(id));
-
-    await Promise.all(promises);
+    await Promise.all(ids.map((id) => this.inviteStore.del(id)));
   }
 
   /**
