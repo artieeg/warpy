@@ -2,6 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { IParticipant, Roles } from '@warpy/lib';
 import { ConfigService } from '@nestjs/config';
 import IORedis, { Pipeline } from 'ioredis';
+import { flatten } from '@warpy-be/utils/redis';
 
 export interface IFullParticipant extends IParticipant {
   recvNodeId: string;
@@ -223,17 +224,7 @@ export class ParticipantStore implements OnModuleInit {
     data: Partial<IFullParticipant>,
     pipeline?: Pipeline,
   ) {
-    const args: string[] = [];
-
-    for (const key in data) {
-      const value = data[key];
-
-      if (typeof value === 'boolean') {
-        args.push(key, value ? 'true' : 'false');
-      } else {
-        args.push(key, value);
-      }
-    }
+    const args = flatten(data);
 
     return (pipeline || this.redis).hmset(key, ...args);
   }

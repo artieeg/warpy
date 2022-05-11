@@ -50,6 +50,21 @@ export class InviteService {
     this.sendInviteState(id, inviter_id, 'declined');
   }
 
+  async checkNewInvitesFor(user: string) {
+    const invites = await this.inviteStore.getPendingInvitesFor(user);
+
+    //Emit a notification for each pending invite
+    invites.forEach((invite) =>
+      this.eventEmitter.emit('notification.invite.create', invite),
+    );
+
+    //Mark invites as received
+    this.inviteStore.updateMany(
+      invites.map((invite) => invite.id),
+      { received: true },
+    );
+  }
+
   async deleteUserInvites(user: string) {
     const ids = await this.inviteStore.getUserInviteIds(user);
     await Promise.all(ids.map((id) => this.inviteStore.del(id)));
@@ -84,10 +99,16 @@ export class InviteService {
       stream_id && this.streamEntity.findById(stream_id),
     ]);
 
+    //If the receiver is online, mark the invitation as received
+    //else, invitation will be marked as not received and
+    //will be sent out once the user has opened the app
+    const isInviteeOnline = await this.inviteStore.isUserOnline(invitee.id);
+
     const invite = await this.inviteStore.create({
       invitee,
       inviter,
       stream,
+      received: isInviteeOnline,
     });
 
     this.eventEmitter.emit('notification.invite.create', invite);

@@ -1,5 +1,11 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import {
+  OnlineStatusStoreBehavior,
+  VAL_OFFLINE,
+  VAL_ONLINE,
+} from '@warpy-be/shared';
+import { flatten } from '@warpy-be/utils/redis';
 import { IInvite, IInviteBase, IStream, IUser } from '@warpy/lib';
 import cuid from 'cuid';
 import IORedis from 'ioredis';
@@ -14,16 +20,21 @@ const PREFIX_STREAM = 'stream_';
 const PREFIX_INVITE = 'invite_';
 
 /** Store invite ids from user */
-const PREFIX_INVITES_FROM = 'invites_from';
+const PREFIX_INVITES_FROM = 'invites_from_';
+
+/** Store invite ids for user */
+const PREFIX_INVITES_FOR = 'invites_for_';
 
 @Injectable()
 export class InviteStore implements OnModuleInit {
   private redis: IORedis.Redis;
+  private onlineBehavior: OnlineStatusStoreBehavior;
 
   constructor(private configService: ConfigService) {}
 
   onModuleInit() {
     this.redis = new IORedis(this.configService.get('inviteStoreAddr'));
+    this.onlineBehavior = new OnlineStatusStoreBehavior(this.redis);
   }
 
   private toBaseDTO(data: any): IInviteBase {
@@ -49,14 +60,24 @@ export class InviteStore implements OnModuleInit {
     };
   }
 
+  async setUserOnlineStatus(user: string, flag: boolean) {
+    this.onlineBehavior.set(user, flag ? VAL_ONLINE : VAL_OFFLINE);
+  }
+
+  async isUserOnline(user: string) {
+    return this.onlineBehavior.getStatus(user);
+  }
+
   async create({
     invitee,
     inviter,
     stream,
+    received,
   }: {
     invitee: IUser;
     inviter: IUser;
     stream?: IStream;
+    received: boolean;
   }): Promise<IInvite> {
     const pipe = this.redis.pipeline();
 
@@ -76,12 +97,14 @@ export class InviteStore implements OnModuleInit {
       inviter_id: inviter.id,
       invitee_id: invitee.id,
       stream_id: stream?.id,
+      received,
     };
 
     //Store invite data
     pipe.hmset(PREFIX_INVITE + invite_id, invite);
 
     pipe.sadd(PREFIX_INVITES_FROM + inviter.id, invite_id);
+    pipe.sadd(PREFIX_INVITES_FOR + invitee.id, invite_id);
 
     await pipe.exec();
 
@@ -143,6 +166,33 @@ export class InviteStore implements OnModuleInit {
     await pipe.exec();
   }
 
+  /**
+   * Returns invites that hasn't been sent out yet
+   * */
+  async getPendingInvitesFor(user: string) {
+    const invite_ids = await this.redis.smembers(PREFIX_INVITES_FOR + user);
+    const invites = await Promise.all(invite_ids.map((id) => this.get(id)));
+
+    return invites.filter((invite) => !invite.received);
+  }
+
+  private async update(
+    invite: string,
+    params: Partial<IInviteBase>,
+    runner: IORedis.Pipeline | IORedis.Redis = this.redis,
+  ) {
+    const args = flatten(params);
+    return runner.hmset(invite, ...args);
+  }
+
+  async updateMany(ids: string[], params: Partial<IInviteBase>) {
+    const pipe = this.redis.pipeline();
+
+    ids.forEach((id) => this.update(id, params, pipe));
+
+    await pipe.exec();
+  }
+
   /** Returns invite ids that the user has sent */
   async getUserInviteIds(user: string): Promise<string[]> {
     return this.redis.smembers(PREFIX_INVITES_FROM + user);
@@ -160,7 +210,7 @@ export class InviteStore implements OnModuleInit {
     pipe.del(PREFIX_USER + invitee_id);
     pipe.del(PREFIX_USER + inviter_id);
     pipe.del(PREFIX_INVITES_FROM + inviter_id);
-
+    pipe.del(PREFIX_INVITES_FOR + invitee_id);
     await pipe.exec();
 
     return data;

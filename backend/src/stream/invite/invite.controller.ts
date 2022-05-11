@@ -1,8 +1,16 @@
 import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
-import { OnParticipantLeave } from '@warpy-be/interfaces';
-import { EVENT_PARTICIPANT_LEAVE } from '@warpy-be/utils';
+import {
+  OnParticipantLeave,
+  OnUserConnect,
+  OnUserDisconnect,
+} from '@warpy-be/interfaces';
+import {
+  EVENT_PARTICIPANT_LEAVE,
+  EVENT_USER_CONNECTED,
+  EVENT_USER_DISCONNECTED,
+} from '@warpy-be/utils';
 import {
   IInviteActionRequest,
   ICancelInviteRequest,
@@ -13,11 +21,32 @@ import {
   IInviteSuggestionsResponse,
 } from '@warpy/lib';
 import { InviteService } from './invite.service';
+import { InviteStore } from './invite.store';
 
 @Controller()
-export class InviteController implements OnParticipantLeave {
-  constructor(private inviteService: InviteService) {}
+export class InviteController
+  implements OnParticipantLeave, OnUserConnect, OnUserDisconnect
+{
+  constructor(
+    private inviteService: InviteService,
+    private inviteStore: InviteStore,
+  ) {}
 
+  @OnEvent(EVENT_USER_DISCONNECTED)
+  async onUserDisconnect({ user }) {
+    return this.inviteStore.setUserOnlineStatus(user, false);
+  }
+
+  /** Send new invites if there are any */
+  @OnEvent(EVENT_USER_CONNECTED)
+  async onUserConnect({ user }) {
+    await Promise.all([
+      this.inviteStore.setUserOnlineStatus(user, true),
+      this.inviteService.checkNewInvitesFor(user),
+    ]);
+  }
+
+  /** Clear user invites */
   @OnEvent(EVENT_PARTICIPANT_LEAVE)
   async onParticipantLeave({ user }) {
     await this.inviteService.deleteUserInvites(user);

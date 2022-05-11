@@ -8,6 +8,8 @@ export interface IInviteBase {
   invitee_id: string;
   inviter_id: string;
   stream_id?: string;
+
+  received?: boolean;
 }
 
 export interface IInvite extends IInviteBase {
