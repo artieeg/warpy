@@ -24,6 +24,44 @@ export class NotificationStore implements OnModuleInit {
     this.redis = new IORedis(this.configService.get('notificationStoreAddr'));
   }
 
+  private async getInviteInfo(id: string): Promise<IInvite> {
+    const invite_base = (await this.redis.hgetall(
+      PREFIX_INVITE + id,
+    )) as unknown as IInviteBase;
+
+    const { invitee_id, inviter_id, stream_id } = invite_base;
+
+    const pipe = this.redis.pipeline();
+
+    pipe.hgetall(PREFIX_USER + invitee_id);
+    pipe.hgetall(PREFIX_USER + inviter_id);
+    pipe.hgetall(PREFIX_STREAM + stream_id);
+
+    const [[, invitee], [, inviter], [, stream]] = await pipe.exec();
+
+    return {
+      ...invite_base,
+      inviter,
+      invitee,
+      stream,
+    };
+  }
+
+  async get(id: string): Promise<INotification> {
+    const notification_base = (await this.redis.hgetall(
+      PREFIX_NOTIFICATION + id,
+    )) as unknown as INotificationBase;
+
+    const { invite_id } = notification_base;
+
+    const invite = invite_id ? await this.getInviteInfo(invite_id) : undefined;
+
+    return {
+      ...notification_base,
+      invite,
+    };
+  }
+
   async createInviteNotification(invite: IInvite): Promise<INotification> {
     const { invitee, inviter, stream } = invite;
 
@@ -59,6 +97,7 @@ export class NotificationStore implements OnModuleInit {
       hasBeenSeen: false,
       created_at: Date.now(),
       user_id: invitee.id,
+      invite_id: invite.id,
     };
 
     pipe

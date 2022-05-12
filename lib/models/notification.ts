@@ -1,9 +1,13 @@
 import { IInvite } from "./invite";
 
-export interface INotification {
+export interface INotificationBase {
   id: string;
   user_id: string;
-  invite?: IInvite;
+  invite_id?: string;
   hasBeenSeen: boolean;
   created_at: number;
+}
+
+export interface INotification extends INotificationBase {
+  invite?: IInvite;
 }
