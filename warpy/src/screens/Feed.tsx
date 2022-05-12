@@ -1,4 +1,8 @@
-import {FriendFeed, StreamFeedView} from '@app/components';
+import {
+  FriendFeed,
+  StagedFadeInAppearance,
+  StreamFeedView,
+} from '@app/components';
 import {ScreenHeader} from '@app/components/ScreenHeader';
 import {StreamCategoryList} from '@app/components/StreamCategoryList';
 import {useFeed} from '@app/hooks';
@@ -61,20 +65,22 @@ export const Feed = () => {
     <View style={styles.wrapper}>
       <ScreenHeader minimizationProgress={scrollY} />
       <Animated.View style={{height: '100%'}} layout={Layout.duration(200)}>
-        <FriendFeed />
-        <StreamCategoryList
-          minimizationProgress={scrollY}
-          onLayout={e => setCategoryListHeight(e.nativeEvent.layout.height)}
-          mode="browse-feed"
-        />
-
-        <Animated.View style={feedWrapperStyle}>
-          <StreamFeedView
-            scrollEventThrottle={16}
-            onScroll={handler}
-            data={feed}
+        <StagedFadeInAppearance>
+          <FriendFeed />
+          <StreamCategoryList
+            minimizationProgress={scrollY}
+            onLayout={e => setCategoryListHeight(e.nativeEvent.layout.height)}
+            mode="browse-feed"
           />
-        </Animated.View>
+
+          <Animated.View style={feedWrapperStyle}>
+            <StreamFeedView
+              scrollEventThrottle={16}
+              onScroll={handler}
+              data={feed}
+            />
+          </Animated.View>
+        </StagedFadeInAppearance>
       </Animated.View>
       <View style={styles.startStreamButtonWrapper}>
         <TextButton

@@ -24,7 +24,7 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
       isLoadingUser: true,
     });
 
-    const { user, following, hasActivatedAppInvite, categories } =
+    const { user, friendFeed, following, hasActivatedAppInvite, categories } =
       await api.user.auth(token);
 
     if (!user) {
@@ -34,11 +34,15 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
       });
     } else {
       set({
+        friendFeed,
         user,
         categories,
         exists: true,
         hasActivatedAppInvite,
-        following: following || [],
+        list_following: {
+          list: following,
+          page: 0,
+        },
         isLoadingUser: false,
         //selectedFeedCategory: categories[0],
         newStreamCategory: categories[1],

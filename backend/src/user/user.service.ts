@@ -20,6 +20,7 @@ import { CategoriesEntity } from '@warpy-be/stream/categories/categories.entity'
 import { StreamEntity } from '@warpy-be/stream/common/stream.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EVENT_USER_CREATED } from '@warpy-be/utils';
+import { FriendFeedService } from './friend_feed/friend_feed.service';
 
 @Injectable()
 export class UserService {
@@ -36,6 +37,7 @@ export class UserService {
     private appliedAppInviteEntity: AppliedAppInviteEntity,
     private userOnlineStatusService: UserOnlineStatusService,
     private eventEmitter: EventEmitter2,
+    private friendFeed: FriendFeedService,
   ) {}
 
   async createAnonUser() {
@@ -97,11 +99,14 @@ export class UserService {
   }
 
   async getById(user: string): Promise<IWhoAmIResponse> {
-    const [data, hasActivatedAppInvite, categories] = await Promise.all([
-      this.user.findById(user, true),
-      this.appliedAppInviteEntity.find(user),
-      this.categoriesEntity.getAll(),
-    ]);
+    const [data, hasActivatedAppInvite, categories, friendFeed, following] =
+      await Promise.all([
+        this.user.findById(user, true),
+        this.appliedAppInviteEntity.find(user),
+        this.categoriesEntity.getAll(),
+        this.friendFeed.getFriendFeed(user),
+        this.getFollowing(user, 0),
+      ]);
 
     if (!data) {
       throw new UserNotFound();
@@ -109,7 +114,8 @@ export class UserService {
 
     return {
       user: data,
-      following: await this.followEntity.getFollowedUserIds(user),
+      following,
+      friendFeed,
       hasActivatedAppInvite: !!hasActivatedAppInvite,
       categories,
     };

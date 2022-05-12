@@ -43,9 +43,9 @@ export interface IFeedResponse {
 
 export interface IWhoAmIResponse {
   user: IBaseUser | null;
-  following: string[] | null;
+  following: IUser[];
   hasActivatedAppInvite: boolean;
-  //friendFeed: IFriendFeedItem[];
+  friendFeed: IFriendFeedItem[];
   categories: IStreamCategory[];
 }
 

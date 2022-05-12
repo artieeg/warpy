@@ -8,6 +8,7 @@ export const FriendFeed = () => {
   const [friendFeed, following] = useStoreShallow(state => [
     state.friendFeed,
     state.list_following.list,
+    //state.list_following.list,
   ]);
 
   const feed: IFriendFeedItem[] = useMemo(

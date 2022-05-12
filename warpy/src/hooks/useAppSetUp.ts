@@ -43,8 +43,8 @@ export const useAppSetUp = () => {
 
       useStore.getState().dispatchNotificationsFetchUnread();
       useStore.getState().dispatchFetchAppInvite();
-      useStore.getState().dispatchFetchFriendFeed();
-      useStore.getState().dispatchFetchUserList('following');
+      //useStore.getState().dispatchFetchFriendFeed();
+      //useStore.getState().dispatchFetchUserList('following');
     }
   }, [user, n]);
 

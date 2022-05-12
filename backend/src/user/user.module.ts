@@ -19,6 +19,7 @@ import { UserService } from './user.service';
     PrismaModule,
     FollowModule,
     StreamModule,
+    FriendFeedModule,
     TokenModule,
     FriendFeedModule,
     ParticipantModule,

@@ -33,3 +33,4 @@ export * from './AwardFeedItem';
 export * from './FriendFeed';
 export * from './SmallIconButton';
 export * from './StreamFeedView';
+export * from './StagedFadeInAppearance';

@@ -8,6 +8,7 @@ import Animated, {
   Easing,
   Extrapolate,
   interpolate,
+  Layout,
   SharedValue,
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -185,7 +186,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
   );
 
   return (
-    <View
+    <Animated.View
       {...props}
       onLayout={e => {
         setListWidth(e.nativeEvent.layout.width);
@@ -226,7 +227,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
           </Animated.View>
         </Animated.View>
       )}
-    </View>
+    </Animated.View>
   );
 };
 
