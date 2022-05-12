@@ -46,15 +46,6 @@ export class UserController {
     return data;
   }
 
-  @MessagePattern('user.whoami-request')
-  async onUserGet({ user }: IWhoAmIRequest): Promise<IWhoAmIResponse> {
-    const data = await this.userService.getById(user);
-
-    this.eventEmitter.emit(EVENT_USER_CONNECTED, { user });
-
-    return data;
-  }
-
   @MessagePattern('user.update')
   async onUserUpdate({
     user,

@@ -55,6 +55,10 @@ export class UserService {
     };
   }
 
+  async findById(user: string, details?: boolean) {
+    return this.user.findById(user, details);
+  }
+
   async getUserInfo(id: string, requester: string): Promise<IUserInfoResponse> {
     const [user, currentStreamId, isFollowed, isFollower] = await Promise.all([
       this.user.findById(id, false),
@@ -96,29 +100,6 @@ export class UserService {
 
   async get(user: string): Promise<IUser> {
     return this.user.findById(user);
-  }
-
-  async getById(user: string): Promise<IWhoAmIResponse> {
-    const [data, hasActivatedAppInvite, categories, friendFeed, following] =
-      await Promise.all([
-        this.user.findById(user, true),
-        this.appliedAppInviteEntity.find(user),
-        this.categoriesEntity.getAll(),
-        this.friendFeed.getFriendFeed(user),
-        this.getFollowing(user, 0),
-      ]);
-
-    if (!data) {
-      throw new UserNotFound();
-    }
-
-    return {
-      user: data,
-      following,
-      friendFeed,
-      hasActivatedAppInvite: !!hasActivatedAppInvite,
-      categories,
-    };
   }
 
   async createDevUser(data: INewUser): Promise<INewUserResponse> {

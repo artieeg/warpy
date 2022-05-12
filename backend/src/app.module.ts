@@ -19,6 +19,7 @@ import { MailModule } from './mail/mail.module';
 import { ChatModule } from './stream/chat/chat.module';
 import { MessageModule } from './message/message.module';
 import { TimerModule } from './shared/modules/timer/timer.module';
+import { SyncModule } from './sync/sync.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { TimerModule } from './shared/modules/timer/timer.module';
     MessageModule,
     NotificationModule,
     WaitlistModule,
+    SyncModule,
     EventEmitterModule.forRoot(),
   ],
   controllers: [AppController],
