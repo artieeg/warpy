@@ -4,10 +4,11 @@ import { NotificationEntity } from './notification.entity';
 import { NotificationService } from './notification.service';
 import { NotificationController } from './notification.controller';
 import { StreamModule } from '@warpy-be/stream/stream.module';
+import { NotificationStore } from './notification.store';
 
 @Module({
   imports: [PrismaModule],
-  providers: [NotificationEntity, NotificationService],
+  providers: [NotificationEntity, NotificationStore, NotificationService],
   controllers: [NotificationController],
   exports: [],
 })
