@@ -1,13 +1,13 @@
 import { MessageService } from '@warpy-be/message/message.service';
 import { Injectable } from '@nestjs/common';
 import { IInvite, INotification } from '@warpy/lib';
-import { NotificationEntity } from './notification.entity';
-import cuid from 'cuid';
+import { NotificationStore } from './notification.store';
 
 @Injectable()
 export class NotificationService {
   constructor(
-    private notificationEntity: NotificationEntity,
+    //private notificationEntity: NotificationEntity,
+    private notificationStore: NotificationStore,
     private messageService: MessageService,
   ) {}
 
@@ -21,38 +21,27 @@ export class NotificationService {
   }
 
   async createInviteNotification(invite: IInvite) {
-    /*
-    const notification = await this.notificationEntity.createFromInvite(
-      invite.invitee.id,
-      invite.id,
-    );
-    */
-
-    const invitee_id = invite.invitee.id;
-
-    this.sendNotification(invitee_id, {
-      id: cuid(),
-      user_id: invitee_id,
+    const notification = await this.notificationStore.createInviteNotification(
       invite,
-      hasBeenSeen: false,
-      created_at: Date.now(),
-    });
+    );
+
+    this.sendNotification(invite.invitee.id, notification);
   }
 
   async readAllNotifications(user_id: string) {
-    await this.notificationEntity.readAll(user_id);
+    await this.notificationStore.readAll(user_id);
   }
 
   async getUnreadNotifications(user: string) {
-    return this.notificationEntity.getUnread(user);
+    return this.notificationStore.getUnread(user);
   }
 
   async getReadNotifications(user: string, page: number) {
-    return this.notificationEntity.getAll(user, page);
+    return this.notificationStore.getAll(user);
   }
 
   async cancelNotification(notification_id: string) {
-    const notification = await this.notificationEntity.getById(notification_id);
+    const notification = await this.notificationStore.get(notification_id);
 
     this.messageService.sendMessage(notification.user_id, {
       event: 'notification-deleted',
@@ -60,5 +49,7 @@ export class NotificationService {
         notification_id,
       },
     });
+
+    await this.notificationStore.del(notification_id, notification.user_id);
   }
 }

@@ -8,11 +8,15 @@ import {
   INotificationBase,
 } from '@warpy/lib';
 import cuid from 'cuid';
+import { getDayNumber } from '@warpy-be/utils/day';
 
 const PREFIX_NOTIFICATION = 'noti_';
 const PREFIX_USER = 'user_';
 const PREFIX_STREAM = 'stream_';
 const PREFIX_INVITE = 'invite_';
+
+const PREFIX_NOTIFICATIONS_FOR_USER = 'noti_for_';
+const PREFIX_NOTIFICATIONS_READ_BY = 'noti_read_by_';
 
 @Injectable()
 export class NotificationStore implements OnModuleInit {
@@ -104,9 +108,76 @@ export class NotificationStore implements OnModuleInit {
       .hmset(PREFIX_NOTIFICATION + data.id)
       .expire(PREFIX_NOTIFICATION + data.id, DAY);
 
+    //Build indexes based on day eg notification ids for day 19124
+    //For the next day we will have different day_n and
+    //the previous index will be expired
+    const day_n = getDayNumber();
+
+    pipe.sadd(PREFIX_NOTIFICATIONS_FOR_USER + data.user_id + day_n, data.id);
+    pipe.expire(PREFIX_NOTIFICATIONS_FOR_USER + data.user_id + day_n, 86400);
+
+    await pipe.exec();
+
     return {
       ...data,
       invite,
     };
+  }
+
+  private async getAllIds(user: string) {
+    return this.redis.smembers(PREFIX_NOTIFICATIONS_FOR_USER + user);
+  }
+
+  private async getUnreadIds(user: string) {
+    return this.redis.sdiff(
+      PREFIX_NOTIFICATIONS_FOR_USER + user,
+      PREFIX_NOTIFICATIONS_READ_BY + user,
+    );
+  }
+
+  private async fetchList(ids: string[]) {
+    const notifications = await Promise.all(ids.map((id) => this.get(id)));
+
+    return notifications;
+  }
+
+  async del(id: string, user: string) {
+    const pipe = this.redis.pipeline();
+
+    //Clear indexes, the data itself
+    //will be expired within 24 hours
+    //(see create* functions)
+    pipe.srem(PREFIX_NOTIFICATIONS_READ_BY + user, id);
+    pipe.srem(PREFIX_NOTIFICATIONS_FOR_USER + user, id);
+
+    await pipe.exec();
+  }
+
+  async getUnread(user: string) {
+    const unread_ids = await this.getUnreadIds(user);
+
+    return this.fetchList(unread_ids);
+  }
+
+  async getAll(user: string) {
+    const ids = await this.getAllIds(user);
+
+    return this.fetchList(ids);
+  }
+
+  async readAll(user: string) {
+    const day_n = getDayNumber();
+
+    const unread_ids = await this.getUnreadIds(user);
+
+    const pipe = this.redis.pipeline();
+
+    unread_ids.forEach((id) =>
+      pipe.sadd(PREFIX_NOTIFICATIONS_READ_BY + user + day_n, id),
+    );
+
+    pipe.expire(PREFIX_NOTIFICATIONS_READ_BY + user + day_n, 86400);
+
+    await pipe.exec();
   }
 }
