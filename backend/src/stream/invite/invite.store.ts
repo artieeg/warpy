@@ -133,7 +133,11 @@ export class InviteStore implements OnModuleInit {
 
     const data = await pipe.exec();
 
+    console.log({ data });
+
     const [invitee, inviter, stream] = data.map(([_err, v]) => v);
+
+    console.log({ base });
 
     return {
       ...base,

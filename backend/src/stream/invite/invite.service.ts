@@ -6,7 +6,13 @@ import { TokenService } from '@warpy-be/token/token.service';
 import { FollowEntity } from '@warpy-be/user/follow/follow.entity';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
-import { IInvite, InviteStates, IReceivedInviteEvent, IStream, IUser } from '@warpy/lib';
+import {
+  IInvite,
+  InviteStates,
+  IReceivedInviteEvent,
+  IStream,
+  IUser,
+} from '@warpy/lib';
 import {
   EVENT_INVITE_STREAM_ID_AVAILABLE,
   EVENT_STREAM_CREATED,
@@ -53,10 +59,30 @@ export class InviteService {
   async checkNewInvitesFor(user: string) {
     const invites = await this.inviteStore.getPendingInvitesFor(user);
 
-    //Emit a notification for each pending invite
-    invites.forEach((invite) =>
-      this.eventEmitter.emit('notification.invite.create', invite),
-    );
+    if (invites.length === 0) {
+      return;
+    }
+
+    //Emit notifications about each new invite to streams that have already started
+    invites
+      .filter((invite) => invite.stream_id)
+      .forEach((invite) =>
+        this.eventEmitter.emit('notification.invite.create', invite),
+      );
+
+    const latestInvite = invites[invites.length - 1];
+
+    console.log({ latestInvite });
+
+    //send the latest invite
+    if (latestInvite) {
+      this.messageService.sendMessage(user, {
+        event: 'new-invite',
+        data: {
+          invite: latestInvite,
+        },
+      });
+    }
 
     //Mark invites as received
     this.inviteStore.updateMany(
@@ -113,11 +139,11 @@ export class InviteService {
 
     this.eventEmitter.emit('notification.invite.create', invite);
     this.messageService.sendMessage(invitee.id, {
-      event: "new-invite",
+      event: 'new-invite',
       data: {
-        invite
-      } as IReceivedInviteEvent
-    })
+        invite,
+      } as IReceivedInviteEvent,
+    });
 
     return invite;
   }
