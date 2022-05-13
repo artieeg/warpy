@@ -21,6 +21,11 @@ export class NotificationService {
   }
 
   async createInviteNotification(invite: IInvite) {
+    //If the stream hasn't been started yet, dont send the notification
+    if (!invite.stream) {
+      return
+    }
+
     const notification = await this.notificationStore.createInviteNotification(
       invite,
     );
