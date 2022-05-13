@@ -1,6 +1,7 @@
 import {
   IAward,
   IChatMessage,
+  IInvite,
   INotification,
   IParticipant,
   IStream,
@@ -101,4 +102,8 @@ export interface IReassignedStreamHost {
 
 export interface IStreamEndEvent {
   stream: string;
+}
+
+export interface IReceivedInviteEvent {
+  invite: IInvite;
 }

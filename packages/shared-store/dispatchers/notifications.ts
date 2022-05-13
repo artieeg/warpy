@@ -47,23 +47,10 @@ export const createNotificationDispatchers: StoreSlice<INotificaionDispatchers> 
     },
 
     dispatchNotificationAdd(notification) {
-      if (notification.invite) {
-        get().dispatchModalOpen("stream-invite", {
-          invite: {
-            ...notification.invite,
-            notification: notification.id,
-          },
-        });
-      }
-
       set({ notifications: [notification, ...get().notifications] });
     },
 
     dispatchNotificationRemove(id) {
-      if (get().modalInvite?.notification === id) {
-        get().dispatchModalClose();
-      }
-
       set({
         notifications: get().notifications.filter((n) => n.id !== id),
       });

@@ -6,7 +6,7 @@ import { TokenService } from '@warpy-be/token/token.service';
 import { FollowEntity } from '@warpy-be/user/follow/follow.entity';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
-import { IInvite, InviteStates, IStream, IUser } from '@warpy/lib';
+import { IInvite, InviteStates, IReceivedInviteEvent, IStream, IUser } from '@warpy/lib';
 import {
   EVENT_INVITE_STREAM_ID_AVAILABLE,
   EVENT_STREAM_CREATED,
@@ -112,6 +112,12 @@ export class InviteService {
     });
 
     this.eventEmitter.emit('notification.invite.create', invite);
+    this.messageService.sendMessage(invitee.id, {
+      event: "new-invite",
+      data: {
+        invite
+      } as IReceivedInviteEvent
+    })
 
     return invite;
   }

@@ -160,6 +160,12 @@ export const createAPISlice = (
       store.dispatchParticipantRemove(user);
     });
 
+    api.stream.onNewInvite(({ invite }) => {
+      get().dispatchModalOpen("stream-invite", {
+        invite,
+      });
+    });
+
     api.notification.onNewNotification((data) => {
       get().dispatchNotificationAdd(data.notification);
     });

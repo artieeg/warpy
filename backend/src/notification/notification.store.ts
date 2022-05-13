@@ -81,15 +81,17 @@ export class NotificationStore implements OnModuleInit {
       .hmset(PREFIX_USER + inviter.id, inviter)
       .expire(PREFIX_USER + inviter.id, DAY);
 
-    pipe
-      .hmset(PREFIX_STREAM + stream.id, stream)
-      .expire(PREFIX_STREAM + stream.id, DAY);
+    if (invite.stream) {
+      pipe
+        .hmset(PREFIX_STREAM + stream.id, stream)
+        .expire(PREFIX_STREAM + stream.id, DAY);
+    }
 
     const invite_base: IInviteBase = {
       id: invite.id,
       inviter_id: invite.inviter.id,
       invitee_id: invite.invitee.id,
-      stream_id: stream.id,
+      stream_id: invite.stream_id,
     };
 
     pipe

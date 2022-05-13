@@ -6,7 +6,8 @@ type OpenModalParams = {
   userToAward?: IBaseUser;
   botConfirmId?: string;
   botConfirmData?: IBot;
-  invite?: IInvite & { notification: string };
+  //invite?: IInvite & { notification: string };
+  invite?: IInvite;
   closeAfterReassign?: boolean;
 };
 

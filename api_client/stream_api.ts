@@ -23,6 +23,7 @@ import {
   IPreviousStream,
   IReassignedStreamHost,
   IStreamEndEvent,
+  IReceivedInviteEvent,
 } from "@warpy/lib";
 
 export interface IStreamAPI {
@@ -64,6 +65,7 @@ export interface IStreamAPI {
   onStreamIdAvailable: EventHandler<IStreamIdAvailable>;
   onHostReassign: EventHandler<IReassignedStreamHost>;
   onStreamEnd: EventHandler<IStreamEndEvent>;
+  onNewInvite: EventHandler<IReceivedInviteEvent>;
   leave: (stream: string) => Promise<ILeaveStreamResponse>;
 }
 
@@ -110,6 +112,7 @@ export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({
   setRole: (userToUpdate, role) =>
     socket.publish("set-role", { userToUpdate, role }),
   onNewParticipant: (handler) => socket.on("new-participant", handler),
+  onNewInvite: (handler) => socket.on("new-invite", handler),
   onHostReassign: (handler) => socket.on("stream-host-reassigned", handler),
   onPreviousStream: (handler) => socket.on("previous-stream", handler),
   onInviteStateUpdate: (handler) => socket.on("invite-state-update", handler),
