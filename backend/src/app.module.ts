@@ -16,10 +16,11 @@ import { TokenModule } from './token/token.module';
 import { UserModule } from './user/user.module';
 import { WaitlistModule } from './waitlist/waitlist.module';
 import { MailModule } from './mail/mail.module';
-import { ChatModule } from './stream/chat/chat.module';
 import { MessageModule } from './message/message.module';
 import { TimerModule } from './shared/modules/timer/timer.module';
 import { SyncModule } from './sync/sync.module';
+import { ChatModule } from './chat/chat.module';
+import { FriendFeedModule } from './friend_feed/friend_feed.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { SyncModule } from './sync/sync.module';
     GifModule,
     UserModule,
     TokenModule,
+    FriendFeedModule,
     StreamModule,
     MailModule,
     NatsModule,

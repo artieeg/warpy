@@ -1,4 +1,5 @@
 import {
+  OnNewStream,
   OnParticipantLeave,
   OnParticipantRejoin,
   OnStreamEnd,
@@ -8,6 +9,7 @@ import {
   EVENT_PARTICIPANT_KICKED,
   EVENT_PARTICIPANT_LEAVE,
   EVENT_PARTICIPANT_REJOIN,
+  EVENT_STREAM_CREATED,
   EVENT_STREAM_ENDED,
   EVENT_USER_DISCONNECTED,
 } from '@warpy-be/utils';

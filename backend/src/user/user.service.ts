@@ -20,7 +20,6 @@ import { CategoriesEntity } from '@warpy-be/stream/categories/categories.entity'
 import { StreamEntity } from '@warpy-be/stream/common/stream.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EVENT_USER_CREATED } from '@warpy-be/utils';
-import { FriendFeedService } from './friend_feed/friend_feed.service';
 
 @Injectable()
 export class UserService {
@@ -37,7 +36,6 @@ export class UserService {
     private appliedAppInviteEntity: AppliedAppInviteEntity,
     private userOnlineStatusService: UserOnlineStatusService,
     private eventEmitter: EventEmitter2,
-    private friendFeed: FriendFeedService,
   ) {}
 
   async createAnonUser() {

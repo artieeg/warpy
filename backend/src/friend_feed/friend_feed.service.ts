@@ -2,7 +2,7 @@ import { StreamEntity } from '@warpy-be/stream/common/stream.entity';
 import { ParticipantStore } from '@warpy-be/user/participant';
 import { Injectable } from '@nestjs/common';
 import { IFriendFeedItem } from '@warpy/lib';
-import { FollowEntity } from '../follow/follow.entity';
+import { FollowEntity } from '@warpy-be/user/follow/follow.entity';
 
 @Injectable()
 export class FriendFeedService {

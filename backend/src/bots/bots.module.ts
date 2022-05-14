@@ -15,7 +15,8 @@ import { DeveloperAccountModule } from '@warpy-be/user/developer_account/develop
   imports: [
     PrismaModule,
     MediaModule,
-    forwardRef(() => UserModule),
+    //forwardRef(() => UserModule),
+    //forwardRef(() => ParticipantModule),
     DeveloperAccountModule,
     TokenModule,
   ],

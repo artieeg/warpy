@@ -1,8 +1,4 @@
-import { StreamNotFound, UserNotFound } from '@warpy-be/errors';
-import {
-  IFullParticipant,
-  ParticipantStore,
-} from '@warpy-be/user/participant/store';
+import { StreamNotFound } from '@warpy-be/errors';
 import {
   EVENT_NEW_PARTICIPANT,
   EVENT_STREAM_CREATED,
@@ -13,15 +9,12 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { INewStreamResponse } from '@warpy/lib';
 import cuid from 'cuid';
 import { MediaService } from '../media/media.service';
-import { UserEntity } from '../user/user.entity';
 import { StreamEntity } from './common/stream.entity';
 
 @Injectable()
 export class StreamService {
   constructor(
     private streamEntity: StreamEntity,
-    private participantStore: ParticipantStore,
-    private userEntity: UserEntity,
     private mediaService: MediaService,
     private eventEmitter: EventEmitter2,
   ) {}
@@ -37,16 +30,10 @@ export class StreamService {
     title: string,
     category: string,
   ): Promise<INewStreamResponse> {
-    const streamer = await this.userEntity.findById(owner);
-
-    if (!streamer) {
-      throw new UserNotFound();
-    }
-
     const stream_id = cuid();
 
     const { token, recvNodeId, sendNodeId } =
-      await this.mediaService.getHostToken(owner, stream_id);
+      await this.mediaService.getStreamerToken(owner, stream_id);
 
     const stream = await this.streamEntity.create({
       id: stream_id,
@@ -58,38 +45,28 @@ export class StreamService {
       reactions: 0,
     });
 
-    const host: IFullParticipant = {
-      ...streamer,
-      role: 'streamer',
-      recvNodeId,
-      sendNodeId,
-      audioEnabled: true,
-      videoEnabled: true,
-      isBanned: false,
-      stream: stream_id,
-      isBot: false,
-    };
-
-    await this.participantStore.add(host);
-
     const media = await this.mediaService.createNewRoom({
       roomId: stream.id,
       host: owner,
     });
 
     const recvMediaParams = await this.mediaService.getViewerParams(
-      host.recvNodeId,
+      recvNodeId,
       owner,
       stream.id,
     );
 
-    this.eventEmitter.emit(EVENT_STREAM_CREATED, { stream });
-    this.eventEmitter.emit(EVENT_NEW_PARTICIPANT, { participant: host });
+    this.eventEmitter.emit(EVENT_STREAM_CREATED, {
+      stream,
+      hostNodeIds: {
+        sendNodeId,
+        recvNodeId,
+      },
+    });
 
     return {
       stream: stream.id,
       media,
-      speakers: [host],
       count: 1,
       mediaPermissionsToken: token,
       recvMediaParams,

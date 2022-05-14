@@ -1,12 +1,12 @@
 import { StreamModule } from '@warpy-be/stream/stream.module';
 import { Module } from '@nestjs/common';
-import { FollowModule } from '../follow/follow.module';
-import { ParticipantModule } from '../participant/participant.module';
 import { FriendFeedController } from './friend_feed.controller';
 import { FriendFeedService } from './friend_feed.service';
+import { UserModule } from '@warpy-be/user/user.module';
+import { FollowModule } from '@warpy-be/user/follow/follow.module';
 
 @Module({
-  imports: [ParticipantModule, FollowModule, StreamModule],
+  imports: [UserModule, FollowModule, StreamModule],
   providers: [FriendFeedService],
   controllers: [FriendFeedController],
   exports: [FriendFeedService],

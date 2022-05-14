@@ -1,4 +1,4 @@
-import { IParticipant, IUser } from '@warpy/lib';
+import { IParticipant, IStream, IUser } from '@warpy/lib';
 import { IFullParticipant } from './user/participant';
 
 export interface OnUserDisconnect {
@@ -59,4 +59,11 @@ export interface OnHostReassign {
     stream: string;
     host: IFullParticipant;
   }) => Promise<any>;
+}
+
+export interface OnNewStream {
+  onNewStream: (data: { stream: IStream, hostNodeIds: {
+    sendNodeId: string;
+    recvNodeId: string
+  } }) => Promise<any>;
 }

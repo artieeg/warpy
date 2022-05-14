@@ -93,7 +93,7 @@ export class MediaService {
     return response as IConnectRecvTransportParams;
   }
 
-  async getHostToken(user: string, stream: string) {
+  async getStreamerToken(user: string, stream: string) {
     const [sendNodeId, recvNodeId] = await Promise.all([
       this.balancer.getSendNodeId(stream),
       this.balancer.getRecvNodeId(stream),

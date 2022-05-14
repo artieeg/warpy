@@ -69,6 +69,7 @@ export class BlockService {
   }
 
   async isBannedBySpeaker(user: string, stream: string) {
+    //TODO: store stream speakers in redis local
     const speakers = await this.participantEntity.getStreamers(stream);
     const blockedByIds = await this.blockEntity.getBlockedByIds(user);
     const blockedIds = await this.blockEntity.getBlockedUserIds(user);

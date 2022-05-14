@@ -12,7 +12,8 @@ import { InviteStore } from './invite.store';
   imports: [
     PrismaModule,
     StreamCommonModule,
-    forwardRef(() => UserModule),
+    //forwardRef(() => UserModule),
+    UserModule,
     TokenModule,
     forwardRef(() => BotsModule),
   ],

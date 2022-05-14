@@ -18,7 +18,6 @@ import { UserList } from "./types";
 export interface INewStreamResponse {
   stream: string;
   media: any;
-  speakers: IParticipant[];
   count: number;
   mediaPermissionsToken: string;
   recvMediaParams: IConnectRecvTransportParams;

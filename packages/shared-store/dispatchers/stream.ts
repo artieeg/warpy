@@ -57,7 +57,6 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
     const {
       stream,
       media: mediaData,
-      speakers,
       count,
       mediaPermissionsToken,
       recvMediaParams,
@@ -67,7 +66,9 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       stream,
       title,
       sendMediaParams: mediaData,
-      streamers: arrayToMap<IParticipant>(speakers),
+      streamers: arrayToMap<IParticipant>([
+        { ...user!, stream, role: "streamer", isBot: false },
+      ]),
       totalParticipantCount: count,
       currentStreamHost: user!.id,
       role: "streamer",
