@@ -65,22 +65,20 @@ export const Feed = () => {
     <View style={styles.wrapper}>
       <ScreenHeader minimizationProgress={scrollY} />
       <Animated.View style={{height: '100%'}} layout={Layout.duration(200)}>
-        <StagedFadeInAppearance>
-          <FriendFeed />
-          <StreamCategoryList
-            minimizationProgress={scrollY}
-            onLayout={e => setCategoryListHeight(e.nativeEvent.layout.height)}
-            mode="browse-feed"
-          />
+        <FriendFeed />
+        <StreamCategoryList
+          minimizationProgress={scrollY}
+          onLayout={e => setCategoryListHeight(e.nativeEvent.layout.height)}
+          mode="browse-feed"
+        />
 
-          <Animated.View style={feedWrapperStyle}>
-            <StreamFeedView
-              scrollEventThrottle={16}
-              onScroll={handler}
-              data={feed}
-            />
-          </Animated.View>
-        </StagedFadeInAppearance>
+        <Animated.View style={feedWrapperStyle}>
+          <StreamFeedView
+            scrollEventThrottle={16}
+            onScroll={handler}
+            data={feed}
+          />
+        </Animated.View>
       </Animated.View>
       <View style={styles.startStreamButtonWrapper}>
         <TextButton
