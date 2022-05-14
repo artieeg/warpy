@@ -1,7 +1,6 @@
 import { NoPermissionError } from '@warpy-be/errors';
 import { MediaService } from '@warpy-be/media/media.service';
 import { MessageService } from '@warpy-be/message/message.service';
-import { BlockService } from '@warpy-be/user/block/block.service';
 import {
   EVENT_ROLE_CHANGE,
   EVENT_STREAMER_DOWNGRADED_TO_VIEWER,
@@ -12,6 +11,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Roles } from '@warpy/lib';
 import { ParticipantStore } from '../store';
 import { HostService } from '../host/host.service';
+import { BlockService } from '@warpy-be/block/block.service';
 
 @Injectable()
 export class ParticipantRoleService {

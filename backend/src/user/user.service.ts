@@ -10,7 +10,6 @@ import {
 } from '@warpy/lib';
 import { RefreshTokenEntity } from '../token/refresh-token.entity';
 import { TokenService } from '../token/token.service';
-import { BlockEntity } from './block/block.entity';
 import { UserOnlineStatusService } from './online-status/user-online-status.service';
 import { UserEntity } from './user.entity';
 import { FollowEntity } from './follow/follow.entity';
@@ -20,6 +19,7 @@ import { CategoriesEntity } from '@warpy-be/stream/categories/categories.entity'
 import { StreamEntity } from '@warpy-be/stream/common/stream.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EVENT_USER_CREATED } from '@warpy-be/utils';
+import { BlockEntity } from '@warpy-be/block/block.entity';
 
 @Injectable()
 export class UserService {

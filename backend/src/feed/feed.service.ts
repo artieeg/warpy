@@ -1,13 +1,12 @@
 import { StreamEntity } from '@warpy-be/stream/common/stream.entity';
-import { BlockService } from '@warpy-be/user/block/block.service';
 import { ParticipantStore } from '@warpy-be/user/participant/store';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ICandidate, IStream } from '@warpy/lib';
+import { BlockService } from '@warpy-be/block/block.service';
 
 @Injectable()
 export class FeedService {
   constructor(
-    @Inject(forwardRef(() => BlockService))
     private blockService: BlockService,
 
     private streamEntity: StreamEntity,

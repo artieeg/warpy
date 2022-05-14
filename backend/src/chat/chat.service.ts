@@ -4,11 +4,11 @@ import { UserEntity } from '@warpy-be/user/user.entity';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IChatMessage } from '@warpy/lib';
-import { BlockService } from '@warpy-be/user/block/block.service';
 import { EVENT_CHAT_MESSAGE } from '@warpy-be/utils';
 
 import cuid from 'cuid';
 import Filter from 'bad-words';
+import { BlockService } from '@warpy-be/block/block.service';
 
 @Injectable()
 export class ChatService {

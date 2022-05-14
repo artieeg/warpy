@@ -2,7 +2,7 @@ import { PrismaService } from '@warpy-be/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { UserBlock, User } from '@prisma/client';
 import { IUserBlock } from '@warpy/lib';
-import { UserEntity } from '../user.entity';
+import { UserEntity } from '@warpy-be/user/user.entity';
 
 @Injectable()
 export class BlockEntity {

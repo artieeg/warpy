@@ -3,7 +3,6 @@ import { Module } from '@nestjs/common';
 import { MediaModule } from '../media/media.module';
 import { CategoryModule } from './categories/categories.module';
 import { StreamCommonModule } from './common/stream-common.module';
-import { FeedModule } from './feed/feed.module';
 import { PreviousStreamModule } from './previous-stream/previous-stream.module';
 import { ReactionModule } from './reaction/reaction.module';
 import { StreamController } from './stream.controller';
@@ -17,8 +16,6 @@ import { StreamService } from './stream.service';
     StreamCommonModule,
     PreviousStreamModule,
     ReactionModule,
-
-    FeedModule,
   ],
   controllers: [StreamController],
   providers: [StreamService],

@@ -6,6 +6,7 @@ import { Injectable } from '@nestjs/common';
 import { ParticipantStore } from '@warpy-be/user/participant';
 import { BlockEntity } from './block.entity';
 import { BlockCacheService } from './block.cache';
+import { StreamerIdStore } from './streamer_ids.store';
 
 @Injectable()
 export class BlockService {
@@ -13,6 +14,7 @@ export class BlockService {
     private participantEntity: ParticipantStore,
     private blockEntity: BlockEntity,
     private blockCacheService: BlockCacheService,
+    private streamerIdStore: StreamerIdStore,
   ) {}
 
   async unblockUser(blocker: string, blocked: string) {
@@ -69,31 +71,24 @@ export class BlockService {
   }
 
   async isBannedBySpeaker(user: string, stream: string) {
-    //TODO: store stream speakers in redis local
-    const streamers = await this.participantEntity.getStreamers(stream);
+    const streamerIds = await this.streamerIdStore.get(stream);
     const blockedByIds = await this.blockEntity.getBlockedByIds(user);
     const blockedIds = await this.blockEntity.getBlockedUserIds(user);
 
-    const blocker = streamers.find((speaker) =>
-      blockedByIds.includes(speaker.id),
+    const blocker = streamerIds.find((streamer) =>
+      blockedByIds.includes(streamer),
     );
 
     if (blocker) {
-      throw new BlockedByAnotherSpeaker({
-        last_name: blocker.last_name,
-        first_name: blocker.first_name,
-      });
+      throw new BlockedByAnotherSpeaker();
     }
 
-    const blockedStreamStreamer = streamers.find((streamer) =>
-      blockedIds.includes(streamer.id),
+    const blockedStreamStreamer = streamerIds.find((streamer) =>
+      blockedIds.includes(streamer),
     );
 
     if (blockedStreamStreamer) {
-      throw new StreamHasBlockedSpeakerError({
-        last_name: blockedStreamStreamer.last_name,
-        first_name: blockedStreamStreamer.first_name,
-      });
+      throw new StreamHasBlockedSpeakerError();
     }
   }
 }

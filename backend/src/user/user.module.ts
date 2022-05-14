@@ -3,7 +3,6 @@ import { forwardRef, Module } from '@nestjs/common';
 import { PrismaModule } from '../prisma/prisma.module';
 import { TokenModule } from '../token/token.module';
 import { AppInviteModule } from './app_invite/app-invite.module';
-import { BlockModule } from './block/block.module';
 import { DeveloperAccountModule } from './developer_account/developer_account.module';
 import { FollowModule } from './follow/follow.module';
 import { UserOnlineStatusModule } from './online-status/user-online-status.module';
@@ -12,6 +11,7 @@ import { UserReportModule } from './report/user-report.module';
 import { UserController } from './user.controller';
 import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
+import { BlockModule } from '@warpy-be/block/block.module';
 
 @Module({
   imports: [
@@ -20,9 +20,9 @@ import { UserService } from './user.service';
     forwardRef(() => StreamModule),
     TokenModule,
     ParticipantModule,
-    BlockModule,
     UserOnlineStatusModule,
     UserReportModule,
+    BlockModule,
     AppInviteModule,
     DeveloperAccountModule,
   ],
@@ -31,7 +31,6 @@ import { UserService } from './user.service';
   exports: [
     UserEntity,
     UserService,
-    BlockModule,
     ParticipantModule,
     FollowModule,
     DeveloperAccountModule,

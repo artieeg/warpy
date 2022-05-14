@@ -21,6 +21,8 @@ import { TimerModule } from './shared/modules/timer/timer.module';
 import { SyncModule } from './sync/sync.module';
 import { ChatModule } from './chat/chat.module';
 import { FriendFeedModule } from './friend_feed/friend_feed.module';
+import { BlockModule } from './block/block.module';
+import { FeedModule } from './feed/feed.module';
 
 @Module({
   imports: [
@@ -33,6 +35,7 @@ import { FriendFeedModule } from './friend_feed/friend_feed.module';
     BroadcastModule,
     MediaModule,
     GifModule,
+    FeedModule,
     UserModule,
     TokenModule,
     FriendFeedModule,
@@ -45,6 +48,7 @@ import { FriendFeedModule } from './friend_feed/friend_feed.module';
     NotificationModule,
     WaitlistModule,
     SyncModule,
+    BlockModule,
     EventEmitterModule.forRoot(),
   ],
   controllers: [AppController],
