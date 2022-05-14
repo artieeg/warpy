@@ -70,11 +70,11 @@ export class BlockService {
 
   async isBannedBySpeaker(user: string, stream: string) {
     //TODO: store stream speakers in redis local
-    const speakers = await this.participantEntity.getStreamers(stream);
+    const streamers = await this.participantEntity.getStreamers(stream);
     const blockedByIds = await this.blockEntity.getBlockedByIds(user);
     const blockedIds = await this.blockEntity.getBlockedUserIds(user);
 
-    const blocker = speakers.find((speaker) =>
+    const blocker = streamers.find((speaker) =>
       blockedByIds.includes(speaker.id),
     );
 
@@ -85,14 +85,14 @@ export class BlockService {
       });
     }
 
-    const blockedStreamSpeaker = speakers.find((speaker) =>
-      blockedIds.includes(speaker.id),
+    const blockedStreamStreamer = streamers.find((streamer) =>
+      blockedIds.includes(streamer.id),
     );
 
-    if (blockedStreamSpeaker) {
+    if (blockedStreamStreamer) {
       throw new StreamHasBlockedSpeakerError({
-        last_name: blockedStreamSpeaker.last_name,
-        first_name: blockedStreamSpeaker.first_name,
+        last_name: blockedStreamStreamer.last_name,
+        first_name: blockedStreamStreamer.first_name,
       });
     }
   }
