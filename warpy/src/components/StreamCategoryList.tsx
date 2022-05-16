@@ -1,4 +1,4 @@
-import {useStore} from '@app/store';
+import {useStore, useStoreShallow} from '@app/store';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, ViewProps, useWindowDimensions} from 'react-native';
 import {StreamCategoryOption} from './StreamCategoryOption';
@@ -16,6 +16,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+import {INFO_HEADER_HEIGHT} from './InfoHeader';
 
 const BASE_COLOR = tinycolor('F9AA71');
 
@@ -49,6 +50,10 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
   const coordsEasing = Easing.inOut(Easing.quad);
   const coordsDuration = 400;
 
+  const [isInfoHeaderVisible] = useStoreShallow(store => [
+    !!store.previousStreamData,
+  ]);
+
   //animate current category's y to 35 when minimizing
   const selectedCategoryY = useDerivedValue(() => {
     if (!currentCategoryPosition) {
@@ -59,7 +64,12 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
       interpolate(
         minimizationProgress?.value ?? 0,
         [0, 0.1],
-        [0, 35 - currentCategoryPosition.y],
+        [
+          0,
+          35 +
+            (isInfoHeaderVisible ? INFO_HEADER_HEIGHT : 0) -
+            currentCategoryPosition.y,
+        ],
         Extrapolate.CLAMP,
       ),
       {

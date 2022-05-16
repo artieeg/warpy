@@ -36,7 +36,7 @@ const useInfoHeaderController = () => {
   };
 };
 
-const HEADER_HEIGHT = 50;
+export const INFO_HEADER_HEIGHT = 50;
 
 export const InfoHeader = () => {
   const {visible, onPress, mode} = useInfoHeaderController();
@@ -45,7 +45,7 @@ export const InfoHeader = () => {
     if (visible) {
       return 0;
     } else {
-      return -HEADER_HEIGHT;
+      return -INFO_HEADER_HEIGHT;
     }
   }, [visible]);
 
@@ -73,7 +73,7 @@ export const InfoHeader = () => {
 
 const styles = StyleSheet.create({
   wrapper: {
-    height: HEADER_HEIGHT,
+    height: INFO_HEADER_HEIGHT,
     backgroundColor: colors.blue,
     width: '100%',
     alignItems: 'center',

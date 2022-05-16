@@ -17,7 +17,8 @@ import { FollowModule } from '@warpy-be/follow/follow.module';
   imports: [
     PrismaModule,
     FollowModule,
-    forwardRef(() => StreamModule),
+    //forwardRef(() => StreamModule),
+    StreamModule,
     TokenModule,
     ParticipantModule,
     UserOnlineStatusModule,
