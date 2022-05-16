@@ -1,4 +1,3 @@
-import { UserNotFound } from '@warpy-be/errors';
 import { ParticipantStore } from '@warpy-be/user/participant/store';
 import { Injectable } from '@nestjs/common';
 import {
@@ -6,25 +5,20 @@ import {
   INewUserResponse,
   IUser,
   IUserInfoResponse,
-  IWhoAmIResponse,
 } from '@warpy/lib';
 import { RefreshTokenEntity } from '../token/refresh-token.entity';
 import { TokenService } from '../token/token.service';
 import { UserOnlineStatusService } from './online-status/user-online-status.service';
 import { UserEntity } from './user.entity';
-import { FollowEntity } from './follow/follow.entity';
-import { AppInviteEntity } from './app_invite/app-invite.entity';
-import { AppliedAppInviteEntity } from './app_invite/applied-app-invite.entity';
-import { CategoriesEntity } from '@warpy-be/stream/categories/categories.entity';
 import { StreamEntity } from '@warpy-be/stream/common/stream.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EVENT_USER_CREATED } from '@warpy-be/utils';
 import { BlockEntity } from '@warpy-be/block/block.entity';
+import { FollowEntity } from '@warpy-be/follow/follow.entity';
 
 @Injectable()
 export class UserService {
   constructor(
-    private categoriesEntity: CategoriesEntity,
     private user: UserEntity,
     private tokenService: TokenService,
     private refreshTokenEntity: RefreshTokenEntity,
@@ -32,8 +26,6 @@ export class UserService {
     private participantEntity: ParticipantStore,
     private streamEntity: StreamEntity,
     private blockEntity: BlockEntity,
-    private appInviteEntity: AppInviteEntity,
-    private appliedAppInviteEntity: AppliedAppInviteEntity,
     private userOnlineStatusService: UserOnlineStatusService,
     private eventEmitter: EventEmitter2,
   ) {}
@@ -73,8 +65,6 @@ export class UserService {
 
     if (currentStreamId) {
       const stream = await this.streamEntity.findById(currentStreamId);
-
-      console.log({ currentStreamId, stream });
 
       if (stream) {
         response['stream'] = {

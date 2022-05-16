@@ -23,6 +23,7 @@ import { ChatModule } from './chat/chat.module';
 import { FriendFeedModule } from './friend_feed/friend_feed.module';
 import { BlockModule } from './block/block.module';
 import { FeedModule } from './feed/feed.module';
+import { FollowModule } from './follow/follow.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { FeedModule } from './feed/feed.module';
       load: [configuration],
       isGlobal: true,
     }),
+    FollowModule,
     AwardModule,
     TimerModule,
     BroadcastModule,

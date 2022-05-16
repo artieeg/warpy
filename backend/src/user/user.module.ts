@@ -4,7 +4,6 @@ import { PrismaModule } from '../prisma/prisma.module';
 import { TokenModule } from '../token/token.module';
 import { AppInviteModule } from './app_invite/app-invite.module';
 import { DeveloperAccountModule } from './developer_account/developer_account.module';
-import { FollowModule } from './follow/follow.module';
 import { UserOnlineStatusModule } from './online-status/user-online-status.module';
 import { ParticipantModule } from './participant/participant.module';
 import { UserReportModule } from './report/user-report.module';
@@ -16,7 +15,6 @@ import { BlockModule } from '@warpy-be/block/block.module';
 @Module({
   imports: [
     PrismaModule,
-    FollowModule,
     forwardRef(() => StreamModule),
     TokenModule,
     ParticipantModule,
@@ -32,7 +30,6 @@ import { BlockModule } from '@warpy-be/block/block.module';
     UserEntity,
     UserService,
     ParticipantModule,
-    FollowModule,
     DeveloperAccountModule,
   ],
 })
