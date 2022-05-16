@@ -8,12 +8,10 @@ import {
 } from '@warpy/lib';
 import { RefreshTokenEntity } from '../token/refresh-token.entity';
 import { TokenService } from '../token/token.service';
-import { UserOnlineStatusService } from './online-status/user-online-status.service';
 import { UserEntity } from './user.entity';
 import { StreamEntity } from '@warpy-be/stream/common/stream.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EVENT_USER_CREATED } from '@warpy-be/utils';
-import { BlockEntity } from '@warpy-be/block/block.entity';
 import { FollowEntity } from '@warpy-be/follow/follow.entity';
 
 @Injectable()
@@ -22,12 +20,11 @@ export class UserService {
     private user: UserEntity,
     private tokenService: TokenService,
     private refreshTokenEntity: RefreshTokenEntity,
+    private eventEmitter: EventEmitter2,
+
     private followEntity: FollowEntity,
     private participantEntity: ParticipantStore,
     private streamEntity: StreamEntity,
-    private blockEntity: BlockEntity,
-    private userOnlineStatusService: UserOnlineStatusService,
-    private eventEmitter: EventEmitter2,
   ) {}
 
   async createAnonUser() {
@@ -125,37 +122,5 @@ export class UserService {
 
   async deleteUser(user: string) {
     await this.user.delete(user);
-  }
-
-  async getFollowers(user: string, page: number): Promise<IUser[]> {
-    const followers = await this.followEntity.getFollowers(user);
-
-    return followers.map((f) => f.follower);
-  }
-
-  async getFollowing(user: string, page: number): Promise<IUser[]> {
-    const records = await this.followEntity.getFollowed(user);
-
-    if (records.length === 0) {
-      return [];
-    }
-
-    const following = records.map((f) => f.followed);
-
-    //Collect ids and check online status
-    const ids = following.map((user) => user.id);
-    const statuses = this.userOnlineStatusService.getUserStatusMany(ids);
-
-    following.forEach((user) => {
-      user.online = !!statuses[user.id];
-    });
-
-    return following;
-  }
-
-  async getBlockedUsers(user: string, page: number): Promise<IUser[]> {
-    const blocked = await this.blockEntity.getBlockedUsers(user);
-
-    return blocked.map((record) => record.blocked);
   }
 }

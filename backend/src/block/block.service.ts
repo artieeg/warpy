@@ -7,6 +7,7 @@ import { ParticipantStore } from '@warpy-be/user/participant';
 import { BlockEntity } from './block.entity';
 import { BlockCacheService } from './block.cache';
 import { StreamerIdStore } from './streamer_ids.store';
+import { IUser } from '@warpy/lib';
 
 @Injectable()
 export class BlockService {
@@ -68,6 +69,12 @@ export class BlockService {
     ]);
 
     return blockId;
+  }
+
+  async getBlockedUsers(user: string, page: number): Promise<IUser[]> {
+    const blocked = await this.blockEntity.getBlockedUsers(user);
+
+    return blocked.map((record) => record.blocked);
   }
 
   async isBannedBySpeaker(user: string, stream: string) {

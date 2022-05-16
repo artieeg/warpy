@@ -24,6 +24,8 @@ import { FriendFeedModule } from './friend_feed/friend_feed.module';
 import { BlockModule } from './block/block.module';
 import { FeedModule } from './feed/feed.module';
 import { FollowModule } from './follow/follow.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { UserListModule } from './user-list/user-list.module';
 
 @Module({
   imports: [
@@ -31,7 +33,7 @@ import { FollowModule } from './follow/follow.module';
       load: [configuration],
       isGlobal: true,
     }),
-    FollowModule,
+    PrismaModule,
     AwardModule,
     TimerModule,
     BroadcastModule,
@@ -39,6 +41,7 @@ import { FollowModule } from './follow/follow.module';
     GifModule,
     FeedModule,
     UserModule,
+    UserListModule,
     TokenModule,
     FriendFeedModule,
     StreamModule,
@@ -51,6 +54,7 @@ import { FollowModule } from './follow/follow.module';
     WaitlistModule,
     SyncModule,
     BlockModule,
+    FollowModule,
     EventEmitterModule.forRoot(),
   ],
   controllers: [AppController],

@@ -11,10 +11,12 @@ import { UserController } from './user.controller';
 import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
 import { BlockModule } from '@warpy-be/block/block.module';
+import { FollowModule } from '@warpy-be/follow/follow.module';
 
 @Module({
   imports: [
     PrismaModule,
+    FollowModule,
     forwardRef(() => StreamModule),
     TokenModule,
     ParticipantModule,
@@ -26,11 +28,6 @@ import { BlockModule } from '@warpy-be/block/block.module';
   ],
   controllers: [UserController],
   providers: [UserEntity, UserService],
-  exports: [
-    UserEntity,
-    UserService,
-    ParticipantModule,
-    DeveloperAccountModule,
-  ],
+  exports: [UserEntity, UserService, ParticipantModule, DeveloperAccountModule],
 })
 export class UserModule {}

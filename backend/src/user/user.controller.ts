@@ -95,28 +95,6 @@ export class UserController {
     return { users };
   }
 
-  @MessagePattern('user.get-list')
-  async onGetList({
-    user,
-    page,
-    list,
-  }: IUserListRequest): Promise<IUserListResponse> {
-    let users: IUser[];
-
-    if (list === 'followers') {
-      users = await this.userService.getFollowers(user, page);
-    } else if (list === 'following') {
-      users = await this.userService.getFollowing(user, page);
-    } else {
-      users = await this.userService.getBlockedUsers(user, page);
-    }
-
-    return {
-      list,
-      users,
-    };
-  }
-
   @MessagePattern('user.disconnected')
   async onUserDisconnect({ user }: IUserDisconnected) {
     const isAnonUser = user.slice(0, 9) === 'anon_user';

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserNotFound } from '@warpy-be/errors';
 import { FriendFeedService } from '@warpy-be/friend_feed/friend_feed.service';
 import { CategoriesEntity } from '@warpy-be/stream/categories/categories.entity';
+import { UserListService } from '@warpy-be/user-list/user-list.service';
 import { AppliedAppInviteEntity } from '@warpy-be/user/app_invite/applied-app-invite.entity';
 import { UserService } from '@warpy-be/user/user.service';
 import { IWhoAmIResponse } from '@warpy/lib';
@@ -13,6 +14,7 @@ export class SyncService {
     private appliedAppInviteEntity: AppliedAppInviteEntity,
     private categoriesEntity: CategoriesEntity,
     private friendFeed: FriendFeedService,
+    private userListService: UserListService,
   ) {}
 
   async sync(user: string): Promise<IWhoAmIResponse> {
@@ -22,7 +24,7 @@ export class SyncService {
         this.appliedAppInviteEntity.find(user),
         this.categoriesEntity.getAll(),
         this.friendFeed.getFriendFeed(user),
-        this.userService.getFollowing(user, 0),
+        this.userListService.getFollowing(user, 0),
       ]);
 
     if (!data) {
