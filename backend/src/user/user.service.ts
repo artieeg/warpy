@@ -75,8 +75,10 @@ export class UserService {
     return response as any;
   }
 
-  async search(text: string): Promise<IUser[]> {
-    return this.user.search(text);
+  async search(text: string, requester_id: string): Promise<IUser[]> {
+    const users = await this.user.search(text);
+
+    return users.filter((user) => user.id !== requester_id);
   }
 
   async update(user: string, params: Partial<IUser>) {

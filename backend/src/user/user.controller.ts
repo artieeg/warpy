@@ -89,8 +89,9 @@ export class UserController {
   @MessagePattern('user.search')
   async onUserSearch({
     textToSearch,
+    user
   }: IUserSearchRequest): Promise<IUserSearchResponse> {
-    const users = await this.userService.search(textToSearch);
+    const users = await this.userService.search(textToSearch, user);
 
     return { users };
   }

@@ -226,6 +226,7 @@ export interface IInviteSuggestionsRequest {
 
 export interface IUserSearchRequest {
   textToSearch: string;
+  user: string;
 }
 
 export interface ICancelInviteRequest {
