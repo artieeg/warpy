@@ -15,9 +15,10 @@ export const UserProducer = (props: IRaisedHandInfo) => {
   const {id, role} = data;
   const name = `${data.first_name}`;
 
-  const [api, isStreamOwner] = useStoreShallow(store => [
+  const [api, isStreamOwner, isAppUser] = useStoreShallow(store => [
     store.api,
     store.currentStreamHost === store.user?.id,
+    store.user?.id === id,
   ]);
 
   return (
@@ -27,7 +28,13 @@ export const UserProducer = (props: IRaisedHandInfo) => {
         <Text weight="bold" style={styles.name} size="small">
           {name}
         </Text>
-        {isStreamOwner && (
+        {isAppUser && (
+          <Text weight="bold" color="boulder" size="xsmall">
+            you
+          </Text>
+        )}
+
+        {isStreamOwner && !isAppUser && (
           <View style={styles.producerActionWrapper}>
             <IconButton
               onPress={async () => {
@@ -72,9 +79,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
-  name: {
-    marginBottom: 10,
-  },
+  name: {},
   text: {
     marginLeft: 10,
   },
@@ -89,6 +94,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F9F871',
   },
   producerActionWrapper: {
+    marginTop: 10,
     flexDirection: 'row',
   },
 });

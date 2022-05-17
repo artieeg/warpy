@@ -13,9 +13,10 @@ interface IRaisedHandInfo {
 export const UserWithRaisedHand = (props: IRaisedHandInfo) => {
   const {data} = props;
 
-  const [api, isStreamOwner] = useStoreShallow(store => [
+  const [api, isStreamOwner, isAppUser] = useStoreShallow(store => [
     store.api,
     store.currentStreamHost === store.user?.id,
+    store.user?.id === data.id,
   ]);
 
   const onAllow = useCallback(() => {
@@ -30,7 +31,18 @@ export const UserWithRaisedHand = (props: IRaisedHandInfo) => {
         <Text weight="bold" style={styles.name} size="small">
           {name}
         </Text>
-        {isStreamOwner && <SmallTextButton onPress={onAllow} title="Accept" />}
+
+        {isAppUser && (
+          <Text weight="bold" color="boulder" size="xsmall">
+            you
+          </Text>
+        )}
+
+        {isStreamOwner && (
+          <View style={styles.actionWrapper}>
+            <SmallTextButton onPress={onAllow} title="Accept" />
+          </View>
+        )}
       </View>
     </View>
   );
@@ -41,9 +53,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  name: {
-    marginBottom: 10,
+  actionWrapper: {
+    marginTop: 10,
   },
+  name: {},
   text: {
     marginLeft: 10,
   },

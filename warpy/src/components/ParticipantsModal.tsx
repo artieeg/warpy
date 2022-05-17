@@ -34,8 +34,8 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
   const producers = useStreamProducers();
   const [viewers, onFetchMore] = useStreamViewers();
 
-  const streamer = useMemo(
-    () => producers.find(speaker => speaker.id === currentHostId),
+  const host = useMemo(
+    () => producers.find(streamer => streamer.id === currentHostId),
     [producers, currentHostId],
   );
 
@@ -45,9 +45,9 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
         viewers,
         speakers: producers,
         usersRaisingHand,
-        streamer: streamer!,
+        host: host!,
       }),
-    [viewers, producers, usersRaisingHand, streamer],
+    [viewers, producers, usersRaisingHand, host],
   );
 
   const columnWidth = (useWindowDimensions().width - 40) / 4;
@@ -56,8 +56,6 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
   //TODO: Separate components
   const renderSection = (sectionData: any) => {
     const {item} = sectionData;
-
-    console.log({producers, currentHostId});
 
     const {kind} = item;
 
@@ -158,12 +156,12 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
 };
 
 const getListData = ({
-  streamer,
+  host,
   speakers,
   usersRaisingHand,
   viewers,
 }: {
-  streamer: IParticipant;
+  host: IParticipant;
   speakers: IParticipant[];
   usersRaisingHand: IParticipant[];
   viewers: IParticipant[];
@@ -172,7 +170,7 @@ const getListData = ({
     title: 'Host',
     data: [
       {
-        list: [streamer!],
+        list: [host!],
         kind: 'streamer',
       },
     ],
