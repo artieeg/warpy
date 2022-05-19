@@ -80,18 +80,8 @@ export const InviteModal = (props: IBaseModalProps) => {
 
       {searchedUsers.length === 0 && !isLoading && (
         <FlatList
-          renderItem={({item, index}) => {
-            if (index === 0 && shouldDisplayInviteButton) {
-              return (
-                <>
-                  <ShareStreamLinkButton />
-                  <UserInviteOption user={item} />
-                </>
-              );
-            } else {
-              return <UserInviteOption user={item} />;
-            }
-          }}
+          ListHeaderComponent={() => <ShareStreamLinkButton />}
+          renderItem={({item}) => <UserInviteOption user={item} />}
           data={inviteSuggestions}
         />
       )}

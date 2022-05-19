@@ -10,6 +10,7 @@ import {InviteButton} from './InviteButton';
 import {RaiseHandButton} from './RaiseHandButton';
 import {ReactionCanvas} from './ReactionCanvas';
 import {ReactionEmitter} from './ReactionEmitter';
+import {ShareButton} from './ShareButton';
 import {ShowParticipantsButton} from './ShowParticipantsButton';
 import {StopStream} from './StopStream';
 import {SwitchCameraButton} from './SwitchCameraButton';
@@ -54,7 +55,10 @@ export const StreamOverlay = () => {
           <ClapButton />,
           <InviteButton />,
           <SwitchCameraButton />,
+          /*
           <AwardButton />,
+             */
+          <ShareButton />,
           <StopStream />,
         ],
         bottom: [
@@ -71,7 +75,10 @@ export const StreamOverlay = () => {
         top: [
           <EmptyItem />,
           <InviteButton />,
+          /*
           <AwardButton />,
+            */
+          <ShareButton />,
           <StopStream />,
           <EmptyItem />,
         ],
@@ -89,7 +96,10 @@ export const StreamOverlay = () => {
         top: [
           <EmptyItem />,
           <InviteButton />,
+          /*
           <AwardButton />,
+            */
+          <ShareButton />,
           <StopStream />,
           <EmptyItem />,
         ],
