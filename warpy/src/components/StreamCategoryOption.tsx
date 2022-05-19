@@ -74,6 +74,8 @@ export const StreamCategoryOption = React.memo(
             x: e.nativeEvent.layout.x,
             y: e.nativeEvent.layout.y,
           };
+
+          rest.onLayout?.(e);
         }}
         style={[styles.wrapper, animatedStyle, style]}>
         <TouchableOpacity

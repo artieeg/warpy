@@ -43,8 +43,15 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
   const selectedIndex = useRef<number>(0);
 
   //position of current category relative to screen
-  const [currentCategoryPosition, setCurrentCategoryPosition] =
-    useState<{x: number; y: number; w: number}>();
+  const [currentCategoryPosition, setCurrentCategoryPosition] = useState<{
+    x: number;
+    y: number;
+    w: number;
+  }>({
+    x: 10,
+    y: 186,
+    w: 83,
+  });
 
   //animation settings
   const coordsEasing = Easing.inOut(Easing.quad);
@@ -139,7 +146,6 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
           color={colors[index].toHexString()}
           category={category}
           onPress={p => {
-            console.log(p);
             setCurrentCategoryPosition(p);
             selectedIndex.current = index;
             useStore.getState().dispatchFeedCategoryChange(category);
@@ -159,21 +165,24 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
   }));
 
   //counteract the scroll offset
-  const fakeCategoryWrapper = useAnimatedStyle(() => ({
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    right: 0,
-    bottom: 0,
-    transform: [
-      {
-        translateX: withTiming(
-          scrollOffsetX.value * (minimizationProgress?.value ?? 1),
-          {duration: coordsDuration, easing: coordsEasing},
-        ),
-      },
-    ],
-  }));
+  const fakeCategoryWrapper = useAnimatedStyle(
+    () => ({
+      position: 'absolute',
+      left: streamCategory?.id === 'foru' ? 10 : 0,
+      top: 0,
+      right: 0,
+      bottom: 0,
+      transform: [
+        {
+          translateX: withTiming(
+            scrollOffsetX.value * (minimizationProgress?.value ?? 1),
+            {duration: coordsDuration, easing: coordsEasing},
+          ),
+        },
+      ],
+    }),
+    [streamCategory],
+  );
 
   //hide scroll view during minimization
   const scrollViewStyle = useAnimatedStyle(() => ({
@@ -225,7 +234,6 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
               color={colors[selectedIndex.current].toHexString()}
               category={streamCategory}
               onPress={() => {
-                console.log('e');
                 if (minimizationProgress) {
                   minimizationProgress.value = withTiming(0, {
                     duration: 400,
