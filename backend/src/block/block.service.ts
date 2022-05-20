@@ -3,7 +3,6 @@ import {
   StreamHasBlockedSpeakerError,
 } from '@warpy-be/errors';
 import { Injectable } from '@nestjs/common';
-import { ParticipantStore } from '@warpy-be/user/participant';
 import { BlockEntity } from './block.entity';
 import { BlockCacheService } from './block.cache';
 import { StreamerIdStore } from './streamer_ids.store';
@@ -12,7 +11,6 @@ import { IUser } from '@warpy/lib';
 @Injectable()
 export class BlockService {
   constructor(
-    private participantEntity: ParticipantStore,
     private blockEntity: BlockEntity,
     private blockCacheService: BlockCacheService,
     private streamerIdStore: StreamerIdStore,

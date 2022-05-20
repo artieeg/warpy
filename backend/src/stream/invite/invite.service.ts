@@ -14,6 +14,7 @@ import {
   IUser,
 } from '@warpy/lib';
 import {
+  EVENT_INVITE_AVAILABLE,
   EVENT_INVITE_STREAM_ID_AVAILABLE,
   EVENT_STREAM_CREATED,
 } from '@warpy-be/utils';
@@ -67,7 +68,7 @@ export class InviteService {
     invites
       .filter((invite) => invite.stream_id)
       .forEach((invite) =>
-        this.eventEmitter.emit('notification.invite.create', invite),
+        this.eventEmitter.emit(EVENT_INVITE_AVAILABLE, invite),
       );
 
     const latestInvite = invites[invites.length - 1];
@@ -137,7 +138,7 @@ export class InviteService {
       received: isInviteeOnline,
     });
 
-    this.eventEmitter.emit('notification.invite.create', invite);
+    this.eventEmitter.emit(EVENT_INVITE_AVAILABLE, invite);
     this.messageService.sendMessage(invitee.id, {
       event: 'new-invite',
       data: {
@@ -222,17 +223,6 @@ export class InviteService {
 
   async deleteInvite(invite_id: string) {
     await this.inviteStore.del(invite_id);
-
-    /*
-    const { notification_id } = await this.inviteEntity.deleteByInviter(
-      invite_id,
-      user,
-    );
-
-    if (notification_id) {
-      this.eventEmitter.emit('notification.cancel', notification_id);
-    }
-    */
   }
 
   /**

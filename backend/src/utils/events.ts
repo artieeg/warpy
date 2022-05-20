@@ -25,3 +25,7 @@ export const EVENT_HOST_REASSIGN_FAILED = 'host.reassign.fail';
 export const EVENT_HOST_REASSIGN = 'host.reassign.success';
 
 export const EVENT_INVITE_STREAM_ID_AVAILABLE = 'invite.stream-id-available';
+
+export const EVENT_INVITE_AVAILABLE = 'invite.new';
+
+export const EVENT_STREAMER_MEDIA_TOGGLE = 'participant.media-toggle';

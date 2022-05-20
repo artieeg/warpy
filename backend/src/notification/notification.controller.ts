@@ -1,6 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
+import { EVENT_INVITE_AVAILABLE } from '@warpy-be/utils';
 import {
   IGetReadNotifications,
   IGetUnreadNotifications,
@@ -14,14 +15,9 @@ import { NotificationService } from './notification.service';
 export class NotificationController {
   constructor(private notificationService: NotificationService) {}
 
-  @OnEvent('notification.invite.create')
+  @OnEvent(EVENT_INVITE_AVAILABLE)
   async onNewInvite(invite: IInvite) {
     await this.notificationService.createInviteNotification(invite);
-  }
-
-  @OnEvent('notification.cancel')
-  async onNotificationCancel(id: string) {
-    await this.notificationService.cancelNotification(id);
   }
 
   @MessagePattern('notifications.read')

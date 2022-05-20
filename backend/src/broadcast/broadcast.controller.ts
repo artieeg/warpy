@@ -15,6 +15,7 @@ import {
   EVENT_RAISE_HAND,
   EVENT_REACTIONS,
   EVENT_ROLE_CHANGE,
+  EVENT_STREAMER_MEDIA_TOGGLE,
   EVENT_STREAM_ENDED,
 } from '@warpy-be/utils';
 import { Controller } from '@nestjs/common';
@@ -51,7 +52,7 @@ export class BroadcastController
     await this.store.deleteList(stream);
   }
 
-  @OnEvent('participant.media-toggle')
+  @OnEvent(EVENT_STREAMER_MEDIA_TOGGLE)
   async onMediaToggle(data: MediaToggleEvent) {
     return this.broadcast.broadcastMediaToggle(data);
   }

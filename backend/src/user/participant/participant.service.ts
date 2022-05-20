@@ -4,6 +4,7 @@ import { MediaService } from '@warpy-be/media/media.service';
 import {
   EVENT_PARTICIPANT_LEAVE,
   EVENT_PARTICIPANT_REJOIN,
+  EVENT_STREAMER_MEDIA_TOGGLE,
 } from '@warpy-be/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -48,7 +49,7 @@ export class ParticipantService {
 
     await this.participant.update(user, update);
 
-    this.eventEmitter.emit('participant.media-toggle', {
+    this.eventEmitter.emit(EVENT_STREAMER_MEDIA_TOGGLE, {
       user,
       stream,
       videoEnabled,
