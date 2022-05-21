@@ -1,10 +1,25 @@
 import {useStoreShallow} from '@app/store';
 import React, {useMemo} from 'react';
-import {View, StyleSheet, FlatList} from 'react-native';
+import {View, StyleSheet, FlatList, ViewProps} from 'react-native';
 import {IFriendFeedItem} from '@warpy/lib';
 import {UserHorizontalListItem} from './UserHorizontalListItem';
+import Animated, {
+  Easing,
+  Extrapolate,
+  interpolate,
+  SharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from 'react-native-reanimated';
 
-export const FriendFeed = () => {
+interface FriendFeedProps extends ViewProps {
+  minimizationProgress: SharedValue<number>;
+}
+
+export const FriendFeed: React.FC<FriendFeedProps> = ({
+  minimizationProgress,
+  ...props
+}) => {
   const [friendFeed, following] = useStoreShallow(state => [
     state.friendFeed,
     state.list_following.list,
@@ -28,8 +43,31 @@ export const FriendFeed = () => {
     return null;
   }
 
+  const wrapperStyle = useAnimatedStyle(() => {
+    return {
+      opacity: withTiming(1 - minimizationProgress.value, {
+        duration: 300,
+        easing: Easing.ease,
+      }),
+
+      transform: [
+        {
+          scale: withTiming(
+            interpolate(
+              minimizationProgress.value,
+              [0, 1],
+              [1, 0.9],
+              Extrapolate.CLAMP,
+            ),
+            {duration: 300, easing: Easing.ease},
+          ),
+        },
+      ],
+    };
+  }, [minimizationProgress]);
+
   return (
-    <View>
+    <Animated.View {...props} style={wrapperStyle}>
       <FlatList
         horizontal
         data={feed}
@@ -38,7 +76,7 @@ export const FriendFeed = () => {
           <UserHorizontalListItem key={item.user.id} item={item} />
         )}
       />
-    </View>
+    </Animated.View>
   );
 };
 

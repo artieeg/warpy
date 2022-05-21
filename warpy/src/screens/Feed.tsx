@@ -28,14 +28,24 @@ export const Feed = () => {
 
   const scrollY = useSharedValue(0);
 
-  const [categoryListHeight, setCategoryListHeight] = useState(0);
+  const categoryListHeight = useSharedValue(0);
+  const friendFeedHeight = useSharedValue(0);
+  //const [friendFeedHeight, setFriendFeedHeight] = useState(0);
 
-  const feedWrapperStyle = useAnimatedStyle(() => ({
-    marginTop: withTiming(-1 * scrollY.value * (categoryListHeight + 10), {
-      duration: 300,
+  const feedWrapperStyle = useAnimatedStyle(
+    () => ({
+      marginTop: withTiming(
+        -1 *
+          scrollY.value *
+          (categoryListHeight.value + 10 + friendFeedHeight.value),
+        {
+          duration: 300,
+        },
+      ),
+      flex: 1,
     }),
-    flex: 1,
-  }));
+    [categoryListHeight, scrollY],
+  );
 
   const {height} = useWindowDimensions();
 
@@ -47,7 +57,7 @@ export const Feed = () => {
           return;
         }
 
-        scrollY.value += dy / categoryListHeight;
+        scrollY.value += dy / categoryListHeight.value;
 
         if (dy > 0 && scrollY.value > 0.3) {
           scrollY.value = 1;
@@ -58,17 +68,24 @@ export const Feed = () => {
         }
       },
     },
-    [categoryListHeight, height],
+    [categoryListHeight, height, categoryListHeight],
   );
 
   return (
     <View style={styles.wrapper}>
       <ScreenHeader minimizationProgress={scrollY} />
       <Animated.View style={{height: '100%'}} layout={Layout.duration(200)}>
-        <FriendFeed />
+        <FriendFeed
+          minimizationProgress={scrollY}
+          onLayout={e => {
+            friendFeedHeight.value = e.nativeEvent.layout.height;
+          }}
+        />
         <StreamCategoryList
           minimizationProgress={scrollY}
-          onLayout={e => setCategoryListHeight(e.nativeEvent.layout.height)}
+          onLayout={e => {
+            categoryListHeight.value = e.nativeEvent.layout.height;
+          }}
           mode="browse-feed"
         />
 
