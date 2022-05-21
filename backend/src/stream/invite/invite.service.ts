@@ -3,7 +3,6 @@ import { NoPermissionError } from '@warpy-be/errors';
 import { MessageService } from '@warpy-be/message/message.service';
 import { StreamEntity } from '../common/stream.entity';
 import { TokenService } from '@warpy-be/token/token.service';
-import { FollowEntity } from '@warpy-be/user/follow/follow.entity';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import {
@@ -20,6 +19,7 @@ import {
 } from '@warpy-be/utils';
 import { UserEntity } from '@warpy-be/user/user.entity';
 import { InviteStore } from './invite.store';
+import { FollowEntity } from '@warpy-be/follow/follow.entity';
 
 @Injectable()
 export class InviteService {
@@ -193,6 +193,7 @@ export class InviteService {
       return null;
     } else {
       const invite = await this.inviteRealUser(inviter, invitee, stream);
+
       return invite;
     }
   }

@@ -15,8 +15,6 @@ export class ParticipantStoreController implements OnStreamEnd, OnRoleChange {
 
   @OnEvent(EVENT_STREAM_ENDED)
   async onStreamEnd({ stream }) {
-    console.log('clearing stream', { stream });
-
     return this.store.clearStreamData(stream);
   }
 }

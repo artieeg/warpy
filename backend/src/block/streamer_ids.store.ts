@@ -27,6 +27,6 @@ export class StreamerIdStore implements OnModuleInit {
   }
 
   async del(stream: string) {
-    await this.redis.srem(stream);
+    await this.redis.del(stream);
   }
 }
