@@ -15,6 +15,11 @@ interface StreamCategoryOptionProps extends ViewProps {
   color: string;
   selected: boolean;
   onPress: (position: {x: number; y: number; w: number}) => any;
+  onWindowPositionAvailable?: (position: {
+    x: number;
+    y: number;
+    w: number;
+  }) => any;
 }
 
 export const StreamCategoryOption = React.memo(
@@ -24,6 +29,7 @@ export const StreamCategoryOption = React.memo(
     color,
     selected,
     onPress,
+    onWindowPositionAvailable,
     ...rest
   }: StreamCategoryOptionProps) => {
     const colorTransition = useDerivedValue(() => {
@@ -35,12 +41,12 @@ export const StreamCategoryOption = React.memo(
 
     useEffect(() => {
       setTimeout(() => {
-        if (category.id === 'foru') {
+        if (onWindowPositionAvailable) {
           ref.current?.measureInWindow((x: number, y: number, w: number) =>
-            onPress({x, y, w}),
+            onWindowPositionAvailable({x, y, w}),
           );
         }
-      }, 50);
+      }, 1000);
     }, []);
 
     const position = useRef<{x: number; y: number}>();

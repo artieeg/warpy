@@ -47,11 +47,9 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
     x: number;
     y: number;
     w: number;
-  }>({
-    x: 10,
-    y: 186,
-    w: 83,
-  });
+  }>();
+
+  console.log({currentCategoryPosition});
 
   //animation settings
   const coordsEasing = Easing.inOut(Easing.quad);
@@ -138,6 +136,12 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
       const isSelected =
         useStore.getState().selectedFeedCategory?.id === category.id;
 
+      const onCategorySelect = (p: {x: number; y: number; w: number}) => {
+        setCurrentCategoryPosition(p);
+        selectedIndex.current = index;
+        useStore.getState().dispatchFeedCategoryChange(category);
+      };
+
       return (
         <StreamCategoryOption
           key={category.id}
@@ -145,11 +149,10 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
           style={{opacity: isSelected ? 0 : 1}} //Hide selected category since we draw a fake component over it
           color={colors[index].toHexString()}
           category={category}
-          onPress={p => {
-            setCurrentCategoryPosition(p);
-            selectedIndex.current = index;
-            useStore.getState().dispatchFeedCategoryChange(category);
-          }}
+          //Selecting the first category,
+          //hacky solution, but this way we get category's position for animations
+          onWindowPositionAvailable={index === 0 ? onCategorySelect : undefined}
+          onPress={onCategorySelect}
         />
       );
     },
