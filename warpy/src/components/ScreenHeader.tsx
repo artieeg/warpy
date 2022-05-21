@@ -138,7 +138,7 @@ export const ScreenHeader: React.FC<{
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: withTiming(
-      minimizationProgress ? 10 + (1 - minimizationProgress.value) * 10 : 30,
+      minimizationProgress ? 10 + (1 - minimizationProgress.value) * 10 : 20,
       {
         duration: 300,
         easing: Easing.ease,

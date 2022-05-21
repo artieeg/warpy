@@ -117,7 +117,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
     }
 
     return useStore.getState().categories;
-  }, []);
+  }, [mode]);
 
   const colors = useMemo(() => {
     const colors = [BASE_COLOR];
@@ -131,7 +131,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
     }
 
     return colors;
-  }, [categories]);
+  }, [categories, mode]);
 
   const renderItem = useCallback(
     (category: IStreamCategory, index: number) => {

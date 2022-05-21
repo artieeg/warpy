@@ -1,30 +1,49 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, StyleSheet, useWindowDimensions} from 'react-native';
 import {IUser} from '@warpy/lib';
 import {Avatar} from './Avatar';
 import {Text} from './Text';
 import {Checkbox} from './Checkbox';
-import {useStoreShallow} from '@app/store';
+import {useStore} from '@app/store';
 
 interface IUserInviteProps {
   user: IUser;
 }
 
-export const UserInviteOption = ({user}: IUserInviteProps) => {
-  const [invited, setInvited] = useState(false);
+const useUserInviteOptionController = (user: IUser) => {
+  const sentInvites = useStore(store => store.sentInvites);
 
-  const [dispatchPendingInvite, dispatchCancelInvite] = useStoreShallow(
-    state => [state.dispatchPendingInvite, state.dispatchCancelInvite],
-  );
+  const isAlreadyInvited = React.useMemo(() => {
+    const invites = Object.values(sentInvites);
+
+    return !!invites.find(invite => invite.invitee.id === user.id);
+  }, [sentInvites, user]);
+
+  const [invited, setInvited] = useState(isAlreadyInvited);
 
   useEffect(() => {
     if (invited) {
-      dispatchPendingInvite(user.id);
+      useStore.getState().dispatchPendingInvite(user.id);
     } else {
-      dispatchCancelInvite(user.id);
+      useStore.getState().dispatchCancelInvite(user.id);
     }
   }, [invited, user.id]);
 
+  console.log({sentInvites});
+
+  const onInviteToggle = useCallback(() => {
+    console.log({isAlreadyInvited});
+
+    if (!isAlreadyInvited) {
+      setInvited(prev => !prev);
+    }
+  }, [isAlreadyInvited]);
+
+  return {invited, onInviteToggle};
+};
+
+export const UserInviteOption = ({user}: IUserInviteProps) => {
+  const {invited, onInviteToggle} = useUserInviteOptionController(user);
   const {width} = useWindowDimensions();
 
   return (
@@ -40,7 +59,7 @@ export const UserInviteOption = ({user}: IUserInviteProps) => {
           </Text>
         </View>
       </View>
-      <Checkbox visible={invited} onToggle={() => setInvited(prev => !prev)} />
+      <Checkbox visible={invited} onToggle={onInviteToggle} />
     </View>
   );
 };
