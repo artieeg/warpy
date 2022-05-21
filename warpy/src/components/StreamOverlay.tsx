@@ -155,13 +155,14 @@ export const StreamOverlay = () => {
           })}
         </View>
       </Animated.View>
-      <IconButton
-        style={styles.visibility}
-        onPress={() => setVisible(prev => !prev)}
-        color="#ffffff"
-        name={isVisible ? 'eye' : 'eye'}
-        size={30}
-      />
+      <View style={styles.visibility}>
+        <IconButton
+          onPress={() => setVisible(prev => !prev)}
+          color="#ffffff"
+          name={isVisible ? 'eye' : 'eye-off'}
+          size={30}
+        />
+      </View>
     </View>
   );
 };
