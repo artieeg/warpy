@@ -37,6 +37,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       }
     }
 
+    get().dispatchInviteClear();
     get().dispatchMediaClose();
   },
 

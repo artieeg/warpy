@@ -13,6 +13,7 @@ export interface IInviteDispatchers {
   dispatchInviteStateUpdate: (invite: string, state: InviteStates) => void;
   dispatchFetchAppInvite: () => Promise<void>;
   dispatchAppInviteUpdate: () => Promise<void>;
+  dispatchInviteClear: () => Promise<void>;
 }
 
 export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
@@ -41,8 +42,6 @@ export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
 
   async dispatchInviteAction(action) {
     const { api, modalInvite } = get();
-
-    console.log("modalInvite", modalInvite);
 
     if (!modalInvite) return;
 
@@ -74,12 +73,9 @@ export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
   async dispatchSendPendingInvites() {
     const { pendingInviteUserIds, api, stream } = get();
 
-    console.log(pendingInviteUserIds);
-
     const promises = pendingInviteUserIds.map((userToInvite) =>
       api.stream.invite(userToInvite, stream)
     );
-    console.log(promises.length);
 
     const responses = await Promise.all(promises);
 
@@ -96,6 +92,8 @@ export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
         return result;
       }, {} as Record<string, ISentInvite>),
     });
+
+    get().dispatchModalClose();
   },
 
   dispatchPendingInvite(user) {
@@ -124,5 +122,12 @@ export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
         delete state.sentInvites[user];
       })
     );
+  },
+
+  async dispatchInviteClear() {
+    set({
+      pendingInviteUserIds: [],
+      sentInvites: {},
+    });
   },
 });
