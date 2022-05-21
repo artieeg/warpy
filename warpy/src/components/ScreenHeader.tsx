@@ -103,12 +103,6 @@ export const ScreenHeader: React.FC<{
     [route.name],
   );
 
-  /*
-  const controlsOpacity = useDerivedValue(() => {
-    return minimized ? 0 : 1;
-  }, [minimized]);
-   */
-
   const controlsStyle = useAnimatedStyle(() => ({
     opacity: withTiming(
       minimizationProgress ? 1 - minimizationProgress.value : 1,

@@ -1,12 +1,8 @@
-import {
-  FriendFeed,
-  StagedFadeInAppearance,
-  StreamFeedView,
-} from '@app/components';
+import {FriendFeed, StreamFeedView} from '@app/components';
 import {ScreenHeader} from '@app/components/ScreenHeader';
 import {StreamCategoryList} from '@app/components/StreamCategoryList';
 import {useFeed} from '@app/hooks';
-import React, {useState} from 'react';
+import React from 'react';
 import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {TextButton} from '@warpy/components';
 import {useNavigation} from '@react-navigation/native';
@@ -30,7 +26,6 @@ export const Feed = () => {
 
   const categoryListHeight = useSharedValue(0);
   const friendFeedHeight = useSharedValue(0);
-  //const [friendFeedHeight, setFriendFeedHeight] = useState(0);
 
   const feedWrapperStyle = useAnimatedStyle(
     () => ({
