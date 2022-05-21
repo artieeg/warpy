@@ -5,13 +5,13 @@ import { TokenModule } from '@warpy-be/token/token.module';
 import { BotsModule } from '@warpy-be/bots/bots.module';
 import { UserModule } from '@warpy-be/user/user.module';
 import { PrismaModule } from '@warpy-be/prisma/prisma.module';
-import { StreamCommonModule } from '../common/stream-common.module';
 import { InviteStore } from './invite.store';
+import { StreamModule } from '@warpy-be/stream/stream.module';
 
 @Module({
   imports: [
     PrismaModule,
-    StreamCommonModule,
+    StreamModule,
     //forwardRef(() => UserModule),
     UserModule,
     TokenModule,

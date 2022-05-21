@@ -1,7 +1,6 @@
 import { BotsEntity } from '@warpy-be/bots/bots.entity';
 import { NoPermissionError } from '@warpy-be/errors';
 import { MessageService } from '@warpy-be/message/message.service';
-import { StreamEntity } from '../common/stream.entity';
 import { TokenService } from '@warpy-be/token/token.service';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
@@ -20,6 +19,7 @@ import {
 import { UserEntity } from '@warpy-be/user/user.entity';
 import { InviteStore } from './invite.store';
 import { FollowEntity } from '@warpy-be/follow/follow.entity';
+import { StreamEntity } from '@warpy-be/stream/common/stream.entity';
 
 @Injectable()
 export class InviteService {
@@ -120,16 +120,21 @@ export class InviteService {
     invitee_id: string,
     stream_id?: string,
   ) {
+    console.log('1');
+
     const [inviter, invitee, stream] = await Promise.all([
       this.userEntity.findById(inviter_id),
       this.userEntity.findById(invitee_id),
       stream_id && this.streamEntity.findById(stream_id),
     ]);
+    console.log('2');
 
     //If the receiver is online, mark the invitation as received
     //else, invitation will be marked as not received and
     //will be sent out once the user has opened the app
     const isInviteeOnline = await this.inviteStore.isUserOnline(invitee.id);
+
+    console.log('3');
 
     const invite = await this.inviteStore.create({
       invitee,
@@ -138,6 +143,8 @@ export class InviteService {
       received: isInviteeOnline,
     });
 
+    console.log('4');
+
     this.eventEmitter.emit(EVENT_INVITE_AVAILABLE, invite);
     this.messageService.sendMessage(invitee.id, {
       event: 'new-invite',
@@ -145,6 +152,7 @@ export class InviteService {
         invite,
       } as IReceivedInviteEvent,
     });
+    console.log('5');
 
     return invite;
   }

@@ -26,6 +26,7 @@ import { FeedModule } from './feed/feed.module';
 import { FollowModule } from './follow/follow.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserListModule } from './user-list/user-list.module';
+import { InviteModule } from './invite/invite.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { UserListModule } from './user-list/user-list.module';
     NotificationModule,
     WaitlistModule,
     SyncModule,
+    InviteModule,
     BlockModule,
     FollowModule,
     EventEmitterModule.forRoot(),

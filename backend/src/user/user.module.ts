@@ -29,6 +29,12 @@ import { FollowModule } from '@warpy-be/follow/follow.module';
   ],
   controllers: [UserController],
   providers: [UserEntity, UserService],
-  exports: [UserEntity, UserService, ParticipantModule, DeveloperAccountModule],
+  exports: [
+    UserEntity,
+    UserService,
+    ParticipantModule,
+    DeveloperAccountModule,
+    FollowModule,
+  ],
 })
 export class UserModule {}

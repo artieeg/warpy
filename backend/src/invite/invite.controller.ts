@@ -64,6 +64,8 @@ export class InviteController
       stream,
     });
 
+    console.log('created invite', { invite });
+
     return { invite };
   }
 
