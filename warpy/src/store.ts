@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createNewStore, IStore} from '@warpy/store';
 import {useCallback} from 'react';
 import {mediaDevices} from 'react-native-webrtc';
@@ -10,8 +11,10 @@ export * from '@warpy/store';
 export const useStore = createNewStore({
   dependencies: {
     mediaDevices,
+    saveReaction: code => {
+      AsyncStorage.setItem('reaction', code);
+    },
     openStream: id => {
-      console.log('opening stream', id, navigation);
       navigation.current?.navigate('Stream', {
         stream: id,
       });

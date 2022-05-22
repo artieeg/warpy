@@ -37,6 +37,17 @@ export const useAppSetUp = () => {
     };
   }, []);
 
+  //Load previous reaction if exists
+  useEffect(() => {
+    AsyncStorage.getItem('reaction').then(code => {
+      if (code) {
+        useStore.getState().set({
+          reaction: code,
+        });
+      }
+    });
+  }, []);
+
   useEffect(() => {
     if (user) {
       n.navigate('Feed');

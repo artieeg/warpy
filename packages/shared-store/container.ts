@@ -4,8 +4,10 @@
 import { IStream } from "@warpy/lib";
 
 type OpenStreamFn = (stream: IStream) => any;
+type SaveReactionFn = (code: string) => any;
 
 export const container = {
   mediaDevices: null as any,
   openStream: null as OpenStreamFn | null,
+  saveReaction: null as SaveReactionFn | null,
 };
