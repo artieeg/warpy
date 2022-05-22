@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import {Avatar} from './Avatar';
 import {StyleSheet, View} from 'react-native';
 import {Text} from './Text';
@@ -15,9 +15,10 @@ export const StreamerInfo: React.FC<StreamerInfoProps> = props => {
 
   const [name, username] = [data.first_name, data.username];
 
-  const isStreamOwner = useStore(
-    state => state.user?.id === state.currentStreamHost,
-  );
+  const [isStreamOwner, canReassign] = useStoreShallow(state => [
+    state.user?.id === state.currentStreamHost,
+    Object.keys(state.streamers).length > 1,
+  ]);
 
   return (
     <View style={styles.wrapper}>
@@ -33,9 +34,14 @@ export const StreamerInfo: React.FC<StreamerInfoProps> = props => {
         </View>
       </View>
 
-      {isStreamOwner && (
+      {isStreamOwner && canReassign && (
         <View>
-          <SmallTextButton title="reassign" />
+          <SmallTextButton
+            onPress={() => {
+              useStore.getState().dispatchModalOpen('host-reassign');
+            }}
+            title="reassign"
+          />
         </View>
       )}
     </View>
