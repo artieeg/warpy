@@ -74,17 +74,6 @@ export class StreamEntity {
     return StreamEntity.toStreamDTO(stream);
   }
 
-  async findByOwnerIdLive(owner: string): Promise<IStream | null> {
-    const stream = await this.prisma.stream.findFirst({
-      where: {
-        owner_id: owner,
-        live: true,
-      },
-    });
-
-    return stream ? StreamEntity.toStreamDTO(stream) : null;
-  }
-
   async incReactionsCount(
     id: string,
     amount = 0,
