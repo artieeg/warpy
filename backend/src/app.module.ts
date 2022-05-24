@@ -27,6 +27,7 @@ import { FollowModule } from './follow/follow.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserListModule } from './user-list/user-list.module';
 import { InviteModule } from './invite/invite.module';
+import { CategoryModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { InviteModule } from './invite/invite.module';
     }),
     PrismaModule,
     AwardModule,
+    CategoryModule,
     TimerModule,
     BroadcastModule,
     MediaModule,

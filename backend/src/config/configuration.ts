@@ -30,4 +30,5 @@ export const configuration = () => ({
   inviteStoreAddr: process.env.INVITE_STORE_ADDR,
   notificationStoreAddr: process.env.NOTIFICATION_STORE_ADDR,
   blockStreamerIdStoreAddr: process.env.BLOCK_STREAMER_ID_STORE_ADDR,
+  streamStoreAddr: process.env.STREAM_STORE_ADDR,
 });

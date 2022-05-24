@@ -9,8 +9,8 @@ services:
   redis:
     image:
       redis:6.2.4-alpine
-    ports:
-      - 6379:6379
+    deploy:
+      replicas: 2
       
   web_next:
     image: node:16.0.0-alpine

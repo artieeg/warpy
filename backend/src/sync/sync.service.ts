@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { CategoriesEntity } from '@warpy-be/categories/categories.entity';
 import { UserNotFound } from '@warpy-be/errors';
 import { FriendFeedService } from '@warpy-be/friend_feed/friend_feed.service';
-import { CategoriesEntity } from '@warpy-be/stream/categories/categories.entity';
 import { UserListService } from '@warpy-be/user-list/user-list.service';
 import { AppliedAppInviteEntity } from '@warpy-be/user/app_invite/applied-app-invite.entity';
 import { UserService } from '@warpy-be/user/user.service';
