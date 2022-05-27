@@ -104,6 +104,8 @@ export class HostService {
     this.timerService.setTimer(async () => {
       const hostHasRejoined = await this.hostStore.isHostJoined(user);
 
+      console.log({ hostHasRejoined });
+
       //if the user has rejoined, don't do anything else
       if (hostHasRejoined) {
         return;
@@ -122,6 +124,6 @@ export class HostService {
       } else {
         await this.setStreamHost(stream, newHost);
       }
-    }, 1000); //TODO: debug
+    }, 20000);
   }
 }

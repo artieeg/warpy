@@ -10,7 +10,7 @@ import { InviteStates, Roles } from "./types";
 
 export interface IRoleUpdateEvent {
   stream: string;
-  media?: any;
+  sendMediaParams?: any;
   mediaPermissionToken: string;
   role: Roles;
 }

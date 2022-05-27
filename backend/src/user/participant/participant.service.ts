@@ -8,7 +8,17 @@ import {
 } from '@warpy-be/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ParticipantStore } from './store';
+import { IFullParticipant, ParticipantStore } from './store';
+import { ViewerService } from './viewer/viewer.service';
+import { IJoinStreamResponse } from '@warpy/lib';
+import { HostService } from './host/host.service';
+
+type StreamData = {
+  streamers: IFullParticipant[];
+  raisedHands: IFullParticipant[];
+  count: number;
+  host: string;
+};
 
 @Injectable()
 export class ParticipantService {
@@ -17,7 +27,88 @@ export class ParticipantService {
     private botInstanceEntity: BotInstanceEntity,
     private media: MediaService,
     private eventEmitter: EventEmitter2,
+    private viewerService: ViewerService,
+    private hostService: HostService,
   ) {}
+
+  /**
+   * Returns stream's speakers, host, users with raised hands
+   * and total amount of people on the stream
+   * */
+  async getStreamData(stream: string): Promise<StreamData> {
+    const [speakers, raisedHands, count, host] = await Promise.all([
+      this.participant.getStreamers(stream),
+      this.participant.getRaisedHands(stream),
+      this.participant.count(stream),
+      this.hostService.getStreamHostId(stream),
+    ]);
+
+    return {
+      streamers: speakers,
+      raisedHands,
+      count,
+      host,
+    };
+  }
+
+  /**
+   * Determines if the user tries to join or rejoin the stream
+   * In case the user tries to rejoin, sync their previous role
+   * */
+  async createNewParticipant(
+    user: string,
+    stream: string,
+  ): Promise<IJoinStreamResponse> {
+    let response: IJoinStreamResponse;
+
+    //Check if the record already exists
+    const data = await this.participant.get(user);
+
+    const streamData = await this.getStreamData(stream);
+
+    response = { ...response, ...streamData };
+
+    //If the user is not rejoining, join as a viewer
+    if (data?.stream !== stream) {
+      const { mediaPermissionsToken, recvMediaParams } =
+        await this.viewerService.createNewViewer(stream, user);
+
+      response = {
+        ...response,
+        mediaPermissionsToken,
+        recvMediaParams,
+        role: 'viewer',
+      };
+
+      return response;
+    }
+
+    const { token: mediaPermissionsToken, recvMediaParams } =
+      await this.media.getViewerParams(user, stream);
+
+    const { role, stream: prevStreamId } = data;
+
+    response = { ...response, mediaPermissionsToken, recvMediaParams, role };
+
+    //TODO: check if host
+
+    //If rejoining
+    if (stream === prevStreamId) {
+      await this.reactivateUser(user);
+
+      if (role !== 'viewer') {
+        const { sendMediaParams, mediaPermissionToken } =
+          await this.media.updateMediaRole(data, role);
+
+        response.sendMediaParams = sendMediaParams;
+        response.mediaPermissionsToken = mediaPermissionToken;
+
+        response.streamers = [...response.streamers, data];
+      }
+    }
+
+    return response;
+  }
 
   async setMediaEnabled(
     user: string,
@@ -57,7 +148,7 @@ export class ParticipantService {
     });
   }
 
-  async activateUser(user: string) {
+  async reactivateUser(user: string) {
     const data = await this.participant.get(user);
 
     if (!data) {

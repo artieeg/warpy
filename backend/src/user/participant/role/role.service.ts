@@ -81,6 +81,8 @@ export class ParticipantRoleService {
       audioEnabled: !(role === 'viewer'),
     });
 
+    console.log('sending role change event', { response, updatedUser });
+
     this.messageService.sendMessage(userToUpdate, {
       event: 'role-change',
       data: response,

@@ -95,14 +95,20 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
   async dispatchStreamJoin(stream) {
     const { api, dispatchInitViewer } = get();
 
+    const joinData = await api.stream.join(stream);
+
     const {
       mediaPermissionsToken,
       recvMediaParams,
-      speakers,
+      streamers: speakers,
       raisedHands,
       count,
       host,
-    } = await api.stream.join(stream);
+      role,
+      sendMediaParams,
+    } = joinData;
+
+    set({ sendMediaParams });
 
     await dispatchInitViewer(mediaPermissionsToken, recvMediaParams);
 
@@ -166,7 +172,16 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
       totalParticipantCount: count,
       streamers: arrayToMap<IParticipant>(speakers),
       viewersWithRaisedHands: arrayToMap<IParticipant>(raisedHands),
-      role: "viewer",
+      role,
     });
+
+    if (role === "speaker") {
+      await get().dispatchMediaSend(mediaPermissionsToken, ["audio"]);
+    }
+
+    if (role === "streamer") {
+      await get().dispatchMediaSend(mediaPermissionsToken, ["audio"]);
+      await get().dispatchMediaSend(mediaPermissionsToken, ["video"]);
+    }
   },
 });

@@ -51,17 +51,21 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
   },
 
   async dispatchUserRoleUpdate(newRole, mediaPermissionToken, sendMediaParams) {
+    const oldRole = get().role;
+
     set(
       produce<IStore>((store) => {
-        const oldRole = get().role;
-
         store.role = newRole;
         store.isRaisingHand = false;
 
         if (sendMediaParams) {
           store.sendMediaParams = sendMediaParams;
         }
+      })
+    );
 
+    set(
+      produce<IStore>((store) => {
         get().dispatchToastMessage(`You are a ${newRole} now`);
 
         if (newRole === "viewer") {

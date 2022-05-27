@@ -27,26 +27,27 @@ export const createAPISlice = (
     return new Promise((resolve) => {
       const socket = new WebSocket(addr);
 
+      socket.onclose = () => {
+        clearInterval(reconnecting_interval);
+
+        set({ isConnected: false });
+        reconnecting_interval = setInterval(() => {
+          console.log("reconnecting...");
+
+          get().connect(addr);
+        }, 1000);
+      };
+
+      socket.onerror = () => {
+        console.log("error");
+        socket.close();
+      };
+
       socket.onopen = () => {
         get().api.conn.socket = socket;
         set({ isConnected: true });
 
         clearInterval(reconnecting_interval);
-
-        socket.onclose = () => {
-          clearInterval(reconnecting_interval);
-
-          set({ isConnected: false });
-          reconnecting_interval = setInterval(() => {
-            console.log("reconnecting...");
-
-            get().connect(addr);
-          }, 1000);
-        };
-
-        socket.onerror = () => {
-          socket.close();
-        };
 
         resolve();
       };
@@ -118,9 +119,15 @@ export const createAPISlice = (
       store.dispatchParticipantRaisedHand(participant);
     });
 
-    api.stream.onRoleUpdate(async ({ mediaPermissionToken, media, role }) => {
-      await get().dispatchUserRoleUpdate(role, mediaPermissionToken, media);
-    });
+    api.stream.onRoleUpdate(
+      async ({ mediaPermissionToken, sendMediaParams, role }) => {
+        await get().dispatchUserRoleUpdate(
+          role,
+          mediaPermissionToken,
+          sendMediaParams
+        );
+      }
+    );
 
     api.stream.onMediaToggle((data) => {
       get().dispatchMediaToggle(data.user, {

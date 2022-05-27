@@ -9,6 +9,6 @@ import { BlockModule } from '@warpy-be/block/block.module';
   imports: [BlockModule, HostModule, MediaModule],
   providers: [ParticipantRoleService],
   controllers: [ParticipantRoleController],
-  exports: [],
+  exports: [ParticipantRoleService],
 })
 export class ParticipantRoleModule {}

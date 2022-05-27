@@ -3,10 +3,15 @@ import { UserService } from '@warpy-be/user/user.service';
 import { EVENT_NEW_PARTICIPANT, EVENT_RAISE_HAND } from '@warpy-be/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { IJoinStreamResponse } from '@warpy/lib';
 import { ParticipantBanService } from '../ban/ban.service';
 import { IFullParticipant, ParticipantStore } from '../store';
 import { HostService } from '../host/host.service';
+
+type ViewerSetupParams = {
+  mediaPermissionsToken: string;
+  recvMediaParams: any;
+  recvNodeId: string;
+};
 
 @Injectable()
 export class ViewerService {
@@ -34,13 +39,11 @@ export class ViewerService {
   async createNewViewer(
     stream: string,
     viewerId: string,
-  ): Promise<IJoinStreamResponse> {
-    const { token, recvNodeId } = await this.media.getViewerToken(
-      viewerId,
-      stream,
-    );
-
+  ): Promise<{ mediaPermissionsToken: string; recvMediaParams: any }> {
     await this.bans.checkUserBanned(viewerId, stream);
+
+    const { recvMediaParams, token, recvNodeId } =
+      await this.media.getViewerParams(viewerId, stream);
 
     const user = await this.user.get(viewerId);
     const viewer: IFullParticipant = {
@@ -57,22 +60,6 @@ export class ViewerService {
 
     this.eventEmitter.emit(EVENT_NEW_PARTICIPANT, { participant: viewer });
 
-    const [recvMediaParams, speakers, raisedHands, count, host] =
-      await Promise.all([
-        this.media.getViewerParams(recvNodeId, viewerId, stream),
-        this.participant.getStreamers(stream),
-        this.participant.getRaisedHands(stream),
-        this.participant.count(stream),
-        this.host.getStreamHostId(stream),
-      ]);
-
-    return {
-      speakers: speakers,
-      host,
-      raisedHands: raisedHands,
-      count,
-      mediaPermissionsToken: token,
-      recvMediaParams,
-    };
+    return { mediaPermissionsToken: token, recvMediaParams };
   }
 }

@@ -2,8 +2,6 @@ import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import {
-  IJoinStream,
-  IJoinStreamResponse,
   IRaiseHand,
   IRequestViewers,
   IRequestViewersResponse,
@@ -13,14 +11,6 @@ import { ViewerService } from './viewer.service';
 @Controller()
 export class ViewerController {
   constructor(private viewer: ViewerService) {}
-
-  @MessagePattern('stream.join')
-  async onNewViewer({
-    stream,
-    user,
-  }: IJoinStream): Promise<IJoinStreamResponse> {
-    return this.viewer.createNewViewer(stream, user);
-  }
 
   @MessagePattern('viewers.get')
   async onViewersRequest({

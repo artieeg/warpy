@@ -48,7 +48,7 @@ export class BotInstanceService {
         speaker: data.id,
         roomId: stream,
       }),
-      this.mediaService.getViewerParams(recvNodeId, bot, stream),
+      this.mediaService.getBotParams(recvNodeId, bot, stream),
       this.participantEntity.add(botParticipant),
     ]);
 

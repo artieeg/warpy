@@ -22,10 +22,10 @@ const createNewRoom = (): IRoom => {
   };
 };
 
-export const handleNewRoom: MessageHandler<
-  ICreateMediaRoom,
-  INewMediaRoomData
-> = async (data, respond) => {
+export const handleNewRoom: MessageHandler<ICreateMediaRoom, {}> = async (
+  data,
+  respond
+) => {
   const { roomId, host } = data;
 
   if (rooms[roomId]) {
@@ -51,24 +51,19 @@ export const handleNewRoom: MessageHandler<
     return;
   }
 
+  /*
   const sendTransport = await SFUService.createTransport("send", router, host);
 
   room.peers[host] = createNewPeer({
     sendTransport,
+    //router
   });
-
-  /*
-  const remoteRtpPort = SFUService.getPortForRemoteRTP();
-  await plainTransport.connect({
-    ip: config.mediasoup.plainRtpTransport.listenIp.ip,
-    port: remoteRtpPort,
-  });
-
-  plainTransport.appData.remoteRtpPort = remoteRtpPort;
-  */
 
   respond!({
     routerRtpCapabilities: rooms[roomId].router.rtpCapabilities,
     sendTransportOptions: getOptionsFromTransport(sendTransport),
   });
+  */
+
+  respond!({});
 };

@@ -42,8 +42,8 @@ export class MediaService {
     let sendMedia: INewTransportResponse;
     let sendNodeId = prevSendNodeId;
 
-    //If the user was viewer, assign them to a media send node
-    if (participant.role === 'viewer') {
+    //If participant becomes audio/video streamer, assign them a send node
+    if (role !== 'viewer') {
       sendNodeId = await this.balancer.getSendNodeId(stream);
 
       sendMedia = await this.createSendTransport({
@@ -61,7 +61,11 @@ export class MediaService {
       room: stream,
     });
 
-    return { mediaPermissionToken: token, media: sendMedia, sendNodeId };
+    return {
+      mediaPermissionToken: token,
+      sendMediaParams: sendMedia,
+      sendNodeId,
+    };
   }
 
   async createSendTransport(
@@ -78,8 +82,12 @@ export class MediaService {
     return response as INewTransportResponse;
   }
 
-  async getViewerParams(recvNodeId: string, user: string, roomId: string) {
-    const response = await this.nc.request(
+  private async getRecvParams(
+    recvNodeId: string,
+    user: string,
+    roomId: string,
+  ) {
+    const recvMediaParams: IConnectRecvTransportParams = await this.nc.request(
       `media.peer.join.${recvNodeId}`,
       {
         user,
@@ -90,7 +98,44 @@ export class MediaService {
       },
     );
 
-    return response as IConnectRecvTransportParams;
+    return recvMediaParams;
+  }
+
+  async getBotParams(recvNodeId: string, user: string, roomId: string) {
+    return this.getRecvParams(recvNodeId, user, roomId);
+  }
+
+  async getViewerParams(user: string, roomId: string) {
+    const { token, recvNodeId } = await this.getViewerToken(user, roomId);
+    const recvMediaParams = await this.getRecvParams(recvNodeId, user, roomId);
+
+    return {
+      token,
+      recvNodeId,
+      recvMediaParams,
+    };
+  }
+
+  async getStreamerParams({ user, roomId }: { user: string; roomId: string }) {
+    const { token, recvNodeId, sendNodeId } = await this.getStreamerToken(
+      user,
+      roomId,
+    );
+
+    const sendMediaParams = await this.createSendTransport({
+      roomId,
+      speaker: user,
+    });
+
+    const recvMediaParams = await this.getRecvParams(recvNodeId, user, roomId);
+
+    return {
+      token,
+      recvNodeId,
+      sendNodeId,
+      recvMediaParams,
+      sendMediaParams,
+    };
   }
 
   async getStreamerToken(user: string, stream: string) {

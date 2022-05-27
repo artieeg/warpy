@@ -1,31 +1,35 @@
 import {
-  OnNewStream,
+  OnNewParticipant,
   OnParticipantLeave,
   OnParticipantRejoin,
   OnStreamEnd,
+  OnUserConnect,
   OnUserDisconnect,
 } from '@warpy-be/interfaces';
 import {
+  EVENT_NEW_PARTICIPANT,
   EVENT_PARTICIPANT_KICKED,
   EVENT_PARTICIPANT_LEAVE,
   EVENT_PARTICIPANT_REJOIN,
-  EVENT_STREAM_CREATED,
   EVENT_STREAM_ENDED,
+  EVENT_USER_CONNECTED,
   EVENT_USER_DISCONNECTED,
 } from '@warpy-be/utils';
 import { Controller } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
-import { ILeaveStreamRequest, IMediaToggleRequest } from '@warpy/lib';
+import {
+  IJoinStream,
+  IJoinStreamResponse,
+  ILeaveStreamRequest,
+  IMediaToggleRequest,
+} from '@warpy/lib';
 import { ParticipantService } from './participant.service';
 
 @Controller()
+//OnParticipantRejoin,
 export class ParticipantController
-  implements
-    OnParticipantRejoin,
-    OnUserDisconnect,
-    OnStreamEnd,
-    OnParticipantLeave
+  implements OnUserDisconnect, OnStreamEnd, OnParticipantLeave
 {
   constructor(
     private participant: ParticipantService,
@@ -36,6 +40,14 @@ export class ParticipantController
   async onParticipantLeave({ user, stream }: ILeaveStreamRequest) {
     await this.participant.removeUserFromStream(user, stream);
     this.eventEmitter.emit(EVENT_PARTICIPANT_LEAVE, { user, stream });
+  }
+
+  @MessagePattern('stream.join')
+  async onNewViewer({
+    stream,
+    user,
+  }: IJoinStream): Promise<IJoinStreamResponse> {
+    return this.participant.createNewParticipant(user, stream);
   }
 
   @MessagePattern('participant.media-toggle')
@@ -55,10 +67,26 @@ export class ParticipantController
     await this.participant.removeUserFromStream(user);
   }
 
+  /*
+  @OnEvent(EVENT_NEW_PARTICIPANT)
+  async onNewParticipant({ participant }) {
+    await this.participant.reactivateUser(participant.id, participant.stream);
+  }
+*/
+
+  /*
+  @OnEvent(EVENT_USER_CONNECTED)
+  async onUserConnect({ user }) {
+    await this.participant.reactivateUser(user);
+  }
+  */
+
+  /*
   @OnEvent(EVENT_PARTICIPANT_REJOIN)
   async onParticipantRejoin({ participant }) {
     await this.participant.activateUser(participant.id);
   }
+  */
 
   @OnEvent(EVENT_USER_DISCONNECTED)
   async onUserDisconnect({ user }) {

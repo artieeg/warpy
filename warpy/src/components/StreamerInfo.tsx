@@ -29,7 +29,7 @@ export const StreamerInfo: React.FC<StreamerInfoProps> = props => {
             {name}
           </Text>
           <Text weight="bold" color="boulder" ellipsizeMode="tail" size="small">
-            {username}
+            {isStreamOwner ? 'you' : username}
           </Text>
         </View>
       </View>

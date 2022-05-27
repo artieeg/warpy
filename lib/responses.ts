@@ -13,7 +13,7 @@ import {
   IStreamCategory,
   IFriendFeedItem,
 } from "./models";
-import { UserList } from "./types";
+import { Roles, UserList } from "./types";
 
 export interface INewStreamResponse {
   stream: string;
@@ -24,12 +24,14 @@ export interface INewStreamResponse {
 }
 
 export interface IJoinStreamResponse {
-  speakers: IParticipant[];
+  streamers: IParticipant[];
   raisedHands: IParticipant[];
   count: number;
   mediaPermissionsToken: string;
   recvMediaParams: IConnectRecvTransportParams;
+  sendMediaParams?: any;
   host: string;
+  role: Roles;
 }
 
 export interface IRequestViewersResponse {

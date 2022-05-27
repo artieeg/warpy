@@ -129,6 +129,8 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
   async dispatchInitViewer(permissions, recvMediaParams) {
     const { api, recvDevice, sendDevice } = get();
 
+    console.log("INIT RECV MEDIA PARAMS", { recvMediaParams });
+
     if (!recvDevice.loaded) {
       await recvDevice.load({
         routerRtpCapabilities: recvMediaParams.routerRtpCapabilities,
@@ -199,11 +201,16 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
   async dispatchMediaSend(permissions, tracks, startSending) {
     const { mediaClient, stream, sendMediaParams, sendDevice } = get();
 
+    console.log({ mediaClient });
+
     if (!mediaClient) {
       return;
     }
 
+    console.log("sendMediaParams", sendMediaParams);
     const { routerRtpCapabilities, sendTransportOptions } = sendMediaParams;
+
+    console.log("sendDevice.loaded = ", sendDevice.loaded);
 
     if (!sendDevice.loaded) {
       //Fix orientation issue

@@ -1,4 +1,4 @@
-import { RtpParameters } from "mediasoup/lib/types";
+import { RtpParameters } from "mediasoup/node/lib/types";
 import { Readable } from "stream";
 
 export const convertStringToStream = (stringToConvert: any) => {
