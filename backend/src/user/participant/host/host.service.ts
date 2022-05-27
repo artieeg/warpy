@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { HostReassignError } from '@warpy-be/errors';
 import { TimerService } from '@warpy-be/shared';
+import { UserEntity } from '@warpy-be/user/user.entity';
 import {
   EVENT_HOST_REASSIGN,
   EVENT_HOST_REASSIGN_FAILED,
+  EVENT_NEW_PARTICIPANT,
 } from '@warpy-be/utils';
 import { IParticipant } from '@warpy/lib';
-import { IFullParticipant } from '../store';
+import { IFullParticipant, ParticipantStore } from '../store';
 import { HostStore } from './host.store';
 
 @Injectable()
@@ -16,6 +18,8 @@ export class HostService {
     private timerService: TimerService,
     private hostStore: HostStore,
     private eventEmitter: EventEmitter2,
+    private userEntity: UserEntity,
+    private participantStore: ParticipantStore,
   ) {}
 
   async getHostInfo(user: string) {
@@ -125,5 +129,41 @@ export class HostService {
         await this.setStreamHost(stream, newHost);
       }
     }, 20000);
+  }
+
+  /**
+   * Initializes the host data when a new stream starts
+   * */
+  async initStreamHost({
+    user,
+    stream,
+    sendNodeId,
+    recvNodeId,
+  }: {
+    user: string;
+    stream: string;
+    sendNodeId: string;
+    recvNodeId: string;
+  }) {
+    const streamer = await this.userEntity.findById(user);
+
+    const host: IFullParticipant = {
+      ...streamer,
+      role: 'streamer',
+      recvNodeId,
+      sendNodeId,
+      audioEnabled: true,
+      videoEnabled: true,
+      isBanned: false,
+      stream,
+      isBot: false,
+    };
+
+    await Promise.all([
+      this.participantStore.add(host),
+      this.hostStore.setStreamHost(host),
+    ]);
+
+    this.eventEmitter.emit(EVENT_NEW_PARTICIPANT, { participant: host });
   }
 }

@@ -3,6 +3,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   OnNewParticipant,
+  OnNewStream,
   OnParticipantLeave,
   OnParticipantRejoin,
   OnStreamEnd,
@@ -14,6 +15,7 @@ import {
   EVENT_PARTICIPANT_LEAVE,
   EVENT_PARTICIPANT_REJOIN,
   EVENT_STREAMER_DOWNGRADED_TO_VIEWER,
+  EVENT_STREAM_CREATED,
   EVENT_STREAM_ENDED,
   EVENT_VIEWER_UPGRADED,
 } from '@warpy-be/utils';
@@ -25,6 +27,7 @@ import { HostStore } from './host.store';
 export class HostController
   implements
     OnParticipantRejoin,
+    OnNewStream,
     OnStreamEnd,
     OnNewParticipant,
     OnStreamerDowngradeToViewer,
@@ -47,11 +50,16 @@ export class HostController
     return this.hostStore.delByStream(stream);
   }
 
-  @OnEvent(EVENT_NEW_PARTICIPANT)
-  async onNewParticipant({ participant }) {
-    if (participant.role === 'streamer') {
-      return this.hostStore.setStreamHost(participant);
-    }
+  @OnEvent(EVENT_STREAM_CREATED)
+  async onNewStream({ stream, hostNodeIds: { recvNodeId, sendNodeId } }) {
+    const { owner, id } = stream;
+
+    await this.hostService.initStreamHost({
+      user: owner,
+      stream: id,
+      recvNodeId,
+      sendNodeId,
+    });
   }
 
   @OnEvent(EVENT_STREAMER_DOWNGRADED_TO_VIEWER)

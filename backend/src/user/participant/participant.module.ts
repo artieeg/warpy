@@ -10,12 +10,10 @@ import { ParticipantService } from './participant.service';
 import { ParticipantRoleModule } from './role/role.module';
 import { ViewerModule } from './viewer/viewer.module';
 import { HostModule } from './host/host.module';
-import { StreamerModule } from './streamer/streamer.module';
 
 @Module({
   imports: [
     ViewerModule,
-    StreamerModule,
     ActiveSpeakerModule,
     ParticipantRoleModule,
     ParticipantBanModule,

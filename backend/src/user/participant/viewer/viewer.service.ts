@@ -5,19 +5,11 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ParticipantBanService } from '../ban/ban.service';
 import { IFullParticipant, ParticipantStore } from '../store';
-import { HostService } from '../host/host.service';
-
-type ViewerSetupParams = {
-  mediaPermissionsToken: string;
-  recvMediaParams: any;
-  recvNodeId: string;
-};
 
 @Injectable()
 export class ViewerService {
   constructor(
     private media: MediaService,
-    private host: HostService,
     private eventEmitter: EventEmitter2,
     private bans: ParticipantBanService,
     private participant: ParticipantStore,
