@@ -23,7 +23,7 @@ type StreamData = {
 @Injectable()
 export class ParticipantService {
   constructor(
-    private participant: ParticipantStore,
+    private participantStore: ParticipantStore,
     private botInstanceEntity: BotInstanceEntity,
     private media: MediaService,
     private eventEmitter: EventEmitter2,
@@ -37,9 +37,9 @@ export class ParticipantService {
    * */
   async getStreamData(stream: string): Promise<StreamData> {
     const [speakers, raisedHands, count, host] = await Promise.all([
-      this.participant.getStreamers(stream),
-      this.participant.getRaisedHands(stream),
-      this.participant.count(stream),
+      this.participantStore.getStreamers(stream),
+      this.participantStore.getRaisedHands(stream),
+      this.participantStore.count(stream),
       this.hostService.getStreamHostId(stream),
     ]);
 
@@ -62,14 +62,14 @@ export class ParticipantService {
     let response: IJoinStreamResponse;
 
     //Check if the record already exists
-    const data = await this.participant.get(user);
+    const oldParticipantData = await this.participantStore.get(user);
 
     const streamData = await this.getStreamData(stream);
 
     response = { ...response, ...streamData, count: streamData.count + 1 };
 
     //If the user is not rejoining, join as a viewer
-    if (data?.stream !== stream) {
+    if (oldParticipantData?.stream !== stream) {
       const { mediaPermissionsToken, recvMediaParams } =
         await this.viewerService.createNewViewer(stream, user);
 
@@ -86,7 +86,7 @@ export class ParticipantService {
     const { token: mediaPermissionsToken, recvMediaParams } =
       await this.media.getViewerParams(user, stream);
 
-    const { role, stream: prevStreamId } = data;
+    const { role, stream: prevStreamId } = oldParticipantData;
 
     response = { ...response, mediaPermissionsToken, recvMediaParams, role };
 
@@ -97,13 +97,23 @@ export class ParticipantService {
       await this.reactivateUser(user);
 
       if (role !== 'viewer') {
-        const { sendMediaParams, mediaPermissionToken } =
-          await this.media.updateMediaRole(data, role);
+        const { sendMediaParams, mediaPermissionToken, sendNodeId } =
+          await this.media.updateMediaRole(oldParticipantData, role);
 
-        response.sendMediaParams = sendMediaParams;
-        response.mediaPermissionsToken = mediaPermissionToken;
+        /**
+         * The streamer may be assigned to a different send media node
+         * when rejoining
+         *
+         * In that case, update the sendNodeId in the store
+         * */
+        await this.participantStore.update(user, { sendNodeId });
 
-        response.streamers = [...response.streamers, data];
+        response = {
+          ...response,
+          sendMediaParams,
+          mediaPermissionsToken: mediaPermissionToken,
+          streamers: [...response.streamers, oldParticipantData],
+        };
       }
     }
 
@@ -117,7 +127,7 @@ export class ParticipantService {
       audioEnabled,
     }: { videoEnabled?: boolean; audioEnabled?: boolean },
   ) {
-    const stream = await this.participant.getStreamId(user);
+    const stream = await this.participantStore.getStreamId(user);
 
     const update = {};
 
@@ -126,9 +136,8 @@ export class ParticipantService {
     }
 
     if (videoEnabled !== undefined) {
-      const activeVideoStreamers = await this.participant.countVideoStreamers(
-        stream,
-      );
+      const activeVideoStreamers =
+        await this.participantStore.countVideoStreamers(stream);
 
       //If the user tries to send video when there are already 4 video streamers...
       if (activeVideoStreamers >= 4 && videoEnabled === true) {
@@ -138,7 +147,7 @@ export class ParticipantService {
       update['videoEnabled'] = videoEnabled;
     }
 
-    await this.participant.update(user, update);
+    await this.participantStore.update(user, update);
 
     this.eventEmitter.emit(EVENT_STREAMER_MEDIA_TOGGLE, {
       user,
@@ -149,18 +158,18 @@ export class ParticipantService {
   }
 
   async reactivateUser(user: string) {
-    const data = await this.participant.get(user);
+    const data = await this.participantStore.get(user);
 
     if (!data) {
       return;
     }
 
-    await this.participant.setDeactivated(user, data.stream, false);
+    await this.participantStore.setDeactivated(user, data.stream, false);
     this.eventEmitter.emit(EVENT_PARTICIPANT_REJOIN, { participant: data });
   }
 
   async deactivateUser(user: string) {
-    const data = await this.participant.get(user);
+    const data = await this.participantStore.get(user);
 
     if (!data) {
       return;
@@ -171,7 +180,7 @@ export class ParticipantService {
       return this.removeUserFromStream(user, data.stream);
     }
 
-    await this.participant.setDeactivated(user, data.stream, true);
+    await this.participantStore.setDeactivated(user, data.stream, true);
 
     this.eventEmitter.emit(EVENT_PARTICIPANT_LEAVE, {
       user,
@@ -180,7 +189,7 @@ export class ParticipantService {
   }
 
   async removeUserFromStream(user: string, stream?: string) {
-    const userToRemove = await this.participant.get(user);
+    const userToRemove = await this.participantStore.get(user);
 
     if (userToRemove) {
       await this.media.removeFromNodes(userToRemove);
@@ -207,13 +216,13 @@ export class ParticipantService {
 
   private async deleteUserParticipant(user: string) {
     try {
-      await this.participant.del(user);
+      await this.participantStore.del(user);
     } catch (e) {
       console.error(e);
     }
   }
 
   async clearStreamData(stream: string) {
-    return this.participant.clearStreamData(stream);
+    return this.participantStore.clearStreamData(stream);
   }
 }
