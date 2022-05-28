@@ -28,6 +28,27 @@ export class ViewerService {
     return viewers;
   }
 
+  /**
+   * Checks if the user has been banned on the stream,
+   * points viewer to a new recv node, returns recv params and token
+   * */
+  async reconnectOldViewer(user: string, stream: string) {
+    await this.bans.checkUserBanned(user, stream);
+
+    const {
+      token: mediaPermissionsToken,
+      recvMediaParams,
+      recvNodeId,
+    } = await this.media.getViewerParams(user, stream);
+
+    //Sync the new recv node
+    await this.participant.update(user, {
+      recvNodeId,
+    });
+
+    return { mediaPermissionsToken, recvMediaParams };
+  }
+
   async createNewViewer(
     stream: string,
     viewerId: string,

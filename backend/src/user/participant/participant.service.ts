@@ -10,8 +10,9 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IFullParticipant, ParticipantStore } from './store';
 import { ViewerService } from './viewer/viewer.service';
-import { IJoinStreamResponse } from '@warpy/lib';
+import { IJoinStreamResponse, Roles } from '@warpy/lib';
 import { HostService } from './host/host.service';
+import { StreamerService } from './streamer/streamer.service';
 
 type StreamData = {
   streamers: IFullParticipant[];
@@ -29,6 +30,7 @@ export class ParticipantService {
     private eventEmitter: EventEmitter2,
     private viewerService: ViewerService,
     private hostService: HostService,
+    private streamerService: StreamerService,
   ) {}
 
   /**
@@ -61,18 +63,19 @@ export class ParticipantService {
   ): Promise<IJoinStreamResponse> {
     let response: IJoinStreamResponse;
 
-    //Check if the record already exists
-    const oldParticipantData = await this.participantStore.get(user);
-    const prevStreamId = oldParticipantData?.stream;
+    const [oldParticipantData, streamData] = await Promise.all([
+      this.participantStore.get(user),
+      this.getStreamData(stream),
+    ]);
 
-    const streamData = await this.getStreamData(stream);
+    const prevStreamId = oldParticipantData?.stream;
 
     response = { ...response, ...streamData };
 
     /**
-     * If not rejoining, create a new viewer record
+     * if joining the stream
      * */
-    if (prevStreamId !== stream) {
+    if (!oldParticipantData || prevStreamId !== stream) {
       const { mediaPermissionsToken, recvMediaParams } =
         await this.viewerService.createNewViewer(stream, user);
 
@@ -80,7 +83,7 @@ export class ParticipantService {
         ...response,
         mediaPermissionsToken,
         recvMediaParams,
-        count: response.count + 1, //+1 since we have joined
+        count: response.count + 1, //+1 since we are joining for the first time
         role: 'viewer',
       };
 
@@ -99,64 +102,50 @@ export class ParticipantService {
     const { role } = oldParticipantData;
     response.role = role;
 
-    let newRecvNodeId: string, newSendNodeId: string;
-
-    if (role === 'viewer') {
-      const {
-        token: mediaPermissionsToken,
-        recvMediaParams,
-        recvNodeId,
-      } = await this.media.getViewerParams(user, stream);
-
-      newRecvNodeId = recvNodeId;
-
-      response = {
-        ...response,
-        mediaPermissionsToken,
-        recvMediaParams,
-      };
-    } else {
-      /**
-       * TODO: count video streamers
-       * */
-
-      const {
-        token: mediaPermissionsToken,
-        sendMediaParams,
-        recvMediaParams,
-        sendNodeId,
-        recvNodeId,
-      } = await this.media.getStreamerParams({
-        user,
-        roomId: stream,
-        audio: true,
-        video: role === 'streamer',
-      });
-
-      newSendNodeId = sendNodeId;
-      newRecvNodeId = recvNodeId;
-
-      response = {
-        ...response,
-        mediaPermissionsToken,
-        sendMediaParams,
-        recvMediaParams,
-        streamers: [...response.streamers, oldParticipantData],
-      };
-    }
+    const reconnectMediaParams = await this.getReconnectMediaParams({
+      user,
+      stream,
+      role,
+    });
 
     /**
-     * The streamer may be reassigned to different
-     * send/recv media nodes when rejoining
-     *
-     * In that case, update the sendNodeId in the store
+     * Merge token, send/recv params into the response,
+     * if we are streaming audio/video, then
+     * include us in the streamers array
      * */
-    await this.participantStore.update(user, {
-      sendNodeId: newSendNodeId,
-      recvNodeId: newRecvNodeId,
+    response = {
+      ...response,
+      ...reconnectMediaParams,
+      streamers:
+        role === 'viewer'
+          ? response.streamers
+          : [...response.streamers, oldParticipantData],
+    };
+
+    this.eventEmitter.emit(EVENT_PARTICIPANT_REJOIN, {
+      participant: oldParticipantData,
     });
 
     return response;
+  }
+
+  /**
+   * Returns recv + send params and media permissions token
+   * */
+  private async getReconnectMediaParams({
+    user,
+    stream,
+    role,
+  }: {
+    user: string;
+    stream: string;
+    role: Roles;
+  }) {
+    if (role === 'viewer') {
+      return this.viewerService.reconnectOldViewer(user, stream);
+    } else {
+      return this.streamerService.reconnectOldStreamer(user, stream, role);
+    }
   }
 
   async setMediaEnabled(
@@ -196,6 +185,10 @@ export class ParticipantService {
     });
   }
 
+  /**
+   * Enable participant
+   * (start including this user when fetching lists, etc)
+   * */
   async reactivateUser(user: string) {
     const data = await this.participantStore.get(user);
 
@@ -204,9 +197,12 @@ export class ParticipantService {
     }
 
     await this.participantStore.setDeactivated(user, data.stream, false);
-    this.eventEmitter.emit(EVENT_PARTICIPANT_REJOIN, { participant: data });
   }
 
+  /**
+   * Disable participant
+   * (stop including this user when fetching lists, etc)
+   * */
   async deactivateUser(user: string) {
     const data = await this.participantStore.get(user);
 
