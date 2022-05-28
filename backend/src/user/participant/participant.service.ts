@@ -53,11 +53,31 @@ export class ParticipantService {
     };
   }
 
+  async handleLeavingParticipant(user: string) {
+    const data = await this.participantStore.get(user);
+
+    if (!data) {
+      return;
+    }
+
+    //ignore bots
+    if (user.slice(0, 3) === 'bot') {
+      return this.removeUserFromStream(user, data.stream);
+    }
+
+    await this.participantStore.setDeactivated(user, data.stream, true);
+
+    this.eventEmitter.emit(EVENT_PARTICIPANT_LEAVE, {
+      user,
+      stream: data.stream,
+    });
+  }
+
   /**
    * Determines if the user tries to join or rejoin the stream
    * In case the user tries to rejoin, sync their previous role
    * */
-  async handleStreamJoin(
+  async handleJoiningParticipant(
     user: string,
     stream: string,
   ): Promise<IJoinStreamResponse> {
@@ -94,13 +114,12 @@ export class ParticipantService {
      * If rejoining...
      * */
 
-    await this.reactivateUser(user);
+    await this.participantStore.setDeactivated(user, prevStreamId, false);
 
     /**
      * Based on the previous role, get viewer or streamer params
      * */
     const { role } = oldParticipantData;
-    response.role = role;
 
     const reconnectMediaParams = await this.getReconnectMediaParams({
       user,
@@ -116,6 +135,7 @@ export class ParticipantService {
     response = {
       ...response,
       ...reconnectMediaParams,
+      role,
       streamers:
         role === 'viewer'
           ? response.streamers
@@ -182,44 +202,6 @@ export class ParticipantService {
       stream,
       videoEnabled,
       audioEnabled,
-    });
-  }
-
-  /**
-   * Enable participant
-   * (start including this user when fetching lists, etc)
-   * */
-  async reactivateUser(user: string) {
-    const data = await this.participantStore.get(user);
-
-    if (!data) {
-      return;
-    }
-
-    await this.participantStore.setDeactivated(user, data.stream, false);
-  }
-
-  /**
-   * Disable participant
-   * (stop including this user when fetching lists, etc)
-   * */
-  async deactivateUser(user: string) {
-    const data = await this.participantStore.get(user);
-
-    if (!data) {
-      return;
-    }
-
-    //ignore bots
-    if (user.slice(0, 3) === 'bot') {
-      return this.removeUserFromStream(user, data.stream);
-    }
-
-    await this.participantStore.setDeactivated(user, data.stream, true);
-
-    this.eventEmitter.emit(EVENT_PARTICIPANT_LEAVE, {
-      user,
-      stream: data.stream,
     });
   }
 

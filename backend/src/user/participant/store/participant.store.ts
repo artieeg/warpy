@@ -99,6 +99,10 @@ export class ParticipantStore implements OnModuleInit {
     return result;
   }
 
+  /**
+   * Enable/disable participant
+   * (start/stop including this user when fetching lists, etc)
+   * */
   async setDeactivated(user: string, stream: string, flag: boolean) {
     if (flag) {
       return this.redis

@@ -40,7 +40,7 @@ export class ParticipantController
     stream,
     user,
   }: IJoinStream): Promise<IJoinStreamResponse> {
-    return this.participant.handleStreamJoin(user, stream);
+    return this.participant.handleJoiningParticipant(user, stream);
   }
 
   @MessagePattern('participant.media-toggle')
@@ -62,7 +62,7 @@ export class ParticipantController
 
   @OnEvent(EVENT_USER_DISCONNECTED)
   async onUserDisconnect({ user }) {
-    await this.participant.deactivateUser(user);
+    await this.participant.handleLeavingParticipant(user);
   }
 
   @OnEvent(EVENT_STREAM_ENDED)
