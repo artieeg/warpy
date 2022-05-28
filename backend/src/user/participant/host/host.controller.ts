@@ -2,7 +2,6 @@ import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import {
-  OnNewParticipant,
   OnNewStream,
   OnParticipantLeave,
   OnParticipantRejoin,
@@ -11,7 +10,6 @@ import {
   OnViewerUpgraded,
 } from '@warpy-be/interfaces';
 import {
-  EVENT_NEW_PARTICIPANT,
   EVENT_PARTICIPANT_LEAVE,
   EVENT_PARTICIPANT_REJOIN,
   EVENT_STREAMER_DOWNGRADED_TO_VIEWER,
@@ -29,7 +27,6 @@ export class HostController
     OnParticipantRejoin,
     OnNewStream,
     OnStreamEnd,
-    OnNewParticipant,
     OnStreamerDowngradeToViewer,
     OnViewerUpgraded,
     OnParticipantLeave
