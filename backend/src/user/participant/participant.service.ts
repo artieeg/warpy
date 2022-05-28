@@ -55,7 +55,7 @@ export class ParticipantService {
    * Determines if the user tries to join or rejoin the stream
    * In case the user tries to rejoin, sync their previous role
    * */
-  async createNewParticipant(
+  async handleStreamJoin(
     user: string,
     stream: string,
   ): Promise<IJoinStreamResponse> {
@@ -63,13 +63,16 @@ export class ParticipantService {
 
     //Check if the record already exists
     const oldParticipantData = await this.participantStore.get(user);
+    const prevStreamId = oldParticipantData?.stream;
 
     const streamData = await this.getStreamData(stream);
 
-    response = { ...response, ...streamData, count: streamData.count + 1 };
+    response = { ...response, ...streamData };
 
-    //If the user is not rejoining, join as a viewer
-    if (oldParticipantData?.stream !== stream) {
+    /**
+     * If not rejoining, create a new viewer record
+     * */
+    if (prevStreamId !== stream) {
       const { mediaPermissionsToken, recvMediaParams } =
         await this.viewerService.createNewViewer(stream, user);
 
@@ -77,45 +80,81 @@ export class ParticipantService {
         ...response,
         mediaPermissionsToken,
         recvMediaParams,
+        count: response.count + 1, //+1 since we have joined
         role: 'viewer',
       };
 
       return response;
     }
 
-    const { token: mediaPermissionsToken, recvMediaParams } =
-      await this.media.getViewerParams(user, stream);
+    /**
+     * If rejoining...
+     * */
 
-    const { role, stream: prevStreamId } = oldParticipantData;
+    await this.reactivateUser(user);
 
-    response = { ...response, mediaPermissionsToken, recvMediaParams, role };
+    /**
+     * Based on the previous role, get viewer or streamer params
+     * */
+    const { role } = oldParticipantData;
+    response.role = role;
 
-    //TODO: check if host
+    let newRecvNodeId: string, newSendNodeId: string;
 
-    //If rejoining
-    if (stream === prevStreamId) {
-      await this.reactivateUser(user);
+    if (role === 'viewer') {
+      const {
+        token: mediaPermissionsToken,
+        recvMediaParams,
+        recvNodeId,
+      } = await this.media.getViewerParams(user, stream);
 
-      if (role !== 'viewer') {
-        const { sendMediaParams, mediaPermissionToken, sendNodeId } =
-          await this.media.updateMediaRole(oldParticipantData, role);
+      newRecvNodeId = recvNodeId;
 
-        /**
-         * The streamer may be assigned to a different send media node
-         * when rejoining
-         *
-         * In that case, update the sendNodeId in the store
-         * */
-        await this.participantStore.update(user, { sendNodeId });
+      response = {
+        ...response,
+        mediaPermissionsToken,
+        recvMediaParams,
+      };
+    } else {
+      /**
+       * TODO: count video streamers
+       * */
 
-        response = {
-          ...response,
-          sendMediaParams,
-          mediaPermissionsToken: mediaPermissionToken,
-          streamers: [...response.streamers, oldParticipantData],
-        };
-      }
+      const {
+        token: mediaPermissionsToken,
+        sendMediaParams,
+        recvMediaParams,
+        sendNodeId,
+        recvNodeId,
+      } = await this.media.getStreamerParams({
+        user,
+        roomId: stream,
+        audio: true,
+        video: role === 'streamer',
+      });
+
+      newSendNodeId = sendNodeId;
+      newRecvNodeId = recvNodeId;
+
+      response = {
+        ...response,
+        mediaPermissionsToken,
+        sendMediaParams,
+        recvMediaParams,
+        streamers: [...response.streamers, oldParticipantData],
+      };
     }
+
+    /**
+     * The streamer may be reassigned to different
+     * send/recv media nodes when rejoining
+     *
+     * In that case, update the sendNodeId in the store
+     * */
+    await this.participantStore.update(user, {
+      sendNodeId: newSendNodeId,
+      recvNodeId: newRecvNodeId,
+    });
 
     return response;
   }

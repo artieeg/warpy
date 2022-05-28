@@ -1,6 +1,7 @@
 import {
   OnHostReassign,
   OnNewParticipant,
+  OnParticipantRejoin,
   OnRoleChange,
   OnStreamEnd,
 } from '@warpy-be/interfaces';
@@ -12,6 +13,7 @@ import {
   EVENT_NEW_PARTICIPANT,
   EVENT_PARTICIPANT_KICKED,
   EVENT_PARTICIPANT_LEAVE,
+  EVENT_PARTICIPANT_REJOIN,
   EVENT_RAISE_HAND,
   EVENT_REACTIONS,
   EVENT_ROLE_CHANGE,
@@ -34,7 +36,12 @@ import {
 
 @Controller()
 export class BroadcastController
-  implements OnStreamEnd, OnNewParticipant, OnRoleChange, OnHostReassign
+  implements
+    OnStreamEnd,
+    OnParticipantRejoin,
+    OnNewParticipant,
+    OnRoleChange,
+    OnHostReassign
 {
   constructor(
     private broadcast: BroadcastService,
@@ -99,12 +106,21 @@ export class BroadcastController
     ]);
   }
 
-  @OnEvent(EVENT_NEW_PARTICIPANT, { async: true })
-  async onNewParticipant({ participant }) {
+  private async onParticipantJoin(participant: IParticipant) {
     return Promise.all([
       this.broadcast.broadcastNewParticipant(participant),
       this.store.addUserToList(participant.stream, participant.id),
     ]);
+  }
+
+  @OnEvent(EVENT_PARTICIPANT_REJOIN, { async: true })
+  async onParticipantRejoin({ participant }) {
+    return this.onParticipantJoin(participant);
+  }
+
+  @OnEvent(EVENT_NEW_PARTICIPANT, { async: true })
+  async onNewParticipant({ participant }) {
+    return this.onParticipantJoin(participant);
   }
 
   @OnEvent(EVENT_AWARD_SENT, { async: true })

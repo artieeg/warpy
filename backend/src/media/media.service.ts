@@ -116,10 +116,22 @@ export class MediaService {
     };
   }
 
-  async getStreamerParams({ user, roomId }: { user: string; roomId: string }) {
+  async getStreamerParams({
+    user,
+    roomId,
+    audio,
+    video,
+  }: {
+    user: string;
+    roomId: string;
+    audio: boolean;
+    video: boolean;
+  }) {
     const { token, recvNodeId, sendNodeId } = await this.getStreamerToken(
       user,
       roomId,
+      audio,
+      video,
     );
 
     const sendMediaParams = await this.createSendTransport({
@@ -138,7 +150,12 @@ export class MediaService {
     };
   }
 
-  async getStreamerToken(user: string, stream: string) {
+  async getStreamerToken(
+    user: string,
+    stream: string,
+    audio: boolean,
+    video: boolean,
+  ) {
     const [sendNodeId, recvNodeId] = await Promise.all([
       this.balancer.getSendNodeId(stream),
       this.balancer.getRecvNodeId(stream),
@@ -147,8 +164,8 @@ export class MediaService {
     const token = this.createPermissionToken({
       user,
       room: stream,
-      audio: true,
-      video: true,
+      audio,
+      video,
       sendNodeId,
       recvNodeId,
     });

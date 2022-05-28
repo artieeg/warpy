@@ -40,7 +40,7 @@ export class ParticipantController
     stream,
     user,
   }: IJoinStream): Promise<IJoinStreamResponse> {
-    return this.participant.createNewParticipant(user, stream);
+    return this.participant.handleStreamJoin(user, stream);
   }
 
   @MessagePattern('participant.media-toggle')

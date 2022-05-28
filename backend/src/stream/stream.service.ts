@@ -57,6 +57,8 @@ export class StreamService {
       await this.mediaService.getStreamerParams({
         user: owner,
         roomId: stream.id,
+        audio: true,
+        video: true,
       });
 
     /*
