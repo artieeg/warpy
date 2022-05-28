@@ -66,7 +66,7 @@ export class ParticipantService {
 
     const streamData = await this.getStreamData(stream);
 
-    response = { ...response, ...streamData };
+    response = { ...response, ...streamData, count: streamData.count + 1 };
 
     //If the user is not rejoining, join as a viewer
     if (data?.stream !== stream) {
