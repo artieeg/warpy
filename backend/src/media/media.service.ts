@@ -40,7 +40,7 @@ export class MediaService {
     const { stream, id, recvNodeId, sendNodeId: prevSendNodeId } = participant;
 
     let sendMedia: INewTransportResponse;
-    let sendNodeId = prevSendNodeId;
+    let sendNodeId = prevSendNodeId; //TODO: make use of prevSendNodeId?
 
     //If participant becomes audio/video streamer, assign them a send node
     if (role !== 'viewer') {

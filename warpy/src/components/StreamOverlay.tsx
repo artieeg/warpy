@@ -2,9 +2,8 @@ import {useStore} from '@app/store';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, useWindowDimensions, Animated} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {AwardButton} from './AwardButton';
 import {ChatButton} from './ChatButton';
-import {ClapButton} from './ClapsButton';
+import {ReactionSelectButton} from './ReactionSelectButton';
 import {IconButton} from './IconButton';
 import {InviteButton} from './InviteButton';
 import {RaiseHandButton} from './RaiseHandButton';
@@ -52,7 +51,7 @@ export const StreamOverlay = () => {
     if (role === 'streamer') {
       return {
         top: [
-          <ClapButton />,
+          <ReactionSelectButton />,
           <InviteButton />,
           <SwitchCameraButton />,
           /*
@@ -84,7 +83,7 @@ export const StreamOverlay = () => {
         ],
         bottom: [
           <ReactionEmitter disabled={!isVisible} />,
-          <ClapButton />,
+          <ReactionSelectButton />,
           <ToggleMicButton />,
           <ChatButton />,
           <ShowParticipantsButton style={styles.transparent} />,
@@ -105,7 +104,7 @@ export const StreamOverlay = () => {
         ],
         bottom: [
           <ReactionEmitter disabled={!isVisible} />,
-          <ClapButton />,
+          <ReactionSelectButton />,
           <RaiseHandButton />,
           <ChatButton />,
           <ShowParticipantsButton style={styles.transparent} />,

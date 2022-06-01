@@ -1,7 +1,7 @@
 import React from 'react';
 import {BaseSlideModal} from './BaseSlideModal';
 import {FlatList, StyleSheet, useWindowDimensions, View} from 'react-native';
-import {ReactionButton} from './ReactionButton';
+import {ReactionOptionButton} from './ReactionOptionButton';
 import {reactionCodes} from './Reaction';
 import {useStore} from '@app/store';
 
@@ -41,7 +41,7 @@ export const Reactions = (props: IReactionsProps) => {
         keyExtractor={item => item}
         renderItem={({item}) => (
           <ReactionContainer>
-            <ReactionButton
+            <ReactionOptionButton
               onPress={() => {
                 dispatchReactionChange(item);
                 dispatchModalClose();

@@ -5,7 +5,7 @@ import {Reaction} from './Reaction';
 import {RoundButton} from './RoundButton';
 import shallow from 'zustand/shallow';
 
-export const ClapButton = () => {
+export const ReactionSelectButton = () => {
   const [reaction, dispatchModalOpen] = useStore(
     state => [state.reaction, state.dispatchModalOpen],
     shallow,
