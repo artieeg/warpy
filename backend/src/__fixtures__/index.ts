@@ -1,5 +1,5 @@
 import { IFollow } from '@warpy-be/follow/follow.entity';
-import { IFullParticipant } from '@warpy-be/participant/participant.entity';
+import { IFullParticipant } from '@warpy-be/user/participant';
 import {
   IAward,
   IAwardModel,
@@ -45,7 +45,30 @@ export const createParticipantFixture = (
   recvNodeId: 'test-node-id',
   sendNodeId: 'test-node-id',
   isBanned: false,
-  hasLeftStream: false,
+  ...data,
+});
+
+export const createSendMediaParamsFixture = (data: Partial<any>): any => ({
+  roomId: 'test-room-id',
+  user: 'test-user-id',
+  routerRtpCapabilities: {
+    test: true,
+  },
+  sendTransportOptions: {
+    test: true,
+  },
+  ...data,
+});
+
+export const createRecvMediaParamsFixture = (data: Partial<any>): any => ({
+  roomId: 'test-room-id',
+  user: 'test-user-id',
+  routerRtpCapabilities: {
+    test: true,
+  },
+  recvTransportOptions: {
+    test: true,
+  },
   ...data,
 });
 
@@ -72,12 +95,14 @@ export const createFollowRecord = (data: Partial<IFollow>): IFollow => ({
 });
 
 export const createInviteFixture = (data: Partial<IInvite>): IInvite => ({
+  invitee_id: '1',
+  inviter_id: '2',
   invitee: createUserFixture({ id: '1' }),
   inviter: createUserFixture({ id: '2' }),
   id: 'test',
   stream: createStreamFixture({}),
-  accepted: false,
-  declined: false,
+  //accepted: false,
+  //declined: false,
   ...data,
 });
 
@@ -105,7 +130,8 @@ export const createAwardFixture = (data: Partial<IAward>): IAward => ({
   id: 'test',
   sender: createUserFixture({ id: 'sender' }),
   recipent: createUserFixture({ id: 'recipent' }),
-  award: createAwardModelFixture({ id: 'award' }),
+  visual: 'sth',
+  //award: createAwardModelFixture({ id: 'award' }),
   created_at: new Date().toISOString(),
   message: 'test',
   ...data,

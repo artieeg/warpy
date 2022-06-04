@@ -46,7 +46,7 @@ export class BotInstanceEntity {
     return BotInstanceEntity.toBotInstanceDTO(data);
   }
 
-  async getBotInstante(bot: string, stream: string) {
+  async getBotInstance(bot: string, stream: string) {
     const data = await this.prismaService.botInstance.findFirst({
       where: {
         bot_id: bot,

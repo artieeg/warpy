@@ -14,8 +14,8 @@ import { NotificationModule } from './notification/notification.module';
 import { StreamModule } from './stream/stream.module';
 import { TokenModule } from './token/token.module';
 import { UserModule } from './user/user.module';
-import { WaitlistModule } from './waitlist/waitlist.module';
-import { MailModule } from './mail/mail.module';
+//import { WaitlistModule } from './waitlist/waitlist.module';
+//import { MailModule } from './mail/mail.module';
 import { MessageModule } from './message/message.module';
 import { TimerModule } from './shared/modules/timer/timer.module';
 import { SyncModule } from './sync/sync.module';
@@ -29,38 +29,40 @@ import { UserListModule } from './user-list/user-list.module';
 import { InviteModule } from './invite/invite.module';
 import { CategoryModule } from './categories/categories.module';
 
+export const appModuleImports = [
+  ConfigModule.forRoot({
+    load: [configuration],
+    isGlobal: true,
+  }),
+  PrismaModule,
+  AwardModule,
+  CategoryModule,
+  TimerModule,
+  BroadcastModule,
+  MediaModule,
+  GifModule,
+  FeedModule,
+  UserModule,
+  UserListModule,
+  TokenModule,
+  FriendFeedModule,
+  StreamModule,
+  //MailModule,
+  NatsModule,
+  BotsModule,
+  ChatModule,
+  MessageModule,
+  NotificationModule,
+  //WaitlistModule,
+  SyncModule,
+  InviteModule,
+  BlockModule,
+  FollowModule,
+  EventEmitterModule.forRoot(),
+];
+
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      load: [configuration],
-      isGlobal: true,
-    }),
-    PrismaModule,
-    AwardModule,
-    CategoryModule,
-    TimerModule,
-    BroadcastModule,
-    MediaModule,
-    GifModule,
-    FeedModule,
-    UserModule,
-    UserListModule,
-    TokenModule,
-    FriendFeedModule,
-    StreamModule,
-    MailModule,
-    NatsModule,
-    BotsModule,
-    ChatModule,
-    MessageModule,
-    NotificationModule,
-    WaitlistModule,
-    SyncModule,
-    InviteModule,
-    BlockModule,
-    FollowModule,
-    EventEmitterModule.forRoot(),
-  ],
+  imports: appModuleImports,
   controllers: [AppController],
   providers: [AppService],
 })

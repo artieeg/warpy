@@ -1,5 +1,4 @@
 import { BotsModule } from '@warpy-be/bots/bots.module';
-import { MediaModule } from '@warpy-be/media/media.module';
 import { TokenService } from '@warpy-be/token/token.service';
 import { Module } from '@nestjs/common';
 import { ActiveSpeakerModule } from './active-speaker/active-speaker.module';
@@ -22,7 +21,6 @@ import { StreamerModule } from './streamer/streamer.module';
     ParticipantCommonModule,
     HostModule,
     BotsModule,
-    MediaModule,
     TokenService,
   ],
   providers: [ParticipantService],

@@ -32,7 +32,6 @@ export class ParticipantController
   @MessagePattern('participant.leave')
   async onParticipantLeave({ user, stream }: ILeaveStreamRequest) {
     await this.participant.removeUserFromStream(user, stream);
-    this.eventEmitter.emit(EVENT_PARTICIPANT_LEAVE, { user, stream });
   }
 
   @MessagePattern('stream.join')

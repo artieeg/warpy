@@ -83,7 +83,7 @@
     "preset": "ts-jest",
     "timers": "fake",
     "moduleNameMapper": {
-      "^@backend_2/(.*)$": "<rootDir>/$1"
+      "^@warpy-be/(.*)$": "<rootDir>/$1"
     },
     "setupFilesAfterEnv": [
       "./jest.setup.js"

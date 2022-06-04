@@ -10,7 +10,12 @@ export interface OnStreamEnd {
 }
 
 export interface OnParticipantLeave {
-  onParticipantLeave: (data: { user: string; stream: string }) => Promise<any>;
+  onParticipantLeave: (data: {
+    user: string;
+    stream: string;
+    sendNodeId?: string;
+    recvNodeId: string;
+  }) => Promise<any>;
 }
 
 export interface OnNewUser {
@@ -62,8 +67,11 @@ export interface OnHostReassign {
 }
 
 export interface OnNewStream {
-  onNewStream: (data: { stream: IStream, hostNodeIds: {
-    sendNodeId: string;
-    recvNodeId: string
-  } }) => Promise<any>;
+  onNewStream: (data: {
+    stream: IStream;
+    hostNodeIds: {
+      sendNodeId: string;
+      recvNodeId: string;
+    };
+  }) => Promise<any>;
 }

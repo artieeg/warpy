@@ -225,15 +225,20 @@ export class MediaService {
     stream,
     sendNodeId,
     recvNodeId,
-  }: IFullParticipant) {
+  }: {
+    id: string;
+    stream: string;
+    sendNodeId?: string;
+    recvNodeId?: string;
+  }) {
     const [sendNodeResponse, recvNodeResponse] = await Promise.all([
       sendNodeId ? this.kickFromRoom(id, stream, sendNodeId) : null,
       recvNodeId ? this.kickFromRoom(id, stream, recvNodeId) : null,
     ]);
 
     if (
-      (sendNodeResponse && sendNodeResponse.status !== 'ok') ||
-      (recvNodeResponse && recvNodeResponse.status !== 'ok')
+      sendNodeResponse?.status !== 'ok' ||
+      recvNodeResponse?.status !== 'ok'
     ) {
       throw new InternalError();
     }

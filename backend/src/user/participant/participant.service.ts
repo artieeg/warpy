@@ -1,6 +1,5 @@
 import { BotInstanceEntity } from '@warpy-be/bots/bot-instance.entity';
 import { MaxVideoStreamers } from '@warpy-be/errors';
-import { MediaService } from '@warpy-be/media/media.service';
 import {
   EVENT_PARTICIPANT_LEAVE,
   EVENT_PARTICIPANT_REJOIN,
@@ -26,7 +25,6 @@ export class ParticipantService {
   constructor(
     private participantStore: ParticipantStore,
     private botInstanceEntity: BotInstanceEntity,
-    private media: MediaService,
     private eventEmitter: EventEmitter2,
     private viewerService: ViewerService,
     private hostService: HostService,
@@ -65,6 +63,7 @@ export class ParticipantService {
       return this.removeUserFromStream(user, data.stream);
     }
 
+    //TODO: handle in store controller
     await this.participantStore.setDeactivated(user, data.stream, true);
 
     this.eventEmitter.emit(EVENT_PARTICIPANT_LEAVE, {
@@ -114,6 +113,7 @@ export class ParticipantService {
      * If rejoining...
      * */
 
+    //TODO: handle in store controller
     await this.participantStore.setDeactivated(user, prevStreamId, false);
 
     /**
@@ -206,28 +206,24 @@ export class ParticipantService {
   }
 
   async removeUserFromStream(user: string, stream?: string) {
-    const userToRemove = await this.participantStore.get(user);
-
-    if (userToRemove) {
-      await this.media.removeFromNodes(userToRemove);
-    }
-
     const isBot = user.slice(0, 3) === 'bot';
 
+    let id = user;
+
     if (isBot) {
-      const instance = await this.botInstanceEntity.getBotInstante(
+      const instance = await this.botInstanceEntity.getBotInstance(
         user,
         stream,
       );
 
-      await this.deleteUserParticipant(instance.id);
-    } else {
-      await this.deleteUserParticipant(user);
+      id = instance.id;
     }
+
+    await this.deleteUserParticipant(id);
 
     this.eventEmitter.emit(EVENT_PARTICIPANT_LEAVE, {
       user,
-      stream: userToRemove.stream,
+      stream,
     });
   }
 
