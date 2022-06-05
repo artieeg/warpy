@@ -1,5 +1,4 @@
 import { InternalError } from '@warpy-be/errors';
-import { IFullParticipant } from '@warpy-be/user/participant';
 import { Injectable } from '@nestjs/common';
 import {
   ICreateTransport,
@@ -10,10 +9,12 @@ import {
   INewMediaRoomData,
   INewTransportResponse,
   Roles,
+  IParticipant,
 } from '@warpy/lib';
 import * as jwt from 'jsonwebtoken';
 import { NatsService } from '../nats/nats.service';
 import { MediaBalancerService } from './media-balancer/media-balancer.service';
+import { ParticipantNodeAssignerStore } from './participant-node-assigner/participant-node-assigner.store';
 
 const secret = process.env.MEDIA_JWT_SECRET || 'test-secret';
 
@@ -21,6 +22,7 @@ const secret = process.env.MEDIA_JWT_SECRET || 'test-secret';
 export class MediaService {
   constructor(
     private balancer: MediaBalancerService,
+    private participantNodeAssigner: ParticipantNodeAssignerStore,
     private nc: NatsService,
   ) {}
 
@@ -36,21 +38,29 @@ export class MediaService {
     return response as INewMediaRoomData;
   }
 
-  async updateMediaRole(participant: IFullParticipant, role: Roles) {
-    const { stream, id, recvNodeId, sendNodeId: prevSendNodeId } = participant;
+  async updateMediaRole(participant: IParticipant, role: Roles) {
+    const { stream, id } = participant;
 
-    let sendMedia: INewTransportResponse;
+    const { recv: recvNodeId, send: prevSendNodeId } =
+      await this.participantNodeAssigner.get(id);
+
+    let sendMediaParams: INewTransportResponse;
     let sendNodeId = prevSendNodeId; //TODO: make use of prevSendNodeId?
 
     //If participant becomes audio/video streamer, assign them a send node
     if (role !== 'viewer') {
       sendNodeId = await this.balancer.getSendNodeId(stream);
 
-      sendMedia = await this.createSendTransport({
+      sendMediaParams = await this.createSendTransport({
         roomId: stream,
         speaker: id,
       });
     }
+
+    await this.participantNodeAssigner.set(id, {
+      send: sendNodeId,
+      recv: recvNodeId,
+    });
 
     const token = this.createPermissionToken({
       audio: role !== 'viewer',
@@ -63,8 +73,7 @@ export class MediaService {
 
     return {
       mediaPermissionToken: token,
-      sendMediaParams: sendMedia,
-      sendNodeId,
+      sendMediaParams,
     };
   }
 
@@ -101,17 +110,23 @@ export class MediaService {
     return recvMediaParams;
   }
 
-  async getBotParams(recvNodeId: string, user: string, roomId: string) {
-    return this.getRecvParams(recvNodeId, user, roomId);
+  async getBotParams(user: string, roomId: string) {
+    const { recv } = await this.participantNodeAssigner.get(user);
+
+    return this.getRecvParams(recv, user, roomId);
   }
 
   async getViewerParams(user: string, roomId: string) {
     const { token, recvNodeId } = await this.getViewerToken(user, roomId);
     const recvMediaParams = await this.getRecvParams(recvNodeId, user, roomId);
 
+    await this.participantNodeAssigner.set(user, {
+      recv: recvNodeId,
+      send: undefined,
+    });
+
     return {
       token,
-      recvNodeId,
       recvMediaParams,
     };
   }
@@ -141,10 +156,13 @@ export class MediaService {
 
     const recvMediaParams = await this.getRecvParams(recvNodeId, user, roomId);
 
+    await this.participantNodeAssigner.set(user, {
+      recv: recvNodeId,
+      send: sendNodeId,
+    });
+
     return {
       token,
-      recvNodeId,
-      sendNodeId,
       recvMediaParams,
       sendMediaParams,
     };
@@ -220,27 +238,24 @@ export class MediaService {
     return response as IKickedFromMediaRoom;
   }
 
-  async removeFromNodes({
-    id,
-    stream,
-    sendNodeId,
-    recvNodeId,
-  }: {
-    id: string;
-    stream: string;
-    sendNodeId?: string;
-    recvNodeId?: string;
-  }) {
+  async removeFromNodes({ id, stream }: { id: string; stream: string }) {
+    //Fetch node ids the user has been assigned to
+    const { send, recv } = await this.participantNodeAssigner.get(id);
+
+    //Try to kick the user from those nodes
     const [sendNodeResponse, recvNodeResponse] = await Promise.all([
-      sendNodeId ? this.kickFromRoom(id, stream, sendNodeId) : null,
-      recvNodeId ? this.kickFromRoom(id, stream, recvNodeId) : null,
+      send ? this.kickFromRoom(id, stream, send) : null,
+      recv ? this.kickFromRoom(id, stream, recv) : null,
     ]);
 
+    //check if we got responses from send/recv and the response status
     if (
-      sendNodeResponse?.status !== 'ok' ||
-      recvNodeResponse?.status !== 'ok'
+      (sendNodeResponse && sendNodeResponse.status !== 'ok') ||
+      (recvNodeResponse && recvNodeResponse.status !== 'ok')
     ) {
       throw new InternalError();
+    } else {
+      await this.participantNodeAssigner.del(id);
     }
   }
 

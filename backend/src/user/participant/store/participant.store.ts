@@ -1,14 +1,8 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { IParticipant, Roles } from '@warpy/lib';
+import { IParticipant } from '@warpy/lib';
 import { ConfigService } from '@nestjs/config';
 import IORedis, { Pipeline } from 'ioredis';
 import { flatten } from '@warpy-be/utils/redis';
-
-export interface IFullParticipant extends IParticipant {
-  recvNodeId: string;
-  sendNodeId: string | null;
-  isBanned: boolean;
-}
 
 const PREFIX_VIEWERS = 'viewer_';
 const PREFIX_STREAMERS = 'streamers_';
@@ -26,7 +20,7 @@ export class ParticipantStore implements OnModuleInit {
     this.redis = new IORedis(this.configService.get('participantStoreAddr'));
   }
 
-  static toDTO(data: any): IFullParticipant {
+  static toDTO(data: any): IParticipant {
     return {
       ...data,
       videoEnabled: data.videoEnabled === 'true',
@@ -78,7 +72,7 @@ export class ParticipantStore implements OnModuleInit {
     return pipe.exec();
   }
 
-  async list(ids: string[]): Promise<IFullParticipant[]> {
+  async list(ids: string[]): Promise<IParticipant[]> {
     const pipe = this.redis.pipeline();
 
     for (const id of ids) {
@@ -225,7 +219,7 @@ export class ParticipantStore implements OnModuleInit {
 
   private async write(
     key: string,
-    data: Partial<IFullParticipant>,
+    data: Partial<IParticipant>,
     pipeline?: Pipeline,
   ) {
     const args = flatten(data);
@@ -233,7 +227,7 @@ export class ParticipantStore implements OnModuleInit {
     return (pipeline || this.redis).hmset(key, ...args);
   }
 
-  async update(id: string, data: Partial<IFullParticipant>) {
+  async update(id: string, data: Partial<IParticipant>) {
     const pipe = this.redis.pipeline();
     this.write(id, data, pipe);
     pipe.hgetall(id);
@@ -285,7 +279,7 @@ export class ParticipantStore implements OnModuleInit {
     return this.list(ids);
   }
 
-  async add(data: IFullParticipant) {
+  async add(data: IParticipant) {
     const { stream, id } = data;
 
     const pipe = this.redis.pipeline();

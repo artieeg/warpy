@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { StreamNodeAssignerService } from './node-assigner.service';
+import { StreamNodeAssignerService } from './stream-node-assigner.service';
 
 @Controller()
 export class StreamNodeAssignerController {

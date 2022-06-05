@@ -9,6 +9,7 @@ export interface IBaseParticipant extends IEntity {
   audioEnabled?: boolean;
   videoEnabled?: boolean;
   isBot: boolean;
+  isBanned: boolean;
 }
 
 export interface IParticipant extends IBaseUser, IBaseParticipant {

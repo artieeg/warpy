@@ -9,7 +9,7 @@ import {
   EVENT_NEW_PARTICIPANT,
 } from '@warpy-be/utils';
 import { IParticipant } from '@warpy/lib';
-import { IFullParticipant, ParticipantStore } from '../store';
+import { ParticipantStore } from '../store';
 import { HostStore } from './host.store';
 
 @Injectable()
@@ -30,7 +30,7 @@ export class HostService {
     return this.hostStore.getHostId(stream);
   }
 
-  async handlePossibleHost(participant: IFullParticipant) {
+  async handlePossibleHost(participant: IParticipant) {
     const { role, id, stream } = participant;
 
     //If user has been downgraded to viewer, remove him from the list
@@ -134,24 +134,12 @@ export class HostService {
   /**
    * Initializes the host data when a new stream starts
    * */
-  async initStreamHost({
-    user,
-    stream,
-    sendNodeId,
-    recvNodeId,
-  }: {
-    user: string;
-    stream: string;
-    sendNodeId: string;
-    recvNodeId: string;
-  }) {
+  async initStreamHost({ user, stream }: { user: string; stream: string }) {
     const streamer = await this.userEntity.findById(user);
 
-    const host: IFullParticipant = {
+    const host: IParticipant = {
       ...streamer,
       role: 'streamer',
-      recvNodeId,
-      sendNodeId,
       audioEnabled: true,
       videoEnabled: true,
       isBanned: false,

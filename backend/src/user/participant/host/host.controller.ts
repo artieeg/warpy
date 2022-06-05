@@ -48,14 +48,12 @@ export class HostController
   }
 
   @OnEvent(EVENT_STREAM_CREATED)
-  async onNewStream({ stream, hostNodeIds: { recvNodeId, sendNodeId } }) {
+  async onNewStream({ stream }) {
     const { owner, id } = stream;
 
     await this.hostService.initStreamHost({
       user: owner,
       stream: id,
-      recvNodeId,
-      sendNodeId,
     });
   }
 

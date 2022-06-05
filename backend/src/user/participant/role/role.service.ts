@@ -55,11 +55,8 @@ export class ParticipantRoleService {
     const oldUserData = await this.participant.get(userToUpdate);
 
     //receive new media token,
-    //sendNodeId and send transport data (if upgrading from viewer)
-    const { sendNodeId, ...rest } = await this.media.updateMediaRole(
-      oldUserData,
-      role,
-    );
+    //send transport data (if upgrading from viewer)
+    const { ...rest } = await this.media.updateMediaRole(oldUserData, role);
 
     let response = {
       role,
@@ -69,7 +66,6 @@ export class ParticipantRoleService {
     //Update participant record with a new role
     //and a new send node id (if changed)
     const updatedUser = await this.participant.update(userToUpdate, {
-      sendNodeId,
       role,
 
       //mark video as disabled if role set to speaker or viewer

@@ -1,5 +1,5 @@
 import { IParticipant, IStream, IUser } from '@warpy/lib';
-import { IFullParticipant } from './user/participant';
+import { IParticipant } from './user/participant';
 
 export interface OnUserDisconnect {
   onUserDisconnect: (data: { user: string }) => Promise<any>;
@@ -10,12 +10,7 @@ export interface OnStreamEnd {
 }
 
 export interface OnParticipantLeave {
-  onParticipantLeave: (data: {
-    user: string;
-    stream: string;
-    sendNodeId?: string;
-    recvNodeId: string;
-  }) => Promise<any>;
+  onParticipantLeave: (data: { user: string; stream: string }) => Promise<any>;
 }
 
 export interface OnNewUser {
@@ -38,16 +33,16 @@ export interface OnUserConnect {
 }
 
 export interface OnRoleChange {
-  onRoleChange: (data: { participant: IFullParticipant }) => Promise<any>;
+  onRoleChange: (data: { participant: IParticipant }) => Promise<any>;
 }
 
 export interface OnViewerUpgraded {
-  onViewerUpgraded: (data: { participant: IFullParticipant }) => Promise<any>;
+  onViewerUpgraded: (data: { participant: IParticipant }) => Promise<any>;
 }
 
 export interface OnStreamerDowngradeToViewer {
   onStreamerDowngradeToViewer: (data: {
-    participant: IFullParticipant;
+    participant: IParticipant;
   }) => Promise<any>;
 }
 
@@ -62,7 +57,7 @@ export interface OnHostReassignFailed {
 export interface OnHostReassign {
   onHostReassign: (data: {
     stream: string;
-    host: IFullParticipant;
+    host: IParticipant;
   }) => Promise<any>;
 }
 

@@ -7,15 +7,15 @@ import {
 } from '@warpy-be/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { IFullParticipant, ParticipantStore } from './store';
+import { ParticipantStore } from './store';
 import { ViewerService } from './viewer/viewer.service';
-import { IJoinStreamResponse, Roles } from '@warpy/lib';
+import { IJoinStreamResponse, IParticipant, Roles } from '@warpy/lib';
 import { HostService } from './host/host.service';
 import { StreamerService } from './streamer/streamer.service';
 
 type StreamData = {
-  streamers: IFullParticipant[];
-  raisedHands: IFullParticipant[];
+  streamers: IParticipant[];
+  raisedHands: IParticipant[];
   count: number;
   host: string;
 };

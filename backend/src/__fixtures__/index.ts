@@ -1,5 +1,5 @@
 import { IFollow } from '@warpy-be/follow/follow.entity';
-import { IFullParticipant } from '@warpy-be/user/participant';
+import { IParticipant } from '@warpy-be/user/participant';
 import {
   IAward,
   IAwardModel,
@@ -35,8 +35,8 @@ export const createUserFixture = (data: Partial<IUser>): IUser => {
 };
 
 export const createParticipantFixture = (
-  data: Partial<IFullParticipant>,
-): IFullParticipant => ({
+  data: Partial<IParticipant>,
+): IParticipant => ({
   ...createUserFixture(data),
   isBot: false,
   stream: 'test-stream-id',

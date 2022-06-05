@@ -2,12 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { MediaService } from '@warpy-be/media/media.service';
 import { Roles } from '@warpy/lib';
 import { ParticipantBanService } from '../ban/ban.service';
-import { ParticipantStore } from '../store';
 
 @Injectable()
 export class StreamerService {
   constructor(
-    private store: ParticipantStore,
     private media: MediaService,
     private bans: ParticipantBanService,
   ) {}
@@ -23,19 +21,11 @@ export class StreamerService {
       token: mediaPermissionsToken,
       sendMediaParams,
       recvMediaParams,
-      sendNodeId,
-      recvNodeId,
     } = await this.media.getStreamerParams({
       user,
       roomId: stream,
       audio: true,
       video: role === 'streamer',
-    });
-
-    //Update recv/send nodes
-    await this.store.update(user, {
-      recvNodeId,
-      sendNodeId,
     });
 
     return { sendMediaParams, recvMediaParams, mediaPermissionsToken };

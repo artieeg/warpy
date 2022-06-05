@@ -31,12 +31,6 @@ export class StreamService {
     category: string,
   ): Promise<INewStreamResponse> {
     const stream_id = cuid();
-
-    /*
-    const { token, recvNodeId, sendNodeId } =
-      await this.mediaService.getStreamerToken(owner, stream_id);
-      */
-
     const stream = await this.streamEntity.create({
       id: stream_id,
       owner_id: owner,
@@ -47,13 +41,12 @@ export class StreamService {
       reactions: 0,
     });
 
-    //const media =
     await this.mediaService.createNewRoom({
       roomId: stream.id,
       host: owner,
     });
 
-    const { token, recvMediaParams, sendMediaParams, recvNodeId, sendNodeId } =
+    const { token, recvMediaParams, sendMediaParams } =
       await this.mediaService.getStreamerParams({
         user: owner,
         roomId: stream.id,
@@ -61,20 +54,8 @@ export class StreamService {
         video: true,
       });
 
-    /*
-    const recvMediaParams = await this.mediaService.getViewerParams(
-      recvNodeId,
-      owner,
-      stream.id,
-    );
-    */
-
     this.eventEmitter.emit(EVENT_STREAM_CREATED, {
       stream,
-      hostNodeIds: {
-        sendNodeId,
-        recvNodeId,
-      },
     });
 
     return {

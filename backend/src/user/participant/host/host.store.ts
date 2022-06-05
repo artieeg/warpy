@@ -1,8 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import IORedis, { Redis } from 'ioredis';
-import { IFullParticipant } from '..';
-import { IParticipant } from '../../../../../lib';
+import { IParticipant } from '@warpy/lib';
 import { ParticipantStore } from '../store';
 
 const PREFIX_HOST_OF_STREAM = 'host_of_';
@@ -30,9 +29,7 @@ export class HostStore implements OnModuleInit {
     return !!hostedStream;
   }
 
-  async getRandomPossibleHost(
-    stream: string,
-  ): Promise<IFullParticipant | null> {
+  async getRandomPossibleHost(stream: string): Promise<IParticipant | null> {
     const id = await this.redis.srandmember(PREFIX_POSSIBLE_HOST + stream);
     const host = await this.getHostInfo(id);
 
@@ -45,7 +42,7 @@ export class HostStore implements OnModuleInit {
     return id;
   }
 
-  async addPossibleHost(host: IFullParticipant) {
+  async addPossibleHost(host: IParticipant) {
     const { id, stream } = host;
 
     this.redis
@@ -113,7 +110,7 @@ export class HostStore implements OnModuleInit {
     return this.del(stream, host);
   }
 
-  async getHostInfo(host: string): Promise<IFullParticipant | null> {
+  async getHostInfo(host: string): Promise<IParticipant | null> {
     const data = await this.redis.hgetall(PREFIX_USER_INFO + host);
 
     if (!data.id) {

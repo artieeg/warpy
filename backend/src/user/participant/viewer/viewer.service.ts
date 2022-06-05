@@ -4,7 +4,8 @@ import { EVENT_NEW_PARTICIPANT, EVENT_RAISE_HAND } from '@warpy-be/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ParticipantBanService } from '../ban/ban.service';
-import { IFullParticipant, ParticipantStore } from '../store';
+import { ParticipantStore } from '../store';
+import { IParticipant } from '@warpy/lib';
 
 @Injectable()
 export class ViewerService {
@@ -35,16 +36,8 @@ export class ViewerService {
   async reconnectOldViewer(user: string, stream: string) {
     await this.bans.checkUserBanned(user, stream);
 
-    const {
-      token: mediaPermissionsToken,
-      recvMediaParams,
-      recvNodeId,
-    } = await this.media.getViewerParams(user, stream);
-
-    //Sync the new recv node
-    await this.participant.update(user, {
-      recvNodeId,
-    });
+    const { token: mediaPermissionsToken, recvMediaParams } =
+      await this.media.getViewerParams(user, stream);
 
     return { mediaPermissionsToken, recvMediaParams };
   }
@@ -55,16 +48,16 @@ export class ViewerService {
   ): Promise<{ mediaPermissionsToken: string; recvMediaParams: any }> {
     await this.bans.checkUserBanned(viewerId, stream);
 
-    const { recvMediaParams, token, recvNodeId } =
-      await this.media.getViewerParams(viewerId, stream);
+    const { recvMediaParams, token } = await this.media.getViewerParams(
+      viewerId,
+      stream,
+    );
 
     const user = await this.user.get(viewerId);
-    const viewer: IFullParticipant = {
+    const viewer: IParticipant = {
       ...user,
       stream,
       role: 'viewer',
-      recvNodeId,
-      sendNodeId: null,
       isBanned: false,
       isBot: false,
     };
