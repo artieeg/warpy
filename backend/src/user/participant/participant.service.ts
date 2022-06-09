@@ -116,11 +116,11 @@ export class ParticipantService {
     //TODO: handle in store controller
     await this.participantStore.setDeactivated(user, prevStreamId, false);
 
+    const { role } = oldParticipantData;
+
     /**
      * Based on the previous role, get viewer or streamer params
      * */
-    const { role } = oldParticipantData;
-
     const reconnectMediaParams = await this.getReconnectMediaParams({
       user,
       stream,

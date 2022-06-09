@@ -1,5 +1,4 @@
 import { IParticipant, IStream, IUser } from '@warpy/lib';
-import { IParticipant } from './user/participant';
 
 export interface OnUserDisconnect {
   onUserDisconnect: (data: { user: string }) => Promise<any>;
