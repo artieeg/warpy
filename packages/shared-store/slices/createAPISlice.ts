@@ -86,6 +86,10 @@ export const createAPISlice = (
     api.stream.onStreamEnd(({ stream }) => {
       onStreamEnd(stream);
       get().dispatchToastMessage("the stream has ended");
+
+      set({
+        feed: get().feed.filter((candidate) => candidate.id !== stream),
+      });
     });
 
     api.stream.onStreamIdAvailable(({ id }) => {
