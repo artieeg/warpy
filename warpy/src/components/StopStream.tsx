@@ -53,6 +53,7 @@ export const StopStream = () => {
             },
           },
         ],
+        {cancelable: true},
       );
     } else {
       await useStore.getState().dispatchStreamLeave({
@@ -61,7 +62,7 @@ export const StopStream = () => {
       });
       navigation.navigate('Feed');
     }
-  }, [navigation, api, stream]);
+  }, [navigation, api, stream, isHost]);
 
   return (
     <IconButton onPress={onLeave} color="#ffffff" size={30} name="hand-wave" />
