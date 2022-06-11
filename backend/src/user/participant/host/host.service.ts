@@ -104,11 +104,9 @@ export class HostService {
     //make user offline
     await this.hostStore.setHostJoinedStatus(user, false);
 
-    //wait 15 seconds and check if the host has reconnected
+    //wait 20 seconds and check if the host has reconnected
     this.timerService.setTimer(async () => {
       const hostHasRejoined = await this.hostStore.isHostJoined(user);
-
-      console.log({ hostHasRejoined });
 
       //if the user has rejoined, don't do anything else
       if (hostHasRejoined) {

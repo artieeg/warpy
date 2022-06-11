@@ -1,8 +1,8 @@
+import React from 'react';
 import {FriendFeed, StreamFeedView} from '@app/components';
 import {ScreenHeader} from '@app/components/ScreenHeader';
 import {StreamCategoryList} from '@app/components/StreamCategoryList';
 import {useFeed} from '@app/hooks';
-import React, {useEffect} from 'react';
 import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {TextButton} from '@warpy/components';
 import {useNavigation} from '@react-navigation/native';
@@ -13,16 +13,10 @@ import Animated, {
   useSharedValue,
   Layout,
 } from 'react-native-reanimated';
-import {useStore, useStoreShallow} from '@app/store';
 
 export const Feed = () => {
   const feed = useFeed();
   const navigation = useNavigation();
-  const [isConnected] = useStoreShallow(store => [store.isConnected]);
-
-  useEffect(() => {
-    useStore.getState().dispatchToastMessage('isConnected: ' + isConnected);
-  }, [isConnected]);
 
   const onStartStream = React.useCallback(() => {
     navigation.navigate('NewStream');

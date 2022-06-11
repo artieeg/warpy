@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import IORedis from 'ioredis';
 
 const PREFIX_STREAM = 'stream_';
 
 @Injectable()
-export class PreviousStreamCacheService {
+export class PreviousStreamCacheService implements OnModuleInit {
   client: IORedis.Redis;
 
   constructor(private configService: ConfigService) {}
