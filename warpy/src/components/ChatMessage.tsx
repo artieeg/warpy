@@ -20,7 +20,7 @@ export const ChatMessage = React.memo((props: IChatMessageProps) => {
             {sender.username}
           </Text>
 
-          <Text size="xsmall" weight="bold">
+          <Text size="xsmall" weight="bold" color="white">
             {message}
           </Text>
         </View>

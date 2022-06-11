@@ -19,10 +19,10 @@ export const ChatMessageInput = () => {
         style={[
           textStyles.bold,
           textStyles.xsmall,
-          {color: colors.green},
+          {color: colors.white},
           styles.input,
         ]}
-        placeholderTextColor="#fff"
+        placeholderTextColor={colors.boulder}
         placeholder="type your message"
       />
       <SendMessageButton
