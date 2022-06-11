@@ -1,26 +1,37 @@
-import {IChatMessage} from '@warpy/lib';
-import produce from 'immer';
-import {StoreSlice} from '../types';
-import {IStore} from '../useStore';
+import { IChatMessage } from "@warpy/lib";
+import produce from "immer";
+import { StoreSlice } from "../types";
+import { IStore } from "../useStore";
 
 export interface IChatDispatchers {
   dispatchChatMessages: (messages: IChatMessage[]) => void;
-  dispatchChatSendMessage: (message: string) => Promise<void>;
+  dispatchChatSendMessage: () => Promise<void>;
   dispatchChatClearMessages: () => void;
+  dispatchSetChatInput: (msg: string) => void;
 }
 
 export const createChatDispatchers: StoreSlice<IChatDispatchers> = (
   set,
-  get,
+  get
 ) => ({
-  async dispatchChatSendMessage(message) {
-    const {api} = get();
-    const {message: newChatMessage} = await api.stream.sendChatMessage(message);
+  async dispatchSetChatInput(msg) {
+    set({
+      messageInputValue: msg,
+    });
+  },
+
+  async dispatchChatSendMessage() {
+    const { api, messageInputValue } = get();
+
+    const { message: newChatMessage } = await api.stream.sendChatMessage(
+      messageInputValue
+    );
 
     set(
-      produce<IStore>(state => {
+      produce<IStore>((state) => {
         state.messages = [newChatMessage, ...state.messages];
-      }),
+        state.messageInputValue = "";
+      })
     );
   },
 
@@ -32,9 +43,9 @@ export const createChatDispatchers: StoreSlice<IChatDispatchers> = (
 
   dispatchChatMessages(messages) {
     set(
-      produce<IStore>(state => {
+      produce<IStore>((state) => {
         state.messages = [...messages, ...state.messages];
-      }),
+      })
     );
   },
 });
