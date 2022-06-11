@@ -31,6 +31,12 @@ export class PreviousStreamCacheService {
   async set(user: string, stream: string) {
     const pipe = this.client.pipeline();
 
+    //remove user from old stream index (if exists)
+    const oldPrevStreamValue = await this.get(user);
+    if (oldPrevStreamValue) {
+      pipe.srem(PREFIX_STREAM + oldPrevStreamValue, user);
+    }
+
     pipe.set(user, stream);
     pipe.sadd(PREFIX_STREAM + stream, user);
 
