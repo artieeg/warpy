@@ -1,15 +1,7 @@
 import { MediaClient } from "@warpy/media";
-import { Transport, Producer, Consumer } from "mediasoup-client/lib/types";
+import { Transport, Producer } from "mediasoup-client/lib/types";
+import { MediaStreamMap } from "../app/types";
 import { StoreSlice } from "../types";
-
-export type MediaStreamMap = Record<
-  string,
-  {
-    consumer: Consumer;
-    stream: any;
-    enabled: boolean;
-  }
->;
 
 export interface IMediaSlice {
   mediaClient?: MediaClient;
