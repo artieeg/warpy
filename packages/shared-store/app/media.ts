@@ -7,16 +7,22 @@ import { MediaStreamMap, StateUpdate } from "./types";
 
 export const getMediaService = (state: IStore) => {
   return {
-    async initSendMedia(
-      token: string,
-      role: Roles,
-      streamMediaImmediately: boolean
-    ): Promise<StateUpdate> {
-      if (role === "speaker") {
-        return this.stream(token, "audio", streamMediaImmediately);
+    async initSendMedia({
+      token,
+      role,
+      streamMediaImmediately,
+    }: {
+      token: string;
+      role: Roles;
+      streamMediaImmediately: boolean;
+    }): Promise<StateUpdate> {
+      if (role === "viewer") {
+        throw new Error("User cannot send media");
       }
 
-      if (role === "streamer") {
+      if (role === "speaker") {
+        return this.stream(token, "audio", streamMediaImmediately);
+      } else {
         return {
           ...(await this.stream(token, "audio", streamMediaImmediately)),
           ...(await this.stream(token, "video", streamMediaImmediately)),
@@ -32,7 +38,7 @@ export const getMediaService = (state: IStore) => {
       const { mediaClient, stream, sendMediaParams, sendDevice } = state;
 
       if (!mediaClient) {
-        return;
+        throw new Error();
       }
 
       const { routerRtpCapabilities, sendTransportOptions } = sendMediaParams;
@@ -69,27 +75,25 @@ export const getMediaService = (state: IStore) => {
       }
 
       let media = state[kind];
-      let mediaStateUpdate: Partial<StateUpdate> = {};
+      let requestMediaStreamResult: Partial<StateUpdate> = {};
 
       if (!media) {
-        mediaStateUpdate = await this.requestMediaStream(kind, {
+        requestMediaStreamResult = await this.requestMediaStream(kind, {
           enabled: !!streamMediaImmediately,
         });
 
-        media = mediaStateUpdate[kind];
-
-        stateUpdate = { ...stateUpdate, ...mediaStateUpdate };
+        media = requestMediaStreamResult[kind];
       }
 
       const producer = await mediaClient.sendMediaStream(
-        media.track,
+        media!.track,
         kind,
         sendTransport as Transport
       );
 
-      stateUpdate[kind].producer = producer;
+      stateUpdate[kind]!.producer = producer;
 
-      return stateUpdate;
+      return { ...stateUpdate, ...requestMediaStreamResult };
     },
 
     async initRecvMedia({
@@ -193,7 +197,7 @@ export const getMediaService = (state: IStore) => {
 
       //F
       if (!mediaStream || mediaStream === true) {
-        return;
+        throw new Error("getUserMedia has returned a boolean type");
       }
 
       if (!params?.enabled) {

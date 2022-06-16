@@ -23,7 +23,7 @@ export const getStreamService = (state: IStore) => {
       const mediaService = getMediaService(state);
 
       /** Consume remote audio/video streams */
-      const recvMediaStateUpdate = await mediaService.initRecvMedia({
+      const initRecvMediaResult = await mediaService.initRecvMedia({
         stream,
         mediaPermissionsToken,
         recvMediaParams,
@@ -31,18 +31,18 @@ export const getStreamService = (state: IStore) => {
       });
 
       /** If not viewer, start sending media */
-      let sendMediaStateUpdate: StateUpdate = {};
+      let initSendMediaResult: StateUpdate = {};
       if (role !== "viewer") {
-        sendMediaStateUpdate = await mediaService.initSendMedia(
-          mediaPermissionsToken,
+        initSendMediaResult = await mediaService.initSendMedia({
+          token: mediaPermissionsToken,
           role,
-          false
-        );
+          streamMediaImmediately: false,
+        });
       }
 
       return {
-        ...sendMediaStateUpdate,
-        ...recvMediaStateUpdate,
+        ...initSendMediaResult,
+        ...initRecvMediaResult,
         sendMediaParams,
         stream,
         currentStreamHost: host,

@@ -2,6 +2,7 @@ import { IParticipant } from "@warpy/lib";
 import produce from "immer";
 import { getStreamService } from "../app/stream";
 import { StoreSlice } from "../types";
+import { mergeStateUpdate } from "../utils";
 
 export function arrayToMap<T>(array: T[]) {
   const result: Record<string, T> = {};
@@ -92,15 +93,6 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
   },
 
   async dispatchStreamJoin(stream) {
-    const stateUpdate = await getStreamService(get()).join(stream);
-
-    set(
-      produce((state) => {
-        for (const key in stateUpdate) {
-          console.log({ key });
-          state[key] = stateUpdate[key];
-        }
-      })
-    );
+    set(await mergeStateUpdate(getStreamService(get()).join(stream)));
   },
 });
