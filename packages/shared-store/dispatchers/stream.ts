@@ -1,9 +1,7 @@
 import { IParticipant } from "@warpy/lib";
 import produce from "immer";
 import { getStreamService } from "../app/stream";
-import { MediaStreamMap } from "../slices/createMediaSlice";
 import { StoreSlice } from "../types";
-import { IStore } from "../useStore";
 
 export function arrayToMap<T>(array: T[]) {
   const result: Record<string, T> = {};
