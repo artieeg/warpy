@@ -1,7 +1,5 @@
 import { IParticipant } from "@warpy/lib";
-import produce from "immer";
 import { StreamService } from "../app/stream";
-import { getStreamService } from "../app/stream";
 import { StoreSlice } from "../types";
 import { mergeStateUpdate } from "../utils";
 
