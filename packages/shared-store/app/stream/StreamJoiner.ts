@@ -12,6 +12,7 @@ export interface StreamJoiner {
 
 export class StreamJoinerImpl implements StreamJoiner {
   private state: AppState;
+  private mediaService: MediaService;
 
   constructor(state: IStore | AppState) {
     if (state instanceof AppState) {
@@ -19,6 +20,8 @@ export class StreamJoinerImpl implements StreamJoiner {
     } else {
       this.state = new AppState(state);
     }
+
+    this.mediaService = new MediaService(this.state);
   }
 
   async join({ stream }) {
@@ -44,10 +47,8 @@ export class StreamJoinerImpl implements StreamJoiner {
       role,
     });
 
-    const mediaService = new MediaService(this.state);
-
     /** Consume remote audio/video streams */
-    await mediaService.consumeRemoteStreams({
+    await this.mediaService.consumeRemoteStreams({
       stream,
       mediaPermissionsToken,
       recvMediaParams,
@@ -56,7 +57,7 @@ export class StreamJoinerImpl implements StreamJoiner {
 
     /** If not viewer, start sending media */
     if (role !== "viewer") {
-      await mediaService.initSendMedia({
+      await this.mediaService.initSendMedia({
         token: mediaPermissionsToken,
         role,
         streamMediaImmediately: false,

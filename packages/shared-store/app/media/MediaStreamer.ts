@@ -11,14 +11,14 @@ export interface MediaStreamer {
     token: string;
     role: Roles;
     streamMediaImmediately: boolean;
-    sendMediaParams: boolean;
+    sendMediaParams: any;
   }) => Promise<StateUpdate>;
 
   stream: (params: {
     token: string;
     kind: MediaKind;
     streamMediaImmediately: boolean;
-    sendMediaParams: boolean;
+    sendMediaParams: any;
   }) => Promise<StateUpdate>;
 }
 
@@ -38,6 +38,11 @@ export class MediaStreamerImpl implements MediaStreamer {
     role,
     streamMediaImmediately,
     sendMediaParams,
+  }: {
+    token: string;
+    role: Roles;
+    streamMediaImmediately: boolean;
+    sendMediaParams: boolean;
   }) {
     if (role === "viewer") {
       throw new Error("User cannot send media");
@@ -68,32 +73,30 @@ export class MediaStreamerImpl implements MediaStreamer {
     }
   }
 
-  async stream({ token, kind, streamMediaImmediately, sendMediaParams }) {
+  /**
+   * Applies header fixes and initializes mediasoup device
+   * */
+  private async loadSendDevice(routerRtpCapabilities: any) {
+    //Fix orientation issue during recording
+    routerRtpCapabilities.headerExtensions =
+      routerRtpCapabilities.headerExtensions.filter(
+        (ext: { uri: string }) => ext.uri !== "urn:3gpp:video-orientation"
+      );
+
+    await this.state.get().sendDevice.load({ routerRtpCapabilities });
+  }
+
+  /**
+   * Returns existing send transport.
+   * If it doesn't exist, creates a new one
+   * */
+  private async getSendTransport(sendTransportOptions: any) {
     const { mediaClient, stream, sendDevice } = this.state.get();
-
-    if (!mediaClient) {
-      throw new Error("media client is null");
-    }
-
-    const { routerRtpCapabilities, sendTransportOptions } = sendMediaParams;
-
-    if (!sendDevice.loaded) {
-      //Fix orientation issue
-      routerRtpCapabilities.headerExtensions =
-        routerRtpCapabilities.headerExtensions.filter(
-          (ext: { uri: string }) => ext.uri !== "urn:3gpp:video-orientation"
-        );
-
-      await sendDevice.load({ routerRtpCapabilities });
-    }
-
-    mediaClient.permissionsToken = token;
-    mediaClient.sendDevice = sendDevice;
 
     let sendTransport = this.state.get().sendTransport;
 
     if (!sendTransport) {
-      sendTransport = await mediaClient.createTransport({
+      sendTransport = await mediaClient!.createTransport({
         roomId: stream!,
         device: sendDevice,
         direction: "send",
@@ -105,6 +108,37 @@ export class MediaStreamerImpl implements MediaStreamer {
 
       this.state.update({ sendTransport });
     }
+
+    return sendTransport;
+  }
+
+  async stream({
+    token,
+    kind,
+    streamMediaImmediately,
+    sendMediaParams,
+  }: {
+    token: string;
+    kind: MediaKind;
+    streamMediaImmediately: boolean;
+    sendMediaParams: any;
+  }) {
+    const { mediaClient, sendDevice } = this.state.get();
+
+    if (!mediaClient) {
+      throw new Error("media client is null");
+    }
+
+    const { routerRtpCapabilities, sendTransportOptions } = sendMediaParams;
+
+    if (!sendDevice.loaded) {
+      await this.loadSendDevice(routerRtpCapabilities);
+    }
+
+    mediaClient.permissionsToken = token;
+    mediaClient.sendDevice = sendDevice;
+
+    const sendTransport = await this.getSendTransport(sendTransportOptions);
 
     let media = this.state.get()[kind];
 
