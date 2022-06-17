@@ -16,7 +16,7 @@ export class StreamService implements StreamJoiner, StreamCreator {
     return this.creator.create();
   }
 
-  join(params) {
+  join(params: { stream: string }) {
     return this.joiner.join(params);
   }
 }

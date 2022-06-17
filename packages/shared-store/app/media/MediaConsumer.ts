@@ -22,7 +22,7 @@ export interface MediaConsumer {
 export class MediaConsumerImpl implements MediaConsumer {
   private state: AppState;
 
-  constructor(state: IStore) {
+  constructor(state: IStore | AppState) {
     if (state instanceof AppState) {
       this.state = state;
     } else {
@@ -30,7 +30,15 @@ export class MediaConsumerImpl implements MediaConsumer {
     }
   }
 
-  async initMediaConsumer({ mediaPermissionsToken, stream, recvMediaParams }) {
+  async initMediaConsumer({
+    mediaPermissionsToken,
+    stream,
+    recvMediaParams,
+  }: {
+    mediaPermissionsToken: string;
+    stream: string;
+    recvMediaParams: any;
+  }) {
     const { api, recvDevice, sendDevice } = this.state.get();
 
     if (!recvDevice.loaded) {
@@ -71,6 +79,11 @@ export class MediaConsumerImpl implements MediaConsumer {
     mediaPermissionsToken,
     recvMediaParams,
     streamers,
+  }: {
+    stream: string;
+    mediaPermissionsToken: string;
+    recvMediaParams: any;
+    streamers: IParticipant[];
   }): Promise<StateUpdate> {
     await this.initMediaConsumer({
       mediaPermissionsToken,

@@ -51,6 +51,7 @@ export class StreamCreatorImpl implements StreamCreator {
     });
 
     await this.mediaService.initMediaConsumer({
+      stream,
       mediaPermissionsToken,
       recvMediaParams,
     });

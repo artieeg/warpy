@@ -24,7 +24,7 @@ export class StreamJoinerImpl implements StreamJoiner {
     this.mediaService = new MediaService(this.state);
   }
 
-  async join({ stream }) {
+  async join({ stream }: { stream: string }) {
     const { api } = this.state.get();
 
     const {
