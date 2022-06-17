@@ -17,8 +17,8 @@ export interface IStreamDispatchers {
   dispatchStreamCreate: () => Promise<void>;
   dispatchStreamJoin: (stream: string) => Promise<void>;
   dispatchStreamLeave: (config: {
-    shouldStopStream?: boolean;
-    stream?: string;
+    shouldStopStream: boolean;
+    stream: string;
   }) => Promise<void>;
 }
 
@@ -27,18 +27,11 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
   get
 ) => ({
   async dispatchStreamLeave({ shouldStopStream, stream }) {
-    const { api } = get();
-
-    if (stream) {
-      if (shouldStopStream) {
-        await api.stream.stop(stream);
-      } else {
-        await api.stream.leave(stream);
-      }
-    }
-
-    get().dispatchInviteClear();
-    get().dispatchMediaClose();
+    set(
+      await mergeStateUpdate(
+        new StreamService(get()).leave({ shouldStopStream, stream })
+      )
+    );
   },
 
   async dispatchStreamCreate() {
