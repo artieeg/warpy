@@ -1,18 +1,27 @@
-import { IParticipant, Roles } from "@warpy/lib";
+import { IParticipant } from "@warpy/lib";
 import { arrayToMap } from "../../dispatchers";
 import { IStore } from "../../useStore";
 import { MediaService } from "../media";
 import { StateUpdate } from "../types";
+import { AppState } from "../AppState";
 
 export interface StreamCreator {
   create: () => Promise<StateUpdate>;
 }
 
 export class StreamCreatorImpl implements StreamCreator {
-  constructor(private state: IStore) {}
+  private state: AppState;
+
+  constructor(state: IStore | AppState) {
+    if (state instanceof AppState) {
+      this.state = state;
+    } else {
+      this.state = new AppState(state);
+    }
+  }
 
   async create() {
-    const { newStreamCategory, api, title, user } = this.state;
+    const { newStreamCategory, api, title, user } = this.state.get();
 
     if (!title || !newStreamCategory) {
       throw new Error("title or category");
@@ -26,7 +35,9 @@ export class StreamCreatorImpl implements StreamCreator {
       recvMediaParams,
     } = await api.stream.create(title, newStreamCategory.id);
 
-    const consumer = new MediaService(this.state);
+    this.state.update({ stream });
+
+    const consumer = new MediaService(this.state.get());
 
     const mediaConsumerResult = await consumer.initMediaConsumer({
       mediaPermissionsToken,
@@ -34,7 +45,7 @@ export class StreamCreatorImpl implements StreamCreator {
     });
 
     const audioStreamer = new MediaService({
-      ...this.state,
+      ...this.state.get(),
       stream,
       mediaClient: mediaConsumerResult.mediaClient,
     });
@@ -47,7 +58,7 @@ export class StreamCreatorImpl implements StreamCreator {
     });
 
     const videoStreamer = new MediaService({
-      ...this.state,
+      ...this.state.get(),
       stream,
       mediaClient: mediaConsumerResult.mediaClient,
       sendTransport: audioStreamResult.sendTransport!,
@@ -74,7 +85,5 @@ export class StreamCreatorImpl implements StreamCreator {
       currentStreamHost: user!.id,
       role: "streamer",
     } as StateUpdate;
-
-    //await dispatchMediaSend(mediaPermissionsToken, ["audio", "video"], true);
   }
 }

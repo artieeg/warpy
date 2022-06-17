@@ -4,16 +4,25 @@ import { IStore } from "../../useStore";
 import { StateUpdate } from "../types";
 import { IParticipant } from "@warpy/lib";
 import { arrayToMap } from "../../dispatchers";
+import { AppState } from "../AppState";
 
 export interface StreamJoiner {
   join: ({ stream }: { stream: string }) => Promise<StateUpdate>;
 }
 
 export class StreamJoinerImpl implements StreamJoiner {
-  constructor(private state: IStore) {}
+  private state: AppState;
+
+  constructor(state: IStore | AppState) {
+    if (state instanceof AppState) {
+      this.state = state;
+    } else {
+      this.state = new AppState(state);
+    }
+  }
 
   async join({ stream }) {
-    const { api } = this.state;
+    const { api } = this.state.get();
 
     const {
       mediaPermissionsToken,

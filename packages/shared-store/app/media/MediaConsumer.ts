@@ -2,6 +2,7 @@ import { IParticipant, MediaKind } from "@warpy/lib";
 import { MediaClient } from "@warpy/media";
 import { container } from "../../container";
 import { IStore } from "../../useStore";
+import { AppState } from "../AppState";
 import { MediaStreamMap, StateUpdate } from "../types";
 
 export interface MediaConsumer {
@@ -19,10 +20,18 @@ export interface MediaConsumer {
 }
 
 export class MediaConsumerImpl implements MediaConsumer {
-  constructor(private state: IStore) {}
+  private state: AppState;
+
+  constructor(state: IStore) {
+    if (state instanceof AppState) {
+      this.state = state;
+    } else {
+      this.state = new AppState(state);
+    }
+  }
 
   async initMediaConsumer({ mediaPermissionsToken, stream, recvMediaParams }) {
-    const { api, recvDevice, sendDevice } = this.state;
+    const { api, recvDevice, sendDevice } = this.state.get();
 
     if (!recvDevice.loaded) {
       await recvDevice.load({
@@ -46,6 +55,12 @@ export class MediaConsumerImpl implements MediaConsumer {
       },
       isProducer: false,
     });
+
+    /*
+    this.state.update({
+      mediaClient,recvDevice,recvMediaParams,recvTransport
+    })
+    */
 
     return { mediaClient, recvDevice, recvMediaParams, recvTransport };
   }
@@ -102,8 +117,8 @@ export class MediaConsumerImpl implements MediaConsumer {
       ...initMediaConsumerResult,
       recvMediaParams,
       recvTransport,
-      audioStreams: { ...this.state.audioStreams, ...audioStreams },
-      videoStreams: { ...this.state.videoStreams, ...videoStreams },
+      audioStreams: { ...this.state.get().audioStreams, ...audioStreams },
+      videoStreams: { ...this.state.get().videoStreams, ...videoStreams },
     };
   }
 

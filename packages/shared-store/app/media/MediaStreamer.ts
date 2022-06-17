@@ -4,6 +4,7 @@ import { MediaKind, Roles } from "@warpy/lib";
 import { Transport } from "mediasoup-client/lib/types";
 import { StateUpdate } from "../types";
 import { container } from "../../container";
+import { AppState } from "../AppState";
 
 export interface MediaStreamer {
   initSendMedia: (params: {
@@ -22,7 +23,15 @@ export interface MediaStreamer {
 }
 
 export class MediaStreamerImpl implements MediaStreamer {
-  constructor(private state: IStore) {}
+  private state: AppState;
+
+  constructor(state: IStore | AppState) {
+    if (state instanceof AppState) {
+      this.state = state;
+    } else {
+      this.state = new AppState(state);
+    }
+  }
 
   async initSendMedia({
     token,
@@ -60,7 +69,7 @@ export class MediaStreamerImpl implements MediaStreamer {
   }
 
   async stream({ token, kind, streamMediaImmediately, sendMediaParams }) {
-    const { mediaClient, stream, sendDevice } = this.state;
+    const { mediaClient, stream, sendDevice } = this.state.get();
 
     if (!mediaClient) {
       throw new Error("media client is null");
@@ -83,7 +92,7 @@ export class MediaStreamerImpl implements MediaStreamer {
 
     let stateUpdate: StateUpdate = {};
 
-    let sendTransport = this.state.sendTransport;
+    let sendTransport = this.state.get().sendTransport;
 
     if (!sendTransport) {
       sendTransport = await mediaClient.createTransport({
@@ -99,7 +108,7 @@ export class MediaStreamerImpl implements MediaStreamer {
       stateUpdate.sendTransport = sendTransport;
     }
 
-    let media = this.state[kind];
+    let media = this.state.get()[kind];
     let requestMediaStreamResult: Partial<StateUpdate> = {};
 
     if (!media) {

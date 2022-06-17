@@ -1,12 +1,13 @@
 import { MediaStreamer, MediaStreamerImpl } from "./MediaStreamer";
 import { MediaConsumer, MediaConsumerImpl } from "./MediaConsumer";
 import { IStore } from "../../useStore";
+import { AppState } from "../AppState";
 
 export class MediaService implements MediaStreamer, MediaConsumer {
   streamer: MediaStreamer;
   consumer: MediaConsumer;
 
-  constructor(state: IStore) {
+  constructor(state: IStore | AppState) {
     this.streamer = new MediaStreamerImpl(state);
     this.consumer = new MediaConsumerImpl(state);
   }
