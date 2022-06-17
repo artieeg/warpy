@@ -35,10 +35,19 @@ export class StreamJoinerImpl implements StreamJoiner {
       sendMediaParams,
     } = await api.stream.join(stream);
 
+    this.state.update({
+      stream,
+      currentStreamHost: host,
+      totalParticipantCount: count,
+      streamers: arrayToMap<IParticipant>(streamers),
+      viewersWithRaisedHands: arrayToMap<IParticipant>(raisedHands),
+      role,
+    });
+
     const mediaService = new MediaService(this.state);
 
     /** Consume remote audio/video streams */
-    const consumeRemoteStreamsResult = await mediaService.consumeRemoteStreams({
+    await mediaService.consumeRemoteStreams({
       stream,
       mediaPermissionsToken,
       recvMediaParams,
@@ -46,9 +55,8 @@ export class StreamJoinerImpl implements StreamJoiner {
     });
 
     /** If not viewer, start sending media */
-    let initSendMediaResult: StateUpdate = {};
     if (role !== "viewer") {
-      initSendMediaResult = await mediaService.initSendMedia({
+      await mediaService.initSendMedia({
         token: mediaPermissionsToken,
         role,
         streamMediaImmediately: false,
@@ -56,15 +64,6 @@ export class StreamJoinerImpl implements StreamJoiner {
       });
     }
 
-    return {
-      ...initSendMediaResult,
-      ...consumeRemoteStreamsResult,
-      stream,
-      currentStreamHost: host,
-      totalParticipantCount: count,
-      streamers: arrayToMap<IParticipant>(streamers),
-      viewersWithRaisedHands: arrayToMap<IParticipant>(raisedHands),
-      role,
-    };
+    return this.state.getStateDiff();
   }
 }

@@ -72,13 +72,17 @@ export class MediaConsumerImpl implements MediaConsumer {
     recvMediaParams,
     streamers,
   }): Promise<StateUpdate> {
-    const initMediaConsumerResult = await this.initMediaConsumer({
+    await this.initMediaConsumer({
       mediaPermissionsToken,
       stream,
       recvMediaParams,
     });
 
-    const { mediaClient, recvTransport } = initMediaConsumerResult;
+    const { mediaClient, recvTransport } = this.state.get();
+
+    if (!mediaClient || !recvTransport) {
+      throw new Error("MediaClient or RecvTransport not initialized");
+    }
 
     const consumers = await mediaClient.consumeRemoteStreams(
       stream,
@@ -114,13 +118,12 @@ export class MediaConsumerImpl implements MediaConsumer {
       }
     });
 
-    return {
-      ...initMediaConsumerResult,
-      recvMediaParams,
-      recvTransport,
+    this.state.update({
       audioStreams: { ...this.state.get().audioStreams, ...audioStreams },
       videoStreams: { ...this.state.get().videoStreams, ...videoStreams },
-    };
+    });
+
+    return this.state.getStateDiff();
   }
 
   async requestMediaStream(
