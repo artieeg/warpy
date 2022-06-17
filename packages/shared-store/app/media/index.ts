@@ -8,9 +8,9 @@ import { IParticipant, MediaKind, Roles } from "@warpy/lib";
 export class MediaService
   implements MediaStreamer, MediaConsumer, MediaCleaner
 {
-  streamer: MediaStreamer;
-  consumer: MediaConsumer;
-  cleaner: MediaCleaner;
+  private streamer: MediaStreamer;
+  private consumer: MediaConsumer;
+  private cleaner: MediaCleaner;
 
   constructor(state: IStore | AppState) {
     this.streamer = new MediaStreamerImpl(state);

@@ -5,9 +5,9 @@ import { StreamJoiner, StreamJoinerImpl } from "./StreamJoiner";
 import { StreamLeaver, StreamLeaverImpl } from "./StreamLeaver";
 
 export class StreamService implements StreamJoiner, StreamCreator {
-  joiner: StreamJoiner;
-  creator: StreamCreator;
-  leaver: StreamLeaver;
+  private joiner: StreamJoiner;
+  private creator: StreamCreator;
+  private leaver: StreamLeaver;
 
   constructor(state: IStore | AppState) {
     this.joiner = new StreamJoinerImpl(state);
