@@ -56,6 +56,7 @@ export class MediaClient {
     });
 
     if (direction === "send") {
+      console.log("attached produce event listener");
       transport.on("produce", (produceParams, callback, errback) => {
         console.log("producing new track");
         console.log(produceParams.kind);
@@ -87,6 +88,7 @@ export class MediaClient {
     }
 
     transport.on("connectionstatechange", (_state) => {
+      console.log("connectionstatechange", _state);
       //TODO
     });
 

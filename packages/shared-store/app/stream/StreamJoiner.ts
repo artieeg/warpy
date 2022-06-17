@@ -43,13 +43,13 @@ export class StreamJoinerImpl implements StreamJoiner {
         token: mediaPermissionsToken,
         role,
         streamMediaImmediately: false,
+        sendMediaParams,
       });
     }
 
     return {
       ...initSendMediaResult,
       ...consumeRemoteStreamsResult,
-      sendMediaParams,
       stream,
       currentStreamHost: host,
       totalParticipantCount: count,

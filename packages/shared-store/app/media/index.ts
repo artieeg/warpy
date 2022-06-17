@@ -11,6 +11,10 @@ export class MediaService implements MediaStreamer, MediaConsumer {
     this.consumer = new MediaConsumerImpl(state);
   }
 
+  initMediaConsumer(params) {
+    return this.consumer.initMediaConsumer(params);
+  }
+
   consumeRemoteStreams(params) {
     return this.consumer.consumeRemoteStreams(params);
   }

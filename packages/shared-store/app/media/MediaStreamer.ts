@@ -10,46 +10,60 @@ export interface MediaStreamer {
     token: string;
     role: Roles;
     streamMediaImmediately: boolean;
+    sendMediaParams: boolean;
   }) => Promise<StateUpdate>;
 
-  stream: ({
-    token: string,
-    kind: MediaKind,
-    streamMediaImmediately: boolean,
+  stream: (params: {
+    token: string;
+    kind: MediaKind;
+    streamMediaImmediately: boolean;
+    sendMediaParams: boolean;
   }) => Promise<StateUpdate>;
 }
 
 export class MediaStreamerImpl implements MediaStreamer {
   constructor(private state: IStore) {}
 
-  async initSendMedia({ token, role, streamMediaImmediately }) {
+  async initSendMedia({
+    token,
+    role,
+    streamMediaImmediately,
+    sendMediaParams,
+  }) {
     if (role === "viewer") {
       throw new Error("User cannot send media");
     }
 
     if (role === "speaker") {
-      return this.stream({ token, kind: "audio", streamMediaImmediately });
+      return this.stream({
+        token,
+        kind: "audio",
+        streamMediaImmediately,
+        sendMediaParams,
+      });
     } else {
       return {
         ...(await this.stream({
           token,
           kind: "audio",
           streamMediaImmediately,
+          sendMediaParams,
         })),
         ...(await this.stream({
           token,
           kind: "video",
           streamMediaImmediately,
+          sendMediaParams,
         })),
       };
     }
   }
 
-  async stream({ token, kind, streamMediaImmediately }) {
-    const { mediaClient, stream, sendMediaParams, sendDevice } = this.state;
+  async stream({ token, kind, streamMediaImmediately, sendMediaParams }) {
+    const { mediaClient, stream, sendDevice } = this.state;
 
     if (!mediaClient) {
-      throw new Error();
+      throw new Error("media client is null");
     }
 
     const { routerRtpCapabilities, sendTransportOptions } = sendMediaParams;
@@ -96,11 +110,14 @@ export class MediaStreamerImpl implements MediaStreamer {
       media = requestMediaStreamResult[kind];
     }
 
+    stateUpdate = { ...stateUpdate, [kind]: media };
+
     const producer = await mediaClient.sendMediaStream(
       media!.track,
       kind,
       sendTransport as Transport
     );
+    console.log("done", stateUpdate[kind], kind);
 
     stateUpdate[kind]!.producer = producer;
 

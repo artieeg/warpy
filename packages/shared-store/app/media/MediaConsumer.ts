@@ -5,6 +5,11 @@ import { IStore } from "../../useStore";
 import { MediaStreamMap, StateUpdate } from "../types";
 
 export interface MediaConsumer {
+  initMediaConsumer: (params: {
+    mediaPermissionsToken: string;
+    stream: string;
+    recvMediaParams: any;
+  }) => Promise<StateUpdate>;
   consumeRemoteStreams: (params: {
     stream: string;
     mediaPermissionsToken: string;
@@ -16,12 +21,7 @@ export interface MediaConsumer {
 export class MediaConsumerImpl implements MediaConsumer {
   constructor(private state: IStore) {}
 
-  async consumeRemoteStreams({
-    stream,
-    mediaPermissionsToken,
-    recvMediaParams,
-    streamers,
-  }): Promise<StateUpdate> {
+  async initMediaConsumer({ mediaPermissionsToken, stream, recvMediaParams }) {
     const { api, recvDevice, sendDevice } = this.state;
 
     if (!recvDevice.loaded) {
@@ -39,13 +39,30 @@ export class MediaConsumerImpl implements MediaConsumer {
 
     const recvTransport = await mediaClient.createTransport({
       roomId: stream,
-      device: recvDevice,
+      device: recvDevice!,
       direction: "recv",
       options: {
         recvTransportOptions: recvMediaParams.recvTransportOptions,
       },
       isProducer: false,
     });
+
+    return { mediaClient, recvDevice, recvMediaParams, recvTransport };
+  }
+
+  async consumeRemoteStreams({
+    stream,
+    mediaPermissionsToken,
+    recvMediaParams,
+    streamers,
+  }): Promise<StateUpdate> {
+    const initMediaConsumerResult = await this.initMediaConsumer({
+      mediaPermissionsToken,
+      stream,
+      recvMediaParams,
+    });
+
+    const { mediaClient, recvTransport } = initMediaConsumerResult;
 
     const consumers = await mediaClient.consumeRemoteStreams(
       stream,
@@ -82,7 +99,7 @@ export class MediaConsumerImpl implements MediaConsumer {
     });
 
     return {
-      mediaClient,
+      ...initMediaConsumerResult,
       recvMediaParams,
       recvTransport,
       audioStreams: { ...this.state.audioStreams, ...audioStreams },

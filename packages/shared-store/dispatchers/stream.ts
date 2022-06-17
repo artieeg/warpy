@@ -1,4 +1,5 @@
 import { IParticipant } from "@warpy/lib";
+import produce from "immer";
 import { StreamService } from "../app/stream";
 import { StoreSlice } from "../types";
 import { mergeStateUpdate } from "../utils";
@@ -41,54 +42,7 @@ export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
   },
 
   async dispatchStreamCreate() {
-    const {
-      newStreamCategory,
-      api,
-      dispatchMediaSend,
-      title,
-      dispatchInitViewer,
-      user,
-    } = get();
-
-    if (!title || !newStreamCategory) {
-      return;
-    }
-
-    const {
-      stream,
-      media: mediaData,
-      count,
-      mediaPermissionsToken,
-      recvMediaParams,
-    } = await api.stream.create(title, newStreamCategory.id);
-
-    set({
-      stream,
-      title,
-      sendMediaParams: mediaData,
-      streamers: arrayToMap<IParticipant>([
-        { ...user!, stream, role: "streamer", isBot: false, isBanned: false },
-      ]),
-      totalParticipantCount: count,
-      currentStreamHost: user!.id,
-      role: "streamer",
-    });
-
-    await dispatchInitViewer(mediaPermissionsToken, recvMediaParams);
-
-    const recvTransport = await get().mediaClient!.createTransport({
-      roomId: stream,
-      device: get().recvDevice,
-      direction: "recv",
-      options: {
-        recvTransportOptions: recvMediaParams.recvTransportOptions,
-      },
-      isProducer: false,
-    });
-
-    set({ recvTransport });
-
-    await dispatchMediaSend(mediaPermissionsToken, ["audio", "video"], true);
+    set(await mergeStateUpdate(new StreamService(get()).create()));
   },
 
   async dispatchStreamJoin(stream) {
