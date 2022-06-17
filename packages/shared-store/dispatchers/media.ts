@@ -4,6 +4,8 @@ import { IStore } from "../useStore";
 import { StoreSlice } from "../types";
 import { MediaClient } from "@warpy/media";
 import { container } from "../container";
+import { mergeStateUpdate } from "../utils";
+import { MediaService } from "../app/media";
 
 export interface IMediaDispatchers {
   dispatchMediaSend: (
@@ -57,23 +59,7 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
   },
 
   async dispatchMediaClose() {
-    //TODO: check once I have the internet connection
-
-    //get().video?.track.stop();
-    //get().audio?.track.stop();
-
-    //get().video?.track.release();
-    //get().audio?.track.release();
-
-    get().video?.stream.release();
-    get().audio?.stream.release();
-
-    set({
-      audioEnabled: false,
-      videoEnabled: false,
-      video: undefined,
-      audio: undefined,
-    });
+    set(await mergeStateUpdate(new MediaService(get()).close()));
   },
 
   async dispatchMediaRequest(kind, params) {
