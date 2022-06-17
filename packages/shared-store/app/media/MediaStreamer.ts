@@ -90,8 +90,6 @@ export class MediaStreamerImpl implements MediaStreamer {
     mediaClient.permissionsToken = token;
     mediaClient.sendDevice = sendDevice;
 
-    let stateUpdate: StateUpdate = {};
-
     let sendTransport = this.state.get().sendTransport;
 
     if (!sendTransport) {
@@ -105,32 +103,33 @@ export class MediaStreamerImpl implements MediaStreamer {
         isProducer: true,
       });
 
-      stateUpdate.sendTransport = sendTransport;
+      this.state.update({ sendTransport });
     }
 
     let media = this.state.get()[kind];
-    let requestMediaStreamResult: Partial<StateUpdate> = {};
 
     if (!media) {
-      requestMediaStreamResult = await this.requestMediaStream(kind, {
+      await this.requestMediaStream(kind, {
         enabled: !!streamMediaImmediately,
       });
 
-      media = requestMediaStreamResult[kind];
+      media = this.state.get()[kind];
     }
-
-    stateUpdate = { ...stateUpdate, [kind]: media };
 
     const producer = await mediaClient.sendMediaStream(
       media!.track,
       kind,
       sendTransport as Transport
     );
-    console.log("done", stateUpdate[kind], kind);
 
-    stateUpdate[kind]!.producer = producer;
+    this.state.update({
+      [kind]: {
+        ...this.state.get()[kind],
+        producer,
+      },
+    });
 
-    return { ...stateUpdate, ...requestMediaStreamResult };
+    return this.state.getStateDiff();
   }
 
   private async requestMediaStream(
@@ -168,21 +167,23 @@ export class MediaStreamerImpl implements MediaStreamer {
     }
 
     if (kind === "video") {
-      return {
+      this.state.update({
         videoEnabled: !!params?.enabled,
         video: {
           stream: mediaStream,
           track: mediaStream.getVideoTracks()[0],
         },
-      };
+      });
     } else {
-      return {
+      this.state.update({
         audioEnabled: !!params?.enabled,
         audio: {
           stream: mediaStream,
           track: mediaStream.getAudioTracks()[0],
         },
-      };
+      });
     }
+
+    return this.state.getStateDiff();
   }
 }

@@ -11,6 +11,7 @@ export interface StreamCreator {
 
 export class StreamCreatorImpl implements StreamCreator {
   private state: AppState;
+  private mediaService: MediaService;
 
   constructor(state: IStore | AppState) {
     if (state instanceof AppState) {
@@ -18,6 +19,8 @@ export class StreamCreatorImpl implements StreamCreator {
     } else {
       this.state = new AppState(state);
     }
+
+    this.mediaService = new MediaService(this.state);
   }
 
   async create() {
@@ -35,46 +38,7 @@ export class StreamCreatorImpl implements StreamCreator {
       recvMediaParams,
     } = await api.stream.create(title, newStreamCategory.id);
 
-    this.state.update({ stream });
-
-    const consumer = new MediaService(this.state.get());
-
-    const mediaConsumerResult = await consumer.initMediaConsumer({
-      mediaPermissionsToken,
-      recvMediaParams,
-    });
-
-    const audioStreamer = new MediaService({
-      ...this.state.get(),
-      stream,
-      mediaClient: mediaConsumerResult.mediaClient,
-    });
-
-    const audioStreamResult = await audioStreamer.stream({
-      token: mediaPermissionsToken,
-      kind: "audio",
-      streamMediaImmediately: true,
-      sendMediaParams,
-    });
-
-    const videoStreamer = new MediaService({
-      ...this.state.get(),
-      stream,
-      mediaClient: mediaConsumerResult.mediaClient,
-      sendTransport: audioStreamResult.sendTransport!,
-    });
-
-    const videoStreamResult = await videoStreamer.stream({
-      token: mediaPermissionsToken,
-      kind: "video",
-      streamMediaImmediately: true,
-      sendMediaParams,
-    });
-
-    return {
-      ...audioStreamResult,
-      ...videoStreamResult,
-      ...mediaConsumerResult,
+    this.state.update({
       stream,
       title,
       sendMediaParams,
@@ -84,6 +48,27 @@ export class StreamCreatorImpl implements StreamCreator {
       totalParticipantCount: count,
       currentStreamHost: user!.id,
       role: "streamer",
-    } as StateUpdate;
+    });
+
+    await this.mediaService.initMediaConsumer({
+      mediaPermissionsToken,
+      recvMediaParams,
+    });
+
+    await this.mediaService.stream({
+      token: mediaPermissionsToken,
+      kind: "audio",
+      streamMediaImmediately: true,
+      sendMediaParams,
+    });
+
+    await this.mediaService.stream({
+      token: mediaPermissionsToken,
+      kind: "video",
+      streamMediaImmediately: true,
+      sendMediaParams,
+    });
+
+    return this.state.getStateDiff();
   }
 }

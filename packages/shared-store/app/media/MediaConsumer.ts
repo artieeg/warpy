@@ -56,13 +56,14 @@ export class MediaConsumerImpl implements MediaConsumer {
       isProducer: false,
     });
 
-    /*
     this.state.update({
-      mediaClient,recvDevice,recvMediaParams,recvTransport
-    })
-    */
+      mediaClient,
+      recvDevice,
+      recvMediaParams,
+      recvTransport,
+    });
 
-    return { mediaClient, recvDevice, recvMediaParams, recvTransport };
+    return this.state.getStateDiff();
   }
 
   async consumeRemoteStreams({
