@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {View, TextInput, StyleSheet} from 'react-native';
 import {textStyles} from './Text';
 import {SendMessageButton} from './SendMessageButton';
@@ -16,7 +16,11 @@ export const ChatMessageInput = () => {
         value={messageInputValue}
         numberOfLines={1}
         returnKeyType="send"
-        onChangeText={useStore.getState().dispatchSetChatInput}
+        onChangeText={text => {
+          useStore.setState({
+            messageInputValue: text,
+          });
+        }}
         onSubmitEditing={() => {
           useStore.getState().dispatchChatSendMessage();
         }}

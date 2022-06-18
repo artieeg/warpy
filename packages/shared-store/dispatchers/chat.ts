@@ -1,51 +1,31 @@
 import { IChatMessage } from "@warpy/lib";
-import produce from "immer";
+import { ChatService } from "../app/chat";
 import { StoreSlice } from "../types";
-import { IStore } from "../useStore";
+import { mergeStateUpdate } from "../utils";
 
 export interface IChatDispatchers {
   dispatchChatMessages: (messages: IChatMessage[]) => void;
   dispatchChatSendMessage: () => Promise<void>;
   dispatchChatClearMessages: () => void;
-  dispatchSetChatInput: (msg: string) => void;
 }
 
 export const createChatDispatchers: StoreSlice<IChatDispatchers> = (
   set,
   get
 ) => ({
-  async dispatchSetChatInput(msg) {
-    set({
-      messageInputValue: msg,
-    });
-  },
-
   async dispatchChatSendMessage() {
-    const { api, messageInputValue } = get();
-
-    const { message: newChatMessage } = await api.stream.sendChatMessage(
-      messageInputValue
-    );
-
-    set(
-      produce<IStore>((state) => {
-        state.messages = [newChatMessage, ...state.messages];
-        state.messageInputValue = "";
-      })
-    );
+    set(await mergeStateUpdate(new ChatService(get()).send()));
   },
 
-  dispatchChatClearMessages() {
-    set({
-      messages: [],
-    });
+  async dispatchChatClearMessages() {
+    set(await mergeStateUpdate(new ChatService(get()).clear()));
   },
 
-  dispatchChatMessages(messages) {
+  async dispatchChatMessages(messages) {
     set(
-      produce<IStore>((state) => {
-        state.messages = [...messages, ...state.messages];
-      })
+      await mergeStateUpdate(
+        new ChatService(get()).prependNewMessages(messages)
+      )
     );
   },
 });
