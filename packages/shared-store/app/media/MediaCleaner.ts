@@ -1,9 +1,11 @@
+import { MediaKind } from "@warpy/lib";
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
 import { StateUpdate } from "../types";
 
 export interface MediaCleaner {
   close: () => Promise<StateUpdate>;
+  closeProducer: (...args: MediaKind[]) => StateUpdate;
 }
 
 export class MediaCleanerImpl implements MediaCleaner {
@@ -30,6 +32,18 @@ export class MediaCleanerImpl implements MediaCleaner {
       audioEnabled: false,
       videoEnabled: false,
     });
+
+    return this.state.getStateDiff();
+  }
+
+  closeProducer(...args: MediaKind[]) {
+    for (const kind in args) {
+      this.state.get()[kind]?.producer?.close();
+
+      this.state.update({
+        [kind]: undefined,
+      });
+    }
 
     return this.state.getStateDiff();
   }

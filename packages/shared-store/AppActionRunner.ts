@@ -1,5 +1,4 @@
-import produce from "immer";
-import { SetState } from "zustand";
+import { PartialState, SetState } from "zustand";
 import { StateUpdate, StreamedStateUpdate } from "./app/types";
 import { IStore } from "./useStore";
 
@@ -20,18 +19,17 @@ export class AppActionRunner {
   private async merge(stateUpdate: StateUpdate | Promise<StateUpdate>) {
     const update = await stateUpdate;
 
-    return produce((state) => {
-      for (const key in update) {
-        state[key] = (update as any)[key];
-      }
-    });
+    return update as PartialState<IStore>;
   }
 
   /**
    * Apply a singular state update
    * */
-  async mergeStateUpdate(update: Promise<StateUpdate>) {
-    this.set(await this.merge(update));
+  async mergeStateUpdate(update: StateUpdate | Promise<StateUpdate>) {
+    const r = await this.merge(update);
+
+    this.set(r);
+    console.log("setting");
   }
 
   /**
@@ -47,5 +45,7 @@ export class AppActionRunner {
       done = result.done;
       value = result.value;
     }
+
+    this.set(await this.merge(value));
   }
 }

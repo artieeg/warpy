@@ -19,12 +19,6 @@ export const Feed = () => {
   const feed = useFeed();
   const navigation = useNavigation();
 
-  const isFetchingFeed = useStore(state => state.isFeedLoading);
-
-  React.useEffect(() => {
-    console.log({isFetchingFeed});
-  }, [isFetchingFeed]);
-
   const onStartStream = React.useCallback(() => {
     navigation.navigate('NewStream');
   }, [navigation]);

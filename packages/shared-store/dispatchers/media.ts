@@ -1,10 +1,9 @@
 import produce from "immer";
 import { MediaKind, Transport } from "mediasoup-client/lib/types";
-import { IStore } from "../useStore";
+import { IStore, runner } from "../useStore";
 import { StoreSlice } from "../types";
 import { MediaClient } from "@warpy/media";
 import { container } from "../container";
-import { mergeStateUpdate } from "../utils";
 import { MediaService } from "../app/media";
 
 export interface IMediaDispatchers {
@@ -59,7 +58,7 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
   },
 
   async dispatchMediaClose() {
-    set(await mergeStateUpdate(new MediaService(get()).close()));
+    await runner.mergeStateUpdate(new MediaService(get()).close());
   },
 
   async dispatchMediaRequest(kind, params) {

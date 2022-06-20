@@ -56,4 +56,8 @@ export class MediaService
   }) {
     return this.streamer.initSendMedia(params);
   }
+
+  closeProducer(...args: MediaKind[]) {
+    return this.cleaner.closeProducer(...args);
+  }
 }
