@@ -13,10 +13,17 @@ import Animated, {
   useSharedValue,
   Layout,
 } from 'react-native-reanimated';
+import {useStore} from '@app/store';
 
 export const Feed = () => {
   const feed = useFeed();
   const navigation = useNavigation();
+
+  const isFetchingFeed = useStore(state => state.isFeedLoading);
+
+  React.useEffect(() => {
+    console.log({isFetchingFeed});
+  }, [isFetchingFeed]);
 
   const onStartStream = React.useCallback(() => {
     navigation.navigate('NewStream');

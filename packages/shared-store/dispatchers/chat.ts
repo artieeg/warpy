@@ -1,7 +1,7 @@
 import { IChatMessage } from "@warpy/lib";
 import { ChatService } from "../app/chat";
 import { StoreSlice } from "../types";
-import { mergeStateUpdate } from "../utils";
+import { runner } from "../useStore";
 
 export interface IChatDispatchers {
   dispatchChatMessages: (messages: IChatMessage[]) => void;
@@ -10,22 +10,20 @@ export interface IChatDispatchers {
 }
 
 export const createChatDispatchers: StoreSlice<IChatDispatchers> = (
-  set,
+  _set,
   get
 ) => ({
   async dispatchChatSendMessage() {
-    set(await mergeStateUpdate(new ChatService(get()).send()));
+    await runner.mergeStateUpdate(new ChatService(get()).send());
   },
 
   async dispatchChatClearMessages() {
-    set(await mergeStateUpdate(new ChatService(get()).clear()));
+    await runner.mergeStateUpdate(new ChatService(get()).clear());
   },
 
   async dispatchChatMessages(messages) {
-    set(
-      await mergeStateUpdate(
-        new ChatService(get()).prependNewMessages(messages)
-      )
+    await runner.mergeStateUpdate(
+      new ChatService(get()).prependNewMessages(messages)
     );
   },
 });

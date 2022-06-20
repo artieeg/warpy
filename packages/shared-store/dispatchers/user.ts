@@ -1,7 +1,8 @@
 import { Roles } from "@warpy/lib";
 import produce from "immer";
+import { UserService } from "../app/user";
 import { StoreSlice } from "../types";
-import { IStore } from "../useStore";
+import { IStore, runner } from "../useStore";
 
 export interface IUserDispatchers {
   dispatchUserRoleUpdate: (
@@ -18,36 +19,9 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
   get
 ) => ({
   async dispatchUserLoadData(token) {
-    const { api } = get();
-
-    set({
-      isLoadingUser: true,
-    });
-
-    const { user, friendFeed, following, hasActivatedAppInvite, categories } =
-      await api.user.auth(token);
-
-    if (!user) {
-      set({
-        isLoadingUser: false,
-        exists: false,
-      });
-    } else {
-      set({
-        friendFeed,
-        user,
-        categories,
-        exists: true,
-        hasActivatedAppInvite,
-        list_following: {
-          list: following,
-          page: 0,
-        },
-        isLoadingUser: false,
-        //selectedFeedCategory: categories[0],
-        newStreamCategory: categories[1],
-      });
-    }
+    await runner.mergeStreamedUpdates(
+      new UserService(get()).loadUserData(token)
+    );
   },
 
   async dispatchUserRoleUpdate(newRole, mediaPermissionToken, sendMediaParams) {

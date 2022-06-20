@@ -83,6 +83,7 @@ import {
 } from "./dispatchers/user_list";
 import { createAwardsSlice, IAwardsSlice } from "./slices/createAwardsSlice";
 import { container } from "./container";
+import { AppActionRunner } from "./AppActionRunner";
 
 interface Selectors<StoreType> {
   use: {
@@ -149,6 +150,8 @@ type StoreConfig = {
   dependencies?: typeof container;
 };
 
+export let runner: AppActionRunner;
+
 export const createNewStore = (config: StoreConfig) => {
   if (config.dependencies) {
     const { mediaDevices, openStream, saveReaction } = config.dependencies;
@@ -160,6 +163,8 @@ export const createNewStore = (config: StoreConfig) => {
 
   return createSelectorHooks<IStore>(
     create<IStore>((set, get): IStore => {
+      runner = new AppActionRunner(set);
+
       return {
         ...config.data,
         ...createModalSlice(set, get),

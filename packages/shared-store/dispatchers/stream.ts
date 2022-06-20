@@ -1,6 +1,7 @@
 import { StreamService } from "../app/stream";
 import { StoreSlice } from "../types";
-import { mergeStateUpdate } from "../utils";
+import { runner } from "../useStore";
+import { mergeStateUpdate, performAppAction } from "../utils";
 
 export function arrayToMap<T>(array: T[]) {
   const result: Record<string, T> = {};
@@ -21,22 +22,20 @@ export interface IStreamDispatchers {
 }
 
 export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
-  set,
+  _set,
   get
 ) => ({
   async dispatchStreamLeave({ shouldStopStream, stream }) {
-    set(
-      await mergeStateUpdate(
-        new StreamService(get()).leave({ shouldStopStream, stream })
-      )
+    await runner.mergeStateUpdate(
+      new StreamService(get()).leave({ shouldStopStream, stream })
     );
   },
 
   async dispatchStreamCreate() {
-    set(await mergeStateUpdate(new StreamService(get()).create()));
+    await runner.mergeStateUpdate(new StreamService(get()).create());
   },
 
   async dispatchStreamJoin(stream) {
-    set(await mergeStateUpdate(new StreamService(get()).join({ stream })));
+    await runner.mergeStateUpdate(new StreamService(get()).join({ stream }));
   },
 });

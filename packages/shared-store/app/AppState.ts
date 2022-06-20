@@ -23,6 +23,8 @@ export class AppState {
   update(update: Partial<IStore>) {
     this.state = { ...this.state, ...update };
     this.diff = { ...this.diff, ...update };
+
+    return this.getStateDiff();
   }
 
   getStateDiff() {
