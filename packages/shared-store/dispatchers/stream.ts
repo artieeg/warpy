@@ -1,7 +1,6 @@
 import { StreamService } from "../app/stream";
 import { StoreSlice } from "../types";
 import { runner } from "../useStore";
-import { mergeStateUpdate, performAppAction } from "../utils";
 
 export function arrayToMap<T>(array: T[]) {
   const result: Record<string, T> = {};
