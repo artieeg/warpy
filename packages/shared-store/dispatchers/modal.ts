@@ -1,15 +1,6 @@
-import { IBaseUser, IBot, IInvite } from "@warpy/lib";
-import { StoreSlice, Modal } from "../types";
-
-type OpenModalParams = {
-  selectedUser?: IBaseUser;
-  userToAward?: IBaseUser;
-  botConfirmId?: string;
-  botConfirmData?: IBot;
-  //invite?: IInvite & { notification: string };
-  invite?: IInvite;
-  closeAfterReassign?: boolean;
-};
+import { StoreSlice } from "../types";
+import { Modal, ModalService, OpenModalParams } from "../app/modal";
+import { runner } from "@app/store";
 
 export interface IModalDispatchers {
   dispatchModalOpen: (modal: Modal, params?: OpenModalParams) => void;
@@ -17,29 +8,13 @@ export interface IModalDispatchers {
 }
 
 export const createModalDispatchers: StoreSlice<IModalDispatchers> = (
-  set,
+  _set,
   get
 ) => ({
   dispatchModalClose() {
-    set({
-      modalCurrent: null,
-      modalSelectedUser: null,
-      modalBotConfirmId: null,
-      modalBotConfirmData: null,
-      modalInvite: null,
-      modalCloseAfterHostReassign: false,
-    });
+    runner.mergeStateUpdate(new ModalService(get()).close());
   },
   dispatchModalOpen(modal, params) {
-    set({
-      unseenRaisedHands: modal === "participants" ? 0 : get().unseenRaisedHands,
-      modalCurrent: modal === get().modalCurrent ? null : modal,
-      modalSelectedUser: params?.selectedUser || null,
-      modalBotConfirmData: params?.botConfirmData || null,
-      modalBotConfirmId: params?.botConfirmId || null,
-      modalUserToAward: params?.userToAward || null,
-      modalInvite: params?.invite || null,
-      modalCloseAfterHostReassign: !!params?.closeAfterReassign,
-    });
+    runner.mergeStateUpdate(new ModalService(get()).open(modal, params));
   },
 });
