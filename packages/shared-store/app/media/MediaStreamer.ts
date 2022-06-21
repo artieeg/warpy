@@ -14,6 +14,11 @@ export interface MediaStreamer {
     sendMediaParams: any;
   }) => Promise<StateUpdate>;
 
+  requestMediaStream: (
+    kind: MediaKind,
+    params?: { enabled?: boolean }
+  ) => Promise<StateUpdate>;
+
   stream: (params: {
     token: string;
     kind: MediaKind;
@@ -166,7 +171,7 @@ export class MediaStreamerImpl implements MediaStreamer {
     return this.state.getStateDiff();
   }
 
-  private async requestMediaStream(
+  async requestMediaStream(
     kind: MediaKind,
     params?: { enabled?: boolean }
   ): Promise<StateUpdate> {
@@ -201,7 +206,7 @@ export class MediaStreamerImpl implements MediaStreamer {
     }
 
     if (kind === "video") {
-      this.state.update({
+      return this.state.update({
         videoEnabled: !!params?.enabled,
         video: {
           stream: mediaStream,
@@ -209,7 +214,7 @@ export class MediaStreamerImpl implements MediaStreamer {
         },
       });
     } else {
-      this.state.update({
+      return this.state.update({
         audioEnabled: !!params?.enabled,
         audio: {
           stream: mediaStream,
@@ -217,7 +222,5 @@ export class MediaStreamerImpl implements MediaStreamer {
         },
       });
     }
-
-    return this.state.getStateDiff();
   }
 }

@@ -17,6 +17,10 @@ export interface MediaConsumer {
     recvMediaParams: any;
     streamers: IParticipant[];
   }) => Promise<StateUpdate>;
+  consumeRemoteStream: (params: {
+    user: string;
+    consumerParameters: any;
+  }) => Promise<StateUpdate>;
 }
 
 export class MediaConsumerImpl implements MediaConsumer {
@@ -28,6 +32,40 @@ export class MediaConsumerImpl implements MediaConsumer {
     } else {
       this.state = new AppState(state);
     }
+  }
+
+  async consumeRemoteStream({
+    user,
+    consumerParameters,
+  }: {
+    user: string;
+    consumerParameters: any;
+  }) {
+    const { mediaClient, recvTransport } = this.state.get();
+
+    if (!mediaClient || !recvTransport) {
+      throw new Error("Not ready to receive media");
+    }
+
+    const consumer = await mediaClient.consumeRemoteStream(
+      consumerParameters,
+      user,
+      recvTransport
+    );
+
+    const stream = new MediaStream([consumer.track]);
+    const key = consumer.kind === "audio" ? "audioStreams" : "videoStreams";
+
+    return this.state.update({
+      [key]: {
+        ...this.state.get()[key],
+        [user]: {
+          consumer,
+          stream,
+          enabled: true,
+        },
+      },
+    });
   }
 
   async initMediaConsumer({
