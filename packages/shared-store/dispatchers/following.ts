@@ -1,4 +1,6 @@
+import { UserService } from "../app/user";
 import { StoreSlice } from "../types";
+import { runner } from "../useStore";
 
 export interface IFollowingDispatchers {
   dispatchFollowingAdd: (newFollowedUser: string) => Promise<void>;
@@ -6,25 +8,18 @@ export interface IFollowingDispatchers {
 }
 
 export const createFollowingDispatchers: StoreSlice<IFollowingDispatchers> = (
-  set,
+  _set,
   get
 ) => ({
   dispatchFollowingAdd: async (newFollowedUser) => {
-    const { api } = get();
-
-    const { followedUser } = await api.user.follow(newFollowedUser);
-
-    set((state) => ({
-      following: [...state.following, followedUser],
-    }));
+    await runner.mergeStateUpdate(
+      new UserService(get()).follow(newFollowedUser)
+    );
   },
 
   dispatchFollowingRemove: async (unfollowedUser) => {
-    const { api } = get();
-    await api.user.unfollow(unfollowedUser);
-
-    set((state) => ({
-      following: state.following.filter((id) => id !== unfollowedUser),
-    }));
+    await runner.mergeStateUpdate(
+      new UserService(get()).unfollow(unfollowedUser)
+    );
   },
 });

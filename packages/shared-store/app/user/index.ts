@@ -7,18 +7,25 @@ import {
   StreamPermissionRequesterImpl,
 } from "./StreamPermissionRequester";
 import { UserDataLoader, UserDataLoaderImpl } from "./UserDataLoader";
+import { UserFollower, UserFollowerImpl } from "./UserFollower";
 
 export class UserService
-  implements UserDataLoader, RoleUpdater, StreamPermissionRequester
+  implements
+    UserDataLoader,
+    RoleUpdater,
+    StreamPermissionRequester,
+    UserFollower
 {
   private loader: UserDataLoader;
   private roleUpdater: RoleUpdater;
   private streamPermissionRequester: StreamPermissionRequester;
+  private follower: UserFollowerImpl;
 
   constructor(state: IStore | AppState) {
     this.loader = new UserDataLoaderImpl(state);
     this.roleUpdater = new RoleUpdaterImpl(state);
     this.streamPermissionRequester = new StreamPermissionRequesterImpl(state);
+    this.follower = new UserFollowerImpl(state);
   }
 
   loadUserData(access_token: string) {
@@ -35,5 +42,13 @@ export class UserService
 
   requestStreamPermission() {
     return this.streamPermissionRequester.requestStreamPermission();
+  }
+
+  follow(newFollowedUser: string) {
+    return this.follower.follow(newFollowedUser);
+  }
+
+  unfollow(userToUnfollow: string) {
+    return this.follower.unfollow(userToUnfollow);
   }
 }
