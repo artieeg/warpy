@@ -1,4 +1,4 @@
-import { IChatMessage } from "../../../../lib";
+import { IChatMessage } from "@warpy/lib";
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
 import { MessageManager, MessageManagerImpl } from "./MessageManager";
