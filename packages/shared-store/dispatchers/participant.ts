@@ -7,7 +7,6 @@ export interface IParticipantDispatchers {
   dispatchViewersFetch: () => Promise<void>;
   dispatchParticipantAdd: (viewer: IParticipant) => void;
   dispatchStreamerAdd: (streamer: IParticipant) => void;
-  dispatchStreamers: (streamers: IParticipant[]) => void;
   dispatchParticipantRaisedHand: (user: IParticipant) => void;
   dispatchParticipantRemove: (user: string) => void;
   dispatchMediaToggle: (
@@ -72,12 +71,6 @@ export const createParticipantDispatchers: StoreSlice<IParticipantDispatchers> =
           state.streamers[user.id] = user;
         })
       );
-    },
-
-    dispatchStreamers(speakers) {
-      set(() => {
-        speakers;
-      });
     },
 
     dispatchParticipantRaisedHand(user) {
