@@ -1,4 +1,4 @@
-import { Roles } from "@warpy/lib";
+import { Roles, UserList } from "@warpy/lib";
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
 import { RoleUpdater, RoleUpdaterImpl } from "./RoleUpdater";
@@ -8,24 +8,32 @@ import {
 } from "./StreamPermissionRequester";
 import { UserDataLoader, UserDataLoaderImpl } from "./UserDataLoader";
 import { UserFollower, UserFollowerImpl } from "./UserFollower";
+import { UserListFetcher, UserListFetcherImpl } from "./UserListFetcher";
 
 export class UserService
   implements
     UserDataLoader,
     RoleUpdater,
     StreamPermissionRequester,
-    UserFollower
+    UserFollower,
+    UserListFetcher
 {
   private loader: UserDataLoader;
   private roleUpdater: RoleUpdater;
   private streamPermissionRequester: StreamPermissionRequester;
   private follower: UserFollowerImpl;
+  private listFetcher: UserListFetcher;
 
   constructor(state: IStore | AppState) {
     this.loader = new UserDataLoaderImpl(state);
     this.roleUpdater = new RoleUpdaterImpl(state);
     this.streamPermissionRequester = new StreamPermissionRequesterImpl(state);
     this.follower = new UserFollowerImpl(state);
+    this.listFetcher = new UserListFetcherImpl(state);
+  }
+
+  fetchUserList(list: UserList) {
+    return this.listFetcher.fetchUserList(list);
   }
 
   loadUserData(access_token: string) {
