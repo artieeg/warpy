@@ -5,10 +5,13 @@ import { StateUpdate, StreamedStateUpdate } from "../types";
 
 export interface StreamParticipantManager {
   fetchStreamViewers: () => StreamedStateUpdate;
-  addStreamParticipant: (viewer: IParticipant) => Promise<StateUpdate>;
+  addStreamParticipant: (participant: IParticipant) => StateUpdate;
   removeStreamParticipant: (user: string) => Promise<StateUpdate>;
   updateStreamParticipant: (user: IParticipant) => Promise<StateUpdate>;
 }
+
+//TODO: reoganize participant state structure,
+//after extracting logic from dispatchers, the code is a bit messy
 
 export class StreamParticipantManagerImpl implements StreamParticipantManager {
   private state: AppState;
@@ -66,15 +69,15 @@ export class StreamParticipantManagerImpl implements StreamParticipantManager {
       audio.consumer.close();
     }
 
+    let updatedVideoStreams = { ...videoStreams };
+    delete updatedVideoStreams[user];
+
+    let updatedAudioStreams = { ...audioStreams };
+    delete updatedAudioStreams[user];
+
     return this.state.update({
-      videoStreams: {
-        ...videoStreams,
-        [user]: undefined,
-      },
-      audioStreams: {
-        ...audioStreams,
-        [user]: undefined,
-      },
+      videoStreams: updatedVideoStreams,
+      audioStreams: updatedAudioStreams,
     });
   }
 
@@ -88,45 +91,62 @@ export class StreamParticipantManagerImpl implements StreamParticipantManager {
 
     this.clearMediaFrom(user);
 
+    let updatedViewers = { ...viewers };
+    let updatedStreamers = { ...streamers };
+    let updatedViewersWithRaisedHand = { ...viewersWithRaisedHands };
+
+    delete updatedViewers[user];
+    delete updatedStreamers[user];
+    delete updatedViewersWithRaisedHand[user];
+
     return this.state.update({
       totalParticipantCount: totalParticipantCount - 1,
-      viewers: {
-        ...viewers,
-        [user]: undefined,
-      },
-      viewersWithRaisedHands: {
-        ...viewersWithRaisedHands,
-        [user]: undefined,
-      },
-      streamers: {
-        ...streamers,
-        [user]: undefined,
-      },
+      streamers: updatedStreamers,
+      viewers: updatedViewers,
+      viewersWithRaisedHands: updatedViewersWithRaisedHand,
     });
   }
 
-  async addStreamParticipant(user: IParticipant) {
-    const { viewers, streamers, totalParticipantCount } = this.state.get();
+  addStreamParticipant(participant: IParticipant) {
+    const {
+      viewers,
+      viewersWithRaisedHands,
+      streamers,
+      totalParticipantCount,
+    } = this.state.get();
 
-    this.state.update({
-      totalParticipantCount: totalParticipantCount + 1,
-    });
-
-    if (user.role === "viewer") {
-      return this.state.update({
-        viewers: {
-          ...viewers,
-          [user.id]: user,
-        },
-      });
-    } else if (user.role === "streamer" || user.role === "speaker") {
-      return this.state.update({
-        streamers: {
-          ...streamers,
-          [user.id]: user,
-        },
+    //check if new
+    if (
+      !viewers[participant.id] &&
+      !streamers[participant.id] &&
+      !viewersWithRaisedHands[participant.id]
+    ) {
+      this.state.update({
+        totalParticipantCount: totalParticipantCount + 1,
       });
     }
+
+    let updatedViewers = { ...viewers };
+    let updatedStreamers = { ...streamers };
+    let updatedViewersWithRaisedHand = { ...viewersWithRaisedHands };
+
+    if (participant.role === "viewer") {
+      updatedViewers[participant.id] = participant;
+      delete updatedStreamers[participant.id];
+    } else if (
+      participant.role === "streamer" ||
+      participant.role === "speaker"
+    ) {
+      delete updatedViewers[participant.id];
+      delete updatedViewersWithRaisedHand[participant.id];
+      updatedStreamers[participant.id] = participant;
+    }
+
+    return this.state.update({
+      streamers: updatedStreamers,
+      viewers: updatedViewers,
+      viewersWithRaisedHands: updatedViewersWithRaisedHand,
+    });
   }
 
   private hasStreamingRequestStatusChanged(user: IParticipant) {
@@ -142,11 +162,11 @@ export class StreamParticipantManagerImpl implements StreamParticipantManager {
     const { viewers, modalCurrent, unseenRaisedHands, viewersWithRaisedHands } =
       this.state.get();
 
+    let updatedViewers = { ...viewers };
+    delete updatedViewers[user.id];
+
     return this.state.update({
-      viewers: {
-        ...viewers,
-        [user.id]: undefined,
-      },
+      viewers: updatedViewers,
       viewersWithRaisedHands: {
         ...viewersWithRaisedHands,
         [user.id]: user,
@@ -162,15 +182,15 @@ export class StreamParticipantManagerImpl implements StreamParticipantManager {
     const { viewers, modalCurrent, unseenRaisedHands, viewersWithRaisedHands } =
       this.state.get();
 
+    let updatedViewersWithRaisedHand = { ...viewersWithRaisedHands };
+    delete updatedViewersWithRaisedHand[user.id];
+
     return this.state.update({
       viewers: {
         ...viewers,
         [user.id]: user,
       },
-      viewersWithRaisedHands: {
-        ...viewersWithRaisedHands,
-        [user.id]: undefined,
-      },
+      viewersWithRaisedHands: updatedViewersWithRaisedHand,
       unseenRaisedHands:
         modalCurrent !== "participants" && unseenRaisedHands > 0
           ? unseenRaisedHands - 1

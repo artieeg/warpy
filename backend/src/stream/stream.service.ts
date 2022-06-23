@@ -1,6 +1,5 @@
 import { StreamNotFound } from '@warpy-be/errors';
 import {
-  EVENT_NEW_PARTICIPANT,
   EVENT_STREAM_CREATED,
   EVENT_STREAM_ENDED,
 } from '@warpy-be/utils';
