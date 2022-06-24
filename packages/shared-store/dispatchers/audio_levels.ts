@@ -1,32 +1,22 @@
-import produce from 'immer';
-import {StoreSlice} from '../types';
-import {IStore} from '../useStore';
+import { StreamService } from "../app/stream";
+import { StoreSlice } from "../types";
+import { runner } from "../useStore";
 
 export interface IAudioLevelDispatchers {
   dispatchAudioLevelsUpdate: (
-    speakers: {user: string; volume: number}[],
+    levels: { user: string; volume: number }[]
   ) => void;
-  dispatchAudioLevelDelete: (speaker: string) => void;
+  dispatchAudioLevelDelete: (user: string) => void;
 }
 
 export const createAudioLevelDispatchers: StoreSlice<IAudioLevelDispatchers> = (
-  set,
-  _get,
+  _set,
+  get
 ) => ({
-  dispatchAudioLevelsUpdate(speakers) {
-    set(
-      produce<IStore>(state => {
-        speakers.forEach(({user, volume}) => {
-          state.userAudioLevels[user] = volume;
-        });
-      }),
-    );
+  dispatchAudioLevelsUpdate(levels) {
+    runner.mergeStateUpdate(new StreamService(get()).updateAudioLevels(levels));
   },
-  dispatchAudioLevelDelete(speaker) {
-    set(
-      produce(state => {
-        delete state.userAudioLevels[speaker];
-      }),
-    );
+  dispatchAudioLevelDelete(user) {
+    runner.mergeStateUpdate(new StreamService(get()).delAudioLevel(user));
   },
 });

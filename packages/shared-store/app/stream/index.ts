@@ -8,13 +8,23 @@ import {
   StreamParticipantManager,
   StreamParticipantManagerImpl,
 } from "./StreamParticipantManager";
+import {
+  AudioLevelRecord,
+  AudioLevelsUpdater,
+  AudioLevelsUpdaterImpl,
+} from "./AudioLevelsUpdater";
 
 export class StreamService
-  implements StreamJoiner, StreamCreator, StreamParticipantManager
+  implements
+    StreamJoiner,
+    StreamCreator,
+    StreamParticipantManager,
+    AudioLevelsUpdater
 {
   private joiner: StreamJoiner;
   private creator: StreamCreator;
   private leaver: StreamLeaver;
+  private audioLevels: AudioLevelsUpdater;
   private participantManager: StreamParticipantManager;
 
   constructor(state: IStore | AppState) {
@@ -22,6 +32,15 @@ export class StreamService
     this.creator = new StreamCreatorImpl(state);
     this.leaver = new StreamLeaverImpl(state);
     this.participantManager = new StreamParticipantManagerImpl(state);
+    this.audioLevels = new AudioLevelsUpdaterImpl(state);
+  }
+
+  updateAudioLevels(levels: AudioLevelRecord[]) {
+    return this.audioLevels.updateAudioLevels(levels);
+  }
+
+  delAudioLevel(user: string) {
+    return this.audioLevels.delAudioLevel(user);
   }
 
   fetchStreamViewers() {
