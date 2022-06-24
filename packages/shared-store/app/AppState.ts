@@ -1,3 +1,4 @@
+import produce from "immer";
 import { IStore } from "../useStore";
 import { StateUpdate } from "./types";
 
@@ -20,9 +21,14 @@ export class AppState {
     return this.state;
   }
 
-  update(update: Partial<IStore>) {
-    this.state = { ...this.state, ...update };
-    this.diff = { ...this.diff, ...update };
+  update(update: Partial<IStore> | ((draft: IStore) => void)) {
+    if (typeof update === "object") {
+      this.state = { ...this.state, ...update };
+      this.diff = { ...this.diff, ...update };
+    } else {
+      this.state = produce(update)(this.state);
+      this.diff = { ...this.state };
+    }
 
     return this.getStateDiff();
   }
