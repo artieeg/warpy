@@ -10,9 +10,6 @@ export interface StreamParticipantManager {
   updateStreamParticipant: (user: IParticipant) => Promise<StateUpdate>;
 }
 
-//TODO: reoganize participant state structure,
-//after extracting logic from dispatchers, the code is a bit messy
-
 export class StreamParticipantManagerImpl implements StreamParticipantManager {
   private state: AppState;
 
@@ -22,18 +19,6 @@ export class StreamParticipantManagerImpl implements StreamParticipantManager {
     } else {
       this.state = new AppState(state);
     }
-  }
-
-  private mergeNewViewers(newViewers: IParticipant[]) {
-    const oldViewers = this.state.get().viewers;
-
-    const updatedViewers = { ...oldViewers };
-
-    newViewers.forEach((viewer) => {
-      updatedViewers[viewer.id] = viewer;
-    });
-
-    return updatedViewers;
   }
 
   async *fetchStreamViewers() {
@@ -49,9 +34,11 @@ export class StreamParticipantManagerImpl implements StreamParticipantManager {
 
     const { viewers } = await api.stream.getViewers(stream, page + 1);
 
-    yield this.state.update({
-      isFetchingViewers: false,
-      viewers: this.mergeNewViewers(viewers),
+    yield this.state.update((state) => {
+      state.isFetchingViewers = false;
+      for (const viewer of viewers) {
+        state.viewers[viewer.id] = viewer;
+      }
     });
   }
 
@@ -69,83 +56,46 @@ export class StreamParticipantManagerImpl implements StreamParticipantManager {
       audio.consumer.close();
     }
 
-    let updatedVideoStreams = { ...videoStreams };
-    delete updatedVideoStreams[user];
-
-    let updatedAudioStreams = { ...audioStreams };
-    delete updatedAudioStreams[user];
-
-    return this.state.update({
-      videoStreams: updatedVideoStreams,
-      audioStreams: updatedAudioStreams,
+    return this.state.update((state) => {
+      delete state.videoStreams[user];
+      delete state.audioStreams[user];
     });
   }
 
   async removeStreamParticipant(user: string) {
-    const {
-      totalParticipantCount,
-      viewers,
-      viewersWithRaisedHands,
-      streamers,
-    } = this.state.get();
-
     this.clearMediaFrom(user);
 
-    let updatedViewers = { ...viewers };
-    let updatedStreamers = { ...streamers };
-    let updatedViewersWithRaisedHand = { ...viewersWithRaisedHands };
-
-    delete updatedViewers[user];
-    delete updatedStreamers[user];
-    delete updatedViewersWithRaisedHand[user];
-
-    return this.state.update({
-      totalParticipantCount: totalParticipantCount - 1,
-      streamers: updatedStreamers,
-      viewers: updatedViewers,
-      viewersWithRaisedHands: updatedViewersWithRaisedHand,
+    return this.state.update((state) => {
+      delete state.viewers[user];
+      delete state.streamers[user];
+      delete state.viewersWithRaisedHands[user];
+      state.totalParticipantCount--;
     });
   }
 
   addStreamParticipant(participant: IParticipant) {
-    const {
-      viewers,
-      viewersWithRaisedHands,
-      streamers,
-      totalParticipantCount,
-    } = this.state.get();
+    const { totalParticipantCount } = this.state.get();
 
-    //check if new
-    if (
-      !viewers[participant.id] &&
-      !streamers[participant.id] &&
-      !viewersWithRaisedHands[participant.id]
-    ) {
-      this.state.update({
-        totalParticipantCount: totalParticipantCount + 1,
-      });
-    }
+    return this.state.update((state) => {
+      if (
+        !state.viewers[participant.id] &&
+        !state.streamers[participant.id] &&
+        !state.viewersWithRaisedHands[participant.id]
+      ) {
+        this.state.update({
+          totalParticipantCount: totalParticipantCount + 1,
+        });
+      }
 
-    let updatedViewers = { ...viewers };
-    let updatedStreamers = { ...streamers };
-    let updatedViewersWithRaisedHand = { ...viewersWithRaisedHands };
+      delete state.viewers[participant.id];
+      delete state.viewersWithRaisedHands[participant.id];
+      delete state.streamers[participant.id];
 
-    if (participant.role === "viewer") {
-      updatedViewers[participant.id] = participant;
-      delete updatedStreamers[participant.id];
-    } else if (
-      participant.role === "streamer" ||
-      participant.role === "speaker"
-    ) {
-      delete updatedViewers[participant.id];
-      delete updatedViewersWithRaisedHand[participant.id];
-      updatedStreamers[participant.id] = participant;
-    }
-
-    return this.state.update({
-      streamers: updatedStreamers,
-      viewers: updatedViewers,
-      viewersWithRaisedHands: updatedViewersWithRaisedHand,
+      if (participant.role === "viewer") {
+        state.viewers[participant.id] = participant;
+      } else {
+        state.streamers[participant.id] = participant;
+      }
     });
   }
 

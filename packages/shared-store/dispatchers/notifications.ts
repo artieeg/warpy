@@ -1,5 +1,7 @@
+import { runner } from "@app/store";
 import { INotification } from "@warpy/lib";
 import { StoreSlice } from "../types";
+import { NotificationService } from "../app/notification";
 
 export interface INotificaionDispatchers {
   dispatchNotificationAdd: (notification: INotification) => void;
@@ -12,47 +14,26 @@ export interface INotificaionDispatchers {
 export const createNotificationDispatchers: StoreSlice<INotificaionDispatchers> =
   (set, get) => ({
     dispatchNotificationsReadAll() {
-      const { api, notifications } = get();
-
-      api.notification.readAll();
-
-      set({
-        hasUnseenNotifications: false,
-        notifications: notifications.map((n) => ({ ...n, hasBeenSeen: true })),
-      });
+      runner.mergeStateUpdate(new NotificationService(get()).readAll());
     },
 
     async dispatchNotificationsFetchUnread() {
-      const { api, notifications } = get();
-
-      const { notifications: unreadNotifications } =
-        await api.notification.getUnread();
-
-      set({
-        notifications: [...unreadNotifications, ...notifications],
-        hasUnseenNotifications: unreadNotifications.length > 0,
-      });
+      await runner.mergeStateUpdate(
+        new NotificationService(get()).fetchUnread()
+      );
     },
 
     async dispatchNotificationsFetchRead() {
-      const { api, notifications, notificationPage } = get();
-
-      const { notifications: unreadNotifications } =
-        await api.notification.getRead(notificationPage);
-
-      set({
-        notifications: [...unreadNotifications, ...notifications],
-        notificationPage: notificationPage + 1,
-      });
+      await runner.mergeStateUpdate(new NotificationService(get()).fetchRead());
     },
 
     dispatchNotificationAdd(notification) {
-      set({ notifications: [notification, ...get().notifications] });
+      runner.mergeStateUpdate(
+        new NotificationService(get()).addNewNotification(notification)
+      );
     },
 
     dispatchNotificationRemove(id) {
-      set({
-        notifications: get().notifications.filter((n) => n.id !== id),
-      });
+      runner.mergeStateUpdate(new NotificationService(get()).remove(id));
     },
   });
