@@ -19,6 +19,10 @@ export class ChatService
     this.manager = new MessageManagerImpl(this.state);
   }
 
+  setMessageInput(messageInputValue: string) {
+    return this.sender.setMessageInput(messageInputValue);
+  }
+
   async send() {
     return this.sender.send();
   }

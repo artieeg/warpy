@@ -3,6 +3,7 @@ import { AppState } from "../AppState";
 import { StateUpdate } from "../types";
 
 export interface MessageSender {
+  setMessageInput: (messageInputValue: string) => StateUpdate;
   send: () => Promise<StateUpdate>;
 }
 
@@ -17,12 +18,21 @@ export class MessageSenderImpl implements MessageSender {
     }
   }
 
+  setMessageInput(messageInputValue: string) {
+    return this.state.update({
+      messageInputValue,
+    });
+  }
+
   async send() {
     const { api, messageInputValue, messages } = this.state.get();
+
+    console.log("sending an msg", messageInputValue);
 
     const { message: newChatMessage } = await api.stream.sendChatMessage(
       messageInputValue
     );
+    console.log("msg", newChatMessage);
 
     this.state.update({
       messages: [newChatMessage, ...messages],

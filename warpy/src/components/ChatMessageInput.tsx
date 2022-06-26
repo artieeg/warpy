@@ -17,9 +17,7 @@ export const ChatMessageInput = () => {
         numberOfLines={1}
         returnKeyType="send"
         onChangeText={text => {
-          useStore.setState({
-            messageInputValue: text,
-          });
+          useStore.getState().dispatchChatSetMessage(text);
         }}
         onSubmitEditing={() => {
           useStore.getState().dispatchChatSendMessage();
