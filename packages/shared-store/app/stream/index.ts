@@ -43,6 +43,10 @@ export class StreamService
     this.audioLevels = new AudioLevelsUpdaterImpl(this.state);
   }
 
+  setNewStreamTitle(title: string) {
+    return this.creator.setNewStreamTitle(title);
+  }
+
   change(reaction: string) {
     return this.reaction.change(reaction);
   }

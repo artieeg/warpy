@@ -11,6 +11,7 @@ export function arrayToMap<T>(array: T[]) {
 
 export interface IStreamDispatchers {
   dispatchStreamCreate: () => Promise<void>;
+  dispatchStreamSetTitle: (title: string) => void;
   dispatchStreamJoin: (stream: string) => Promise<void>;
   dispatchStreamLeave: (config: {
     shouldStopStream: boolean;
@@ -18,21 +19,23 @@ export interface IStreamDispatchers {
   }) => Promise<void>;
 }
 
-export const createStreamDispatchers: StoreDispatcherSlice<IStreamDispatchers> = (
-  runner,
-  { stream }
-) => ({
-  async dispatchStreamLeave({ shouldStopStream, stream: streamId }) {
-    await runner.mergeStateUpdate(
-      stream.leave({ shouldStopStream, stream: streamId })
-    );
-  },
+export const createStreamDispatchers: StoreDispatcherSlice<IStreamDispatchers> =
+  (runner, { stream }) => ({
+    dispatchStreamSetTitle(title) {
+      runner.mergeStateUpdate(stream.setNewStreamTitle(title));
+    },
 
-  async dispatchStreamCreate() {
-    await runner.mergeStateUpdate(stream.create());
-  },
+    async dispatchStreamLeave({ shouldStopStream, stream: streamId }) {
+      await runner.mergeStateUpdate(
+        stream.leave({ shouldStopStream, stream: streamId })
+      );
+    },
 
-  async dispatchStreamJoin(streamId) {
-    await runner.mergeStateUpdate(stream.join({ stream: streamId }));
-  },
-});
+    async dispatchStreamCreate() {
+      await runner.mergeStateUpdate(stream.create());
+    },
+
+    async dispatchStreamJoin(streamId) {
+      await runner.mergeStateUpdate(stream.join({ stream: streamId }));
+    },
+  });

@@ -22,7 +22,6 @@ export const useNewStreamPanelController = () => {
 
 export const NewStreamPanel = () => {
   const {gradientHeightStyle} = useNewStreamPanelController();
-  const set = useStore.use.set();
 
   return (
     <View style={styles.wrapper}>
@@ -44,7 +43,7 @@ export const NewStreamPanel = () => {
 
       <View style={styles.infoInputs}>
         <TextInput
-          onChangeText={v => set({title: v})}
+          onChangeText={v => useStore.getState().dispatchStreamSetTitle(v)}
           style={styles.titleInput}
           placeholder="stream title"
           placeholderTextColor={colors.boulder}

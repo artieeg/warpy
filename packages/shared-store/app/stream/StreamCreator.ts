@@ -7,6 +7,7 @@ import { AppState } from "../AppState";
 
 export interface StreamCreator {
   create: () => Promise<StateUpdate>;
+  setNewStreamTitle: (title: string) => StateUpdate;
 }
 
 export class StreamCreatorImpl implements StreamCreator {
@@ -23,8 +24,16 @@ export class StreamCreatorImpl implements StreamCreator {
     this.mediaService = new MediaService(this.state);
   }
 
+  setNewStreamTitle(title: string) {
+    return this.state.update({
+      title,
+    });
+  }
+
   async create() {
     const { newStreamCategory, api, title, user } = this.state.get();
+
+    console.log({ newStreamCategory });
 
     if (!title || !newStreamCategory) {
       throw new Error("title or category");
