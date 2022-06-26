@@ -11,6 +11,10 @@ export const handleUserLeave: MessageHandler<
 > = async (data, respond) => {
   const { user, stream } = data;
 
+  if (!rooms[stream]) {
+    return;
+  }
+
   const peer = rooms[stream].peers[user];
 
   console.log("user leaving", user, stream);
