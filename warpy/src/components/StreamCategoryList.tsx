@@ -29,7 +29,9 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
   const {onLayout, mode, minimizationProgress} = props;
   const [listWidth, setListWidth] = useState(0);
 
-  const streamCategory = useStore(state => state.selectedFeedCategory);
+  const [streamCategory] = useStoreShallow(state => [
+    state.selectedFeedCategory,
+  ]);
 
   //used to adjust absolutely positioned current category according to scroll
   const scrollOffsetX = useSharedValue(0);
@@ -51,6 +53,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
 
   console.log({currentCategoryPosition});
 
+  /*
   //animation settings
   const coordsEasing = Easing.inOut(Easing.quad);
   const coordsDuration = 400;
@@ -108,6 +111,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
       },
     );
   }, [currentCategoryPosition]);
+   */
 
   const categories = useMemo(() => {
     if (mode === 'create-stream') {
@@ -145,8 +149,9 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
       return (
         <StreamCategoryOption
           key={category.id}
-          selected={false}
-          style={{opacity: isSelected ? 0 : 1}} //Hide selected category since we draw a fake component over it
+          selected={isSelected}
+          //selected={false}
+          //style={{opacity: isSelected ? 0 : 1}} //Hide selected category since we draw a fake component over it
           color={colors[index].toHexString()}
           category={category}
           //Selecting the first category,
@@ -159,6 +164,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
     [categories, mode, streamCategory],
   );
 
+  /*
   //position fake category, adjust according to scroll offset
   const fakeCategoryStyle = useAnimatedStyle(() => ({
     position: 'absolute',
@@ -186,6 +192,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
     }),
     [streamCategory],
   );
+   */
 
   //hide scroll view during minimization
   const scrollViewStyle = useAnimatedStyle(() => ({
@@ -226,7 +233,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
         {categories.map(renderItem)}
       </Animated.ScrollView>
 
-      {streamCategory && (
+      {/*streamCategory && (
         <Animated.View
           key="current_category"
           pointerEvents="none"
@@ -247,7 +254,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
             />
           </Animated.View>
         </Animated.View>
-      )}
+      ) */}
     </Animated.View>
   );
 };

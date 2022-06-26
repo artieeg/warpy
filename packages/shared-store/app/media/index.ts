@@ -5,8 +5,10 @@ import { MediaManager, MediaManagerImpl } from "./MediaManager";
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
 import { IParticipant, MediaKind, Roles } from "@warpy/lib";
+import { Service } from "../Service";
 
 export class MediaService
+  extends Service
   implements MediaStreamer, MediaConsumer, MediaCleaner, MediaManager
 {
   private streamer: MediaStreamer;
@@ -15,10 +17,11 @@ export class MediaService
   private manager: MediaManager;
 
   constructor(state: IStore | AppState) {
-    this.streamer = new MediaStreamerImpl(state);
-    this.consumer = new MediaConsumerImpl(state);
-    this.cleaner = new MediaCleanerImpl(state);
-    this.manager = new MediaManagerImpl(state);
+    super(state);
+    this.streamer = new MediaStreamerImpl(this.state);
+    this.consumer = new MediaConsumerImpl(this.state);
+    this.cleaner = new MediaCleanerImpl(this.state);
+    this.manager = new MediaManagerImpl(this.state);
   }
 
   toggleVideo() {
@@ -82,5 +85,12 @@ export class MediaService
 
   closeProducer(...args: MediaKind[]) {
     return this.cleaner.closeProducer(...args);
+  }
+
+  async toggleParticipantMedia(
+    user: string,
+    { video, audio }: { video: boolean; audio: boolean }
+  ) {
+    return this.manager.toggleParticipantMedia(user, { video, audio });
   }
 }

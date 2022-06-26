@@ -1,15 +1,10 @@
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
+import { Service } from "../Service";
 
-export class AppInviteService {
-  private state: AppState;
-
+export class AppInviteService extends Service {
   constructor(state: IStore | AppState) {
-    if (state instanceof AppState) {
-      this.state = state;
-    } else {
-      this.state = new AppState(state);
-    }
+    super(state);
   }
 
   async get() {

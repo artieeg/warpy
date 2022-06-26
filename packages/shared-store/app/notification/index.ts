@@ -1,16 +1,11 @@
 import { INotification } from "@warpy/lib";
 import { AppState } from "../AppState";
 import { IStore } from "../../useStore";
+import { Service } from "../Service";
 
-export class NotificationService {
-  private state: AppState;
-
+export class NotificationService extends Service {
   constructor(state: AppState | IStore) {
-    if (state instanceof AppState) {
-      this.state = state;
-    } else {
-      this.state = new AppState(state);
-    }
+    super(state);
   }
 
   addNewNotification(notification: INotification) {

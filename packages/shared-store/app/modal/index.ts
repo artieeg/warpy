@@ -1,6 +1,7 @@
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
 import { IBaseUser, IBot, IInvite } from "@warpy/lib";
+import { Service } from "../Service";
 
 export type OpenModalParams = {
   selectedUser?: IBaseUser;
@@ -26,15 +27,9 @@ export type Modal =
   | "bot-confirm"
   | "chat";
 
-export class ModalService {
-  private state: AppState;
-
+export class ModalService extends Service {
   constructor(state: AppState | IStore) {
-    if (state instanceof AppState) {
-      this.state = state;
-    } else {
-      this.state = new AppState(state);
-    }
+    super(state);
   }
 
   open(modal: Modal, params?: OpenModalParams) {

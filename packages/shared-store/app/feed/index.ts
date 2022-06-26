@@ -1,16 +1,22 @@
 import { IStreamCategory } from "@warpy/lib";
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
+import { Service } from "../Service";
 import { CategoryChanger, CategoryChangerImpl } from "./CategoryChanger";
 import { FeedFetcher, FeedFetcherImpl } from "./FeedFetcher";
 
-export class FeedService implements CategoryChanger, FeedFetcher {
+export class FeedService
+  extends Service
+  implements CategoryChanger, FeedFetcher
+{
   private fetcher: FeedFetcher;
   private categoryChanger: CategoryChanger;
 
   constructor(state: IStore | AppState) {
-    this.fetcher = new FeedFetcherImpl(state);
-    this.categoryChanger = new CategoryChangerImpl(state);
+    super(state);
+
+    this.fetcher = new FeedFetcherImpl(this.state);
+    this.categoryChanger = new CategoryChangerImpl(this.state);
   }
 
   fetchNextFeedPage() {

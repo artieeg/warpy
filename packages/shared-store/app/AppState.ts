@@ -21,6 +21,11 @@ export class AppState {
     return this.state;
   }
 
+  set(state: IStore) {
+    this.state = { ...state };
+    this.diff = {};
+  }
+
   update(update: Partial<IStore> | ((draft: IStore) => void)) {
     if (typeof update === "object") {
       this.state = { ...this.state, ...update };

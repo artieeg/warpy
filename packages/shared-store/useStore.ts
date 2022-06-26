@@ -151,6 +151,7 @@ type StoreConfig = {
 };
 
 export let runner: AppActionRunner;
+let state: UseStore<IStore>;
 
 export const createNewStore = (config: StoreConfig) => {
   if (config.dependencies) {
@@ -161,9 +162,11 @@ export const createNewStore = (config: StoreConfig) => {
     container.saveReaction = saveReaction;
   }
 
-  return createSelectorHooks<IStore>(
+  state = createSelectorHooks<IStore>(
     create<IStore>((set, get): IStore => {
-      runner = new AppActionRunner(set);
+      runner = new AppActionRunner(set, get);
+
+      runner.initServices();
 
       return {
         ...config.data,
@@ -193,14 +196,14 @@ export const createNewStore = (config: StoreConfig) => {
         ...createUserListDispatchers(set, get),
         ...createStreamDispatchers(set, get),
         ...createAudioLevelDispatchers(set, get),
-        ...createChatDispatchers(set, get),
+        ...createChatDispatchers(runner, runner.getServices()),
         ...createFeedDispatchers(set, get),
         ...createFollowingDispatchers(set, get),
         ...createMediaDispatchers(set, get),
         ...createModalDispatchers(set, get),
         ...createNotificationDispatchers(set, get),
         ...createReactionDispatchers(set, get),
-        ...createParticipantDispatchers(set, get),
+        ...createParticipantDispatchers(runner, runner.getServices()),
         ...createToastDispatchers(set, get),
         ...createFriendFeedDispatchers(set, get),
         set,
@@ -208,4 +211,8 @@ export const createNewStore = (config: StoreConfig) => {
       };
     })
   );
+
+  runner.connectServicesToStore(state);
+
+  return state;
 };

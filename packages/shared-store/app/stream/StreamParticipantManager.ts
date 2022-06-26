@@ -74,17 +74,13 @@ export class StreamParticipantManagerImpl implements StreamParticipantManager {
   }
 
   addStreamParticipant(participant: IParticipant) {
-    const { totalParticipantCount } = this.state.get();
-
     return this.state.update((state) => {
       if (
         !state.viewers[participant.id] &&
         !state.streamers[participant.id] &&
         !state.viewersWithRaisedHands[participant.id]
       ) {
-        this.state.update({
-          totalParticipantCount: totalParticipantCount + 1,
-        });
+        state.totalParticipantCount++;
       }
 
       delete state.viewers[participant.id];

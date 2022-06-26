@@ -3,14 +3,20 @@ import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
 import { MessageManager, MessageManagerImpl } from "./MessageManager";
 import { MessageSender, MessageSenderImpl } from "./MessageSender";
+import { Service } from "../Service";
 
-export class ChatService implements MessageSender, MessageManager {
+export class ChatService
+  extends Service
+  implements MessageSender, MessageManager
+{
   private sender: MessageSender;
   private manager: MessageManager;
 
   constructor(state: IStore | AppState) {
-    this.sender = new MessageSenderImpl(state);
-    this.manager = new MessageManagerImpl(state);
+    super(state);
+
+    this.sender = new MessageSenderImpl(this.state);
+    this.manager = new MessageManagerImpl(this.state);
   }
 
   async send() {

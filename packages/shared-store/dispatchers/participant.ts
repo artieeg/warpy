@@ -1,8 +1,5 @@
 import { IParticipant } from "@warpy/lib";
-import produce from "immer";
-import { StreamService } from "../app/stream";
-import { StoreSlice } from "../types";
-import { IStore, runner } from "../useStore";
+import { StoreSlice2 } from "../types";
 
 export interface IParticipantDispatchers {
   dispatchViewersFetch: () => Promise<void>;
@@ -16,49 +13,31 @@ export interface IParticipantDispatchers {
   ) => void;
 }
 
-export const createParticipantDispatchers: StoreSlice<IParticipantDispatchers> =
-  (set, get) => ({
+export const createParticipantDispatchers: StoreSlice2<IParticipantDispatchers> =
+  (runner, { stream, media }) => ({
     dispatchStreamerAdd(user) {
-      runner.mergeStateUpdate(
-        new StreamService(get()).addStreamParticipant(user)
-      );
+      runner.mergeStateUpdate(stream.addStreamParticipant(user));
     },
 
     async dispatchViewersFetch() {
-      await runner.mergeStreamedUpdates(
-        new StreamService(get()).fetchStreamViewers()
-      );
+      await runner.mergeStreamedUpdates(stream.fetchStreamViewers());
     },
 
     dispatchParticipantRemove(user) {
-      runner.mergeStateUpdate(
-        new StreamService(get()).removeStreamParticipant(user)
-      );
+      runner.mergeStateUpdate(stream.removeStreamParticipant(user));
     },
 
     dispatchParticipantRaisedHand(user) {
-      runner.mergeStateUpdate(
-        new StreamService(get()).updateStreamParticipant(user)
-      );
+      runner.mergeStateUpdate(stream.updateStreamParticipant(user));
     },
 
     dispatchParticipantAdd(user) {
-      runner.mergeStateUpdate(
-        new StreamService(get()).addStreamParticipant(user)
-      );
+      runner.mergeStateUpdate(stream.addStreamParticipant(user));
     },
 
     dispatchMediaToggle(user, { video, audio }) {
-      set(
-        produce<IStore>((state) => {
-          if (video !== undefined && state.videoStreams[user]) {
-            state.videoStreams[user].enabled = video;
-          }
-
-          if (audio !== undefined && state.audioStreams[user]) {
-            state.audioStreams[user].enabled = audio;
-          }
-        })
+      runner.mergeStateUpdate(
+        media.toggleParticipantMedia(user, { video, audio })
       );
     },
   });

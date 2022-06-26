@@ -1,17 +1,12 @@
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
+import { Service } from "../Service";
 
 export type TOAST_DURATION = "LONG" | "SHORT";
 
-export class ToastService {
-  private state: AppState;
-
+export class ToastService extends Service {
   constructor(state: IStore | AppState) {
-    if (state instanceof AppState) {
-      this.state = state;
-    } else {
-      this.state = new AppState(state);
-    }
+    super(state);
   }
 
   async showToastMessage(message: string, duration: TOAST_DURATION = "SHORT") {

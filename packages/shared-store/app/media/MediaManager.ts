@@ -6,6 +6,10 @@ export interface MediaManager {
   switchCamera: () => any;
   toggleAudio: () => Promise<StateUpdate>;
   toggleVideo: () => Promise<StateUpdate>;
+  toggleParticipantMedia: (
+    user: string,
+    params: { audio: boolean; video: boolean }
+  ) => Promise<StateUpdate>;
 }
 
 export class MediaManagerImpl implements MediaManager {
@@ -52,6 +56,27 @@ export class MediaManagerImpl implements MediaManager {
 
     return this.state.update({
       audioEnabled: !audioEnabled,
+    });
+  }
+
+  async toggleParticipantMedia(
+    user: string,
+    { video, audio }: { video: boolean; audio: boolean }
+  ) {
+    return this.state.update((state) => {
+      if (video !== undefined && state.videoStreams[user]) {
+        state.videoStreams[user] = {
+          ...state.videoStreams[user],
+          enabled: video,
+        };
+      }
+
+      if (audio !== undefined && state.audioStreams[user]) {
+        state.audioStreams[user] = {
+          ...state.videoStreams[user],
+          enabled: audio,
+        };
+      }
     });
   }
 }

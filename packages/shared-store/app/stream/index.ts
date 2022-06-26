@@ -13,8 +13,10 @@ import {
   AudioLevelsUpdater,
   AudioLevelsUpdaterImpl,
 } from "./AudioLevelsUpdater";
+import { Service } from "../Service";
 
 export class StreamService
+  extends Service
   implements
     StreamJoiner,
     StreamCreator,
@@ -28,11 +30,13 @@ export class StreamService
   private participantManager: StreamParticipantManager;
 
   constructor(state: IStore | AppState) {
-    this.joiner = new StreamJoinerImpl(state);
-    this.creator = new StreamCreatorImpl(state);
-    this.leaver = new StreamLeaverImpl(state);
-    this.participantManager = new StreamParticipantManagerImpl(state);
-    this.audioLevels = new AudioLevelsUpdaterImpl(state);
+    super(state);
+
+    this.joiner = new StreamJoinerImpl(this.state);
+    this.creator = new StreamCreatorImpl(this.state);
+    this.leaver = new StreamLeaverImpl(this.state);
+    this.participantManager = new StreamParticipantManagerImpl(this.state);
+    this.audioLevels = new AudioLevelsUpdaterImpl(this.state);
   }
 
   updateAudioLevels(levels: AudioLevelRecord[]) {

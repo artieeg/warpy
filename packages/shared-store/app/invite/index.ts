@@ -1,6 +1,7 @@
 import { InviteStates } from "@warpy/lib";
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
+import { Service } from "../Service";
 import { InviteCleaner, InviteCleanerImpl } from "./InviteCleaner";
 import { InviteSender, InviteSenderImpl } from "./InviteSender";
 import {
@@ -10,6 +11,7 @@ import {
 import { SentInviteStateUpdater } from "./SentInviteStateUpdater";
 
 export class InviteService
+  extends Service
   implements
     InviteCleaner,
     InviteSender,
@@ -21,9 +23,11 @@ export class InviteService
   private manager: ReceivedInviteManager;
 
   constructor(state: IStore | AppState) {
-    this.cleaner = new InviteCleanerImpl(state);
-    this.sender = new InviteSenderImpl(state);
-    this.manager = new ReceivedInviteManagerImpl(state);
+    super(state);
+
+    this.cleaner = new InviteCleanerImpl(this.state);
+    this.sender = new InviteSenderImpl(this.state);
+    this.manager = new ReceivedInviteManagerImpl(this.state);
   }
 
   reset() {
