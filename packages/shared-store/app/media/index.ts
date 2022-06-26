@@ -89,7 +89,7 @@ export class MediaService
 
   async toggleParticipantMedia(
     user: string,
-    { video, audio }: { video: boolean; audio: boolean }
+    { video, audio }: { video?: boolean; audio?: boolean }
   ) {
     return this.manager.toggleParticipantMedia(user, { video, audio });
   }

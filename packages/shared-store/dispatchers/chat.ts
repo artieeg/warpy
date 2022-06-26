@@ -1,5 +1,5 @@
 import { IChatMessage } from "@warpy/lib";
-import { StoreSlice2 } from "../types";
+import { StoreDispatcherSlice } from "../types";
 
 export interface IChatDispatchers {
   dispatchChatMessages: (messages: IChatMessage[]) => void;
@@ -8,7 +8,7 @@ export interface IChatDispatchers {
   dispatchChatClearMessages: () => void;
 }
 
-export const createChatDispatchers: StoreSlice2<IChatDispatchers> = (
+export const createChatDispatchers: StoreDispatcherSlice<IChatDispatchers> = (
   runner,
   { chat }
 ) => ({

@@ -1,20 +1,20 @@
-import { StoreSlice } from "../types";
-import { Modal, ModalService, OpenModalParams } from "../app/modal";
-import { runner } from "@app/store";
+import { StoreDispatcherSlice } from "../types";
+import { Modal, OpenModalParams } from "../app/modal";
 
 export interface IModalDispatchers {
   dispatchModalOpen: (modal: Modal, params?: OpenModalParams) => void;
   dispatchModalClose: () => void;
 }
 
-export const createModalDispatchers: StoreSlice<IModalDispatchers> = (
-  _set,
-  get
+export const createModalDispatchers: StoreDispatcherSlice<IModalDispatchers> = (
+  runner,
+  { modal }
 ) => ({
   dispatchModalClose() {
-    runner.mergeStateUpdate(new ModalService(get()).close());
+    runner.mergeStateUpdate(modal.close());
   },
-  dispatchModalOpen(modal, params) {
-    runner.mergeStateUpdate(new ModalService(get()).open(modal, params));
+
+  dispatchModalOpen(modalName, params) {
+    runner.mergeStateUpdate(modal.open(modalName, params));
   },
 });

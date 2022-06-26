@@ -1,7 +1,5 @@
 import { MediaKind } from "mediasoup-client/lib/types";
-import { runner } from "../useStore";
-import { StoreSlice } from "../types";
-import { MediaService } from "../app/media";
+import { StoreDispatcherSlice } from "../types";
 
 export interface IMediaDispatchers {
   dispatchAudioToggle: () => Promise<void>;
@@ -15,13 +13,13 @@ export interface IMediaDispatchers {
   dispatchMediaClose: () => Promise<void>;
 }
 
-export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
-  _set,
-  get
+export const createMediaDispatchers: StoreDispatcherSlice<IMediaDispatchers> = (
+  runner,
+  { media }
 ) => ({
   async dispatchTrackAdd(user, consumerParameters) {
     await runner.mergeStateUpdate(
-      new MediaService(get()).consumeRemoteStream({
+      media.consumeRemoteStream({
         user,
         consumerParameters,
       })
@@ -29,24 +27,22 @@ export const createMediaDispatchers: StoreSlice<IMediaDispatchers> = (
   },
 
   async dispatchMediaClose() {
-    await runner.mergeStateUpdate(new MediaService(get()).close());
+    await runner.mergeStateUpdate(media.close());
   },
 
   async dispatchMediaRequest(kind, params) {
-    await runner.mergeStateUpdate(
-      new MediaService(get()).requestMediaStream(kind, params)
-    );
+    await runner.mergeStateUpdate(media.requestMediaStream(kind, params));
   },
 
   dispatchCameraSwitch() {
-    new MediaService(get()).switchCamera();
+    media.switchCamera();
   },
 
   async dispatchAudioToggle() {
-    await runner.mergeStateUpdate(new MediaService(get()).toggleAudio());
+    await runner.mergeStateUpdate(media.toggleAudio());
   },
 
   async dispatchVideoToggle() {
-    await runner.mergeStateUpdate(new MediaService(get()).toggleVideo());
+    await runner.mergeStateUpdate(media.toggleVideo());
   },
 });

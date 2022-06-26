@@ -1,7 +1,5 @@
 import { Roles } from "@warpy/lib";
-import { UserService } from "../app/user";
-import { StoreSlice } from "../types";
-import { runner } from "../useStore";
+import { StoreDispatcherSlice } from "../types";
 
 export interface IUserDispatchers {
   dispatchUserRoleUpdate: (
@@ -13,19 +11,17 @@ export interface IUserDispatchers {
   dispatchUserHandRaiseToggle: () => void;
 }
 
-export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
-  _set,
-  get
+export const createUserDispatchers: StoreDispatcherSlice<IUserDispatchers> = (
+  runner,
+  { user }
 ) => ({
   async dispatchUserLoadData(token) {
-    await runner.mergeStreamedUpdates(
-      new UserService(get()).loadUserData(token)
-    );
+    await runner.mergeStreamedUpdates(user.loadUserData(token));
   },
 
   async dispatchUserRoleUpdate(newRole, mediaPermissionToken, sendMediaParams) {
     await runner.mergeStreamedUpdates(
-      new UserService(get()).updateUserRole({
+      user.updateUserRole({
         role: newRole,
         mediaPermissionToken,
         sendMediaParams,
@@ -34,8 +30,6 @@ export const createUserDispatchers: StoreSlice<IUserDispatchers> = (
   },
 
   async dispatchUserHandRaiseToggle() {
-    await runner.mergeStateUpdate(
-      new UserService(get()).requestStreamPermission()
-    );
+    await runner.mergeStateUpdate(user.requestStreamPermission());
   },
 });

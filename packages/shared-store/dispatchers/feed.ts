@@ -1,30 +1,21 @@
 import { IStreamCategory } from "@warpy/lib";
-import { FeedService } from "../app/feed";
-import { StoreSlice } from "../types";
-import { runner } from "../useStore";
+import { StoreDispatcherSlice } from "../types";
 
 export interface IFeedDispatchers {
   dispatchFeedFetchNext: () => Promise<void>;
   dispatchFeedCategoryChange: (category: IStreamCategory) => Promise<void>;
 }
 
-export const createFeedDispatchers: StoreSlice<IFeedDispatchers> = (
-  _set,
-  get
+export const createFeedDispatchers: StoreDispatcherSlice<IFeedDispatchers> = (
+  runner,
+  { feed }
 ) => ({
   async dispatchFeedCategoryChange(category) {
-    await runner.mergeStateUpdate(
-      new FeedService(get()).changeFeedCategory(category)
-    );
-
-    await runner.mergeStreamedUpdates(
-      new FeedService(get()).fetchNextFeedPage()
-    );
+    await runner.mergeStateUpdate(feed.changeFeedCategory(category));
+    await runner.mergeStreamedUpdates(feed.fetchNextFeedPage());
   },
 
   async dispatchFeedFetchNext() {
-    await runner.mergeStreamedUpdates(
-      new FeedService(get()).fetchNextFeedPage()
-    );
+    await runner.mergeStreamedUpdates(feed.fetchNextFeedPage());
   },
 });

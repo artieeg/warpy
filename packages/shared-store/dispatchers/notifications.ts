@@ -1,7 +1,5 @@
-import { runner } from "@app/store";
 import { INotification } from "@warpy/lib";
-import { StoreSlice } from "../types";
-import { NotificationService } from "../app/notification";
+import { StoreDispatcherSlice } from "../types";
 
 export interface INotificaionDispatchers {
   dispatchNotificationAdd: (notification: INotification) => void;
@@ -11,29 +9,25 @@ export interface INotificaionDispatchers {
   dispatchNotificationsReadAll: () => void;
 }
 
-export const createNotificationDispatchers: StoreSlice<INotificaionDispatchers> =
-  (set, get) => ({
+export const createNotificationDispatchers: StoreDispatcherSlice<INotificaionDispatchers> =
+  (runner, { notification }) => ({
     dispatchNotificationsReadAll() {
-      runner.mergeStateUpdate(new NotificationService(get()).readAll());
+      runner.mergeStateUpdate(notification.readAll());
     },
 
     async dispatchNotificationsFetchUnread() {
-      await runner.mergeStateUpdate(
-        new NotificationService(get()).fetchUnread()
-      );
+      await runner.mergeStateUpdate(notification.fetchUnread());
     },
 
     async dispatchNotificationsFetchRead() {
-      await runner.mergeStateUpdate(new NotificationService(get()).fetchRead());
+      await runner.mergeStateUpdate(notification.fetchRead());
     },
 
-    dispatchNotificationAdd(notification) {
-      runner.mergeStateUpdate(
-        new NotificationService(get()).addNewNotification(notification)
-      );
+    dispatchNotificationAdd(data) {
+      runner.mergeStateUpdate(notification.addNewNotification(data));
     },
 
     dispatchNotificationRemove(id) {
-      runner.mergeStateUpdate(new NotificationService(get()).remove(id));
+      runner.mergeStateUpdate(notification.remove(id));
     },
   });

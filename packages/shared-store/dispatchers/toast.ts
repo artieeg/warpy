@@ -1,18 +1,15 @@
-import { ToastService, TOAST_DURATION } from "../app/toast";
-import { StoreSlice } from "../types";
-import { runner } from "../useStore";
+import { TOAST_DURATION } from "../app/toast";
+import { StoreDispatcherSlice } from "../types";
 
 export interface IToastDispatchers {
   dispatchToastMessage: (message: string, duration?: TOAST_DURATION) => void;
 }
 
-export const createToastDispatchers: StoreSlice<IToastDispatchers> = (
-  _set,
-  get
+export const createToastDispatchers: StoreDispatcherSlice<IToastDispatchers> = (
+  runner,
+  { toast }
 ) => ({
   dispatchToastMessage(message, duration) {
-    runner.mergeStateUpdate(
-      new ToastService(get()).showToastMessage(message, duration)
-    );
+    runner.mergeStateUpdate(toast.showToastMessage(message, duration));
   },
 });

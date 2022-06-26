@@ -1,6 +1,4 @@
-import { StreamService } from "../app/stream";
-import { StoreSlice } from "../types";
-import { runner } from "../useStore";
+import { StoreDispatcherSlice } from "../types";
 
 export function arrayToMap<T>(array: T[]) {
   const result: Record<string, T> = {};
@@ -20,21 +18,21 @@ export interface IStreamDispatchers {
   }) => Promise<void>;
 }
 
-export const createStreamDispatchers: StoreSlice<IStreamDispatchers> = (
-  _set,
-  get
+export const createStreamDispatchers: StoreDispatcherSlice<IStreamDispatchers> = (
+  runner,
+  { stream }
 ) => ({
-  async dispatchStreamLeave({ shouldStopStream, stream }) {
+  async dispatchStreamLeave({ shouldStopStream, stream: streamId }) {
     await runner.mergeStateUpdate(
-      new StreamService(get()).leave({ shouldStopStream, stream })
+      stream.leave({ shouldStopStream, stream: streamId })
     );
   },
 
   async dispatchStreamCreate() {
-    await runner.mergeStateUpdate(new StreamService(get()).create());
+    await runner.mergeStateUpdate(stream.create());
   },
 
-  async dispatchStreamJoin(stream) {
-    await runner.mergeStateUpdate(new StreamService(get()).join({ stream }));
+  async dispatchStreamJoin(streamId) {
+    await runner.mergeStateUpdate(stream.join({ stream: streamId }));
   },
 });

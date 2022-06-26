@@ -1,6 +1,4 @@
-import { StreamService } from "../app/stream";
-import { StoreSlice } from "../types";
-import { runner } from "../useStore";
+import { StoreDispatcherSlice } from "../types";
 
 export interface IAudioLevelDispatchers {
   dispatchAudioLevelsUpdate: (
@@ -9,14 +7,12 @@ export interface IAudioLevelDispatchers {
   dispatchAudioLevelDelete: (user: string) => void;
 }
 
-export const createAudioLevelDispatchers: StoreSlice<IAudioLevelDispatchers> = (
-  _set,
-  get
-) => ({
-  dispatchAudioLevelsUpdate(levels) {
-    runner.mergeStateUpdate(new StreamService(get()).updateAudioLevels(levels));
-  },
-  dispatchAudioLevelDelete(user) {
-    runner.mergeStateUpdate(new StreamService(get()).delAudioLevel(user));
-  },
-});
+export const createAudioLevelDispatchers: StoreDispatcherSlice<IAudioLevelDispatchers> =
+  (runner, { stream }) => ({
+    dispatchAudioLevelsUpdate(levels) {
+      runner.mergeStateUpdate(stream.updateAudioLevels(levels));
+    },
+    dispatchAudioLevelDelete(user) {
+      runner.mergeStateUpdate(stream.delAudioLevel(user));
+    },
+  });

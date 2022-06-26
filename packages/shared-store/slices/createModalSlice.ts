@@ -1,5 +1,5 @@
 import { IBaseUser, IBot, IInvite } from "@warpy/lib";
-import { StoreSlice, Modal } from "../types";
+import { StoreSlice } from "../types";
 
 export interface IModalSlice {
   modalCurrent: Modal | null;

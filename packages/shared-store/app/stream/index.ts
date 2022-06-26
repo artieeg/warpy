@@ -4,6 +4,7 @@ import { AppState } from "../AppState";
 import { StreamCreator, StreamCreatorImpl } from "./StreamCreator";
 import { StreamJoiner, StreamJoinerImpl } from "./StreamJoiner";
 import { StreamLeaver, StreamLeaverImpl } from "./StreamLeaver";
+import { StreamReaction, StreamReactionImpl } from "./StreamReaction";
 import {
   StreamParticipantManager,
   StreamParticipantManagerImpl,
@@ -21,8 +22,10 @@ export class StreamService
     StreamJoiner,
     StreamCreator,
     StreamParticipantManager,
-    AudioLevelsUpdater
+    AudioLevelsUpdater,
+    StreamReaction
 {
+  private reaction: StreamReaction;
   private joiner: StreamJoiner;
   private creator: StreamCreator;
   private leaver: StreamLeaver;
@@ -32,11 +35,16 @@ export class StreamService
   constructor(state: IStore | AppState) {
     super(state);
 
+    this.reaction = new StreamReactionImpl(this.state);
     this.joiner = new StreamJoinerImpl(this.state);
     this.creator = new StreamCreatorImpl(this.state);
     this.leaver = new StreamLeaverImpl(this.state);
     this.participantManager = new StreamParticipantManagerImpl(this.state);
     this.audioLevels = new AudioLevelsUpdaterImpl(this.state);
+  }
+
+  change(reaction: string) {
+    return this.reaction.change(reaction);
   }
 
   updateAudioLevels(levels: AudioLevelRecord[]) {

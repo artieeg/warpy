@@ -1,8 +1,5 @@
 import { InviteStates } from "@warpy/lib";
-import { StoreSlice } from "../types";
-import { runner } from "../useStore";
-import { InviteService } from "../app/invite";
-import { AppInviteService } from "../app/app-invite";
+import { StoreDispatcherSlice } from "../types";
 
 export interface IInviteDispatchers {
   dispatchPendingInvite: (user: string) => void;
@@ -15,48 +12,39 @@ export interface IInviteDispatchers {
   dispatchInviteClear: () => Promise<void>;
 }
 
-export const createInviteDispatchers: StoreSlice<IInviteDispatchers> = (
-  _set,
-  get
-) => ({
-  async dispatchAppInviteUpdate() {
-    await runner.mergeStateUpdate(new AppInviteService(get()).update());
-  },
+export const createInviteDispatchers: StoreDispatcherSlice<IInviteDispatchers> =
+  (runner, { invite, app_invite }) => ({
+    async dispatchAppInviteUpdate() {
+      await runner.mergeStateUpdate(app_invite.update());
+    },
 
-  async dispatchFetchAppInvite() {
-    await runner.mergeStateUpdate(new AppInviteService(get()).get());
-  },
+    async dispatchFetchAppInvite() {
+      await runner.mergeStateUpdate(app_invite.get());
+    },
 
-  async dispatchInviteAction(action) {
-    const inviteService = new InviteService(get());
+    async dispatchInviteAction(action) {
+      const update = action === "accept" ? invite.accept() : invite.decline();
 
-    const update =
-      action === "accept" ? inviteService.accept() : inviteService.decline();
+      await runner.mergeStateUpdate(update);
+    },
 
-    await runner.mergeStateUpdate(update);
-  },
+    dispatchInviteStateUpdate(inviteId, value) {
+      runner.mergeStateUpdate(invite.updateStateOfSentInvite(inviteId, value));
+    },
 
-  dispatchInviteStateUpdate(invite, value) {
-    runner.mergeStateUpdate(
-      new InviteService(get()).updateStateOfSentInvite(invite, value)
-    );
-  },
+    async dispatchSendPendingInvites() {
+      await runner.mergeStateUpdate(invite.sendPendingInvites());
+    },
 
-  async dispatchSendPendingInvites() {
-    await runner.mergeStateUpdate(
-      new InviteService(get()).sendPendingInvites()
-    );
-  },
+    dispatchPendingInvite(user) {
+      runner.mergeStateUpdate(invite.addPendingInvite(user));
+    },
 
-  dispatchPendingInvite(user) {
-    runner.mergeStateUpdate(new InviteService(get()).addPendingInvite(user));
-  },
+    async dispatchCancelInvite(user) {
+      await runner.mergeStateUpdate(invite.cancelInvite(user));
+    },
 
-  async dispatchCancelInvite(user) {
-    await runner.mergeStateUpdate(new InviteService(get()).cancelInvite(user));
-  },
-
-  async dispatchInviteClear() {
-    await runner.mergeStateUpdate(new InviteService(get()).reset());
-  },
-});
+    async dispatchInviteClear() {
+      await runner.mergeStateUpdate(invite.reset());
+    },
+  });

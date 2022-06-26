@@ -1,18 +1,15 @@
 import { container } from "../container";
-import { StoreSlice } from "../types";
+import { StoreDispatcherSlice } from "../types";
 
 export interface IReactionDispatchers {
   dispatchReactionChange: (reaction: string) => void;
 }
 
-export const createReactionDispatchers: StoreSlice<IReactionDispatchers> = (
-  set
-) => ({
-  dispatchReactionChange(reaction) {
-    container.saveReaction?.(reaction);
+export const createReactionDispatchers: StoreDispatcherSlice<IReactionDispatchers> =
+  (runner, { stream }) => ({
+    dispatchReactionChange(reaction) {
+      container.saveReaction?.(reaction);
 
-    set({
-      reaction,
-    });
-  },
-});
+      runner.mergeStateUpdate(stream.change(reaction));
+    },
+  });
