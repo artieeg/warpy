@@ -20,6 +20,7 @@ export interface MediaConsumer {
   consumeRemoteStream: (params: {
     user: string;
     consumerParameters: any;
+    startConsumingImmediately: boolean;
   }) => Promise<StateUpdate>;
 }
 
@@ -37,9 +38,11 @@ export class MediaConsumerImpl implements MediaConsumer {
   async consumeRemoteStream({
     user,
     consumerParameters,
+    startConsumingImmediately,
   }: {
     user: string;
     consumerParameters: any;
+    startConsumingImmediately: boolean;
   }) {
     const { mediaClient, recvTransport } = this.state.get();
 
@@ -62,6 +65,7 @@ export class MediaConsumerImpl implements MediaConsumer {
         [user]: {
           consumer,
           stream,
+          //enabled: startConsumingImmediately,
           enabled: true,
         },
       },
@@ -102,14 +106,12 @@ export class MediaConsumerImpl implements MediaConsumer {
       isProducer: false,
     });
 
-    this.state.update({
+    return this.state.update({
       mediaClient,
       recvDevice,
       recvMediaParams,
       recvTransport,
     });
-
-    return this.state.getStateDiff();
   }
 
   async consumeRemoteStreams({

@@ -52,7 +52,11 @@ export class MediaService
     return this.cleaner.close();
   }
 
-  consumeRemoteStream(params: { user: string; consumerParameters: any }) {
+  consumeRemoteStream(params: {
+    user: string;
+    consumerParameters: any;
+    startConsumingImmediately: boolean;
+  }) {
     return this.consumer.consumeRemoteStream(params);
   }
 

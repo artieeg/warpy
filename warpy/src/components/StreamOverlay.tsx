@@ -1,6 +1,12 @@
-import {useStore} from '@app/store';
+import {useStoreShallow} from '@app/store';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {View, StyleSheet, useWindowDimensions, Animated} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  useWindowDimensions,
+  Animated,
+  Alert,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {ChatButton} from './ChatButton';
 import {ReactionSelectButton} from './ReactionSelectButton';
@@ -23,7 +29,11 @@ export const StreamOverlay = () => {
   const [debouncedVisible, setDebouncedVisible] = useState(true);
 
   const gradientHeightStyle = {height: useWindowDimensions().height / 3.4};
-  const role = useStore.use.role();
+  const [role] = useStoreShallow(store => [store.role]);
+
+  useEffect(() => {
+    Alert.alert('role is', role ?? 'undefined');
+  }, [role]);
 
   const opacity = useRef(new Animated.Value(1));
 

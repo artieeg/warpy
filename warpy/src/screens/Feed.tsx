@@ -13,7 +13,6 @@ import Animated, {
   useSharedValue,
   Layout,
 } from 'react-native-reanimated';
-import {useStore} from '@app/store';
 
 export const Feed = () => {
   const feed = useFeed();

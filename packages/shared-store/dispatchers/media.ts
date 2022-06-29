@@ -22,6 +22,7 @@ export const createMediaDispatchers: StoreDispatcherSlice<IMediaDispatchers> = (
       media.consumeRemoteStream({
         user,
         consumerParameters,
+        startConsumingImmediately: false,
       })
     );
   },

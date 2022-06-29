@@ -1,9 +1,5 @@
 import { ExceptionFilter } from '@warpy-be/rpc-exception.filter';
-import {
-  EVENT_PARTICIPANT_LEAVE,
-  EVENT_USER_CONNECTED,
-  EVENT_USER_DISCONNECTED,
-} from '@warpy-be/utils';
+import { EVENT_USER_DISCONNECTED } from '@warpy-be/utils';
 import { Controller, UseFilters } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -12,20 +8,15 @@ import {
   ICreateAnonUserResponse,
   INewUser,
   INewUserResponse,
-  IUser,
   IUserDelete,
   IUserDeleteResponse,
   IUserDisconnected,
   IUserInfoResponse,
-  IUserListRequest,
-  IUserListResponse,
   IUserRequest,
   IUserSearchRequest,
   IUserSearchResponse,
   IUserUpdateRequest,
   IUserUpdateResponse,
-  IWhoAmIRequest,
-  IWhoAmIResponse,
 } from '@warpy/lib';
 import { UserService } from './user.service';
 
@@ -89,7 +80,7 @@ export class UserController {
   @MessagePattern('user.search')
   async onUserSearch({
     textToSearch,
-    user
+    user,
   }: IUserSearchRequest): Promise<IUserSearchResponse> {
     const users = await this.userService.search(textToSearch, user);
 

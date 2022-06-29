@@ -73,7 +73,7 @@ export class MediaManagerImpl implements MediaManager {
 
       if (audio !== undefined && state.audioStreams[user]) {
         state.audioStreams[user] = {
-          ...state.videoStreams[user],
+          ...state.audioStreams[user],
           enabled: audio,
         };
       }

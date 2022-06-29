@@ -3,7 +3,6 @@ import {StyleSheet, View} from 'react-native';
 import {StreamOverlay} from './StreamOverlay';
 import {Room} from './Room';
 import {useRemoteStreamController} from '@app/hooks';
-import {ReactionCanvas} from './ReactionCanvas';
 import {AwardDisplay} from './AwardDisplay';
 import {IStream} from '@warpy/lib';
 

@@ -1,4 +1,4 @@
-import {useEffect, useMemo} from 'react';
+import {useMemo} from 'react';
 import {useRemoteStreams} from '.';
 import {useStore} from '@app/store';
 import shallow from 'zustand/shallow';

@@ -1,13 +1,15 @@
 import { CustomTransportStrategy, Server } from '@nestjs/microservices';
 import { connect, JSONCodec, Msg, NatsConnection } from 'nats';
-import { catchError, Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
 export class NatsServer extends Server implements CustomTransportStrategy {
   nc: NatsConnection;
   jc = JSONCodec();
 
   sendResponse(msg: Msg, data: any) {
-    msg.respond(this.jc.encode(data));
+    try {
+      msg.respond(this.jc.encode(data));
+    } catch (e) {}
   }
 
   private async subscribeTo(subject: string) {
@@ -19,35 +21,19 @@ export class NatsServer extends Server implements CustomTransportStrategy {
       const response = await this.messageHandlers.get(subject)(message);
 
       if (response instanceof Observable) {
-        response.subscribe({
-          next: (value) => this.sendResponse(msg, value),
-          error: (err) =>
-            this.sendResponse(msg, {
-              status: 'error',
-              data: err,
-            }),
-        });
+        try {
+          response.subscribe({
+            next: (value) => this.sendResponse(msg, value),
+            error: (err) =>
+              this.sendResponse(msg, {
+                status: 'error',
+                data: err,
+              }),
+          });
+        } catch (e) {}
       } else {
         this.sendResponse(msg, response);
       }
-
-      /*
-      response
-        .pipe(({}) => this.sendResponse(msg, response))
-        .pipe(
-          catchError((e) => {
-            this.sendResponse(msg, e);
-          }),
-        );
-
-      response.subscribe(
-        (response) => this.sendResponse(msg, response),
-        (err) => this.sendResponse(msg, err),
-      );
-        */
-      //response.pipe(catchError((err) => of({ error: err }))).pipe();
-
-      //msg.respond(this.jc.encode(response));
     }
   }
 

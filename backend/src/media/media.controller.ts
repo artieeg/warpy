@@ -10,9 +10,15 @@ export class MediaController implements OnParticipantLeave {
 
   @OnEvent(EVENT_PARTICIPANT_LEAVE)
   async onParticipantLeave({ user, stream }) {
-    this.mediaService.removeFromNodes({
-      id: user,
-      stream,
-    });
+    if (!stream) {
+      return;
+    }
+
+    try {
+      await this.mediaService.removeFromNodes({
+        id: user,
+        stream,
+      });
+    } catch (e) {}
   }
 }

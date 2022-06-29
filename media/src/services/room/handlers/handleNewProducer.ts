@@ -48,14 +48,17 @@ export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
   const { peers } = room;
 
   if (!peers[userId]) {
+    const router = SFUService.getWorker().router;
+
     const recvTransport = await SFUService.createTransport(
       "recv",
-      SFUService.getWorker().router,
+      router,
       userId
     );
 
     peers[userId] = createNewPeer({
       recvTransport,
+      router,
       producer: {
         audio: kind === "audio" ? producers : {},
         video: kind === "video" ? producers : {},

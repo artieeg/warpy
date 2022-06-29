@@ -41,7 +41,7 @@ export class RoleUpdaterImpl implements RoleUpdater {
   }) {
     const { role: oldRole } = this.state.get();
 
-    yield this.state.update({
+    this.state.update({
       role,
       isRaisingHand: false,
       sendMediaParams,
@@ -62,7 +62,8 @@ export class RoleUpdaterImpl implements RoleUpdater {
 
       yield await this.media.stream({
         token: mediaPermissionToken,
-        streamMediaImmediately: false,
+        //streamMediaImmediately: false,
+        streamMediaImmediately: true,
         sendMediaParams,
         kind,
       });
@@ -72,5 +73,11 @@ export class RoleUpdaterImpl implements RoleUpdater {
         audioEnabled: false,
       });
     }
+
+    yield this.state.update({
+      role,
+      isRaisingHand: false,
+      sendMediaParams,
+    });
   }
 }

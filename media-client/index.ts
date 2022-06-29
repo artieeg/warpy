@@ -105,7 +105,7 @@ export class MediaClient {
       appData: {
         user,
         producerId: options.producerId,
-        mediaTag: "remote-media",
+        mediaTag: "media-" + Math.random(),
       },
     });
 

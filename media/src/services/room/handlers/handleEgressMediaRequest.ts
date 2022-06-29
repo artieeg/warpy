@@ -8,6 +8,8 @@ export const handleEgressMediaRequest: MessageHandler<any, any> = async (
 ) => {
   const { stream, node } = data;
 
+  console.log("requested forwarding of", stream, "to", node);
+
   const { peers, forwardingToNodeIds } = rooms[stream];
 
   //Check if we forward all room's media to this node already
