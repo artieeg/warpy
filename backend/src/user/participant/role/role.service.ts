@@ -56,11 +56,11 @@ export class ParticipantRoleService {
 
     //receive new media token,
     //send transport data (if upgrading from viewer)
-    const { ...rest } = await this.media.updateMediaRole(oldUserData, role);
+    const media = await this.media.updateMediaRole(oldUserData, role);
 
     let response = {
       role,
-      ...rest,
+      ...media,
     };
 
     //Update participant record with a new role
@@ -68,6 +68,11 @@ export class ParticipantRoleService {
     const updatedUser = await this.participant.update(userToUpdate, {
       role,
 
+      //new streamers start with their audio and video disabled
+      videoEnabled: role === 'streamer' ? false : oldUserData.videoEnabled,
+      audioEnabled: role === 'speaker' ? false : oldUserData.audioEnabled,
+
+      /*
       //mark video as disabled if role set to speaker or viewer
       videoEnabled: !(role === 'speaker' || role === 'viewer')
         ? false
@@ -75,9 +80,8 @@ export class ParticipantRoleService {
 
       //mark audio as disabled if role set to viewer
       audioEnabled: !(role === 'viewer'),
+      */
     });
-
-    console.log('sending role change event', { response, updatedUser });
 
     this.messageService.sendMessage(userToUpdate, {
       event: 'role-change',

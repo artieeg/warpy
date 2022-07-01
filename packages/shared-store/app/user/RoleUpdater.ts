@@ -59,11 +59,9 @@ export class RoleUpdaterImpl implements RoleUpdater {
       yield this.state.update({ videoEnabled: false });
     } else if (role !== "viewer") {
       const kind = role === "speaker" ? "audio" : "video";
-
       yield await this.media.stream({
         token: mediaPermissionToken,
-        //streamMediaImmediately: false,
-        streamMediaImmediately: true,
+        streamMediaImmediately: false,
         sendMediaParams,
         kind,
       });

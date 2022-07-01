@@ -56,7 +56,11 @@ export class MediaConsumerImpl implements MediaConsumer {
       recvTransport
     );
 
+    console.log(`consuming ${consumer.kind} from user ${user}`);
+
     const stream = new MediaStream([consumer.track]);
+    console.log("created stream", { stream });
+
     const key = consumer.kind === "audio" ? "audioStreams" : "videoStreams";
 
     return this.state.update({

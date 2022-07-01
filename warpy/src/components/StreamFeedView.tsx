@@ -74,28 +74,7 @@ export const StreamFeedView: React.FC<StreamFeedViewProps> = ({
     <AnimatedFlatList
       {...(rest as any)}
       style={[wrapperStyle, rest.style]}
-      data={
-        data && [
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-        ]
-      }
+      data={data}
       numColumns={2}
       renderItem={renderItem as any}
     />

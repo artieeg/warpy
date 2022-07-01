@@ -30,11 +30,6 @@ export const StreamOverlay = () => {
 
   const gradientHeightStyle = {height: useWindowDimensions().height / 3.4};
   const [role] = useStoreShallow(store => [store.role]);
-
-  useEffect(() => {
-    Alert.alert('role is', role ?? 'undefined');
-  }, [role]);
-
   const opacity = useRef(new Animated.Value(1));
 
   useEffect(() => {

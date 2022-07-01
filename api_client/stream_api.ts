@@ -50,6 +50,7 @@ export interface IStreamAPI {
   cancelInvite: (invite_id: string) => Promise<ICancelInviteResponse>;
   getInviteSuggestions: (stream: string) => Promise<IInviteSuggestionsResponse>;
   setRole: (userToUpdate: string, role: Roles) => void;
+  leave: (stream: string) => Promise<ILeaveStreamResponse>;
   onPreviousStream: EventHandler<IPreviousStream>;
   onReactionsUpdate: EventHandler<IReactionsUpdate>;
   onNewParticipant: EventHandler<INewParticipantEvent>;
@@ -66,7 +67,6 @@ export interface IStreamAPI {
   onHostReassign: EventHandler<IReassignedStreamHost>;
   onStreamEnd: EventHandler<IStreamEndEvent>;
   onNewInvite: EventHandler<IReceivedInviteEvent>;
-  leave: (stream: string) => Promise<ILeaveStreamResponse>;
 }
 
 export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({

@@ -161,14 +161,12 @@ export class MediaStreamerImpl implements MediaStreamer {
       sendTransport as Transport
     );
 
-    this.state.update({
+    return this.state.update({
       [kind]: {
         ...this.state.get()[kind],
         producer,
       },
     });
-
-    return this.state.getStateDiff();
   }
 
   async requestMediaStream(

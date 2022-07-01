@@ -76,6 +76,10 @@ export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
     const { recvTransport: peerRecvTransport, router } = peers[peerId];
 
     if (!peerRecvTransport || !router) {
+      console.warn(
+        `Peer ${peerId} doesn't have recv transport or router assigned`,
+        { peerRecvTransport, router }
+      );
       continue;
     }
 

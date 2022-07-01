@@ -40,6 +40,7 @@ export const Room = () => {
       <View style={styles.videoWrapper}>
         {streams.map((stream, i) => (
           <RTCView
+            key={stream.id}
             style={mediaStyles[streams.length - 1][i]}
             objectFit="cover"
             streamURL={stream.toURL()}
