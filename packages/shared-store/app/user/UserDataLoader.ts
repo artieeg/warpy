@@ -33,8 +33,6 @@ export class UserDataLoaderImpl implements UserDataLoader {
         exists: false,
       });
     } else {
-      console.log({ newStreamCategory: categories[1] });
-
       yield this.state.update({
         friendFeed,
         user,

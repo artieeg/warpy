@@ -28,11 +28,13 @@ export class FeedFetcherImpl implements FeedFetcher {
       isFeedLoading: true,
     });
 
-    const categoryId = selectedFeedCategory.id;
+    //console.log({ selectedFeedCategory });
+
+    //const categoryId = selectedFeedCategory.id;
 
     const { feed } = await api.feed.get({
       page: latestFeedPage,
-      category: categoryId,
+      category: selectedFeedCategory.id,
     });
 
     yield this.state.update({
