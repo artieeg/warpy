@@ -20,6 +20,15 @@ export const createUserDispatchers: StoreDispatcherSlice<IUserDispatchers> = (
   },
 
   async dispatchUserRoleUpdate(newRole, mediaPermissionToken, sendMediaParams) {
+    await runner.mergeStateUpdate(
+      user.updateUserRole({
+        role: newRole,
+        mediaPermissionToken,
+        sendMediaParams,
+      })
+    );
+
+    /*
     await runner.mergeStreamedUpdates(
       user.updateUserRole({
         role: newRole,
@@ -27,6 +36,7 @@ export const createUserDispatchers: StoreDispatcherSlice<IUserDispatchers> = (
         sendMediaParams,
       })
     );
+    */
   },
 
   async dispatchUserHandRaiseToggle() {

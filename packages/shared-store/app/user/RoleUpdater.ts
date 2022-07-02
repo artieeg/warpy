@@ -3,14 +3,14 @@ import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
 import { MediaService } from "../media";
 import { ToastService } from "../toast";
-import { StreamedStateUpdate } from "../types";
+import { StateUpdate, StreamedStateUpdate } from "../types";
 
 export interface RoleUpdater {
   updateUserRole: (params: {
     role: Roles;
     mediaPermissionToken: string;
     sendMediaParams: any;
-  }) => StreamedStateUpdate;
+  }) => Promise<StateUpdate>;
 }
 
 export class RoleUpdaterImpl implements RoleUpdater {
@@ -30,7 +30,7 @@ export class RoleUpdaterImpl implements RoleUpdater {
     this.media = new MediaService(this.state);
   }
 
-  async *updateUserRole({
+  async updateUserRole({
     role,
     mediaPermissionToken,
     sendMediaParams,
@@ -47,32 +47,32 @@ export class RoleUpdaterImpl implements RoleUpdater {
       sendMediaParams,
     });
 
-    yield this.toast.showToastMessage(`You are a ${role} now`);
+    this.toast.showToastMessage(`You are a ${role} now`);
 
     if (role === "viewer") {
-      yield this.media.closeProducer("audio", "video");
+      this.media.closeProducer("audio", "video");
     } else if (role === "speaker") {
-      yield this.media.closeProducer("video");
+      this.media.closeProducer("video");
     }
 
     if (oldRole === "streamer" && role === "speaker") {
-      yield this.state.update({ videoEnabled: false });
+      this.state.update({ videoEnabled: false });
     } else if (role !== "viewer") {
       const kind = role === "speaker" ? "audio" : "video";
-      yield await this.media.stream({
+      await this.media.stream({
         token: mediaPermissionToken,
         streamMediaImmediately: false,
         sendMediaParams,
         kind,
       });
     } else {
-      yield this.state.update({
+      this.state.update({
         videoEnabled: false,
         audioEnabled: false,
       });
     }
 
-    yield this.state.update({
+    return this.state.update({
       role,
       isRaisingHand: false,
       sendMediaParams,

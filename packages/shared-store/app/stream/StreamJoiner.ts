@@ -38,6 +38,8 @@ export class StreamJoinerImpl implements StreamJoiner {
       sendMediaParams,
     } = await api.stream.join(stream);
 
+    console.log("received streamers from api", streamers);
+
     this.state.update({
       stream,
       currentStreamHost: host,

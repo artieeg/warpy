@@ -20,34 +20,40 @@ export const handleEgressMediaRequest: MessageHandler<any, any> = async (
 
   const pipeRouterId = SFUService.getPipeRouter().id;
 
-  Object.entries(peers).forEach(([userId, peer]) => {
-    const producers = [
-      peer.producer.audio[pipeRouterId],
-      peer.producer.video[pipeRouterId],
-    ].filter((p) => !!p);
+  const promises = Object.entries(peers)
+    .map(([userId, peer]) => {
+      const producers = [
+        peer.producer.audio[pipeRouterId],
+        peer.producer.video[pipeRouterId],
+      ].filter((p) => !!p);
 
-    producers.forEach(async (producer) => {
-      const pipeConsumer = await SFUService.createPipeConsumer(
-        producer.id,
-        node
-      );
+      return producers.map(async (producer) => {
+        const pipeConsumer = await SFUService.createPipeConsumer(
+          producer.id,
+          node
+        );
 
-      producer.appData.forwadingToNodes = [
-        ...(producer.appData.forwadingToNodes ?? []),
-        node,
-      ];
+        producer.appData.forwadingToNodes = [
+          ...(producer.appData.forwadingToNodes ?? []),
+          node,
+        ];
 
-      MessageService.sendNewProducer(node, {
-        userId,
-        roomId: stream,
-        id: pipeConsumer.id,
-        kind: pipeConsumer.kind,
-        rtpParameters: pipeConsumer.rtpParameters,
-        rtpCapabilities: peer.rtpCapabilities,
-        appData: pipeConsumer.appData,
+        return MessageService.sendNewProducer(node, {
+          userId,
+          roomId: stream,
+          id: pipeConsumer.id,
+          kind: pipeConsumer.kind,
+          rtpParameters: pipeConsumer.rtpParameters,
+          rtpCapabilities: peer.rtpCapabilities,
+          appData: pipeConsumer.appData,
+        });
       });
-    });
-  });
+    })
+    .reduce((p, c) => [...p, ...c]);
+
+  console.log(`sending ${promises.length} media producer`, Date.now());
+  const results = await Promise.all(promises);
+  console.log("results", results);
 
   forwardingToNodeIds.push(node);
 

@@ -132,7 +132,7 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
         node
       );
 
-      MessageService.sendNewProducer(node, {
+      await MessageService.sendNewProducer(node, {
         userId: user,
         roomId,
         id: pipeConsumer.id,

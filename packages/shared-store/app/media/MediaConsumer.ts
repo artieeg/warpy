@@ -56,10 +56,7 @@ export class MediaConsumerImpl implements MediaConsumer {
       recvTransport
     );
 
-    console.log(`consuming ${consumer.kind} from user ${user}`);
-
     const stream = new MediaStream([consumer.track]);
-    console.log("created stream", { stream });
 
     const key = consumer.kind === "audio" ? "audioStreams" : "videoStreams";
 
@@ -69,8 +66,8 @@ export class MediaConsumerImpl implements MediaConsumer {
         [user]: {
           consumer,
           stream,
-          //enabled: startConsumingImmediately,
-          enabled: true,
+          enabled: startConsumingImmediately,
+          //enabled: false,
         },
       },
     });
@@ -149,6 +146,8 @@ export class MediaConsumerImpl implements MediaConsumer {
     let videoStreams: MediaStreamMap = {};
     let audioStreams: MediaStreamMap = {};
 
+    console.log("streamers", streamers);
+
     streamers.forEach((s: IParticipant) => {
       const audioConsumer = consumers.find(
         (c) => c.appData.user === s.id && c.kind === "audio"
@@ -157,6 +156,12 @@ export class MediaConsumerImpl implements MediaConsumer {
       const videoConsumer = consumers.find(
         (c) => c.appData.user === s.id && c.kind === "video"
       );
+
+      if (s.videoEnabled && !videoConsumer) {
+        console.warn(
+          `streamer ${s.id} has video enabled but no consumer has been found`
+        );
+      }
 
       if (audioConsumer) {
         audioStreams[s.id] = {
@@ -174,6 +179,8 @@ export class MediaConsumerImpl implements MediaConsumer {
         };
       }
     });
+
+    console.log("video streqms", videoStreams);
 
     this.state.update({
       audioStreams: { ...this.state.get().audioStreams, ...audioStreams },

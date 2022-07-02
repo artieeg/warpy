@@ -9,7 +9,9 @@ export class NatsServer extends Server implements CustomTransportStrategy {
   sendResponse(msg: Msg, data: any) {
     try {
       msg.respond(this.jc.encode(data));
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   private async subscribeTo(subject: string) {
@@ -30,7 +32,9 @@ export class NatsServer extends Server implements CustomTransportStrategy {
                 data: err,
               }),
           });
-        } catch (e) {}
+        } catch (e) {
+          console.error(e);
+        }
       } else {
         this.sendResponse(msg, response);
       }

@@ -5,7 +5,10 @@ import { MessageHandler, INewProducer } from "@warpy/lib";
 import { Producer } from "mediasoup/node/lib/Producer";
 import { rooms } from "../rooms";
 
-export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
+export const handleNewProducer: MessageHandler<
+  INewProducer,
+  { status: string }
+> = async (data, respond) => {
   const { userId, roomId, rtpCapabilities, kind } = data;
 
   const pipeProducer = await SFUService.pipeToIngress.produce({
@@ -106,4 +109,8 @@ export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
       console.error(e);
     }
   }
+
+  console.log("piped a producer", Date.now(), `kind: ${kind}, user: ${userId}`);
+
+  respond({ status: "ok" });
 };

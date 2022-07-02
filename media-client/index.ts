@@ -132,6 +132,8 @@ export class MediaClient {
       mediaPermissionsToken: this.permissionsToken,
     });
 
+    console.log("fetched consumer params from the api", consumerParams);
+
     const consumersPromises: Promise<Consumer>[] = consumerParams.map(
       (params: any) =>
         transport.consume({

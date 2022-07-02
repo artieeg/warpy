@@ -38,7 +38,9 @@ export const handleRecvTracksRequest: MessageHandler<
 
   const consumerParams: any[] = [];
 
+  console.log("requesting media tracks", Date.now());
   await MessageService.requestMediaTracks(stream);
+  console.log("producers received", Date.now());
 
   for (const peerId of Object.keys(peers)) {
     const peer = peers[peerId];

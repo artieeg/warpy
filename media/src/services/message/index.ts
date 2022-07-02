@@ -105,11 +105,12 @@ export const sendActiveSpeakers = (speakers: string[]) => {
   nc.publish("stream.active-speakers", jc.encode({ speakers }));
 };
 
-export const sendNewProducer = (node: string, producer: INewProducer) => {
-  nc.publish(
+export const sendNewProducer = async (node: string, producer: INewProducer) => {
+  const r = await nc.request(
     `${subjects.media.egress.newProducer}.${node}`,
     jc.encode(producer)
   );
+  return jc.decode(r.data) as any;
 };
 
 export const sendNodeIsOnlineMessage = async (nodeParams: any) => {
