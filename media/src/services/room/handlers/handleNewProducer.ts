@@ -9,7 +9,7 @@ export const handleNewProducer: MessageHandler<
   INewProducer,
   { status: string }
 > = async (data, respond) => {
-  const { userId, roomId, rtpCapabilities, kind } = data;
+  const { userId, sendTrackToUser, roomId, rtpCapabilities, kind } = data;
 
   const pipeProducer = await SFUService.pipeToIngress.produce({
     id: data.id,
@@ -97,20 +97,22 @@ export const handleNewProducer: MessageHandler<
         peerId
       );
 
-      MessageService.sendMessageToUser(peerId, {
-        event: "@media/new-track",
-        data: {
-          user: userId,
-          consumerParameters,
-          roomId,
-        },
-      });
+      if (sendTrackToUser) {
+        setTimeout(() => {
+          MessageService.sendMessageToUser(peerId, {
+            event: "@media/new-track",
+            data: {
+              user: userId,
+              consumerParameters,
+              roomId,
+            },
+          });
+        }, 1000);
+      }
     } catch (e) {
       console.error(e);
     }
   }
-
-  console.log("piped a producer", Date.now(), `kind: ${kind}, user: ${userId}`);
 
   respond({ status: "ok" });
 };

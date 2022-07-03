@@ -135,6 +135,7 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
       await MessageService.sendNewProducer(node, {
         userId: user,
         roomId,
+        sendTrackToUser: true,
         id: pipeConsumer.id,
         kind: pipeConsumer.kind,
         rtpParameters: pipeConsumer.rtpParameters,

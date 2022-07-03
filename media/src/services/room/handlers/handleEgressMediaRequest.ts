@@ -46,14 +46,13 @@ export const handleEgressMediaRequest: MessageHandler<any, any> = async (
           rtpParameters: pipeConsumer.rtpParameters,
           rtpCapabilities: peer.rtpCapabilities,
           appData: pipeConsumer.appData,
+          sendTrackToUser: false,
         });
       });
     })
     .reduce((p, c) => [...p, ...c]);
 
-  console.log(`sending ${promises.length} media producer`, Date.now());
   const results = await Promise.all(promises);
-  console.log("results", results);
 
   forwardingToNodeIds.push(node);
 

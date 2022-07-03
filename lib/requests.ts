@@ -103,6 +103,7 @@ export interface INewProducer {
   appData: any;
   roomId: string;
   userId: string;
+  sendTrackToUser?: boolean;
 }
 
 export interface INewMediaNode {
