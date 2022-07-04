@@ -11,6 +11,10 @@ export const handleNewProducer: MessageHandler<
 > = async (data, respond) => {
   const { userId, sendTrackToUser, roomId, rtpCapabilities, kind } = data;
 
+  console.log(
+    `received a new producer of ${kind} from user ${userId} in room ${roomId}`
+  );
+
   const pipeProducer = await SFUService.pipeToIngress.produce({
     id: data.id,
     kind: data.kind,

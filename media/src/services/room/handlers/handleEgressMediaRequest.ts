@@ -52,7 +52,9 @@ export const handleEgressMediaRequest: MessageHandler<any, any> = async (
     })
     .reduce((p, c) => [...p, ...c]);
 
-  const results = await Promise.all(promises);
+  console.log(promises);
+
+  await Promise.all(promises);
 
   forwardingToNodeIds.push(node);
 

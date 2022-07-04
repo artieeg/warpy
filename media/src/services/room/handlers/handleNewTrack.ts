@@ -44,19 +44,16 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
 
   let newProducer: Producer;
   try {
-    console.log("trying to produce", kind);
     newProducer = await transport.produce({
       kind,
       rtpParameters,
       appData: { ...appData, user, transportId, stream: roomId },
     });
-    console.log("producing", kind);
 
     if (kind === "audio") {
       await room.audioLevelObserver.addProducer({
         producerId: newProducer.id,
       });
-      console.log("added producer to the audio observer");
     }
 
     if (kind === "video") {
@@ -93,14 +90,6 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
         paused: true,
       });
 
-      console.log({ rtpConsumer });
-
-      /*
-      if (!rtpConsumer) {
-        throw new Error("Failed to create rtp consumer");
-      }
-      */
-
       if (rtpConsumer) {
         peer.consumers.push(rtpConsumer);
 
@@ -126,37 +115,30 @@ export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
 
     peer.rtpCapabilities = rtpCapabilities;
 
-    room.forwardingToNodeIds.forEach(async (node) => {
-      const pipeConsumer = await SFUService.createPipeConsumer(
-        newProducer.id,
-        node
-      );
+    console.log(`producing ${kind} from user_${user} in room_${roomId}`);
+    console.log(
+      `${kind} is being forwarded to nodes: ${room.forwardingToNodeIds.toString()}`
+    );
 
-      await MessageService.sendNewProducer(node, {
-        userId: user,
-        roomId,
-        sendTrackToUser: true,
-        id: pipeConsumer.id,
-        kind: pipeConsumer.kind,
-        rtpParameters: pipeConsumer.rtpParameters,
-        rtpCapabilities: rtpCapabilities,
-        appData: pipeConsumer.appData,
-      });
-    });
-    /*
+    await Promise.all(
+      room.forwardingToNodeIds.map(async (node) => {
+        const pipeConsumer = await SFUService.createPipeConsumer(
+          newProducer.id,
+          node
+        );
 
-    for (const [node, pipeConsumer] of Object.entries(pipeConsumers)) {
-      MessageService.sendNewProducer(node, {
-        userId: user,
-        roomId,
-        id: pipeConsumer.id,
-        kind: pipeConsumer.kind,
-        rtpParameters: pipeConsumer.rtpParameters,
-        rtpCapabilities: rtpCapabilities,
-        appData: pipeConsumer.appData,
-      });
-    }
-    */
+        await MessageService.sendNewProducer(node, {
+          userId: user,
+          roomId,
+          sendTrackToUser: true,
+          id: pipeConsumer.id,
+          kind: pipeConsumer.kind,
+          rtpParameters: pipeConsumer.rtpParameters,
+          rtpCapabilities,
+          appData: pipeConsumer.appData,
+        });
+      })
+    );
   } catch (e) {
     console.error("error:", e);
     return;
