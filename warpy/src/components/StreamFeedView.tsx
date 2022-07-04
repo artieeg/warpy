@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, FlatListProps} from 'react-native';
+import {FlatList, FlatListProps, RefreshControl} from 'react-native';
 import {ICandidate} from '@warpy/lib';
 import {usePreviewDimensions} from '@app/hooks';
 import {StreamPreview} from './StreamPreview';
@@ -12,7 +12,9 @@ import Animated, {
 import {colors} from '../../colors';
 
 interface StreamFeedViewProps
-  extends Omit<FlatListProps<ICandidate>, 'renderItem'> {}
+  extends Omit<FlatListProps<ICandidate>, 'renderItem'> {
+  isLoading?: boolean;
+}
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -71,13 +73,20 @@ export const StreamFeedView: React.FC<StreamFeedViewProps> = ({
   }));
 
   return (
-    <AnimatedFlatList
-      {...(rest as any)}
-      style={[wrapperStyle, rest.style]}
-      data={data}
-      numColumns={2}
-      renderItem={renderItem as any}
-    />
+    <RefreshControl
+      style={{flex: 1}}
+      refreshing={!!rest.refreshing}
+      onRefresh={rest.onRefresh as any}>
+      <AnimatedFlatList
+        {...(rest as any)}
+        refreshing={undefined}
+        onRefresh={undefined}
+        style={[wrapperStyle, rest.style]}
+        data={data}
+        numColumns={2}
+        renderItem={renderItem as any}
+      />
+    </RefreshControl>
   );
 };
 //(props0, props1) => props0.data === props1.data && props1,

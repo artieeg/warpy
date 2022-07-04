@@ -15,7 +15,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 export const Feed = () => {
-  const feed = useFeed();
+  const {feed, initialFeedFetchDone, isFeedLoading, refreshFeed} = useFeed();
   const navigation = useNavigation();
 
   const onStartStream = React.useCallback(() => {
@@ -87,6 +87,8 @@ export const Feed = () => {
         <Animated.View style={feedWrapperStyle}>
           <StreamFeedView
             scrollEventThrottle={16}
+            onRefresh={refreshFeed}
+            refreshing={isFeedLoading && initialFeedFetchDone}
             onScroll={handler}
             data={feed}
           />

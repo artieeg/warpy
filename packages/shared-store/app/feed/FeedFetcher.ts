@@ -33,7 +33,7 @@ export class FeedFetcherImpl implements FeedFetcher {
     //const categoryId = selectedFeedCategory.id;
 
     const { feed } = await api.feed.get({
-      page: latestFeedPage,
+      page: 0,
       category: selectedFeedCategory.id,
     });
 

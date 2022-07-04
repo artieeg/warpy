@@ -1,12 +1,15 @@
 import {useStore} from '@app/store';
-import {useEffect} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import shallow from 'zustand/shallow';
 
 export const useFeed = () => {
-  const [feed, category, dispatchFeedFetchNext] = useStore(
+  const [initialFeedFetchDone, setInitialFeedFetchDone] = useState(false);
+
+  const [feed, category, isFeedLoading, dispatchFeedFetchNext] = useStore(
     state => [
       state.feed,
       state.selectedFeedCategory,
+      state.isFeedLoading,
       state.dispatchFeedFetchNext,
     ],
     shallow,
@@ -15,9 +18,15 @@ export const useFeed = () => {
   useEffect(() => {
     //Check if category is selected, then fetch
     if (category) {
-      dispatchFeedFetchNext();
+      dispatchFeedFetchNext().then(() => {
+        setInitialFeedFetchDone(true);
+      });
     }
   }, [category]);
 
-  return feed;
+  const refreshFeed = useCallback(() => {
+    dispatchFeedFetchNext();
+  }, []);
+
+  return {feed, refreshFeed, isFeedLoading, initialFeedFetchDone};
 };

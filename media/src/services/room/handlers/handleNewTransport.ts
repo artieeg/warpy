@@ -1,4 +1,4 @@
-import { closePeerProducers, createNewPeer } from "@media/models";
+import { createNewPeer } from "@media/models";
 import { SFUService } from "@media/services";
 import { getOptionsFromTransport } from "@media/utils";
 import {
