@@ -1,64 +1,88 @@
-import {useStore} from '@app/store';
-import React, {useEffect, useRef} from 'react';
-import {StyleSheet, Animated} from 'react-native';
+import {useStore, useStoreShallow} from '@app/store';
+import React, {useEffect, useMemo, useRef} from 'react';
+import {StyleSheet} from 'react-native';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useDerivedValue,
+  withDelay,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
 import {Text} from './Text';
 
 const FADE_DURATION = 100;
+const TOAST_DURATION_LONG = 5000;
+const TOAST_DURATION_SHORT = 1000;
 
 export const ToastProvider = () => {
-  const message = useStore.use.message();
-  const duration = useStore.use.duration();
+  const [message, duration] = useStoreShallow(state => [
+    state.message,
+    state.duration,
+  ]);
 
-  const opacity = useRef(new Animated.Value(0));
-  const translateY = useRef(new Animated.Value(20));
+  const delay = useMemo(
+    () => (duration === 'LONG' ? TOAST_DURATION_LONG : TOAST_DURATION_SHORT),
+    [duration],
+  );
 
-  useEffect(() => {
+  const opacity = useDerivedValue(() => {
     if (!message) {
-      return;
+      return 0;
     }
 
-    Animated.sequence([
-      Animated.parallel([
-        Animated.timing(translateY.current, {
-          toValue: 0,
-          duration: FADE_DURATION,
-          useNativeDriver: true,
-        }),
-        Animated.timing(opacity.current, {
-          toValue: 1,
-          duration: FADE_DURATION,
-          useNativeDriver: true,
-        }),
-      ]),
-      Animated.delay(duration === 'LONG' ? 3000 : 1000),
-      Animated.parallel([
-        Animated.timing(translateY.current, {
-          toValue: 20,
-          duration: FADE_DURATION,
-          useNativeDriver: true,
-        }),
-        Animated.timing(opacity.current, {
-          toValue: 0,
-          duration: FADE_DURATION,
-          useNativeDriver: true,
-        }),
-      ]),
-    ]).start(() => {
+    return withSequence(
+      withTiming(1, {
+        duration: FADE_DURATION,
+        easing: Easing.ease,
+      }),
+      withDelay(
+        delay,
+        withTiming(0, {duration: FADE_DURATION, easing: Easing.ease}),
+      ),
+    );
+  }, [message, duration, delay]);
+
+  const translateY = useDerivedValue(() => {
+    if (!message) {
+      return 20;
+    }
+
+    return withSequence(
+      withTiming(0, {
+        duration: FADE_DURATION,
+        easing: Easing.ease,
+      }),
+      withDelay(
+        delay,
+        withTiming(20, {duration: FADE_DURATION, easing: Easing.ease}),
+      ),
+    );
+  }, [message, duration, delay]);
+
+  const style = useAnimatedStyle(
+    () => ({
+      transform: [{translateY: translateY.value}],
+      opacity: opacity.value,
+    }),
+    [translateY, opacity],
+  );
+
+  const timeout = useRef<any>();
+  useEffect(() => {
+    clearTimeout(timeout.current);
+
+    timeout.current = setTimeout(() => {
       useStore.setState({
         message: null,
       });
-    });
+    }, FADE_DURATION * 2 + delay);
   }, [message]);
-
-  const animatedStyle = {
-    transform: [{translateY: translateY.current}],
-    opacity: opacity.current,
-  };
 
   return (
     <>
       {message && (
-        <Animated.View style={[styles.toast, animatedStyle]}>
+        <Animated.View style={[styles.toast, style]}>
           <Text weight="bold" size="xsmall" color="black">
             {message}
           </Text>
