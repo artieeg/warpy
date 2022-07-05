@@ -19,18 +19,15 @@ export class UserListFetcherImpl implements UserListFetcher {
   }
 
   async fetchUserList(list: UserList) {
-    const { api } = this.state.get();
-
     const key: string = ("list_" + list) as any;
-    const { users } = await api.user.fetchUserList(
-      list,
-      this.state.get()[key].page
-    );
+
+    const { api, [key]: listData } = this.state.get() as any;
+    const { users } = await api.user.fetchUserList(list, listData.page);
 
     return this.state.update({
       [key]: {
-        page: this.state.get()[key].page + 1,
-        list: [...this.state.get()[key].list, ...users],
+        page: listData.page + 1,
+        list: [...listData.list, ...users],
       },
     });
   }
