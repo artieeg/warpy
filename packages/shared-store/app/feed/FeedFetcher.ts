@@ -3,7 +3,7 @@ import { AppState } from "../AppState";
 import { StreamedStateUpdate } from "../types";
 
 export interface FeedFetcher {
-  fetchNextFeedPage: () => StreamedStateUpdate;
+  fetchFeedPage: (params?: { refresh?: boolean }) => StreamedStateUpdate;
 }
 
 export class FeedFetcherImpl implements FeedFetcher {
@@ -17,7 +17,13 @@ export class FeedFetcherImpl implements FeedFetcher {
     }
   }
 
-  async *fetchNextFeedPage() {
+  async *fetchFeedPage(params?: { refresh?: boolean }) {
+    if (params?.refresh) {
+      this.state.update({
+        latestFeedPage: 0,
+      });
+    }
+
     const { latestFeedPage, api, selectedFeedCategory } = this.state.get();
 
     if (!selectedFeedCategory) {
@@ -28,12 +34,8 @@ export class FeedFetcherImpl implements FeedFetcher {
       isFeedLoading: true,
     });
 
-    //console.log({ selectedFeedCategory });
-
-    //const categoryId = selectedFeedCategory.id;
-
     const { feed } = await api.feed.get({
-      page: 0,
+      page: latestFeedPage, //0,
       category: selectedFeedCategory.id,
     });
 

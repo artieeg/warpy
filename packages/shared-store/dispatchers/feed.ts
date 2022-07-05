@@ -3,6 +3,7 @@ import { StoreDispatcherSlice } from "../types";
 
 export interface IFeedDispatchers {
   dispatchFeedFetchNext: () => Promise<void>;
+  dispatchFeedRefetch: () => Promise<void>;
   dispatchFeedCategoryChange: (category: IStreamCategory) => Promise<void>;
 }
 
@@ -15,7 +16,11 @@ export const createFeedDispatchers: StoreDispatcherSlice<IFeedDispatchers> = (
     //await runner.mergeStreamedUpdates(feed.fetchNextFeedPage());
   },
 
+  async dispatchFeedRefetch() {
+    await runner.mergeStreamedUpdates(feed.fetchFeedPage({ refresh: true }));
+  },
+
   async dispatchFeedFetchNext() {
-    await runner.mergeStreamedUpdates(feed.fetchNextFeedPage());
+    await runner.mergeStreamedUpdates(feed.fetchFeedPage());
   },
 });

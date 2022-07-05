@@ -1,31 +1,30 @@
-import {useStore} from '@app/store';
+import {useStore, useStoreShallow} from '@app/store';
 import {useCallback, useEffect, useState} from 'react';
-import shallow from 'zustand/shallow';
 
 export const useFeed = () => {
+  //Used to prevent displaying the refresh indicator during the first fetch
   const [initialFeedFetchDone, setInitialFeedFetchDone] = useState(false);
 
-  const [feed, category, isFeedLoading, dispatchFeedFetchNext] = useStore(
-    state => [
-      state.feed,
-      state.selectedFeedCategory,
-      state.isFeedLoading,
-      state.dispatchFeedFetchNext,
-    ],
-    shallow,
-  );
+  const [feed, category, isFeedLoading] = useStoreShallow(state => [
+    state.feed,
+    state.selectedFeedCategory,
+    state.isFeedLoading,
+  ]);
 
   useEffect(() => {
     //Check if category is selected, then fetch
     if (category) {
-      dispatchFeedFetchNext().then(() => {
-        setInitialFeedFetchDone(true);
-      });
+      useStore
+        .getState()
+        .dispatchFeedFetchNext()
+        .then(() => {
+          setInitialFeedFetchDone(true);
+        });
     }
   }, [category]);
 
   const refreshFeed = useCallback(() => {
-    dispatchFeedFetchNext();
+    useStore.getState().dispatchFeedRefetch();
   }, []);
 
   return {feed, refreshFeed, isFeedLoading, initialFeedFetchDone};

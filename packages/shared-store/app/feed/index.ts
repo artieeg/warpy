@@ -19,8 +19,8 @@ export class FeedService
     this.categoryChanger = new CategoryChangerImpl(this.state);
   }
 
-  fetchNextFeedPage() {
-    return this.fetcher.fetchNextFeedPage();
+  fetchFeedPage(params?: { refresh?: boolean }) {
+    return this.fetcher.fetchFeedPage(params);
   }
 
   async changeFeedCategory(category: IStreamCategory) {
