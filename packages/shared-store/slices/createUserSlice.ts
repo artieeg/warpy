@@ -1,4 +1,4 @@
-import { IBaseUser, Roles } from "@warpy/lib";
+import { IBaseUser, IUser, Roles } from "@warpy/lib";
 import { StoreSlice } from "../types";
 
 export interface IUserSlice {
@@ -9,6 +9,8 @@ export interface IUserSlice {
   following: string[];
   isRaisingHand: boolean;
   hasActivatedAppInvite: boolean;
+  userSearchResult: IUser[];
+  isSearchingUsers: boolean;
 }
 
 export const createUserSlice: StoreSlice<IUserSlice> = () => ({
@@ -19,4 +21,6 @@ export const createUserSlice: StoreSlice<IUserSlice> = () => ({
   exists: false,
   following: [],
   hasActivatedAppInvite: false,
+  userSearchResult: [],
+  isSearchingUsers: false,
 });

@@ -10,11 +10,13 @@ import {
 import { UserDataLoader, UserDataLoaderImpl } from "./UserDataLoader";
 import { UserFollower, UserFollowerImpl } from "./UserFollower";
 import { UserListFetcher, UserListFetcherImpl } from "./UserListFetcher";
+import { UserSearcher, UserSearcherImpl } from "./UserSearcher";
 
 export class UserService
   extends Service
   implements
     UserDataLoader,
+    UserSearcher,
     RoleUpdater,
     StreamPermissionRequester,
     UserFollower,
@@ -25,6 +27,7 @@ export class UserService
   private streamPermissionRequester: StreamPermissionRequester;
   private follower: UserFollowerImpl;
   private listFetcher: UserListFetcher;
+  private searcher: UserSearcher;
 
   constructor(state: IStore | AppState) {
     super(state);
@@ -36,6 +39,15 @@ export class UserService
     );
     this.follower = new UserFollowerImpl(this.state);
     this.listFetcher = new UserListFetcherImpl(this.state);
+    this.searcher = new UserSearcherImpl(this.state);
+  }
+
+  resetUserSearch() {
+    return this.searcher.resetUserSearch();
+  }
+
+  searchUsers(query: string) {
+    return this.searcher.searchUsers(query);
   }
 
   fetchUserList(list: UserList) {

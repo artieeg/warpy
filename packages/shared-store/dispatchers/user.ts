@@ -9,6 +9,9 @@ export interface IUserDispatchers {
   ) => Promise<void>;
   dispatchUserLoadData: (token: string) => Promise<void>;
   dispatchUserHandRaiseToggle: () => void;
+
+  dispatchUserSearch: (query: string) => Promise<void>;
+  dispatchUserSearchReset: () => void;
 }
 
 export const createUserDispatchers: StoreDispatcherSlice<IUserDispatchers> = (
@@ -19,6 +22,14 @@ export const createUserDispatchers: StoreDispatcherSlice<IUserDispatchers> = (
     await runner.mergeStreamedUpdates(user.loadUserData(token));
   },
 
+  async dispatchUserSearch(query: string) {
+    await runner.mergeStreamedUpdates(user.searchUsers(query));
+  },
+
+  dispatchUserSearchReset() {
+    runner.mergeStateUpdate(user.resetUserSearch());
+  },
+
   async dispatchUserRoleUpdate(newRole, mediaPermissionToken, sendMediaParams) {
     await runner.mergeStateUpdate(
       user.updateUserRole({
@@ -27,16 +38,6 @@ export const createUserDispatchers: StoreDispatcherSlice<IUserDispatchers> = (
         sendMediaParams,
       })
     );
-
-    /*
-    await runner.mergeStreamedUpdates(
-      user.updateUserRole({
-        role: newRole,
-        mediaPermissionToken,
-        sendMediaParams,
-      })
-    );
-    */
   },
 
   async dispatchUserHandRaiseToggle() {

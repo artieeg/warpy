@@ -50,7 +50,6 @@ export const InviteModal = (props: IBaseModalProps) => {
     setSearchQuery,
     pendingInviteCount,
     sendPendingInvites,
-    shouldDisplayInviteButton,
   } = useInviteModalController();
 
   const modalStyle = {

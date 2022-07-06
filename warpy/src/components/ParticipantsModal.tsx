@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   useWindowDimensions,
-  View,
 } from 'react-native';
 import {BaseSlideModal} from './BaseSlideModal';
 import {ParticipantDisplay} from './Participant';
