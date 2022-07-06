@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   useWindowDimensions,
+  View,
 } from 'react-native';
 import {BaseSlideModal} from './BaseSlideModal';
 import {ParticipantDisplay} from './Participant';
@@ -61,7 +62,14 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
 
     if (kind === 'streamer') {
       if (!item.list[0]) {
-        return null;
+        return (
+          <Text
+            size="xsmall"
+            style={styles.hostReassignMessage}
+            color="boulder">
+            Host has left the stream.{'\n'}New host will be assigned soon
+          </Text>
+        );
       } else {
         return <StreamerInfo data={item.list[0]} />;
       }
@@ -225,5 +233,8 @@ const styles = StyleSheet.create({
     top: 10,
     borderRadius: 12,
     backgroundColor: '#e0e0e0',
+  },
+  hostReassignMessage: {
+    textAlign: 'center',
   },
 });
