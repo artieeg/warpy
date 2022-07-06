@@ -13,7 +13,6 @@ export const createFeedDispatchers: StoreDispatcherSlice<IFeedDispatchers> = (
 ) => ({
   async dispatchFeedCategoryChange(category) {
     await runner.mergeStateUpdate(feed.changeFeedCategory(category));
-    //await runner.mergeStreamedUpdates(feed.fetchNextFeedPage());
   },
 
   async dispatchFeedRefetch() {

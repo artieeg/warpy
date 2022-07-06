@@ -1,12 +1,14 @@
-import {useStore} from '@app/store';
+import {useStoreShallow} from '@app/store';
 import {IUser} from '@warpy/lib';
 import {useEffect, useState} from 'react';
 
 export const useInviteSuggestions = (): IUser[] => {
   const [suggestions, setSuggestions] = useState<IUser[]>([]);
 
-  const currentStream = useStore.use.stream();
-  const api = useStore.use.api();
+  const [currentStream, api] = useStoreShallow(state => [
+    state.stream,
+    state.api,
+  ]);
 
   useEffect(() => {
     //if (currentStream) {

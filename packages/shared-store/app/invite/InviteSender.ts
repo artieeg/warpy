@@ -59,14 +59,12 @@ export class InviteSenderImpl implements InviteSender {
       await api.stream.cancelInvite(sentInviteId);
     }
 
-    return this.state.update({
-      pendingInviteUserIds: this.state
-        .get()
-        .pendingInviteUserIds.filter((id) => id !== user),
-      sentInvites: {
-        ...this.state.get().sentInvites,
-        [user]: undefined,
-      },
+    return this.state.update((state) => {
+      state.pendingInviteUserIds = state.pendingInviteUserIds.filter(
+        (id) => id !== user
+      );
+
+      delete state.sentInvites[user];
     });
   }
 

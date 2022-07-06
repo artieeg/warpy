@@ -18,12 +18,18 @@ export const useInviteModalController = () => {
     visible,
     sendPendingInvites,
     shouldDisplayInviteButton,
+    modal,
   ] = useStoreShallow(state => [
     state.pendingInviteUserIds.length,
     state.modalCurrent === 'invite',
     state.dispatchSendPendingInvites,
     !!state.stream,
+    state.modalCurrent,
   ]);
+
+  React.useEffect(() => {
+    console.log('current modal', modal);
+  }, [modal]);
 
   const modalHeight = useWindowDimensions().height * 0.9;
 
