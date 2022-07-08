@@ -35,12 +35,6 @@ import {
 } from "./slices/createAudioLevelSlice";
 import { createSignUpSlice, ISignUpSlice } from "./slices/createSignUpSlice";
 import {
-  createReactionDispatchers,
-  IReactionDispatchers,
-  IAwardsDispatchers,
-  createAwardsDispatchers,
-} from "./dispatchers";
-import {
   createParticipantSlice,
   IParticipantSlice,
 } from "./slices/createParticipantSlice";
@@ -49,7 +43,7 @@ import { createUserListSlice } from "./slices/createUserListSlice";
 import { createAwardsSlice, IAwardsSlice } from "./slices/createAwardsSlice";
 import { container } from "./container";
 import { AppActionRunner } from "./AppActionRunner";
-import { AppActionDispatcher, createDispatcher } from "./dispatchers/dispatch";
+import { AppActionDispatcher, createDispatcher } from "./dispatch";
 
 interface Selectors<StoreType> {
   use: {
@@ -89,8 +83,6 @@ export interface IStore
     IAudioLevelSlice,
     ISignUpSlice,
     IToastSlice,
-    IReactionDispatchers,
-    IAwardsDispatchers,
     AppActionDispatcher,
     IAPISlice {
   set: SetState<IStore>;
@@ -142,9 +134,6 @@ export const createNewStore = (config: StoreConfig) => {
         ...createReactionSlice(),
         ...createParticipantSlice(),
         ...createFriendFeedSlice(),
-
-        ...createAwardsDispatchers(),
-        ...createReactionDispatchers(runner, runner.getServices()),
         ...createDispatcher(runner, runner.getServices()),
         set,
         get,
