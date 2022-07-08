@@ -20,18 +20,14 @@ export class MessageManagerImpl implements MessageManager {
   }
 
   async clear() {
-    this.state.update({
+    return this.state.update({
       messages: [],
     });
-
-    return this.state.getStateDiff();
   }
 
   async prependNewMessages(messages: IChatMessage[]) {
-    this.state.update({
+    return this.state.update({
       messages: [...messages, ...this.state.get().messages],
     });
-
-    return this.state.getStateDiff();
   }
 }

@@ -27,18 +27,13 @@ export class MessageSenderImpl implements MessageSender {
   async send() {
     const { api, messageInputValue, messages } = this.state.get();
 
-    console.log("sending an msg", messageInputValue);
-
     const { message: newChatMessage } = await api.stream.sendChatMessage(
       messageInputValue
     );
-    console.log("msg", newChatMessage);
 
-    this.state.update({
+    return this.state.update({
       messages: [newChatMessage, ...messages],
       messageInputValue: "",
     });
-
-    return this.state.getStateDiff();
   }
 }
