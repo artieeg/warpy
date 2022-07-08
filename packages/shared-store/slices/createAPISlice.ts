@@ -54,22 +54,27 @@ export const createAPISlice = (
     });
   },
   createAPISubscriptions: ({ onStreamIdAvailable, onStreamEnd }) => {
-    const store = get();
-    const { api } = store;
+    const { api, dispatch } = get();
 
     api.awards.onNewAward(({ award }) => {
       get().dispatchAwardDisplayQueueAppend(award);
     });
 
     api.stream.onInviteStateUpdate((data) => {
-      get().dispatchInviteStateUpdate(data.id, data.state);
+      dispatch(({ invite }) =>
+        invite.updateStateOfSentInvite(data.id, data.state)
+      );
     });
 
     api.stream.onHostReassign(({ host }) => {
       if (get().user?.id === host.id) {
-        get().dispatchToastMessage("you are a new stream host");
+        dispatch(({ toast }) =>
+          toast.showToastMessage("you are a new stream host")
+        );
       } else {
-        get().dispatchToastMessage(`${host.username} is a new stream host`);
+        dispatch(({ toast }) =>
+          toast.showToastMessage(`${host.username} is a new stream host`)
+        );
       }
 
       set({
@@ -85,7 +90,7 @@ export const createAPISlice = (
 
     api.stream.onStreamEnd(({ stream }) => {
       onStreamEnd(stream);
-      get().dispatchToastMessage("the stream has ended");
+      dispatch(({ toast }) => toast.showToastMessage("the stream has ended"));
 
       set({
         feed: get().feed.filter((candidate) => candidate.id !== stream),
@@ -111,78 +116,85 @@ export const createAPISlice = (
     });
 
     api.stream.onNewParticipant((data) => {
-      store.dispatchParticipantAdd(data.participant);
+      dispatch(({ stream }) => stream.addStreamParticipant(data.participant));
     });
 
     api.stream.onActiveSpeaker((data) => {
-      store.dispatchAudioLevelsUpdate(data.speakers);
+      dispatch(({ stream }) => stream.updateAudioLevels(data.speakers));
     });
 
     api.stream.onRaiseHandUpdate((data) => {
-      const participant = data.viewer;
-      store.dispatchParticipantRaisedHand(participant);
+      dispatch(({ stream }) => stream.updateStreamParticipant(data.viewer));
     });
 
     api.stream.onRoleUpdate(
       async ({ mediaPermissionToken, sendMediaParams, role }) => {
-        await get().dispatchUserRoleUpdate(
-          role,
-          mediaPermissionToken,
-          sendMediaParams
+        dispatch(({ user }) =>
+          user.updateUserRole({
+            role,
+            mediaPermissionToken,
+            sendMediaParams,
+          })
         );
       }
     );
 
     api.stream.onMediaToggle((data) => {
-      get().dispatchMediaToggle(data.user, {
-        video: data.videoEnabled,
-        audio: data.audioEnabled,
-      });
+      dispatch(({ media }) =>
+        media.toggleParticipantMedia(data.user, {
+          video: data.videoEnabled,
+          audio: data.audioEnabled,
+        })
+      );
     });
 
     api.botDev.onCreateBotConfirmRequest(({ confirmation_id, bot }) => {
-      get().dispatchModalOpen("bot-confirm", {
-        botConfirmData: bot,
-        botConfirmId: confirmation_id,
-      });
+      dispatch(({ modal }) =>
+        modal.open("bot-confirm", {
+          botConfirmData: bot,
+          botConfirmId: confirmation_id,
+        })
+      );
     });
 
     api.media.onNewTrack((data) => {
-      get().dispatchTrackAdd(data.user, data.consumerParameters);
+      dispatch(({ media }) =>
+        media.consumeRemoteStream({
+          user: data.user,
+          consumerParameters: data.consumerParameters,
+          startConsumingImmediately: false,
+        })
+      );
     });
 
     api.stream.onParticipantRoleChange((data) => {
-      store.dispatchStreamerAdd(data.user);
+      dispatch(({ stream }) => stream.addStreamParticipant(data.user));
     });
 
     api.stream.onUserLeft((data) => {
-      const { user } = data;
-
-      store.dispatchParticipantRemove(user);
+      dispatch(({ stream }) => stream.removeStreamParticipant(data.user));
     });
 
     api.stream.onChatMessages((data) => {
-      const { messages } = data;
-
-      store.dispatchChatMessages(messages);
+      dispatch(({ chat }) => chat.prependNewMessages(data.messages));
     });
 
     api.stream.onUserKick(({ user }) => {
-      store.dispatchParticipantRemove(user);
+      dispatch(({ stream }) => stream.removeStreamParticipant(user));
     });
 
     api.stream.onNewInvite(({ invite }) => {
-      get().dispatchModalOpen("stream-invite", {
-        invite,
-      });
+      dispatch(({ modal }) => modal.open("stream-invite", { invite }));
     });
 
     api.notification.onNewNotification((data) => {
-      get().dispatchNotificationAdd(data.notification);
+      dispatch(({ notification }) =>
+        notification.addNewNotification(data.notification)
+      );
     });
 
     api.notification.onNotificationDelete((data) => {
-      get().dispatchNotificationRemove(data.notification_id);
+      dispatch(({ notification }) => notification.remove(data.notification_id));
     });
   },
 });

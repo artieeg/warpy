@@ -2,13 +2,12 @@ import React from 'react';
 import {View, TextInput, StyleSheet} from 'react-native';
 import {textStyles} from './Text';
 import {SendMessageButton} from './SendMessageButton';
-import {useStore, useStoreShallow} from '@app/store';
+import {useDispatcher, useStoreShallow} from '@app/store';
 import {colors} from '../../colors';
 
 export const ChatMessageInput = () => {
-  const [messageInputValue] = useStoreShallow(state => [
-    state.messageInputValue,
-  ]);
+  const dispatch = useDispatcher();
+  const messageInputValue = useStoreShallow(state => state.messageInputValue);
 
   return (
     <View style={styles.wrapper}>
@@ -17,10 +16,10 @@ export const ChatMessageInput = () => {
         numberOfLines={1}
         returnKeyType="send"
         onChangeText={text => {
-          useStore.getState().dispatchChatSetMessage(text);
+          dispatch(({chat}) => chat.setMessageInput(text));
         }}
         onSubmitEditing={() => {
-          useStore.getState().dispatchChatSendMessage();
+          dispatch(({chat}) => chat.send());
         }}
         style={[
           textStyles.bold,
@@ -33,7 +32,7 @@ export const ChatMessageInput = () => {
       />
       <SendMessageButton
         onPress={() => {
-          useStore.getState().dispatchChatSendMessage();
+          dispatch(({chat}) => chat.send());
         }}
         style={styles.button}
       />

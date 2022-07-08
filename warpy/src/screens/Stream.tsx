@@ -1,11 +1,12 @@
 import {RemoteStream} from '@app/components';
-import {useStore} from '@app/store';
+import {useDispatcher, useStore} from '@app/store';
 import React, {useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 
 export const Stream = (props: any) => {
   const {route} = props;
   const {stream} = route.params;
+  const dispatch = useDispatcher();
 
   useEffect(() => {
     useStore.setState({
@@ -15,7 +16,7 @@ export const Stream = (props: any) => {
 
     return () => {
       //close streams
-      useStore.getState().dispatchMediaClose();
+      dispatch(({media}) => media.close());
 
       //clear stream data
       useStore.setState({

@@ -25,3 +25,7 @@ export const useStore = createNewStore({
 export function useStoreShallow<U>(selector: StateSelector<IStore, U>) {
   return useStore(useCallback(selector, []), shallow);
 }
+
+export function useDispatcher() {
+  return useStore(state => state.dispatch);
+}

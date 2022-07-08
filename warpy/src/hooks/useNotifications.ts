@@ -1,15 +1,16 @@
-import {useStore} from '@app/store';
+import {useDispatcher, useStoreShallow} from '@app/store';
 import {useCallback, useEffect} from 'react';
 
 export const useNotifications = () => {
-  const notifications = useStore.use.notifications();
+  const dispatch = useDispatcher();
+  const [notifications] = useStoreShallow(store => [store.notifications]);
 
   useEffect(() => {
-    useStore.getState().dispatchNotificationsReadAll();
+    dispatch(({notification}) => notification.readAll());
   }, [notifications.length]);
 
   const fetchMoreNotifications = useCallback(() => {
-    useStore.getState().dispatchNotificationsFetchRead();
+    dispatch(({notification}) => notification.fetchRead());
   }, []);
 
   useEffect(() => {

@@ -5,12 +5,13 @@ import {SmallTextButton} from './SmallTextButton';
 import {UserGeneralInfo} from './UserGeneralInfo';
 import {UserAwardsPreview} from './UserAwardsPreview';
 import {Text} from './Text';
-import {useStore, useStoreShallow} from '@app/store';
+import {useDispatcher, useStoreShallow} from '@app/store';
 import {useModalNavigation, useUserData} from '@app/hooks';
 import {colors} from '../../colors';
 import {SmallIconButton} from './SmallIconButton';
 
 export const useParticipantModalController = () => {
+  const dispatch = useDispatcher();
   const [visible, modalSelectedUser, following] = useStoreShallow(state => [
     state.modalCurrent === 'participant-info',
     state.modalSelectedUser,
@@ -26,19 +27,19 @@ export const useParticipantModalController = () => {
     if (!userId) return;
 
     const startRoomTogetherTimeout = setTimeout(() => {
-      useStore.getState().dispatchPendingInvite(userId);
-      useStore.getState().dispatchSendPendingInvites();
+      dispatch(({invite}) => invite.addPendingInvite(userId));
+      dispatch(({invite}) => invite.sendPendingInvites());
     }, 400);
 
     navigation.navigate('NewStream', {startRoomTogetherTimeout});
 
-    useStore.getState().dispatchModalClose();
+    dispatch(({modal}) => modal.close());
   }, [navigation, userId]);
 
   const onOpenProfile = useCallback(() => {
     if (!userId) return;
 
-    useStore.getState().dispatchModalClose();
+    dispatch(({modal}) => modal.close());
     navigation.navigate('User', {id: userId});
   }, [userId]);
 
@@ -51,14 +52,14 @@ export const useParticipantModalController = () => {
     if (!userId) return;
 
     if (isFollowing) {
-      useStore.getState().dispatchFollowingRemove(userId);
+      dispatch(({user}) => user.unfollow(userId));
     } else {
-      useStore.getState().dispatchFollowingAdd(userId);
+      dispatch(({user}) => user.follow(userId));
     }
   }, [userId, isFollowing]);
 
   const onReport = useCallback(() => {
-    useStore.getState().dispatchModalOpen('reports');
+    dispatch(({modal}) => modal.open('reports'));
   }, []);
 
   const onBlock = useCallback(() => {

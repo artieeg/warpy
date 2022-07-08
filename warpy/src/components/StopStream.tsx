@@ -1,4 +1,4 @@
-import {useStore, useStoreShallow} from '@app/store';
+import {useDispatcher, useStoreShallow} from '@app/store';
 import {useNavigation} from '@react-navigation/native';
 import React, {useCallback} from 'react';
 import {Alert} from 'react-native';
@@ -10,6 +10,8 @@ export const StopStream = () => {
     store.stream,
     store.currentStreamHost === store.user!.id,
   ]);
+
+  const dispatch = useDispatcher();
 
   const navigation = useNavigation();
 
@@ -26,18 +28,20 @@ export const StopStream = () => {
           {
             text: 'assign a host',
             onPress: async () => {
-              useStore
-                .getState()
-                .dispatchModalOpen('host-reassign', {closeAfterReassign: true});
+              dispatch(({modal}) =>
+                modal.open('host-reassign', {closeAfterReassign: true}),
+              );
             },
           },
           {
             text: 'end the room',
             onPress: async () => {
-              await useStore.getState().dispatchStreamLeave({
-                shouldStopStream: true,
-                stream,
-              });
+              dispatch(({stream: stream_s}) =>
+                stream_s.leave({
+                  shouldStopStream: true,
+                  stream,
+                }),
+              );
 
               navigation.navigate('Feed');
             },
@@ -45,10 +49,13 @@ export const StopStream = () => {
           {
             text: 'just leave',
             onPress: async () => {
-              await useStore.getState().dispatchStreamLeave({
-                shouldStopStream: false,
-                stream,
-              });
+              dispatch(({stream: stream_s}) =>
+                stream_s.leave({
+                  shouldStopStream: false,
+                  stream,
+                }),
+              );
+
               navigation.navigate('Feed');
             },
           },
@@ -56,10 +63,12 @@ export const StopStream = () => {
         {cancelable: true},
       );
     } else {
-      await useStore.getState().dispatchStreamLeave({
-        shouldStopStream: false,
-        stream,
-      });
+      dispatch(({stream: stream_s}) =>
+        stream_s.leave({
+          shouldStopStream: false,
+          stream,
+        }),
+      );
       navigation.navigate('Feed');
     }
   }, [navigation, api, stream, isHost]);

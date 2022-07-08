@@ -5,7 +5,9 @@ export type ParticipantRole = "streamer" | "speaker" | "viewer";
 
 export type DURATION = "LONG" | "SHORT";
 
-type AppServices = ReturnType<typeof AppActionRunner.prototype.getServices>;
+export type AppServices = ReturnType<
+  typeof AppActionRunner.prototype.getServices
+>;
 
 export type StoreSlice<T> = () => T;
 

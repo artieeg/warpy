@@ -1,16 +1,18 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {IconButton} from './IconButton';
-import {useStore} from '@app/store';
+import {useDispatcher} from '@app/store';
 import {colors} from '../../colors';
 
 export const HostNewStreamButton = () => {
+  const dispatch = useDispatcher();
+
   return (
     <IconButton
       name="plus"
       size={24}
       style={styles.button}
-      onPress={() => useStore.getState().dispatchStreamCreate()}
+      onPress={() => dispatch(({stream}) => stream.create())}
     />
   );
 };

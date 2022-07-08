@@ -1,8 +1,7 @@
-import {useStore} from '@app/store';
+import {useDispatcher, useStoreShallow} from '@app/store';
 import {IParticipant} from '@warpy/lib';
 import React, {useCallback} from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
-import shallow from 'zustand/shallow';
 import {AudioLevelIndicator} from './AudioLevelIndicator';
 import {Avatar} from './Avatar';
 import {Text} from './Text';
@@ -16,21 +15,18 @@ export const ParticipantView = ({
   data,
   onPress: providedOnPress,
 }: ParticipantViewProps) => {
-  const [userAudioLevel, dispatchModalOpen, dispatchAudioLevelDelete] =
-    useStore(
-      state => [
-        state.userAudioLevels[data.id],
-        state.dispatchModalOpen,
-        state.dispatchAudioLevelDelete,
-      ],
-      shallow,
-    );
+  const dispatch = useDispatcher();
+  const [userAudioLevel] = useStoreShallow(state => [
+    state.userAudioLevels[data.id],
+  ]);
 
   const onPress = useCallback(() => {
     if (providedOnPress) {
       providedOnPress();
     } else {
-      dispatchModalOpen('participant-info', {selectedUser: data});
+      dispatch(({modal}) =>
+        modal.open('participant-info', {selectedUser: data}),
+      );
     }
   }, [providedOnPress]);
 
@@ -39,7 +35,9 @@ export const ParticipantView = ({
       <AudioLevelIndicator
         volume={userAudioLevel || 0}
         minScale={1}
-        onDoneSpeaking={() => dispatchAudioLevelDelete(data.id)}>
+        onDoneSpeaking={() =>
+          dispatch(({stream}) => stream.delAudioLevel(data.id))
+        }>
         <Avatar useRNImage size="large" user={data} style={styles.avatar} />
       </AudioLevelIndicator>
       <Text weight="bold" size="xsmall">

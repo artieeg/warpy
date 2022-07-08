@@ -1,4 +1,4 @@
-import {useStore, useStoreShallow} from '@app/store';
+import {useDispatcher, useStore, useStoreShallow} from '@app/store';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, ViewProps, useWindowDimensions} from 'react-native';
 import {StreamCategoryOption} from './StreamCategoryOption';
@@ -28,6 +28,7 @@ interface StreamCategoryListProps extends ViewProps {
 export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
   const {onLayout, mode, minimizationProgress} = props;
   const [listWidth, setListWidth] = useState(0);
+  const dispatch = useDispatcher();
 
   const [streamCategory] = useStoreShallow(state => [
     state.selectedFeedCategory,
@@ -143,7 +144,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
       const onCategorySelect = (p: {x: number; y: number; w: number}) => {
         setCurrentCategoryPosition(p);
         selectedIndex.current = index;
-        useStore.getState().dispatchFeedCategoryChange(category);
+        dispatch(({feed}) => feed.changeFeedCategory(category));
       };
 
       return (

@@ -1,34 +1,43 @@
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {StyleSheet, FlatList} from 'react-native';
 import {IParticipant} from '@warpy/lib';
 import {BaseSlideModal, IBaseModalProps} from './BaseSlideModal';
-import {useStore, useStoreShallow} from '@app/store';
+import {useDispatcher, useStoreShallow} from '@app/store';
 import {HostCandidate} from './HostCandidate';
 import {TextButton} from '@warpy/components';
 import {navigation} from '@app/navigation';
 
 export const HostReassignModal: React.FC<IBaseModalProps> = props => {
-  const [api, stream, modalCurrent, hostCandidates, closeAfterReassign] =
+  const [api, stream, modalCurrent, user, streamers, closeAfterReassign] =
     useStoreShallow(state => [
       state.api,
       state.stream,
       state.modalCurrent,
-      Object.values(state.streamers).filter(u => u.id !== state.user!.id),
+      state.user,
+      state.streamers,
       state.modalCloseAfterHostReassign,
     ]);
+
+  const dispatch = useDispatcher();
+
+  const hostCandidates = useMemo(
+    () => Object.values(streamers).filter(u => u.id !== user!.id),
+    [streamers],
+  );
 
   const [selected, setSelected] = useState<string>();
 
   const onHostReassign = React.useCallback(async () => {
     if (selected && stream) {
-      await useStore.getState().api.stream.reassignHost(selected);
+      await dispatch(({stream}) => stream.reassign(selected));
 
       if (closeAfterReassign) {
-        useStore.getState().dispatchModalClose();
-        await useStore.getState().dispatchStreamLeave({
-          shouldStopStream: true,
-          stream,
-        });
+        await dispatch(({stream: stream_s}) =>
+          stream_s.leave({
+            shouldStopStream: true,
+            stream,
+          }),
+        );
 
         navigation.current?.navigate('Feed');
       }

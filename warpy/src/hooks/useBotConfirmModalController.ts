@@ -1,33 +1,28 @@
-import {useStore} from '@app/store';
-import {useCallback, useMemo} from 'react';
-import shallow from 'zustand/shallow';
-import {useStreamParticipant} from './useStreamParticipant';
+import {useDispatcher, useStoreShallow} from '@app/store';
+import {useCallback} from 'react';
 
 export const useBotConfirmModalController = () => {
-  const [api, currentModal, confirmationId, bot, dispatchModalClose] = useStore(
-    state => [
-      state.api,
-      state.modalCurrent,
-      state.modalBotConfirmId,
-      state.modalBotConfirmData,
-      state.dispatchModalClose,
-    ],
-    shallow,
-  );
+  const dispatch = useDispatcher();
+  const [api, currentModal, confirmationId, bot] = useStoreShallow(state => [
+    state.api,
+    state.modalCurrent,
+    state.modalBotConfirmId,
+    state.modalBotConfirmData,
+  ]);
 
   const visible = currentModal === 'bot-confirm';
 
   const onDecline = useCallback(() => {
     if (confirmationId) {
       api.botDev.cancel(confirmationId);
-      dispatchModalClose();
+      dispatch(({modal}) => modal.close());
     }
   }, [confirmationId]);
 
   const onConfirm = useCallback(() => {
     if (confirmationId) {
       api.botDev.confirm(confirmationId);
-      dispatchModalClose();
+      dispatch(({modal}) => modal.close());
     }
   }, [confirmationId]);
 

@@ -4,7 +4,7 @@ import {IUser} from '@warpy/lib';
 import {Avatar} from './Avatar';
 import {Text} from './Text';
 import {Checkbox} from './Checkbox';
-import {useStore} from '@app/store';
+import {useDispatcher, useStore} from '@app/store';
 
 interface IUserInviteProps {
   user: IUser;
@@ -12,6 +12,7 @@ interface IUserInviteProps {
 
 const useUserInviteOptionController = (user: IUser) => {
   const sentInvites = useStore(store => store.sentInvites);
+  const dispatch = useDispatcher();
 
   const isAlreadyInvited = React.useMemo(() => {
     const invites = Object.values(sentInvites);
@@ -23,17 +24,13 @@ const useUserInviteOptionController = (user: IUser) => {
 
   useEffect(() => {
     if (invited) {
-      useStore.getState().dispatchPendingInvite(user.id);
+      dispatch(({invite}) => invite.addPendingInvite(user.id));
     } else {
-      useStore.getState().dispatchCancelInvite(user.id);
+      dispatch(({invite}) => invite.cancelInvite(user.id));
     }
   }, [invited, user.id]);
 
-  console.log({sentInvites});
-
   const onInviteToggle = useCallback(() => {
-    console.log({isAlreadyInvited});
-
     if (!isAlreadyInvited) {
       setInvited(prev => !prev);
     }

@@ -1,17 +1,13 @@
-import {useStore, useStoreShallow} from '@app/store';
-import {StyleSheet, View} from 'react-native';
+import {useDispatcher, useStoreShallow} from '@app/store';
+import {StyleSheet} from 'react-native';
 import React from 'react';
 import {RoundButton} from './RoundButton';
 import {Text} from './Text';
 import Animated, {
-  interpolateColor,
-  Layout,
   useAnimatedStyle,
   useDerivedValue,
-  withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import {colors} from '../../colors';
 
 export const ShowParticipantsButton = (props: {style: any}) => {
   const [count, isHost, unseenRaisedHands] = useStoreShallow(state => [
@@ -20,6 +16,8 @@ export const ShowParticipantsButton = (props: {style: any}) => {
     state.unseenRaisedHands,
   ]);
 
+  const dispatch = useDispatcher();
+
   const indicatorVisibility = useDerivedValue(() => {
     if (isHost) {
       return unseenRaisedHands > 0 ? 1 : 0;
@@ -27,10 +25,6 @@ export const ShowParticipantsButton = (props: {style: any}) => {
 
     return 0;
   }, [isHost, unseenRaisedHands]);
-
-  const colorTransition = useDerivedValue(() => {
-    return;
-  }, []);
 
   const indicatorStyle = useAnimatedStyle(() => ({
     opacity: withTiming(indicatorVisibility.value, {duration: 100}),
@@ -46,7 +40,7 @@ export const ShowParticipantsButton = (props: {style: any}) => {
   return (
     <RoundButton
       {...props}
-      onPress={() => useStore.getState().dispatchModalOpen('participants')}>
+      onPress={() => dispatch(({modal}) => modal.open('participants'))}>
       <>
         <Text color="white" weight="bold" size="small">
           {count.toString()}

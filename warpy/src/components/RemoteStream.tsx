@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {StreamOverlay} from './StreamOverlay';
 import {Room} from './Room';
-import {useRemoteStreamController} from '@app/hooks';
+import {useKickHandler} from '@app/hooks';
 import {AwardDisplay} from './AwardDisplay';
 import {IStream} from '@warpy/lib';
+import {useDispatcher} from '@app/store';
 
 interface IRemoteStreamProps {
   stream: IStream;
@@ -12,7 +13,16 @@ interface IRemoteStreamProps {
 
 export const RemoteStream = (props: IRemoteStreamProps) => {
   const {id} = props.stream;
-  useRemoteStreamController(id);
+
+  const dispatch = useDispatcher();
+
+  useEffect(() => {
+    if (id) {
+      dispatch(({stream}) => stream.join({stream: id}));
+    }
+  }, [id]);
+
+  useKickHandler();
 
   return (
     <View style={styles.wrapper}>

@@ -5,6 +5,7 @@ import { StreamCreator, StreamCreatorImpl } from "./StreamCreator";
 import { StreamJoiner, StreamJoinerImpl } from "./StreamJoiner";
 import { StreamLeaver, StreamLeaverImpl } from "./StreamLeaver";
 import { StreamReaction, StreamReactionImpl } from "./StreamReaction";
+import { HostReassigner, HostReassignerImpl } from "./HostReassigner";
 import {
   StreamParticipantManager,
   StreamParticipantManagerImpl,
@@ -23,7 +24,8 @@ export class StreamService
     StreamCreator,
     StreamParticipantManager,
     AudioLevelsUpdater,
-    StreamReaction
+    StreamReaction,
+    HostReassigner
 {
   private reaction: StreamReaction;
   private joiner: StreamJoiner;
@@ -31,6 +33,7 @@ export class StreamService
   private leaver: StreamLeaver;
   private audioLevels: AudioLevelsUpdater;
   private participantManager: StreamParticipantManager;
+  private hostReassigner: HostReassigner;
 
   constructor(state: IStore | AppState) {
     super(state);
@@ -41,6 +44,11 @@ export class StreamService
     this.leaver = new StreamLeaverImpl(this.state);
     this.participantManager = new StreamParticipantManagerImpl(this.state);
     this.audioLevels = new AudioLevelsUpdaterImpl(this.state);
+    this.hostReassigner = new HostReassignerImpl(this.state);
+  }
+
+  reassign(newHostId: string) {
+    return this.hostReassigner.reassign(newHostId);
   }
 
   setNewStreamTitle(title: string) {

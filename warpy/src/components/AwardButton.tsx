@@ -1,27 +1,27 @@
-import {useStoreShallow} from '@app/store';
+import {useDispatcher, useStoreShallow} from '@app/store';
 import React, {useCallback} from 'react';
 import {IconButton} from './IconButton';
 
 export const AwardButton = () => {
-  const [dispatchModalOpen, streamHasOneSpeaker, streamer] = useStoreShallow(
-    state => [
-      state.dispatchModalOpen,
-      Object.keys(state.streamers).filter(
-        streamer => streamer !== state.user!.id,
-      ).length === 1,
-      Object.values(state.streamers)[0],
-    ],
-  );
+  const dispatch = useDispatcher();
+
+  const [streamHasOneSpeaker, streamer] = useStoreShallow(state => [
+    Object.keys(state.streamers).filter(streamer => streamer !== state.user!.id)
+      .length === 1,
+    Object.values(state.streamers)[0],
+  ]);
 
   const onPress = useCallback(() => {
     if (streamHasOneSpeaker) {
-      dispatchModalOpen('award-visual', {
-        userToAward: streamer,
-      });
+      dispatch(({modal}) =>
+        modal.open('award-visual', {
+          userToAward: streamer,
+        }),
+      );
     } else {
-      dispatchModalOpen('award-recipent');
+      dispatch(({modal}) => modal.open('award-recipent'));
     }
-  }, [dispatchModalOpen, streamHasOneSpeaker]);
+  }, [streamHasOneSpeaker]);
 
   return <IconButton onPress={onPress} size={24} name="badge-1" color="#fff" />;
 };

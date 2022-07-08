@@ -1,17 +1,14 @@
-import {useStore} from '@app/store';
+import {useDispatcher, useStore} from '@app/store';
 import React from 'react';
-import shallow from 'zustand/shallow';
 import {IconButtonToggle} from './IconButtonToggle';
 
 export const ToggleMicButton = () => {
-  const [dispatchAudioToggle, audioEnabled] = useStore(
-    state => [state.dispatchAudioToggle, state.audioEnabled],
-    shallow,
-  );
+  const dispatch = useDispatcher();
+  const audioEnabled = useStore(state => state.audioEnabled);
 
   return (
     <IconButtonToggle
-      onToggle={dispatchAudioToggle}
+      onToggle={() => dispatch(({media}) => media.toggleAudio())}
       enabled={audioEnabled}
       icon={audioEnabled ? 'mic-on' : 'mic-on'}
     />

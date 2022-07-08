@@ -1,19 +1,16 @@
 import {StyleSheet} from 'react-native';
-import {useStore} from '@app/store';
+import {useDispatcher, useStore} from '@app/store';
 import React from 'react';
 import {Reaction} from './Reaction';
 import {RoundButton} from './RoundButton';
-import shallow from 'zustand/shallow';
 
 export const ReactionSelectButton = () => {
-  const [reaction, dispatchModalOpen] = useStore(
-    state => [state.reaction, state.dispatchModalOpen],
-    shallow,
-  );
+  const reaction = useStore(state => state.reaction);
+  const dispatch = useDispatcher();
 
   return (
     <RoundButton
-      onPress={() => dispatchModalOpen('reactions')}
+      onPress={() => dispatch(({modal}) => modal.open('reactions'))}
       style={styles.transparent}>
       <Reaction code={reaction} />
     </RoundButton>

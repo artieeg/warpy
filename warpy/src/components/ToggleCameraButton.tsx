@@ -1,17 +1,15 @@
-import {useStore} from '@app/store';
+import {useDispatcher, useStoreShallow} from '@app/store';
 import React from 'react';
-import shallow from 'zustand/shallow';
 import {IconButtonToggle} from './IconButtonToggle';
 
 export const ToggleCameraButton = () => {
-  const [videoEnabled, dispatchVideoToggle] = useStore(
-    state => [state.videoEnabled, state.dispatchVideoToggle],
-    shallow,
-  );
+  const dispatch = useDispatcher();
+
+  const [videoEnabled] = useStoreShallow(state => [state.videoEnabled]);
 
   return (
     <IconButtonToggle
-      onToggle={dispatchVideoToggle}
+      onToggle={() => dispatch(({media}) => media.toggleVideo())}
       enabled={videoEnabled}
       icon={videoEnabled ? 'camera' : 'camera'}
     />

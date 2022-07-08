@@ -35,55 +35,21 @@ import {
 } from "./slices/createAudioLevelSlice";
 import { createSignUpSlice, ISignUpSlice } from "./slices/createSignUpSlice";
 import {
-  createUserDispatchers,
-  createStreamDispatchers,
-  IUserDispatchers,
-  IStreamDispatchers,
-  IAudioLevelDispatchers,
-  createAudioLevelDispatchers,
-  IChatDispatchers,
-  createChatDispatchers,
-  IFeedDispatchers,
-  createFeedDispatchers,
-  IFollowingDispatchers,
-  createFollowingDispatchers,
-  IMediaDispatchers,
-  createMediaDispatchers,
-  IModalDispatchers,
-  INotificaionDispatchers,
-  createModalDispatchers,
-  createNotificationDispatchers,
   createReactionDispatchers,
   IReactionDispatchers,
-  createParticipantDispatchers,
-  IParticipantDispatchers,
-  IToastDispatchers,
-  createToastDispatchers,
   IAwardsDispatchers,
   createAwardsDispatchers,
-  IFriendFeedDispatchers,
-  createFriendFeedDispatchers,
 } from "./dispatchers";
 import {
   createParticipantSlice,
   IParticipantSlice,
 } from "./slices/createParticipantSlice";
 import { createInviteSlice, IInviteSlice } from "./slices/createInviteSlice";
-import {
-  createInviteDispatchers,
-  IInviteDispatchers,
-} from "./dispatchers/invites";
-import {
-  createUserListSlice,
-  IUserListSlice,
-} from "./slices/createUserListSlice";
-import {
-  createUserListDispatchers,
-  IUserListDispatchers,
-} from "./dispatchers/user_list";
+import { createUserListSlice } from "./slices/createUserListSlice";
 import { createAwardsSlice, IAwardsSlice } from "./slices/createAwardsSlice";
 import { container } from "./container";
 import { AppActionRunner } from "./AppActionRunner";
+import { AppActionDispatcher, createDispatcher } from "./dispatchers/dispatch";
 
 interface Selectors<StoreType> {
   use: {
@@ -111,35 +77,21 @@ export interface IStore
     IUserSlice,
     IFollowingSlice,
     IInviteSlice,
+    IParticipantSlice,
     IAwardsSlice,
     IMediaSlice,
     IDeviceSlice,
     IChatSlice,
     IModalSlice,
-    IFeedDispatchers,
-    IFollowingDispatchers,
-    IStreamDispatchers,
-    IUserDispatchers,
     IReactionSlice,
     INotificationSlice,
     IFriendFeedSlice,
     IAudioLevelSlice,
     ISignUpSlice,
     IToastSlice,
-    IAudioLevelDispatchers,
-    IChatDispatchers,
-    IMediaDispatchers,
-    IModalDispatchers,
-    INotificaionDispatchers,
     IReactionDispatchers,
-    IParticipantSlice,
-    IUserListDispatchers,
-    IParticipantDispatchers,
-    IUserListSlice,
     IAwardsDispatchers,
-    IToastDispatchers,
-    IInviteDispatchers,
-    IFriendFeedDispatchers,
+    AppActionDispatcher,
     IAPISlice {
   set: SetState<IStore>;
   get: GetState<IStore>;
@@ -190,24 +142,10 @@ export const createNewStore = (config: StoreConfig) => {
         ...createReactionSlice(),
         ...createParticipantSlice(),
         ...createFriendFeedSlice(),
-        ...createUserDispatchers(runner, runner.getServices()),
-        ...createInviteDispatchers(runner, runner.getServices()),
-        ...createUserListDispatchers(runner, runner.getServices()),
-        ...createStreamDispatchers(runner, runner.getServices()),
-        ...createAudioLevelDispatchers(runner, runner.getServices()),
-        ...createChatDispatchers(runner, runner.getServices()),
-        ...createFeedDispatchers(runner, runner.getServices()),
-        ...createFollowingDispatchers(runner, runner.getServices()),
-        ...createMediaDispatchers(runner, runner.getServices()),
-        ...createModalDispatchers(runner, runner.getServices()),
-        ...createNotificationDispatchers(runner, runner.getServices()),
-        ...createParticipantDispatchers(runner, runner.getServices()),
-        ...createToastDispatchers(runner, runner.getServices()),
 
         ...createAwardsDispatchers(),
         ...createReactionDispatchers(runner, runner.getServices()),
-
-        //...createFriendFeedDispatchers(set, get),
+        ...createDispatcher(runner, runner.getServices()),
         set,
         get,
       };

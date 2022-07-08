@@ -4,13 +4,14 @@ import {SmallTextButton} from '@app/components/SmallTextButton';
 import {UserAwardsPreview} from '@app/components/UserAwardsPreview';
 import {UserGeneralInfo} from '@app/components/UserGeneralInfo';
 import {useRouteParamsUnsafe, useUserData} from '@app/hooks';
-import {useStore, useStoreShallow} from '@app/store';
+import {useDispatcher, useStoreShallow} from '@app/store';
 import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useMemo} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
 import FadeInOut from 'react-native-fade-in-out';
 
 export const useUserScreenController = () => {
+  const dispatch = useDispatcher();
   const [following] = useStoreShallow(store => [store.following]);
 
   const {id} = useRouteParamsUnsafe();
@@ -26,16 +27,16 @@ export const useUserScreenController = () => {
     }
 
     if (isFollowing) {
-      useStore.getState().dispatchFollowingRemove(id);
+      dispatch(({user}) => user.unfollow(id));
     } else {
-      useStore.getState().dispatchFollowingAdd(id);
+      dispatch(({user}) => user.follow(id));
     }
   }, [id, isFollowing]);
 
   const onStartRoomTogether = useCallback(async () => {
-    const startRoomTogetherTimeout = setTimeout(() => {
-      useStore.getState().dispatchPendingInvite(id);
-      useStore.getState().dispatchSendPendingInvites();
+    const startRoomTogetherTimeout = setTimeout(async () => {
+      await dispatch(({invite}) => invite.addPendingInvite(id));
+      await dispatch(({invite}) => invite.sendPendingInvites());
     }, 400);
 
     navigation.navigate('NewStream', {startRoomTogetherTimeout});

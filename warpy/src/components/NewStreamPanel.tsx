@@ -1,4 +1,4 @@
-import {useStore} from '@app/store';
+import {useDispatcher} from '@app/store';
 import React from 'react';
 import {View, StyleSheet, useWindowDimensions, TextInput} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -22,6 +22,7 @@ export const useNewStreamPanelController = () => {
 
 export const NewStreamPanel = () => {
   const {gradientHeightStyle} = useNewStreamPanelController();
+  const dispatch = useDispatcher();
 
   return (
     <View style={styles.wrapper}>
@@ -43,7 +44,9 @@ export const NewStreamPanel = () => {
 
       <View style={styles.infoInputs}>
         <TextInput
-          onChangeText={v => useStore.getState().dispatchStreamSetTitle(v)}
+          onChangeText={v =>
+            dispatch(({stream}) => stream.setNewStreamTitle(v))
+          }
           style={styles.titleInput}
           placeholder="stream title"
           placeholderTextColor={colors.boulder}

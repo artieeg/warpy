@@ -1,5 +1,5 @@
 import React from 'react';
-import {useStore, useStoreShallow} from '@app/store';
+import {useDispatcher, useStoreShallow} from '@app/store';
 import {ParticipantsModal} from './ParticipantsModal';
 import {UserInfoModal} from './UserInfoModal';
 import {ReportActionSheet} from './ReportActionSheet';
@@ -20,6 +20,8 @@ export const ModalProvider = () => {
     state.isConnected,
   ]);
 
+  const dispatch = useDispatcher();
+
   if (!isApiConnected) {
     return null;
   }
@@ -36,12 +38,12 @@ export const ModalProvider = () => {
       <HostReassignModal />
 
       <ParticipantsModal
-        onHide={() => useStore.getState().dispatchModalClose()}
+        onHide={() => dispatch(({modal}) => modal.close())}
         visible={modal === 'participants'}
         onSelectParticipant={user => {
-          useStore
-            .getState()
-            .dispatchModalOpen('participant-info', {selectedUser: user});
+          dispatch(({modal}) =>
+            modal.open('participant-info', {selectedUser: user}),
+          );
         }}
       />
 
@@ -51,7 +53,7 @@ export const ModalProvider = () => {
 
       <ReportActionSheet
         visible={modal === 'reports'}
-        onHide={() => useStore.getState().dispatchModalClose()}
+        onHide={() => dispatch(({modal}) => modal.close())}
       />
 
       <InviteModal />

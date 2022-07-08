@@ -1,14 +1,14 @@
-import {useStoreShallow} from '@app/store';
+import {useDispatcher, useStoreShallow} from '@app/store';
 import React, {useMemo} from 'react';
 import {FlatList, StyleSheet, useWindowDimensions, View} from 'react-native';
 import {BaseSlideModal} from './BaseSlideModal';
 import {ParticipantView} from './ParticipantView';
 
 export const AwardRecipentPicker = () => {
-  const [visible, streamers, dispatchModalOpen, us] = useStoreShallow(state => [
+  const dispatch = useDispatcher();
+  const [visible, streamers, us] = useStoreShallow(state => [
     state.modalCurrent === 'award-recipent',
     state.streamers,
-    state.dispatchModalOpen,
     state.user?.id,
   ]);
 
@@ -36,7 +36,9 @@ export const AwardRecipentPicker = () => {
         renderItem={({item}) => (
           <View style={cellStyle}>
             <ParticipantView
-              onPress={() => dispatchModalOpen('award', {userToAward: item})}
+              onPress={() =>
+                dispatch(({modal}) => modal.open('award', {userToAward: item}))
+              }
               data={item}
             />
           </View>

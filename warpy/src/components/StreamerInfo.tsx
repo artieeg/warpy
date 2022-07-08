@@ -4,7 +4,7 @@ import {StyleSheet, View} from 'react-native';
 import {Text} from './Text';
 import {IParticipant} from '@warpy/lib';
 import {SmallTextButton} from './SmallTextButton';
-import {useStore, useStoreShallow} from '@app/store';
+import {useDispatcher, useStore, useStoreShallow} from '@app/store';
 
 interface StreamerInfoProps {
   data: IParticipant;
@@ -15,6 +15,7 @@ export const StreamerInfo: React.FC<StreamerInfoProps> = props => {
 
   const [name, username] = [data.first_name, data.username];
 
+  const dispatch = useDispatcher();
   const [isStreamOwner, canReassign] = useStoreShallow(state => [
     state.user?.id === state.currentStreamHost,
     Object.keys(state.streamers).length > 1,
@@ -38,7 +39,7 @@ export const StreamerInfo: React.FC<StreamerInfoProps> = props => {
         <View>
           <SmallTextButton
             onPress={() => {
-              useStore.getState().dispatchModalOpen('host-reassign');
+              dispatch(({modal}) => modal.open('host-reassign'));
             }}
             title="reassign"
           />

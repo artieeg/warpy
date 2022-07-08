@@ -1,5 +1,5 @@
 import {useStyle} from '@app/hooks';
-import {useStore, useStoreShallow} from '@app/store';
+import {useDispatcher, useStore, useStoreShallow} from '@app/store';
 import React, {useCallback, useState} from 'react';
 import {
   FlatList,
@@ -18,6 +18,8 @@ import {colors} from '../../colors';
 import {IBaseUser} from '@warpy/lib';
 
 export const AwardVisualPickerModal = () => {
+  const dispatch = useDispatcher();
+
   const [visible, picked, user] = useStoreShallow(state => [
     state.modalCurrent === 'award-visual',
     state.pickedAwardVisual,
@@ -87,9 +89,11 @@ export const AwardVisualPickerModal = () => {
   );
 
   const onNext = useCallback(() => {
-    useStore.getState().dispatchModalOpen('award-message', {
-      userToAward: user as IBaseUser,
-    });
+    dispatch(({modal}) =>
+      modal.open('award-message', {
+        userToAward: user as IBaseUser,
+      }),
+    );
   }, [user]);
 
   const onClose = useCallback(() => {

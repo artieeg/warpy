@@ -1,23 +1,24 @@
-import {useStore, useStoreShallow} from '@app/store';
+import {useDispatcher, useStoreShallow} from '@app/store';
 import {useState, useEffect} from 'react';
 import {useDebounce} from 'use-debounce';
 
 export const useUserSearch = () => {
   const [search, setSearch] = useState('');
-  const [value] = useDebounce(search, 300);
+  const [query] = useDebounce(search, 300);
 
+  const dispatch = useDispatcher();
   const [userSearchResult, isLoading] = useStoreShallow(store => [
     store.userSearchResult,
     store.isSearchingUsers,
   ]);
 
   useEffect(() => {
-    if (value.length === 0) {
-      useStore.getState().dispatchUserSearchReset();
+    if (query.length === 0) {
+      dispatch(({user}) => user.resetUserSearch());
     } else {
-      useStore.getState().dispatchUserSearch(value);
+      dispatch(({user}) => user.searchUsers(query));
     }
-  }, [value]);
+  }, [query]);
 
   return {setSearch, users: userSearchResult, isLoading};
 };

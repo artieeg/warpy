@@ -1,4 +1,4 @@
-import {useStore, useStoreShallow} from '@app/store';
+import {useDispatcher, useStore, useStoreShallow} from '@app/store';
 import {useNavigation} from '@react-navigation/native';
 import {useEffect} from 'react';
 import {navigation} from '@app/navigation';
@@ -9,6 +9,7 @@ export const useAppSetUp = () => {
   const n = useNavigation();
   navigation.current = n;
 
+  const dispatch = useDispatcher();
   const [userExists, isLoadingUser, api, user, isConnected] = useStoreShallow(
     state => [
       state.exists,
@@ -30,7 +31,10 @@ export const useAppSetUp = () => {
       },
     });
 
-    api.onError(error => useStore.getState().dispatchToastMessage(error.error));
+    //api.onError(error => useStore.getState().dispatchToastMessage(error.error));
+    api.onError(error =>
+      dispatch(({toast}) => toast.showToastMessage(error.error)),
+    );
 
     return () => {
       api.observer.removeAllListeners();
@@ -52,9 +56,8 @@ export const useAppSetUp = () => {
     if (user) {
       n.navigate('Feed');
 
-      useStore.getState().dispatchNotificationsFetchUnread();
-      useStore.getState().dispatchFetchAppInvite();
-      //useStore.getState().dispatchFetchUserList('following');
+      dispatch(({notification}) => notification.fetchUnread());
+      dispatch(({app_invite}) => app_invite.get());
     }
   }, [user, n]);
 
@@ -70,7 +73,7 @@ export const useAppSetUp = () => {
         const token = await AsyncStorage.getItem('access');
 
         if (token) {
-          useStore.getState().dispatchUserLoadData(token);
+          dispatch(({user}) => user.loadUserData(token));
         } else {
           n.navigate('SignUpName');
         }

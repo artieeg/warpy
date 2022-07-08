@@ -2,16 +2,14 @@ import React, {useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {StreamOverlay} from '@app/components/StreamOverlay';
 import {Room} from '@app/components/Room';
-import {useStore, useStoreShallow} from '@app/store';
+import {useDispatcher, useStore} from '@app/store';
 import {NewStreamPanel} from '@app/components/NewStreamPanel';
 import {AwardDisplay} from '@app/components/AwardDisplay';
 import {useRoute} from '@react-navigation/native';
 
 export const useNewStreamController = () => {
-  const [streamId, dispatchMediaRequest] = useStoreShallow(state => [
-    state.stream,
-    state.dispatchMediaRequest,
-  ]);
+  const dispatch = useDispatcher();
+  const streamId = useStore(state => state.stream);
 
   const params = useRoute().params as any;
 
@@ -25,12 +23,12 @@ export const useNewStreamController = () => {
   }, [params?.startRoomTogetherTimeout]);
 
   useEffect(() => {
-    dispatchMediaRequest('audio', {enabled: true});
-    dispatchMediaRequest('video', {enabled: true});
+    dispatch(({media}) => media.requestMediaStream('audio', {enabled: true}));
+    dispatch(({media}) => media.requestMediaStream('video', {enabled: true}));
 
     //close streams
     return () => {
-      useStore.getState().dispatchMediaClose();
+      dispatch(({media}) => media.close());
 
       useStore.setState({
         title: null,
