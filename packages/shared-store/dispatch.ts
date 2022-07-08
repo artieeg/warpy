@@ -1,5 +1,5 @@
-import { StateUpdate, StreamedStateUpdate } from "../app/types";
-import { AppServices, StoreDispatcherSlice } from "../types";
+import { StateUpdate, StreamedStateUpdate } from "./app/types";
+import { AppServices, StoreDispatcherSlice } from "./types";
 
 export interface AppActionDispatcher {
   dispatch: (
