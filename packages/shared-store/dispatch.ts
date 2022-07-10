@@ -9,6 +9,7 @@ export interface AppActionDispatcher {
   ) => Promise<void>;
 }
 
+/** Checks whether an update is an instance of AsyncGenerator */
 const isStreamedUpdate = (update: object) => {
   return (
     Reflect.has(update, "next") &&
@@ -25,7 +26,6 @@ export const createDispatcher: StoreDispatcherSlice<AppActionDispatcher> = (
 
     if (!update) {
       return;
-      //throw new Error("Action has returned void");
     }
 
     if (isStreamedUpdate(update)) {

@@ -29,3 +29,4 @@ export const EVENT_INVITE_STREAM_ID_AVAILABLE = 'invite.stream-id-available';
 export const EVENT_INVITE_AVAILABLE = 'invite.new';
 
 export const EVENT_STREAMER_MEDIA_TOGGLE = 'participant.media-toggle';
+export const EVENT_REACTION_NEW = 'reaction.new';

@@ -69,3 +69,7 @@ export interface OnNewStream {
     };
   }) => Promise<any>;
 }
+
+export interface OnNewReaction {
+  onNewReaction: (data: { reaction: string; stream: string }) => Promise<any>;
+}

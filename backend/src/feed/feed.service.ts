@@ -8,7 +8,6 @@ import { BlockService } from '@warpy-be/block/block.service';
 export class FeedService {
   constructor(
     private blockService: BlockService,
-
     private streamEntity: StreamEntity,
     private participantEntity: ParticipantStore,
   ) {}
