@@ -11,44 +11,37 @@ import { TokenService } from '../token/token.service';
 import { UserStoreService } from './user.store';
 import { StreamEntity } from '@warpy-be/stream/common/stream.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { EVENT_USER_CREATED } from '@warpy-be/utils';
 import { FollowEntity } from '@warpy-be/follow/follow.entity';
+import { User } from 'lib/services';
 
 @Injectable()
 export class UserService {
+  private user: User;
+
   constructor(
-    private user: UserStoreService,
-    private tokenService: TokenService,
-    private refreshTokenEntity: RefreshTokenEntity,
-    private eventEmitter: EventEmitter2,
+    private store: UserStoreService,
+    tokenService: TokenService,
+    refreshTokenEntity: RefreshTokenEntity,
+    events: EventEmitter2,
 
     private followEntity: FollowEntity,
     private participantEntity: ParticipantStore,
     private streamEntity: StreamEntity,
-  ) {}
+  ) {
+    this.user = new User(store, tokenService, refreshTokenEntity, events);
+  }
 
   async createAnonUser() {
-    const anonUserId = await this.user.createAnonUser();
-
-    const accessToken = this.tokenService.createAuthToken(
-      anonUserId,
-      false,
-      '1d',
-    );
-
-    return {
-      id: anonUserId,
-      access: accessToken,
-    };
+    return this.user.createAnonUser();
   }
 
   async findById(user: string, details?: boolean) {
-    return this.user.find(user, details);
+    return this.store.find(user, details);
   }
 
   async getUserInfo(id: string, requester: string): Promise<IUserInfoResponse> {
     const [user, currentStreamId, isFollowed, isFollower] = await Promise.all([
-      this.user.find(id, false),
+      this.store.find(id, false),
       this.participantEntity.getStreamId(id),
       this.followEntity.isFollowing(requester, id),
       this.followEntity.isFollowing(id, requester),
@@ -76,53 +69,24 @@ export class UserService {
   }
 
   async search(text: string, requester_id: string): Promise<IUser[]> {
-    const users = await this.user.search(text);
+    const users = await this.store.search(text);
 
     return users.filter((user) => user.id !== requester_id);
   }
 
   async update(user: string, params: Partial<IUser>) {
-    await this.user.update(user, params);
+    await this.store.update(user, params);
   }
 
   async get(user: string): Promise<IUser> {
-    return this.user.find(user);
+    return this.store.find(user);
   }
 
-  async createDevUser(data: INewUser): Promise<INewUserResponse> {
-    const { username, avatar, last_name, first_name, email } = data;
-
-    const user = await this.user.createUser({
-      username,
-      last_name,
-      first_name,
-      email,
-      avatar,
-      sub: 'DEV_ACCOUNT',
-      is_anon: false,
-    });
-
-    const accessToken = this.tokenService.createAuthToken(user.id, false, '1d');
-    const refreshToken = this.tokenService.createAuthToken(
-      user.id,
-      false,
-      '1y',
-    );
-
-    this.eventEmitter.emit(EVENT_USER_CREATED, {
-      user,
-    });
-
-    await this.refreshTokenEntity.create(refreshToken);
-
-    return {
-      id: user.id,
-      access: accessToken,
-      refresh: refreshToken,
-    };
+  async createUser(data: INewUser): Promise<INewUserResponse> {
+    return this.user.createUser(data);
   }
 
   async deleteUser(user: string) {
-    await this.user.del(user);
+    await this.store.del(user);
   }
 }

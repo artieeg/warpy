@@ -64,7 +64,7 @@ export class UserController {
   @MessagePattern('user.create')
   async onUserCreate(data: INewUser): Promise<INewUserResponse> {
     if (!this.configService.get('isProduction') && data.kind === 'dev') {
-      return this.userService.createDevUser(data);
+      return this.userService.createUser(data);
     }
   }
 

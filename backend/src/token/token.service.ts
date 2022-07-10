@@ -1,28 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as jwt from 'jsonwebtoken';
+import { Token, TokenImpl } from 'lib/services/token';
 
 @Injectable()
-export class TokenService {
-  constructor(private configService: ConfigService) {}
+export class TokenService implements Token {
+  private token: Token;
+
+  constructor(configService: ConfigService) {
+    this.token = new TokenImpl(configService.get('accessJwtSecret'));
+  }
 
   createToken(data: any, params?: jwt.SignOptions) {
-    const secret = this.configService.get<string>('accessJwtSecret');
-
-    return jwt.sign(data, secret, params);
+    return this.token.createToken(data, params);
   }
 
   validateToken<T = any>(token: string) {
-    const secret = this.configService.get<string>('accessJwtSecret');
-
-    return jwt.verify(token, secret) as T;
+    return this.token.validateToken<T>(token);
   }
 
   decodeToken<T = any>(token: string) {
-    return jwt.decode(token) as T;
+    return this.token.decodeToken<T>(token);
   }
 
   createAuthToken(sub: string, isBot: boolean, expiresIn?: string) {
-    return this.createToken({ sub, isBot }, expiresIn && { expiresIn });
+    return this.token.createAuthToken(sub, isBot, expiresIn);
   }
 }
