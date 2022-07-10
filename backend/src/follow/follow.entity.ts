@@ -1,8 +1,8 @@
 import { PrismaService } from '@warpy-be/prisma/prisma.service';
-import { UserEntity } from '@warpy-be/user/user.entity';
 import { Injectable } from '@nestjs/common';
 import { FollowRecord, User } from '@prisma/client';
 import { IUser } from '@warpy/lib';
+import { toUserDTO } from 'lib/stores';
 
 export interface IFollow {
   follower_id: string;
@@ -20,8 +20,8 @@ export class FollowEntity {
     let followData: IFollow = {
       followed_id: data.followed_id,
       follower_id: data.follower_id,
-      followed: data.followed && UserEntity.toUserDTO(data.followed),
-      follower: data.follower && UserEntity.toUserDTO(data.follower),
+      followed: data.followed && toUserDTO(data.followed),
+      follower: data.follower && toUserDTO(data.follower),
     };
 
     return followData;

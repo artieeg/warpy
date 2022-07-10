@@ -2,7 +2,7 @@ import { PrismaService } from '@warpy-be/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { UserBlock, User } from '@prisma/client';
 import { IUserBlock } from '@warpy/lib';
-import { UserEntity } from '@warpy-be/user/user.entity';
+import { toUserDTO } from 'lib/stores';
 
 @Injectable()
 export class BlockEntity {
@@ -19,7 +19,7 @@ export class BlockEntity {
 
     return {
       id: data.id,
-      blocked: UserEntity.toUserDTO(data.blocked),
+      blocked: toUserDTO(data.blocked),
       blocker: data.blocker_id,
     };
   }

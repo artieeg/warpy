@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { HostReassignError } from '@warpy-be/errors';
 import { TimerService } from '@warpy-be/shared';
-import { UserEntity } from '@warpy-be/user/user.entity';
+import { UserStoreService } from '@warpy-be/user/user.store';
 import {
   EVENT_HOST_REASSIGN,
   EVENT_HOST_REASSIGN_FAILED,
@@ -18,7 +18,7 @@ export class HostService {
     private timerService: TimerService,
     private hostStore: HostStore,
     private eventEmitter: EventEmitter2,
-    private userEntity: UserEntity,
+    private user: UserStoreService,
     private participantStore: ParticipantStore,
   ) {}
 
@@ -133,7 +133,7 @@ export class HostService {
    * Initializes the host data when a new stream starts
    * */
   async initStreamHost({ user, stream }: { user: string; stream: string }) {
-    const streamer = await this.userEntity.findById(user);
+    const streamer = await this.user.find(user);
 
     const host: IParticipant = {
       ...streamer,

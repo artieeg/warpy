@@ -1,7 +1,7 @@
 import { PrismaService } from '@warpy-be/prisma/prisma.service';
-import { UserEntity } from '@warpy-be/user/user.entity';
 import { Injectable } from '@nestjs/common';
 import { IAward } from '@warpy/lib';
+import { toUserDTO } from 'lib/stores';
 
 @Injectable()
 export class AwardEntity {
@@ -10,8 +10,8 @@ export class AwardEntity {
   static toAwardDTO(data: any): IAward {
     return {
       id: data.id,
-      sender: UserEntity.toUserDTO(data.sender),
-      recipent: UserEntity.toUserDTO(data.recipent),
+      sender: toUserDTO(data.sender),
+      recipent: toUserDTO(data.recipent),
       visual: data.visual,
       message: data.message,
       created_at: data.created_at,

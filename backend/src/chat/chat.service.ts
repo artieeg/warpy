@@ -1,6 +1,6 @@
 import { StreamNotFound, UserNotFound } from '@warpy-be/errors';
 import { ParticipantStore } from '@warpy-be/user/participant';
-import { UserEntity } from '@warpy-be/user/user.entity';
+import { UserStoreService } from '@warpy-be/user/user.store';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IChatMessage } from '@warpy/lib';
@@ -16,7 +16,7 @@ export class ChatService {
 
   constructor(
     private eventEmitter: EventEmitter2,
-    private userEntity: UserEntity,
+    private userEntity: UserStoreService,
     private participantEntity: ParticipantStore,
     private blockService: BlockService,
   ) {}
@@ -26,7 +26,7 @@ export class ChatService {
   }
 
   async sendNewMessage(userId: string, text: string) {
-    const user = await this.userEntity.findById(userId);
+    const user = await this.userEntity.find(userId);
 
     if (!user) {
       throw new UserNotFound();

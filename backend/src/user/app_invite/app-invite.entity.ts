@@ -1,10 +1,10 @@
 import { AppInviteNotFound } from '@warpy-be/errors';
 import { PrismaService } from '@warpy-be/prisma/prisma.service';
-import { UserEntity } from '@warpy-be/user/user.entity';
 import { Injectable } from '@nestjs/common';
 import { AppInvite } from '@prisma/client';
 import { animals, colors, uniqueNamesGenerator } from 'unique-names-generator';
 import { IAppInvite } from '@warpy/lib';
+import { toUserDTO } from 'lib/stores';
 
 @Injectable()
 export class AppInviteEntity {
@@ -36,7 +36,7 @@ export class AppInviteEntity {
   static toAppInviteDTO(data: any): IAppInvite {
     return {
       id: data.id,
-      user: UserEntity.toUserDTO(data.user),
+      user: toUserDTO(data.user),
       code: data.code,
     };
   }

@@ -8,7 +8,7 @@ import {
 } from '@warpy/lib';
 import { RefreshTokenEntity } from '../token/refresh-token.entity';
 import { TokenService } from '../token/token.service';
-import { UserEntity } from './user.entity';
+import { UserStoreService } from './user.store';
 import { StreamEntity } from '@warpy-be/stream/common/stream.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EVENT_USER_CREATED } from '@warpy-be/utils';
@@ -17,7 +17,7 @@ import { FollowEntity } from '@warpy-be/follow/follow.entity';
 @Injectable()
 export class UserService {
   constructor(
-    private user: UserEntity,
+    private user: UserStoreService,
     private tokenService: TokenService,
     private refreshTokenEntity: RefreshTokenEntity,
     private eventEmitter: EventEmitter2,
@@ -43,12 +43,12 @@ export class UserService {
   }
 
   async findById(user: string, details?: boolean) {
-    return this.user.findById(user, details);
+    return this.user.find(user, details);
   }
 
   async getUserInfo(id: string, requester: string): Promise<IUserInfoResponse> {
     const [user, currentStreamId, isFollowed, isFollower] = await Promise.all([
-      this.user.findById(id, false),
+      this.user.find(id, false),
       this.participantEntity.getStreamId(id),
       this.followEntity.isFollowing(requester, id),
       this.followEntity.isFollowing(id, requester),
@@ -86,13 +86,13 @@ export class UserService {
   }
 
   async get(user: string): Promise<IUser> {
-    return this.user.findById(user);
+    return this.user.find(user);
   }
 
   async createDevUser(data: INewUser): Promise<INewUserResponse> {
     const { username, avatar, last_name, first_name, email } = data;
 
-    const user = await this.user.createNewUser({
+    const user = await this.user.createUser({
       username,
       last_name,
       first_name,
@@ -123,6 +123,6 @@ export class UserService {
   }
 
   async deleteUser(user: string) {
-    await this.user.delete(user);
+    await this.user.del(user);
   }
 }

@@ -16,7 +16,7 @@ import {
   EVENT_INVITE_STREAM_ID_AVAILABLE,
   EVENT_STREAM_CREATED,
 } from '@warpy-be/utils';
-import { UserEntity } from '@warpy-be/user/user.entity';
+import { UserStoreService } from '@warpy-be/user/user.store';
 import { InviteStore } from './invite.store';
 import { FollowEntity } from '@warpy-be/follow/follow.entity';
 import { StreamEntity } from '@warpy-be/stream/common/stream.entity';
@@ -25,7 +25,7 @@ import { StreamEntity } from '@warpy-be/stream/common/stream.entity';
 export class InviteService {
   constructor(
     private inviteStore: InviteStore,
-    private userEntity: UserEntity,
+    private userEntity: UserStoreService,
     private followEntity: FollowEntity,
     private eventEmitter: EventEmitter2,
     private streamEntity: StreamEntity,
@@ -123,8 +123,8 @@ export class InviteService {
     console.log('1');
 
     const [inviter, invitee, stream] = await Promise.all([
-      this.userEntity.findById(inviter_id),
-      this.userEntity.findById(invitee_id),
+      this.userEntity.find(inviter_id),
+      this.userEntity.find(invitee_id),
       stream_id && this.streamEntity.findById(stream_id),
     ]);
     console.log('2');

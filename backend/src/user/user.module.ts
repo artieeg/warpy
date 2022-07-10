@@ -1,5 +1,5 @@
 import { StreamModule } from '@warpy-be/stream/stream.module';
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { PrismaModule } from '../prisma/prisma.module';
 import { TokenModule } from '../token/token.module';
 import { AppInviteModule } from './app_invite/app-invite.module';
@@ -8,7 +8,7 @@ import { UserOnlineStatusModule } from './online-status/user-online-status.modul
 import { ParticipantModule } from './participant/participant.module';
 import { UserReportModule } from './report/user-report.module';
 import { UserController } from './user.controller';
-import { UserEntity } from './user.entity';
+import { UserStoreService } from './user.store';
 import { UserService } from './user.service';
 import { BlockModule } from '@warpy-be/block/block.module';
 import { FollowModule } from '@warpy-be/follow/follow.module';
@@ -28,9 +28,9 @@ import { FollowModule } from '@warpy-be/follow/follow.module';
     DeveloperAccountModule,
   ],
   controllers: [UserController],
-  providers: [UserEntity, UserService],
+  providers: [UserStoreService, UserService],
   exports: [
-    UserEntity,
+    UserStoreService,
     UserService,
     ParticipantModule,
     DeveloperAccountModule,
