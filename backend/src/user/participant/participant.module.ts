@@ -5,7 +5,7 @@ import { ActiveSpeakerModule } from './active-speaker/active-speaker.module';
 import { ParticipantBanModule } from './ban/ban.module';
 import { ParticipantCommonModule } from './store';
 import { ParticipantController } from './participant.controller';
-import { ParticipantService } from './participant.service';
+import { NjsParticipantService } from './participant.service';
 import { ParticipantRoleModule } from './role/role.module';
 import { ViewerModule } from './viewer/viewer.module';
 import { HostModule } from './host/host.module';
@@ -23,7 +23,7 @@ import { StreamerModule } from './streamer/streamer.module';
     BotsModule,
     NJTokenService,
   ],
-  providers: [ParticipantService],
+  providers: [NjsParticipantService],
   controllers: [ParticipantController],
   exports: [ViewerModule, ParticipantCommonModule],
 })

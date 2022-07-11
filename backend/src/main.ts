@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 import { REQUIRED_ENV_KEYS } from './config/configuration';
 import { getTestModuleBuilder } from './__fixtures__/app.module';
 import { ParticipantModule } from './user/participant/participant.module';
-import { ParticipantService } from './user/participant/participant.service';
+import { NjsParticipantService } from './user/participant/participant.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

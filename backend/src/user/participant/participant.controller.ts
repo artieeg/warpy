@@ -18,14 +18,14 @@ import {
   ILeaveStreamRequest,
   IMediaToggleRequest,
 } from '@warpy/lib';
-import { ParticipantService } from './participant.service';
+import { NjsParticipantService } from './participant.service';
 
 @Controller()
 export class ParticipantController
   implements OnUserDisconnect, OnStreamEnd, OnParticipantLeave
 {
   constructor(
-    private participant: ParticipantService,
+    private participant: NjsParticipantService,
     private eventEmitter: EventEmitter2,
   ) {}
 
@@ -66,6 +66,6 @@ export class ParticipantController
 
   @OnEvent(EVENT_STREAM_ENDED)
   async onStreamEnd({ stream }) {
-    await this.participant.clearStreamData(stream);
+    await this.participant.removeAllParticipantsFrom(stream);
   }
 }

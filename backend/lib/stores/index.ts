@@ -4,3 +4,4 @@ export * from './stream';
 export * from './participant';
 export * from './refresh-token';
 export * from './host';
+export * from './bot-instance';

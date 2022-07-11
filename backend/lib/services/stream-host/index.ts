@@ -9,7 +9,25 @@ import { IParticipant } from '@warpy/lib';
 import { HostStore, ParticipantStore, UserStore } from 'lib/stores';
 import { TimerService } from '../timer';
 
-export class HostService {
+export interface IHostService {
+  getHostInfo(user: string): Promise<IParticipant>;
+  getStreamHostId(stream: string): Promise<string>;
+  handlePossibleHost(participant: IParticipant): Promise<void>;
+  handleRejoinedUser(user: string): Promise<void>;
+  reassignHost(current: string, next: string): Promise<void>;
+
+  tryReassignHostAfterTime(user: string): Promise<void>;
+
+  initStreamHost({
+    user,
+    stream,
+  }: {
+    user: string;
+    stream: string;
+  }): Promise<void>;
+}
+
+export class HostService implements IHostService {
   constructor(
     private timerService: TimerService,
     private hostStore: HostStore,
@@ -76,7 +94,7 @@ export class HostService {
       throw new HostReassignError();
     }
 
-    return Promise.all([
+    await Promise.all([
       //because previous host hasn't left the stream, they can be picked as a host again
       this.hostStore.addPossibleHost(currentHostData),
 

@@ -1,7 +1,6 @@
-import { BotInstanceEntity } from '@warpy-be/bots/bot-instance.entity';
+import { NjsBotInstanceStore } from '@warpy-be/bots/bot-instance.entity';
 import { MaxVideoStreamers } from '@warpy-be/errors';
 import {
-  EVENT_PARTICIPANT_LEAVE,
   EVENT_PARTICIPANT_REJOIN,
   EVENT_STREAMER_MEDIA_TOGGLE,
 } from '@warpy-be/utils';
@@ -9,67 +8,22 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { NjsParticipantStore } from './store';
 import { ViewerService } from './viewer/viewer.service';
-import { IJoinStreamResponse, IParticipant, Roles } from '@warpy/lib';
+import { IJoinStreamResponse, Roles } from '@warpy/lib';
 import { NjsHostService } from './host/host.service';
 import { StreamerService } from './streamer/streamer.service';
-
-type StreamData = {
-  streamers: IParticipant[];
-  raisedHands: IParticipant[];
-  count: number;
-  host: string;
-};
+import { ParticipantService } from 'lib/services/participant';
 
 @Injectable()
-export class ParticipantService {
+export class NjsParticipantService extends ParticipantService {
   constructor(
     private participantStore: NjsParticipantStore,
-    private botInstanceEntity: BotInstanceEntity,
-    private eventEmitter: EventEmitter2,
+    botInstanceStore: NjsBotInstanceStore,
+    private events: EventEmitter2,
     private viewerService: ViewerService,
-    private hostService: NjsHostService,
+    hostService: NjsHostService,
     private streamerService: StreamerService,
-  ) {}
-
-  /**
-   * Returns stream's speakers, host, users with raised hands
-   * and total amount of people on the stream
-   * */
-  async getParticipantDataOnStream(stream: string): Promise<StreamData> {
-    const [speakers, raisedHands, count, host] = await Promise.all([
-      this.participantStore.getStreamers(stream),
-      this.participantStore.getRaisedHands(stream),
-      this.participantStore.count(stream),
-      this.hostService.getStreamHostId(stream),
-    ]);
-
-    return {
-      streamers: speakers,
-      raisedHands,
-      count,
-      host,
-    };
-  }
-
-  async handleLeavingParticipant(user: string) {
-    const data = await this.participantStore.get(user);
-
-    if (!data) {
-      return;
-    }
-
-    //ignore bots
-    if (user.slice(0, 3) === 'bot') {
-      return this.removeUserFromStream(user, data.stream);
-    }
-
-    //TODO: handle in store controller
-    await this.participantStore.setDeactivated(user, data.stream, true);
-
-    this.eventEmitter.emit(EVENT_PARTICIPANT_LEAVE, {
-      user,
-      stream: data.stream,
-    });
+  ) {
+    super(participantStore, hostService, botInstanceStore, events);
   }
 
   /**
@@ -142,7 +96,7 @@ export class ParticipantService {
           : [...response.streamers, oldParticipantData],
     };
 
-    this.eventEmitter.emit(EVENT_PARTICIPANT_REJOIN, {
+    this.events.emit(EVENT_PARTICIPANT_REJOIN, {
       participant: oldParticipantData,
     });
 
@@ -197,45 +151,11 @@ export class ParticipantService {
 
     await this.participantStore.update(user, update);
 
-    this.eventEmitter.emit(EVENT_STREAMER_MEDIA_TOGGLE, {
+    this.events.emit(EVENT_STREAMER_MEDIA_TOGGLE, {
       user,
       stream,
       videoEnabled,
       audioEnabled,
     });
-  }
-
-  async removeUserFromStream(user: string, stream?: string) {
-    const isBot = user.slice(0, 3) === 'bot';
-
-    let id = user;
-
-    if (isBot) {
-      const instance = await this.botInstanceEntity.getBotInstance(
-        user,
-        stream,
-      );
-
-      id = instance.id;
-    }
-
-    await this.deleteUserParticipant(id);
-
-    this.eventEmitter.emit(EVENT_PARTICIPANT_LEAVE, {
-      user,
-      stream,
-    });
-  }
-
-  private async deleteUserParticipant(user: string) {
-    try {
-      await this.participantStore.del(user);
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  async clearStreamData(stream: string) {
-    return this.participantStore.removeParticipantDataFromStream(stream);
   }
 }

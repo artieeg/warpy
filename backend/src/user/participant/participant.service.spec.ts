@@ -5,13 +5,13 @@ import {
 } from '@warpy-be/__fixtures__';
 import { getTestModuleBuilder } from '@warpy-be/__fixtures__/app.module';
 import { ParticipantModule } from './participant.module';
-import { ParticipantService } from './participant.service';
+import { NjsParticipantService } from './participant.service';
 import { mockedParticipantStore } from './store/store.mocks';
 import { mockedStreamerService } from './streamer/streamer.mocks';
 import { mockedViewerService } from './viewer/viewer.mocks';
 
 describe('ParticipantService', () => {
-  let participantService: ParticipantService;
+  let participantService: NjsParticipantService;
 
   const mockedRecvMediaParams = createRecvMediaParamsFixture({});
   const mockedSendMediaParams = createSendMediaParamsFixture({});
