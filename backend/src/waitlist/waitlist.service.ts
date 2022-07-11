@@ -1,6 +1,6 @@
 import { WaitlistRecordExists } from '@warpy-be/errors';
 import { MailService } from '@warpy-be/mail/mail.service';
-import { TokenService } from '@warpy-be/token/token.service';
+import { NJTokenService } from '@warpy-be/token/token.service';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import fs from 'fs';
@@ -13,7 +13,7 @@ export class WaitlistService {
   constructor(
     private config: ConfigService,
     private mail: MailService,
-    private token: TokenService,
+    private token: NJTokenService,
     private waitlistEntity: WaitlistEntity,
   ) {
     this.email_template = fs.readFileSync(
@@ -52,7 +52,7 @@ export class WaitlistService {
       await this.waitlistEntity.add(email, username);
     } catch (e) {
       console.log('failed e', email, username);
-      console.error(e)
+      console.error(e);
       throw e;
     }
   }

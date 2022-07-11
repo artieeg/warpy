@@ -1,5 +1,5 @@
 import { MediaService } from '@warpy-be/media/media.service';
-import { UserService } from '@warpy-be/user/user.service';
+import { NjsUserService } from '@warpy-be/user/user.service';
 import { EVENT_NEW_PARTICIPANT, EVENT_RAISE_HAND } from '@warpy-be/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -14,7 +14,7 @@ export class ViewerService {
     private eventEmitter: EventEmitter2,
     private bans: ParticipantBanService,
     private participant: ParticipantStore,
-    private user: UserService,
+    private user: NjsUserService,
   ) {}
 
   async setRaiseHand(user: string, flag: boolean) {

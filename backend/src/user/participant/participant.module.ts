@@ -1,5 +1,5 @@
 import { BotsModule } from '@warpy-be/bots/bots.module';
-import { TokenService } from '@warpy-be/token/token.service';
+import { NJTokenService } from '@warpy-be/token/token.service';
 import { Module } from '@nestjs/common';
 import { ActiveSpeakerModule } from './active-speaker/active-speaker.module';
 import { ParticipantBanModule } from './ban/ban.module';
@@ -21,7 +21,7 @@ import { StreamerModule } from './streamer/streamer.module';
     ParticipantCommonModule,
     HostModule,
     BotsModule,
-    TokenService,
+    NJTokenService,
   ],
   providers: [ParticipantService],
   controllers: [ParticipantController],

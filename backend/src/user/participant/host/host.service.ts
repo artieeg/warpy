@@ -10,13 +10,13 @@ import {
 } from '@warpy-be/utils';
 import { IParticipant } from '@warpy/lib';
 import { ParticipantStore } from '../store';
-import { HostStore } from './host.store';
+import { NjsHostStore } from './host.store';
 
 @Injectable()
 export class HostService {
   constructor(
     private timerService: TimerService,
-    private hostStore: HostStore,
+    private hostStore: NjsHostStore,
     private eventEmitter: EventEmitter2,
     private user: UserStoreService,
     private participantStore: ParticipantStore,

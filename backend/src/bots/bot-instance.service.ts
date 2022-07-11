@@ -1,6 +1,6 @@
 import { MediaService } from '@warpy-be/media/media.service';
 import { ParticipantStore } from '@warpy-be/user/participant';
-import { TokenService } from '@warpy-be/token/token.service';
+import { NJTokenService } from '@warpy-be/token/token.service';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IBotJoinResponse, IParticipant } from '@warpy/lib';
@@ -11,7 +11,7 @@ import { EVENT_NEW_PARTICIPANT } from '@warpy-be/utils';
 export class BotInstanceService {
   constructor(
     private mediaService: MediaService,
-    private tokenService: TokenService,
+    private tokenService: NJTokenService,
     private botInstanceEntity: BotInstanceEntity,
     private eventEmitter: EventEmitter2,
     private participantStore: ParticipantStore,

@@ -12,7 +12,7 @@ const PREFIX_HOSTED_STREAM = 'stream_hosted_by_';
 const JOINED = 'joined';
 const NOT_JOINED = 'not-joined';
 
-export interface HostStore extends OnInstanceInit {
+export interface IHostStore extends OnInstanceInit {
   isHost(user: string): Promise<boolean>;
   getRandomPossibleHost(stream: string): Promise<IParticipant | null>;
   getHostId(stream: string): Promise<string | undefined>;
@@ -26,7 +26,7 @@ export interface HostStore extends OnInstanceInit {
   getHostInfo(host: string): Promise<IParticipant | null>;
 }
 
-export class HostStoreImpl implements HostStore {
+export class HostStore implements IHostStore {
   redis: Redis;
 
   constructor(private uri: string) {}

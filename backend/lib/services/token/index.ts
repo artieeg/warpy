@@ -1,13 +1,13 @@
 import * as jwt from 'jsonwebtoken';
 
-export interface Token {
+export interface ITokenService {
   createToken: (data: any, params?: jwt.SignOptions) => string;
   validateToken: <T = any>(token: string) => T;
   decodeToken: <T = any>(token: string) => T;
   createAuthToken: (sub: string, isBot: boolean, expiresIn?: string) => string;
 }
 
-export class TokenImpl implements Token {
+export class TokenService implements ITokenService {
   constructor(private secret: string) {}
 
   createToken(data: any, params?: jwt.SignOptions) {

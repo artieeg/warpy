@@ -9,7 +9,7 @@ import { ParticipantModule } from './participant/participant.module';
 import { UserReportModule } from './report/user-report.module';
 import { UserController } from './user.controller';
 import { UserStoreService } from './user.store';
-import { UserService } from './user.service';
+import { NjsUserService } from './user.service';
 import { BlockModule } from '@warpy-be/block/block.module';
 import { FollowModule } from '@warpy-be/follow/follow.module';
 
@@ -28,10 +28,10 @@ import { FollowModule } from '@warpy-be/follow/follow.module';
     DeveloperAccountModule,
   ],
   controllers: [UserController],
-  providers: [UserStoreService, UserService],
+  providers: [UserStoreService, NjsUserService],
   exports: [
     UserStoreService,
-    UserService,
+    NjsUserService,
     ParticipantModule,
     DeveloperAccountModule,
     FollowModule,

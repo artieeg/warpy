@@ -1,5 +1,5 @@
 import { MessageService } from '@warpy-be/message/message.service';
-import { TokenService } from '@warpy-be/token/token.service';
+import { NJTokenService } from '@warpy-be/token/token.service';
 import { DeveloperAccountEntity } from '@warpy-be/user/developer_account/developer_account.entity';
 import { Injectable } from '@nestjs/common';
 import { BotConfirmResponseDTO } from './bots.dto';
@@ -11,7 +11,7 @@ export class BotsService {
     private botEntity: BotsEntity,
     private developerAccountEntity: DeveloperAccountEntity,
     private messageService: MessageService,
-    private tokenService: TokenService,
+    private tokenService: NJTokenService,
   ) {}
 
   async createNewBot(

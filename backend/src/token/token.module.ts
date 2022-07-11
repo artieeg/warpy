@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from '../prisma/prisma.module';
 import { RefreshTokenEntity } from './refresh-token.entity';
-import { TokenService } from './token.service';
+import { NJTokenService } from './token.service';
 
 @Module({
   imports: [PrismaModule, ConfigModule],
-  providers: [TokenService, RefreshTokenEntity],
+  providers: [NJTokenService, RefreshTokenEntity],
   controllers: [],
-  exports: [TokenService, RefreshTokenEntity],
+  exports: [NJTokenService, RefreshTokenEntity],
 })
 export class TokenModule {}

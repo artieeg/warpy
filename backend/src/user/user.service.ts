@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { RefreshTokenEntity } from '../token/refresh-token.entity';
-import { TokenService } from '../token/token.service';
+import { NJTokenService } from '../token/token.service';
 import { UserStoreService } from './user.store';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { User } from 'lib/services';
+import { UserService } from 'lib/services';
 
 @Injectable()
-export class UserService extends User {
+export class NjsUserService extends UserService {
   constructor(
     store: UserStoreService,
-    tokenService: TokenService,
+    tokenService: NJTokenService,
     refreshTokenEntity: RefreshTokenEntity,
     events: EventEmitter2,
   ) {

@@ -1,7 +1,7 @@
 import { BotsEntity } from '@warpy-be/bots/bots.entity';
 import { NoPermissionError } from '@warpy-be/errors';
 import { MessageService } from '@warpy-be/message/message.service';
-import { TokenService } from '@warpy-be/token/token.service';
+import { NJTokenService } from '@warpy-be/token/token.service';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import {
@@ -30,7 +30,7 @@ export class InviteService {
     private eventEmitter: EventEmitter2,
     private streamEntity: StreamStore,
     private messageService: MessageService,
-    private tokenService: TokenService,
+    private tokenService: NJTokenService,
     private botEntity: BotsEntity,
   ) {}
 

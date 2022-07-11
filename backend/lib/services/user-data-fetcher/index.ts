@@ -3,7 +3,7 @@ import { FollowStore } from 'lib/stores/follow';
 import { ParticipantStore } from 'lib/stores/participant';
 import { StreamStore } from 'lib/stores/stream';
 
-export class UserDataFetcher {
+export class UserDataFetcherService {
   constructor(
     private store: UserStore,
     private followStore: FollowStore,

@@ -1,11 +1,11 @@
 import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
-import { TokenService } from './token.service';
+import { NJTokenService } from './token.service';
 
 describe('TokenService', () => {
-  let tokenService: TokenService;
+  let tokenService: NJTokenService;
 
   beforeAll(async () => {
-    tokenService = (await testModuleBuilder.compile()).get(TokenService);
+    tokenService = (await testModuleBuilder.compile()).get(NJTokenService);
   });
 
   it('creates a new jwt token', () => {

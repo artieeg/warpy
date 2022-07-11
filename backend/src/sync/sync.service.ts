@@ -4,13 +4,13 @@ import { UserNotFound } from '@warpy-be/errors';
 import { FriendFeedService } from '@warpy-be/friend_feed/friend_feed.service';
 import { UserListService } from '@warpy-be/user-list/user-list.service';
 import { AppliedAppInviteEntity } from '@warpy-be/user/app_invite/applied-app-invite.entity';
-import { UserService } from '@warpy-be/user/user.service';
+import { NjsUserService } from '@warpy-be/user/user.service';
 import { IWhoAmIResponse } from '@warpy/lib';
 
 @Injectable()
 export class SyncService {
   constructor(
-    private userService: UserService,
+    private userService: NjsUserService,
     private appliedAppInviteEntity: AppliedAppInviteEntity,
     private categoriesEntity: CategoriesEntity,
     private friendFeed: FriendFeedService,

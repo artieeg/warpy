@@ -16,13 +16,13 @@ import {
   IUserUpdateRequest,
   IUserUpdateResponse,
 } from '@warpy/lib';
-import { UserService } from './user.service';
+import { NjsUserService } from './user.service';
 
 @Controller()
 @UseFilters(ExceptionFilter)
 export class UserController {
   constructor(
-    private userService: UserService,
+    private userService: NjsUserService,
     private configService: ConfigService,
     private eventEmitter: EventEmitter2,
   ) {}

@@ -4,7 +4,7 @@ import { NotADeveloper } from '@warpy-be/errors';
 import { mockedMediaService } from '@warpy-be/media/media.service.mock';
 import { MessageService } from '@warpy-be/message/message.service';
 import { mockedMessageService } from '@warpy-be/message/message.service.mock';
-import { TokenService } from '@warpy-be/token/token.service';
+import { NJTokenService } from '@warpy-be/token/token.service';
 import { mockedTokenService } from '@warpy-be/token/token.service.mock';
 import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
 import { BotsEntity } from './bots.entity';
@@ -22,7 +22,7 @@ describe('BotsService', () => {
       .useValue(mockedDeveloperAccountEntity)
       .overrideProvider(MessageService)
       .useValue(mockedMessageService)
-      .overrideProvider(TokenService)
+      .overrideProvider(NJTokenService)
       .useValue(mockedTokenService)
       .compile();
     botsService = m.get(BotsService);

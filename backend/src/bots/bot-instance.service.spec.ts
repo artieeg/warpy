@@ -3,7 +3,7 @@ import { MediaService } from '@warpy-be/media/media.service';
 import { mockedMediaService } from '@warpy-be/media/media.service.mock';
 import { ParticipantEntity } from '@warpy-be/participant/participant.entity';
 import { mockedParticipantEntity } from '@warpy-be/participant/participant.entity.mock';
-import { TokenService } from '@warpy-be/token/token.service';
+import { NJTokenService } from '@warpy-be/token/token.service';
 import { mockedTokenService } from '@warpy-be/token/token.service.mock';
 import { EVENT_NEW_PARTICIPANT } from '@warpy-be/utils';
 import { createParticipantFixture } from '@warpy-be/__fixtures__';
@@ -36,7 +36,7 @@ describe('Bot Instance Service', () => {
     const m = await testModuleBuilder
       .overrideProvider(MediaService)
       .useValue(mockedMediaService)
-      .overrideProvider(TokenService)
+      .overrideProvider(NJTokenService)
       .useValue(mockedTokenService)
       .overrideProvider(BotInstanceEntity)
       .useValue(mockedBotInstanceEntity)

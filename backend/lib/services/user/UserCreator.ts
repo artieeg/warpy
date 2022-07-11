@@ -3,7 +3,7 @@ import { EVENT_USER_CREATED } from '@warpy-be/utils';
 import { INewUser, INewUserResponse } from '@warpy/lib';
 import { UserStore } from 'lib/stores';
 import { RefreshTokenStore } from 'lib/stores/refresh-token';
-import { Token } from '../token';
+import { ITokenService } from '../token';
 
 export interface UserCreator {
   createAnonUser: () => Promise<{ id: string; access: string }>;
@@ -13,7 +13,7 @@ export interface UserCreator {
 export class UserCreatorImpl implements UserCreator {
   constructor(
     private store: UserStore,
-    private token: Token,
+    private token: ITokenService,
     private refreshTokenStore: RefreshTokenStore,
     private events: EventEmitter2,
   ) {}

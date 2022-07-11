@@ -5,13 +5,13 @@ import { FollowStore } from 'lib/stores/follow';
 import { ParticipantStore } from 'lib/stores/participant';
 import { RefreshTokenStore } from 'lib/stores/refresh-token';
 import { StreamStore } from 'lib/stores/stream';
-import { Token } from '../token';
+import { ITokenService } from '../token';
 import { UserCreator, UserCreatorImpl } from './UserCreator';
 import { UserDeleter, UserDeleterImpl } from './UserDeleter';
 import { UserSearcher, UserSearcherImpl } from './UserSearcher';
 import { UserUpdater, UserUpdaterImpl } from './UserUpdater';
 
-export class User
+export class UserService
   implements UserCreator, UserSearcher, UserUpdater, UserDeleter
 {
   private creator: UserCreator;
@@ -21,7 +21,7 @@ export class User
 
   constructor(
     user: UserStore,
-    token: Token,
+    token: ITokenService,
     refreshTokenStore: RefreshTokenStore,
     events: EventEmitter2,
   ) {

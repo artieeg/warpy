@@ -19,7 +19,7 @@ import {
 } from '@warpy-be/utils';
 import { IHostReassignRequest } from '@warpy/lib';
 import { HostService } from './host.service';
-import { HostStore } from './host.store';
+import { NjsHostStore } from './host.store';
 
 @Controller()
 export class HostController
@@ -31,7 +31,10 @@ export class HostController
     OnViewerUpgraded,
     OnParticipantLeave
 {
-  constructor(private hostStore: HostStore, private hostService: HostService) {}
+  constructor(
+    private hostStore: NjsHostStore,
+    private hostService: HostService,
+  ) {}
 
   @MessagePattern('host.reassign')
   async onHostReassign({ host, user }: IHostReassignRequest) {

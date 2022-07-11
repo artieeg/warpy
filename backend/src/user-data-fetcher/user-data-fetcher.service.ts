@@ -3,10 +3,10 @@ import { FollowStore } from '@warpy-be/follow/follow.entity';
 import { StreamStore } from '@warpy-be/stream/common/stream.entity';
 import { ParticipantStore } from '@warpy-be/user/participant';
 import { UserStoreService } from '@warpy-be/user/user.store';
-import { UserDataFetcher } from 'lib/services';
+import { UserDataFetcherService } from 'lib/services';
 
 @Injectable()
-export class UserDataFetcherService extends UserDataFetcher {
+export class NjsUserDataFetcherService extends UserDataFetcherService {
   constructor(
     user: UserStoreService,
     follow: FollowStore,
