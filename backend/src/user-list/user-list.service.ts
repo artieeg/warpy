@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { BlockService } from '@warpy-be/block/block.service';
-import { FollowEntity } from '@warpy-be/follow/follow.entity';
+import { FollowStore } from '@warpy-be/follow/follow.entity';
 import { IUser } from '@warpy/lib';
 
 @Injectable()
 export class UserListService {
   constructor(
-    private followEntity: FollowEntity,
+    private followEntity: FollowStore,
     private blockService: BlockService,
   ) {}
 

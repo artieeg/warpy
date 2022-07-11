@@ -18,17 +18,17 @@ import {
 } from '@warpy-be/utils';
 import { UserStoreService } from '@warpy-be/user/user.store';
 import { InviteStore } from './invite.store';
-import { FollowEntity } from '@warpy-be/follow/follow.entity';
-import { StreamEntity } from '@warpy-be/stream/common/stream.entity';
+import { FollowStore } from '@warpy-be/follow/follow.entity';
+import { StreamStore } from '@warpy-be/stream/common/stream.entity';
 
 @Injectable()
 export class InviteService {
   constructor(
     private inviteStore: InviteStore,
     private userEntity: UserStoreService,
-    private followEntity: FollowEntity,
+    private followEntity: FollowStore,
     private eventEmitter: EventEmitter2,
-    private streamEntity: StreamEntity,
+    private streamEntity: StreamStore,
     private messageService: MessageService,
     private tokenService: TokenService,
     private botEntity: BotsEntity,

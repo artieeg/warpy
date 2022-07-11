@@ -1,6 +1,6 @@
 import { MessageService } from '@warpy-be/message/message.service';
 import { Injectable } from '@nestjs/common';
-import { StreamEntity } from '../common/stream.entity';
+import { StreamStore } from '../common/stream.entity';
 import { PreviousStreamCacheService } from './previous-stream.cache';
 
 @Injectable()
@@ -8,7 +8,7 @@ export class PreviousStreamService {
   constructor(
     private previousStreamCache: PreviousStreamCacheService,
     private messageService: MessageService,
-    private streamEntity: StreamEntity,
+    private streamEntity: StreamStore,
   ) {}
 
   async clearStream(stream: string) {

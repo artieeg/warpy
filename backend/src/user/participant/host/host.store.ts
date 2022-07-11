@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import IORedis, { Redis } from 'ioredis';
 import { IParticipant } from '@warpy/lib';
 import { ParticipantStore } from '../store';
+import { toParticipantDTO } from 'lib/stores/participant';
 
 const PREFIX_HOST_OF_STREAM = 'host_of_';
 const PREFIX_HOST_JOIN_STATUS = 'host_';
@@ -117,6 +118,6 @@ export class HostStore implements OnModuleInit {
       return null;
     }
 
-    return ParticipantStore.toDTO(data);
+    return toParticipantDTO(data);
   }
 }

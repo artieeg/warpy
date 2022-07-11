@@ -1,6 +1,6 @@
 import { createFollowRecord } from '@warpy-be/__fixtures__';
 import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
-import { FollowEntity } from './follow.entity';
+import { FollowStore } from './follow.entity';
 import { mockedFollowEntity } from './follow.entity.mock';
 import { FollowService } from './follow.service';
 
@@ -9,7 +9,7 @@ describe('FollowService', () => {
 
   beforeAll(async () => {
     const m = await testModuleBuilder
-      .overrideProvider(FollowEntity)
+      .overrideProvider(FollowStore)
       .useValue(mockedFollowEntity)
       .compile();
 

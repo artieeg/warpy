@@ -70,7 +70,7 @@ export class UserController {
 
   @MessagePattern('user.delete')
   async onUserDelete({ user }: IUserDelete): Promise<IUserDeleteResponse> {
-    await this.userService.deleteUser(user);
+    await this.userService.del(user);
 
     return {
       status: 'ok',
@@ -92,7 +92,7 @@ export class UserController {
     const isAnonUser = user.slice(0, 9) === 'anon_user';
 
     if (isAnonUser) {
-      await this.userService.deleteUser(user);
+      await this.userService.del(user);
     }
 
     this.eventEmitter.emit(EVENT_USER_DISCONNECTED, { user });

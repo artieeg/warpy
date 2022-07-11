@@ -1,19 +1,16 @@
 import { StreamNotFound } from '@warpy-be/errors';
-import {
-  EVENT_STREAM_CREATED,
-  EVENT_STREAM_ENDED,
-} from '@warpy-be/utils';
+import { EVENT_STREAM_CREATED, EVENT_STREAM_ENDED } from '@warpy-be/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { INewStreamResponse } from '@warpy/lib';
 import cuid from 'cuid';
 import { MediaService } from '../media/media.service';
-import { StreamEntity } from './common/stream.entity';
+import { StreamStore } from './common/stream.entity';
 
 @Injectable()
 export class StreamService {
   constructor(
-    private streamEntity: StreamEntity,
+    private streamEntity: StreamStore,
     private mediaService: MediaService,
     private eventEmitter: EventEmitter2,
   ) {}
@@ -71,14 +68,14 @@ export class StreamService {
   }
 
   async deleteStream(stream: string) {
-    await this.streamEntity.delete(stream);
+    await this.streamEntity.del(stream);
     this.eventEmitter.emit(EVENT_STREAM_ENDED, {
       stream,
     });
   }
 
   async stopStream(user: string): Promise<void> {
-    const stream = await this.streamEntity.deleteByHost(user);
+    const stream = await this.streamEntity.delByHost(user);
 
     if (!stream) {
       throw new StreamNotFound();

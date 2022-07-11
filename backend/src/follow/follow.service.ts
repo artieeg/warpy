@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { FollowEntity, IFollow } from './follow.entity';
+import { FollowStore, IFollow } from './follow.entity';
 
 @Injectable()
 export class FollowService {
-  constructor(private followEntity: FollowEntity) {}
+  constructor(private followEntity: FollowStore) {}
 
   async createNewFollow(
     follower: string,

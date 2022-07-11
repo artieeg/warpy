@@ -1,4 +1,4 @@
-import { StreamEntity } from '@warpy-be/stream/common/stream.entity';
+import { StreamStore } from '@warpy-be/stream/common/stream.entity';
 import { ParticipantStore } from '@warpy-be/user/participant/store';
 import { Injectable } from '@nestjs/common';
 import { ICandidate, IStream } from '@warpy/lib';
@@ -8,7 +8,7 @@ import { BlockService } from '@warpy-be/block/block.service';
 export class FeedService {
   constructor(
     private blockService: BlockService,
-    private streamEntity: StreamEntity,
+    private streamEntity: StreamStore,
     private participantEntity: ParticipantStore,
   ) {}
 
@@ -42,7 +42,7 @@ export class FeedService {
       this.blockService.getBlockedByIds(user),
     ]);
 
-    const streams: IStream[] = await this.streamEntity.get({
+    const streams: IStream[] = await this.streamEntity.find({
       blockedUserIds,
       blockedByUserIds,
       category: category === 'foru' ? undefined : category,
