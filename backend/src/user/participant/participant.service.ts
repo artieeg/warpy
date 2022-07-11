@@ -35,7 +35,7 @@ export class ParticipantService {
    * Returns stream's speakers, host, users with raised hands
    * and total amount of people on the stream
    * */
-  async getStreamData(stream: string): Promise<StreamData> {
+  async getParticipantDataOnStream(stream: string): Promise<StreamData> {
     const [speakers, raisedHands, count, host] = await Promise.all([
       this.participantStore.getStreamers(stream),
       this.participantStore.getRaisedHands(stream),
@@ -84,7 +84,7 @@ export class ParticipantService {
 
     const [oldParticipantData, streamData] = await Promise.all([
       this.participantStore.get(user),
-      this.getStreamData(stream),
+      this.getParticipantDataOnStream(stream),
     ]);
 
     const prevStreamId = oldParticipantData?.stream;
@@ -102,7 +102,7 @@ export class ParticipantService {
         ...response,
         mediaPermissionsToken,
         recvMediaParams,
-        count: response.count + 1, //+1 since we are joining for the first time
+        count: response.count + 1, //+1 because we are joining
         role: 'viewer',
       };
 
@@ -236,6 +236,6 @@ export class ParticipantService {
   }
 
   async clearStreamData(stream: string) {
-    return this.participantStore.clearStreamData(stream);
+    return this.participantStore.removeParticipantDataFromStream(stream);
   }
 }

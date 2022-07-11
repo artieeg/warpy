@@ -1,15 +1,9 @@
-import { IUser, IUserInfoResponse } from '@warpy/lib';
 import { UserStore } from 'lib/stores';
 import { FollowStore } from 'lib/stores/follow';
 import { ParticipantStore } from 'lib/stores/participant';
 import { StreamStore } from 'lib/stores/stream';
 
-export interface UserDataFetcher {
-  find: (user: string, details?: boolean) => Promise<IUser>;
-  getUserInfo: (id: string, requester: string) => Promise<IUserInfoResponse>;
-}
-
-export class UserDataFetcherImpl implements UserDataFetcher {
+export class UserDataFetcher {
   constructor(
     private store: UserStore,
     private followStore: FollowStore,
@@ -44,9 +38,5 @@ export class UserDataFetcherImpl implements UserDataFetcher {
     }
 
     return response as any;
-  }
-
-  async find(user: string, details?: boolean) {
-    return this.store.find(user, details);
   }
 }

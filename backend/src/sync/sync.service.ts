@@ -20,7 +20,7 @@ export class SyncService {
   async sync(user: string): Promise<IWhoAmIResponse> {
     const [data, hasActivatedAppInvite, categories, friendFeed, following] =
       await Promise.all([
-        this.userService.find(user, true),
+        this.userService.findById(user, true),
         this.appliedAppInviteEntity.find(user),
         this.categoriesEntity.getAll(),
         this.friendFeed.getFriendFeed(user),

@@ -37,6 +37,6 @@ export class ParticipantStoreController
 
   @OnEvent(EVENT_STREAM_ENDED)
   async onStreamEnd({ stream }) {
-    return this.store.clearStreamData(stream);
+    return this.store.removeParticipantDataFromStream(stream);
   }
 }

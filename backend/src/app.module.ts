@@ -28,6 +28,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UserListModule } from './user-list/user-list.module';
 import { InviteModule } from './invite/invite.module';
 import { CategoryModule } from './categories/categories.module';
+import { UserDataFetcherModule } from './user-data-fetcher/user-data-fetcher.module';
 
 export const appModuleImports = [
   ConfigModule.forRoot({
@@ -46,6 +47,7 @@ export const appModuleImports = [
   UserListModule,
   TokenModule,
   FriendFeedModule,
+  UserDataFetcherModule,
   StreamModule,
   //MailModule,
   NatsModule,

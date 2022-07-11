@@ -7,23 +7,16 @@ import { RefreshTokenStore } from 'lib/stores/refresh-token';
 import { StreamStore } from 'lib/stores/stream';
 import { Token } from '../token';
 import { UserCreator, UserCreatorImpl } from './UserCreator';
-import { UserDataFetcher, UserDataFetcherImpl } from './UserDataFetcher';
 import { UserDeleter, UserDeleterImpl } from './UserDeleter';
 import { UserSearcher, UserSearcherImpl } from './UserSearcher';
 import { UserUpdater, UserUpdaterImpl } from './UserUpdater';
 
 export class User
-  implements
-    UserCreator,
-    UserSearcher,
-    UserUpdater,
-    UserDataFetcher,
-    UserDeleter
+  implements UserCreator, UserSearcher, UserUpdater, UserDeleter
 {
   private creator: UserCreator;
   private searcher: UserSearcher;
   private updater: UserUpdater;
-  private fetcher: UserDataFetcher;
   private deleter: UserDeleter;
 
   constructor(
@@ -31,23 +24,15 @@ export class User
     token: Token,
     refreshTokenStore: RefreshTokenStore,
     events: EventEmitter2,
-    follow: FollowStore,
-    participant: ParticipantStore,
-    stream: StreamStore,
   ) {
     this.creator = new UserCreatorImpl(user, token, refreshTokenStore, events);
     this.searcher = new UserSearcherImpl(user);
     this.updater = new UserUpdaterImpl(user);
-    this.fetcher = new UserDataFetcherImpl(user, follow, participant, stream);
     this.deleter = new UserDeleterImpl(user);
   }
 
-  find(user: string, details?: boolean) {
-    return this.fetcher.find(user, details);
-  }
-
-  getUserInfo(id: string, requester: string) {
-    return this.fetcher.getUserInfo(id, requester);
+  findById(user: string, details?: boolean) {
+    return this.searcher.findById(user, details);
   }
 
   update(user: string, params: Partial<IUser>) {

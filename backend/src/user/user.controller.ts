@@ -11,8 +11,6 @@ import {
   IUserDelete,
   IUserDeleteResponse,
   IUserDisconnected,
-  IUserInfoResponse,
-  IUserRequest,
   IUserSearchRequest,
   IUserSearchResponse,
   IUserUpdateRequest,
@@ -28,14 +26,6 @@ export class UserController {
     private configService: ConfigService,
     private eventEmitter: EventEmitter2,
   ) {}
-
-  @MessagePattern('user.get')
-  async onUserRequest({ user, id }: IUserRequest): Promise<IUserInfoResponse> {
-    console.log(user, id);
-    const data = await this.userService.getUserInfo(id, user);
-
-    return data;
-  }
 
   @MessagePattern('user.update')
   async onUserUpdate({

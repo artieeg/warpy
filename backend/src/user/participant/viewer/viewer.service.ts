@@ -53,7 +53,7 @@ export class ViewerService {
       stream,
     );
 
-    const user = await this.user.find(viewerId);
+    const user = await this.user.findById(viewerId);
     const viewer: IParticipant = {
       ...user,
       stream,

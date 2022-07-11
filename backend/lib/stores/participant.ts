@@ -37,7 +37,7 @@ export interface ParticipantStore extends OnInstanceInit {
     stream: string,
     includeDeactivatedUsers?: boolean,
   ) => Promise<string[]>;
-  clearStreamData: (stream: string) => Promise<void>;
+  removeParticipantDataFromStream: (stream: string) => Promise<void>;
   removeParticipantFromStream: (
     participant: string,
     stream: string,
@@ -180,7 +180,7 @@ export class ParticipantStoreImpl implements ParticipantStore {
     return ids;
   }
 
-  async clearStreamData(stream: string) {
+  async removeParticipantDataFromStream(stream: string) {
     const ids = await this.getParticipantIds(stream, true);
 
     if (ids.length === 0) {
