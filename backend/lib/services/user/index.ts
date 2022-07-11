@@ -2,7 +2,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { INewUser, IUser } from '@warpy/lib';
 import { UserStore } from 'lib/stores';
 import { FollowStore } from 'lib/stores/follow';
-import { ParticipantStore } from 'lib/stores/participant';
+import { IParticipantStore } from 'lib/stores/participant';
 import { RefreshTokenStore } from 'lib/stores/refresh-token';
 import { StreamStore } from 'lib/stores/stream';
 import { ITokenService } from '../token';

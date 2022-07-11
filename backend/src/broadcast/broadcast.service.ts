@@ -1,4 +1,4 @@
-import { ParticipantStore } from '@warpy-be/user/participant/store';
+import { NjsParticipantStore } from '@warpy-be/user/participant/store';
 import { Injectable } from '@nestjs/common';
 import { IParticipant } from '@warpy/lib';
 import { MessageService } from '../message/message.service';
@@ -16,7 +16,7 @@ import {
 @Injectable()
 export class BroadcastService {
   constructor(
-    private participant: ParticipantStore,
+    private participant: NjsParticipantStore,
     private messageService: MessageService,
     private broadcastUserListStore: BroadcastUserListStore,
   ) {}

@@ -12,13 +12,13 @@ import {
   EVENT_ROLE_CHANGE,
   EVENT_STREAM_ENDED,
 } from '@warpy-be/utils';
-import { ParticipantStore } from './participant.store';
+import { NjsParticipantStore } from './participant.store';
 
 @Controller()
 export class ParticipantStoreController
   implements OnStreamEnd, OnRoleChange, OnParticipantLeave, OnParticipantRejoin
 {
-  constructor(private store: ParticipantStore) {}
+  constructor(private store: NjsParticipantStore) {}
 
   @OnEvent(EVENT_ROLE_CHANGE)
   async onRoleChange({ participant }) {

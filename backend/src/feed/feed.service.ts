@@ -1,5 +1,5 @@
 import { StreamStore } from '@warpy-be/stream/common/stream.entity';
-import { ParticipantStore } from '@warpy-be/user/participant/store';
+import { NjsParticipantStore } from '@warpy-be/user/participant/store';
 import { Injectable } from '@nestjs/common';
 import { ICandidate, IStream } from '@warpy/lib';
 import { BlockService } from '@warpy-be/block/block.service';
@@ -9,7 +9,7 @@ export class FeedService {
   constructor(
     private blockService: BlockService,
     private streamEntity: StreamStore,
-    private participantEntity: ParticipantStore,
+    private participantEntity: NjsParticipantStore,
   ) {}
 
   private async getFeedCandidate(stream: IStream): Promise<ICandidate> {

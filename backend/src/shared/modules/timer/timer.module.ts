@@ -1,11 +1,11 @@
 import { Global, Module } from '@nestjs/common';
-import { TimerService } from './timer.service';
+import { NjsTimerService } from './timer.service';
 
 @Module({
   imports: [],
-  providers: [TimerService],
+  providers: [NjsTimerService],
   controllers: [],
-  exports: [TimerService],
+  exports: [NjsTimerService],
 })
 @Global()
 export class TimerModule {}

@@ -7,14 +7,14 @@ import { MediaService } from '@warpy-be/media/media.service';
 import { EVENT_PARTICIPANT_KICKED } from '@warpy-be/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ParticipantStore } from '../store';
+import { NjsParticipantStore } from '../store';
 import { ParticipantBanEntity } from './ban.entity';
 
 @Injectable()
 export class ParticipantBanService {
   constructor(
     private banEntity: ParticipantBanEntity,
-    private participant: ParticipantStore,
+    private participant: NjsParticipantStore,
     private media: MediaService,
     private eventEmitter: EventEmitter2,
   ) {}

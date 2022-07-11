@@ -1,5 +1,5 @@
 import { IParticipant } from '@warpy/lib';
-import { ParticipantStore } from 'lib/stores';
+import { IParticipantStore } from 'lib/stores';
 
 type StreamData = {
   streamers: IParticipant[];
@@ -15,7 +15,7 @@ export interface StreamParticipantDataFetcher {
 export class StreamParticipantDataFetcherImpl
   implements StreamParticipantDataFetcher
 {
-  constructor(private store: ParticipantStore) {}
+  constructor(private store: IParticipantStore) {}
 
   async getParticipantDataOnStream(stream: string) {
     const [speakers, raisedHands, count, host] = await Promise.all([

@@ -4,7 +4,7 @@ import { EVENT_NEW_PARTICIPANT, EVENT_RAISE_HAND } from '@warpy-be/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ParticipantBanService } from '../ban/ban.service';
-import { ParticipantStore } from '../store';
+import { NjsParticipantStore } from '../store';
 import { IParticipant } from '@warpy/lib';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class ViewerService {
     private media: MediaService,
     private eventEmitter: EventEmitter2,
     private bans: ParticipantBanService,
-    private participant: ParticipantStore,
+    private participant: NjsParticipantStore,
     private user: NjsUserService,
   ) {}
 

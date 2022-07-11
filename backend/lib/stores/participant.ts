@@ -21,7 +21,7 @@ export function toParticipantDTO(data: any): IParticipant {
   };
 }
 
-export interface ParticipantStore extends OnInstanceInit {
+export interface IParticipantStore extends OnInstanceInit {
   del: (id: string) => Promise<void>;
   get: (id: string) => Promise<IParticipant>;
   delMany: (ids: string[]) => Promise<void>;
@@ -50,7 +50,7 @@ export interface ParticipantStore extends OnInstanceInit {
   add: (data: IParticipant) => Promise<void>;
 }
 
-export class ParticipantStoreImpl implements ParticipantStore {
+export class ParticipantStore implements IParticipantStore {
   redis: IORedis.Redis;
 
   constructor(private configService: ConfigService) {}

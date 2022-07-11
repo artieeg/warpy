@@ -1,4 +1,5 @@
 import { getMockedInstance } from '@warpy-be/utils';
-import { HostService } from './host.service';
+import { NjsHostService } from './host.service';
 
-export const mockedHostService = getMockedInstance<HostService>(HostService);
+export const mockedHostService =
+  getMockedInstance<NjsHostService>(NjsHostService);

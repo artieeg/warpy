@@ -7,10 +7,10 @@ import {
 } from '@warpy-be/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ParticipantStore } from './store';
+import { NjsParticipantStore } from './store';
 import { ViewerService } from './viewer/viewer.service';
 import { IJoinStreamResponse, IParticipant, Roles } from '@warpy/lib';
-import { HostService } from './host/host.service';
+import { NjsHostService } from './host/host.service';
 import { StreamerService } from './streamer/streamer.service';
 
 type StreamData = {
@@ -23,11 +23,11 @@ type StreamData = {
 @Injectable()
 export class ParticipantService {
   constructor(
-    private participantStore: ParticipantStore,
+    private participantStore: NjsParticipantStore,
     private botInstanceEntity: BotInstanceEntity,
     private eventEmitter: EventEmitter2,
     private viewerService: ViewerService,
-    private hostService: HostService,
+    private hostService: NjsHostService,
     private streamerService: StreamerService,
   ) {}
 

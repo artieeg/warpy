@@ -18,7 +18,7 @@ import {
   EVENT_VIEWER_UPGRADED,
 } from '@warpy-be/utils';
 import { IHostReassignRequest } from '@warpy/lib';
-import { HostService } from './host.service';
+import { NjsHostService } from './host.service';
 import { NjsHostStore } from './host.store';
 
 @Controller()
@@ -33,7 +33,7 @@ export class HostController
 {
   constructor(
     private hostStore: NjsHostStore,
-    private hostService: HostService,
+    private hostService: NjsHostService,
   ) {}
 
   @MessagePattern('host.reassign')

@@ -1,10 +1,10 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ParticipantStoreImpl } from 'lib/stores/participant';
+import { ParticipantStore } from 'lib/stores/participant';
 
 @Injectable()
-export class ParticipantStore
-  extends ParticipantStoreImpl
+export class NjsParticipantStore
+  extends ParticipantStore
   implements OnModuleInit
 {
   constructor(configService: ConfigService) {

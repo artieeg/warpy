@@ -9,19 +9,19 @@ import {
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Roles } from '@warpy/lib';
-import { ParticipantStore } from '../store';
-import { HostService } from '../host/host.service';
+import { NjsParticipantStore } from '../store';
+import { NjsHostService } from '../host/host.service';
 import { BlockService } from '@warpy-be/block/block.service';
 
 @Injectable()
 export class ParticipantRoleService {
   constructor(
-    private participant: ParticipantStore,
+    private participant: NjsParticipantStore,
     private blockService: BlockService,
     private messageService: MessageService,
     private media: MediaService,
     private eventEmitter: EventEmitter2,
-    private hostService: HostService,
+    private hostService: NjsHostService,
   ) {}
 
   async setRole({
