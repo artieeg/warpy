@@ -5,12 +5,11 @@ import {
 } from '@warpy-be/interfaces';
 import {
   EVENT_PARTICIPANT_KICKED,
-  EVENT_PARTICIPANT_LEAVE,
   EVENT_STREAM_ENDED,
   EVENT_USER_DISCONNECTED,
 } from '@warpy-be/utils';
 import { Controller } from '@nestjs/common';
-import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   IJoinStream,
@@ -19,6 +18,7 @@ import {
   IMediaToggleRequest,
 } from '@warpy/lib';
 import { NjsParticipantService } from './participant.service';
+import { NjsStreamJoiner } from './stream-joiner.service';
 
 @Controller()
 export class ParticipantController
@@ -26,20 +26,20 @@ export class ParticipantController
 {
   constructor(
     private participant: NjsParticipantService,
-    private eventEmitter: EventEmitter2,
+    private joiner: NjsStreamJoiner,
   ) {}
-
-  @MessagePattern('participant.leave')
-  async onParticipantLeave({ user, stream }: ILeaveStreamRequest) {
-    await this.participant.removeUserFromStream(user, stream);
-  }
 
   @MessagePattern('stream.join')
   async onNewViewer({
     stream,
     user,
   }: IJoinStream): Promise<IJoinStreamResponse> {
-    return this.participant.handleJoiningParticipant(user, stream);
+    return this.joiner.join(user, stream);
+  }
+
+  @MessagePattern('participant.leave')
+  async onParticipantLeave({ user, stream }: ILeaveStreamRequest) {
+    await this.participant.removeUserFromStream(user, stream);
   }
 
   @MessagePattern('participant.media-toggle')

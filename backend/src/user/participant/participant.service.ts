@@ -1,125 +1,35 @@
 import { NjsBotInstanceStore } from '@warpy-be/bots/bot-instance.entity';
 import { MaxVideoStreamers } from '@warpy-be/errors';
-import {
-  EVENT_PARTICIPANT_REJOIN,
-  EVENT_STREAMER_MEDIA_TOGGLE,
-} from '@warpy-be/utils';
+import { EVENT_STREAMER_MEDIA_TOGGLE } from '@warpy-be/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { NjsParticipantStore } from './store';
-import { ViewerService } from './viewer/viewer.service';
-import { IJoinStreamResponse, Roles } from '@warpy/lib';
 import { NjsHostService } from './host/host.service';
-import { StreamerService } from './streamer/streamer.service';
 import { ParticipantService } from 'lib/services/participant';
+import { NjsMediaService } from '@warpy-be/media/media.service';
+import { NjsUserService } from '../user.service';
+import { NjsStreamBanService } from './ban/ban.service';
 
 @Injectable()
 export class NjsParticipantService extends ParticipantService {
   constructor(
     private participantStore: NjsParticipantStore,
+    hostService: NjsHostService,
     botInstanceStore: NjsBotInstanceStore,
     private events: EventEmitter2,
-    private viewerService: ViewerService,
-    hostService: NjsHostService,
-    private streamerService: StreamerService,
+    user: NjsUserService,
+    bans: NjsStreamBanService,
+    media: NjsMediaService,
   ) {
-    super(participantStore, hostService, botInstanceStore, events);
-  }
-
-  /**
-   * Determines if the user tries to join or rejoin the stream
-   * In case the user tries to rejoin, sync their previous role
-   * */
-  async handleJoiningParticipant(
-    user: string,
-    stream: string,
-  ): Promise<IJoinStreamResponse> {
-    let response: IJoinStreamResponse;
-
-    const [oldParticipantData, streamData] = await Promise.all([
-      this.participantStore.get(user),
-      this.getParticipantDataOnStream(stream),
-    ]);
-
-    const prevStreamId = oldParticipantData?.stream;
-
-    response = { ...response, ...streamData };
-
-    /**
-     * if joining the stream
-     * */
-    if (!oldParticipantData || prevStreamId !== stream) {
-      const { mediaPermissionsToken, recvMediaParams } =
-        await this.viewerService.createNewViewer(stream, user);
-
-      response = {
-        ...response,
-        mediaPermissionsToken,
-        recvMediaParams,
-        count: response.count + 1, //+1 because we are joining
-        role: 'viewer',
-      };
-
-      return response;
-    }
-
-    /**
-     * If rejoining...
-     * */
-
-    //TODO: handle in store controller
-    await this.participantStore.setDeactivated(user, prevStreamId, false);
-
-    const { role } = oldParticipantData;
-
-    /**
-     * Based on the previous role, get viewer or streamer params
-     * */
-    const reconnectMediaParams = await this.getReconnectMediaParams({
+    super(
+      participantStore,
+      hostService,
+      botInstanceStore,
+      events,
       user,
-      stream,
-      role,
-    });
-
-    /**
-     * Merge token, send/recv params into the response,
-     * if we are streaming audio/video, then
-     * include us in the streamers array
-     * */
-    response = {
-      ...response,
-      ...reconnectMediaParams,
-      role,
-      streamers:
-        role === 'viewer'
-          ? response.streamers
-          : [...response.streamers, oldParticipantData],
-    };
-
-    this.events.emit(EVENT_PARTICIPANT_REJOIN, {
-      participant: oldParticipantData,
-    });
-
-    return response;
-  }
-
-  /**
-   * Returns recv + send params and media permissions token
-   * */
-  private async getReconnectMediaParams({
-    user,
-    stream,
-    role,
-  }: {
-    user: string;
-    stream: string;
-    role: Roles;
-  }) {
-    if (role === 'viewer') {
-      return this.viewerService.reconnectOldViewer(user, stream);
-    } else {
-      return this.streamerService.reconnectOldStreamer(user, stream, role);
-    }
+      bans,
+      media,
+    );
   }
 
   async setMediaEnabled(

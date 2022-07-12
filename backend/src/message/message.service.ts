@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { EVENT_INVITE_STREAM_ID_AVAILABLE } from '@warpy-be/utils';
-import { NatsService } from '../nats/nats.service';
+import { NjsNatsService } from '../nats/nats.service';
 
 @Injectable()
 export class MessageService {
-  constructor(private nc: NatsService) {}
+  constructor(private nc: NjsNatsService) {}
 
   decodeMessage<T = any>(data: Uint8Array): T {
     return this.nc.jc.decode(data) as T;

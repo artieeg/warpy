@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { NodeInfoController } from './node-info.controller';
-import { NodeInfoService } from './node-info.service';
+import { NjsNodeInfoStore } from './node-info.service';
 
 @Module({
   imports: [],
-  providers: [NodeInfoService],
+  providers: [NjsNodeInfoStore],
   controllers: [NodeInfoController],
-  exports: [NodeInfoService],
+  exports: [NjsNodeInfoStore],
 })
 export class NodeInfoModule {}

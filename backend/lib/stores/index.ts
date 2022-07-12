@@ -5,3 +5,8 @@ export * from './participant';
 export * from './refresh-token';
 export * from './host';
 export * from './bot-instance';
+export * from './stream-bans';
+export * from './participant-node-assigner';
+export * from './stream-node-assigner';
+export * from './node-info';
+export * from './node-registry';

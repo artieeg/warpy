@@ -1,15 +1,12 @@
-import { Injectable } from '@nestjs/common';
 import { MediaServiceRole } from '@warpy/lib';
-import { NjsNodeInfoStore } from './node-info/node-info.service';
-import { NjsNodeRegistryStore } from './node-registry/node-registry.service';
-import { StreamNodeAssignerService } from './stream-node-assigner/stream-node-assigner.service';
+import { NodeInfoStore, StreamNodeAssignerStore } from 'lib/stores';
+import { NodeRegistryService } from './node-registry/node-registry.service';
 
-@Injectable()
 export class MediaBalancerService {
   constructor(
-    private nodeRegistryService: NjsNodeRegistryStore,
-    private streamNodeAssigner: StreamNodeAssignerService,
-    private nodeInfoService: NjsNodeInfoStore,
+    private nodeRegistryService: NodeRegistryService,
+    private streamNodeAssigner: StreamNodeAssignerStore,
+    private nodeInfoStore: NodeInfoStore,
   ) {}
 
   /**
@@ -36,7 +33,7 @@ export class MediaBalancerService {
 
     //Fetch their info
     const assignedNodesInfo = await Promise.all(
-      assignedNodeIds.map((id) => this.nodeInfoService.get(id)),
+      assignedNodeIds.map((id) => this.nodeInfoStore.get(id)),
     );
 
     //nodes to select from, filtered by role, sorted by load in descending order
@@ -61,7 +58,7 @@ export class MediaBalancerService {
     //Pick a node with least load
     const { node: id } = (
       await Promise.all(
-        availableNodeIds.map((id) => this.nodeInfoService.get(id)),
+        availableNodeIds.map((id) => this.nodeInfoStore.get(id)),
       )
     ).sort((a, b) => a.load - b.load)[0];
 

@@ -1,7 +1,7 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EVENT_USER_CREATED } from '@warpy-be/utils';
 import { INewUser, INewUserResponse } from '@warpy/lib';
-import { UserStore } from 'lib/stores';
+import { IUserStore } from 'lib/stores';
 import { RefreshTokenStore } from 'lib/stores/refresh-token';
 import { ITokenService } from '../token';
 
@@ -12,7 +12,7 @@ export interface UserCreator {
 
 export class UserCreatorImpl implements UserCreator {
   constructor(
-    private store: UserStore,
+    private store: IUserStore,
     private token: ITokenService,
     private refreshTokenStore: RefreshTokenStore,
     private events: EventEmitter2,

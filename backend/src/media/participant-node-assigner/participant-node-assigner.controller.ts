@@ -5,13 +5,15 @@ import {
   EVENT_PARTICIPANT_LEAVE,
   EVENT_USER_DISCONNECTED,
 } from '@warpy-be/utils';
-import { ParticipantNodeAssignerStore } from './participant-node-assigner.store';
+import { NjsParticipantNodeAssignerStore } from './participant-node-assigner.store';
 
 @Controller()
 export class ParticipantNodeAssignerController
   implements OnParticipantLeave, OnUserDisconnect
 {
-  constructor(private participantNodeAssigner: ParticipantNodeAssignerStore) {}
+  constructor(
+    private participantNodeAssigner: NjsParticipantNodeAssignerStore,
+  ) {}
 
   private async clearAssignedNodes(user: string) {
     await this.participantNodeAssigner.del(user);

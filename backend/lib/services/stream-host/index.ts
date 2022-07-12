@@ -6,7 +6,7 @@ import {
   EVENT_NEW_PARTICIPANT,
 } from '@warpy-be/utils';
 import { IParticipant } from '@warpy/lib';
-import { HostStore, ParticipantStore, UserStore } from 'lib/stores';
+import { HostStore, ParticipantStore, IUserStore } from 'lib/stores';
 import { TimerService } from '../timer';
 
 export interface IHostService {
@@ -32,7 +32,7 @@ export class HostService implements IHostService {
     private timerService: TimerService,
     private hostStore: HostStore,
     private eventEmitter: EventEmitter2,
-    private user: UserStore,
+    private user: IUserStore,
     private participantStore: ParticipantStore,
   ) {}
 

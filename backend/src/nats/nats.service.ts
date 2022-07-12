@@ -1,33 +1,13 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { connect, RequestOptions, JSONCodec, NatsConnection } from 'nats';
+import { NatsService } from 'lib/services';
 
 @Injectable()
-export class NatsService implements OnModuleInit {
-  private nc: NatsConnection;
-  public jc = JSONCodec();
-
-  constructor() {}
+export class NjsNatsService extends NatsService implements OnModuleInit {
+  constructor() {
+    super();
+  }
 
   async onModuleInit() {
-    this.nc = await connect({
-      servers: [process.env.NATS_ADDR],
-    });
-  }
-
-  async request<T = any>(
-    subject: string,
-    message: Uint8Array | any,
-    opts?: RequestOptions,
-  ): Promise<T> {
-    let payload =
-      message instanceof Uint8Array ? message : this.jc.encode(message);
-
-    const { data } = await this.nc.request(subject, payload, opts);
-
-    return this.jc.decode(data) as T;
-  }
-
-  publish(subject: string, message: Uint8Array) {
-    this.nc.publish(subject, message);
+    await this.onInstanceInit();
   }
 }

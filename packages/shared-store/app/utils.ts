@@ -4,5 +4,5 @@ export function arrayToMap<T = any>(data: any[]): Record<string, T> {
       ...p,
       [c.id]: c,
     };
-  });
+  }, []);
 }

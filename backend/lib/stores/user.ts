@@ -4,7 +4,7 @@ import cuid from 'cuid';
 
 export type NewUserParams = Omit<User, 'id' | 'created_at'>;
 
-export interface UserStore {
+export interface IUserStore {
   update: (user: string, update: Partial<User>) => Promise<void>;
   createUser: (data: NewUserParams) => Promise<IUser>;
   createAnonUser: () => Promise<string>;
@@ -27,7 +27,7 @@ export function toUserDTO(data: User, includeDetails?: boolean) {
   };
 }
 
-export class UserStoreImpl implements UserStore {
+export class UserStore implements IUserStore {
   constructor(private prisma: PrismaClient) {}
 
   async update(user: string, data: Partial<User>) {

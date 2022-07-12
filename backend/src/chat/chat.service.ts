@@ -1,6 +1,6 @@
 import { StreamNotFound, UserNotFound } from '@warpy-be/errors';
 import { NjsParticipantStore } from '@warpy-be/user/participant';
-import { UserStoreService } from '@warpy-be/user/user.store';
+import { NjsUserStore } from '@warpy-be/user/user.store';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IChatMessage } from '@warpy/lib';
@@ -16,7 +16,7 @@ export class ChatService {
 
   constructor(
     private eventEmitter: EventEmitter2,
-    private userEntity: UserStoreService,
+    private userEntity: NjsUserStore,
     private participantEntity: NjsParticipantStore,
     private blockService: BlockService,
   ) {}

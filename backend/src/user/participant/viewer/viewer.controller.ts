@@ -1,5 +1,4 @@
 import { Controller } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   IRaiseHand,

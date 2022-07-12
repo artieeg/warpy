@@ -1,11 +1,11 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { INewMediaNode } from '@warpy/lib';
-import { NodeRegistryService } from './node-registry.service';
+import { NjsNodeRegistryStore } from './node-registry.service';
 
 @Controller()
 export class NodeRegistryController {
-  constructor(private nodeRegistryService: NodeRegistryService) {}
+  constructor(private nodeRegistryService: NjsNodeRegistryStore) {}
 
   @MessagePattern('media.node.is-online')
   async onNewMediaNode({ id, role }: INewMediaNode) {

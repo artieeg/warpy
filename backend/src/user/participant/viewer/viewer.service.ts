@@ -1,18 +1,18 @@
-import { MediaService } from '@warpy-be/media/media.service';
+import { NjsMediaService } from '@warpy-be/media/media.service';
 import { NjsUserService } from '@warpy-be/user/user.service';
 import { EVENT_NEW_PARTICIPANT, EVENT_RAISE_HAND } from '@warpy-be/utils';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ParticipantBanService } from '../ban/ban.service';
+import { NjsStreamBanService } from '../ban/ban.service';
 import { NjsParticipantStore } from '../store';
 import { IParticipant } from '@warpy/lib';
 
 @Injectable()
 export class ViewerService {
   constructor(
-    private media: MediaService,
+    private media: NjsMediaService,
     private eventEmitter: EventEmitter2,
-    private bans: ParticipantBanService,
+    private bans: NjsStreamBanService,
     private participant: NjsParticipantStore,
     private user: NjsUserService,
   ) {}

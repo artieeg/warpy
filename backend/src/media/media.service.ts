@@ -12,18 +12,18 @@ import {
   IParticipant,
 } from '@warpy/lib';
 import * as jwt from 'jsonwebtoken';
-import { NatsService } from '../nats/nats.service';
+import { NjsNatsService } from '../nats/nats.service';
 import { MediaBalancerService } from './media-balancer/media-balancer.service';
-import { ParticipantNodeAssignerStore } from './participant-node-assigner/participant-node-assigner.store';
+import { NjsParticipantNodeAssignerStore } from './participant-node-assigner/participant-node-assigner.store';
 
 const secret = process.env.MEDIA_JWT_SECRET || 'test-secret';
 
 @Injectable()
-export class MediaService {
+export class NjsMediaService {
   constructor(
     private balancer: MediaBalancerService,
-    private participantNodeAssigner: ParticipantNodeAssignerStore,
-    private nc: NatsService,
+    private participantNodeAssigner: NjsParticipantNodeAssignerStore,
+    private nc: NjsNatsService,
   ) {}
 
   createPermissionToken(permissions: IMediaPermissions): string {

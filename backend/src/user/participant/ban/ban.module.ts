@@ -1,13 +1,13 @@
 import { MediaModule } from '@warpy-be/media/media.module';
 import { PrismaModule } from '@warpy-be/prisma/prisma.module';
 import { Module } from '@nestjs/common';
-import { ParticipantBanEntity } from './ban.entity';
-import { ParticipantBanService } from './ban.service';
+import { NjsStreamBanStore } from './ban.entity';
+import { NjsStreamBanService } from './ban.service';
 
 @Module({
   imports: [PrismaModule, MediaModule],
-  providers: [ParticipantBanService, ParticipantBanEntity],
+  providers: [NjsStreamBanService, NjsStreamBanStore],
   controllers: [],
-  exports: [ParticipantBanService],
+  exports: [NjsStreamBanService],
 })
 export class ParticipantBanModule {}

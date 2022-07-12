@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { NjsTimerService } from '@warpy-be/shared';
-import { UserStoreService } from '@warpy-be/user/user.store';
+import { NjsUserStore } from '@warpy-be/user/user.store';
 import { HostService } from 'lib/services/stream-host';
 import { NjsParticipantStore } from '../store';
 import { NjsHostStore } from './host.store';
@@ -12,7 +12,7 @@ export class NjsHostService extends HostService {
     timerService: NjsTimerService,
     hostStore: NjsHostStore,
     eventEmitter: EventEmitter2,
-    user: UserStoreService,
+    user: NjsUserStore,
     participantStore: NjsParticipantStore,
   ) {
     super(timerService, hostStore, eventEmitter, user, participantStore);

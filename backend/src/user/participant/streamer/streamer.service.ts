@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { MediaService } from '@warpy-be/media/media.service';
+import { NjsMediaService } from '@warpy-be/media/media.service';
 import { Roles } from '@warpy/lib';
-import { ParticipantBanService } from '../ban/ban.service';
+import { NjsStreamBanService } from '../ban/ban.service';
 
 @Injectable()
 export class StreamerService {
   constructor(
-    private media: MediaService,
-    private bans: ParticipantBanService,
+    private media: NjsMediaService,
+    private bans: NjsStreamBanService,
   ) {}
 
   /**

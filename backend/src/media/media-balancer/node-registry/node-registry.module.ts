@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { NodeRegistryController } from './node-registry.controller';
-import { NodeRegistryService } from './node-registry.service';
+import { NjsNodeRegistryStore } from './node-registry.service';
 
 @Module({
   imports: [],
-  providers: [NodeRegistryService],
+  providers: [NjsNodeRegistryStore],
   controllers: [NodeRegistryController],
-  exports: [NodeRegistryService],
+  exports: [NjsNodeRegistryStore],
 })
 export class NodeRegistryModule {}

@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ParticipantNodeAssignerStore } from './participant-node-assigner.store';
+import { NjsParticipantNodeAssignerStore } from './participant-node-assigner.store';
 
 @Module({
   imports: [],
-  providers: [ParticipantNodeAssignerStore],
+  providers: [NjsParticipantNodeAssignerStore],
   controllers: [],
-  exports: [ParticipantNodeAssignerStore],
+  exports: [NjsParticipantNodeAssignerStore],
 })
 export class ParticipantNodeAssignerModule {}

@@ -1,27 +1,27 @@
 import { InternalError } from '@warpy-be/errors';
-import { NatsService } from '@warpy-be/nats/nats.service';
+import { NjsNatsService } from '@warpy-be/nats/nats.service';
 import { mockedNatsService } from '@warpy-be/nats/nats.services.mock';
 import { createParticipantFixture } from '@warpy-be/__fixtures__';
 import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
 import { MediaCacheService } from './media.cache';
 import { mockedMediaCache } from './media.cache.mock';
-import { MediaService } from './media.service';
+import { NjsMediaService } from './media.service';
 
 describe('MediaService', () => {
-  let mediaService: MediaService;
+  let mediaService: NjsMediaService;
 
   const sendNodeId = 'send-node-id';
   const recvNodeId = 'recv-node-id';
 
   beforeAll(async () => {
     const m = await testModuleBuilder
-      .overrideProvider(NatsService)
+      .overrideProvider(NjsNatsService)
       .useValue(mockedNatsService)
       .overrideProvider(MediaCacheService)
       .useValue(mockedMediaCache)
       .compile();
 
-    mediaService = m.get(MediaService);
+    mediaService = m.get(NjsMediaService);
 
     mockedNatsService.request.mockResolvedValue({ status: 'ok' });
     mockedMediaCache.getConsumerNodeId.mockResolvedValue(recvNodeId);

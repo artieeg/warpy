@@ -8,7 +8,7 @@ import { UserOnlineStatusModule } from './online-status/user-online-status.modul
 import { ParticipantModule } from './participant/participant.module';
 import { UserReportModule } from './report/user-report.module';
 import { UserController } from './user.controller';
-import { UserStoreService } from './user.store';
+import { NjsUserStore } from './user.store';
 import { NjsUserService } from './user.service';
 import { BlockModule } from '@warpy-be/block/block.module';
 import { FollowModule } from '@warpy-be/follow/follow.module';
@@ -17,7 +17,6 @@ import { FollowModule } from '@warpy-be/follow/follow.module';
   imports: [
     PrismaModule,
     FollowModule,
-    //forwardRef(() => StreamModule),
     StreamModule,
     TokenModule,
     ParticipantModule,
@@ -28,9 +27,9 @@ import { FollowModule } from '@warpy-be/follow/follow.module';
     DeveloperAccountModule,
   ],
   controllers: [UserController],
-  providers: [UserStoreService, NjsUserService],
+  providers: [NjsUserStore, NjsUserService],
   exports: [
-    UserStoreService,
+    NjsUserStore,
     NjsUserService,
     ParticipantModule,
     DeveloperAccountModule,

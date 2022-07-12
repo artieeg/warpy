@@ -1,4 +1,4 @@
-import { NatsService } from '@warpy-be/nats/nats.service';
+import { NjsNatsService } from '@warpy-be/nats/nats.service';
 import { mockedNatsService } from '@warpy-be/nats/nats.services.mock';
 import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
 import { MessageService } from './message.service';
@@ -8,7 +8,7 @@ describe('MessageService', () => {
 
   beforeAll(async () => {
     const m = await testModuleBuilder
-      .overrideProvider(NatsService)
+      .overrideProvider(NjsNatsService)
       .useValue(mockedNatsService)
       .compile();
 

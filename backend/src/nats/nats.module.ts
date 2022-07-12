@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { NatsService } from './nats.service';
+import { NjsNatsService } from './nats.service';
 
 @Module({
-  providers: [NatsService],
-  exports: [NatsService],
+  providers: [NjsNatsService],
+  exports: [NjsNatsService],
 })
 export class NatsModule {}

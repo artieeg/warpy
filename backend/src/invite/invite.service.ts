@@ -16,7 +16,7 @@ import {
   EVENT_INVITE_STREAM_ID_AVAILABLE,
   EVENT_STREAM_CREATED,
 } from '@warpy-be/utils';
-import { UserStoreService } from '@warpy-be/user/user.store';
+import { NjsUserStore } from '@warpy-be/user/user.store';
 import { InviteStore } from './invite.store';
 import { FollowStore } from '@warpy-be/follow/follow.entity';
 import { StreamStore } from '@warpy-be/stream/common/stream.entity';
@@ -25,7 +25,7 @@ import { StreamStore } from '@warpy-be/stream/common/stream.entity';
 export class InviteService {
   constructor(
     private inviteStore: InviteStore,
-    private userEntity: UserStoreService,
+    private userEntity: NjsUserStore,
     private followEntity: FollowStore,
     private eventEmitter: EventEmitter2,
     private streamEntity: StreamStore,

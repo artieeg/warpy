@@ -1,4 +1,5 @@
 import { getMockedInstance } from '@warpy-be/utils';
-import { MediaService } from './media.service';
+import { NjsMediaService } from './media.service';
 
-export const mockedMediaService = getMockedInstance<MediaService>(MediaService);
+export const mockedMediaService =
+  getMockedInstance<NjsMediaService>(NjsMediaService);

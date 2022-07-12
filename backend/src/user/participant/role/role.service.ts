@@ -1,5 +1,5 @@
 import { NoPermissionError } from '@warpy-be/errors';
-import { MediaService } from '@warpy-be/media/media.service';
+import { NjsMediaService } from '@warpy-be/media/media.service';
 import { MessageService } from '@warpy-be/message/message.service';
 import {
   EVENT_ROLE_CHANGE,
@@ -19,7 +19,7 @@ export class ParticipantRoleService {
     private participant: NjsParticipantStore,
     private blockService: BlockService,
     private messageService: MessageService,
-    private media: MediaService,
+    private media: NjsMediaService,
     private eventEmitter: EventEmitter2,
     private hostService: NjsHostService,
   ) {}

@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { IUser } from '@warpy/lib';
-import { NewUserParams, UserStore, UserStoreImpl } from 'lib/stores';
+import { NewUserParams, IUserStore, UserStore } from 'lib/stores';
 
 @Injectable()
-export class UserStoreService implements UserStore {
-  private store: UserStore;
+export class NjsUserStore implements IUserStore {
+  private store: IUserStore;
 
   constructor(prisma: PrismaService) {
-    this.store = new UserStoreImpl(prisma);
+    this.store = new UserStore(prisma);
   }
 
   update(user: string, data: Partial<User>) {
