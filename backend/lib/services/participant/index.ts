@@ -4,6 +4,7 @@ import { IMediaService } from '../media';
 import { IStreamBanService } from '../stream-bans';
 import { IHostService } from '../stream-host';
 import { IUserService } from '../user';
+import { MediaToggler, MediaTogglerImpl } from './MediaToggler';
 import {
   ParticipantCreator,
   ParticipantCreatorImpl,
@@ -20,12 +21,14 @@ import {
 export interface IParticipantService
   extends StreamParticipantDataFetcher,
     ParticipantRemover,
-    ParticipantCreator {}
+    ParticipantCreator,
+    MediaToggler {}
 
 export class ParticipantService implements IParticipantService {
   private streamParticipantDataFetcher: StreamParticipantDataFetcher;
   private remover: ParticipantRemover;
   private creator: ParticipantCreator;
+  private mediaToggler: MediaToggler;
 
   constructor(
     store: IParticipantStore,
@@ -42,6 +45,14 @@ export class ParticipantService implements IParticipantService {
     );
     this.remover = new ParticipantRemoverImpl(botInstanceStore, events, store);
     this.creator = new ParticipantCreatorImpl(store, user, bans, events, media);
+    this.mediaToggler = new MediaTogglerImpl(store, events);
+  }
+
+  setMediaEnabled(
+    user: string,
+    params: { audioEnabled?: boolean; videoEnabled?: boolean },
+  ): Promise<void> {
+    return this.mediaToggler.setMediaEnabled(user, params);
   }
 
   createNewParticipant(stream: string, user: string) {

@@ -1,10 +1,13 @@
 import { MediaServiceRole } from '@warpy/lib';
-import { NodeInfoStore, StreamNodeAssignerStore } from 'lib/stores';
-import { NodeRegistryService } from './node-registry/node-registry.service';
+import {
+  NodeInfoStore,
+  NodeRegistryStore,
+  StreamNodeAssignerStore,
+} from 'lib/stores';
 
 export class MediaBalancerService {
   constructor(
-    private nodeRegistryService: NodeRegistryService,
+    private nodeRegistryStore: NodeRegistryStore,
     private streamNodeAssigner: StreamNodeAssignerStore,
     private nodeInfoStore: NodeInfoStore,
   ) {}
@@ -22,7 +25,7 @@ export class MediaBalancerService {
    * */
   private async selectOptimalNode(stream: string, nodeRole: MediaServiceRole) {
     //Get all available nodes of a requested type
-    const allAvailableNodeIds = await this.nodeRegistryService.getNodeIds(
+    const allAvailableNodeIds = await this.nodeRegistryStore.getNodeIds(
       nodeRole,
     );
 

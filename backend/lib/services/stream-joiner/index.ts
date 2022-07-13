@@ -10,6 +10,10 @@ export interface IStreamJoiner {
   join(user: string, stream: string): Promise<IJoinStreamResponse>;
 }
 
+/**
+ * Joins/rejoins a participant, checks if the user has been banned
+ * on stream, sets up user's media based on role
+ * */
 export class StreamJoiner implements IStreamJoiner {
   constructor(
     private participant: IParticipantService,
@@ -53,7 +57,6 @@ export class StreamJoiner implements IStreamJoiner {
      * If rejoining...
      * */
 
-    //TODO: handle in store controller
     await this.participantStore.setDeactivated(user, prevStreamId, false);
 
     const { role } = oldParticipantData;
