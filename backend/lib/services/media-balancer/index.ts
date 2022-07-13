@@ -5,7 +5,12 @@ import {
   StreamNodeAssignerStore,
 } from 'lib/stores';
 
-export class MediaBalancerService {
+export interface IMediaBalancerService {
+  getSendNodeId(stream: string): Promise<string>;
+  getRecvNodeId(stream: string): Promise<string>;
+}
+
+export class MediaBalancerService implements IMediaBalancerService {
   constructor(
     private nodeRegistryStore: NodeRegistryStore,
     private streamNodeAssigner: StreamNodeAssignerStore,
@@ -23,7 +28,10 @@ export class MediaBalancerService {
    *
    * When picking a new node, we select the one that has the least load on it.
    * */
-  private async selectOptimalNode(stream: string, nodeRole: MediaServiceRole) {
+  private async selectOptimalNode(
+    stream: string,
+    nodeRole: MediaServiceRole,
+  ): Promise<string> {
     //Get all available nodes of a requested type
     const allAvailableNodeIds = await this.nodeRegistryStore.getNodeIds(
       nodeRole,
