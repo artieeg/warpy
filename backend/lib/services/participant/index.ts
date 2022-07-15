@@ -13,9 +13,14 @@ import {
   ParticipantRemoverImpl,
 } from './ParticipantRemover';
 import {
+  StreamingPermissionRequester,
+  StreamingPermissionRequesterImpl,
+} from './StreamingPermissionRequester';
+import {
   StreamParticipantDataFetcher,
   StreamParticipantDataFetcherImpl,
 } from './StreamParticipantsDataFetcher';
+import { ViewerFetcher, ViewerFetcherImpl } from './ViewerFetcher';
 
 export interface IParticipantService
   extends StreamParticipantDataFetcher,
@@ -28,11 +33,13 @@ export class ParticipantService implements IParticipantService {
   private remover: ParticipantRemover;
   private creator: ParticipantCreator;
   private mediaToggler: MediaToggler;
+  private streamingPermissionRequester: StreamingPermissionRequester;
+  private viewerFetcher: ViewerFetcher;
 
   constructor(
-    private store: IParticipantStore,
+    store: IParticipantStore,
     botInstanceStore: BotInstanceStore,
-    private events: EventEmitter2,
+    events: EventEmitter2,
     user: IUserService,
     media: IMediaService,
   ) {
@@ -42,18 +49,19 @@ export class ParticipantService implements IParticipantService {
     this.remover = new ParticipantRemoverImpl(botInstanceStore, events, store);
     this.creator = new ParticipantCreatorImpl(store, user, events, media);
     this.mediaToggler = new MediaTogglerImpl(store, events);
+    this.streamingPermissionRequester = new StreamingPermissionRequesterImpl(
+      store,
+      events,
+    );
+    this.viewerFetcher = new ViewerFetcherImpl(store);
   }
 
-  async setRaiseHand(user: string, flag: boolean) {
-    const participant = await this.store.setRaiseHand(user, flag);
-
-    this.events.emit(EVENT_RAISE_HAND, participant);
+  setRaiseHand(user: string, flag: boolean) {
+    return this.streamingPermissionRequester.setRaiseHand(user, flag);
   }
 
   async getViewers(stream: string, page: number) {
-    const viewers = await this.store.getViewersPage(stream, page);
-
-    return viewers;
+    return this.viewerFetcher.getViewers(stream, page);
   }
 
   setMediaEnabled(
