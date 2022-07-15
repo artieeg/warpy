@@ -1,11 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CategoriesEntity } from './categories.entity';
+import { CategoryService } from 'lib/services/category';
 
 @Injectable()
-export class CategoriesService {
-  constructor(private categoriesEntity: CategoriesEntity) {}
-
-  async getAllCategories() {
-    return this.categoriesEntity.getAll();
-  }
-}
+export class NjsCategoryStore extends CategoryService {}

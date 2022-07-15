@@ -16,3 +16,4 @@ export * from './streamer-ids';
 export * from './bot';
 export * from './developer-account';
 export * from './broadcast-user-list';
+export * from './category';

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CategoriesEntity } from '@warpy-be/categories/categories.entity';
+import { NjsCategoryStore } from '@warpy-be/categories/categories.entity';
 import { UserNotFound } from '@warpy-be/errors';
 import { FriendFeedService } from '@warpy-be/friend_feed/friend_feed.service';
 import { UserListService } from '@warpy-be/user-list/user-list.service';
@@ -12,7 +12,7 @@ export class SyncService {
   constructor(
     private userService: NjsUserService,
     private appliedAppInviteEntity: AppliedAppInviteEntity,
-    private categoriesEntity: CategoriesEntity,
+    private categoriesEntity: NjsCategoryStore,
     private friendFeed: FriendFeedService,
     private userListService: UserListService,
   ) {}
