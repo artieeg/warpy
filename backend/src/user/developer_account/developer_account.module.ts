@@ -1,11 +1,11 @@
 import { PrismaModule } from '@warpy-be/prisma/prisma.module';
 import { Module } from '@nestjs/common';
-import { DeveloperAccountEntity } from './developer_account.entity';
+import { NjsDeveloperAccountStore } from './developer_account.entity';
 
 @Module({
   imports: [PrismaModule],
-  providers: [DeveloperAccountEntity],
+  providers: [NjsDeveloperAccountStore],
   controllers: [],
-  exports: [DeveloperAccountEntity],
+  exports: [NjsDeveloperAccountStore],
 })
 export class DeveloperAccountModule {}

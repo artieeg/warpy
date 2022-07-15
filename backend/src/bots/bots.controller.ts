@@ -1,10 +1,10 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { CreateBotDTO } from './bots.dto';
-import { BotsService } from './bots.service';
+import { NjsBotsService } from './bots.service';
 
 @Controller()
 export class BotsController {
-  constructor(private botsService: BotsService) {}
+  constructor(private botsService: NjsBotsService) {}
 
   @Post('/bot')
   async createNewBot(@Body() { name, botname, avatar, creator }: CreateBotDTO) {

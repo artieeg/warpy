@@ -1,11 +1,11 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { IBotJoin } from '@warpy/lib';
-import { BotInstanceService } from './bot-instance.service';
+import { NjsBotInstanceService } from './bot-instance.service';
 
 @Controller()
 export class BotInstanceController {
-  constructor(private botInstanceService: BotInstanceService) {}
+  constructor(private botInstanceService: NjsBotInstanceService) {}
 
   @MessagePattern('bot.join')
   async onBotJoin({ user, inviteDetailsToken }: IBotJoin) {

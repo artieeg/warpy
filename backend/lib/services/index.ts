@@ -9,3 +9,6 @@ export * from './media';
 export * from './stream-joiner';
 export * from './user-block';
 export * from './message';
+export * from './bot-instance';
+export * from './bot';
+export * from './broadcast';

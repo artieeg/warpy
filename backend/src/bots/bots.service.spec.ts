@@ -7,16 +7,16 @@ import { mockedMessageService } from '@warpy-be/message/message.service.mock';
 import { NJTokenService } from '@warpy-be/token/token.service';
 import { mockedTokenService } from '@warpy-be/token/token.service.mock';
 import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
-import { BotsEntity } from './bots.entity';
+import { NjsBotStore } from './bots.entity';
 import { mockedBotsEntity } from './bots.entity.mock';
-import { BotsService } from './bots.service';
+import { NjsBotsService } from './bots.service';
 
 describe('BotsService', () => {
-  let botsService: BotsService;
+  let botsService: NjsBotsService;
 
   beforeAll(async () => {
     const m = await testModuleBuilder
-      .overrideProvider(BotsEntity)
+      .overrideProvider(NjsBotStore)
       .useValue(mockedBotsEntity)
       .overrideProvider(DeveloperAccountEntity)
       .useValue(mockedDeveloperAccountEntity)
@@ -25,7 +25,7 @@ describe('BotsService', () => {
       .overrideProvider(NJTokenService)
       .useValue(mockedTokenService)
       .compile();
-    botsService = m.get(BotsService);
+    botsService = m.get(NjsBotsService);
   });
 
   describe('creating new bot', () => {

@@ -1,4 +1,4 @@
-import { BotsEntity } from '@warpy-be/bots/bots.entity';
+import { NjsBotStore } from '@warpy-be/bots/bots.entity';
 import { NoPermissionError } from '@warpy-be/errors';
 import { NjsMessageService } from '@warpy-be/message/message.service';
 import { NJTokenService } from '@warpy-be/token/token.service';
@@ -31,7 +31,7 @@ export class InviteService {
     private streamEntity: StreamStore,
     private messageService: NjsMessageService,
     private tokenService: NJTokenService,
-    private botEntity: BotsEntity,
+    private botEntity: NjsBotStore,
   ) {}
 
   /**

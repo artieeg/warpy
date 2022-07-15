@@ -23,8 +23,8 @@ import {
 import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { IParticipant } from '@warpy/lib';
-import { BroadcastUserListStore } from './broadcast-user-list.store';
-import { BroadcastService } from './broadcast.service';
+import { NjsBroadcastUserListStore } from './broadcast-user-list.store';
+import { NjsBroadcastService } from './broadcast.service';
 import {
   ActiveSpeakersEvent,
   AwardSentEvent,
@@ -44,8 +44,8 @@ export class BroadcastController
     OnHostReassign
 {
   constructor(
-    private broadcast: BroadcastService,
-    private store: BroadcastUserListStore,
+    private broadcast: NjsBroadcastService,
+    private store: NjsBroadcastUserListStore,
   ) {}
 
   @OnEvent(EVENT_HOST_REASSIGN)

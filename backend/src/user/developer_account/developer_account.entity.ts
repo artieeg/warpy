@@ -1,16 +1,5 @@
-import { PrismaService } from '@warpy-be/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
+import { DeveloperAccountStore } from 'lib/stores/developer-account';
 
 @Injectable()
-export class DeveloperAccountEntity {
-  constructor(private prismaService: PrismaService) {}
-
-  async getDeveloperAccount(user: string) {
-    const { id } = await this.prismaService.developerAccount.findUnique({
-      where: { user_id: user },
-      select: { id: true },
-    });
-
-    return id;
-  }
-}
+export class NjsDeveloperAccountStore extends DeveloperAccountStore {}

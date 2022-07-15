@@ -4,10 +4,10 @@ import { ParticipantEntity } from '@warpy-be/participant/participant.entity';
 import { mockedParticipantEntity } from '@warpy-be/participant/participant.entity.mock';
 import { createParticipantFixture } from '@warpy-be/__fixtures__';
 import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
-import { BroadcastService } from './broadcast.service';
+import { NjsBroadcastService } from './broadcast.service';
 
 describe('BroadcastService', () => {
-  let broadcast: BroadcastService;
+  let broadcast: NjsBroadcastService;
 
   const participants = ['1', '2', '3'];
 
@@ -19,7 +19,7 @@ describe('BroadcastService', () => {
       .useValue(mockedMessageService)
       .compile();
 
-    broadcast = m.get(BroadcastService);
+    broadcast = m.get(NjsBroadcastService);
 
     mockedMessageService.encodeMessage.mockReturnValue(new Uint8Array(120));
 

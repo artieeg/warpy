@@ -1,12 +1,12 @@
 import { Global, Module } from '@nestjs/common';
-import { BroadcastUserListStore } from './broadcast-user-list.store';
+import { NjsBroadcastUserListStore } from './broadcast-user-list.store';
 import { BroadcastController } from './broadcast.controller';
-import { BroadcastService } from './broadcast.service';
+import { NjsBroadcastService } from './broadcast.service';
 
 @Module({
   imports: [],
   controllers: [BroadcastController],
-  providers: [BroadcastService, BroadcastUserListStore],
+  providers: [NjsBroadcastService, NjsBroadcastUserListStore],
 })
 @Global()
 export class BroadcastModule {}

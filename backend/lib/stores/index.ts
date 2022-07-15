@@ -13,3 +13,6 @@ export * from './node-registry';
 export * from './user-block';
 export * from './user-block-cache';
 export * from './streamer-ids';
+export * from './bot';
+export * from './developer-account';
+export * from './broadcast-user-list';
