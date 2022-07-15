@@ -12,3 +12,5 @@ export * from './message';
 export * from './bot-instance';
 export * from './bot';
 export * from './broadcast';
+export * from './chat';
+export * from './feed';

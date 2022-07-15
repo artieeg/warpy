@@ -3,7 +3,7 @@ import { IStream } from '@warpy/lib';
 
 type CreateNewStream = Stream;
 
-export interface StreamStore {
+export interface IStreamStore {
   setHost(stream: string, host: string): Promise<void>;
   search(text: string): Promise<IStream[]>;
   findByIds(ids: string[]): Promise<IStream[]>;
@@ -35,7 +35,7 @@ export function toStreamDTO(data: Stream): IStream {
   };
 }
 
-export class StreamStoreImpl implements StreamStore {
+export class StreamStore implements IStreamStore {
   constructor(private prisma: PrismaClient) {}
 
   async setHost(stream: string, host: string) {

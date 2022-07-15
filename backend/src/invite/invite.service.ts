@@ -19,7 +19,7 @@ import {
 import { NjsUserStore } from '@warpy-be/user/user.store';
 import { InviteStore } from './invite.store';
 import { FollowStore } from '@warpy-be/follow/follow.entity';
-import { StreamStore } from '@warpy-be/stream/common/stream.entity';
+import { NjsStreamStore } from '@warpy-be/stream/common/stream.entity';
 
 @Injectable()
 export class InviteService {
@@ -28,7 +28,7 @@ export class InviteService {
     private userEntity: NjsUserStore,
     private followEntity: FollowStore,
     private eventEmitter: EventEmitter2,
-    private streamEntity: StreamStore,
+    private streamEntity: NjsStreamStore,
     private messageService: NjsMessageService,
     private tokenService: NJTokenService,
     private botEntity: NjsBotStore,

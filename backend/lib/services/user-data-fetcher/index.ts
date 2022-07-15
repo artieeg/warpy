@@ -1,14 +1,14 @@
 import { IUserStore } from 'lib/stores';
 import { FollowStore } from 'lib/stores/follow';
 import { IParticipantStore } from 'lib/stores/participant';
-import { StreamStore } from 'lib/stores/stream';
+import { IStreamStore } from 'lib/stores/stream';
 
 export class UserDataFetcherService {
   constructor(
     private store: IUserStore,
     private followStore: FollowStore,
     private participantStore: IParticipantStore,
-    private streamStore: StreamStore,
+    private streamStore: IStreamStore,
   ) {}
 
   async getUserInfo(id: string, requester: string) {

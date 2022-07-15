@@ -1,4 +1,4 @@
-import { StreamStore } from '@warpy-be/stream/common/stream.entity';
+import { NjsStreamStore } from '@warpy-be/stream/common/stream.entity';
 import { NjsParticipantStore } from '@warpy-be/user/participant';
 import { Injectable } from '@nestjs/common';
 import { IFriendFeedItem } from '@warpy/lib';
@@ -9,7 +9,7 @@ export class FriendFeedService {
   constructor(
     private participant: NjsParticipantStore,
     private follow: FollowStore,
-    private stream: StreamStore,
+    private stream: NjsStreamStore,
   ) {}
 
   async getFriendFeed(user: string): Promise<IFriendFeedItem[]> {

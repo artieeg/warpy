@@ -1,11 +1,11 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { IGetCategoriesResponse } from '@warpy/lib';
-import { CategoriesService } from './categories.service';
+import { NjsCategoryStore } from './categories.service';
 
 @Controller()
 export class CategoriesController {
-  constructor(private categoriesService: CategoriesService) {}
+  constructor(private categoriesService: NjsCategoryStore) {}
 
   @MessagePattern('categories.get')
   async onCategoriesRequest(): Promise<IGetCategoriesResponse> {

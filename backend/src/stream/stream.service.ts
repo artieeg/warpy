@@ -5,12 +5,12 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { INewStreamResponse } from '@warpy/lib';
 import cuid from 'cuid';
 import { NjsMediaService } from '../media/media.service';
-import { StreamStore } from './common/stream.entity';
+import { NjsStreamStore } from './common/stream.entity';
 
 @Injectable()
 export class StreamService {
   constructor(
-    private streamEntity: StreamStore,
+    private streamEntity: NjsStreamStore,
     private mediaService: NjsMediaService,
     private eventEmitter: EventEmitter2,
   ) {}

@@ -1,22 +1,18 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ListStoreBehaviour } from '@warpy-be/shared';
-import IORedis, { Redis } from 'ioredis';
+import { ChatMemberStore } from 'lib/stores';
 
 @Injectable()
-export class ChatMemberStore implements OnModuleInit {
-  redis: Redis;
-  chatMembers: ListStoreBehaviour;
-
-  constructor(private config: ConfigService) {}
+export class NjsChatMemberStore
+  extends ChatMemberStore
+  implements OnModuleInit
+{
+  constructor(config: ConfigService) {
+    super(config.get('chatMemberStoreAddr'));
+  }
 
   onModuleInit() {
-    this.redis = new IORedis(this.config.get('chatMemberStoreAddr'));
-
-    this.chatMembers = new ListStoreBehaviour(
-      this.redis,
-      'stream_chat_members_',
-    );
+    this.onInstanceInit();
   }
 
   async addChatMember(stream: string, user: string) {

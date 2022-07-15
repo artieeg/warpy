@@ -1,4 +1,4 @@
-import { StreamStore } from '@warpy-be/stream/common/stream.entity';
+import { NjsStreamStore } from '@warpy-be/stream/common/stream.entity';
 import { EVENT_REACTIONS } from '@warpy-be/utils';
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -11,7 +11,7 @@ export class ReactionService implements OnModuleInit, OnModuleDestroy {
 
   constructor(
     private eventEmitter: EventEmitter2,
-    private streamEntity: StreamStore,
+    private streamEntity: NjsStreamStore,
   ) {}
 
   reset() {

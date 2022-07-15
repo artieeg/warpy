@@ -14,8 +14,8 @@ import {
   EVENT_STREAM_ENDED,
 } from '@warpy-be/utils';
 import { INewChatMessage, ISendMessageResponse } from '@warpy/lib';
-import { ChatMemberStore } from './chat-member.store';
-import { ChatService } from './chat.service';
+import { NjsChatMemberStore } from './chat-member.store';
+import { NjsChatService } from './chat.service';
 
 @Controller()
 export class ChatController
@@ -26,8 +26,8 @@ export class ChatController
     OnParticipantRejoin
 {
   constructor(
-    private chatService: ChatService,
-    private chatMemberStore: ChatMemberStore,
+    private chatService: NjsChatService,
+    private chatMemberStore: NjsChatMemberStore,
   ) {}
 
   @OnEvent(EVENT_PARTICIPANT_REJOIN)
