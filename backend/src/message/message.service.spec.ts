@@ -1,10 +1,10 @@
 import { NjsNatsService } from '@warpy-be/nats/nats.service';
 import { mockedNatsService } from '@warpy-be/nats/nats.services.mock';
 import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
-import { MessageService } from './message.service';
+import { NjsMessageService } from './message.service';
 
 describe('MessageService', () => {
-  let messageService: MessageService;
+  let messageService: NjsMessageService;
 
   beforeAll(async () => {
     const m = await testModuleBuilder
@@ -12,7 +12,7 @@ describe('MessageService', () => {
       .useValue(mockedNatsService)
       .compile();
 
-    messageService = m.get(MessageService);
+    messageService = m.get(NjsMessageService);
   });
 
   it('sends message', () => {

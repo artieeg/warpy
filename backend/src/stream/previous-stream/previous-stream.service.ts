@@ -1,4 +1,4 @@
-import { MessageService } from '@warpy-be/message/message.service';
+import { NjsMessageService } from '@warpy-be/message/message.service';
 import { Injectable } from '@nestjs/common';
 import { StreamStore } from '../common/stream.entity';
 import { PreviousStreamCacheService } from './previous-stream.cache';
@@ -7,7 +7,7 @@ import { PreviousStreamCacheService } from './previous-stream.cache';
 export class PreviousStreamService {
   constructor(
     private previousStreamCache: PreviousStreamCacheService,
-    private messageService: MessageService,
+    private messageService: NjsMessageService,
     private streamEntity: StreamStore,
   ) {}
 

@@ -7,7 +7,7 @@ import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
 import { NotificationEntity } from './notification.entity';
 import { mockedNotificationEntity } from './notification.entity.mock';
 import { mockedMessageService } from '@warpy-be/message/message.service.mock';
-import { MessageService } from '@warpy-be/message/message.service';
+import { NjsMessageService } from '@warpy-be/message/message.service';
 
 describe('NotificationService', () => {
   let notificationService: NotificationService;
@@ -16,7 +16,7 @@ describe('NotificationService', () => {
     const m = await testModuleBuilder
       .overrideProvider(NotificationEntity)
       .useValue(mockedNotificationEntity)
-      .overrideProvider(MessageService)
+      .overrideProvider(NjsMessageService)
       .useValue(mockedMessageService)
       .compile();
 

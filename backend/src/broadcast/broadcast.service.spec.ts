@@ -1,4 +1,4 @@
-import { MessageService } from '@warpy-be/message/message.service';
+import { NjsMessageService } from '@warpy-be/message/message.service';
 import { mockedMessageService } from '@warpy-be/message/message.service.mock';
 import { ParticipantEntity } from '@warpy-be/participant/participant.entity';
 import { mockedParticipantEntity } from '@warpy-be/participant/participant.entity.mock';
@@ -15,7 +15,7 @@ describe('BroadcastService', () => {
     const m = await testModuleBuilder
       .overrideProvider(ParticipantEntity)
       .useValue(mockedParticipantEntity)
-      .overrideProvider(MessageService)
+      .overrideProvider(NjsMessageService)
       .useValue(mockedMessageService)
       .compile();
 

@@ -1,6 +1,6 @@
 import { BotsEntity } from '@warpy-be/bots/bots.entity';
 import { NoPermissionError } from '@warpy-be/errors';
-import { MessageService } from '@warpy-be/message/message.service';
+import { NjsMessageService } from '@warpy-be/message/message.service';
 import { NJTokenService } from '@warpy-be/token/token.service';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
@@ -29,7 +29,7 @@ export class InviteService {
     private followEntity: FollowStore,
     private eventEmitter: EventEmitter2,
     private streamEntity: StreamStore,
-    private messageService: MessageService,
+    private messageService: NjsMessageService,
     private tokenService: NJTokenService,
     private botEntity: BotsEntity,
   ) {}
@@ -223,10 +223,13 @@ export class InviteService {
       this.inviteStore.setStreamData(ownedInviteIds, stream),
     ]);
 
-    console.log({ invitedUserIds, ownedInviteIds });
-
     invitedUserIds.forEach((user) => {
-      this.eventEmitter.emit(EVENT_INVITE_STREAM_ID_AVAILABLE, { id, user });
+      this.messageService.sendMessage(user, {
+        event: 'stream-id-available',
+        data: {
+          id,
+        },
+      });
     });
   }
 

@@ -8,7 +8,7 @@ import { EVENT_CHAT_MESSAGE } from '@warpy-be/utils';
 
 import cuid from 'cuid';
 import Filter from 'bad-words';
-import { BlockService } from '@warpy-be/block/block.service';
+import { NjsBlockService } from '@warpy-be/block/block.service';
 
 @Injectable()
 export class ChatService {
@@ -18,7 +18,7 @@ export class ChatService {
     private eventEmitter: EventEmitter2,
     private userEntity: NjsUserStore,
     private participantEntity: NjsParticipantStore,
-    private blockService: BlockService,
+    private blockService: NjsBlockService,
   ) {}
 
   getFilteredMessage(message: string): string {

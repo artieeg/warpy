@@ -20,14 +20,11 @@ export class ParticipantCreatorImpl {
   constructor(
     private participantStore: IParticipantStore,
     private user: IUserService,
-    private bans: IStreamBanService,
     private events: EventEmitter2,
     private media: IMediaService,
   ) {}
 
   async createNewParticipant(stream: string, userId: string) {
-    await this.bans.checkUserBanned(userId, stream);
-
     const { recvMediaParams, token } = await this.media.getViewerParams(
       userId,
       stream,

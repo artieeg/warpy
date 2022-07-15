@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { BlockService } from '@warpy-be/block/block.service';
+import { NjsBlockService } from '@warpy-be/block/block.service';
 import { FollowStore } from '@warpy-be/follow/follow.entity';
 import { IUser } from '@warpy/lib';
 
@@ -7,7 +7,7 @@ import { IUser } from '@warpy/lib';
 export class UserListService {
   constructor(
     private followEntity: FollowStore,
-    private blockService: BlockService,
+    private blockService: NjsBlockService,
   ) {}
 
   async getFollowers(user: string, _page: number): Promise<IUser[]> {

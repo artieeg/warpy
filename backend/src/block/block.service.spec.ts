@@ -6,22 +6,22 @@ import { ParticipantEntity } from '@warpy-be/participant/participant.entity';
 import { mockedParticipantEntity } from '@warpy-be/participant/participant.entity.mock';
 import { createParticipantFixture } from '@warpy-be/__fixtures__';
 import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
-import { BlockEntity } from './block.entity';
+import { NjsBlockStore } from './block.entity';
 import { mockedBlockEntity } from './block.entity.mock';
-import { BlockService } from './block.service';
+import { NjsBlockService } from './block.service';
 
 describe('BlockService', () => {
-  let blockService: BlockService;
+  let blockService: NjsBlockService;
 
   beforeAll(async () => {
     const m = await testModuleBuilder
       .overrideProvider(ParticipantEntity)
       .useValue(mockedParticipantEntity)
-      .overrideProvider(BlockEntity)
+      .overrideProvider(NjsBlockStore)
       .useValue(mockedBlockEntity)
       .compile();
 
-    blockService = m.get(BlockService);
+    blockService = m.get(NjsBlockService);
   });
 
   it('blocks user', async () => {

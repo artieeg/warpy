@@ -1,6 +1,6 @@
-import { BlockEntity } from './block.entity';
+import { NjsBlockStore } from './block.entity';
 
-export const mockedBlockEntity: jest.Mocked<Partial<BlockEntity>> = {
+export const mockedBlockEntity: jest.Mocked<Partial<NjsBlockStore>> = {
   create: jest.fn().mockResolvedValue('id'),
   deleteById: jest.fn(),
   getBlockedByIds: jest.fn().mockResolvedValue(['id1']),

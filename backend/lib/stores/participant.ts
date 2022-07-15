@@ -45,6 +45,7 @@ export interface IParticipantStore extends OnInstanceInit {
   getStreamers: (stream: string) => Promise<IParticipant[]>;
   getRaisedHands: (stream: string) => Promise<IParticipant[]>;
   count: (stream: string) => Promise<number>;
+  getViewersPage(stream: string, page: number): Promise<IParticipant[]>;
   update: (id: string, data: Partial<IParticipant>) => Promise<IParticipant>;
   setRaiseHand: (user: string, flag: boolean) => Promise<IParticipant>;
   add: (data: IParticipant) => Promise<void>;

@@ -5,6 +5,7 @@ import { IParticipantStore } from 'lib/stores';
 import { IMediaService } from '../media';
 import { IParticipantService } from '../participant';
 import { IStreamBanService } from '../stream-bans';
+import { HostService } from '../stream-host';
 
 export interface IStreamJoiner {
   join(user: string, stream: string): Promise<IJoinStreamResponse>;
@@ -21,19 +22,24 @@ export class StreamJoiner implements IStreamJoiner {
     private events: EventEmitter2,
     private bans: IStreamBanService,
     private media: IMediaService,
+    private host: HostService,
   ) {}
 
   async join(user: string, stream: string) {
+    //check whether the user has been banned on stream
+    await this.bans.checkUserBanned(user, stream);
+
     let response: IJoinStreamResponse;
 
-    const [oldParticipantData, streamData] = await Promise.all([
+    const [oldParticipantData, streamData, host] = await Promise.all([
       this.participantStore.get(user),
       this.participant.getParticipantDataOnStream(stream),
+      this.host.getStreamHostId(stream),
     ]);
 
     const prevStreamId = oldParticipantData?.stream;
 
-    response = { ...response, ...streamData };
+    response = { ...response, ...streamData, host };
 
     /**
      * if joining the stream
@@ -104,9 +110,6 @@ export class StreamJoiner implements IStreamJoiner {
     stream: string;
     role: Roles;
   }) {
-    //check whether the user has been banned on stream
-    await this.bans.checkUserBanned(user, stream);
-
     if (role === 'viewer') {
       const { token: mediaPermissionsToken, recvMediaParams } =
         await this.media.getViewerParams(user, stream);

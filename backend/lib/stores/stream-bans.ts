@@ -21,6 +21,7 @@ export interface IStreamBanStore {
 
 export class StreamBanStore implements IStreamBanStore {
   constructor(private prisma: PrismaClient) {}
+
   async create(stream: string, user: string) {
     await this.prisma.streamBlock.create({
       data: {

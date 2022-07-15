@@ -1,4 +1,4 @@
-import { BlockEntity } from '@warpy-be/block/block.entity';
+import { NjsBlockStore } from '@warpy-be/block/block.entity';
 import { mockedBlockEntity } from '@warpy-be/block/block.entity.mock';
 import { ParticipantEntity } from '@warpy-be/participant/participant.entity';
 import { mockedParticipantEntity } from '@warpy-be/participant/participant.entity.mock';
@@ -20,7 +20,7 @@ describe('FeedService', () => {
       .useValue(mockedParticipantEntity)
       .overrideProvider(StreamEntity)
       .useValue(mockedStreamEntity)
-      .overrideProvider(BlockEntity)
+      .overrideProvider(NjsBlockStore)
       .useValue(mockedBlockEntity)
       .compile();
 

@@ -2,7 +2,7 @@ import { DeveloperAccountEntity } from '@warpy-be/developer_account/developer_ac
 import { mockedDeveloperAccountEntity } from '@warpy-be/developer_account/developer_account.entity.mock';
 import { NotADeveloper } from '@warpy-be/errors';
 import { mockedMediaService } from '@warpy-be/media/media.service.mock';
-import { MessageService } from '@warpy-be/message/message.service';
+import { NjsMessageService } from '@warpy-be/message/message.service';
 import { mockedMessageService } from '@warpy-be/message/message.service.mock';
 import { NJTokenService } from '@warpy-be/token/token.service';
 import { mockedTokenService } from '@warpy-be/token/token.service.mock';
@@ -20,7 +20,7 @@ describe('BotsService', () => {
       .useValue(mockedBotsEntity)
       .overrideProvider(DeveloperAccountEntity)
       .useValue(mockedDeveloperAccountEntity)
-      .overrideProvider(MessageService)
+      .overrideProvider(NjsMessageService)
       .useValue(mockedMessageService)
       .overrideProvider(NJTokenService)
       .useValue(mockedTokenService)

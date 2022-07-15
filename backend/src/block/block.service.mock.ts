@@ -1,4 +1,5 @@
 import { getMockedInstance } from '@warpy-be/utils';
-import { BlockService } from './block.service';
+import { NjsBlockService } from './block.service';
 
-export const mockedBlockService = getMockedInstance<BlockService>(BlockService);
+export const mockedBlockService =
+  getMockedInstance<NjsBlockService>(NjsBlockService);

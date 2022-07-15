@@ -1,32 +1,14 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import IORedis from 'ioredis';
+import { StreamerIdStore } from 'lib/stores';
 
 @Injectable()
-export class StreamerIdStore implements OnModuleInit {
-  private redis: IORedis.Redis;
-
-  constructor(private configService: ConfigService) {}
+export class NjsStreamerIdStore extends StreamerIdStore {
+  constructor(configService: ConfigService) {
+    super(configService.get('blockStreamerIdStoreAddr'));
+  }
 
   onModuleInit() {
-    this.redis = new IORedis(
-      this.configService.get('blockStreamerIdStoreAddr'),
-    );
-  }
-
-  async get(stream: string) {
-    return this.redis.smembers(stream);
-  }
-
-  async add(user: string, stream: string) {
-    await this.redis.sadd(stream, user);
-  }
-
-  async rem(user: string, stream: string) {
-    await this.redis.srem(stream, user);
-  }
-
-  async del(stream: string) {
-    await this.redis.del(stream);
+    this.onInstanceInit();
   }
 }

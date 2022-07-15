@@ -1,8 +1,7 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EVENT_RAISE_HAND } from '@warpy-be/utils';
 import { BotInstanceStore, IParticipantStore } from 'lib/stores';
 import { IMediaService } from '../media';
-import { IStreamBanService } from '../stream-bans';
-import { IHostService } from '../stream-host';
 import { IUserService } from '../user';
 import { MediaToggler, MediaTogglerImpl } from './MediaToggler';
 import {
@@ -31,21 +30,30 @@ export class ParticipantService implements IParticipantService {
   private mediaToggler: MediaToggler;
 
   constructor(
-    store: IParticipantStore,
-    hostService: IHostService,
+    private store: IParticipantStore,
     botInstanceStore: BotInstanceStore,
-    events: EventEmitter2,
+    private events: EventEmitter2,
     user: IUserService,
-    bans: IStreamBanService,
     media: IMediaService,
   ) {
     this.streamParticipantDataFetcher = new StreamParticipantDataFetcherImpl(
       store,
-      hostService,
     );
     this.remover = new ParticipantRemoverImpl(botInstanceStore, events, store);
-    this.creator = new ParticipantCreatorImpl(store, user, bans, events, media);
+    this.creator = new ParticipantCreatorImpl(store, user, events, media);
     this.mediaToggler = new MediaTogglerImpl(store, events);
+  }
+
+  async setRaiseHand(user: string, flag: boolean) {
+    const participant = await this.store.setRaiseHand(user, flag);
+
+    this.events.emit(EVENT_RAISE_HAND, participant);
+  }
+
+  async getViewers(stream: string, page: number) {
+    const viewers = await this.store.getViewersPage(stream, page);
+
+    return viewers;
   }
 
   setMediaEnabled(

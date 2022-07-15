@@ -1,5 +1,5 @@
 import { getMockedInstance } from '@warpy-be/utils';
-import { MessageService } from './message.service';
+import { NjsMessageService } from './message.service';
 
 export const mockedMessageService =
-  getMockedInstance<MessageService>(MessageService);
+  getMockedInstance<NjsMessageService>(NjsMessageService);

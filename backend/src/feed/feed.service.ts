@@ -2,12 +2,12 @@ import { StreamStore } from '@warpy-be/stream/common/stream.entity';
 import { NjsParticipantStore } from '@warpy-be/user/participant/store';
 import { Injectable } from '@nestjs/common';
 import { ICandidate, IStream } from '@warpy/lib';
-import { BlockService } from '@warpy-be/block/block.service';
+import { NjsBlockService } from '@warpy-be/block/block.service';
 
 @Injectable()
 export class FeedService {
   constructor(
-    private blockService: BlockService,
+    private blockService: NjsBlockService,
     private streamEntity: StreamStore,
     private participantEntity: NjsParticipantStore,
   ) {}

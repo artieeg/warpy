@@ -7,3 +7,5 @@ export * from './nats';
 export * from './participant';
 export * from './media';
 export * from './stream-joiner';
+export * from './user-block';
+export * from './message';

@@ -1,4 +1,4 @@
-import { MessageService } from '@warpy-be/message/message.service';
+import { NjsMessageService } from '@warpy-be/message/message.service';
 import { NJTokenService } from '@warpy-be/token/token.service';
 import { DeveloperAccountEntity } from '@warpy-be/user/developer_account/developer_account.entity';
 import { Injectable } from '@nestjs/common';
@@ -10,7 +10,7 @@ export class BotsService {
   constructor(
     private botEntity: BotsEntity,
     private developerAccountEntity: DeveloperAccountEntity,
-    private messageService: MessageService,
+    private messageService: NjsMessageService,
     private tokenService: NJTokenService,
   ) {}
 

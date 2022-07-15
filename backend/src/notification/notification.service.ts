@@ -1,4 +1,4 @@
-import { MessageService } from '@warpy-be/message/message.service';
+import { NjsMessageService } from '@warpy-be/message/message.service';
 import { Injectable } from '@nestjs/common';
 import { IInvite, INotification } from '@warpy/lib';
 import { NotificationStore } from './notification.store';
@@ -8,7 +8,7 @@ export class NotificationService {
   constructor(
     //private notificationEntity: NotificationEntity,
     private notificationStore: NotificationStore,
-    private messageService: MessageService,
+    private messageService: NjsMessageService,
   ) {}
 
   private async sendNotification(user: string, notification: INotification) {
@@ -23,7 +23,7 @@ export class NotificationService {
   async createInviteNotification(invite: IInvite) {
     //If the stream hasn't been started yet, dont send the notification
     if (!invite.stream) {
-      return
+      return;
     }
 
     const notification = await this.notificationStore.createInviteNotification(

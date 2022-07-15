@@ -10,3 +10,6 @@ export * from './participant-node-assigner';
 export * from './stream-node-assigner';
 export * from './node-info';
 export * from './node-registry';
+export * from './user-block';
+export * from './user-block-cache';
+export * from './streamer-ids';

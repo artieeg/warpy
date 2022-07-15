@@ -16,16 +16,16 @@ import {
   IUserBlockResponse,
   IUserUnblockResponse,
 } from '@warpy/lib';
-import { BlockService } from './block.service';
-import { StreamerIdStore } from './streamer_ids.store';
+import { NjsBlockService } from './block.service';
+import { NjsStreamerIdStore } from './streamer_ids.store';
 
 @Controller()
 export class BlockController
   implements OnRoleChange, OnParticipantLeave, OnStreamEnd
 {
   constructor(
-    private blockService: BlockService,
-    private streamerIdStore: StreamerIdStore,
+    private blockService: NjsBlockService,
+    private streamerIdStore: NjsStreamerIdStore,
   ) {}
 
   @OnEvent(EVENT_STREAM_ENDED)

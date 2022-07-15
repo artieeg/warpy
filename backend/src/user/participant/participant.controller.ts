@@ -16,6 +16,9 @@ import {
   IJoinStreamResponse,
   ILeaveStreamRequest,
   IMediaToggleRequest,
+  IRaiseHand,
+  IRequestViewers,
+  IRequestViewersResponse,
 } from '@warpy/lib';
 import { NjsParticipantService } from './participant.service';
 import { NjsStreamJoiner } from './stream-joiner.service';
@@ -28,6 +31,21 @@ export class ParticipantController
     private participant: NjsParticipantService,
     private joiner: NjsStreamJoiner,
   ) {}
+
+  @MessagePattern('viewers.get')
+  async onViewersRequest({
+    stream,
+    page,
+  }: IRequestViewers): Promise<IRequestViewersResponse> {
+    const viewers = await this.participant.getViewers(stream, page);
+
+    return { viewers };
+  }
+
+  @MessagePattern('user.raise-hand')
+  async onRaiseHand({ user, flag }: IRaiseHand) {
+    await this.participant.setRaiseHand(user, flag);
+  }
 
   @MessagePattern('stream.join')
   async onNewViewer({
