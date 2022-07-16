@@ -3,40 +3,34 @@ import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AwardModule } from './award/award.module';
-import { BotsModule } from './bots/bots.module';
-import { BroadcastModule } from './broadcast/broadcast.module';
 import { configuration } from './config/configuration';
-import { GifModule } from './gif/gif.module';
-import { MediaModule } from './media/media.module';
-import { NatsModule } from './nats/nats.module';
-import { NotificationModule } from './notification/notification.module';
-import { StreamModule } from './stream/stream.module';
-import { TokenModule } from './token/token.module';
-import { UserModule } from './user/user.module';
-//import { WaitlistModule } from './waitlist/waitlist.module';
-//import { MailModule } from './mail/mail.module';
-import { MessageModule } from './message/message.module';
 import { TimerModule } from './shared/modules/timer/timer.module';
-import { SyncModule } from './sync/sync.module';
-import { ChatModule } from './chat/chat.module';
-import { FriendFeedModule } from './friend_feed/friend_feed.module';
-import { BlockModule } from './block/block.module';
-import { FeedModule } from './feed/feed.module';
-import { FollowModule } from './follow/follow.module';
-import { PrismaModule } from './prisma/prisma.module';
-import { UserListModule } from './user-list/user-list.module';
-import { InviteModule } from './invite/invite.module';
-import { CategoryModule } from './categories/categories.module';
-import { UserDataFetcherModule } from './user-data-fetcher/user-data-fetcher.module';
+/*
+import {
+  UserBlockModule,
+  BotInstanceModule,
+  PreviousStreamModule,
+  PrismaModule,
+  ReactionModule,
+  StreamModule,
+  BotsModule,
+  BroadcastModule,
+} from './modules';
+*/
+
+import * as modules from './modules';
 
 export const appModuleImports = [
   ConfigModule.forRoot({
     load: [configuration],
     isGlobal: true,
   }),
+
+  TimerModule,
+  ...Object.values(modules),
+  /*
   PrismaModule,
-  AwardModule,
+  //AwardModule,
   CategoryModule,
   TimerModule,
   BroadcastModule,
@@ -49,6 +43,9 @@ export const appModuleImports = [
   FriendFeedModule,
   UserDataFetcherModule,
   StreamModule,
+  ReactionModule,
+  PreviousStreamModule,
+  BotInstanceModule,
   //MailModule,
   NatsModule,
   BotsModule,
@@ -58,8 +55,9 @@ export const appModuleImports = [
   //WaitlistModule,
   SyncModule,
   InviteModule,
-  BlockModule,
+  UserBlockModule,
   FollowModule,
+  */
   EventEmitterModule.forRoot(),
 ];
 

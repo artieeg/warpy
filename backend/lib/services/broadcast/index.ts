@@ -1,15 +1,41 @@
-import {
-  NewHostEvent,
-  MediaToggleEvent,
-  ChatMessageEvent,
-  ReactionsEvent,
-  ActiveSpeakersEvent,
-  ParticipantLeaveEvent,
-  AwardSentEvent,
-} from '@warpy-be/broadcast/types';
 import { ParticipantStore, BroadcastUserListStore } from 'lib/stores';
 import { MessageService } from '../message';
-import { IParticipant } from '@warpy/lib';
+import { IAward, IParticipant } from '@warpy/lib';
+
+export type MediaToggleEvent = {
+  user: string;
+  stream: string;
+  videoEnabled?: boolean;
+  audioEnabled?: boolean;
+};
+
+export type ChatMessageEvent = {
+  idsToBroadcast: string[];
+  message: string;
+};
+
+export type NewHostEvent = {
+  host: IParticipant;
+};
+
+export type ReactionsEvent = {
+  stream: string;
+  reactions: any;
+};
+
+export type ActiveSpeakersEvent = {
+  stream: string;
+  activeSpeakers: { user: string; volume: number }[];
+};
+
+export type ParticipantLeaveEvent = {
+  user: string;
+  stream: string;
+};
+
+export type AwardSentEvent = {
+  award: IAward;
+};
 
 export interface IBroadcastService {
   broadcastStreamEnd(stream: string): Promise<void>;

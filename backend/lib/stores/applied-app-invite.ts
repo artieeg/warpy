@@ -1,12 +1,12 @@
-import { PrismaService } from '@warpy-be/prisma/prisma.service';
+import { PrismaClient } from '@prisma/client';
 
 export interface IAppliedAppInviteStore {
   create(user_id: string, invite_id: string): Promise<void>;
   find(user_id: string): Promise<string>;
 }
 
-export class AppliedAppInviteStore {
-  constructor(private prisma: PrismaService) {}
+export class AppliedAppInviteStore implements IAppliedAppInviteStore {
+  constructor(private prisma: PrismaClient) {}
 
   async create(user_id: string, invite_id: string) {
     await this.prisma.appliedAppInvite.create({

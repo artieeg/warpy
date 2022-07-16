@@ -1,7 +1,12 @@
-import { BotConfirmResponseDTO } from '@warpy-be/bots/bots.dto';
 import { BotStore } from 'lib/stores';
 import { DeveloperAccountStore } from 'lib/stores';
 import { MessageService, TokenService } from '..';
+
+export type BotConfirmResponseDTO = {
+  user: string;
+  bot: string;
+  confirmed: boolean;
+};
 
 export interface IBotsService {
   createNewBot(

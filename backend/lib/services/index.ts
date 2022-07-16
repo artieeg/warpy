@@ -25,3 +25,8 @@ export * from './sync';
 export * from './app-invite';
 export * from './user-report';
 export * from './active-speaker';
+export * from './previous-stream';
+export * from './category';
+export * from './media-balancer';
+export * from './notification';
+export * from './participant-role-manager';
