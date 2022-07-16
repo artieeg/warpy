@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { StreamCommonModule } from '../common/stream-common.module';
 import { ReactionController } from './reaction.controller';
-import { ReactionService } from './reaction.service';
+import { NjsReactionService } from './reaction.service';
 
 @Module({
   imports: [StreamCommonModule],
-  providers: [ReactionService],
+  providers: [NjsReactionService],
   controllers: [ReactionController],
 })
 export class ReactionModule {}

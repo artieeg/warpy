@@ -1,5 +1,5 @@
 import { getMockedInstance } from '@warpy-be/utils';
-import { UserReportEntity } from './user-report.entity';
+import { NjsUserReportStore } from './user-report.entity';
 
 export const mockedUserReportEntity =
-  getMockedInstance<UserReportEntity>(UserReportEntity);
+  getMockedInstance<NjsUserReportStore>(NjsUserReportStore);

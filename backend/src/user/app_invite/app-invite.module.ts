@@ -1,14 +1,14 @@
 import { PrismaModule } from '@warpy-be/prisma/prisma.module';
 import { Module } from '@nestjs/common';
 import { AppInviteController } from './app-invite.controller';
-import { AppInviteEntity } from './app-invite.entity';
-import { AppInviteService } from './app-invite.service';
-import { AppliedAppInviteEntity } from './applied-app-invite.entity';
+import { NjsAppInviteStore } from './app-invite.entity';
+import { NjsAppInviteService } from './app-invite.service';
+import { NjsAppliedAppInviteStore } from './applied-app-invite.entity';
 
 @Module({
   imports: [PrismaModule],
-  providers: [AppInviteEntity, AppliedAppInviteEntity, AppInviteService],
+  providers: [NjsAppInviteStore, NjsAppliedAppInviteStore, NjsAppInviteService],
   controllers: [AppInviteController],
-  exports: [AppInviteEntity, AppliedAppInviteEntity],
+  exports: [NjsAppInviteStore, NjsAppliedAppInviteStore],
 })
 export class AppInviteModule {}

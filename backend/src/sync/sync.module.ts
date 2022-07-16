@@ -5,7 +5,7 @@ import { UserListModule } from '@warpy-be/user-list/user-list.module';
 import { AppInviteModule } from '@warpy-be/user/app_invite/app-invite.module';
 import { UserModule } from '@warpy-be/user/user.module';
 import { SyncController } from './sync.controller';
-import { SyncService } from './sync.service';
+import { NjsSyncService } from './sync.service';
 
 @Module({
   imports: [
@@ -15,7 +15,7 @@ import { SyncService } from './sync.service';
     CategoryModule,
     FriendFeedModule,
   ],
-  providers: [SyncService],
+  providers: [NjsSyncService],
   controllers: [SyncController],
   exports: [],
 })

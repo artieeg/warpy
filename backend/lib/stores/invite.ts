@@ -24,7 +24,7 @@ const PREFIX_INVITES_FROM = 'invites_from_';
 /** Store invite ids for user */
 const PREFIX_INVITES_FOR = 'invites_for_';
 
-export interface IInviteService extends OnInstanceInit {
+export interface IInviteStore extends OnInstanceInit {
   setUserOnlineStatus(user: string, flag: boolean): Promise<void>;
   isUserOnline(user: string): Promise<boolean>;
   create({
@@ -47,7 +47,7 @@ export interface IInviteService extends OnInstanceInit {
   del(invite_id: string): Promise<IInviteBase>;
 }
 
-export class InviteStore implements IInviteService {
+export class InviteStore implements IInviteStore {
   private redis: IORedis.Redis;
   private onlineBehavior: OnlineStatusStoreBehavior;
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IStreamService } from 'lib';
+import { StreamService } from 'lib';
 
 @Injectable()
-export class StreamService implements IStreamService {}
+export class NjsStreamService extends StreamService {}

@@ -13,11 +13,11 @@ import {
   IStopStream,
   IStreamGetRequest,
 } from '@warpy/lib';
-import { StreamService } from './stream.service';
+import { NjsStreamService } from './stream.service';
 
 @Controller()
 export class StreamController implements OnHostReassignFailed, OnHostReassign {
-  constructor(private streamService: StreamService) {}
+  constructor(private streamService: NjsStreamService) {}
 
   @MessagePattern('stream.create')
   async createNewStream({

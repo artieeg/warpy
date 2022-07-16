@@ -20,3 +20,8 @@ export * from './category';
 export * from './chat-member';
 export * from './invite';
 export * from './notification';
+export * from './previous-store';
+export * from './applied-app-invite';
+export * from './app-invite';
+export * from './user-online-status';
+export * from './user-report';

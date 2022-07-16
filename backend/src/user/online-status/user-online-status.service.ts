@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { UserOnlineStatusCache } from './user-online-status.cache';
+import { NjsUserOnlineStatusCache } from './user-online-status.cache';
 
 @Injectable()
 export class UserOnlineStatusService {
-  constructor(private cache: UserOnlineStatusCache) {}
+  constructor(private cache: NjsUserOnlineStatusCache) {}
 
   async setUserOnline(user: string) {
     await this.cache.setUserOnline(user);

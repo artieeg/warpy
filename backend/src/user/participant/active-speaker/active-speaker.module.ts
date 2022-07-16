@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ActiveSpeakerController } from './active-speaker.controller';
-import { ActiveSpeakerService } from './active-speaker.service';
+import { NjsActiveSpeakerService } from './active-speaker.service';
 
 @Module({
   imports: [],
-  providers: [ActiveSpeakerService],
+  providers: [NjsActiveSpeakerService],
   controllers: [ActiveSpeakerController],
   exports: [],
 })

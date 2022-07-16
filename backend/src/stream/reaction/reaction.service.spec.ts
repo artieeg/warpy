@@ -4,10 +4,10 @@ import { mockedStreamEntity } from '@warpy-be/stream/stream.entity.mock';
 import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ALLOWED_EMOJI } from '@warpy/lib';
-import { ReactionService } from './reaction.service';
+import { NjsReactionService } from './reaction.service';
 
 describe('ReactionService', () => {
-  let reactionService: ReactionService;
+  let reactionService: NjsReactionService;
 
   beforeAll(async () => {
     const m = await testModuleBuilder
@@ -17,7 +17,7 @@ describe('ReactionService', () => {
       .useValue(mockedEventEmitter)
       .compile();
 
-    reactionService = m.get(ReactionService);
+    reactionService = m.get(NjsReactionService);
   });
 
   beforeEach(() => {

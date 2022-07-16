@@ -8,11 +8,11 @@ import {
   IAppInviteResponse,
   IInviteApplyRequest,
 } from '@warpy/lib';
-import { AppInviteService } from './app-invite.service';
+import { NjsAppInviteService } from './app-invite.service';
 
 @Controller()
 export class AppInviteController implements OnNewUser {
-  constructor(private appInviteService: AppInviteService) {}
+  constructor(private appInviteService: NjsAppInviteService) {}
 
   @MessagePattern('app-invite.apply')
   async applyAppInvite({

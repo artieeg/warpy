@@ -1,11 +1,11 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { IUserReportRequest, IUserReportResponse } from '@warpy/lib';
-import { UserReportService } from './user-report.service';
+import { NjsUserReportService } from './user-report.service';
 
 @Controller()
 export class UserReportController {
-  constructor(private userReportService: UserReportService) {}
+  constructor(private userReportService: NjsUserReportService) {}
 
   @MessagePattern('user.report')
   async onUserReport({

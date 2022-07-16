@@ -5,7 +5,7 @@ import { StreamCommonModule } from './common/stream-common.module';
 import { PreviousStreamModule } from './previous-stream/previous-stream.module';
 import { ReactionModule } from './reaction/reaction.module';
 import { StreamController } from './stream.controller';
-import { StreamService } from './stream.service';
+import { NjsStreamService } from './stream.service';
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import { StreamService } from './stream.service';
     ReactionModule,
   ],
   controllers: [StreamController],
-  providers: [StreamService],
-  exports: [StreamService, StreamCommonModule, ReactionModule],
+  providers: [NjsStreamService],
+  exports: [NjsStreamService, StreamCommonModule, ReactionModule],
 })
 export class StreamModule {}

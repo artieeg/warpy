@@ -1,18 +1,18 @@
 import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
-import { UserReportEntity } from './user-report.entity';
-import { UserReportService } from './user-report.service';
+import { NjsUserReportStore } from './user-report.entity';
+import { NjsUserReportService } from './user-report.service';
 import { mockedUserReportEntity } from './user-report.entity.mock';
 
 describe('UserReport', () => {
-  let userReportService: UserReportService;
+  let userReportService: NjsUserReportService;
 
   beforeAll(async () => {
     const m = await testModuleBuilder
-      .overrideProvider(UserReportEntity)
+      .overrideProvider(NjsUserReportStore)
       .useValue(mockedUserReportEntity)
       .compile();
 
-    userReportService = m.get(UserReportService);
+    userReportService = m.get(NjsUserReportService);
   });
 
   it('creates new user report', async () => {

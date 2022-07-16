@@ -1,11 +1,11 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { IUser, IUserListRequest, IUserListResponse } from '@warpy/lib';
-import { UserListService } from './user-list.service';
+import { NjsUserListService } from './user-list.service';
 
 @Controller()
 export class UserListController {
-  constructor(private userListService: UserListService) {}
+  constructor(private userListService: NjsUserListService) {}
 
   @MessagePattern('user.get-list')
   async onGetList({

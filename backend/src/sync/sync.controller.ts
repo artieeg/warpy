@@ -3,12 +3,12 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import { EVENT_USER_CONNECTED } from '@warpy-be/utils';
 import { IWhoAmIRequest, IWhoAmIResponse } from '@warpy/lib';
-import { SyncService } from './sync.service';
+import { NjsSyncService } from './sync.service';
 
 @Controller()
 export class SyncController {
   constructor(
-    private syncService: SyncService,
+    private syncService: NjsSyncService,
     private eventEmitter: EventEmitter2,
   ) {}
 
