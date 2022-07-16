@@ -1,4 +1,4 @@
-import IORedis fro 'ioredis';
+import IORedis from 'ioredis';
 import { OnInstanceInit } from 'lib/OnInstanceInit.interface';
 
 const PREFIX_STREAM = 'stream_';

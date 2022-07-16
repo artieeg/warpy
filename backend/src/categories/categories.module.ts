@@ -2,11 +2,11 @@ import { PrismaModule } from '@warpy-be/prisma/prisma.module';
 import { Module } from '@nestjs/common';
 import { CategoriesController } from './categories.controller';
 import { NjsCategoryStore } from './categories.entity';
-import { NjsCategoryStore } from './categories.service';
+import { NjsCategoryService } from './categories.service';
 
 @Module({
   imports: [PrismaModule],
-  providers: [NjsCategoryStore, NjsCategoryStore],
+  providers: [NjsCategoryService, NjsCategoryStore],
   controllers: [CategoriesController],
   exports: [NjsCategoryStore, NjsCategoryStore],
 })
