@@ -9,7 +9,7 @@ export interface IFollow {
   followed?: IUser;
 }
 
-export interface FollowStore {
+export interface IFollowStore {
   createNewFollow: (follower: string, followed: string) => Promise<IFollow>;
   deleteFollow: (follower: string, followed: string) => Promise<void>;
   getFollowed: (user: string) => Promise<IFollow[]>;
@@ -31,7 +31,7 @@ export function toFollowDTO(
   return followData;
 }
 
-export class FollowStoreImpl implements FollowStore {
+export class FollowStore implements IFollowStore {
   constructor(private prisma: PrismaClient) {}
 
   async createNewFollow(follower: string, followed: string): Promise<IFollow> {

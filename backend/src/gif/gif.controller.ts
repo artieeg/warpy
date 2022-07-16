@@ -1,11 +1,11 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { IGifsRequest, IGifsResponse } from '@warpy/lib';
-import { GifService } from './gif.service';
+import { NjsGifService } from './gif.service';
 
 @Controller()
 export class GifController {
-  constructor(private gifService: GifService) {}
+  constructor(private gifService: NjsGifService) {}
 
   @MessagePattern('gifs.search')
   async searchGifs({ next, search }: IGifsRequest): Promise<IGifsResponse> {

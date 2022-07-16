@@ -1,42 +1,5 @@
-import { NjsStreamStore } from '@warpy-be/stream/common/stream.entity';
-import { NjsParticipantStore } from '@warpy-be/user/participant';
 import { Injectable } from '@nestjs/common';
-import { IFriendFeedItem } from '@warpy/lib';
-import { FollowStore } from '@warpy-be/follow/follow.entity';
+import { FriendFeedService } from 'lib';
 
 @Injectable()
-export class FriendFeedService {
-  constructor(
-    private participant: NjsParticipantStore,
-    private follow: FollowStore,
-    private stream: NjsStreamStore,
-  ) {}
-
-  async getFriendFeed(user: string): Promise<IFriendFeedItem[]> {
-    //Get a list of users we're following
-    const following = await this.follow.getFollowedUserIds(user);
-
-    //Check who's participating in rooms
-    const participants = await this.participant.list(following);
-
-    //Get stream
-    const streamIds = [...new Set(participants.map((p) => p.stream))];
-    const streams = await this.stream.findByIds(streamIds);
-
-    //Prepare feed
-    const feed: IFriendFeedItem[] = participants.map((user) => {
-      const stream = streams.find((s) => s.id === user.stream);
-
-      if (stream) {
-        user.online = true;
-      }
-
-      return {
-        user,
-        stream,
-      };
-    });
-
-    return feed;
-  }
-}
+export class NjsFriendFeedService extends FriendFeedService {}

@@ -1,13 +1,13 @@
 import { NjsMessageService } from '@warpy-be/message/message.service';
 import { Injectable } from '@nestjs/common';
 import { IInvite, INotification } from '@warpy/lib';
-import { NotificationStore } from './notification.store';
+import { NjsNotificationStore } from './notification.store';
 
 @Injectable()
 export class NotificationService {
   constructor(
     //private notificationEntity: NotificationEntity,
-    private notificationStore: NotificationStore,
+    private notificationStore: NjsNotificationStore,
     private messageService: NjsMessageService,
   ) {}
 

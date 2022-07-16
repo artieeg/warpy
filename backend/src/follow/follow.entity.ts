@@ -1,7 +1,7 @@
 import { PrismaService } from '@warpy-be/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { IUser } from '@warpy/lib';
-import { FollowStoreImpl } from 'lib/stores/follow';
+import { FollowStore } from 'lib';
 
 export interface IFollow {
   follower_id: string;
@@ -11,7 +11,7 @@ export interface IFollow {
 }
 
 @Injectable()
-export class FollowStore extends FollowStoreImpl {
+export class NjsFollowStore extends FollowStore {
   constructor(prisma: PrismaService) {
     super(prisma);
   }

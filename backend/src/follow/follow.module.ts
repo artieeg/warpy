@@ -1,13 +1,13 @@
 import { PrismaModule } from '@warpy-be/prisma/prisma.module';
 import { Module } from '@nestjs/common';
 import { FollowController } from './follow.controller';
-import { FollowStore } from './follow.entity';
-import { FollowService } from './follow.service';
+import { NjsFollowStore } from './follow.entity';
+import { NjsFollowService } from './follow.service';
 
 @Module({
   imports: [PrismaModule],
-  providers: [FollowStore, FollowService],
+  providers: [NjsFollowStore, NjsFollowService],
   controllers: [FollowController],
-  exports: [FollowStore, FollowService],
+  exports: [NjsFollowStore, NjsFollowService],
 })
 export class FollowModule {}

@@ -1,19 +1,19 @@
 import { createFollowRecord } from '@warpy-be/__fixtures__';
 import { testModuleBuilder } from '@warpy-be/__fixtures__/app.module';
-import { FollowStore } from './follow.entity';
+import { NjsFollowStore } from './follow.entity';
 import { mockedFollowEntity } from './follow.entity.mock';
-import { FollowService } from './follow.service';
+import { NjsFollowService } from './follow.service';
 
 describe('FollowService', () => {
-  let followService: FollowService;
+  let followService: NjsFollowService;
 
   beforeAll(async () => {
     const m = await testModuleBuilder
-      .overrideProvider(FollowStore)
+      .overrideProvider(NjsFollowStore)
       .useValue(mockedFollowEntity)
       .compile();
 
-    followService = m.get(FollowService);
+    followService = m.get(NjsFollowService);
   });
 
   it('creates new follow', async () => {

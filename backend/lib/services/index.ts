@@ -14,3 +14,8 @@ export * from './bot';
 export * from './broadcast';
 export * from './chat';
 export * from './feed';
+export * from './follow';
+export * from './friend-feed';
+export * from './gif';
+export * from './invite';
+export * from './stream';

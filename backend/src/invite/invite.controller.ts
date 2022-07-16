@@ -2,12 +2,14 @@ import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import {
+  OnNewStream,
   OnParticipantLeave,
   OnUserConnect,
   OnUserDisconnect,
 } from '@warpy-be/interfaces';
 import {
   EVENT_PARTICIPANT_LEAVE,
+  EVENT_STREAM_CREATED,
   EVENT_USER_CONNECTED,
   EVENT_USER_DISCONNECTED,
 } from '@warpy-be/utils';
@@ -20,17 +22,22 @@ import {
   IInviteSuggestionsRequest,
   IInviteSuggestionsResponse,
 } from '@warpy/lib';
-import { InviteService } from './invite.service';
-import { InviteStore } from './invite.store';
+import { NjsInviteService } from './invite.service';
+import { NjsInviteStore } from './invite.store';
 
 @Controller()
 export class InviteController
-  implements OnParticipantLeave, OnUserConnect, OnUserDisconnect
+  implements OnParticipantLeave, OnUserConnect, OnUserDisconnect, OnNewStream
 {
   constructor(
-    private inviteService: InviteService,
-    private inviteStore: InviteStore,
+    private inviteService: NjsInviteService,
+    private inviteStore: NjsInviteStore,
   ) {}
+
+  @OnEvent(EVENT_STREAM_CREATED)
+  async onNewStream({ stream: { owner, id } }) {
+    await this.inviteService.notifyAboutStreamId(id, owner);
+  }
 
   @OnEvent(EVENT_USER_DISCONNECTED)
   async onUserDisconnect({ user }) {

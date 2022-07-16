@@ -6,11 +6,11 @@ import {
   IUnfollowRequest,
   IUnfollowResponse,
 } from '@warpy/lib';
-import { FollowService } from './follow.service';
+import { NjsFollowService } from './follow.service';
 
 @Controller()
 export class FollowController {
-  constructor(private followService: FollowService) {}
+  constructor(private followService: NjsFollowService) {}
 
   @MessagePattern('user.follow')
   async onUserFollow({
