@@ -5,19 +5,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { configuration } from './config/configuration';
 import { TimerModule } from './shared/modules/timer/timer.module';
-/*
-import {
-  UserBlockModule,
-  BotInstanceModule,
-  PreviousStreamModule,
-  PrismaModule,
-  ReactionModule,
-  StreamModule,
-  BotsModule,
-  BroadcastModule,
-} from './modules';
-*/
-
 import * as modules from './modules';
 
 export const appModuleImports = [
@@ -25,39 +12,10 @@ export const appModuleImports = [
     load: [configuration],
     isGlobal: true,
   }),
+  TimerModule,
 
-  TimerModule,
-  ...Object.values(modules),
-  /*
-  PrismaModule,
-  //AwardModule,
-  CategoryModule,
-  TimerModule,
-  BroadcastModule,
-  MediaModule,
-  GifModule,
-  FeedModule,
-  UserModule,
-  UserListModule,
-  TokenModule,
-  FriendFeedModule,
-  UserDataFetcherModule,
-  StreamModule,
-  ReactionModule,
-  PreviousStreamModule,
-  BotInstanceModule,
-  //MailModule,
-  NatsModule,
-  BotsModule,
-  ChatModule,
-  MessageModule,
-  NotificationModule,
-  //WaitlistModule,
-  SyncModule,
-  InviteModule,
-  UserBlockModule,
-  FollowModule,
-  */
+  ...Object.values(modules).filter((m) => m.name.includes('Module')),
+
   EventEmitterModule.forRoot(),
 ];
 

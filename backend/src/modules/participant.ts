@@ -154,7 +154,7 @@ export class ParticipantController
     UserModule,
     TokenModule,
   ],
-  providers: [NjsParticipantStore],
+  providers: [NjsParticipantStore, NjsParticipantService, NjsStreamJoiner],
   controllers: [ParticipantController],
   exports: [NjsParticipantStore],
 })
