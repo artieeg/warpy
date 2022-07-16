@@ -27,7 +27,7 @@ export class BotInstanceController {
 @Module({
   imports: [PrismaModule],
   providers: [NjsBotInstanceService, NjsBotInstanceStore],
-  controllers: [NjsBotInstanceService],
+  controllers: [BotInstanceController],
   exports: [NjsBotInstanceService, NjsBotInstanceStore],
 })
 export class BotInstanceModule {}

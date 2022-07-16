@@ -10,6 +10,7 @@ import {
   IMessageService,
   ITokenService,
   IBotStore,
+  FollowStore,
 } from 'lib';
 
 export interface IInviteService {
@@ -41,7 +42,18 @@ export class InviteService {
     private messageService: IMessageService,
     private tokenService: ITokenService,
     private botEntity: IBotStore,
-  ) {}
+  ) {
+    console.log(
+      this.inviteStore,
+      this.userEntity,
+      this.followEntity,
+      this.eventEmitter,
+      this.streamEntity,
+      this.messageService,
+      this.tokenService,
+      this.botEntity,
+    );
+  }
 
   /**
    * Sends invite updates to the user-inviter;

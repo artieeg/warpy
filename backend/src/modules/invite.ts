@@ -31,6 +31,7 @@ import {
   ICancelInviteRequest,
   ICancelInviteResponse,
 } from '@warpy/lib';
+import { FollowModule } from './follow';
 
 @Injectable()
 export class NjsInviteStore extends InviteStore implements OnModuleInit {
@@ -134,7 +135,14 @@ export class InviteController
 }
 
 @Module({
-  imports: [PrismaModule, StreamModule, UserModule, TokenModule, BotsModule],
+  imports: [
+    PrismaModule,
+    StreamModule,
+    UserModule,
+    FollowModule,
+    TokenModule,
+    BotsModule,
+  ],
   providers: [NjsInviteStore, NjsInviteService],
   controllers: [InviteController],
   exports: [],

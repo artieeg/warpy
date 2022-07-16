@@ -81,7 +81,7 @@ export class UserOnlineStatusController
 @Module({
   imports: [],
   providers: [NjsUserOnlineStatusCache, UserOnlineStatusService],
-  controllers: [],
+  controllers: [UserOnlineStatusController],
   exports: [UserOnlineStatusService],
 })
 export class UserOnlineStatusModule {}
