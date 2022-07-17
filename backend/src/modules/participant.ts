@@ -30,7 +30,7 @@ import {
   IMediaToggleRequest,
 } from '@warpy/lib';
 import { MediaModule, NjsMediaService } from './media';
-import { NjsBotInstanceStore } from './bot-instance';
+import { BotInstanceModule, NjsBotInstanceStore } from './bot-instance';
 import { NjsUserService, UserModule } from './user';
 
 @Injectable()
@@ -135,10 +135,10 @@ export class ParticipantController
 }
 
 @Module({
-  imports: [MediaModule, UserModule],
+  imports: [MediaModule, UserModule, BotInstanceModule],
   providers: [NjsParticipantStore, NjsParticipantService],
   controllers: [ParticipantController],
-  exports: [NjsParticipantStore],
+  exports: [NjsParticipantStore, NjsParticipantService],
 })
 @Global()
 export class ParticipantModule {}

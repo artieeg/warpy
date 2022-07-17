@@ -77,6 +77,6 @@ export class StreamController implements OnHostReassignFailed, OnHostReassign {
   imports: [PrismaModule, MediaModule],
   controllers: [StreamController],
   providers: [NjsStreamService, NjsStreamStore],
-  exports: [NjsStreamService],
+  exports: [NjsStreamService, NjsStreamStore],
 })
 export class StreamModule {}

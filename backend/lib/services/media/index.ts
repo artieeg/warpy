@@ -25,6 +25,7 @@ export type MediaConnectionParams = {
 export interface IMediaService {
   createNewRoom(payload: ICreateMediaRoom): Promise<INewMediaRoomData>;
   getViewerParams(user: string, stream: string): Promise<MediaConnectionParams>;
+  createSendTransport(params: ICreateTransport): Promise<INewTransportResponse>;
   getStreamerParams(params: {
     user: string;
     roomId: string;

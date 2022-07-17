@@ -1,10 +1,10 @@
 import { Global, Injectable, Module } from '@nestjs/common';
-import { NatsModule } from './nats';
-import { MessageService, NatsService } from 'lib';
+import { NatsModule, NjsNatsService } from './nats';
+import { MessageService } from 'lib';
 
 @Injectable()
 export class NjsMessageService extends MessageService {
-  constructor(nc: NatsService) {
+  constructor(nc: NjsNatsService) {
     super(nc);
   }
 }

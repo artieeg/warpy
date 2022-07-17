@@ -1,7 +1,6 @@
-//order of exports matters :)
-
 export * from './prisma';
 export * from './nats';
+export * from './message';
 export * from './node-info';
 export * from './node-registry';
 export * from './stream-media-node-assigner';
@@ -28,15 +27,14 @@ export * from './chat';
 export * from './friend-feed';
 export * from './gif';
 export * from './invite';
-export * from './media';
 export * from './media-balancer';
-export * from './message';
+export * from './media';
 export * from './sync';
 export * from './notification';
 export * from './active-speaker';
 export * from './online-status';
-export * from './participant';
 export * from './bot-instance';
+export * from './participant';
 export * from './stream-ban';
 export * from './stream-host';
 export * from './participant-role';

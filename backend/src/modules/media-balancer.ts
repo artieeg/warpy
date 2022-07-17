@@ -20,8 +20,8 @@ export class NjsMediaBalancerService extends MediaBalancerService {
 
 @Module({
   imports: [StreamNodeAssignerModule, NodeInfoModule, NodeRegistryModule],
-  providers: [MediaBalancerService],
+  providers: [NjsMediaBalancerService],
   controllers: [],
-  exports: [MediaBalancerService],
+  exports: [NjsMediaBalancerService],
 })
 export class MediaBalancerModule {}

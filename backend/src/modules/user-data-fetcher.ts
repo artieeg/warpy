@@ -3,7 +3,7 @@ import { MessagePattern } from '@nestjs/microservices';
 import { UserDataFetcherService } from 'lib';
 import { IUserRequest, IUserInfoResponse } from '@warpy/lib';
 import { NjsUserStore, UserModule } from './user';
-import { NjsFollowStore } from './follow';
+import { FollowModule, NjsFollowStore } from './follow';
 import { NjsParticipantStore } from './participant';
 import { NjsStreamStore, StreamModule } from './stream';
 
@@ -32,7 +32,7 @@ export class UserDataFetcherController {
 }
 
 @Module({
-  imports: [UserModule, StreamModule],
+  imports: [UserModule, StreamModule, FollowModule],
   providers: [NjsUserDataFetcherService],
   controllers: [UserDataFetcherController],
   exports: [],

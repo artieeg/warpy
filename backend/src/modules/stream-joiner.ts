@@ -3,11 +3,17 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { StreamJoiner } from 'lib';
-import { IJoinStream, IJoinStreamResponse } from '@warpy/lib';
-import { NjsParticipantService, NjsParticipantStore } from './participant';
+import { IBotJoin, IJoinStream, IJoinStreamResponse } from '@warpy/lib';
+import {
+  NjsParticipantService,
+  NjsParticipantStore,
+  ParticipantModule,
+} from './participant';
 import { NjsStreamBanService, ParticipantBanModule } from './stream-ban';
-import { NjsMediaService } from './media';
-import { NjsHostService } from './stream-host';
+import { MediaModule, NjsMediaService } from './media';
+import { HostModule, NjsHostService } from './stream-host';
+import { BotInstanceModule, NjsBotInstanceService } from './bot-instance';
+import { NJTokenService, TokenModule } from './token';
 
 @Injectable()
 export class NjsStreamJoiner extends StreamJoiner {
@@ -18,14 +24,18 @@ export class NjsStreamJoiner extends StreamJoiner {
     streamBansService: NjsStreamBanService,
     mediaService: NjsMediaService,
     hostService: NjsHostService,
+    botInstanceService: NjsBotInstanceService,
+    tokenService: NJTokenService,
   ) {
     super(
       participantService,
       participantStore,
+      botInstanceService,
       events,
       streamBansService,
       mediaService,
       hostService,
+      tokenService,
     );
   }
 }
@@ -33,6 +43,14 @@ export class NjsStreamJoiner extends StreamJoiner {
 @Controller()
 export class StreamJoinerController {
   constructor(private joiner: NjsStreamJoiner) {}
+
+  @MessagePattern('bot.join')
+  async onBotJoin({ user, inviteDetailsToken }: IBotJoin) {
+    const response = await this.joiner.joinBot(user, inviteDetailsToken);
+
+    return response;
+  }
+
   @MessagePattern('stream.join')
   async onNewViewer({
     stream,
@@ -43,7 +61,14 @@ export class StreamJoinerController {
 }
 
 @Module({
-  imports: [ParticipantBanModule],
+  imports: [
+    ParticipantBanModule,
+    ParticipantModule,
+    HostModule,
+    MediaModule,
+    BotInstanceModule,
+    TokenModule,
+  ],
   providers: [NjsStreamJoiner],
   controllers: [StreamJoinerController],
   exports: [],
