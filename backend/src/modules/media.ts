@@ -6,11 +6,23 @@ import {
   EVENT_PARTICIPANT_LEAVE,
 } from '@warpy-be/utils';
 import { MediaService } from 'lib';
-import { NatsModule, ParticipantNodeAssignerModule } from '.';
-import { MediaBalancerModule } from './media-balancer';
+import { MediaBalancerModule, NjsMediaBalancerService } from './media-balancer';
+import { NatsModule, NjsNatsService } from './nats';
+import {
+  NjsParticipantNodeAssignerStore,
+  ParticipantNodeAssignerModule,
+} from './participant-media-node-assigner';
 
 @Injectable()
-export class NjsMediaService extends MediaService {}
+export class NjsMediaService extends MediaService {
+  constructor(
+    nodeAssigner: NjsParticipantNodeAssignerStore,
+    balancer: NjsMediaBalancerService,
+    nc: NjsNatsService,
+  ) {
+    super(nodeAssigner, balancer, nc);
+  }
+}
 
 @Controller()
 export class MediaController

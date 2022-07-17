@@ -5,14 +5,6 @@ import { MessagePattern } from '@nestjs/microservices';
 import { ExceptionFilter } from '@warpy-be/rpc-exception.filter';
 import { EVENT_USER_DISCONNECTED } from '@warpy-be/utils';
 import {
-  PrismaModule,
-  FollowModule,
-  StreamModule,
-  TokenModule,
-  AppInviteModule,
-  DeveloperAccountModule,
-} from '.';
-import {
   IUserUpdateRequest,
   IUserUpdateResponse,
   ICreateAnonUserResponse,
@@ -25,12 +17,31 @@ import {
   IUserDisconnected,
 } from '@warpy/lib';
 import { UserStore, UserService } from 'lib';
+import { AppInviteModule } from './app-invite';
+import { DeveloperAccountModule } from './developer-account';
+import { FollowModule } from './follow';
+import { PrismaModule, PrismaService } from './prisma';
+import { StreamModule } from './stream';
+import { NjsRefreshTokenStore, NJTokenService, TokenModule } from './token';
 
 @Injectable()
-export class NjsUserStore extends UserStore {}
+export class NjsUserStore extends UserStore {
+  constructor(prisma: PrismaService) {
+    super(prisma);
+  }
+}
 
 @Injectable()
-export class NjsUserService extends UserService {}
+export class NjsUserService extends UserService {
+  constructor(
+    userStore: NjsUserStore,
+    tokenService: NJTokenService,
+    refreshTokenStore: NjsRefreshTokenStore,
+    events: EventEmitter2,
+  ) {
+    super(userStore, tokenService, refreshTokenStore, events);
+  }
+}
 
 @Controller()
 @UseFilters(ExceptionFilter)

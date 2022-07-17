@@ -5,7 +5,7 @@ import IORedis from 'ioredis';
 import { StreamNodeAssignerStore } from 'lib';
 
 @Injectable()
-export class StreamNodeAssignerService
+export class NjsStreamNodeAssignerStore
   extends StreamNodeAssignerStore
   implements OnModuleInit
 {
@@ -22,7 +22,7 @@ export class StreamNodeAssignerService
 
 @Controller()
 export class StreamNodeAssignerController {
-  constructor(private streamNodeAssignerService: StreamNodeAssignerService) {}
+  constructor(private streamNodeAssignerService: NjsStreamNodeAssignerStore) {}
 
   @OnEvent('stream.stopped')
   async onStreamStop({ stream }: { stream: string }) {
@@ -32,8 +32,8 @@ export class StreamNodeAssignerController {
 
 @Module({
   imports: [],
-  providers: [StreamNodeAssignerService],
+  providers: [NjsStreamNodeAssignerStore],
   controllers: [StreamNodeAssignerController],
-  exports: [StreamNodeAssignerService],
+  exports: [NjsStreamNodeAssignerStore],
 })
 export class StreamNodeAssignerModule {}

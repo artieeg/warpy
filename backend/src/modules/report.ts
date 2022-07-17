@@ -1,14 +1,21 @@
 import { Injectable, Controller, Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { UserReportService, UserReportStore } from 'lib';
-import { PrismaModule } from '.';
 import { IUserReportRequest, IUserReportResponse } from '@warpy/lib';
+import { PrismaService, PrismaModule } from './prisma';
+@Injectable()
+export class NjsUserReportStore extends UserReportStore {
+  constructor(prisma: PrismaService) {
+    super(prisma);
+  }
+}
 
 @Injectable()
-export class NjsUserReportService extends UserReportService {}
-
-@Injectable()
-export class NjsUserReportStore extends UserReportStore {}
+export class NjsUserReportService extends UserReportService {
+  constructor(userReportStore: NjsUserReportStore) {
+    super(userReportStore);
+  }
+}
 
 @Controller()
 export class UserReportController {

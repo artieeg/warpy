@@ -1,15 +1,33 @@
 import { Injectable, Controller, Module } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
-import { AppInviteModule } from './app-invite';
-import { UserModule } from './user';
+import { AppInviteModule, NjsAppliedAppInviteStore } from './app-invite';
+import { NjsUserService, UserModule } from './user';
 import { EVENT_USER_CONNECTED } from '@warpy-be/utils';
 import { SyncService } from 'lib';
-import { CategoryModule, FriendFeedModule, UserListModule } from '.';
 import { IWhoAmIRequest, IWhoAmIResponse } from '@warpy/lib';
+import { CategoryModule, NjsCategoryStore } from './category';
+import { FriendFeedModule, NjsFriendFeedService } from './friend-feed';
+import { NjsUserListService, UserListModule } from './user-list';
 
 @Injectable()
-export class NjsSyncService extends SyncService {}
+export class NjsSyncService extends SyncService {
+  constructor(
+    userService: NjsUserService,
+    appliedAppInviteStore: NjsAppliedAppInviteStore,
+    categoryStore: NjsCategoryStore,
+    friendFeedService: NjsFriendFeedService,
+    userListService: NjsUserListService,
+  ) {
+    super(
+      userService,
+      appliedAppInviteStore,
+      categoryStore,
+      friendFeedService,
+      userListService,
+    );
+  }
+}
 
 @Controller()
 export class SyncController {

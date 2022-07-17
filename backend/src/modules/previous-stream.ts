@@ -13,10 +13,11 @@ import {
   EVENT_USER_CONNECTED,
 } from '@warpy-be/utils';
 import { PreviousStreamStore, PreviousStreamService } from 'lib';
-import { StreamModule } from './stream';
+import { NjsMessageService } from './message';
+import { NjsStreamStore, StreamModule } from './stream';
 
 @Injectable()
-export class NjsPreviousStreamStoreProvider
+export class NjsPreviousStreamStore
   extends PreviousStreamStore
   implements OnModuleInit
 {
@@ -30,15 +31,21 @@ export class NjsPreviousStreamStoreProvider
 }
 
 @Injectable()
-export class NjsPreviousStreamServiceProvider extends PreviousStreamService {}
+export class NjsPreviousStreamService extends PreviousStreamService {
+  constructor(
+    previousStreamStore: NjsPreviousStreamStore,
+    messageService: NjsMessageService,
+    streamStore: NjsStreamStore,
+  ) {
+    super(previousStreamStore, messageService, streamStore);
+  }
+}
 
 @Controller()
 export class PreviousStreamController
   implements OnUserDisconnect, OnNewParticipant, OnUserConnect
 {
-  constructor(
-    private previousStreamService: NjsPreviousStreamServiceProvider,
-  ) {}
+  constructor(private previousStreamService: NjsPreviousStreamService) {}
 
   @OnEvent(EVENT_NEW_PARTICIPANT)
   async onNewParticipant({ participant: { id, stream } }) {
@@ -63,7 +70,7 @@ export class PreviousStreamController
 
 @Module({
   imports: [StreamModule],
-  providers: [NjsPreviousStreamStoreProvider, NjsPreviousStreamServiceProvider],
+  providers: [NjsPreviousStreamStore, NjsPreviousStreamService],
   controllers: [PreviousStreamController],
   exports: [],
 })

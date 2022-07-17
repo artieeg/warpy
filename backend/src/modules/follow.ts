@@ -1,19 +1,26 @@
 import { Injectable, Controller, Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { FollowService, FollowStore } from 'lib';
-import { PrismaModule } from '.';
 import {
   IFollowRequest,
   IFollowResponse,
   IUnfollowRequest,
   IUnfollowResponse,
 } from '@warpy/lib';
+import { PrismaService, PrismaModule } from './prisma';
+@Injectable()
+export class NjsFollowStore extends FollowStore {
+  constructor(prisma: PrismaService) {
+    super(prisma);
+  }
+}
 
 @Injectable()
-export class NjsFollowService extends FollowService {}
-
-@Injectable()
-export class NjsFollowStore extends FollowStore {}
+export class NjsFollowService extends FollowService {
+  constructor(followStore: NjsFollowStore) {
+    super(followStore);
+  }
+}
 
 @Controller()
 export class FollowController {

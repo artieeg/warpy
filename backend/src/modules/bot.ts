@@ -1,9 +1,13 @@
 import { Injectable, Controller, Post, Body, Module } from '@nestjs/common';
 import { MediaModule } from './media';
-import { TokenModule } from './token';
-import { DeveloperAccountModule } from './developer-account';
+import { NJTokenService, TokenModule } from './token';
+import {
+  DeveloperAccountModule,
+  NjsDeveloperAccountStore,
+} from './developer-account';
 import { BotsService, BotStore } from 'lib';
-import { PrismaModule } from './prisma';
+import { PrismaModule, PrismaService } from './prisma';
+import { NjsMessageService } from './message';
 
 export type CreateBotDTO = {
   creator: string;
@@ -13,10 +17,23 @@ export type CreateBotDTO = {
 };
 
 @Injectable()
-export class NjsBotsService extends BotsService {}
+export class NjsBotStore extends BotStore {
+  constructor(prisma: PrismaService) {
+    super(prisma);
+  }
+}
 
 @Injectable()
-export class NjsBotStore extends BotStore {}
+export class NjsBotsService extends BotsService {
+  constructor(
+    botStore: NjsBotStore,
+    developerAccountStore: NjsDeveloperAccountStore,
+    messageService: NjsMessageService,
+    tokenService: NJTokenService,
+  ) {
+    super(botStore, developerAccountStore, messageService, tokenService);
+  }
+}
 
 @Controller()
 export class BotController {

@@ -1,16 +1,28 @@
 import { Controller, Injectable, Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { FeedService } from 'lib';
-import { PrismaModule, StreamModule, UserBlockModule, UserModule } from '.';
 import {
   IStreamSearchRequest,
   IStreamSearchResponse,
   IRequestFeed,
   IFeedResponse,
 } from '@warpy/lib';
+import { NjsUserBlockService, UserBlockModule } from './user-block';
+import { NjsParticipantStore } from './participant';
+import { PrismaModule } from './prisma';
+import { NjsStreamStore, StreamModule } from './stream';
+import { UserModule } from './user';
 
 @Injectable()
-export class NjsFeedService extends FeedService {}
+export class NjsFeedService extends FeedService {
+  constructor(
+    userBlockService: NjsUserBlockService,
+    streamStore: NjsStreamStore,
+    participantStore: NjsParticipantStore,
+  ) {
+    super(userBlockService, streamStore, participantStore);
+  }
+}
 
 @Controller()
 export class FeedController {

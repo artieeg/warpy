@@ -1,6 +1,6 @@
-import { Injectable, Controller, forwardRef, Module } from '@nestjs/common';
+import { Injectable, Controller, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { OnEvent } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   OnParticipantRejoin,
@@ -21,7 +21,9 @@ import {
 import { HostStore } from 'lib';
 import { HostService } from 'lib/services/stream-host';
 import { IHostReassignRequest } from '@warpy/lib';
-import { UserModule } from '.';
+import { NjsTimerService } from '@warpy-be/shared';
+import { NjsUserStore, UserModule } from './user';
+import { NjsParticipantStore } from './participant';
 
 @Injectable()
 export class NjsHostStore extends HostStore {
@@ -35,7 +37,17 @@ export class NjsHostStore extends HostStore {
 }
 
 @Injectable()
-export class NjsHostService extends HostService {}
+export class NjsHostService extends HostService {
+  constructor(
+    timerService: NjsTimerService,
+    hostStore: NjsHostStore,
+    events: EventEmitter2,
+    userStore: NjsUserStore,
+    participantStore: NjsParticipantStore,
+  ) {
+    super(timerService, hostStore, events, userStore, participantStore);
+  }
+}
 
 @Controller()
 export class HostController

@@ -1,7 +1,7 @@
 import { Injectable, Module } from '@nestjs/common';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import { TokenService, RefreshTokenStore, RefreshTokenStoreImpl } from 'lib';
-import { PrismaModule, PrismaService } from '.';
+import { PrismaModule, PrismaService } from './prisma';
 
 @Injectable()
 export class NJTokenService extends TokenService {

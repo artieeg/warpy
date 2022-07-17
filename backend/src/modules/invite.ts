@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit, Controller, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { OnEvent } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   OnParticipantLeave,
@@ -16,13 +16,6 @@ import {
 } from '@warpy-be/utils';
 import { InviteStore, InviteService } from 'lib';
 import {
-  PrismaModule,
-  StreamModule,
-  BotsModule,
-  TokenModule,
-  UserModule,
-} from '.';
-import {
   IInviteRequest,
   IInviteResponse,
   IInviteSuggestionsRequest,
@@ -31,7 +24,13 @@ import {
   ICancelInviteRequest,
   ICancelInviteResponse,
 } from '@warpy/lib';
-import { FollowModule } from './follow';
+import { FollowModule, NjsFollowStore } from './follow';
+import { NjsUserStore, UserModule } from './user';
+import { NjsStreamStore, StreamModule } from './stream';
+import { NjsMessageService } from './message';
+import { NJTokenService, TokenModule } from './token';
+import { BotsModule, NjsBotStore } from './bot';
+import { PrismaModule } from './prisma';
 
 @Injectable()
 export class NjsInviteStore extends InviteStore implements OnModuleInit {
@@ -45,7 +44,29 @@ export class NjsInviteStore extends InviteStore implements OnModuleInit {
 }
 
 @Injectable()
-export class NjsInviteService extends InviteService {}
+export class NjsInviteService extends InviteService {
+  constructor(
+    inviteStore: NjsInviteStore,
+    userStore: NjsUserStore,
+    followStore: NjsFollowStore,
+    events: EventEmitter2,
+    streamStore: NjsStreamStore,
+    messageService: NjsMessageService,
+    tokenService: NJTokenService,
+    botStore: NjsBotStore,
+  ) {
+    super(
+      inviteStore,
+      userStore,
+      followStore,
+      events,
+      streamStore,
+      messageService,
+      tokenService,
+      botStore,
+    );
+  }
+}
 
 @Controller()
 export class InviteController

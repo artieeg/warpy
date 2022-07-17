@@ -40,6 +40,8 @@ import {
   ReactionsEvent,
 } from 'lib';
 import { IParticipant } from '@warpy/lib';
+import { NjsParticipantStore } from './participant';
+import { NjsMessageService } from './message';
 
 @Injectable()
 export class NjsBroadcastUserListStore
@@ -56,7 +58,15 @@ export class NjsBroadcastUserListStore
 }
 
 @Injectable()
-export class NjsBroadcastService extends BroadcastService {}
+export class NjsBroadcastService extends BroadcastService {
+  constructor(
+    participantStore: NjsParticipantStore,
+    messageService: NjsMessageService,
+    broadcastUserListStore: NjsBroadcastUserListStore,
+  ) {
+    super(participantStore, messageService, broadcastUserListStore);
+  }
+}
 
 @Controller()
 export class BroadcastController

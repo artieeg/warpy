@@ -2,9 +2,14 @@ import { Injectable, Controller, Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { ActiveSpeakerService } from 'lib';
 import { IActiveSpeakersPayload } from '@warpy/lib';
+import {EventEmitter2} from '@nestjs/event-emitter';
 
 @Injectable()
-export class NjsActiveSpeakerService extends ActiveSpeakerService {}
+export class NjsActiveSpeakerService extends ActiveSpeakerService {
+  constructor(events: EventEmitter2) {
+    super(events)
+  }
+}
 
 @Controller()
 export class ActiveSpeakerController {

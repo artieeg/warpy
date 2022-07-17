@@ -8,7 +8,7 @@ import {
   OnNewParticipant,
   OnParticipantRejoin,
 } from '@warpy-be/interfaces';
-import { UserModule } from './user';
+import { NjsUserStore, UserModule } from './user';
 import {
   EVENT_PARTICIPANT_REJOIN,
   EVENT_NEW_PARTICIPANT,
@@ -16,11 +16,21 @@ import {
   EVENT_PARTICIPANT_LEAVE,
 } from '@warpy-be/utils';
 import { ChatService, ChatMemberStore } from 'lib';
-import { UserBlockModule } from '.';
 import { INewChatMessage, ISendMessageResponse } from '@warpy/lib';
+import { NjsParticipantStore } from './participant';
+import { NjsUserBlockService, UserBlockModule } from './user-block';
 
 @Injectable()
-export class NjsChatService extends ChatService {}
+export class NjsChatService extends ChatService {
+  constructor(
+    events: EventEmitter2,
+    userStore: NjsUserStore,
+    participantStore: NjsParticipantStore,
+    userBlockService: NjsUserBlockService,
+  ) {
+    super(events, userStore, participantStore, userBlockService);
+  }
+}
 
 @Injectable()
 export class NjsChatMemberStore

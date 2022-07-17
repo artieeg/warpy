@@ -4,7 +4,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import { EVENT_INVITE_AVAILABLE } from '@warpy-be/utils';
 import { NotificationService, NotificationStore } from 'lib';
-import { PrismaModule } from '.';
+import { PrismaModule } from './prisma';
 import {
   IInvite,
   IReadNotifications,
@@ -12,6 +12,7 @@ import {
   INotificationsPage,
   IGetUnreadNotifications,
 } from '@warpy/lib';
+import { NjsMessageService } from './message';
 
 @Injectable()
 export class NjsNotificationStore
@@ -28,7 +29,14 @@ export class NjsNotificationStore
 }
 
 @Injectable()
-export class NjsNotificationService extends NotificationService {}
+export class NjsNotificationService extends NotificationService {
+  constructor(
+    notificationStore: NjsNotificationStore,
+    messageService: NjsMessageService,
+  ) {
+    super(notificationStore, messageService);
+  }
+}
 
 @Controller()
 export class NotificationController {

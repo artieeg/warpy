@@ -4,10 +4,9 @@ import {
   Controller,
   Module,
   Global,
-  forwardRef,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { OnEvent } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   OnStreamEnd,
@@ -23,33 +22,16 @@ import {
   EVENT_PARTICIPANT_KICKED,
   EVENT_USER_DISCONNECTED,
 } from '@warpy-be/utils';
-import { ParticipantService, ParticipantStore, StreamJoiner } from 'lib';
-import {
-  ActiveSpeakerModule,
-  BotsModule,
-  HostModule,
-  MediaModule,
-  NJTokenService,
-  ParticipantBanModule,
-  ParticipantRoleModule,
-  PrismaModule,
-  UserModule,
-} from '.';
+import { ParticipantService, ParticipantStore } from 'lib';
 import {
   IRequestViewers,
   IRequestViewersResponse,
   IRaiseHand,
-  IJoinStream,
-  IJoinStreamResponse,
   IMediaToggleRequest,
 } from '@warpy/lib';
-import { TokenModule } from './token';
-
-@Injectable()
-export class NjsStreamJoiner extends StreamJoiner {}
-
-@Injectable()
-export class NjsParticipantService extends ParticipantService {}
+import { MediaModule, NjsMediaService } from './media';
+import { NjsBotInstanceStore } from './bot-instance';
+import { NjsUserService, UserModule } from './user';
 
 @Injectable()
 export class NjsParticipantStore
@@ -65,6 +47,25 @@ export class NjsParticipantStore
   }
 }
 
+@Injectable()
+export class NjsParticipantService extends ParticipantService {
+  constructor(
+    participantStore: NjsParticipantStore,
+    botInstanceStore: NjsBotInstanceStore,
+    events: EventEmitter2,
+    userService: NjsUserService,
+    mediaService: NjsMediaService,
+  ) {
+    super(
+      participantStore,
+      botInstanceStore,
+      events,
+      userService,
+      mediaService,
+    );
+  }
+}
+
 @Controller()
 export class ParticipantController
   implements OnStreamEnd, OnRoleChange, OnParticipantLeave, OnParticipantRejoin
@@ -72,7 +73,6 @@ export class ParticipantController
   constructor(
     private store: NjsParticipantStore,
     private participant: NjsParticipantService,
-    private joiner: NjsStreamJoiner,
   ) {}
 
   @MessagePattern('viewers.get')
@@ -88,14 +88,6 @@ export class ParticipantController
   @MessagePattern('user.raise-hand')
   async onRaiseHand({ user, flag }: IRaiseHand) {
     await this.participant.setRaiseHand(user, flag);
-  }
-
-  @MessagePattern('stream.join')
-  async onNewViewer({
-    stream,
-    user,
-  }: IJoinStream): Promise<IJoinStreamResponse> {
-    return this.joiner.join(user, stream);
   }
 
   @MessagePattern('participant.media-toggle')
@@ -143,18 +135,8 @@ export class ParticipantController
 }
 
 @Module({
-  imports: [
-    PrismaModule,
-    MediaModule,
-    ActiveSpeakerModule,
-    ParticipantRoleModule,
-    ParticipantBanModule,
-    HostModule,
-    BotsModule,
-    UserModule,
-    TokenModule,
-  ],
-  providers: [NjsParticipantStore, NjsParticipantService, NjsStreamJoiner],
+  imports: [MediaModule, UserModule],
+  providers: [NjsParticipantStore, NjsParticipantService],
   controllers: [ParticipantController],
   exports: [NjsParticipantStore],
 })

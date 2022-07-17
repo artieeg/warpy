@@ -7,7 +7,7 @@ import {
   OnParticipantLeave,
   OnStreamEnd,
 } from '@warpy-be/interfaces';
-import { PrismaModule } from './prisma';
+import { PrismaModule, PrismaService } from './prisma';
 import {
   EVENT_STREAM_ENDED,
   EVENT_PARTICIPANT_LEAVE,
@@ -27,7 +27,7 @@ import {
 } from '@warpy/lib';
 
 @Injectable()
-class NjsStreamerIdStore extends StreamerIdStore {
+export class NjsStreamerIdStore extends StreamerIdStore {
   constructor(configService: ConfigService) {
     super(configService.get('blockStreamerIdStoreAddr'));
   }
@@ -38,13 +38,14 @@ class NjsStreamerIdStore extends StreamerIdStore {
 }
 
 @Injectable()
-class NjsUserBlockStore extends UserBlockStore {}
+export class NjsUserBlockStore extends UserBlockStore {
+  constructor(prisma: PrismaService) {
+    super(prisma);
+  }
+}
 
 @Injectable()
-class NjsUserBlockService extends UserBlockService {}
-
-@Injectable()
-class NjsUserBlockCacheStore extends UserBlockCacheStore {
+export class NjsUserBlockCacheStore extends UserBlockCacheStore {
   client: IORedis.Redis;
 
   constructor(configService: ConfigService) {
@@ -56,8 +57,19 @@ class NjsUserBlockCacheStore extends UserBlockCacheStore {
   }
 }
 
+@Injectable()
+export class NjsUserBlockService extends UserBlockService {
+  constructor(
+    userBlockStore: NjsUserBlockStore,
+    userBlockCache: NjsUserBlockCacheStore,
+    streamerIdStore: NjsStreamerIdStore,
+  ) {
+    super(userBlockStore, userBlockCache, streamerIdStore);
+  }
+}
+
 @Controller()
-class UserBlockController
+export class UserBlockController
   implements OnRoleChange, OnParticipantLeave, OnStreamEnd
 {
   constructor(

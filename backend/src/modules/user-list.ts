@@ -1,11 +1,16 @@
 import { Injectable, Controller, Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { UserListFetcherService } from 'lib';
-import { FollowModule, UserBlockModule } from '.';
 import { IUserListRequest, IUserListResponse, IUser } from '@warpy/lib';
+import { FollowModule, NjsFollowStore } from './follow';
+import { NjsUserBlockService, UserBlockModule } from './user-block';
 
 @Injectable()
-export class NjsUserListService extends UserListFetcherService {}
+export class NjsUserListService extends UserListFetcherService {
+  constructor(followStore: NjsFollowStore, blockService: NjsUserBlockService) {
+    super(followStore, blockService);
+  }
+}
 
 @Controller()
 export class UserListController {

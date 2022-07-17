@@ -3,10 +3,15 @@ import { MessagePattern } from '@nestjs/microservices';
 import { ReactionService } from 'lib';
 import { IClap } from '@warpy/lib';
 import { ExceptionFilter } from '../rpc-exception.filter';
-import { StreamModule } from './stream';
+import { NjsStreamStore, StreamModule } from './stream';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class NjsReactionService extends ReactionService {
+  constructor(events: EventEmitter2, streamStore: NjsStreamStore) {
+    super(events, streamStore);
+  }
+
   onModuleInit() {
     this.onInstanceInit();
   }

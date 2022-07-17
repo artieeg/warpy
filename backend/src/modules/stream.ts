@@ -1,5 +1,5 @@
 import { Injectable, Controller, Module } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import { StreamService, StreamStore } from 'lib';
 import {
@@ -10,19 +10,31 @@ import {
   IStreamGetRequest,
 } from '@warpy/lib';
 import { OnHostReassignFailed, OnHostReassign } from '../interfaces';
-import { MediaModule } from './media';
-import { PrismaModule } from './prisma';
+import { MediaModule, NjsMediaService } from './media';
+import { PrismaModule, PrismaService } from './prisma';
 import { EVENT_HOST_REASSIGN, EVENT_HOST_REASSIGN_FAILED } from '../utils';
 
 @Injectable()
-class NjsStreamStoreProvider extends StreamStore {}
+export class NjsStreamStore extends StreamStore {
+  constructor(prisma: PrismaService) {
+    super(prisma);
+  }
+}
 
 @Injectable()
-class NjsStreamServiceProvider extends StreamService {}
+export class NjsStreamService extends StreamService {
+  constructor(
+    streamStore: NjsStreamStore,
+    mediaService: NjsMediaService,
+    events: EventEmitter2,
+  ) {
+    super(streamStore, mediaService, events);
+  }
+}
 
 @Controller()
-class StreamController implements OnHostReassignFailed, OnHostReassign {
-  constructor(private streamService: NjsStreamServiceProvider) {}
+export class StreamController implements OnHostReassignFailed, OnHostReassign {
+  constructor(private streamService: NjsStreamService) {}
 
   @MessagePattern('stream.create')
   async createNewStream({
@@ -64,7 +76,7 @@ class StreamController implements OnHostReassignFailed, OnHostReassign {
 @Module({
   imports: [PrismaModule, MediaModule],
   controllers: [StreamController],
-  providers: [NjsStreamServiceProvider, NjsStreamStoreProvider],
-  exports: [NjsStreamServiceProvider],
+  providers: [NjsStreamService, NjsStreamStore],
+  exports: [NjsStreamService],
 })
 export class StreamModule {}

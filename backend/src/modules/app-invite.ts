@@ -4,21 +4,36 @@ import { MessagePattern } from '@nestjs/microservices';
 import { OnNewUser } from '@warpy-be/interfaces';
 import { EVENT_USER_CREATED } from '@warpy-be/utils';
 import { AppliedAppInviteStore, AppInviteService, AppInviteStore } from 'lib';
-import { PrismaModule } from '.';
 import {
   IInviteApplyRequest,
   IAppInviteResponse,
   IAppInviteRequest,
 } from '@warpy/lib';
+import { PrismaService, PrismaModule } from './prisma';
 
 @Injectable()
-export class NjsAppliedAppInviteStore extends AppliedAppInviteStore {}
+export class NjsAppliedAppInviteStore extends AppliedAppInviteStore {
+  constructor(prisma: PrismaService) {
+    super(prisma);
+  }
+}
 
 @Injectable()
-export class NjsAppInviteService extends AppInviteService {}
+export class NjsAppInviteStore extends AppInviteStore {
+  constructor(prisma: PrismaService) {
+    super(prisma);
+  }
+}
 
 @Injectable()
-export class NjsAppInviteStore extends AppInviteStore {}
+export class NjsAppInviteService extends AppInviteService {
+  constructor(
+    appInviteStore: NjsAppInviteStore,
+    appliedAppInviteStore: NjsAppliedAppInviteStore,
+  ) {
+    super(appInviteStore, appliedAppInviteStore);
+  }
+}
 
 @Controller()
 export class AppInviteController implements OnNewUser {
