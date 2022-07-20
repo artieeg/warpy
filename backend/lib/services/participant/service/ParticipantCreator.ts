@@ -2,9 +2,8 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EVENT_NEW_PARTICIPANT } from '@warpy-be/utils';
 import { IParticipant } from '@warpy/lib';
 import { IParticipantStore } from 'lib';
-import { IMediaService } from '../media';
-import { IStreamBanService } from '../stream-bans';
-import { IUserService } from '../user';
+import { IMediaService } from '../../media';
+import { IUserService } from '../../user';
 
 export interface ParticipantCreator {
   createNewParticipant(
