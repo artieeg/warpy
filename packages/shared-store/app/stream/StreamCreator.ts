@@ -1,5 +1,4 @@
 import { IParticipant } from "@warpy/lib";
-import { arrayToMap } from "../../dispatchers";
 import { IStore } from "../../useStore";
 import { MediaService } from "../media";
 import { StateUpdate } from "../types";
@@ -51,9 +50,15 @@ export class StreamCreatorImpl implements StreamCreator {
       stream,
       title,
       sendMediaParams,
-      streamers: arrayToMap<IParticipant>([
-        { ...user!, stream, role: "streamer", isBot: false, isBanned: false },
-      ]),
+      streamers: {
+        [user.id]: {
+          ...user!,
+          stream,
+          role: "streamer",
+          isBot: false,
+          isBanned: false,
+        },
+      },
       totalParticipantCount: count,
       currentStreamHost: user!.id,
       role: "streamer",

@@ -3,8 +3,8 @@ import { MediaService } from "../media";
 import { IStore } from "../../useStore";
 import { StateUpdate } from "../types";
 import { IParticipant } from "@warpy/lib";
-import { arrayToMap } from "../../dispatchers";
 import { AppState } from "../AppState";
+import { arrayToMap } from "../utils";
 
 export interface StreamJoiner {
   join: ({ stream }: { stream: string }) => Promise<StateUpdate>;

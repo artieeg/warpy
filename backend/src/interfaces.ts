@@ -8,6 +8,10 @@ export interface OnStreamEnd {
   onStreamEnd: (data: { stream: string }) => Promise<any>;
 }
 
+export interface OnParticipantKicked {
+  onParticipantKicked: (data: IParticipant) => Promise<any>;
+}
+
 export interface OnParticipantLeave {
   onParticipantLeave: (data: { user: string; stream: string }) => Promise<any>;
 }
