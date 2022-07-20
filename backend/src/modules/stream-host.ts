@@ -19,7 +19,7 @@ import {
   EVENT_PARTICIPANT_LEAVE,
 } from '@warpy-be/utils';
 import { HostStore } from 'lib';
-import { HostService } from 'lib/services/stream-host';
+import { HostService } from 'lib/stream-host';
 import { IHostReassignRequest } from '@warpy/lib';
 import { NjsTimerService } from '@warpy-be/shared';
 import { NjsUserStore, UserModule } from './user';

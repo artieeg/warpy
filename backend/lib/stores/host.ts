@@ -1,6 +1,6 @@
 import IORedis, { Redis } from 'ioredis';
 import { IParticipant } from '@warpy/lib';
-import { toParticipantDTO } from 'lib/services/participant';
+import { toParticipantDTO } from 'lib/participant';
 import { OnInstanceInit } from 'lib/OnInstanceInit.interface';
 
 const PREFIX_HOST_OF_STREAM = 'host_of_';
