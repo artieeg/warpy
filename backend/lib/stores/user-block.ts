@@ -1,6 +1,6 @@
 import { UserBlock, User, PrismaClient } from '@prisma/client';
 import { IUserBlock } from '@warpy/lib';
-import { toUserDTO } from 'lib/stores';
+import { toUserDTO } from 'lib';
 
 function toBlockDTO(data: (UserBlock & { blocked?: User }) | null): IUserBlock {
   if (!data) {

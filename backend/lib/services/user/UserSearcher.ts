@@ -1,5 +1,5 @@
 import { IUser } from '@warpy/lib';
-import { IUserStore } from 'lib/stores';
+import { IUserStore } from 'lib';
 
 export interface UserSearcher {
   findById: (user: string, details?: boolean) => Promise<IUser>;

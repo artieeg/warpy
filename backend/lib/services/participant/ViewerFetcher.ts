@@ -1,5 +1,5 @@
 import { IParticipant } from '@warpy/lib';
-import { IParticipantStore } from 'lib/stores';
+import { IParticipantStore } from 'lib';
 
 export interface ViewerFetcher {
   getViewers(stream: string, page: number): Promise<IParticipant[]>;

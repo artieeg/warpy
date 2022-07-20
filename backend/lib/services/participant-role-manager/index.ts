@@ -6,7 +6,7 @@ import {
   EVENT_ROLE_CHANGE,
 } from '@warpy-be/utils';
 import { Roles } from '@warpy/lib';
-import { ParticipantStore } from 'lib/stores';
+import { ParticipantStore } from 'lib';
 import { MediaService } from '../media';
 import { MessageService } from '../message';
 import { HostService } from '../stream-host';

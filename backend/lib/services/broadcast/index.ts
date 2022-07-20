@@ -1,4 +1,4 @@
-import { ParticipantStore, BroadcastUserListStore } from 'lib/stores';
+import { ParticipantStore, BroadcastUserListStore } from 'lib';
 import { MessageService } from '../message';
 import { IAward, IParticipant } from '@warpy/lib';
 

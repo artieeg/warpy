@@ -1,4 +1,4 @@
-import { IUserStore } from 'lib/stores';
+import { IUserStore } from 'lib';
 
 export interface UserDeleter {
   del(user: string): Promise<void>;

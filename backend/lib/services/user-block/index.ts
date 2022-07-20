@@ -7,7 +7,7 @@ import {
   IStreamerIdStore,
   IUserBlockCacheStore,
   IUserBlockStore,
-} from 'lib/stores';
+} from 'lib';
 
 export interface IUserBlockService {
   unblockUser(blocker: string, blocked: string): Promise<void>;

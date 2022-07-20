@@ -1,5 +1,5 @@
 import { ICandidate, IStream } from '@warpy/lib';
-import { IParticipantStore, IStreamStore } from 'lib/stores';
+import { IParticipantStore, IStreamStore } from 'lib';
 import { IUserBlockService } from '../user-block';
 
 export class FeedService {

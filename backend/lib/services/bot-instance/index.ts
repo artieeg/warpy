@@ -1,4 +1,4 @@
-import { BotInstanceStore } from 'lib/stores';
+import { BotInstanceStore } from 'lib';
 import { TokenService } from '..';
 import { IUser } from '@warpy/lib';
 

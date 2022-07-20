@@ -1,6 +1,6 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EVENT_RAISE_HAND } from '@warpy-be/utils';
-import { IParticipantStore } from 'lib/stores';
+import { IParticipantStore } from 'lib';
 
 export interface StreamingPermissionRequester {
   setRaiseHand(user: string, flag: boolean): Promise<void>;

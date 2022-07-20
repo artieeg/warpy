@@ -1,5 +1,5 @@
-import { BotStore } from 'lib/stores';
-import { DeveloperAccountStore } from 'lib/stores';
+import { BotStore } from 'lib';
+import { DeveloperAccountStore } from 'lib';
 import { MessageService, TokenService } from '..';
 
 export type BotConfirmResponseDTO = {

@@ -1,4 +1,4 @@
-import { IParticipantNodeAssignerStore } from 'lib/stores';
+import { IParticipantNodeAssignerStore } from 'lib';
 import {
   IConnectRecvTransportParams,
   ICreateMediaRoom,

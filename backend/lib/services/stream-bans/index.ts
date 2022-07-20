@@ -5,8 +5,7 @@ import {
 } from '@warpy-be/errors';
 import { EVENT_PARTICIPANT_KICKED } from '@warpy-be/utils';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ParticipantStore } from 'lib/stores';
-import { StreamBanStore } from 'lib/stores/stream-bans';
+import { ParticipantStore, StreamBanStore } from 'lib';
 
 export interface IStreamBanService {
   checkUserBanned(user: string, stream: string): Promise<void>;

@@ -1,5 +1,5 @@
 import { IUser } from '@warpy/lib';
-import { IUserStore } from 'lib/stores';
+import { IUserStore } from 'lib';
 
 export interface UserUpdater {
   update: (user: string, params: Partial<IUser>) => Promise<void>;

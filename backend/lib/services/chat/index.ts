@@ -5,7 +5,7 @@ import { EVENT_CHAT_MESSAGE } from '@warpy-be/utils';
 
 import cuid from 'cuid';
 import Filter from 'bad-words';
-import { IUserStore, IParticipantStore } from 'lib/stores';
+import { IUserStore, IParticipantStore } from 'lib';
 import { IUserBlockService } from '../user-block';
 
 export interface IChatService {

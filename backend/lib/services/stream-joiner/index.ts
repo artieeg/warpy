@@ -9,7 +9,7 @@ import {
   IParticipant,
   Roles,
 } from '@warpy/lib';
-import { IParticipantStore } from 'lib/stores';
+import { IParticipantStore } from 'lib';
 import { BotInstanceService } from '../bot-instance';
 import { IMediaService } from '../media';
 import { IParticipantService } from '../participant';

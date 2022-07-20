@@ -1,7 +1,7 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { MaxVideoStreamers } from '@warpy-be/errors';
 import { EVENT_STREAMER_MEDIA_TOGGLE } from '@warpy-be/utils';
-import { IParticipantStore } from 'lib/stores';
+import { IParticipantStore } from 'lib';
 
 export interface MediaToggler {
   setMediaEnabled(

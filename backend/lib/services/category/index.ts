@@ -1,4 +1,4 @@
-import { ICategoryStore } from 'lib/stores';
+import { ICategoryStore } from 'lib';
 import { IStreamCategory } from '@warpy/lib';
 
 export interface ICategoryService {

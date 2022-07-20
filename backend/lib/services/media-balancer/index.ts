@@ -3,7 +3,7 @@ import {
   NodeInfoStore,
   NodeRegistryStore,
   StreamNodeAssignerStore,
-} from 'lib/stores';
+} from 'lib';
 
 export interface IMediaBalancerService {
   getSendNodeId(stream: string): Promise<string>;

@@ -1,4 +1,4 @@
-import { IFollow, IFollowStore } from 'lib/stores';
+import { IFollow, IFollowStore } from 'lib';
 
 export interface IFollowService {
   createNewFollow(follower: string, userToFollow: string): Promise<IFollow>;

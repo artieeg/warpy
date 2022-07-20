@@ -2,7 +2,7 @@ import { AppInviteNotFound } from '@warpy-be/errors';
 import { AppInvite, PrismaClient } from '@prisma/client';
 import { animals, colors, uniqueNamesGenerator } from 'unique-names-generator';
 import { IAppInvite } from '@warpy/lib';
-import { toUserDTO } from 'lib/stores';
+import { toUserDTO } from 'lib';
 
 export interface IAppInviteStore {
   create(user_id: string): Promise<IAppInvite>;

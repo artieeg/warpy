@@ -1,6 +1,6 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EVENT_PARTICIPANT_LEAVE } from '@warpy-be/utils';
-import { IBotInstanceStore, IParticipantStore } from 'lib/stores';
+import { IBotInstanceStore, IParticipantStore } from 'lib';
 
 export interface ParticipantRemover {
   handleLeavingParticipant(user: string): Promise<void>;

@@ -1,6 +1,6 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EVENT_RAISE_HAND } from '@warpy-be/utils';
-import { BotInstanceStore, IParticipantStore } from 'lib/stores';
+import { BotInstanceStore, IParticipantStore } from 'lib';
 import { IMediaService } from '../media';
 import { IUserService } from '../user';
 import { MediaToggler, MediaTogglerImpl } from './MediaToggler';
