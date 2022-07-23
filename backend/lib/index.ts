@@ -31,5 +31,4 @@ export * from './media-balancer';
 export * from './notification';
 export * from './participant-role-manager';
 export * from './user-online-status';
-export * from './chat-member';
 export * from './stream-host';
