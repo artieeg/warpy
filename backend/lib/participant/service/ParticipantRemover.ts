@@ -47,11 +47,6 @@ export class ParticipantRemoverImpl implements ParticipantRemover {
     }
 
     await this.deleteUserParticipant(id);
-
-    this.events.emit(EVENT_PARTICIPANT_LEAVE, {
-      user,
-      stream,
-    });
   }
 
   private async deleteUserParticipant(user: string) {
