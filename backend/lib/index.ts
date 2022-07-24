@@ -2,7 +2,6 @@ export * from './user';
 export * from './token';
 export * from './user-data-fetcher';
 export * from './timer';
-export * from './stream-bans';
 export * from './nats';
 export * from './participant';
 export * from './media';

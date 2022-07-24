@@ -9,7 +9,6 @@ import {
   NjsParticipantStore,
   ParticipantModule,
 } from './participant';
-import { NjsStreamBanService, ParticipantBanModule } from './stream-ban';
 import { MediaModule, NjsMediaService } from './media';
 import { HostModule, NjsHostService } from './stream-host';
 import { BotInstanceModule, NjsBotInstanceService } from './bot-instance';
@@ -21,7 +20,6 @@ export class NjsStreamJoiner extends StreamJoiner {
     participantService: NjsParticipantService,
     participantStore: NjsParticipantStore,
     events: EventEmitter2,
-    streamBansService: NjsStreamBanService,
     mediaService: NjsMediaService,
     hostService: NjsHostService,
     botInstanceService: NjsBotInstanceService,
@@ -32,7 +30,6 @@ export class NjsStreamJoiner extends StreamJoiner {
       participantStore,
       botInstanceService,
       events,
-      streamBansService,
       mediaService,
       hostService,
       tokenService,
@@ -62,7 +59,6 @@ export class StreamJoinerController {
 
 @Module({
   imports: [
-    ParticipantBanModule,
     ParticipantModule,
     HostModule,
     MediaModule,

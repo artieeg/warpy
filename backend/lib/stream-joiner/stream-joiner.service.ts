@@ -1,4 +1,5 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { BannedFromStreamError } from '@warpy-be/errors';
 import {
   EVENT_NEW_PARTICIPANT,
   EVENT_PARTICIPANT_REJOIN,
@@ -12,8 +13,7 @@ import {
 import { IParticipantStore } from 'lib';
 import { BotInstanceService } from '../bot-instance';
 import { IMediaService } from '../media';
-import { IParticipantService } from '../participant';
-import { IStreamBanService } from '../stream-bans';
+import { ParticipantService } from '../participant';
 import { HostService } from '../stream-host';
 import { TokenService } from '../token';
 
@@ -28,11 +28,10 @@ export interface IStreamJoiner {
  * */
 export class StreamJoiner implements IStreamJoiner {
   constructor(
-    private participant: IParticipantService,
+    private participant: ParticipantService,
     private participantStore: IParticipantStore,
     private botInstanceService: BotInstanceService,
     private events: EventEmitter2,
-    private bans: IStreamBanService,
     private media: IMediaService,
     private host: HostService,
     private tokenService: TokenService,
@@ -82,7 +81,9 @@ export class StreamJoiner implements IStreamJoiner {
 
   async join(user: string, stream: string) {
     //check whether the user has been banned on stream
-    await this.bans.checkUserBanned(user, stream);
+    if (await this.participant.isUserBanned(user, stream)) {
+      throw new BannedFromStreamError();
+    }
 
     let response: IJoinStreamResponse;
 

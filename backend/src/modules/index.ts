@@ -35,7 +35,6 @@ export * from './active-speaker';
 export * from './online-status';
 export * from './bot-instance';
 export * from './participant';
-export * from './stream-ban';
 export * from './stream-host';
 export * from './participant-role';
 export * from './stream-joiner';

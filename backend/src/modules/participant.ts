@@ -8,17 +8,10 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
-import {
-  OnStreamEnd,
-  OnRoleChange,
-  OnParticipantLeave,
-  OnParticipantRejoin,
-} from '@warpy-be/interfaces';
+import { OnStreamEnd, OnRoleChange } from '@warpy-be/interfaces';
 import {
   EVENT_ROLE_CHANGE,
-  EVENT_PARTICIPANT_REJOIN,
   EVENT_STREAM_ENDED,
-  EVENT_PARTICIPANT_KICKED,
   EVENT_USER_DISCONNECTED,
 } from '@warpy-be/utils';
 import { ParticipantService, ParticipantStore } from 'lib';
@@ -27,10 +20,20 @@ import {
   IRequestViewersResponse,
   IRaiseHand,
   IMediaToggleRequest,
+  IKickUserRequest,
 } from '@warpy/lib';
 import { MediaModule, NjsMediaService } from './media';
 import { BotInstanceModule, NjsBotInstanceStore } from './bot-instance';
 import { NjsUserService, UserModule } from './user';
+import { StreamBanStore } from 'lib/participant/stream-bans.store';
+import { PrismaModule, PrismaService } from './prisma';
+
+@Injectable()
+export class NjsStreamBanStore extends StreamBanStore {
+  constructor(prisma: PrismaService) {
+    super(prisma);
+  }
+}
 
 @Injectable()
 export class NjsParticipantStore
@@ -54,6 +57,7 @@ export class NjsParticipantService extends ParticipantService {
     events: EventEmitter2,
     userService: NjsUserService,
     mediaService: NjsMediaService,
+    streamBanStore: NjsStreamBanStore,
   ) {
     super(
       participantStore,
@@ -61,14 +65,13 @@ export class NjsParticipantService extends ParticipantService {
       events,
       userService,
       mediaService,
+      streamBanStore,
     );
   }
 }
 
 @Controller()
-export class ParticipantController
-  implements OnStreamEnd, OnRoleChange, OnParticipantRejoin
-{
+export class ParticipantController implements OnStreamEnd, OnRoleChange {
   constructor(
     private store: NjsParticipantStore,
     private participant: NjsParticipantService,
@@ -101,11 +104,6 @@ export class ParticipantController
     });
   }
 
-  @OnEvent(EVENT_PARTICIPANT_KICKED)
-  async onUserKicked({ user }) {
-    await this.participant.removeUserFromStream(user);
-  }
-
   @OnEvent(EVENT_USER_DISCONNECTED)
   async onUserDisconnect({ user }) {
     await this.participant.handleLeavingParticipant(user);
@@ -116,14 +114,14 @@ export class ParticipantController
     return this.store.update(participant.id, participant);
   }
 
-  @OnEvent(EVENT_PARTICIPANT_REJOIN)
-  async onParticipantRejoin({ participant: { id, stream } }) {
-    return this.participant.handleRejoiningUser(id, stream);
-  }
-
   @MessagePattern('participant.leave')
   async leave({ user }) {
     await this.participant.handleLeavingParticipant(user);
+  }
+
+  @MessagePattern('stream.kick-user')
+  async onKickUser({ userToKick, user }: IKickUserRequest) {
+    await this.participant.kickStreamParticipant(userToKick, user);
   }
 
   /*
@@ -140,8 +138,8 @@ export class ParticipantController
 }
 
 @Module({
-  imports: [MediaModule, UserModule, BotInstanceModule],
-  providers: [NjsParticipantStore, NjsParticipantService],
+  imports: [MediaModule, UserModule, BotInstanceModule, PrismaModule],
+  providers: [NjsParticipantStore, NjsParticipantService, NjsStreamBanStore],
   controllers: [ParticipantController],
   exports: [NjsParticipantStore, NjsParticipantService],
 })
