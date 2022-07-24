@@ -1,13 +1,13 @@
 import { IFollow } from '@warpy-be/app';
 import {
-  IAward,
-  IAwardModel,
+  Award,
+  AwardModel,
   IInvite,
   INotification,
-  IParticipant,
-  IStream,
+  Participant,
+  Stream,
 } from '@warpy/lib';
-import { IConnectRecvTransportParams, IUser } from '@warpy/lib';
+import { IConnectRecvTransportParams, User } from '@warpy/lib';
 
 function getFixtureCreator<T>(defaults: T) {
   return (data?: Partial<T>): T => {
@@ -18,7 +18,7 @@ function getFixtureCreator<T>(defaults: T) {
   };
 }
 
-export const createStreamFixture = getFixtureCreator<IStream>({
+export const createStreamFixture = getFixtureCreator<Stream>({
   id: 'test-id',
   owner: 'test owner',
   category: 'hub',
@@ -26,7 +26,7 @@ export const createStreamFixture = getFixtureCreator<IStream>({
   title: 'test',
 });
 
-export const createUserFixture = getFixtureCreator<IUser>({
+export const createUserFixture = getFixtureCreator<User>({
   id: 'test-id',
   last_name: 'test',
   first_name: 'test',
@@ -37,7 +37,7 @@ export const createUserFixture = getFixtureCreator<IUser>({
   isAnon: false,
 });
 
-export const createParticipantFixture = getFixtureCreator<IParticipant>({
+export const createParticipantFixture = getFixtureCreator<Participant>({
   ...createUserFixture(),
   isBot: false,
   stream: 'test-stream-id',
@@ -103,14 +103,14 @@ export const createNotificationFixture = getFixtureCreator<INotification>({
   user_id: 'test2',
 });
 
-export const createAwardModelFixture = getFixtureCreator<IAwardModel>({
+export const createAwardModelFixture = getFixtureCreator<AwardModel>({
   id: 'test',
   title: 'test award',
   media: 'example.com/media',
   price: 100,
 });
 
-export const createAwardFixture = getFixtureCreator<IAward>({
+export const createAwardFixture = getFixtureCreator<Award>({
   id: 'test',
   sender: createUserFixture({ id: 'sender' }),
   recipent: createUserFixture({ id: 'recipent' }),

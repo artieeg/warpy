@@ -4,7 +4,7 @@ import {
   EVENT_NEW_PARTICIPANT,
   EVENT_PARTICIPANT_REJOIN,
 } from '@warpy-be/utils';
-import { IJoinStreamResponse, IParticipant, Roles } from '@warpy/lib';
+import { IJoinStreamResponse, Participant, Roles } from '@warpy/lib';
 import { ParticipantStore } from '@warpy-be/app';
 import { BotInstanceService } from '../bot-instance';
 import { MediaService } from '../media';
@@ -39,7 +39,7 @@ export class StreamJoinerService {
       botInstance.id,
     );
 
-    const botParticipant: IParticipant = {
+    const botParticipant: Participant = {
       ...botInstance,
       stream,
       audioEnabled: false,

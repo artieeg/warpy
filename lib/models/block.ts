@@ -1,7 +1,7 @@
-import { IUser } from "./user";
+import { User } from "./user";
 
-export interface IUserBlock {
+export interface UserBlock {
   id: string;
-  blocked: IUser;
+  blocked: User;
   blocker: string;
 }

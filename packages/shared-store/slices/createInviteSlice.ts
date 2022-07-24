@@ -1,10 +1,10 @@
-import { IAppInvite, ISentInvite } from "@warpy/lib";
+import { AppInvite, ISentInvite } from "@warpy/lib";
 import { StoreSlice } from "../types";
 
 export interface IInviteSlice {
   pendingInviteUserIds: string[];
   sentInvites: Record<string, ISentInvite>;
-  appInvite: IAppInvite | null;
+  appInvite: AppInvite | null;
 }
 
 export const createInviteSlice: StoreSlice<IInviteSlice> = () => ({

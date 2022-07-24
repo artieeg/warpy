@@ -1,6 +1,6 @@
 import React, {useMemo, useState} from 'react';
 import {StyleSheet, FlatList} from 'react-native';
-import {IParticipant} from '@warpy/lib';
+import {Participant} from '@warpy/lib';
 import {BaseSlideModal, IBaseModalProps} from './BaseSlideModal';
 import {useDispatcher, useStoreShallow} from '@app/store';
 import {HostCandidate} from './HostCandidate';
@@ -55,7 +55,7 @@ export const HostReassignModal: React.FC<IBaseModalProps> = props => {
   }, []);
 
   const renderHostCandidate = React.useCallback(
-    ({item}: {item: IParticipant}) => {
+    ({item}: {item: Participant}) => {
       return (
         <HostCandidate
           selected={selected === item.id}

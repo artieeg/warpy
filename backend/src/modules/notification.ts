@@ -6,7 +6,7 @@ import { EVENT_INVITE_AVAILABLE } from '@warpy-be/utils';
 import { NotificationService, NotificationStore } from '@warpy-be/app';
 import { PrismaModule } from './prisma';
 import {
-  IInvite,
+  Invite,
   IReadNotifications,
   IGetReadNotifications,
   INotificationsPage,
@@ -43,7 +43,7 @@ export class NotificationController {
   constructor(private notificationService: NjsNotificationService) {}
 
   @OnEvent(EVENT_INVITE_AVAILABLE)
-  async onNewInvite(invite: IInvite) {
+  async onNewInvite(invite: Invite) {
     await this.notificationService.createInviteNotification(invite);
   }
 

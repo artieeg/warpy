@@ -1,10 +1,5 @@
 import IORedis from 'ioredis';
-import {
-  IInvite,
-  IInviteBase,
-  INotification,
-  INotificationBase,
-} from '@warpy/lib';
+import { Invite, InviteBase, Notification, NotificationBase } from '@warpy/lib';
 import cuid from 'cuid';
 import { getDayNumber } from '@warpy-be/utils/day';
 
@@ -25,10 +20,10 @@ export class NotificationStore {
     this.redis = new IORedis(this.uri);
   }
 
-  private async getInviteInfo(id: string): Promise<IInvite> {
+  private async getInviteInfo(id: string): Promise<Invite> {
     const invite_base = (await this.redis.hgetall(
       PREFIX_INVITE + id,
-    )) as unknown as IInviteBase;
+    )) as unknown as InviteBase;
 
     const { invitee_id, inviter_id, stream_id } = invite_base;
 
@@ -48,10 +43,10 @@ export class NotificationStore {
     };
   }
 
-  async get(id: string): Promise<INotification> {
+  async get(id: string): Promise<Notification> {
     const notification_base = (await this.redis.hgetall(
       PREFIX_NOTIFICATION + id,
-    )) as unknown as INotificationBase;
+    )) as unknown as NotificationBase;
 
     const { invite_id } = notification_base;
 
@@ -63,7 +58,7 @@ export class NotificationStore {
     };
   }
 
-  async createInviteNotification(invite: IInvite): Promise<INotification> {
+  async createInviteNotification(invite: Invite): Promise<Notification> {
     const { invitee, inviter, stream } = invite;
 
     const pipe = this.redis.pipeline();
@@ -84,7 +79,7 @@ export class NotificationStore {
         .expire(PREFIX_STREAM + stream.id, DAY);
     }
 
-    const invite_base: IInviteBase = {
+    const invite_base: InviteBase = {
       id: invite.id,
       inviter_id: invite.inviter.id,
       invitee_id: invite.invitee.id,
@@ -95,7 +90,7 @@ export class NotificationStore {
       .hmset(PREFIX_INVITE + invite.id, invite_base)
       .expire(PREFIX_INVITE + invite.id, DAY);
 
-    const data: INotificationBase = {
+    const data: NotificationBase = {
       id: cuid(),
       hasBeenSeen: false,
       created_at: Date.now(),

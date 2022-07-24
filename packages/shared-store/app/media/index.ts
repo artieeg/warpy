@@ -4,7 +4,7 @@ import { MediaCleaner, MediaCleanerImpl } from "./MediaCleaner";
 import { MediaManager, MediaManagerImpl } from "./MediaManager";
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
-import { IParticipant, MediaKind, Roles } from "@warpy/lib";
+import { Participant, MediaKind, Roles } from "@warpy/lib";
 import { Service } from "../Service";
 
 export class MediaService
@@ -64,7 +64,7 @@ export class MediaService
     stream: string;
     mediaPermissionsToken: string;
     recvMediaParams: any;
-    streamers: IParticipant[];
+    streamers: Participant[];
   }) {
     return this.consumer.consumeRemoteStreams(params);
   }

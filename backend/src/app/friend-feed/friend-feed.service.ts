@@ -1,4 +1,4 @@
-import { IFriendFeedItem } from '@warpy/lib';
+import { FriendFeedItem } from '@warpy/lib';
 import { ParticipantStore, FollowStore, StreamStore } from '@warpy-be/app';
 
 export class FriendFeedService {
@@ -8,7 +8,7 @@ export class FriendFeedService {
     private stream: StreamStore,
   ) {}
 
-  async getFriendFeed(user: string): Promise<IFriendFeedItem[]> {
+  async getFriendFeed(user: string): Promise<FriendFeedItem[]> {
     //Get a list of users we're following
     const following = await this.follow.getFollowedUserIds(user);
 
@@ -20,7 +20,7 @@ export class FriendFeedService {
     const streams = await this.stream.findByIds(streamIds);
 
     //Prepare feed
-    const feed: IFriendFeedItem[] = participants.map((user) => {
+    const feed: FriendFeedItem[] = participants.map((user) => {
       const stream = streams.find((s) => s.id === user.stream);
 
       if (stream) {

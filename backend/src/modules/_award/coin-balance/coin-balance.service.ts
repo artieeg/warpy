@@ -1,13 +1,13 @@
 import { NotEnoughCoins } from '@warpy-be/errors';
 import { Injectable } from '@nestjs/common';
-import { IUser } from '@warpy/lib';
+import { User } from '@warpy/lib';
 import { CoinBalanceEntity } from './coin-balance.entity';
 
 @Injectable()
 export class CoinBalanceService {
   constructor(private coinBalanceEntity: CoinBalanceEntity) {}
 
-  async createBalance(user: IUser) {
+  async createBalance(user: User) {
     this.coinBalanceEntity.createCoinBalance(user.id, 2000);
   }
 

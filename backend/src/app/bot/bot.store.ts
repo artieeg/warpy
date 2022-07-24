@@ -1,8 +1,8 @@
 import { Bot, PrismaClient } from '@prisma/client';
-import { IUser } from '@warpy/lib';
+import { User } from '@warpy/lib';
 import cuid from 'cuid';
 
-function toBotDTO(data: Bot): IUser {
+function toBotDTO(data: Bot): User {
   if (!data) {
     throw new Error('BotInstance is null');
   }
@@ -40,7 +40,7 @@ export class BotStore {
     return id;
   }
 
-  async getMany(): Promise<IUser[]> {
+  async getMany(): Promise<User[]> {
     const bots = await this.prismaService.bot.findMany({});
 
     return bots.map(toBotDTO);

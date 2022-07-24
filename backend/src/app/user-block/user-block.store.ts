@@ -1,8 +1,8 @@
-import { UserBlock, User, PrismaClient } from '@prisma/client';
-import { IUserBlock } from '@warpy/lib';
+import { UserBlock as PrismaUserBlock, User, PrismaClient } from '@prisma/client';
+import { UserBlock } from '@warpy/lib';
 import { toUserDTO } from '@warpy-be/app';
 
-function toBlockDTO(data: (UserBlock & { blocked?: User }) | null): IUserBlock {
+function toBlockDTO(data: (PrismaUserBlock & { blocked?: User }) | null): UserBlock {
   if (!data) {
     throw new Error('Block is null');
   }
@@ -86,7 +86,7 @@ export class UserBlockStore {
   /**
    * Returns blocks that are made by us
    */
-  async getBlockedUsers(user: string): Promise<IUserBlock[]> {
+  async getBlockedUsers(user: string): Promise<UserBlock[]> {
     const blocks = await this.prisma.userBlock.findMany({
       where: {
         blocker_id: user,

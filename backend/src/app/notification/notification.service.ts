@@ -1,4 +1,4 @@
-import { INotification, IInvite } from '@warpy/lib';
+import { Notification, Invite } from '@warpy/lib';
 import { NotificationStore, MessageService } from '@warpy-be/app';
 
 export class NotificationService {
@@ -7,7 +7,7 @@ export class NotificationService {
     private messageService: MessageService,
   ) {}
 
-  private async sendNotification(user: string, notification: INotification) {
+  private async sendNotification(user: string, notification: Notification) {
     this.messageService.sendMessage(user, {
       event: 'notification',
       data: {
@@ -16,7 +16,7 @@ export class NotificationService {
     });
   }
 
-  async createInviteNotification(invite: IInvite) {
+  async createInviteNotification(invite: Invite) {
     //If the stream hasn't been started yet, dont send the notification
     if (!invite.stream) {
       return;

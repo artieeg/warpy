@@ -1,5 +1,5 @@
 import {User} from '@app/models';
-import {IParticipant} from '@warpy/lib';
+import {Participant} from '@warpy/lib';
 
 export const createUserFixture = (data?: Partial<User>): User => {
   return {
@@ -13,8 +13,8 @@ export const createUserFixture = (data?: Partial<User>): User => {
 };
 
 export const createParticipantFixture = (
-  data?: Partial<IParticipant>,
-): IParticipant => {
+  data?: Partial<Participant>,
+): Participant => {
   return {
     ...createUserFixture(data),
     role: 'viewer',

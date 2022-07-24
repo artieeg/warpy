@@ -1,8 +1,8 @@
-import { IUser } from "./user";
+import { User } from "./user";
 
-export interface IChatMessage {
+export interface ChatMessage {
   id: string;
   message: string;
   timestamp: number;
-  sender: IUser;
+  sender: User;
 }

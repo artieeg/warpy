@@ -1,4 +1,4 @@
-import { IParticipant } from '@warpy/lib';
+import { Participant } from '@warpy/lib';
 import { ConfigService } from '@nestjs/config';
 import IORedis, { Pipeline } from 'ioredis';
 import { flatten } from '@warpy-be/utils/redis';
@@ -10,7 +10,7 @@ const PREFIX_RAISED_HANDS = 'raised_hands_';
 const PREFIX_COUNT = 'count_';
 const PREFIX_DEACTIVATED_USERS = 'deactivated_users_';
 
-export function toParticipantDTO(data: any): IParticipant {
+export function toParticipantDTO(data: any): Participant {
   return {
     ...data,
     videoEnabled: data.videoEnabled === 'true',
@@ -80,7 +80,7 @@ export class ParticipantStore implements ParticipantStore {
     await pipe.exec();
   }
 
-  async list(ids: string[]): Promise<IParticipant[]> {
+  async list(ids: string[]): Promise<Participant[]> {
     const pipe = this.redis.pipeline();
 
     for (const id of ids) {
@@ -225,7 +225,7 @@ export class ParticipantStore implements ParticipantStore {
 
   private async write(
     key: string,
-    data: Partial<IParticipant>,
+    data: Partial<Participant>,
     pipeline?: Pipeline,
   ) {
     const args = flatten(data);
@@ -233,7 +233,7 @@ export class ParticipantStore implements ParticipantStore {
     return (pipeline || this.redis).hmset(key, ...args);
   }
 
-  async update(id: string, data: Partial<IParticipant>) {
+  async update(id: string, data: Partial<Participant>) {
     const pipe = this.redis.pipeline();
     this.write(id, data, pipe);
     pipe.hgetall(id);
@@ -285,7 +285,7 @@ export class ParticipantStore implements ParticipantStore {
     return this.list(ids);
   }
 
-  async add(data: IParticipant) {
+  async add(data: Participant) {
     const { stream, id } = data;
 
     const pipe = this.redis.pipeline();

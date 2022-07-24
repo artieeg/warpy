@@ -1,13 +1,13 @@
 import { PrismaService } from '@warpy-be/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { CoinBalance } from '@prisma/client';
-import { ICoinBalance } from '@warpy/lib';
+import { CoinBalance } from '@warpy/lib';
 
 @Injectable()
 export class CoinBalanceEntity {
   constructor(private prisma: PrismaService) {}
 
-  static toCoinBalanceDTO(item: CoinBalance): ICoinBalance {
+  static toCoinBalanceDTO(item: CoinBalance): CoinBalance {
     return {
       balance: item.balance,
     };

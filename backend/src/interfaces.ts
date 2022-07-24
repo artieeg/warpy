@@ -1,4 +1,4 @@
-import { IParticipant, IStream, IUser } from '@warpy/lib';
+import { Participant, Stream, User } from '@warpy/lib';
 
 export interface OnUserDisconnect {
   onUserDisconnect: (data: { user: string }) => Promise<any>;
@@ -9,7 +9,7 @@ export interface OnStreamEnd {
 }
 
 export interface OnParticipantKicked {
-  onParticipantKicked: (data: IParticipant) => Promise<any>;
+  onParticipantKicked: (data: Participant) => Promise<any>;
 }
 
 export interface OnParticipantLeave {
@@ -17,7 +17,7 @@ export interface OnParticipantLeave {
 }
 
 export interface OnNewUser {
-  onNewUser: (data: { user: IUser }) => Promise<any>;
+  onNewUser: (data: { user: User }) => Promise<any>;
 }
 
 export interface OnInviteAccepted {
@@ -28,7 +28,7 @@ export interface OnInviteAccepted {
 }
 
 export interface OnNewParticipant {
-  onNewParticipant: (data: { participant: IParticipant }) => Promise<any>;
+  onNewParticipant: (data: { participant: Participant }) => Promise<any>;
 }
 
 export interface OnUserConnect {
@@ -36,21 +36,21 @@ export interface OnUserConnect {
 }
 
 export interface OnRoleChange {
-  onRoleChange: (data: { participant: IParticipant }) => Promise<any>;
+  onRoleChange: (data: { participant: Participant }) => Promise<any>;
 }
 
 export interface OnViewerUpgraded {
-  onViewerUpgraded: (data: { participant: IParticipant }) => Promise<any>;
+  onViewerUpgraded: (data: { participant: Participant }) => Promise<any>;
 }
 
 export interface OnStreamerDowngradeToViewer {
   onStreamerDowngradeToViewer: (data: {
-    participant: IParticipant;
+    participant: Participant;
   }) => Promise<any>;
 }
 
 export interface OnParticipantRejoin {
-  onParticipantRejoin: (data: { participant: IParticipant }) => Promise<any>;
+  onParticipantRejoin: (data: { participant: Participant }) => Promise<any>;
 }
 
 export interface OnHostReassignFailed {
@@ -58,15 +58,12 @@ export interface OnHostReassignFailed {
 }
 
 export interface OnHostReassign {
-  onHostReassign: (data: {
-    stream: string;
-    host: IParticipant;
-  }) => Promise<any>;
+  onHostReassign: (data: { stream: string; host: Participant }) => Promise<any>;
 }
 
 export interface OnNewStream {
   onNewStream: (data: {
-    stream: IStream;
+    stream: Stream;
     hostNodeIds: {
       sendNodeId: string;
       recvNodeId: string;

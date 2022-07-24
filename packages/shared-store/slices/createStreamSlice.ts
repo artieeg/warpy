@@ -1,12 +1,12 @@
-import { IStreamCategory } from "@warpy/lib";
+import { StreamCategory } from "@warpy/lib";
 import { StoreSlice } from "../types";
 
 export interface IStreamSlice {
   stream: string | null;
   title: string | null;
   currentStreamHost: string;
-  newStreamCategory: IStreamCategory | null;
-  selectedFeedCategory: IStreamCategory | null;
+  newStreamCategory: StreamCategory | null;
+  selectedFeedCategory: StreamCategory | null;
 }
 
 export const createStreamSlice: StoreSlice<IStreamSlice> = () => ({

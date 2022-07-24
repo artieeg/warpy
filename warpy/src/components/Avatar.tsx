@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, Image, View, ViewProps} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {IBaseUser} from '@warpy/lib';
+import {UserBase} from '@warpy/lib';
 
 export interface IndicatorProps {
   right?: number;
@@ -10,7 +10,7 @@ export interface IndicatorProps {
 }
 
 export interface IAvatarProps extends ViewProps {
-  user: IBaseUser;
+  user: UserBase;
   size?: keyof typeof sizeStyles;
   useRNImage?: boolean;
   indicatorProps?: IndicatorProps;

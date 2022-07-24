@@ -39,7 +39,7 @@ import {
   ParticipantLeaveEvent,
   ReactionsEvent,
 } from '@warpy-be/app';
-import { IParticipant } from '@warpy/lib';
+import { Participant } from '@warpy/lib';
 import { NjsParticipantStore } from './participant';
 import { NjsMessageService } from './message';
 
@@ -99,7 +99,7 @@ export class BroadcastController
   }
 
   @OnEvent(EVENT_PARTICIPANT_KICKED)
-  async onParticipantKicked(data: IParticipant) {
+  async onParticipantKicked(data: Participant) {
     return Promise.all([
       this.broadcast.broadcastKickedParticipant(data),
       this.store.removeUserFromList(data.stream, data.id),
@@ -127,7 +127,7 @@ export class BroadcastController
   }
 
   @OnEvent(EVENT_RAISE_HAND)
-  async onRaiseHand(data: IParticipant) {
+  async onRaiseHand(data: Participant) {
     console.log(data);
     return this.broadcast.broadcastHandRaise(data);
   }
@@ -140,7 +140,7 @@ export class BroadcastController
     ]);
   }
 
-  private async onParticipantJoin(participant: IParticipant) {
+  private async onParticipantJoin(participant: Participant) {
     return Promise.all([
       this.broadcast.broadcastNewParticipant(participant),
       this.store.addUserToList(participant.stream, participant.id),

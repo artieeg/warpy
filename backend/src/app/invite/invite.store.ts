@@ -4,10 +4,9 @@ import {
   VAL_ONLINE,
 } from '@warpy-be/shared';
 import { flatten } from '@warpy-be/utils/redis';
-import { IInvite, IInviteBase, IStream, IUser } from '@warpy/lib';
+import { Invite, InviteBase, Stream, User } from '@warpy/lib';
 import cuid from 'cuid';
 import IORedis from 'ioredis';
-import { OnInstanceInit } from '@warpy-be/app/OnInstanceInit.interface';
 
 /** Store user data */
 const PREFIX_USER = 'user_';
@@ -35,7 +34,7 @@ export class InviteStore {
     this.onlineBehavior = new OnlineStatusStoreBehavior(this.redis);
   }
 
-  private toBaseDTO(data: any): IInviteBase {
+  private toBaseDTO(data: any): InviteBase {
     return {
       id: data.id,
       stream_id: data.stream_id,
@@ -46,10 +45,10 @@ export class InviteStore {
 
   private toDTO(
     data: any,
-    inviter: IUser,
-    invitee: IUser,
-    stream?: IStream,
-  ): IInvite {
+    inviter: User,
+    invitee: User,
+    stream?: Stream,
+  ): Invite {
     return {
       ...this.toBaseDTO(data),
       stream,
@@ -72,11 +71,11 @@ export class InviteStore {
     stream,
     received,
   }: {
-    invitee: IUser;
-    inviter: IUser;
-    stream?: IStream;
+    invitee: User;
+    inviter: User;
+    stream?: Stream;
     received: boolean;
-  }): Promise<IInvite> {
+  }): Promise<Invite> {
     const pipe = this.redis.pipeline();
 
     //Store invitee and inviter data
@@ -90,7 +89,7 @@ export class InviteStore {
 
     const invite_id = cuid();
 
-    const invite: IInviteBase = {
+    const invite: InviteBase = {
       id: invite_id,
       inviter_id: inviter.id,
       invitee_id: invitee.id,
@@ -153,7 +152,7 @@ export class InviteStore {
     return result.filter(([err]) => !err).map(([, id]) => id);
   }
 
-  async setStreamData(invite_ids: string[], stream: IStream) {
+  async setStreamData(invite_ids: string[], stream: Stream) {
     const pipe = this.redis.pipeline();
 
     pipe.hmset(PREFIX_STREAM + stream.id, stream);
@@ -176,14 +175,14 @@ export class InviteStore {
 
   private async update(
     invite: string,
-    params: Partial<IInviteBase>,
+    params: Partial<InviteBase>,
     runner: IORedis.Pipeline | IORedis.Redis = this.redis,
   ) {
     const args = flatten(params);
     return runner.hmset(invite, ...args);
   }
 
-  async updateMany(ids: string[], params: Partial<IInviteBase>) {
+  async updateMany(ids: string[], params: Partial<InviteBase>) {
     const pipe = this.redis.pipeline();
 
     ids.forEach((id) => this.update(id, params, pipe));

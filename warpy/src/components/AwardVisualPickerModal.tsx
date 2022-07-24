@@ -15,7 +15,7 @@ import {BaseSlideModal} from './BaseSlideModal';
 import {Input} from './Input';
 import {useDebounce} from 'use-debounce/lib';
 import {colors} from '../../colors';
-import {IBaseUser} from '@warpy/lib';
+import {UserBase} from '@warpy/lib';
 
 export const AwardVisualPickerModal = () => {
   const dispatch = useDispatcher();
@@ -91,7 +91,7 @@ export const AwardVisualPickerModal = () => {
   const onNext = useCallback(() => {
     dispatch(({modal}) =>
       modal.open('award-message', {
-        userToAward: user as IBaseUser,
+        userToAward: user as UserBase,
       }),
     );
   }, [user]);

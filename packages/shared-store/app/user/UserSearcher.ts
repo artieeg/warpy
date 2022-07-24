@@ -1,4 +1,4 @@
-import { IUser } from "@warpy/lib";
+import { User } from "@warpy/lib";
 import { AppState } from "../AppState";
 import { IStore } from "../../useStore";
 import { StateUpdate, StreamedStateUpdate } from "../types";

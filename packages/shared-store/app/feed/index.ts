@@ -1,4 +1,4 @@
-import { IStreamCategory } from "@warpy/lib";
+import { StreamCategory } from "@warpy/lib";
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
 import { Service } from "../Service";
@@ -23,7 +23,7 @@ export class FeedService
     return this.fetcher.fetchFeedPage(params);
   }
 
-  async changeFeedCategory(category: IStreamCategory) {
+  async changeFeedCategory(category: StreamCategory) {
     return this.categoryChanger.changeFeedCategory(category);
   }
 }

@@ -1,6 +1,6 @@
 import { StreamNotFound, UserNotFound } from '@warpy-be/errors';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { IChatMessage } from '@warpy/lib';
+import { ChatMessage } from '@warpy/lib';
 import { EVENT_CHAT_MESSAGE } from '@warpy-be/utils';
 import cuid from 'cuid';
 import Filter from 'bad-words';
@@ -47,7 +47,7 @@ export class ChatService {
       (id) => !blockedByIds.includes(id) && !blockedIds.includes(id),
     );
 
-    const message: IChatMessage = {
+    const message: ChatMessage = {
       id: cuid(),
       sender: user,
       message: filteredText,

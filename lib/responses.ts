@@ -1,17 +1,17 @@
 import {
-  IParticipant,
-  ICandidate,
-  IBaseUser,
-  IChatMessage,
-  IInvite,
-  IUser,
-  INotification,
-  IAwardModel,
-  IAward,
-  IAppInvite,
-  IStream,
-  IStreamCategory,
-  IFriendFeedItem,
+  Participant,
+  Candidate,
+  UserBase,
+  ChatMessage,
+  Invite,
+  User,
+  Notification,
+  AwardModel,
+  Award,
+  AppInvite,
+  Stream,
+  StreamCategory,
+  FriendFeedItem,
 } from "./models";
 import { Roles, UserList } from "./types";
 
@@ -24,8 +24,8 @@ export interface INewStreamResponse {
 }
 
 export interface IJoinStreamResponse {
-  streamers: IParticipant[];
-  raisedHands: IParticipant[];
+  streamers: Participant[];
+  raisedHands: Participant[];
   count: number;
   mediaPermissionsToken: string;
   recvMediaParams: IConnectRecvTransportParams;
@@ -35,19 +35,19 @@ export interface IJoinStreamResponse {
 }
 
 export interface IRequestViewersResponse {
-  viewers: IParticipant[];
+  viewers: Participant[];
 }
 
 export interface IFeedResponse {
-  feed: ICandidate[];
+  feed: Candidate[];
 }
 
 export interface IWhoAmIResponse {
-  user: IBaseUser | null;
-  following: IUser[];
+  user: UserBase | null;
+  following: User[];
   hasActivatedAppInvite: boolean;
-  friendFeed: IFriendFeedItem[];
-  categories: IStreamCategory[];
+  friendFeed: FriendFeedItem[];
+  categories: StreamCategory[];
 }
 
 export interface INewUserResponse {
@@ -76,7 +76,7 @@ export interface IUnfollowResponse {
 }
 
 export interface ISendMessageResponse {
-  message: IChatMessage;
+  message: ChatMessage;
 }
 
 export interface IKickedFromMediaRoom {
@@ -93,16 +93,16 @@ export interface IUserBlockResponse {
 }
 
 export interface IInviteResponse {
-  /** Returns null if bot's invited, returns IInvite object if user's invited*/
-  invite?: IInvite;
+  /** Returns null if bot's invited, returns Invite object if user's invited*/
+  invite?: Invite;
 }
 
 export interface IInviteSuggestionsResponse {
-  suggestions: IUser[];
+  suggestions: User[];
 }
 
 export interface IUserSearchResponse {
-  users: IUser[];
+  users: User[];
 }
 
 export interface ICancelInviteResponse {
@@ -110,7 +110,7 @@ export interface ICancelInviteResponse {
 }
 
 export interface INotificationsPage {
-  notifications: INotification[];
+  notifications: Notification[];
 }
 
 export interface IGifsResponse {
@@ -135,7 +135,7 @@ export interface IUserUpdateResponse {
 }
 
 export interface IUserInfoResponse {
-  user: IUser;
+  user: User;
   stream?: {
     id: string;
     title: string;
@@ -147,7 +147,7 @@ export interface IUserInfoResponse {
 
 export interface IUserListResponse {
   list: UserList;
-  users: IUser[];
+  users: User[];
 }
 
 export interface IUserUnblockResponse {
@@ -159,7 +159,7 @@ export interface ICoinBalanceResponse {
 }
 
 export interface IGetAvailableAwardsResponse {
-  awards: IAwardModel[];
+  awards: AwardModel[];
 }
 
 export interface ISendAwardResponse {
@@ -167,11 +167,11 @@ export interface ISendAwardResponse {
 }
 
 export interface IReceivedAwardsResponse {
-  awards: IAward[];
+  awards: Award[];
 }
 
 export interface IAppInviteResponse {
-  invite: IAppInvite;
+  invite: AppInvite;
 }
 
 export interface ICreateAnonUserResponse {
@@ -180,11 +180,11 @@ export interface ICreateAnonUserResponse {
 }
 
 export interface IStreamGetResponse {
-  stream: IStream;
+  stream: Stream;
 }
 
 export interface IGetCategoriesResponse {
-  categories: IStreamCategory[];
+  categories: StreamCategory[];
 }
 
 export interface ILeaveStreamResponse {
@@ -197,11 +197,11 @@ export interface IUserOnlineStatusResponse {
 }
 
 export interface IFriendFeedResponse {
-  feed: IFriendFeedItem[];
+  feed: FriendFeedItem[];
 }
 
 export interface IStreamSearchResponse {
-  streams: ICandidate[];
+  streams: Candidate[];
 }
 
 export interface IHostReassignResponse {

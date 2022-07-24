@@ -1,14 +1,17 @@
-import { PrismaClient, StreamCategory } from '@prisma/client';
-import { IStreamCategory } from '@warpy/lib';
+import {
+  PrismaClient,
+  StreamCategory as PrismaStreamCategory,
+} from '@prisma/client';
+import { StreamCategory } from '@warpy/lib';
 
-function toStreamCategoryDTO(data: StreamCategory): IStreamCategory {
+function toStreamCategoryDTO(data: PrismaStreamCategory): StreamCategory {
   return {
     id: data.id,
     title: data.value,
   };
 }
 
-export class CategoryStore  {
+export class CategoryStore {
   constructor(private prisma: PrismaClient) {}
 
   async getAll() {

@@ -2,7 +2,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { BotInstanceStore, ParticipantStore } from '@warpy-be/app';
 import { UserService } from '../user';
 import { MediaService } from '../media';
-import { IParticipant } from '@warpy/lib';
+import { Participant } from '@warpy/lib';
 import {
   MaxVideoStreamers,
   NoPermissionError,
@@ -34,7 +34,7 @@ export class ParticipantService {
     );
 
     const user = await this.user.findById(userId);
-    const viewer: IParticipant = {
+    const viewer: Participant = {
       ...user,
       stream,
       role: 'viewer',
@@ -183,7 +183,7 @@ export class ParticipantService {
   ) {
     const stream = await this.participantStore.getStreamId(user);
 
-    const update: Partial<IParticipant> = {};
+    const update: Partial<Participant> = {};
 
     if (audioEnabled !== undefined) {
       update['audioEnabled'] = audioEnabled;

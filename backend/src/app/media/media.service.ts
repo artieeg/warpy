@@ -3,10 +3,10 @@ import {
   ICreateMediaRoom,
   ICreateTransport,
   IKickedFromMediaRoom,
-  IMediaPermissions,
+  MediaPermissions,
   INewMediaRoomData,
   INewTransportResponse,
-  IParticipant,
+  Participant,
   Roles,
 } from '@warpy/lib';
 import { MediaBalancerService } from '../media-balancer';
@@ -35,7 +35,7 @@ export class MediaService {
     return response as INewMediaRoomData;
   }
 
-  createPermissionToken(permissions: IMediaPermissions): string {
+  createPermissionToken(permissions: MediaPermissions): string {
     return jwt.sign(permissions, secret, {
       expiresIn: 60,
     });
@@ -87,7 +87,7 @@ export class MediaService {
   private async getViewerToken(user: string, room: string) {
     const recvNodeId = await this.balancer.getRecvNodeId(room);
 
-    const permissions: IMediaPermissions = {
+    const permissions: MediaPermissions = {
       user,
       room,
       audio: false,
@@ -189,7 +189,7 @@ export class MediaService {
     return response as INewTransportResponse;
   }
 
-  async updateMediaRole(participant: IParticipant, role: Roles) {
+  async updateMediaRole(participant: Participant, role: Roles) {
     const { stream, id } = participant;
 
     const { recv: recvNodeId, send: prevSendNodeId } =

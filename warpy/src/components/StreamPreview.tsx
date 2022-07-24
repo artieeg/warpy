@@ -6,11 +6,11 @@ import {useNavigation} from '@react-navigation/native';
 import Video from 'react-native-video';
 import {colors} from '../../colors';
 import tinycolor from 'tinycolor2';
-import {ICandidate} from '@warpy/lib';
+import {Candidate} from '@warpy/lib';
 import {Text} from './Text';
 
 interface IStreamPreviewProps {
-  stream: ICandidate;
+  stream: Candidate;
   style: any;
 }
 

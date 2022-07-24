@@ -1,5 +1,5 @@
 import {useDispatcher, useStoreShallow} from '@app/store';
-import {IParticipant} from '@warpy/lib';
+import {Participant} from '@warpy/lib';
 import React, {useCallback} from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import {AudioLevelIndicator} from './AudioLevelIndicator';
@@ -7,7 +7,7 @@ import {Avatar} from './Avatar';
 import {Text} from './Text';
 
 interface ParticipantViewProps {
-  data: IParticipant;
+  data: Participant;
   onPress?: any;
 }
 

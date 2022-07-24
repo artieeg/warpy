@@ -1,5 +1,5 @@
 import { Bot, BotInstance, PrismaClient } from '@prisma/client';
-import { IUser } from '@warpy/lib';
+import { User } from '@warpy/lib';
 import cuid from 'cuid';
 
 export function toBotInstanceDTO(
@@ -8,7 +8,7 @@ export function toBotInstanceDTO(
         bot?: Bot;
       })
     | null,
-): IUser {
+): User {
   if (!data) {
     throw new Error('BotInstance is null');
   }

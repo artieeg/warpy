@@ -1,10 +1,10 @@
-import { IUser } from '@warpy/lib';
-import { PrismaClient, User } from '@prisma/client';
+import { User } from '@warpy/lib';
+import { PrismaClient, User as PrismaUser } from '@prisma/client';
 import cuid from 'cuid';
 
-export type NewUserParams = Omit<User, 'id' | 'created_at'>;
+export type NewUserParams = Omit<PrismaUser, 'id' | 'created_at'>;
 
-export function toUserDTO(data: User, includeDetails?: boolean) {
+export function toUserDTO(data: PrismaUser, includeDetails?: boolean) {
   return {
     id: data.id,
     last_name: data.last_name,
@@ -43,7 +43,7 @@ export class UserStore {
     return id;
   }
 
-  async createUser(data: NewUserParams): Promise<IUser> {
+  async createUser(data: NewUserParams): Promise<User> {
     const user = await this.prisma.user.create({
       data,
     });
@@ -51,7 +51,7 @@ export class UserStore {
     return toUserDTO(user);
   }
 
-  async search(textToSearch: string): Promise<IUser[]> {
+  async search(textToSearch: string): Promise<User[]> {
     const users = await this.prisma.user.findMany({
       where: {
         OR: [
@@ -80,7 +80,7 @@ export class UserStore {
     return users.map((user) => toUserDTO(user));
   }
 
-  async find(id: string, details = false): Promise<IUser | null> {
+  async find(id: string, details = false): Promise<User | null> {
     const user = await this.prisma.user.findUnique({
       where: { id },
     });
@@ -92,7 +92,7 @@ export class UserStore {
     await this.prisma.user.delete({ where: { id } });
   }
 
-  async findMany(ids: string[]): Promise<IUser[]> {
+  async findMany(ids: string[]): Promise<User[]> {
     const data = await this.prisma.user.findMany({
       where: {
         id: {

@@ -1,10 +1,10 @@
-import { IUser } from '@warpy/lib';
+import { User } from '@warpy/lib';
 import { FollowStore, UserBlockService } from '@warpy-be/app';
 
 export interface IUserListFetcherService {
-  getFollowers(user: string, _page: number): Promise<IUser[]>;
-  getFollowing(user: string, _page: number): Promise<IUser[]>;
-  getBlockedUsers(user: string, _page: number): Promise<IUser[]>;
+  getFollowers(user: string, _page: number): Promise<User[]>;
+  getFollowing(user: string, _page: number): Promise<User[]>;
+  getBlockedUsers(user: string, _page: number): Promise<User[]>;
 }
 
 export class UserListFetcherService {
@@ -13,13 +13,13 @@ export class UserListFetcherService {
     private blockService: UserBlockService,
   ) {}
 
-  async getFollowers(user: string, _page: number): Promise<IUser[]> {
+  async getFollowers(user: string, _page: number): Promise<User[]> {
     const followers = await this.followEntity.getFollowers(user);
 
     return followers.map((f) => f.follower);
   }
 
-  async getFollowing(user: string, _page: number): Promise<IUser[]> {
+  async getFollowing(user: string, _page: number): Promise<User[]> {
     const records = await this.followEntity.getFollowed(user);
 
     if (records.length === 0) {

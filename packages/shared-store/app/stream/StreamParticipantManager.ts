@@ -1,13 +1,13 @@
-import { IParticipant } from "@warpy/lib";
+import { Participant } from "@warpy/lib";
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
 import { StateUpdate, StreamedStateUpdate } from "../types";
 
 export interface StreamParticipantManager {
   fetchStreamViewers: () => StreamedStateUpdate;
-  addStreamParticipant: (participant: IParticipant) => StateUpdate;
+  addStreamParticipant: (participant: Participant) => StateUpdate;
   removeStreamParticipant: (user: string) => Promise<StateUpdate>;
-  updateStreamParticipant: (user: IParticipant) => Promise<StateUpdate>;
+  updateStreamParticipant: (user: Participant) => Promise<StateUpdate>;
 }
 
 export class StreamParticipantManagerImpl implements StreamParticipantManager {
@@ -73,7 +73,7 @@ export class StreamParticipantManagerImpl implements StreamParticipantManager {
     });
   }
 
-  addStreamParticipant(participant: IParticipant) {
+  addStreamParticipant(participant: Participant) {
     return this.state.update((state) => {
       if (
         !state.viewers[participant.id] &&
@@ -95,7 +95,7 @@ export class StreamParticipantManagerImpl implements StreamParticipantManager {
     });
   }
 
-  private hasStreamingRequestStatusChanged(user: IParticipant) {
+  private hasStreamingRequestStatusChanged(user: Participant) {
     const { viewersWithRaisedHands } = this.state.get();
 
     return (
@@ -104,7 +104,7 @@ export class StreamParticipantManagerImpl implements StreamParticipantManager {
     );
   }
 
-  private setStreamingRequestFor(user: IParticipant) {
+  private setStreamingRequestFor(user: Participant) {
     const { viewers, modalCurrent, unseenRaisedHands, viewersWithRaisedHands } =
       this.state.get();
 
@@ -124,7 +124,7 @@ export class StreamParticipantManagerImpl implements StreamParticipantManager {
     });
   }
 
-  private cancelStreamingRequestFor(user: IParticipant) {
+  private cancelStreamingRequestFor(user: Participant) {
     const { viewers, modalCurrent, unseenRaisedHands, viewersWithRaisedHands } =
       this.state.get();
 
@@ -144,7 +144,7 @@ export class StreamParticipantManagerImpl implements StreamParticipantManager {
     });
   }
 
-  async updateStreamParticipant(user: IParticipant) {
+  async updateStreamParticipant(user: Participant) {
     if (this.hasStreamingRequestStatusChanged(user)) {
       if (user.isRaisingHand) {
         this.setStreamingRequestFor(user);

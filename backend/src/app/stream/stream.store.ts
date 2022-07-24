@@ -1,9 +1,9 @@
-import { PrismaClient, Stream } from '@prisma/client';
-import { IStream } from '@warpy/lib';
+import { PrismaClient, Stream as PrismaStream } from '@prisma/client';
+import { Stream } from '@warpy/lib';
 
-type CreateNewStream = Stream;
+type CreateNewStream = PrismaStream;
 
-export function toStreamDTO(data: Stream): IStream {
+export function toStreamDTO(data: PrismaStream): Stream {
   return {
     id: data.id,
     owner: data.owner_id,
@@ -40,7 +40,7 @@ export class StreamStore {
     return streams.map((stream) => toStreamDTO(stream));
   }
 
-  async findByIds(ids: string[]): Promise<IStream[]> {
+  async findByIds(ids: string[]): Promise<Stream[]> {
     const data = await this.prisma.stream.findMany({
       where: {
         id: {
@@ -52,7 +52,7 @@ export class StreamStore {
     return data.map(toStreamDTO);
   }
 
-  async findById(id: string): Promise<IStream | null> {
+  async findById(id: string): Promise<Stream | null> {
     const data = await this.prisma.stream.findUnique({
       where: {
         id,
@@ -62,7 +62,7 @@ export class StreamStore {
     return data ? toStreamDTO(data) : null;
   }
 
-  async create(data: CreateNewStream): Promise<IStream> {
+  async create(data: CreateNewStream): Promise<Stream> {
     const stream = await this.prisma.stream.create({
       data,
     });
@@ -119,7 +119,7 @@ export class StreamStore {
     blockedUserIds: string[];
     blockedByUserIds: string[];
     category?: string;
-  }): Promise<IStream[]> {
+  }): Promise<Stream[]> {
     const streams = await this.prisma.stream.findMany({
       where: {
         live: true,
@@ -142,7 +142,7 @@ export class StreamStore {
     return streams.map(toStreamDTO);
   }
 
-  async setPreviewClip(stream: string, preview: string): Promise<IStream> {
+  async setPreviewClip(stream: string, preview: string): Promise<Stream> {
     const updated = await this.prisma.stream.update({
       where: { id: stream },
       data: { preview },

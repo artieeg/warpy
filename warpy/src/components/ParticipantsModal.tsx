@@ -18,13 +18,13 @@ import {
   useStreamViewers,
 } from '@app/hooks';
 import {useStore} from '@app/store';
-import {IBaseUser, IParticipant} from '@warpy/lib';
+import {UserBase, Participant} from '@warpy/lib';
 import {UserProducer} from './UserProducer';
 
 interface IParticipanModalProps {
   visible: boolean;
   onHide: () => void;
-  onSelectParticipant: (user: IBaseUser) => any;
+  onSelectParticipant: (user: UserBase) => any;
 }
 
 export const ParticipantsModal = (props: IParticipanModalProps) => {
@@ -168,10 +168,10 @@ const getListData = ({
   usersRaisingHand,
   viewers,
 }: {
-  host: IParticipant;
-  speakers: IParticipant[];
-  usersRaisingHand: IParticipant[];
-  viewers: IParticipant[];
+  host: Participant;
+  speakers: Participant[];
+  usersRaisingHand: Participant[];
+  viewers: Participant[];
 }) => [
   {
     title: 'Host',

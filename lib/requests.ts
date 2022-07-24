@@ -1,4 +1,4 @@
-import { IUser } from "./models";
+import { User } from "./models";
 import {
   MediaDirection,
   MediaKind,
@@ -281,7 +281,7 @@ export interface IBotJoin {
 
 export interface IUserUpdateRequest {
   user: string;
-  data: Partial<IUser>;
+  data: Partial<User>;
 }
 
 export interface IUserRequest {

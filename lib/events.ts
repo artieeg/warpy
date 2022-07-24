@@ -1,10 +1,10 @@
 import {
-  IAward,
-  IChatMessage,
-  IInvite,
-  INotification,
-  IParticipant,
-  IStream,
+  Award,
+  ChatMessage,
+  Invite,
+  Notification,
+  Participant,
+  Stream,
 } from "./models";
 import { InviteStates, Roles } from "./types";
 
@@ -34,7 +34,7 @@ export interface IReactionsUpdate {
 }
 
 export interface IChatMessagesEvent {
-  messages: IChatMessage[];
+  messages: ChatMessage[];
 }
 
 export interface IUserKickedEvent {
@@ -43,7 +43,7 @@ export interface IUserKickedEvent {
 }
 
 export interface INotificationEvent {
-  notification: INotification;
+  notification: Notification;
 }
 
 export interface INotificationDeleteEvent {
@@ -51,7 +51,7 @@ export interface INotificationDeleteEvent {
 }
 
 export interface IParticipantRoleChangeEvent {
-  user: IParticipant;
+  user: Participant;
 }
 
 export interface IMediaToggleEvent {
@@ -76,7 +76,7 @@ export interface IBotInviteEvent {
 }
 
 export interface INewParticipantEvent {
-  participant: IParticipant;
+  participant: Participant;
 }
 
 export interface IStreamIdAvailable {
@@ -89,15 +89,15 @@ export interface IInviteStateUpdate {
 }
 
 export interface INewAward {
-  award: IAward;
+  award: Award;
 }
 
 export interface IPreviousStream {
-  stream: IStream;
+  stream: Stream;
 }
 
 export interface IReassignedStreamHost {
-  host: IParticipant;
+  host: Participant;
 }
 
 export interface IStreamEndEvent {
@@ -105,5 +105,5 @@ export interface IStreamEndEvent {
 }
 
 export interface IReceivedInviteEvent {
-  invite: IInvite;
+  invite: Invite;
 }

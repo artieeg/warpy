@@ -5,7 +5,7 @@ import {
   EVENT_HOST_REASSIGN_FAILED,
   EVENT_NEW_PARTICIPANT,
 } from '@warpy-be/utils';
-import { IParticipant } from '@warpy/lib';
+import { Participant } from '@warpy/lib';
 import { ParticipantStore } from '@warpy-be/app/participant';
 import { UserStore } from '@warpy-be/app/user';
 import { TimerService } from '../timer';
@@ -28,7 +28,7 @@ export class HostService {
     return this.hostStore.getHostId(stream);
   }
 
-  async handlePossibleHost(participant: IParticipant) {
+  async handlePossibleHost(participant: Participant) {
     const { role, id, stream } = participant;
 
     //If user has been downgraded to viewer, remove him from the list
@@ -52,7 +52,7 @@ export class HostService {
   /**
    * update the store and emit event
    * */
-  private async setStreamHost(stream: string, host: IParticipant) {
+  private async setStreamHost(stream: string, host: Participant) {
     await this.hostStore.setStreamHost(host);
     this.eventEmitter.emit(EVENT_HOST_REASSIGN, {
       stream,
@@ -133,7 +133,7 @@ export class HostService {
   async initStreamHost({ user, stream }: { user: string; stream: string }) {
     const streamer = await this.user.find(user);
 
-    const host: IParticipant = {
+    const host: Participant = {
       ...streamer,
       role: 'streamer',
       audioEnabled: true,

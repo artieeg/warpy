@@ -1,4 +1,4 @@
-import { IParticipant } from "@warpy/lib";
+import { Participant } from "@warpy/lib";
 import { IStore } from "../../useStore";
 import { MediaService } from "../media";
 import { StateUpdate } from "../types";

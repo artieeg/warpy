@@ -1,7 +1,7 @@
 import { AppInviteNotFound } from '@warpy-be/errors';
-import { AppInvite, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { animals, colors, uniqueNamesGenerator } from 'unique-names-generator';
-import { IAppInvite } from '@warpy/lib';
+import { AppInvite } from '@warpy/lib';
 import { toUserDTO } from '../user';
 
 export class AppInviteStore {
@@ -30,7 +30,7 @@ export class AppInviteStore {
     return result;
   }
 
-  static toAppInviteDTO(data: any): IAppInvite {
+  static toAppInviteDTO(data: any): AppInvite {
     return {
       id: data.id,
       user: toUserDTO(data.user),
@@ -38,7 +38,7 @@ export class AppInviteStore {
     };
   }
 
-  async create(user_id: string): Promise<IAppInvite> {
+  async create(user_id: string): Promise<AppInvite> {
     const invite: AppInvite = await this.repeatUntilSuccess(() =>
       this.prisma.appInvite.create({
         data: {

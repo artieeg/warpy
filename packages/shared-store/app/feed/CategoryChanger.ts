@@ -1,10 +1,10 @@
-import { IStreamCategory } from "@warpy/lib";
+import { StreamCategory } from "@warpy/lib";
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
 import { StateUpdate } from "../types";
 
 export interface CategoryChanger {
-  changeFeedCategory: (category: IStreamCategory) => Promise<StateUpdate>;
+  changeFeedCategory: (category: StreamCategory) => Promise<StateUpdate>;
 }
 
 export class CategoryChangerImpl implements CategoryChanger {
@@ -18,7 +18,7 @@ export class CategoryChangerImpl implements CategoryChanger {
     }
   }
 
-  async changeFeedCategory(category: IStreamCategory) {
+  async changeFeedCategory(category: StreamCategory) {
     // select "for u" category when deselecting current category
     const selectedFeedCategory =
       this.state.get().selectedFeedCategory?.id === category.id

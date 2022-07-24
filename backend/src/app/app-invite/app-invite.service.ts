@@ -1,5 +1,5 @@
 import { AppInviteAlreadyAccepted, CantInviteYourself } from '@warpy-be/errors';
-import { IUser } from '@warpy/lib';
+import { User } from '@warpy/lib';
 import { AppInviteStore } from './app-invite.store';
 import { AppliedAppInviteStore } from './applied-app-invite.store';
 
@@ -9,7 +9,7 @@ export class AppInviteService {
     private appliedInviteEntity: AppliedAppInviteStore,
   ) {}
 
-  async createAppInvite(user: IUser) {
+  async createAppInvite(user: User) {
     return this.appInviteEntity.create(user.id);
   }
 

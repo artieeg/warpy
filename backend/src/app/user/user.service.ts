@@ -1,6 +1,6 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EVENT_USER_CREATED } from '@warpy-be/utils';
-import { INewUser, IUser } from '@warpy/lib';
+import { INewUser, User } from '@warpy/lib';
 import { RefreshTokenStore, TokenService } from '@warpy-be/app/token';
 import { UserStore } from './user.store';
 
@@ -66,7 +66,7 @@ export class UserService {
     return users.filter((user) => user.id !== requester_id);
   }
 
-  async update(user: string, params: Partial<IUser>) {
+  async update(user: string, params: Partial<User>) {
     await this.store.update(user, params);
   }
 }

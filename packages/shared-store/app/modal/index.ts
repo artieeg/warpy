@@ -1,13 +1,13 @@
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
-import { IBaseUser, IBot, IInvite } from "@warpy/lib";
+import { UserBase, Bot, IInvite } from "@warpy/lib";
 import { Service } from "../Service";
 
 export type OpenModalParams = {
-  selectedUser?: IBaseUser;
-  userToAward?: IBaseUser;
+  selectedUser?: UserBase;
+  userToAward?: UserBase;
   botConfirmId?: string;
-  botConfirmData?: IBot;
+  botConfirmData?: Bot;
   invite?: IInvite;
   closeAfterReassign?: boolean;
 };

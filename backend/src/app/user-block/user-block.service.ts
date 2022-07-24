@@ -2,7 +2,7 @@ import {
   BlockedByAnotherSpeaker,
   StreamHasBlockedSpeakerError,
 } from '@warpy-be/errors';
-import { IUser } from '@warpy/lib';
+import { User } from '@warpy/lib';
 import { StreamerIdStore } from './streamer-ids.store';
 import { UserBlockCacheStore } from './user-block.cache';
 import { UserBlockStore } from './user-block.store';
@@ -67,7 +67,7 @@ export class UserBlockService {
     return blockId;
   }
 
-  async getBlockedUsers(user: string, _page: number): Promise<IUser[]> {
+  async getBlockedUsers(user: string, _page: number): Promise<User[]> {
     const blocked = await this.blockEntity.getBlockedUsers(user);
 
     return blocked.map((record) => record.blocked);

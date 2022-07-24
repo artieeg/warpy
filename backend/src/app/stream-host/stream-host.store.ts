@@ -1,5 +1,5 @@
 import IORedis, { Redis } from 'ioredis';
-import { IParticipant } from '@warpy/lib';
+import { Participant } from '@warpy/lib';
 import { toParticipantDTO } from '@warpy-be/app/participant';
 
 const PREFIX_HOST_OF_STREAM = 'host_of_';
@@ -26,7 +26,7 @@ export class HostStore {
     return !!hostedStream;
   }
 
-  async getRandomPossibleHost(stream: string): Promise<IParticipant | null> {
+  async getRandomPossibleHost(stream: string): Promise<Participant | null> {
     const id = await this.redis.srandmember(PREFIX_POSSIBLE_HOST + stream);
     const host = await this.getHostInfo(id);
 
@@ -39,7 +39,7 @@ export class HostStore {
     return id;
   }
 
-  async addPossibleHost(host: IParticipant) {
+  async addPossibleHost(host: Participant) {
     const { id, stream } = host;
 
     await this.redis
@@ -73,7 +73,7 @@ export class HostStore {
     return this.redis.get(PREFIX_HOSTED_STREAM + user);
   }
 
-  async setStreamHost(participant: IParticipant) {
+  async setStreamHost(participant: Participant) {
     const { id, stream } = participant;
 
     await this.redis
@@ -107,7 +107,7 @@ export class HostStore {
     await this.del(stream, host);
   }
 
-  async getHostInfo(host: string): Promise<IParticipant | null> {
+  async getHostInfo(host: string): Promise<Participant | null> {
     const data = await this.redis.hgetall(PREFIX_USER_INFO + host);
 
     if (!data.id) {

@@ -2,7 +2,7 @@ import {
   IFollowResponse,
   INewUserResponse,
   IUnfollowResponse,
-  IUser,
+  User,
   IUserBlockResponse,
   IUserDeleteResponse,
   IUserInfoResponse,
@@ -24,7 +24,7 @@ export interface IUserAPI {
   follow: (userToFollow: string) => Promise<IFollowResponse>;
   unfollow: (userToUnfollow: string) => Promise<IUnfollowResponse>;
   search: (textToSearch: string) => Promise<IUserSearchResponse>;
-  update: (field: keyof IUser, value: string) => Promise<IUserUpdateResponse>;
+  update: (field: keyof User, value: string) => Promise<IUserUpdateResponse>;
   report: (
     userToReport: string,
     reportReasonId: string

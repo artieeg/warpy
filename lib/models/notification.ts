@@ -1,6 +1,6 @@
-import { IInvite } from "./invite";
+import { Invite } from "./invite";
 
-export interface INotificationBase {
+export interface NotificationBase {
   id: string;
   user_id: string;
   invite_id?: string;
@@ -8,6 +8,6 @@ export interface INotificationBase {
   created_at: number;
 }
 
-export interface INotification extends INotificationBase {
-  invite?: IInvite;
+export interface Notification extends NotificationBase {
+  invite?: Invite;
 }

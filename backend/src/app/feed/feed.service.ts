@@ -1,4 +1,4 @@
-import { ICandidate, IStream } from '@warpy/lib';
+import { Candidate, Stream } from '@warpy/lib';
 import { ParticipantStore, StreamStore } from '@warpy-be/app';
 import { UserBlockService } from '../user-block';
 
@@ -9,7 +9,7 @@ export class FeedService {
     private participantService: ParticipantStore,
   ) {}
 
-  private async getFeedCandidate(stream: IStream): Promise<ICandidate> {
+  private async getFeedCandidate(stream: Stream): Promise<Candidate> {
     const [total_participants, streamers] = await Promise.all([
       this.participantService.count(stream.id),
       this.participantService.getStreamers(stream.id),
@@ -22,7 +22,7 @@ export class FeedService {
     };
   }
 
-  private getCandidatesFromStreams(streams: IStream[]): Promise<ICandidate[]> {
+  private getCandidatesFromStreams(streams: Stream[]): Promise<Candidate[]> {
     return Promise.all(streams.map((s) => this.getFeedCandidate(s)));
   }
 
@@ -39,7 +39,7 @@ export class FeedService {
       this.blockService.getBlockedByIds(user),
     ]);
 
-    const streams: IStream[] = await this.streamService.find({
+    const streams: Stream[] = await this.streamService.find({
       blockedUserIds,
       blockedByUserIds,
       category: category === 'foru' ? undefined : category,

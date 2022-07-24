@@ -1,16 +1,16 @@
-import { FollowRecord, PrismaClient, User } from '@prisma/client';
-import { IUser } from '@warpy/lib';
+import { FollowRecord, PrismaClient, User as PrismaUser } from '@prisma/client';
+import { User } from '@warpy/lib';
 import { toUserDTO } from '../user';
 
 export interface IFollow {
   follower_id: string;
   followed_id: string;
-  follower?: IUser;
-  followed?: IUser;
+  follower?: User;
+  followed?: User;
 }
 
 export function toFollowDTO(
-  data: FollowRecord & { followed?: User } & { follower?: User },
+  data: FollowRecord & { followed?: PrismaUser } & { follower?: PrismaUser },
 ): IFollow {
   let followData: IFollow = {
     followed_id: data.followed_id,

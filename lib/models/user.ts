@@ -1,6 +1,6 @@
-import { IEntity } from "./entity";
+import { Item } from "./entity";
 
-export interface IBaseUser extends IEntity {
+export interface UserBase extends Item {
   last_name: string;
   first_name: string;
   username: string;
@@ -15,7 +15,7 @@ export interface IBaseUser extends IEntity {
   online?: boolean;
 }
 
-export interface IUser extends IBaseUser {
+export interface User extends UserBase {
   email: string | null;
   sub: string | null;
 }

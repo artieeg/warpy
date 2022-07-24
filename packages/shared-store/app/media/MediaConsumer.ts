@@ -1,4 +1,4 @@
-import { IParticipant, MediaKind } from "@warpy/lib";
+import { Participant, MediaKind } from "@warpy/lib";
 import { MediaClient } from "@warpy/media";
 import { container } from "../../container";
 import { IStore } from "../../useStore";
@@ -15,7 +15,7 @@ export interface MediaConsumer {
     stream: string;
     mediaPermissionsToken: string;
     recvMediaParams: any;
-    streamers: IParticipant[];
+    streamers: Participant[];
   }) => Promise<StateUpdate>;
   consumeRemoteStream: (params: {
     user: string;
@@ -124,7 +124,7 @@ export class MediaConsumerImpl implements MediaConsumer {
     stream: string;
     mediaPermissionsToken: string;
     recvMediaParams: any;
-    streamers: IParticipant[];
+    streamers: Participant[];
   }): Promise<StateUpdate> {
     await this.initMediaConsumer({
       mediaPermissionsToken,
@@ -148,7 +148,7 @@ export class MediaConsumerImpl implements MediaConsumer {
 
     console.log("streamers", streamers);
 
-    streamers.forEach((s: IParticipant) => {
+    streamers.forEach((s: Participant) => {
       const audioConsumer = consumers.find(
         (c) => c.appData.user === s.id && c.kind === "audio"
       );

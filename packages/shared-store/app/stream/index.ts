@@ -1,4 +1,4 @@
-import { IParticipant } from "@warpy/lib";
+import { Participant } from "@warpy/lib";
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
 import { StreamCreator, StreamCreatorImpl } from "./StreamCreator";
@@ -71,7 +71,7 @@ export class StreamService
     return this.participantManager.fetchStreamViewers();
   }
 
-  addStreamParticipant(participant: IParticipant) {
+  addStreamParticipant(participant: Participant) {
     return this.participantManager.addStreamParticipant(participant);
   }
 
@@ -79,7 +79,7 @@ export class StreamService
     return this.participantManager.removeStreamParticipant(user);
   }
 
-  updateStreamParticipant(user: IParticipant) {
+  updateStreamParticipant(user: Participant) {
     return this.participantManager.updateStreamParticipant(user);
   }
 

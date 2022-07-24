@@ -1,6 +1,6 @@
 import { ParticipantStore, BroadcastUserListStore } from '@warpy-be/app';
 import { MessageService } from '../message';
-import { IAward, IParticipant } from '@warpy/lib';
+import { Award, Participant } from '@warpy/lib';
 
 export type MediaToggleEvent = {
   user: string;
@@ -15,7 +15,7 @@ export type ChatMessageEvent = {
 };
 
 export type NewHostEvent = {
-  host: IParticipant;
+  host: Participant;
 };
 
 export type ReactionsEvent = {
@@ -34,7 +34,7 @@ export type ParticipantLeaveEvent = {
 };
 
 export type AwardSentEvent = {
-  award: IAward;
+  award: Award;
 };
 
 export class BroadcastService {
@@ -95,7 +95,7 @@ export class BroadcastService {
     this.broadcast(ids, payload);
   }
 
-  async broadcastKickedParticipant(participant: IParticipant) {
+  async broadcastKickedParticipant(participant: Participant) {
     const { stream, id } = participant;
 
     const ids = await this.broadcastUserListStore.get(stream);
@@ -153,7 +153,7 @@ export class BroadcastService {
     this.broadcast(ids, message);
   }
 
-  async broadcastRoleChange(user: IParticipant) {
+  async broadcastRoleChange(user: Participant) {
     const ids = await this.broadcastUserListStore.get(user.stream);
 
     const message = this.messageService.encodeMessage({
@@ -166,7 +166,7 @@ export class BroadcastService {
     this.broadcast(ids, message);
   }
 
-  async broadcastHandRaise(viewer: IParticipant) {
+  async broadcastHandRaise(viewer: Participant) {
     const { stream } = viewer;
 
     const ids = await this.broadcastUserListStore.get(stream);
@@ -196,7 +196,7 @@ export class BroadcastService {
     this.broadcast(ids, message);
   }
 
-  async broadcastNewParticipant(participant: IParticipant) {
+  async broadcastNewParticipant(participant: Participant) {
     const ids = await this.broadcastUserListStore.get(participant.stream);
 
     const message = this.messageService.encodeMessage({

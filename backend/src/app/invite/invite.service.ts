@@ -1,6 +1,6 @@
 import { NoPermissionError } from '@warpy-be/errors';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { IInvite, InviteStates, IReceivedInviteEvent, IUser } from '@warpy/lib';
+import { Invite, InviteStates, IReceivedInviteEvent, User } from '@warpy/lib';
 import { EVENT_INVITE_AVAILABLE } from '@warpy-be/utils';
 import {
   UserStore,
@@ -182,7 +182,7 @@ export class InviteService {
     inviter: string;
     stream: string;
     invitee: string;
-  }): Promise<IInvite | null> {
+  }): Promise<Invite | null> {
     const isBot = invitee.slice(0, 3) === 'bot';
 
     if (isBot) {
@@ -229,16 +229,16 @@ export class InviteService {
   /**
    * Creates invite suggestions from bots, followers, following
    * */
-  async getInviteSuggestions(user: string, _stream: string): Promise<IUser[]> {
+  async getInviteSuggestions(user: string, _stream: string): Promise<User[]> {
     const [followed, following, bots] = await Promise.all([
       this.followEntity.getFollowed(user),
       this.followEntity.getFollowers(user),
       this.botEntity.getMany(),
     ]);
 
-    const suggestions: IUser[] = [
-      ...followed.map((f) => f.followed as IUser),
-      ...following.map((f) => f.follower as IUser),
+    const suggestions: User[] = [
+      ...followed.map((f) => f.followed as User),
+      ...following.map((f) => f.follower as User),
     ];
 
     for (var i = suggestions.length - 1; i > 0; i--) {
@@ -248,7 +248,7 @@ export class InviteService {
       suggestions[j] = temp;
     }
 
-    const uniqueSuggestionMap = new Map<string, IUser>(
+    const uniqueSuggestionMap = new Map<string, User>(
       suggestions.map((user) => [user.id, user]),
     );
 

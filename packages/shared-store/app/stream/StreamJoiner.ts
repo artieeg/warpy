@@ -2,7 +2,7 @@ import { MediaService } from "../media";
 
 import { IStore } from "../../useStore";
 import { StateUpdate } from "../types";
-import { IParticipant } from "@warpy/lib";
+import { Participant } from "@warpy/lib";
 import { AppState } from "../AppState";
 import { arrayToMap } from "../utils";
 
@@ -44,8 +44,8 @@ export class StreamJoinerImpl implements StreamJoiner {
       stream,
       currentStreamHost: host,
       totalParticipantCount: count,
-      streamers: arrayToMap<IParticipant>(streamers),
-      viewersWithRaisedHands: arrayToMap<IParticipant>(raisedHands),
+      streamers: arrayToMap<Participant>(streamers),
+      viewersWithRaisedHands: arrayToMap<Participant>(raisedHands),
       role,
     });
 
