@@ -97,35 +97,28 @@ export class StreamJoiner implements IStreamJoiner {
 
     response = { ...response, ...streamData, host };
 
-    /**
-     * if joining the stream
-     * */
+    //if joining the stream
     if (!oldParticipantData || prevStreamId !== stream) {
       const { mediaPermissionsToken, recvMediaParams } =
-        await this.participant.createNewParticipant(stream, user); //move to ParticipantCreator
+        await this.participant.createNewParticipant(stream, user);
 
-      response = {
+      return {
         ...response,
         mediaPermissionsToken,
         recvMediaParams,
-        count: response.count + 1, //+1 because we are joining
-        role: 'viewer',
+        count: response.count + 1,
+        role: 'viewer' as Roles,
       };
-
-      return response;
     }
 
-    /**
-     * If rejoining...
-     * */
+    //If rejoining...
 
+    //Reactivate user, the user will be considered a stream participant again
     await this.participantStore.setDeactivated(user, prevStreamId, false);
 
     const { role } = oldParticipantData;
 
-    /**
-     * Based on the previous role, get viewer or streamer params
-     * */
+    //Based on the previous role, get viewer or streamer params
     const reconnectMediaParams = await this.getReconnectMediaParams({
       user,
       stream,
@@ -141,6 +134,7 @@ export class StreamJoiner implements IStreamJoiner {
       ...response,
       ...reconnectMediaParams,
       role,
+      count: response.count + 1,
       streamers:
         role === 'viewer'
           ? response.streamers
@@ -155,7 +149,9 @@ export class StreamJoiner implements IStreamJoiner {
   }
 
   /**
-   * Returns recv + send params and media permissions token
+   * Depending on user's role, returns
+   * media permissions token, recv media params
+   * and send media params (if streamer)
    * */
   private async getReconnectMediaParams({
     user,

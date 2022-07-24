@@ -38,6 +38,7 @@ export interface IParticipantStore extends OnInstanceInit {
     includeDeactivatedUsers?: boolean,
   ) => Promise<string[]>;
   removeParticipantDataFromStream: (stream: string) => Promise<void>;
+  isDeactivated(user: string, stream: string): Promise<boolean>;
   removeParticipantFromStream: (
     participant: string,
     stream: string,
@@ -58,6 +59,15 @@ export class ParticipantStore implements IParticipantStore {
 
   onInstanceInit() {
     this.redis = new IORedis(this.configService.get('participantStoreAddr'));
+  }
+
+  async isDeactivated(user: string, stream: string) {
+    const r = await this.redis.sismember(
+      PREFIX_DEACTIVATED_USERS + stream,
+      user,
+    );
+
+    return r === 1;
   }
 
   async del(id: string) {

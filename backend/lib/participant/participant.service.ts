@@ -4,7 +4,6 @@ import { IUserService } from '../user';
 import { IMediaService } from '../media';
 import { IParticipant } from '@warpy/lib';
 import {
-  BannedFromStreamError,
   MaxVideoStreamers,
   NoPermissionError,
   UserNotFound,
@@ -89,6 +88,11 @@ export class ParticipantService {
     const data = await this.participantStore.get(user);
 
     if (!data) {
+      return;
+    }
+
+    //Do nothing if the user is already deactivated
+    if (await this.participantStore.isDeactivated(user, data.stream)) {
       return;
     }
 
