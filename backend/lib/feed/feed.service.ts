@@ -5,20 +5,20 @@ import { IUserBlockService } from '../user-block';
 export class FeedService {
   constructor(
     private blockService: IUserBlockService,
-    private streamEntity: IStreamStore,
-    private participantEntity: IParticipantStore,
+    private streamService: IStreamStore,
+    private participantService: IParticipantStore,
   ) {}
 
   private async getFeedCandidate(stream: IStream): Promise<ICandidate> {
     const [total_participants, speakers] = await Promise.all([
-      this.participantEntity.count(stream.id),
-      this.participantEntity.getStreamers(stream.id),
+      this.participantService.count(stream.id),
+      this.participantService.getStreamers(stream.id),
     ]);
 
     return {
       ...stream,
       total_participants,
-      speakers,
+      streamers: speakers,
     };
   }
 
@@ -27,7 +27,7 @@ export class FeedService {
   }
 
   async search(text: string) {
-    const streams = await this.streamEntity.search(text);
+    const streams = await this.streamService.search(text);
     const candidates = await this.getCandidatesFromStreams(streams);
 
     return candidates;
@@ -39,7 +39,7 @@ export class FeedService {
       this.blockService.getBlockedByIds(user),
     ]);
 
-    const streams: IStream[] = await this.streamEntity.find({
+    const streams: IStream[] = await this.streamService.find({
       blockedUserIds,
       blockedByUserIds,
       category: category === 'foru' ? undefined : category,

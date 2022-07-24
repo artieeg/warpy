@@ -52,7 +52,7 @@ export const StreamPreview = React.memo((props: IStreamPreviewProps) => {
             {stream.title}
           </Text>
           <View style={styles.participants}>
-            {stream.speakers.slice(0, 3).map((participant, index) => {
+            {stream.streamers.slice(0, 3).map((participant, index) => {
               const userAvatarStyle = {
                 transform: [{translateX: -index * 3}],
               };
