@@ -1,5 +1,8 @@
-import { Global, Module } from '@nestjs/common';
-import { NjsTimerService } from './timer.service';
+import { Global, Injectable, Module } from '@nestjs/common';
+import { TimerService } from '@warpy-be/app';
+
+@Injectable()
+export class NjsTimerService extends TimerService {}
 
 @Module({
   imports: [],
