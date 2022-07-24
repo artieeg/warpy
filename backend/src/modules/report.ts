@@ -1,6 +1,6 @@
 import { Injectable, Controller, Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { UserReportService, UserReportStore } from 'lib';
+import { UserReportService, UserReportStore } from '@warpy-be/app';
 import { IUserReportRequest, IUserReportResponse } from '@warpy/lib';
 import { PrismaService, PrismaModule } from './prisma';
 @Injectable()

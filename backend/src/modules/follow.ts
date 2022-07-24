@@ -1,6 +1,6 @@
 import { Injectable, Controller, Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { FollowService, FollowStore } from 'lib';
+import { FollowService, FollowStore } from '@warpy-be/app';
 import {
   IFollowRequest,
   IFollowResponse,

@@ -1,6 +1,6 @@
 import { Controller, Injectable, Module, UseFilters } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { ReactionService } from 'lib';
+import { ReactionService } from '@warpy-be/app';
 import { IClap } from '@warpy/lib';
 import { ExceptionFilter } from '../rpc-exception.filter';
 import { EventEmitter2 } from '@nestjs/event-emitter';

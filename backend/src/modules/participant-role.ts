@@ -3,7 +3,7 @@ import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import { OnHostReassign } from '@warpy-be/interfaces';
 import { EVENT_HOST_REASSIGN } from '@warpy-be/utils';
-import { ParticipantRoleManagerService } from 'lib';
+import { ParticipantRoleManagerService } from '@warpy-be/app';
 import { ISetRoleRequest } from '@warpy/lib';
 import { NjsParticipantStore } from './participant';
 import { NjsUserBlockService, UserBlockModule } from './user-block';

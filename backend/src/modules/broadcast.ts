@@ -38,7 +38,7 @@ import {
   MediaToggleEvent,
   ParticipantLeaveEvent,
   ReactionsEvent,
-} from 'lib';
+} from '@warpy-be/app';
 import { IParticipant } from '@warpy/lib';
 import { NjsParticipantStore } from './participant';
 import { NjsMessageService } from './message';

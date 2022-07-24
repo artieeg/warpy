@@ -2,7 +2,7 @@ import { Injectable, OnModuleInit, Controller, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
 import IORedis from 'ioredis';
-import { StreamNodeAssignerStore } from 'lib';
+import { StreamNodeAssignerStore } from '@warpy-be/app';
 
 @Injectable()
 export class NjsStreamNodeAssignerStore

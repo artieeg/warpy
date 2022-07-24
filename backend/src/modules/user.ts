@@ -16,7 +16,7 @@ import {
   IUserSearchResponse,
   IUserDisconnected,
 } from '@warpy/lib';
-import { UserStore, UserService } from 'lib';
+import { UserStore, UserService } from '@warpy-be/app';
 import { AppInviteModule } from './app-invite';
 import { DeveloperAccountModule } from './developer-account';
 import { FollowModule } from './follow';

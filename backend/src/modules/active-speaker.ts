@@ -1,6 +1,6 @@
 import { Injectable, Controller, Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { ActiveSpeakerService } from 'lib';
+import { ActiveSpeakerService } from '@warpy-be/app';
 import { IActiveSpeakersPayload } from '@warpy/lib';
 import {EventEmitter2} from '@nestjs/event-emitter';
 

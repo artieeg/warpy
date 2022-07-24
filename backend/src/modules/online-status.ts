@@ -4,7 +4,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import { OnUserDisconnect, OnUserConnect } from '@warpy-be/interfaces';
 import { EVENT_USER_CONNECTED, EVENT_USER_DISCONNECTED } from '@warpy-be/utils';
-import { UserOnlineStatusStore } from 'lib';
+import { UserOnlineStatusStore } from '@warpy-be/app';
 import { IUserStatusRequest, IUserOnlineStatusResponse } from '@warpy/lib';
 
 @Injectable()

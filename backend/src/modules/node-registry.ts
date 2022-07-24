@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit, Controller, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
-import { NodeRegistryStore } from 'lib';
+import { NodeRegistryStore } from '@warpy-be/app';
 import { INewMediaNode } from '@warpy/lib';
 
 @Injectable()

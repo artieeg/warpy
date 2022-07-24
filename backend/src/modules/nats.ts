@@ -1,5 +1,5 @@
 import { Injectable, Module, OnModuleInit } from '@nestjs/common';
-import { NatsService } from 'lib';
+import { NatsService } from '@warpy-be/app';
 
 @Injectable()
 export class NjsNatsService extends NatsService implements OnModuleInit {

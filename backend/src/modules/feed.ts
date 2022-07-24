@@ -1,6 +1,6 @@
 import { Controller, Injectable, Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { FeedService } from 'lib';
+import { FeedService } from '@warpy-be/app';
 import {
   IStreamSearchRequest,
   IStreamSearchResponse,

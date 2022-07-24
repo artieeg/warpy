@@ -3,7 +3,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import { OnNewUser } from '@warpy-be/interfaces';
 import { EVENT_USER_CREATED } from '@warpy-be/utils';
-import { AppliedAppInviteStore, AppInviteService, AppInviteStore } from 'lib';
+import { AppliedAppInviteStore, AppInviteService, AppInviteStore } from '@warpy-be/app';
 import {
   IInviteApplyRequest,
   IAppInviteResponse,

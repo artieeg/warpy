@@ -1,7 +1,7 @@
 import { Injectable, Controller, Module } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
-import { StreamService, StreamStore } from 'lib';
+import { StreamService, StreamStore } from '@warpy-be/app';
 import {
   INewStream,
   INewStreamResponse,

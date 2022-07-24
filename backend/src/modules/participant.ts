@@ -14,7 +14,7 @@ import {
   EVENT_STREAM_ENDED,
   EVENT_USER_DISCONNECTED,
 } from '@warpy-be/utils';
-import { ParticipantService, ParticipantStore } from 'lib';
+import { ParticipantService, ParticipantStore } from '@warpy-be/app';
 import {
   IRequestViewers,
   IRequestViewersResponse,
@@ -25,7 +25,7 @@ import {
 import { MediaModule, NjsMediaService } from './media';
 import { BotInstanceModule, NjsBotInstanceStore } from './bot-instance';
 import { NjsUserService, UserModule } from './user';
-import { StreamBanStore } from 'lib/participant/stream-bans.store';
+import { StreamBanStore } from '@warpy-be/app/participant/stream-bans.store';
 import { PrismaModule, PrismaService } from './prisma';
 
 @Injectable()

@@ -19,7 +19,7 @@ import {
   UserBlockService,
   UserBlockCacheStore,
   StreamerIdStore,
-} from 'lib';
+} from '@warpy-be/app';
 import {
   IUserBlockRequest,
   IUserUnblockResponse,

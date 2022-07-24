@@ -1,7 +1,7 @@
 import { PrismaService } from '@warpy-be/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { IAward } from '@warpy/lib';
-import { toUserDTO } from 'lib';
+import { toUserDTO } from '@warpy-be/app';
 
 @Injectable()
 export class AwardEntity {

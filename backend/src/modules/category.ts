@@ -1,6 +1,6 @@
 import { Controller, Injectable, Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { CategoryService, CategoryStore } from 'lib';
+import { CategoryService, CategoryStore } from '@warpy-be/app';
 import { PrismaModule } from './prisma';
 import { IGetCategoriesResponse } from '@warpy/lib';
 import { PrismaService } from './prisma';

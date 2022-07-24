@@ -2,7 +2,7 @@ import { Injectable, Controller, Module } from '@nestjs/common';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import { IGifsRequest, IGifsResponse } from '@warpy/lib';
 import { MessagePattern } from '@nestjs/microservices';
-import { GifService } from 'lib';
+import { GifService } from '@warpy-be/app';
 
 @Injectable()
 export class NjsGifService extends GifService {

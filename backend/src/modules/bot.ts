@@ -5,7 +5,7 @@ import {
   DeveloperAccountModule,
   NjsDeveloperAccountStore,
 } from './developer-account';
-import { BotsService, BotStore } from 'lib';
+import { BotsService, BotStore } from '@warpy-be/app';
 import { PrismaModule, PrismaService } from './prisma';
 import { NjsMessageService } from './message';
 

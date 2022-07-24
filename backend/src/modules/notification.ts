@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import { EVENT_INVITE_AVAILABLE } from '@warpy-be/utils';
-import { NotificationService, NotificationStore } from 'lib';
+import { NotificationService, NotificationStore } from '@warpy-be/app';
 import { PrismaModule } from './prisma';
 import {
   IInvite,

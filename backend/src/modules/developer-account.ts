@@ -1,5 +1,5 @@
 import { Injectable, Module } from '@nestjs/common';
-import { DeveloperAccountStore } from 'lib';
+import { DeveloperAccountStore } from '@warpy-be/app';
 import { PrismaService, PrismaModule } from './prisma';
 
 @Injectable()

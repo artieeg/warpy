@@ -1,5 +1,5 @@
 import { Injectable, Module } from '@nestjs/common';
-import { BotInstanceService, BotInstanceStore } from 'lib';
+import { BotInstanceService, BotInstanceStore } from '@warpy-be/app';
 import { PrismaModule, PrismaService } from './prisma';
 import { NJTokenService, TokenModule } from './token';
 

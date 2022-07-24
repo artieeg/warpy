@@ -1,6 +1,6 @@
 import { Injectable, Module } from '@nestjs/common';
 import { ConfigService, ConfigModule } from '@nestjs/config';
-import { RefreshTokenStore, TokenService } from 'lib';
+import { RefreshTokenStore, TokenService } from '@warpy-be/app';
 import { PrismaModule, PrismaService } from './prisma';
 
 @Injectable()

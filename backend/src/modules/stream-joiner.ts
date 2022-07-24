@@ -2,7 +2,7 @@ import { Injectable, Controller } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { StreamJoinerService } from 'lib';
+import { StreamJoinerService } from '@warpy-be/app';
 import { IBotJoin, IJoinStream, IJoinStreamResponse } from '@warpy/lib';
 import {
   NjsParticipantService,

@@ -1,7 +1,7 @@
 import { Controller, Injectable, Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { IFriendFeedRequest } from '@warpy/lib';
-import { FriendFeedService } from 'lib';
+import { FriendFeedService } from '@warpy-be/app';
 import { FollowModule, NjsFollowStore } from './follow';
 import { NjsParticipantStore } from './participant';
 import { NjsStreamStore, StreamModule } from './stream';

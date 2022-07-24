@@ -4,7 +4,7 @@ import { MessagePattern } from '@nestjs/microservices';
 import { AppInviteModule, NjsAppliedAppInviteStore } from './app-invite';
 import { NjsUserService, UserModule } from './user';
 import { EVENT_USER_CONNECTED } from '@warpy-be/utils';
-import { SyncService } from 'lib';
+import { SyncService } from '@warpy-be/app';
 import { IWhoAmIRequest, IWhoAmIResponse } from '@warpy/lib';
 import { CategoryModule, NjsCategoryStore } from './category';
 import { FriendFeedModule, NjsFriendFeedService } from './friend-feed';

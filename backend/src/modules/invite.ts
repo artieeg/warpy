@@ -14,7 +14,7 @@ import {
   EVENT_USER_CONNECTED,
   EVENT_PARTICIPANT_LEAVE,
 } from '@warpy-be/utils';
-import { InviteStore, InviteService } from 'lib';
+import { InviteStore, InviteService } from '@warpy-be/app';
 import {
   IInviteRequest,
   IInviteResponse,

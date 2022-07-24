@@ -1,6 +1,6 @@
 import { Controller, Injectable, Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { UserDataFetcherService } from 'lib';
+import { UserDataFetcherService } from '@warpy-be/app';
 import { IUserRequest, IUserInfoResponse } from '@warpy/lib';
 import { NjsUserStore, UserModule } from './user';
 import { FollowModule, NjsFollowStore } from './follow';

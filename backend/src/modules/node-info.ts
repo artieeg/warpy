@@ -2,7 +2,7 @@ import { Injectable, OnModuleInit, Controller, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
 import IORedis from 'ioredis';
-import { NodeInfoStore } from 'lib';
+import { NodeInfoStore } from '@warpy-be/app';
 import { IMediaNodeInfoRequest, MediaServiceRole } from '@warpy/lib';
 
 @Injectable()
