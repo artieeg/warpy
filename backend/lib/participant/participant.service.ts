@@ -97,7 +97,7 @@ export class ParticipantService {
     }
 
     //remove bots from the stream completely
-    //since they can't rejoin
+    //bc they can't rejoin
     if (user.slice(0, 3) === 'bot') {
       return this.removeUserFromStream(user, data.stream);
     }

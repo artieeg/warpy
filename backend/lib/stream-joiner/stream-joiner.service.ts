@@ -95,7 +95,12 @@ export class StreamJoiner implements IStreamJoiner {
 
     const prevStreamId = oldParticipantData?.stream;
 
-    response = { ...response, ...streamData, host };
+    response = {
+      ...response,
+      ...streamData,
+      count: streamData.count + 1,
+      host,
+    };
 
     //if joining the stream
     if (!oldParticipantData || prevStreamId !== stream) {
@@ -106,7 +111,6 @@ export class StreamJoiner implements IStreamJoiner {
         ...response,
         mediaPermissionsToken,
         recvMediaParams,
-        count: response.count + 1,
         role: 'viewer' as Roles,
       };
     }
@@ -119,7 +123,7 @@ export class StreamJoiner implements IStreamJoiner {
     const { role } = oldParticipantData;
 
     //Based on the previous role, get viewer or streamer params
-    const reconnectMediaParams = await this.getReconnectMediaParams({
+    const reconnectMediaParams = await this.getMediaParamsForRole({
       user,
       stream,
       role,
@@ -134,7 +138,6 @@ export class StreamJoiner implements IStreamJoiner {
       ...response,
       ...reconnectMediaParams,
       role,
-      count: response.count + 1,
       streamers:
         role === 'viewer'
           ? response.streamers
@@ -153,7 +156,7 @@ export class StreamJoiner implements IStreamJoiner {
    * media permissions token, recv media params
    * and send media params (if streamer)
    * */
-  private async getReconnectMediaParams({
+  private async getMediaParamsForRole({
     user,
     stream,
     role,
