@@ -118,11 +118,11 @@ export class ParticipantController
 
   @OnEvent(EVENT_PARTICIPANT_REJOIN)
   async onParticipantRejoin({ participant: { id, stream } }) {
-    return this.store.setDeactivated(id, stream, false);
+    return this.participant.handleRejoiningUser(id, stream);
   }
 
   @MessagePattern('participant.leave')
-  async leave({ user, stream }) {
+  async leave({ user }) {
     await this.participant.handleLeavingParticipant(user);
   }
 

@@ -15,6 +15,17 @@ export class ParticipantRemoverImpl implements ParticipantRemover {
     private participantStore: IParticipantStore,
   ) {}
 
+  /**
+   * Marks users as deactivated (so they can rejoin with their
+   * previous role)
+   *
+   * Deactivated users aren't considered stream
+   * participants, but their data is preserved
+   * until the stream ends or the user joins
+   * a different stream
+   *
+   * If user is a bot, it gets removed completely
+   * */
   async handleLeavingParticipant(user: string) {
     const data = await this.participantStore.get(user);
 
@@ -22,7 +33,8 @@ export class ParticipantRemoverImpl implements ParticipantRemover {
       return;
     }
 
-    //ignore bots
+    //remove bots from the stream completely
+    //since they can't rejoin
     if (user.slice(0, 3) === 'bot') {
       return this.removeUserFromStream(user, data.stream);
     }
@@ -33,6 +45,10 @@ export class ParticipantRemoverImpl implements ParticipantRemover {
       user,
       stream: data.stream,
     });
+  }
+
+  async handleRejoiningUser(user: string, stream: string) {
+    await this.participantStore.setDeactivated(user, stream, false);
   }
 
   async removeUserFromStream(user: string, stream?: string) {
