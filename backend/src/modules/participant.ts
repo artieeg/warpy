@@ -17,7 +17,6 @@ import {
 import {
   EVENT_ROLE_CHANGE,
   EVENT_PARTICIPANT_REJOIN,
-  EVENT_PARTICIPANT_LEAVE,
   EVENT_STREAM_ENDED,
   EVENT_PARTICIPANT_KICKED,
   EVENT_USER_DISCONNECTED,
@@ -68,7 +67,7 @@ export class NjsParticipantService extends ParticipantService {
 
 @Controller()
 export class ParticipantController
-  implements OnStreamEnd, OnRoleChange, OnParticipantLeave, OnParticipantRejoin
+  implements OnStreamEnd, OnRoleChange, OnParticipantRejoin
 {
   constructor(
     private store: NjsParticipantStore,
@@ -122,11 +121,17 @@ export class ParticipantController
     return this.store.setDeactivated(id, stream, false);
   }
 
+  @MessagePattern('participant.leave')
+  async leave({ user, stream }) {
+    await this.participant.handleLeavingParticipant(user);
+  }
+
+  /*
   @OnEvent(EVENT_PARTICIPANT_LEAVE)
   async onParticipantLeave({ user, stream }) {
     await this.participant.removeUserFromStream(user, stream);
-    await this.store.setDeactivated(user, stream, true);
   }
+    */
 
   @OnEvent(EVENT_STREAM_ENDED)
   async onStreamEnd({ stream }) {

@@ -42,8 +42,6 @@ export class FeedController {
     user,
     category,
   }: IRequestFeed): Promise<IFeedResponse> {
-    console.log({ user, category });
-
     const feed = await this.candidateService.getFeed(user, category);
 
     return {

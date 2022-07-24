@@ -21,13 +21,13 @@ export interface IStreamService {
 
 export class StreamService implements IStreamService {
   constructor(
-    private streamEntity: IStreamStore,
+    private streamStore: IStreamStore,
     private mediaService: IMediaService,
     private eventEmitter: EventEmitter2,
   ) {}
 
   async get(id: string) {
-    const stream = await this.streamEntity.findById(id);
+    const stream = await this.streamStore.findById(id);
 
     return stream;
   }
@@ -38,7 +38,7 @@ export class StreamService implements IStreamService {
     category: string,
   ): Promise<INewStreamResponse> {
     const stream_id = cuid();
-    const stream = await this.streamEntity.create({
+    const stream = await this.streamStore.create({
       id: stream_id,
       owner_id: owner,
       title,
@@ -75,18 +75,18 @@ export class StreamService implements IStreamService {
   }
 
   async setStreamHost(stream: string, host: string) {
-    return this.streamEntity.setHost(stream, host);
+    return this.streamStore.setHost(stream, host);
   }
 
   async deleteStream(stream: string) {
-    await this.streamEntity.del(stream);
+    await this.streamStore.del(stream);
     this.eventEmitter.emit(EVENT_STREAM_ENDED, {
       stream,
     });
   }
 
   async stopStream(user: string): Promise<void> {
-    const stream = await this.streamEntity.delByHost(user);
+    const stream = await this.streamStore.delByHost(user);
 
     if (!stream) {
       throw new StreamNotFound();
@@ -98,6 +98,6 @@ export class StreamService implements IStreamService {
   }
 
   async setStreamPreview(stream: string, preview: string) {
-    await this.streamEntity.setPreviewClip(stream, preview);
+    await this.streamStore.setPreviewClip(stream, preview);
   }
 }

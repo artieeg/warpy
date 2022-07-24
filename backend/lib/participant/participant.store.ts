@@ -176,8 +176,6 @@ export class ParticipantStore implements IParticipantStore {
     const [[, streamers], [, raisedHands], [, viewers]] = await pipe.exec();
     const ids: string[] = [...streamers, ...raisedHands, ...viewers];
 
-    console.log({ ids, streamers, raisedHands, viewers });
-
     return ids;
   }
 
