@@ -1,10 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
-export interface IDeveloperAccountStore {
-  getDeveloperAccount(user: string): Promise<string>;
-}
-
-export class DeveloperAccountStore implements IDeveloperAccountStore {
+export class DeveloperAccountStore {
   constructor(private prismaService: PrismaClient) {}
 
   async getDeveloperAccount(user: string) {

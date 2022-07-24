@@ -1,21 +1,12 @@
 import { AppInviteAlreadyAccepted, CantInviteYourself } from '@warpy-be/errors';
-import { IAppInvite, IUser } from '@warpy/lib';
-import { IAppInviteStore } from './app-invite.store';
-import { IAppliedAppInviteStore } from './applied-app-invite.store';
+import { IUser } from '@warpy/lib';
+import { AppInviteStore } from './app-invite.store';
+import { AppliedAppInviteStore } from './applied-app-invite.store';
 
-
-export interface IAppInviteService {
-  createAppInvite(user: IUser): Promise<IAppInvite>;
-  getById(id: string): Promise<IAppInvite>;
-  get(user_id: string): Promise<IAppInvite>;
-  update(user_id: string): Promise<IAppInvite>;
-  accept(user: string, inviteCode: string): Promise<{ status: string }>;
-}
-
-export class AppInviteService implements IAppInviteService {
+export class AppInviteService {
   constructor(
-    private appInviteEntity: IAppInviteStore,
-    private appliedInviteEntity: IAppliedAppInviteStore,
+    private appInviteEntity: AppInviteStore,
+    private appliedInviteEntity: AppliedAppInviteStore,
   ) {}
 
   async createAppInvite(user: IUser) {

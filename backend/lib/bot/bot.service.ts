@@ -1,5 +1,5 @@
-import { IBotStore } from './bot.store';
-import { IDeveloperAccountStore } from './developer-account.store';
+import { BotStore } from './bot.store';
+import { DeveloperAccountStore } from './developer-account.store';
 import { IMessageService } from '../message';
 import { ITokenService } from '../token';
 
@@ -9,23 +9,10 @@ export type BotConfirmResponseDTO = {
   confirmed: boolean;
 };
 
-export interface IBotsService {
-  createNewBot(
-    name: string,
-    botname: string,
-    creatorUserId: string,
-    avatar: string,
-  ): Promise<{
-    id: string;
-    confimed: boolean;
-    token: string;
-  }>;
-}
-
-export class BotsService implements IBotsService {
+export class BotsService {
   constructor(
-    private botEntity: IBotStore,
-    private developerAccountEntity: IDeveloperAccountStore,
+    private botEntity: BotStore,
+    private developerAccountEntity: DeveloperAccountStore,
     private messageService: IMessageService,
     private tokenService: ITokenService,
   ) {}

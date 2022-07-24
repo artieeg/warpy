@@ -4,15 +4,7 @@ import { animals, colors, uniqueNamesGenerator } from 'unique-names-generator';
 import { IAppInvite } from '@warpy/lib';
 import { toUserDTO } from '../user';
 
-export interface IAppInviteStore {
-  create(user_id: string): Promise<IAppInvite>;
-  updateInviteCode(user_id: string): Promise<IAppInvite>;
-  findByCode(code: string): Promise<{ id: string; user_id: string }>;
-  findById(id: string): Promise<IAppInvite>;
-  find(user_id: string): Promise<IAppInvite>;
-}
-
-export class AppInviteStore implements IAppInviteStore {
+export class AppInviteStore {
   constructor(private prisma: PrismaClient) {}
 
   private generateInviteCode() {

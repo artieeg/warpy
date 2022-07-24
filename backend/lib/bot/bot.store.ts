@@ -19,17 +19,7 @@ function toBotDTO(data: Bot): IUser {
   };
 }
 
-export interface IBotStore {
-  create(
-    name: string,
-    botname: string,
-    avatar: string,
-    creator_id: string,
-  ): Promise<string>;
-  getMany(): Promise<IUser[]>;
-}
-
-export class BotStore implements IBotStore {
+export class BotStore {
   constructor(private prismaService: PrismaClient) {}
   async create(
     name: string,

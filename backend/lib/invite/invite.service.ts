@@ -7,7 +7,7 @@ import {
   IStreamStore,
   IMessageService,
   ITokenService,
-  IBotStore,
+  BotStore,
 } from 'lib';
 import { IFollowStore } from 'lib/follow/follow.store';
 import { IInviteStore } from './invite.store';
@@ -40,7 +40,7 @@ export class InviteService {
     private streamEntity: IStreamStore,
     private messageService: IMessageService,
     private tokenService: ITokenService,
-    private botEntity: IBotStore,
+    private botEntity: BotStore,
   ) {}
 
   /**
