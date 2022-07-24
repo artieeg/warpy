@@ -1,16 +1,10 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EVENT_USER_CREATED } from '@warpy-be/utils';
-import { INewUser, INewUserResponse } from '@warpy/lib';
-import { RefreshTokenStore } from 'lib';
-import { TokenService } from '../../token';
-import { UserStore } from '../user.store';
+import { INewUser, IUser } from '@warpy/lib';
+import { RefreshTokenStore, TokenService } from 'lib/token';
+import { UserStore } from './user.store';
 
-export interface UserCreator {
-  createAnonUser: () => Promise<{ id: string; access: string }>;
-  createUser: (data: INewUser) => Promise<INewUserResponse>;
-}
-
-export class UserCreatorImpl implements UserCreator {
+export class UserService {
   constructor(
     private store: UserStore,
     private token: TokenService,
@@ -56,5 +50,23 @@ export class UserCreatorImpl implements UserCreator {
       access: accessToken,
       refresh: refreshToken,
     };
+  }
+
+  async del(user: string) {
+    await this.store.del(user);
+  }
+
+  async findById(user: string, details?: boolean) {
+    return this.store.find(user, details);
+  }
+
+  async search(text: string, requester_id: string) {
+    const users = await this.store.search(text);
+
+    return users.filter((user) => user.id !== requester_id);
+  }
+
+  async update(user: string, params: Partial<IUser>) {
+    await this.store.update(user, params);
   }
 }
