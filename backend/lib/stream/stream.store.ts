@@ -9,10 +9,6 @@ export interface IStreamStore {
   findByIds(ids: string[]): Promise<IStream[]>;
   findById(id: string): Promise<IStream | null>;
   create(data: CreateNewStream): Promise<IStream>;
-  incReactionsCount(
-    id: string,
-    amount: number,
-  ): Promise<{ id: string; reactions: number }>;
   delByHost(host: string): Promise<string | undefined>;
   del(id: string): Promise<number>;
   stop(stream_id: string): Promise<void>;
@@ -90,30 +86,6 @@ export class StreamStore implements IStreamStore {
     });
 
     return toStreamDTO(stream);
-  }
-
-  async incReactionsCount(
-    id: string,
-    amount = 0,
-  ): Promise<{
-    id: string;
-    reactions: number;
-  }> {
-    const { reactions } = await this.prisma.stream.update({
-      where: {
-        id,
-      },
-      data: {
-        reactions: {
-          increment: amount,
-        },
-      },
-      select: {
-        reactions: true,
-      },
-    });
-
-    return { id, reactions };
   }
 
   async delByHost(host: string): Promise<string | undefined> {

@@ -3,7 +3,6 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ALLOWED_EMOJI, Reaction } from '@warpy/lib';
 import { OnInstanceInit } from 'lib/OnInstanceInit.interface';
 import { OnInstanceDestroy } from 'lib/OnInstanceDestroy';
-import { IStreamStore } from 'lib';
 
 export interface IReactionService extends OnInstanceInit, OnInstanceDestroy {
   reset(): void;
@@ -15,10 +14,7 @@ export class ReactionService implements IReactionService {
   private syncInterval: ReturnType<typeof setInterval>;
   private batchedReactionUpdates: Record<string, Reaction[]> = {};
 
-  constructor(
-    private eventEmitter: EventEmitter2,
-    private streamStore: IStreamStore,
-  ) {}
+  constructor(private eventEmitter: EventEmitter2) {}
 
   onInstanceInit() {
     this.syncInterval = setInterval(() => this.syncReactions(), 1000);
@@ -60,7 +56,6 @@ export class ReactionService implements IReactionService {
           }
 
           this.eventEmitter.emit(EVENT_REACTIONS, { stream, reactions });
-          await this.streamStore.incReactionsCount(stream, reactions.length);
         } catch (e) {}
       },
     );

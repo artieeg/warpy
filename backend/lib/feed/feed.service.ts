@@ -10,7 +10,7 @@ export class FeedService {
   ) {}
 
   private async getFeedCandidate(stream: IStream): Promise<ICandidate> {
-    const [total_participants, speakers] = await Promise.all([
+    const [total_participants, streamers] = await Promise.all([
       this.participantService.count(stream.id),
       this.participantService.getStreamers(stream.id),
     ]);
@@ -18,7 +18,7 @@ export class FeedService {
     return {
       ...stream,
       total_participants,
-      streamers: speakers,
+      streamers,
     };
   }
 
