@@ -1,12 +1,12 @@
 import { ICandidate, IStream } from '@warpy/lib';
-import { IParticipantStore, IStreamStore } from 'lib';
-import { IUserBlockService } from '../user-block';
+import { ParticipantStore, StreamStore } from 'lib';
+import { UserBlockService } from '../user-block';
 
 export class FeedService {
   constructor(
-    private blockService: IUserBlockService,
-    private streamService: IStreamStore,
-    private participantService: IParticipantStore,
+    private blockService: UserBlockService,
+    private streamService: StreamStore,
+    private participantService: ParticipantStore,
   ) {}
 
   private async getFeedCandidate(stream: IStream): Promise<ICandidate> {

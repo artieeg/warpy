@@ -25,15 +25,7 @@ export function toBotInstanceDTO(
   };
 }
 
-export interface IBotInstanceStore {
-  create(bot_id: string, stream_id: string): Promise<IUser>;
-  getBotInstance(bot: string, stream: string): Promise<IUser>;
-  getBotInstances(
-    bot_id: string,
-  ): Promise<{ botInstanceId: string; stream: string }[]>;
-}
-
-export class BotInstanceStore implements IBotInstanceStore {
+export class BotInstanceStore {
   constructor(private prismaService: PrismaClient) {}
 
   async create(bot_id: string, stream_id: string) {

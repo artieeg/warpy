@@ -1,15 +1,11 @@
 import { IFriendFeedItem } from '@warpy/lib';
-import { IParticipantStore, IFollowStore, IStreamStore } from 'lib';
-
-export interface IFriendFeedService {
-  getFriendFeed(user: string): Promise<IFriendFeedItem[]>;
-}
+import { ParticipantStore, FollowStore, StreamStore } from 'lib';
 
 export class FriendFeedService {
   constructor(
-    private participant: IParticipantStore,
-    private follow: IFollowStore,
-    private stream: IStreamStore,
+    private participant: ParticipantStore,
+    private follow: FollowStore,
+    private stream: StreamStore,
   ) {}
 
   async getFriendFeed(user: string): Promise<IFriendFeedItem[]> {

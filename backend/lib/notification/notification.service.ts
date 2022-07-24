@@ -1,11 +1,10 @@
 import { INotification, IInvite } from '@warpy/lib';
-import { IMessageService } from 'lib/message';
-import { INotificationStore } from './notification.store';
+import { NotificationStore, MessageService } from 'lib';
 
 export class NotificationService {
   constructor(
-    private notificationStore: INotificationStore,
-    private messageService: IMessageService,
+    private notificationStore: NotificationStore,
+    private messageService: MessageService,
   ) {}
 
   private async sendNotification(user: string, notification: INotification) {

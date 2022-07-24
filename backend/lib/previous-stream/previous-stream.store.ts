@@ -1,16 +1,8 @@
 import IORedis from 'ioredis';
-import { OnInstanceInit } from 'lib/OnInstanceInit.interface';
 
 const PREFIX_STREAM = 'stream_';
 
-export interface IPreviousStreamStore extends OnInstanceInit {
-  delStream(stream: string): Promise<void>;
-  expire(user: string): Promise<void>;
-  set(user: string, stream: string): Promise<void>;
-  get(user: string): Promise<string>;
-}
-
-export class PreviousStreamStore implements IPreviousStreamStore {
+export class PreviousStreamStore {
   private client: IORedis.Redis;
 
   constructor(private uri: string) {}

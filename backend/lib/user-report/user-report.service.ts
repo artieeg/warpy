@@ -1,22 +1,14 @@
-import { IUserReportStore } from './user-report.store';
+import { UserReportStore } from './user-report.store';
 
-export interface IUserReportService {
-  addUserReport(
-    reported: string,
-    reporter: string,
-    reportReasonId: string,
-  ): Promise<void>;
-}
-
-export class UserReportService implements IUserReportService {
-  constructor(private userReportEntity: IUserReportStore) {}
+export class UserReportService {
+  constructor(private userReportStore: UserReportStore) {}
 
   async addUserReport(
     reported: string,
     reporter: string,
     reportReasonId: string,
   ) {
-    await this.userReportEntity.create({
+    await this.userReportStore.create({
       reportee: reporter,
       reported,
       reason: reportReasonId,

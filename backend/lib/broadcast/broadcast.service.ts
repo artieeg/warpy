@@ -37,36 +37,7 @@ export type AwardSentEvent = {
   award: IAward;
 };
 
-export interface IBroadcastService {
-  broadcastStreamEnd(stream: string): Promise<void>;
-  broadcastNewHost({ host }: NewHostEvent): Promise<void>;
-  broadcastMediaToggle({
-    user,
-    stream,
-    videoEnabled,
-    audioEnabled,
-  }: MediaToggleEvent): Promise<void>;
-  broadcastKickedParticipant(participant: IParticipant): Promise<void>;
-  broadcastChatMessage({
-    idsToBroadcast,
-    message,
-  }: ChatMessageEvent): Promise<void>;
-  broadcastReactions({ stream, reactions }: ReactionsEvent): Promise<void>;
-  broadcastActiveSpeakers({
-    stream,
-    activeSpeakers,
-  }: ActiveSpeakersEvent): Promise<void>;
-  broadcastRoleChange(user: IParticipant): Promise<void>;
-  broadcastHandRaise(viewer: IParticipant): Promise<void>;
-  broadcastParticipantLeft({
-    user,
-    stream,
-  }: ParticipantLeaveEvent): Promise<void>;
-  broadcastNewParticipant(participant: IParticipant): Promise<void>;
-  broadcastNewAward({ award }: AwardSentEvent): Promise<void>;
-}
-
-export class BroadcastService implements IBroadcastService {
+export class BroadcastService {
   constructor(
     private participant: ParticipantStore,
     private messageService: MessageService,

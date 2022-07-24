@@ -1,10 +1,6 @@
 import { PrismaClient, StreamCategory } from '@prisma/client';
 import { IStreamCategory } from '@warpy/lib';
 
-export interface ICategoryStore {
-  getAll(): Promise<IStreamCategory[]>;
-}
-
 function toStreamCategoryDTO(data: StreamCategory): IStreamCategory {
   return {
     id: data.id,
@@ -12,7 +8,7 @@ function toStreamCategoryDTO(data: StreamCategory): IStreamCategory {
   };
 }
 
-export class CategoryStore implements ICategoryStore {
+export class CategoryStore  {
   constructor(private prisma: PrismaClient) {}
 
   async getAll() {

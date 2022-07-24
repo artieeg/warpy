@@ -1,10 +1,7 @@
 import { ListStoreBehaviour } from '@warpy-be/shared';
 import IORedis from 'ioredis';
-import { OnInstanceInit } from 'lib/OnInstanceInit.interface';
 
-export interface IBroadcastUserListStore extends OnInstanceInit {}
-
-export class BroadcastUserListStore implements IBroadcastUserListStore {
+export class BroadcastUserListStore {
   private redis: IORedis.Redis;
   private lists: ListStoreBehaviour;
 

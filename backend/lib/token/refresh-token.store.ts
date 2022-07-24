@@ -1,10 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
-export interface RefreshTokenStore {
-  create: (token: string) => Promise<any>;
-}
-
-export class RefreshTokenStoreImpl {
+export class RefreshTokenStore {
   constructor(private prisma: PrismaClient) {}
 
   async create(token: string): Promise<void> {

@@ -9,11 +9,11 @@ import {
   IParticipant,
   Roles,
 } from '@warpy/lib';
-import { IMediaBalancerService } from '../media-balancer';
+import { MediaBalancerService } from '../media-balancer';
 import { NatsService } from '../nats';
 import * as jwt from 'jsonwebtoken';
 import { InternalError } from '@warpy-be/errors';
-import { IParticipantNodeAssignerStore } from './participant-node-assigner.store';
+import { ParticipantNodeAssignerStore } from './participant-node-assigner.store';
 
 const secret = process.env.MEDIA_JWT_SECRET || 'test-secret';
 
@@ -22,48 +22,10 @@ export type MediaConnectionParams = {
   recvMediaParams: any;
 };
 
-export interface IMediaService {
-  createNewRoom(payload: ICreateMediaRoom): Promise<INewMediaRoomData>;
-  getViewerParams(user: string, stream: string): Promise<MediaConnectionParams>;
-  createSendTransport(params: ICreateTransport): Promise<INewTransportResponse>;
-  getStreamerParams(params: {
-    user: string;
-    roomId: string;
-    audio: boolean;
-    video: boolean;
-  }): Promise<{
-    token: string;
-    sendMediaParams: any;
-    recvMediaParams: any;
-  }>;
-  getBotParams(
-    user: string,
-    roomId: string,
-  ): Promise<IConnectRecvTransportParams>;
-  getBotToken(
-    bot: string,
-    room: string,
-  ): Promise<{ token: string; sendNodeId: string; recvNodeId: string }>;
-  updateMediaRole(
-    participant: IParticipant,
-    role: Roles,
-  ): Promise<{
-    mediaPermissionToken: string;
-    sendMediaParams?: any;
-  }>;
-  removeFromNodes({
-    id,
-    stream,
-  }: {
-    id: string;
-    stream: string;
-  }): Promise<void>;
-}
-
-export class MediaService implements IMediaService {
+export class MediaService {
   constructor(
-    private nodeAssigner: IParticipantNodeAssignerStore,
-    private balancer: IMediaBalancerService,
+    private nodeAssigner: ParticipantNodeAssignerStore,
+    private balancer: MediaBalancerService,
     private nc: NatsService,
   ) {}
 

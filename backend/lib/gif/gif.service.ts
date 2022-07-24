@@ -1,19 +1,5 @@
 import axios from 'axios';
 
-export interface IGifService {
-  searchGifs(
-    search: string,
-    next?: string,
-  ): Promise<{
-    gifs: string[];
-    next: string;
-  }>;
-  getTrendingGifs(next?: string): Promise<{
-    gifs: string[];
-    next: string;
-  }>;
-}
-
 export class GifService {
   constructor(private tenorAPIKey: string) {}
 

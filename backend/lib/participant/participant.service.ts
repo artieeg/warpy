@@ -1,7 +1,7 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { BotInstanceStore, IParticipantStore } from 'lib';
-import { IUserService } from '../user';
-import { IMediaService } from '../media';
+import { BotInstanceStore, ParticipantStore } from 'lib';
+import { UserService } from '../user';
+import { MediaService } from '../media';
 import { IParticipant } from '@warpy/lib';
 import {
   MaxVideoStreamers,
@@ -19,11 +19,11 @@ import { StreamBanStore } from './stream-bans.store';
 
 export class ParticipantService {
   constructor(
-    private participantStore: IParticipantStore,
+    private participantStore: ParticipantStore,
     private botInstanceStore: BotInstanceStore,
     private events: EventEmitter2,
-    private user: IUserService,
-    private media: IMediaService,
+    private user: UserService,
+    private media: MediaService,
     private streamBanStore: StreamBanStore,
   ) {}
 

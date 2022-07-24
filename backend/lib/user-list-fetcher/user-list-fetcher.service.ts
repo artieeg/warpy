@@ -1,5 +1,5 @@
 import { IUser } from '@warpy/lib';
-import { IFollowStore, IUserBlockService } from 'lib';
+import { FollowStore, UserBlockService } from 'lib';
 
 export interface IUserListFetcherService {
   getFollowers(user: string, _page: number): Promise<IUser[]>;
@@ -7,10 +7,10 @@ export interface IUserListFetcherService {
   getBlockedUsers(user: string, _page: number): Promise<IUser[]>;
 }
 
-export class UserListFetcherService implements IUserListFetcherService {
+export class UserListFetcherService {
   constructor(
-    private followEntity: IFollowStore,
-    private blockService: IUserBlockService,
+    private followEntity: FollowStore,
+    private blockService: UserBlockService,
   ) {}
 
   async getFollowers(user: string, _page: number): Promise<IUser[]> {

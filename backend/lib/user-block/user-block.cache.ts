@@ -1,16 +1,6 @@
 import IORedis from 'ioredis';
-import { OnInstanceInit } from 'lib/OnInstanceInit.interface';
 
-export interface IUserBlockCacheStore extends OnInstanceInit {
-  delBlockedByUsers(id: string): Promise<void>;
-  delBlockedUserIds(id: string): Promise<void>;
-  getBlockedUserIds(id: string): Promise<string[]>;
-  getBlockedByIds(id: string): Promise<string[]>;
-  setBlockedUserIds(id: string, ids: string[]): Promise<void>;
-  setBlockedByIds(id: string, ids: string[]): Promise<void>;
-}
-
-export class UserBlockCacheStore implements IUserBlockCacheStore {
+export class UserBlockCacheStore {
   client: IORedis.Redis;
 
   constructor(private uri: string) {}

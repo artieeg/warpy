@@ -1,12 +1,7 @@
-import { IStreamCategory } from '@warpy/lib';
-import { ICategoryStore } from './category.store';
+import { CategoryStore } from './category.store';
 
-export interface ICategoryService {
-  getAllCategories(): Promise<IStreamCategory[]>;
-}
-
-export class CategoryService implements ICategoryService {
-  constructor(private categoryStore: ICategoryStore) {}
+export class CategoryService {
+  constructor(private categoryStore: CategoryStore) {}
 
   async getAllCategories() {
     return this.categoryStore.getAll();

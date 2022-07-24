@@ -1,16 +1,8 @@
 import { EVENT_REACTIONS } from '@warpy-be/utils';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ALLOWED_EMOJI, Reaction } from '@warpy/lib';
-import { OnInstanceInit } from 'lib/OnInstanceInit.interface';
-import { OnInstanceDestroy } from 'lib/OnInstanceDestroy';
 
-export interface IReactionService extends OnInstanceInit, OnInstanceDestroy {
-  reset(): void;
-  countNewReaction(user: string, emoji: string, stream: string): Promise<void>;
-  syncReactions(): void;
-}
-
-export class ReactionService implements IReactionService {
+export class ReactionService {
   private syncInterval: ReturnType<typeof setInterval>;
   private batchedReactionUpdates: Record<string, Reaction[]> = {};
 

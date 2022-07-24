@@ -2,7 +2,7 @@ import { Injectable, Controller } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { StreamJoiner } from 'lib';
+import { StreamJoinerService } from 'lib';
 import { IBotJoin, IJoinStream, IJoinStreamResponse } from '@warpy/lib';
 import {
   NjsParticipantService,
@@ -15,7 +15,7 @@ import { BotInstanceModule, NjsBotInstanceService } from './bot-instance';
 import { NJTokenService, TokenModule } from './token';
 
 @Injectable()
-export class NjsStreamJoiner extends StreamJoiner {
+export class NjsStreamJoiner extends StreamJoinerService {
   constructor(
     participantService: NjsParticipantService,
     participantStore: NjsParticipantStore,

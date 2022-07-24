@@ -6,31 +6,20 @@ import {
   EVENT_ROLE_CHANGE,
 } from '@warpy-be/utils';
 import { Roles } from '@warpy/lib';
-import { IParticipantStore } from 'lib/participant';
-import { IMessageService } from 'lib/message';
-import { IMediaService } from 'lib/media';
-import { IHostService } from 'lib/stream-host';
-import { IUserBlockService } from 'lib/user-block';
+import { ParticipantStore } from 'lib/participant';
+import { MediaService } from 'lib/media';
+import { HostService } from 'lib/stream-host';
+import { UserBlockService } from 'lib/user-block';
+import { MessageService } from 'lib';
 
-export interface IParticipantRoleManagerService {
-  setRole(params: {
-    userToUpdate: string;
-    role: Roles;
-    mod?: string;
-    stream?: string;
-  }): Promise<void>;
-}
-
-export class ParticipantRoleManagerService
-  implements IParticipantRoleManagerService
-{
+export class ParticipantRoleManagerService {
   constructor(
-    private participant: IParticipantStore,
-    private blockService: IUserBlockService,
-    private messageService: IMessageService,
-    private media: IMediaService,
+    private participant: ParticipantStore,
+    private blockService: UserBlockService,
+    private messageService: MessageService,
+    private media: MediaService,
     private events: EventEmitter2,
-    private hostService: IHostService,
+    private hostService: HostService,
   ) {}
 
   async setRole({

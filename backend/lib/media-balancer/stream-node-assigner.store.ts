@@ -1,16 +1,9 @@
 import IORedis from 'ioredis';
-import { OnInstanceInit } from 'lib/OnInstanceInit.interface';
-
-export interface IStreamNodeAssignerStore extends OnInstanceInit {
-  del(stream: string): Promise<void>;
-  assignNode(stream: string, node: string): Promise<void>;
-  getAssignedNodes(stream: string): Promise<string[]>;
-}
 
 /**
  * Stores arrays of nodes, where the stream "lives"
  * */
-export class StreamNodeAssignerStore implements IStreamNodeAssignerStore {
+export class StreamNodeAssignerStore {
   client: IORedis.Redis;
 
   constructor(private uri: string) {}

@@ -4,23 +4,18 @@ import { IChatMessage } from '@warpy/lib';
 import { EVENT_CHAT_MESSAGE } from '@warpy-be/utils';
 import cuid from 'cuid';
 import Filter from 'bad-words';
-import { IUserStore } from '../user';
-import { IParticipantStore } from '../participant';
-import { IUserBlockService } from '../user-block';
-
-export interface IChatService {
-  getFilteredMessage(message: string): string;
-  sendNewMessage(userId: string, text: string): Promise<IChatMessage>;
-}
+import { UserStore } from '../user';
+import { ParticipantStore } from '../participant';
+import { UserBlockService } from '../user-block';
 
 export class ChatService {
   profanityFilter = new Filter();
 
   constructor(
     private eventEmitter: EventEmitter2,
-    private userEntity: IUserStore,
-    private participantEntity: IParticipantStore,
-    private blockService: IUserBlockService,
+    private userEntity: UserStore,
+    private participantEntity: ParticipantStore,
+    private blockService: UserBlockService,
   ) {}
 
   getFilteredMessage(message: string): string {

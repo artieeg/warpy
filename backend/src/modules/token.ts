@@ -1,6 +1,6 @@
 import { Injectable, Module } from '@nestjs/common';
 import { ConfigService, ConfigModule } from '@nestjs/config';
-import { TokenService, RefreshTokenStore, RefreshTokenStoreImpl } from 'lib';
+import { RefreshTokenStore, TokenService } from 'lib';
 import { PrismaModule, PrismaService } from './prisma';
 
 @Injectable()
@@ -11,14 +11,9 @@ export class NJTokenService extends TokenService {
 }
 
 @Injectable()
-export class NjsRefreshTokenStore implements RefreshTokenStore {
-  private store: RefreshTokenStore;
+export class NjsRefreshTokenStore extends RefreshTokenStore {
   constructor(prisma: PrismaService) {
-    this.store = new RefreshTokenStoreImpl(prisma);
-  }
-
-  async create(token: string): Promise<void> {
-    return this.store.create(token);
+    super(prisma);
   }
 }
 

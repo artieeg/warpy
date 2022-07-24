@@ -18,21 +18,7 @@ function toBlockDTO(data: (UserBlock & { blocked?: User }) | null): IUserBlock {
   };
 }
 
-export interface IUserBlockStore {
-  create({
-    blocker,
-    blocked,
-  }: {
-    blocker: string;
-    blocked: string;
-  }): Promise<string>;
-  deleteByUsers(blocker_id: string, blocked_id: string): Promise<void>;
-  getBlockedByIds(user: string): Promise<string[]>;
-  getBlockedUserIds(user: string): Promise<string[]>;
-  getBlockedUsers(user: string): Promise<IUserBlock[]>;
-}
-
-export class UserBlockStore implements IUserBlockStore {
+export class UserBlockStore {
   constructor(private prisma: PrismaClient) {}
   async create({
     blocker,

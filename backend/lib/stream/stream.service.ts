@@ -1,28 +1,15 @@
 import { StreamNotFound } from '@warpy-be/errors';
 import { EVENT_STREAM_CREATED, EVENT_STREAM_ENDED } from '@warpy-be/utils';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { INewStreamResponse, IStream } from '@warpy/lib';
+import { INewStreamResponse } from '@warpy/lib';
 import cuid from 'cuid';
-import { IStreamStore } from './stream.store';
-import { IMediaService } from 'lib/media';
+import { MediaService } from 'lib/media';
+import { StreamStore } from './stream.store';
 
-export interface IStreamService {
-  get(id: string): Promise<IStream>;
-  createNewStream(
-    owner: string,
-    title: string,
-    category: string,
-  ): Promise<INewStreamResponse>;
-  setStreamHost(stream: string, host: string): Promise<void>;
-  deleteStream(stream: string): Promise<void>;
-  stopStream(user: string): Promise<void>;
-  setStreamPreview(stream: string, preview: string): Promise<void>;
-}
-
-export class StreamService implements IStreamService {
+export class StreamService {
   constructor(
-    private streamStore: IStreamStore,
-    private mediaService: IMediaService,
+    private streamStore: StreamStore,
+    private mediaService: MediaService,
     private eventEmitter: EventEmitter2,
   ) {}
 

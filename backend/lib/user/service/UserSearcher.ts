@@ -1,5 +1,5 @@
 import { IUser } from '@warpy/lib';
-import { IUserStore } from '../user.store';
+import { UserStore } from '../user.store';
 
 export interface UserSearcher {
   findById: (user: string, details?: boolean) => Promise<IUser>;
@@ -7,7 +7,7 @@ export interface UserSearcher {
 }
 
 export class UserSearcherImpl implements UserSearcher {
-  constructor(private store: IUserStore) {}
+  constructor(private store: UserStore) {}
 
   async findById(user: string, details?: boolean) {
     return this.store.find(user, details);

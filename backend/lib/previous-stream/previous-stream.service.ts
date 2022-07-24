@@ -1,19 +1,12 @@
-import { IStreamStore } from 'lib';
-import { IMessageService } from 'lib/message';
-import { IPreviousStreamStore } from './previous-stream.store';
-
-export interface IPreviousStreamService {
-  clearStream(stream: string): Promise<void>;
-  set(user: string, stream: string): Promise<void>;
-  sendPreviousStream(user: string): Promise<void>;
-  expire(user: string): Promise<void>;
-}
+import { MessageService } from 'lib/message';
+import { StreamStore } from 'lib/stream';
+import { PreviousStreamStore } from './previous-stream.store';
 
 export class PreviousStreamService {
   constructor(
-    private previousStreamCache: IPreviousStreamStore,
-    private messageService: IMessageService,
-    private streamEntity: IStreamStore,
+    private previousStreamCache: PreviousStreamStore,
+    private messageService: MessageService,
+    private streamEntity: StreamStore,
   ) {}
 
   async clearStream(stream: string) {

@@ -1,20 +1,12 @@
 import { MediaServiceRole } from '@warpy/lib';
 import IORedis from 'ioredis';
-import { OnInstanceInit } from 'lib/OnInstanceInit.interface';
 
-interface INodeInfo {
+interface NodeInfo {
   node: string;
   load: number;
   role: MediaServiceRole;
 }
-
-export interface INodeInfoStore extends OnInstanceInit {
-  get(node: string): Promise<INodeInfo>;
-
-  set(node: string, data: INodeInfo): Promise<void>;
-}
-
-export class NodeInfoStore implements INodeInfoStore {
+export class NodeInfoStore {
   client: IORedis.Redis;
 
   constructor(private uri: string) {}
@@ -23,7 +15,7 @@ export class NodeInfoStore implements INodeInfoStore {
     this.client = new IORedis(this.uri);
   }
 
-  async get(node: string): Promise<INodeInfo> {
+  async get(node: string): Promise<NodeInfo> {
     const data = await this.client.hgetall(node);
 
     return {
@@ -33,7 +25,7 @@ export class NodeInfoStore implements INodeInfoStore {
     };
   }
 
-  async set(node: string, data: INodeInfo) {
+  async set(node: string, data: NodeInfo) {
     const pipe = this.client.pipeline();
 
     pipe.hset(node, 'node', node, 'load', data.load, 'role', data.role);

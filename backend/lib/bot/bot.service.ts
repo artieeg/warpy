@@ -1,7 +1,7 @@
 import { BotStore } from './bot.store';
 import { DeveloperAccountStore } from './developer-account.store';
-import { IMessageService } from '../message';
-import { ITokenService } from '../token';
+import { TokenService } from 'lib/token';
+import { MessageService } from 'lib/message';
 
 export type BotConfirmResponseDTO = {
   user: string;
@@ -13,8 +13,8 @@ export class BotsService {
   constructor(
     private botEntity: BotStore,
     private developerAccountEntity: DeveloperAccountStore,
-    private messageService: IMessageService,
-    private tokenService: ITokenService,
+    private messageService: MessageService,
+    private tokenService: TokenService,
   ) {}
 
   async createNewBot(

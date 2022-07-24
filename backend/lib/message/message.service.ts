@@ -1,13 +1,5 @@
 import { NatsService } from '../nats';
 
-export interface IMessageService {
-  decodeMessage<T = any>(data: Uint8Array): T;
-  encodeMessage(data: any): Uint8Array;
-  sendMessage(user: string, message: any): void;
-  send(user: string, message: Uint8Array): void;
-  request<T>(user: string, request: any): Promise<T>;
-}
-
 export class MessageService {
   constructor(private nc: NatsService) {}
 

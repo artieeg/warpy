@@ -6,36 +6,18 @@ import {
   EVENT_NEW_PARTICIPANT,
 } from '@warpy-be/utils';
 import { IParticipant } from '@warpy/lib';
-import { IParticipantStore } from 'lib/participant';
-import { IUserStore } from 'lib/user';
+import { ParticipantStore } from 'lib/participant';
+import { UserStore } from 'lib/user';
 import { TimerService } from '../timer';
-import { IHostStore } from './stream-host.store';
+import { HostStore } from './stream-host.store';
 
-export interface IHostService {
-  getHostInfo(user: string): Promise<IParticipant>;
-  getStreamHostId(stream: string): Promise<string>;
-  handlePossibleHost(participant: IParticipant): Promise<void>;
-  handleRejoinedUser(user: string): Promise<void>;
-  reassignHost(current: string, next: string): Promise<void>;
-
-  tryReassignHostAfterTime(user: string): Promise<void>;
-
-  initStreamHost({
-    user,
-    stream,
-  }: {
-    user: string;
-    stream: string;
-  }): Promise<void>;
-}
-
-export class HostService implements IHostService {
+export class HostService {
   constructor(
     private timerService: TimerService,
-    private hostStore: IHostStore,
+    private hostStore: HostStore,
     private eventEmitter: EventEmitter2,
-    private user: IUserStore,
-    private participantStore: IParticipantStore,
+    private user: UserStore,
+    private participantStore: ParticipantStore,
   ) {}
 
   async getHostInfo(user: string) {

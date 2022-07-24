@@ -1,21 +1,17 @@
 import { UserNotFound } from '@warpy-be/errors';
 import { IWhoAmIResponse } from '@warpy/lib';
-import { ICategoryStore } from 'lib/category';
+import { CategoryStore } from 'lib/category';
 import { AppliedAppInviteStore } from 'lib/app-invite';
-import { IUserService } from 'lib/user';
+import { UserService } from 'lib/user';
 import { IUserListFetcherService } from 'lib/user-list-fetcher';
-import { IFriendFeedService } from 'lib/friend-feed';
+import { FriendFeedService } from 'lib/friend-feed';
 
-export interface ISyncService {
-  sync(user: string): Promise<IWhoAmIResponse>;
-}
-
-export class SyncService implements ISyncService {
+export class SyncService {
   constructor(
-    private userService: IUserService,
+    private userService: UserService,
     private appliedAppInviteEntity: AppliedAppInviteStore,
-    private categoriesEntity: ICategoryStore,
-    private friendFeed: IFriendFeedService,
+    private categoriesEntity: CategoryStore,
+    private friendFeed: FriendFeedService,
     private userListService: IUserListFetcherService,
   ) {}
 

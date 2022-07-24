@@ -3,43 +3,24 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IInvite, InviteStates, IReceivedInviteEvent, IUser } from '@warpy/lib';
 import { EVENT_INVITE_AVAILABLE } from '@warpy-be/utils';
 import {
-  IUserStore,
-  IStreamStore,
-  IMessageService,
-  ITokenService,
+  UserStore,
+  StreamStore,
+  MessageService,
+  TokenService,
   BotStore,
 } from 'lib';
-import { IFollowStore } from 'lib/follow/follow.store';
-import { IInviteStore } from './invite.store';
-
-export interface IInviteService {
-  declineInvite(invite: string): Promise<void>;
-  checkNewInvitesFor(user: string): Promise<void>;
-  deleteUserInvites(user: string): Promise<void>;
-  acceptInvite(invite_id: string): Promise<void>;
-  createStreamInvite({
-    inviter,
-    stream,
-    invitee,
-  }: {
-    inviter: string;
-    stream: string;
-    invitee: string;
-  }): Promise<IInvite | null>;
-  notifyAboutStreamId(id: string, owner: string): Promise<void>;
-  deleteInvite(invite_id: string): Promise<void>;
-  getInviteSuggestions(user: string, _stream: string): Promise<IUser[]>;
-}
+import { FollowStore } from 'lib/follow/follow.store';
+import { InviteStore } from './invite.store';
 
 export class InviteService {
   constructor(
-    private inviteStore: IInviteStore,
-    private userEntity: IUserStore,
-    private followEntity: IFollowStore,
+    private inviteStore: InviteStore,
+    private userEntity: UserStore,
+    private followEntity: FollowStore,
     private eventEmitter: EventEmitter2,
-    private streamEntity: IStreamStore,
-    private messageService: IMessageService,
-    private tokenService: ITokenService,
+    private streamEntity: StreamStore,
+    private messageService: MessageService,
+    private tokenService: TokenService,
     private botEntity: BotStore,
   ) {}
 

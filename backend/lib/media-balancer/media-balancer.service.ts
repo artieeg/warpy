@@ -3,12 +3,7 @@ import { NodeInfoStore } from './node-info.store';
 import { NodeRegistryStore } from './node-registry.store';
 import { StreamNodeAssignerStore } from './stream-node-assigner.store';
 
-export interface IMediaBalancerService {
-  getSendNodeId(stream: string): Promise<string>;
-  getRecvNodeId(stream: string): Promise<string>;
-}
-
-export class MediaBalancerService implements IMediaBalancerService {
+export class MediaBalancerService {
   constructor(
     private nodeRegistryStore: NodeRegistryStore,
     private streamNodeAssigner: StreamNodeAssignerStore,

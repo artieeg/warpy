@@ -1,14 +1,14 @@
-import { IStreamStore, IParticipantStore } from 'lib';
+import { ParticipantStore, StreamStore } from 'lib';
 import { IUserInfoResponse } from '@warpy/lib';
-import { IUserStore } from 'lib/user';
-import { IFollowStore } from 'lib/follow';
+import { UserStore } from 'lib/user';
+import { FollowStore } from 'lib/follow';
 
 export class UserDataFetcherService {
   constructor(
-    private store: IUserStore,
-    private followStore: IFollowStore,
-    private participantStore: IParticipantStore,
-    private streamStore: IStreamStore,
+    private store: UserStore,
+    private followStore: FollowStore,
+    private participantStore: ParticipantStore,
+    private streamStore: StreamStore,
   ) {}
 
   async getUserInfo(id: string, requester: string) {

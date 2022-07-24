@@ -3,24 +3,6 @@ import { IStream } from '@warpy/lib';
 
 type CreateNewStream = Stream;
 
-export interface IStreamStore {
-  setHost(stream: string, host: string): Promise<void>;
-  search(text: string): Promise<IStream[]>;
-  findByIds(ids: string[]): Promise<IStream[]>;
-  findById(id: string): Promise<IStream | null>;
-  create(data: CreateNewStream): Promise<IStream>;
-  delByHost(host: string): Promise<string | undefined>;
-  del(id: string): Promise<number>;
-  stop(stream_id: string): Promise<void>;
-  delByUser(user: string): Promise<number>;
-  find(params: {
-    blockedUserIds: string[];
-    blockedByUserIds: string[];
-    category?: string;
-  }): Promise<IStream[]>;
-  setPreviewClip(stream: string, preview: string): Promise<IStream>;
-}
-
 export function toStreamDTO(data: Stream): IStream {
   return {
     id: data.id,
@@ -31,7 +13,7 @@ export function toStreamDTO(data: Stream): IStream {
   };
 }
 
-export class StreamStore implements IStreamStore {
+export class StreamStore {
   constructor(private prisma: PrismaClient) {}
 
   async setHost(stream: string, host: string) {

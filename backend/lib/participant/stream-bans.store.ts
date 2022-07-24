@@ -14,12 +14,7 @@ function toBanDTO(data: StreamBlock): IBanDTO {
   };
 }
 
-export interface IStreamBanStore {
-  create(stream: string, user: string): Promise<void>;
-  find(user: string, stream: string): Promise<IBanDTO | null>;
-}
-
-export class StreamBanStore implements IStreamBanStore {
+export class StreamBanStore {
   constructor(private prisma: PrismaClient) {}
 
   async create(stream: string, user: string) {

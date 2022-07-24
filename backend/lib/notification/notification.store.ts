@@ -7,7 +7,6 @@ import {
 } from '@warpy/lib';
 import cuid from 'cuid';
 import { getDayNumber } from '@warpy-be/utils/day';
-import { OnInstanceInit } from 'lib/OnInstanceInit.interface';
 
 const PREFIX_NOTIFICATION = 'noti_';
 const PREFIX_USER = 'user_';
@@ -17,16 +16,7 @@ const PREFIX_INVITE = 'invite_';
 const PREFIX_NOTIFICATIONS_FOR_USER = 'noti_for_';
 const PREFIX_NOTIFICATIONS_READ_BY = 'noti_read_by_';
 
-export interface INotificationStore extends OnInstanceInit {
-  get(id: string): Promise<INotification>;
-  createInviteNotification(invite: IInvite): Promise<INotification>;
-  del(id: string, user: string): Promise<void>;
-  getUnread(user: string): Promise<INotification[]>;
-  getAll(user: string): Promise<INotification[]>;
-  readAll(user: string): Promise<void>;
-}
-
-export class NotificationStore implements INotificationStore {
+export class NotificationStore {
   private redis: IORedis.Redis;
 
   constructor(private uri: string) {}

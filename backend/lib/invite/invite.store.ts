@@ -24,30 +24,7 @@ const PREFIX_INVITES_FROM = 'invites_from_';
 /** Store invite ids for user */
 const PREFIX_INVITES_FOR = 'invites_for_';
 
-export interface IInviteStore extends OnInstanceInit {
-  setUserOnlineStatus(user: string, flag: boolean): Promise<void>;
-  isUserOnline(user: string): Promise<boolean>;
-  create({
-    invitee,
-    inviter,
-    stream,
-    received,
-  }: {
-    invitee: IUser;
-    inviter: IUser;
-    stream?: IStream;
-    received: boolean;
-  }): Promise<IInvite>;
-  get(invite_id: string): Promise<IInvite>;
-  getInvitedUsers(invite_ids: string[]): Promise<string[]>;
-  setStreamData(invite_ids: string[], stream: IStream): Promise<void>;
-  getPendingInvitesFor(user: string): Promise<IInvite[]>;
-  updateMany(ids: string[], params: Partial<IInviteBase>): Promise<void>;
-  getUserInviteIds(user: string): Promise<string[]>;
-  del(invite_id: string): Promise<IInviteBase>;
-}
-
-export class InviteStore implements IInviteStore {
+export class InviteStore {
   private redis: IORedis.Redis;
   private onlineBehavior: OnlineStatusStoreBehavior;
 

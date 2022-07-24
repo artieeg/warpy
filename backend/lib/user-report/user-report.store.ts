@@ -1,14 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
-export interface IUserReportStore {
-  create(params: {
-    reportee: string;
-    reported: string;
-    reason: string;
-  }): Promise<void>;
-}
-
-export class UserReportStore implements IUserReportStore {
+export class UserReportStore {
   constructor(private prisma: PrismaClient) {}
 
   async create({

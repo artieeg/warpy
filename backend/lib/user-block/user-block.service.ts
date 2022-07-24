@@ -3,24 +3,15 @@ import {
   StreamHasBlockedSpeakerError,
 } from '@warpy-be/errors';
 import { IUser } from '@warpy/lib';
-import { IStreamerIdStore } from './streamer-ids.store';
-import { IUserBlockCacheStore } from './user-block.cache';
-import { IUserBlockStore } from './user-block.store';
+import { StreamerIdStore } from './streamer-ids.store';
+import { UserBlockCacheStore } from './user-block.cache';
+import { UserBlockStore } from './user-block.store';
 
-export interface IUserBlockService {
-  unblockUser(blocker: string, blocked: string): Promise<void>;
-  getBlockedUserIds(user: string): Promise<string[]>;
-  getBlockedByIds(user: string): Promise<string[]>;
-  blockUser(blocker: string, blocked: string): Promise<string>;
-  getBlockedUsers(user: string, page: number): Promise<IUser[]>;
-  isBannedBySpeaker(user: string, stream: string): Promise<void>;
-}
-
-export class UserBlockService implements IUserBlockService {
+export class UserBlockService {
   constructor(
-    private blockEntity: IUserBlockStore,
-    private blockCacheService: IUserBlockCacheStore,
-    private streamerIdStore: IStreamerIdStore,
+    private blockEntity: UserBlockStore,
+    private blockCacheService: UserBlockCacheStore,
+    private streamerIdStore: StreamerIdStore,
   ) {}
 
   async unblockUser(blocker: string, blocked: string) {

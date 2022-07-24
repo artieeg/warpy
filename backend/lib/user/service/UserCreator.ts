@@ -2,8 +2,8 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EVENT_USER_CREATED } from '@warpy-be/utils';
 import { INewUser, INewUserResponse } from '@warpy/lib';
 import { RefreshTokenStore } from 'lib';
-import { ITokenService } from '../../token';
-import { IUserStore } from '../user.store';
+import { TokenService } from '../../token';
+import { UserStore } from '../user.store';
 
 export interface UserCreator {
   createAnonUser: () => Promise<{ id: string; access: string }>;
@@ -12,8 +12,8 @@ export interface UserCreator {
 
 export class UserCreatorImpl implements UserCreator {
   constructor(
-    private store: IUserStore,
-    private token: ITokenService,
+    private store: UserStore,
+    private token: TokenService,
     private refreshTokenStore: RefreshTokenStore,
     private events: EventEmitter2,
   ) {}

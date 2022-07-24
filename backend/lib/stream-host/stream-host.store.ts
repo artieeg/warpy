@@ -1,7 +1,6 @@
 import IORedis, { Redis } from 'ioredis';
 import { IParticipant } from '@warpy/lib';
 import { toParticipantDTO } from 'lib/participant';
-import { OnInstanceInit } from 'lib/OnInstanceInit.interface';
 
 const PREFIX_HOST_OF_STREAM = 'host_of_';
 const PREFIX_HOST_JOIN_STATUS = 'host_';
@@ -12,21 +11,7 @@ const PREFIX_HOSTED_STREAM = 'stream_hosted_by_';
 const JOINED = 'joined';
 const NOT_JOINED = 'not-joined';
 
-export interface IHostStore extends OnInstanceInit {
-  isHost(user: string): Promise<boolean>;
-  getRandomPossibleHost(stream: string): Promise<IParticipant | null>;
-  getHostId(stream: string): Promise<string | undefined>;
-  addPossibleHost(host: IParticipant): Promise<void>;
-  delPossibleHost(user: string, stream: string): Promise<void>;
-  isHostJoined(host: string): Promise<boolean>;
-  setHostJoinedStatus(host: string, joined: boolean): Promise<void>;
-  getHostedStreamId(user: string): Promise<string | undefined>;
-  setStreamHost(participant: IParticipant): Promise<void>;
-  delByStream(stream: string): Promise<void>;
-  getHostInfo(host: string): Promise<IParticipant | null>;
-}
-
-export class HostStore implements IHostStore {
+export class HostStore {
   redis: Redis;
 
   constructor(private uri: string) {}

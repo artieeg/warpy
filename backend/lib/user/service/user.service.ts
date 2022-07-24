@@ -1,28 +1,22 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { INewUser, IUser } from '@warpy/lib';
 import { RefreshTokenStore } from 'lib';
-import { ITokenService } from '../../token';
-import { IUserStore } from '../user.store';
+import { TokenService } from '../../token';
+import { UserStore } from '../user.store';
 import { UserCreator, UserCreatorImpl } from './UserCreator';
 import { UserDeleter, UserDeleterImpl } from './UserDeleter';
 import { UserSearcher, UserSearcherImpl } from './UserSearcher';
 import { UserUpdater, UserUpdaterImpl } from './UserUpdater';
 
-export interface IUserService
-  extends UserCreator,
-    UserSearcher,
-    UserUpdater,
-    UserDeleter {}
-
-export class UserService implements IUserService {
+export class UserService {
   private creator: UserCreator;
   private searcher: UserSearcher;
   private updater: UserUpdater;
   private deleter: UserDeleter;
 
   constructor(
-    user: IUserStore,
-    token: ITokenService,
+    user: UserStore,
+    token: TokenService,
     refreshTokenStore: RefreshTokenStore,
     events: EventEmitter2,
   ) {

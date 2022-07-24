@@ -1,16 +1,6 @@
-import { OnInstanceInit } from 'lib/OnInstanceInit.interface';
 import { connect, RequestOptions, JSONCodec, NatsConnection } from 'nats';
 
-export interface INatsService extends OnInstanceInit {
-  request<T = any>(
-    subject: string,
-    message: Uint8Array | any,
-    opts?: RequestOptions,
-  ): Promise<T>;
-  publish(subject: string, message: Uint8Array): void;
-}
-
-export class NatsService implements INatsService {
+export class NatsService {
   private nc: NatsConnection;
   public jc = JSONCodec();
 

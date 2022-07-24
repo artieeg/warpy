@@ -1,11 +1,7 @@
-import { IFollow, IFollowStore } from './follow.store';
+import { IFollow, FollowStore } from './follow.store';
 
-export interface IFollowService {
-  createNewFollow(follower: string, userToFollow: string): Promise<IFollow>;
-}
-
-export class FollowService implements IFollowService {
-  constructor(private followEntity: IFollowStore) {}
+export class FollowService {
+  constructor(private followEntity: FollowStore) {}
 
   async createNewFollow(
     follower: string,

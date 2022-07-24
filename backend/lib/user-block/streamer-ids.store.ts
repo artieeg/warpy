@@ -1,14 +1,6 @@
 import IORedis from 'ioredis';
-import { OnInstanceInit } from 'lib/OnInstanceInit.interface';
 
-export interface IStreamerIdStore extends OnInstanceInit {
-  get(stream: string): Promise<string[]>;
-  add(user: string, stream: string): Promise<void>;
-  rem(user: string, stream: string): Promise<void>;
-  del(stream: string): Promise<void>;
-}
-
-export class StreamerIdStore implements IStreamerIdStore {
+export class StreamerIdStore {
   private redis: IORedis.Redis;
 
   constructor(private uri: string) {}

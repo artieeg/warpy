@@ -4,35 +4,25 @@ import {
   EVENT_NEW_PARTICIPANT,
   EVENT_PARTICIPANT_REJOIN,
 } from '@warpy-be/utils';
-import {
-  IBotJoinResponse,
-  IJoinStreamResponse,
-  IParticipant,
-  Roles,
-} from '@warpy/lib';
-import { IParticipantStore } from 'lib';
+import { IJoinStreamResponse, IParticipant, Roles } from '@warpy/lib';
+import { ParticipantStore } from 'lib';
 import { BotInstanceService } from '../bot-instance';
-import { IMediaService } from '../media';
+import { MediaService } from '../media';
 import { ParticipantService } from '../participant';
 import { HostService } from '../stream-host';
 import { TokenService } from '../token';
-
-export interface IStreamJoiner {
-  join(user: string, stream: string): Promise<IJoinStreamResponse>;
-  joinBot(bot: string, inviteToken: string): Promise<IBotJoinResponse>;
-}
 
 /**
  * Joins/rejoins a participant, checks if the user has been banned
  * on stream, sets up user's media based on role
  * */
-export class StreamJoiner implements IStreamJoiner {
+export class StreamJoinerService {
   constructor(
     private participant: ParticipantService,
-    private participantStore: IParticipantStore,
+    private participantStore: ParticipantStore,
     private botInstanceService: BotInstanceService,
     private events: EventEmitter2,
-    private media: IMediaService,
+    private media: MediaService,
     private host: HostService,
     private tokenService: TokenService,
   ) {}

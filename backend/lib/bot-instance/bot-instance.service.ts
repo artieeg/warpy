@@ -2,11 +2,7 @@ import { BotInstanceStore } from 'lib';
 import { TokenService } from '../token';
 import { IUser } from '@warpy/lib';
 
-export interface IBotInstanceService {
-  createBotInstance(bot: string, invitationToken: string): Promise<IUser>;
-}
-
-export class BotInstanceService implements IBotInstanceService {
+export class BotInstanceService {
   constructor(
     private tokenService: TokenService,
     private botInstanceEntity: BotInstanceStore,

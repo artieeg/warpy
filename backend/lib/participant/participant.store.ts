@@ -21,38 +21,7 @@ export function toParticipantDTO(data: any): IParticipant {
   };
 }
 
-export interface IParticipantStore extends OnInstanceInit {
-  del: (id: string) => Promise<void>;
-  get: (id: string) => Promise<IParticipant>;
-  delMany: (ids: string[]) => Promise<void>;
-  list: (ids: string[]) => Promise<IParticipant[]>;
-  setDeactivated: (
-    user: string,
-    stream: string,
-    flag: boolean,
-  ) => Promise<void>;
-  getStreamId: (user: string) => Promise<string>;
-  countVideoStreamers: (stream: string) => Promise<number>;
-  getParticipantIds: (
-    stream: string,
-    includeDeactivatedUsers?: boolean,
-  ) => Promise<string[]>;
-  removeParticipantDataFromStream: (stream: string) => Promise<void>;
-  isDeactivated(user: string, stream: string): Promise<boolean>;
-  removeParticipantFromStream: (
-    participant: string,
-    stream: string,
-  ) => Promise<void>;
-  getStreamers: (stream: string) => Promise<IParticipant[]>;
-  getRaisedHands: (stream: string) => Promise<IParticipant[]>;
-  count: (stream: string) => Promise<number>;
-  getViewersPage(stream: string, page: number): Promise<IParticipant[]>;
-  update: (id: string, data: Partial<IParticipant>) => Promise<IParticipant>;
-  setRaiseHand: (user: string, flag: boolean) => Promise<IParticipant>;
-  add: (data: IParticipant) => Promise<void>;
-}
-
-export class ParticipantStore implements IParticipantStore {
+export class ParticipantStore implements ParticipantStore {
   redis: IORedis.Redis;
 
   constructor(private configService: ConfigService) {}
