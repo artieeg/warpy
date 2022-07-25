@@ -1,37 +1,41 @@
-import { IChatMessage } from "@warpy/lib";
+import { ChatMessage } from "@warpy/lib";
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
-import { MessageManager, MessageManagerImpl } from "./MessageManager";
-import { MessageSender, MessageSenderImpl } from "./MessageSender";
 import { Service } from "../Service";
 
-export class ChatService
-  extends Service
-  implements MessageSender, MessageManager
-{
-  private sender: MessageSender;
-  private manager: MessageManager;
-
+export class ChatService extends Service {
   constructor(state: IStore | AppState) {
     super(state);
-
-    this.sender = new MessageSenderImpl(this.state);
-    this.manager = new MessageManagerImpl(this.state);
   }
 
   setMessageInput(messageInputValue: string) {
-    return this.sender.setMessageInput(messageInputValue);
+    return this.state.update({
+      messageInputValue,
+    });
   }
 
   async send() {
-    return this.sender.send();
+    const { api, messageInputValue, messages } = this.state.get();
+
+    const { message: newChatMessage } = await api.stream.sendChatMessage(
+      messageInputValue
+    );
+
+    return this.state.update({
+      messages: [newChatMessage, ...messages],
+      messageInputValue: "",
+    });
   }
 
   async clear() {
-    return this.manager.clear();
+    return this.state.update({
+      messages: [],
+    });
   }
 
-  async prependNewMessages(messages: IChatMessage[]) {
-    return this.manager.prependNewMessages(messages);
+  async prependNewMessages(messages: ChatMessage[]) {
+    return this.state.update({
+      messages: [...messages, ...this.state.get().messages],
+    });
   }
 }

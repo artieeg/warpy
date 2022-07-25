@@ -39,7 +39,10 @@ import {
   IParticipantSlice,
 } from "./slices/createParticipantSlice";
 import { createInviteSlice, IInviteSlice } from "./slices/createInviteSlice";
-import { createUserListSlice } from "./slices/createUserListSlice";
+import {
+  createUserListSlice,
+  IUserListSlice,
+} from "./slices/createUserListSlice";
 import { createAwardsSlice, IAwardsSlice } from "./slices/createAwardsSlice";
 import { container } from "./container";
 import { AppActionRunner } from "./AppActionRunner";
@@ -69,6 +72,7 @@ export interface IStore
     IStreamCategoriesSlice,
     IFeedSlice,
     IUserSlice,
+    IUserListSlice,
     IFollowingSlice,
     IInviteSlice,
     IParticipantSlice,
@@ -125,6 +129,7 @@ export const createNewStore = (config: StoreConfig) => {
         ...createAPISlice(set, get),
         ...createNotificationSlice(),
         ...createUserSlice(),
+        ...createUserListSlice(),
         ...createFollowingSlice(),
         ...createUserListSlice(),
         ...createMediaSlice(),
