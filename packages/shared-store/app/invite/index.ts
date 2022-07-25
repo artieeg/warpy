@@ -1,38 +1,119 @@
-import { InviteStates } from "@warpy/lib";
+import { InviteStates, InviteSent } from "@warpy/lib";
+import { container } from "../../container";
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
+import { ModalService } from "../modal";
 import { Service } from "../Service";
-import { InviteCleaner, InviteCleanerImpl } from "./InviteCleaner";
-import { InviteSender, InviteSenderImpl } from "./InviteSender";
-import {
-  ReceivedInviteManager,
-  ReceivedInviteManagerImpl,
-} from "./ReceivedInviteManager";
-import {
-  SentInviteStateUpdater,
-  SentInviteStateUpdaterImpl,
-} from "./SentInviteStateUpdater";
 
 export class InviteService extends Service {
-  private cleaner: InviteCleaner;
-  private sender: InviteSender;
-  private manager: ReceivedInviteManager;
-  private sentInviteStateUpdater: SentInviteStateUpdater;
-  private state: AppState;
+  private modal: ModalService;
 
   constructor(state: IStore | AppState) {
     super(state);
 
-    if (state instanceof AppState) {
-      this.state = state;
-    } else {
-      this.state = new AppState(state);
+    this.modal = new ModalService(state);
+  }
+
+  async updateStateOfSentInvite(invite: string, state: InviteStates) {
+    const sentInviteData = this.state.get().sentInvites[invite];
+
+    if (!sentInviteData) {
+      throw new Error("Invite does not exist");
     }
 
-    this.cleaner = new InviteCleanerImpl(this.state);
-    this.sender = new InviteSenderImpl(this.state);
-    this.manager = new ReceivedInviteManagerImpl(this.state);
-    this.sentInviteStateUpdater = new SentInviteStateUpdaterImpl(this.state);
+    return this.state.update({
+      sentInvites: {
+        ...this.state.get().sentInvites,
+        [invite]: {
+          ...sentInviteData,
+          state,
+        },
+      },
+    });
+  }
+
+  decline() {
+    return this.applyInviteAction("decline");
+  }
+
+  accept() {
+    return this.applyInviteAction("accept");
+  }
+
+  private async applyInviteAction(action: "accept" | "decline") {
+    const { api, modalInvite } = this.state.get();
+
+    if (!modalInvite) return;
+
+    api.stream.sendInviteAction(modalInvite.id, action);
+
+    //If the stream has begun already
+    //else the api.strea.onStreamIdAvailable
+    //will fire after the host starts the room
+    if (modalInvite.stream?.id && action === "accept") {
+      container.openStream?.(modalInvite.stream);
+    }
+
+    this.modal.close();
+  }
+
+  async sendPendingInvites() {
+    const { pendingInviteUserIds, api, stream } = this.state.get();
+
+    const promises = pendingInviteUserIds.map((userToInvite: any) =>
+      api.stream.invite(userToInvite, stream)
+    );
+
+    const responses = await Promise.all(promises);
+
+    this.modal.close();
+
+    return this.state.update({
+      pendingInviteUserIds: [],
+      sentInvites: responses.reduce((result, response) => {
+        if (response.invite) {
+          result[response.invite.id] = {
+            ...response.invite,
+            state: "unknown",
+          };
+        }
+
+        return result;
+      }, {} as Record<string, InviteSent>),
+    });
+  }
+
+  async cancelInvite(user: string) {
+    const { api, sentInvites } = this.state.get();
+
+    const sentInviteId = sentInvites[user]?.id;
+
+    if (sentInviteId) {
+      await api.stream.cancelInvite(sentInviteId);
+    }
+
+    return this.state.update((state) => {
+      state.pendingInviteUserIds = state.pendingInviteUserIds.filter(
+        (id) => id !== user
+      );
+
+      delete state.sentInvites[user];
+    });
+  }
+
+  async addPendingInvite(user: string) {
+    return this.state.update({
+      pendingInviteUserIds: [...this.state.get().pendingInviteUserIds, user],
+    });
+  }
+
+  async reset() {
+    this.state.update({
+      pendingInviteUserIds: [],
+      sentInvites: {},
+    });
+
+    return this.state.getStateDiff();
   }
 
   async fetchInviteSuggestions(stream: string) {
@@ -42,33 +123,5 @@ export class InviteService extends Service {
     return this.state.update({
       inviteSuggestions: suggestions,
     });
-  }
-
-  reset() {
-    return this.cleaner.reset();
-  }
-
-  sendPendingInvites() {
-    return this.sender.sendPendingInvites();
-  }
-
-  addPendingInvite(user: string) {
-    return this.sender.addPendingInvite(user);
-  }
-
-  cancelInvite(user: string) {
-    return this.sender.cancelInvite(user);
-  }
-
-  accept() {
-    return this.manager.accept();
-  }
-
-  decline() {
-    return this.manager.decline();
-  }
-
-  updateStateOfSentInvite(invite: string, state: InviteStates) {
-    return this.sentInviteStateUpdater.updateStateOfSentInvite(invite, state);
   }
 }

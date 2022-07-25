@@ -1,10 +1,11 @@
-import {User} from '@app/models';
+import {UserBase} from '@warpy/lib';
 import {Participant} from '@warpy/lib';
 
-export const createUserFixture = (data?: Partial<User>): User => {
+export const createUserFixture = (data?: Partial<UserBase>): UserBase => {
   return {
     id: 'test-id',
     username: 'test username',
+    isAnon: false,
     avatar: 'vvatar',
     first_name: 'Test',
     last_name: 'Name',
@@ -20,6 +21,8 @@ export const createParticipantFixture = (
     role: 'viewer',
     stream: 'test',
     isRaisingHand: false,
+    isBanned: false,
+    isBot: false,
     ...data,
   };
 };
