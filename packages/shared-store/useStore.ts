@@ -3,13 +3,7 @@ import { container } from "./container";
 import { AppActionRunner } from "./AppActionRunner";
 import { createDispatcher } from "./dispatch";
 import { Store } from "./app/Store";
-import { createAPISlice } from "./slices/createAPISlice";
-
-interface Selectors<StoreType> {
-  use: {
-    [key in keyof StoreType]: () => StoreType[key];
-  };
-}
+import { createAPISlice } from "./APISlice";
 
 type StoreConfig = {
   data?: Partial<Store>;

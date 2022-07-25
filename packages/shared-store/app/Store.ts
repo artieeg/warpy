@@ -1,6 +1,6 @@
 import { GetState, SetState } from "zustand";
 import { AppActionDispatcher } from "../dispatch";
-import { IAPISlice } from "../slices/createAPISlice";
+import { IAPISlice } from "../APISlice";
 import {
   AppInviteData,
   ChatData,
