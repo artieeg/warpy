@@ -177,15 +177,11 @@ export class MediaService extends Service<MediaData> {
     let media = this.state.get()[kind];
 
     if (!media) {
-      console.log("requesting media", kind);
-
       await this.requestMediaStream(kind, {
         enabled: !!streamMediaImmediately,
       });
 
       media = this.state.get()[kind];
-
-      console.log("media reuslt", media);
     }
 
     const producer = await mediaClient.sendMediaStream(
