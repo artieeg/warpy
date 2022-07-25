@@ -1,6 +1,6 @@
 import { Global, Injectable, Module } from '@nestjs/common';
 import { NatsModule, NjsNatsService } from './nats';
-import { MessageService } from 'lib';
+import { MessageService } from '@warpy-be/app';
 
 @Injectable()
 export class NjsMessageService extends MessageService {

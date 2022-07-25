@@ -5,7 +5,7 @@ import {
   EVENT_PARTICIPANT_KICKED,
   EVENT_PARTICIPANT_LEAVE,
 } from '@warpy-be/utils';
-import { MediaService } from 'lib';
+import { MediaService } from '@warpy-be/app';
 import { MediaBalancerModule, NjsMediaBalancerService } from './media-balancer';
 import { NatsModule, NjsNatsService } from './nats';
 import {

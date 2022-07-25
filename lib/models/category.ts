@@ -1,4 +1,4 @@
-export interface IStreamCategory {
+export interface StreamCategory {
   id: string;
   title: string;
 }

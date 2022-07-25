@@ -2,11 +2,11 @@ import React from 'react';
 import {Avatar} from './Avatar';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text} from './Text';
-import {IParticipant} from '@warpy/lib';
+import {Participant} from '@warpy/lib';
 import {Checkbox} from './Checkbox';
 
 interface IHostCandidate {
-  data: IParticipant;
+  data: Participant;
   selected: boolean;
   onPress: (id: string) => any;
 }

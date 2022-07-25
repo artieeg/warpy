@@ -1,4 +1,4 @@
-import { IParticipant } from "@warpy/lib";
+import { Participant } from "@warpy/lib";
 import { StoreSlice } from "../types";
 
 export interface IParticipantSlice {
@@ -16,12 +16,12 @@ export interface IParticipantSlice {
   unseenRaisedHands: number;
 
   /** Stream viewers */
-  viewers: Record<string, IParticipant>;
+  viewers: Record<string, Participant>;
 
   /** Users sending audio/video streams */
-  streamers: Record<string, IParticipant>;
+  streamers: Record<string, Participant>;
 
-  viewersWithRaisedHands: Record<string, IParticipant>;
+  viewersWithRaisedHands: Record<string, Participant>;
 }
 
 export const createParticipantSlice: StoreSlice<IParticipantSlice> = () => ({

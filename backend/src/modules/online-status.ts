@@ -4,8 +4,8 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import { OnUserDisconnect, OnUserConnect } from '@warpy-be/interfaces';
 import { EVENT_USER_CONNECTED, EVENT_USER_DISCONNECTED } from '@warpy-be/utils';
-import { UserOnlineStatusStore } from 'lib';
-import { IUserStatusRequest, IUserOnlineStatusResponse } from '@warpy/lib';
+import { UserOnlineStatusStore } from '@warpy-be/app';
+import { RequestUserStatus, UserOnlineStatusResponse } from '@warpy/lib';
 
 @Injectable()
 export class NjsUserOnlineStatusCache
@@ -68,7 +68,7 @@ export class UserOnlineStatusController
   @MessagePattern('user-online-status.get')
   async onStatusRequest({
     user,
-  }: IUserStatusRequest): Promise<IUserOnlineStatusResponse> {
+  }: RequestUserStatus): Promise<UserOnlineStatusResponse> {
     const online = await this.userOnlineStatusService.getUserStatus(user);
 
     return {

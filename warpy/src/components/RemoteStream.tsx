@@ -4,11 +4,11 @@ import {StreamOverlay} from './StreamOverlay';
 import {Room} from './Room';
 import {useKickHandler} from '@app/hooks';
 import {AwardDisplay} from './AwardDisplay';
-import {IStream} from '@warpy/lib';
+import {Stream} from '@warpy/lib';
 import {useDispatcher} from '@app/store';
 
 interface IRemoteStreamProps {
-  stream: IStream;
+  stream: Stream;
 }
 
 export const RemoteStream = (props: IRemoteStreamProps) => {

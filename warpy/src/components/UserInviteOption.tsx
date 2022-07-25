@@ -1,16 +1,16 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, StyleSheet, useWindowDimensions} from 'react-native';
-import {IUser} from '@warpy/lib';
+import {User} from '@warpy/lib';
 import {Avatar} from './Avatar';
 import {Text} from './Text';
 import {Checkbox} from './Checkbox';
 import {useDispatcher, useStore} from '@app/store';
 
 interface IUserInviteProps {
-  user: IUser;
+  user: User;
 }
 
-const useUserInviteOptionController = (user: IUser) => {
+const useUserInviteOptionController = (user: User) => {
   const sentInvites = useStore(store => store.sentInvites);
   const dispatch = useDispatcher();
 

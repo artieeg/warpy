@@ -36,6 +36,7 @@ export const ModalProvider = () => {
       <AwardVisualPickerModal />
       <AwardMessageInputModal />
       <HostReassignModal />
+      <InviteModal />
 
       <ParticipantsModal
         onHide={() => dispatch(({modal}) => modal.close())}
@@ -55,8 +56,6 @@ export const ModalProvider = () => {
         visible={modal === 'reports'}
         onHide={() => dispatch(({modal}) => modal.close())}
       />
-
-      <InviteModal />
     </>
   );
 };

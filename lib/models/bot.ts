@@ -1,4 +1,4 @@
-export interface IBot {
+export interface Bot {
   botname: string;
   name: string;
   avatar: string;

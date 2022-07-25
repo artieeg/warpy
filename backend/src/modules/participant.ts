@@ -8,30 +8,41 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
-import {
-  OnStreamEnd,
-  OnRoleChange,
-  OnParticipantLeave,
-  OnParticipantRejoin,
-} from '@warpy-be/interfaces';
+import { OnStreamEnd, OnRoleChange } from '@warpy-be/interfaces';
 import {
   EVENT_ROLE_CHANGE,
-  EVENT_PARTICIPANT_REJOIN,
-  EVENT_PARTICIPANT_LEAVE,
   EVENT_STREAM_ENDED,
-  EVENT_PARTICIPANT_KICKED,
   EVENT_USER_DISCONNECTED,
 } from '@warpy-be/utils';
-import { ParticipantService, ParticipantStore } from 'lib';
 import {
-  IRequestViewers,
-  IRequestViewersResponse,
-  IRaiseHand,
-  IMediaToggleRequest,
+  BotInstanceStore,
+  ParticipantService,
+  ParticipantStore,
+} from '@warpy-be/app';
+import {
+  RequestViewers,
+  RequestViewersResponse,
+  RequestRaiseHand,
+  RequestMediaToggle,
+  RequestKickUser,
 } from '@warpy/lib';
-import { MediaModule, NjsMediaService } from './media';
-import { BotInstanceModule, NjsBotInstanceStore } from './bot-instance';
 import { NjsUserService, UserModule } from './user';
+import { StreamBanStore } from '@warpy-be/app/participant/stream-bans.store';
+import { PrismaModule, PrismaService } from './prisma';
+
+@Injectable()
+export class NjsBotInstanceStore extends BotInstanceStore {
+  constructor(prisma: PrismaService) {
+    super(prisma);
+  }
+}
+
+@Injectable()
+export class NjsStreamBanStore extends StreamBanStore {
+  constructor(prisma: PrismaService) {
+    super(prisma);
+  }
+}
 
 @Injectable()
 export class NjsParticipantStore
@@ -54,22 +65,20 @@ export class NjsParticipantService extends ParticipantService {
     botInstanceStore: NjsBotInstanceStore,
     events: EventEmitter2,
     userService: NjsUserService,
-    mediaService: NjsMediaService,
+    streamBanStore: NjsStreamBanStore,
   ) {
     super(
       participantStore,
       botInstanceStore,
       events,
       userService,
-      mediaService,
+      streamBanStore,
     );
   }
 }
 
 @Controller()
-export class ParticipantController
-  implements OnStreamEnd, OnRoleChange, OnParticipantLeave, OnParticipantRejoin
-{
+export class ParticipantController implements OnStreamEnd, OnRoleChange {
   constructor(
     private store: NjsParticipantStore,
     private participant: NjsParticipantService,
@@ -79,14 +88,14 @@ export class ParticipantController
   async onViewersRequest({
     stream,
     page,
-  }: IRequestViewers): Promise<IRequestViewersResponse> {
+  }: RequestViewers): Promise<RequestViewersResponse> {
     const viewers = await this.participant.getViewers(stream, page);
 
     return { viewers };
   }
 
   @MessagePattern('user.raise-hand')
-  async onRaiseHand({ user, flag }: IRaiseHand) {
+  async onRaiseHand({ user, flag }: RequestRaiseHand) {
     await this.participant.setRaiseHand(user, flag);
   }
 
@@ -95,16 +104,11 @@ export class ParticipantController
     user,
     audioEnabled,
     videoEnabled,
-  }: IMediaToggleRequest) {
+  }: RequestMediaToggle) {
     await this.participant.setMediaEnabled(user, {
       audioEnabled,
       videoEnabled,
     });
-  }
-
-  @OnEvent(EVENT_PARTICIPANT_KICKED)
-  async onUserKicked({ user }) {
-    await this.participant.removeUserFromStream(user);
   }
 
   @OnEvent(EVENT_USER_DISCONNECTED)
@@ -117,16 +121,22 @@ export class ParticipantController
     return this.store.update(participant.id, participant);
   }
 
-  @OnEvent(EVENT_PARTICIPANT_REJOIN)
-  async onParticipantRejoin({ participant: { id, stream } }) {
-    return this.store.setDeactivated(id, stream, false);
+  @MessagePattern('participant.leave')
+  async leave({ user }) {
+    await this.participant.handleLeavingParticipant(user);
   }
 
+  @MessagePattern('stream.kick-user')
+  async onKickUser({ userToKick, user }: RequestKickUser) {
+    await this.participant.kickStreamParticipant(userToKick, user);
+  }
+
+  /*
   @OnEvent(EVENT_PARTICIPANT_LEAVE)
   async onParticipantLeave({ user, stream }) {
     await this.participant.removeUserFromStream(user, stream);
-    await this.store.setDeactivated(user, stream, true);
   }
+    */
 
   @OnEvent(EVENT_STREAM_ENDED)
   async onStreamEnd({ stream }) {
@@ -135,8 +145,13 @@ export class ParticipantController
 }
 
 @Module({
-  imports: [MediaModule, UserModule, BotInstanceModule],
-  providers: [NjsParticipantStore, NjsParticipantService],
+  imports: [UserModule, PrismaModule],
+  providers: [
+    NjsParticipantStore,
+    NjsBotInstanceStore,
+    NjsParticipantService,
+    NjsStreamBanStore,
+  ],
   controllers: [ParticipantController],
   exports: [NjsParticipantStore, NjsParticipantService],
 })

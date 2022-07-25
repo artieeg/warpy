@@ -1,16 +1,18 @@
 import { GetState, PartialState, SetState, UseStore } from "zustand";
-import { AppInviteService } from "./app/app-invite";
-import { ChatService } from "./app/chat";
-import { FeedService } from "./app/feed";
-import { InviteService } from "./app/invite";
-import { MediaService } from "./app/media";
-import { ModalService } from "./app/modal";
-import { NotificationService } from "./app/notification";
-import { StreamService } from "./app/stream";
-import { ToastService } from "./app/toast";
 import { StateUpdate, StreamedStateUpdate } from "./app/types";
-import { UserService } from "./app/user";
 import { IStore } from "./useStore";
+import {
+  ChatService,
+  StreamService,
+  MediaService,
+  FeedService,
+  AppInviteService,
+  InviteService,
+  ModalService,
+  NotificationService,
+  ToastService,
+  UserService,
+} from "./app";
 
 /**
  * Connects app layer with zustand store

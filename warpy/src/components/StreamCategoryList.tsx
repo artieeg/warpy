@@ -3,7 +3,7 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, ViewProps, useWindowDimensions} from 'react-native';
 import {StreamCategoryOption} from './StreamCategoryOption';
 import tinycolor from 'tinycolor2';
-import {IStreamCategory} from '@warpy/lib';
+import {StreamCategory} from '@warpy/lib';
 import Animated, {
   Easing,
   Extrapolate,
@@ -137,7 +137,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
   }, [categories, mode]);
 
   const renderItem = useCallback(
-    (category: IStreamCategory, index: number) => {
+    (category: StreamCategory, index: number) => {
       const isSelected =
         useStore.getState().selectedFeedCategory?.id === category.id;
 

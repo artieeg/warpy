@@ -2,10 +2,13 @@ import { createNewPeer } from "@media/models";
 import { role } from "@media/role";
 import { SFUService } from "@media/services";
 import { getOptionsFromTransport } from "@media/utils";
-import { IJoinMediaRoom } from "@warpy/lib";
+import { RequestJoinMediaRoom } from "@warpy/lib";
 import { rooms } from "../rooms";
 
-export const handleJoinRoom = async (data: IJoinMediaRoom, respond: any) => {
+export const handleJoinRoom = async (
+  data: RequestJoinMediaRoom,
+  respond: any
+) => {
   console.log(role, "handling new user join");
 
   const { roomId, user } = data;

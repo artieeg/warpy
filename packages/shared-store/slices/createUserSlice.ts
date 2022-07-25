@@ -1,15 +1,15 @@
-import { IBaseUser, IUser, Roles } from "@warpy/lib";
+import { UserBase, User, Roles } from "@warpy/lib";
 import { StoreSlice } from "../types";
 
 export interface IUserSlice {
-  user: IBaseUser | null;
+  user: UserBase | null;
   role: Roles | null;
   isLoadingUser: boolean;
   exists: boolean;
   following: string[];
   isRaisingHand: boolean;
   hasActivatedAppInvite: boolean;
-  userSearchResult: IUser[];
+  userSearchResult: User[];
   isSearchingUsers: boolean;
 }
 

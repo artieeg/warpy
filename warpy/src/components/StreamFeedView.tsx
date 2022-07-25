@@ -1,6 +1,6 @@
 import React from 'react';
 import {FlatList, FlatListProps, RefreshControl} from 'react-native';
-import {ICandidate} from '@warpy/lib';
+import {Candidate} from '@warpy/lib';
 import {usePreviewDimensions} from '@app/hooks';
 import {StreamPreview} from './StreamPreview';
 import Animated, {
@@ -12,7 +12,7 @@ import Animated, {
 import {colors} from '../../colors';
 
 interface StreamFeedViewProps
-  extends Omit<FlatListProps<ICandidate>, 'renderItem'> {
+  extends Omit<FlatListProps<Candidate>, 'renderItem'> {
   isLoading?: boolean;
 }
 
@@ -25,7 +25,7 @@ export const StreamFeedView: React.FC<StreamFeedViewProps> = ({
   const {previewHeight, previewWidth} = usePreviewDimensions();
 
   const renderItem = React.useCallback(
-    ({item, index}: {item: ICandidate; index: number}) => {
+    ({item, index}: {item: Candidate; index: number}) => {
       let style: any = {
         maxWidth: previewWidth,
         width: previewWidth,

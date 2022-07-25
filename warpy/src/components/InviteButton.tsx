@@ -7,7 +7,7 @@ export const InviteButton = () => {
 
   return (
     <IconButton
-      onPress={() => dispatch(({modal}) => modal.open('invite'))}
+      onPress={() => dispatch(({modal}) => modal.open('send-invite'))}
       name="user-add"
       color="#ffffff"
       size={24}

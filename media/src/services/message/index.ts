@@ -2,9 +2,9 @@ import { IMessage } from "@media/models";
 import { NodeInfo } from "@media/nodeinfo";
 import { role } from "@media/role";
 import {
-  IConnectMediaServer,
-  INewProducer,
-  IRecordRequest,
+  RequestConnectMediaServer,
+  RequestCreateProducer,
+  RequestRecord,
   MessageHandler,
   subjects,
 } from "@warpy/lib";
@@ -91,21 +91,24 @@ export const on = (event: string, handler: MessageHandler<any, any>) => {
 };
 
 export const tryConnectToIngress = async (
-  options: IConnectMediaServer
-): Promise<IConnectMediaServer> => {
+  options: RequestConnectMediaServer
+): Promise<RequestConnectMediaServer> => {
   const response = await nc.request(
     subjects.media.egress.tryConnect,
     jc.encode(options)
   );
 
-  return jc.decode(response.data) as IConnectMediaServer;
+  return jc.decode(response.data) as RequestConnectMediaServer;
 };
 
 export const sendActiveSpeakers = (speakers: string[]) => {
   nc.publish("stream.active-speakers", jc.encode({ speakers }));
 };
 
-export const sendNewProducer = async (node: string, producer: INewProducer) => {
+export const sendNewProducer = async (
+  node: string,
+  producer: RequestCreateProducer
+) => {
   const r = await nc.request(
     `${subjects.media.egress.newProducer}.${node}`,
     jc.encode(producer)
@@ -118,7 +121,7 @@ export const sendNodeIsOnlineMessage = async (nodeParams: any) => {
   nc.publish(subjects.media.node.isOnline, data);
 };
 
-export const sendRecordRequest = async (params: IRecordRequest) => {
+export const sendRecordRequest = async (params: RequestRecord) => {
   nc.publish("stream.record-request", jc.encode(params));
 };
 

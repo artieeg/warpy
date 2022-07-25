@@ -1,14 +1,14 @@
 import jwt from "jsonwebtoken";
-import { IMediaPermissions, ITransportOptions } from "@warpy/lib";
+import { MediaPermissions, TransportOptions } from "@warpy/lib";
 import { WebRtcTransport } from "mediasoup/node/lib/types";
 
 export const getMediaPermissions = (token: string) => {
-  return jwt.verify(token, process.env.MEDIA_JWT_SECRET!) as IMediaPermissions;
+  return jwt.verify(token, process.env.MEDIA_JWT_SECRET!) as MediaPermissions;
 };
 
 export const verifyMediaPermissions = (
   token: string,
-  fieldsToCheck: Partial<IMediaPermissions>
+  fieldsToCheck: Partial<MediaPermissions>
 ) => {
   const permissions: any = getMediaPermissions(token);
 
@@ -23,7 +23,7 @@ export const verifyMediaPermissions = (
 
 export const getOptionsFromTransport = (
   transport: WebRtcTransport
-): ITransportOptions => ({
+): TransportOptions => ({
   id: transport.id,
   iceParameters: transport.iceParameters,
   iceCandidates: transport.iceCandidates,

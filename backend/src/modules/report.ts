@@ -1,7 +1,7 @@
 import { Injectable, Controller, Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { UserReportService, UserReportStore } from 'lib';
-import { IUserReportRequest, IUserReportResponse } from '@warpy/lib';
+import { UserReportService, UserReportStore } from '@warpy-be/app';
+import { RequestReportUser, UserReportResponse } from '@warpy/lib';
 import { PrismaService, PrismaModule } from './prisma';
 @Injectable()
 export class NjsUserReportStore extends UserReportStore {
@@ -26,7 +26,7 @@ export class UserReportController {
     reportedUserId,
     reportReasonId,
     user,
-  }: IUserReportRequest): Promise<IUserReportResponse> {
+  }: RequestReportUser): Promise<UserReportResponse> {
     await this.userReportService.addUserReport(
       reportedUserId,
       user,

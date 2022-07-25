@@ -1,9 +1,9 @@
 import {useStore} from '@app/store';
 import {useMemo} from 'react';
 import shallow from 'zustand/shallow';
-import {IParticipant} from '@warpy/lib';
+import {Participant} from '@warpy/lib';
 
-export const useSpeakingRequests = (): IParticipant[] => {
+export const useSpeakingRequests = (): Participant[] => {
   const viewersWithRaisedHands = useStore(
     state => state.viewersWithRaisedHands,
     shallow,

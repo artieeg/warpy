@@ -4,10 +4,10 @@ import {StyleSheet, View} from 'react-native';
 import {Text} from './Text';
 import {SmallTextButton} from './SmallTextButton';
 import {useStoreShallow} from '@app/store';
-import {IParticipant} from '@warpy/lib';
+import {Participant} from '@warpy/lib';
 
 interface IRaisedHandInfo {
-  data: IParticipant;
+  data: Participant;
 }
 
 export const UserWithRaisedHand = (props: IRaisedHandInfo) => {

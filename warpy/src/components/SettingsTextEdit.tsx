@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Text, textStyles} from './Text';
 import {View, StyleSheet, TextInput} from 'react-native';
-import {IUser, IUserUpdateResponse} from '@warpy/lib';
+import {User, IUserUpdateResponse} from '@warpy/lib';
 import {useStore} from '@app/store';
 import shallow from 'zustand/shallow';
 import {useDebounce} from 'use-debounce/lib';
@@ -12,12 +12,12 @@ import {colors} from '../../colors';
 
 interface SettingsTextEditProps {
   placeholder: string;
-  field: keyof IUser;
+  field: keyof User;
 }
 
 export const SettingsTextEdit = (props: SettingsTextEditProps) => {
   const [user, api, dispatchToastMessage] = useStore(
-    store => [store.user as IUser, store.api, store.dispatchToastMessage],
+    store => [store.user as User, store.api, store.dispatchToastMessage],
     shallow,
   );
 

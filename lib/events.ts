@@ -1,31 +1,31 @@
 import {
-  IAward,
-  IChatMessage,
-  IInvite,
-  INotification,
-  IParticipant,
-  IStream,
+  Award,
+  ChatMessage,
+  Invite,
+  Notification,
+  Participant,
+  Stream,
 } from "./models";
 import { InviteStates, Roles } from "./types";
 
-export interface IRoleUpdateEvent {
+export interface EventRoleUpdate {
   stream: string;
   sendMediaParams?: any;
   mediaPermissionToken: string;
   role: Roles;
 }
 
-export interface IActiveSpeakerEvent {
+export interface EventActiveSpeaker {
   stream: string;
   speakers: { user: string; volume: number }[];
 }
 
-export interface INewPreviewEvent {
+export interface EventNewPreview {
   stream: string;
   preview: string;
 }
 
-export interface IReactionsUpdate {
+export interface EventNewReactions {
   stream: string;
   reactions: {
     emoji: string;
@@ -33,35 +33,35 @@ export interface IReactionsUpdate {
   }[];
 }
 
-export interface IChatMessagesEvent {
-  messages: IChatMessage[];
+export interface EventChatMessages {
+  messages: ChatMessage[];
 }
 
-export interface IUserKickedEvent {
+export interface EventKickedUser {
   user: string;
   stream: string;
 }
 
-export interface INotificationEvent {
-  notification: INotification;
+export interface EventNewNotification {
+  notification: Notification;
 }
 
-export interface INotificationDeleteEvent {
+export interface EventNotificationDeleted {
   notification_id: string;
 }
 
-export interface IParticipantRoleChangeEvent {
-  user: IParticipant;
+export interface EventParticipantRoleChange {
+  user: Participant;
 }
 
-export interface IMediaToggleEvent {
+export interface EventMediaToggle {
   user: string;
   stream: string;
   videoEnabled?: boolean;
   audioEnabled?: boolean;
 }
 
-export interface IBotDevConfirmation {
+export interface EventBotDevConfirmation {
   confirmation_id: string;
   bot: {
     botname: string;
@@ -70,40 +70,40 @@ export interface IBotDevConfirmation {
   };
 }
 
-export interface IBotInviteEvent {
+export interface EventBotInvite {
   stream: string;
   inviteDetailsToken: string;
 }
 
-export interface INewParticipantEvent {
-  participant: IParticipant;
+export interface EventNewParticipant {
+  participant: Participant;
 }
 
-export interface IStreamIdAvailable {
+export interface EventStreamIdAvailable {
   id: string;
 }
 
-export interface IInviteStateUpdate {
+export interface EventInviteStateUpdate {
   id: string;
   state: InviteStates;
 }
 
-export interface INewAward {
-  award: IAward;
+export interface EventNewAward {
+  award: Award;
 }
 
-export interface IPreviousStream {
-  stream: IStream;
+export interface EventPreviousStream {
+  stream: Stream;
 }
 
-export interface IReassignedStreamHost {
-  host: IParticipant;
+export interface EventReassignedStreamHost {
+  host: Participant;
 }
 
-export interface IStreamEndEvent {
+export interface EventStreamEnd {
   stream: string;
 }
 
-export interface IReceivedInviteEvent {
-  invite: IInvite;
+export interface EventReceivedInvite {
+  invite: Invite;
 }

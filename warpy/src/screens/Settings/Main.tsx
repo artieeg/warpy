@@ -3,13 +3,13 @@ import {ScreenHeader} from '@app/components/ScreenHeader';
 import {useStoreShallow} from '@app/store';
 import React, {useMemo} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
-import {IUser} from '@warpy/lib';
+import {User} from '@warpy/lib';
 import {SettingItemButton} from '@app/components/SettingItemButton';
 import {navigation} from '@app/navigation';
 
 export const MainSettingsScreen = () => {
   const [user, hasActivatedAppInvite] = useStoreShallow(store => [
-    store.user as IUser,
+    store.user as User,
     store.hasActivatedAppInvite,
   ]);
 

@@ -1,4 +1,4 @@
-export interface IAwardModel {
+export interface AwardModel {
   id: string;
   title: string;
   media: string;

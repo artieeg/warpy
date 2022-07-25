@@ -1,9 +1,9 @@
-import {IUser} from '@warpy/lib';
-import {StoreSlice} from '../types';
+import { User } from "@warpy/lib";
+import { StoreSlice } from "../types";
 
 type UserList = {
   page: number;
-  list: IUser[];
+  list: User[];
 };
 
 export interface IUserListSlice {

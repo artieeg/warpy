@@ -1,11 +1,11 @@
 import { Controller, Injectable, Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { FeedService } from 'lib';
+import { FeedService } from '@warpy-be/app';
 import {
-  IStreamSearchRequest,
-  IStreamSearchResponse,
-  IRequestFeed,
-  IFeedResponse,
+  RequestStreamSearch,
+  StreamSearchResponse,
+  RequestFeed,
+  FeedResponse,
 } from '@warpy/lib';
 import { NjsUserBlockService, UserBlockModule } from './user-block';
 import { NjsParticipantStore } from './participant';
@@ -31,19 +31,14 @@ export class FeedController {
   @MessagePattern('candidate.search')
   async onSearch({
     textToSearch,
-  }: IStreamSearchRequest): Promise<IStreamSearchResponse> {
+  }: RequestStreamSearch): Promise<StreamSearchResponse> {
     const candidates = await this.candidateService.search(textToSearch);
 
     return { streams: candidates };
   }
 
   @MessagePattern('candidate.get')
-  async getStreamFeed({
-    user,
-    category,
-  }: IRequestFeed): Promise<IFeedResponse> {
-    console.log({ user, category });
-
+  async getStreamFeed({ user, category }: RequestFeed): Promise<FeedResponse> {
     const feed = await this.candidateService.getFeed(user, category);
 
     return {

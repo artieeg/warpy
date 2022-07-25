@@ -2,8 +2,8 @@ import { Injectable, OnModuleInit, Controller, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
 import IORedis from 'ioredis';
-import { NodeInfoStore } from 'lib';
-import { IMediaNodeInfoRequest, MediaServiceRole } from '@warpy/lib';
+import { NodeInfoStore } from '@warpy-be/app';
+import { RequestMediaNodeInfo, MediaServiceRole } from '@warpy/lib';
 
 @Injectable()
 export class NjsNodeInfoStore extends NodeInfoStore implements OnModuleInit {
@@ -23,7 +23,7 @@ export class NodeInfoController {
   constructor(private nodeInfoService: NjsNodeInfoStore) {}
 
   @MessagePattern('media.node.info')
-  async onMediaNodeInfo({ node, load, role }: IMediaNodeInfoRequest) {
+  async onMediaNodeInfo({ node, load, role }: RequestMediaNodeInfo) {
     this.nodeInfoService.set(node, {
       load,
       node,

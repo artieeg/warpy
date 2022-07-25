@@ -6,7 +6,7 @@ import {
   EVENT_USER_DISCONNECTED,
   EVENT_PARTICIPANT_LEAVE,
 } from '@warpy-be/utils';
-import { ParticipantNodeAssignerStore } from 'lib';
+import { ParticipantNodeAssignerStore } from '@warpy-be/app';
 
 @Injectable()
 export class NjsParticipantNodeAssignerStore

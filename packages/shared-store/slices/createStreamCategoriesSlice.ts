@@ -1,8 +1,8 @@
-import { IStreamCategory } from "@warpy/lib";
+import { StreamCategory } from "@warpy/lib";
 import { StoreSlice } from "../types";
 
 export interface IStreamCategoriesSlice {
-  categories: IStreamCategory[];
+  categories: StreamCategory[];
 }
 
 export const createStreamCategoriesSlice: StoreSlice<IStreamCategoriesSlice> =

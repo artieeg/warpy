@@ -39,7 +39,7 @@ export const Reactions = (props: IReactionsProps) => {
           <ReactionContainer>
             <ReactionOptionButton
               onPress={() => {
-                dispatch(({stream}) => stream.change(item));
+                dispatch(({stream}) => stream.changeReaction(item));
                 dispatch(({modal}) => modal.close());
               }}
               code={item}

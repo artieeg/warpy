@@ -2,12 +2,12 @@ import React from 'react';
 import {Avatar} from './Avatar';
 import {StyleSheet, View} from 'react-native';
 import {Text} from './Text';
-import {IParticipant} from '@warpy/lib';
+import {Participant} from '@warpy/lib';
 import {SmallTextButton} from './SmallTextButton';
 import {useDispatcher, useStore, useStoreShallow} from '@app/store';
 
 interface StreamerInfoProps {
-  data: IParticipant;
+  data: Participant;
 }
 
 export const StreamerInfo: React.FC<StreamerInfoProps> = props => {

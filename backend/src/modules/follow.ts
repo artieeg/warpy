@@ -1,11 +1,11 @@
 import { Injectable, Controller, Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { FollowService, FollowStore } from 'lib';
+import { FollowService, FollowStore } from '@warpy-be/app';
 import {
-  IFollowRequest,
-  IFollowResponse,
-  IUnfollowRequest,
-  IUnfollowResponse,
+  RequestCreateFollow,
+  FollowResponse,
+  RequestDeleteFollow,
+  UnfollowResponse,
 } from '@warpy/lib';
 import { PrismaService, PrismaModule } from './prisma';
 @Injectable()
@@ -30,7 +30,7 @@ export class FollowController {
   async onUserFollow({
     user,
     userToFollow,
-  }: IFollowRequest): Promise<IFollowResponse> {
+  }: RequestCreateFollow): Promise<FollowResponse> {
     console.log('test');
     const { followed_id } = await this.followService.createNewFollow(
       user,
@@ -44,7 +44,7 @@ export class FollowController {
   async onUserUnfollo({
     user,
     userToUnfollow,
-  }: IUnfollowRequest): Promise<IUnfollowResponse> {
+  }: RequestDeleteFollow): Promise<UnfollowResponse> {
     await this.followService.deleteFollow(user, userToUnfollow);
 
     return {

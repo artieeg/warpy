@@ -4,8 +4,8 @@ import { MessagePattern } from '@nestjs/microservices';
 import { AppInviteModule, NjsAppliedAppInviteStore } from './app-invite';
 import { NjsUserService, UserModule } from './user';
 import { EVENT_USER_CONNECTED } from '@warpy-be/utils';
-import { SyncService } from 'lib';
-import { IWhoAmIRequest, IWhoAmIResponse } from '@warpy/lib';
+import { SyncService } from '@warpy-be/app';
+import { RequestWhoAmI, WhoAmIResponse } from '@warpy/lib';
 import { CategoryModule, NjsCategoryStore } from './category';
 import { FriendFeedModule, NjsFriendFeedService } from './friend-feed';
 import { NjsUserListService, UserListModule } from './user-list';
@@ -37,7 +37,7 @@ export class SyncController {
   ) {}
 
   @MessagePattern('user.whoami-request')
-  async onUserGet({ user }: IWhoAmIRequest): Promise<IWhoAmIResponse> {
+  async onUserGet({ user }: RequestWhoAmI): Promise<WhoAmIResponse> {
     const data = await this.syncService.sync(user);
 
     this.eventEmitter.emit(EVENT_USER_CONNECTED, { user });

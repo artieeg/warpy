@@ -1,11 +1,13 @@
 import { config } from "@media/config";
 import { SFUService, MessageService } from "@media/services";
 import { verifyMediaPermissions } from "@media/utils";
-import { MessageHandler, INewMediaTrack } from "@warpy/lib";
+import { MessageHandler, RequestPostMediaTrack } from "@warpy/lib";
 import { Producer } from "mediasoup/node/lib/types";
 import { rooms } from "../rooms";
 
-export const handleNewTrack: MessageHandler<INewMediaTrack> = async (data) => {
+export const handleNewTrack: MessageHandler<RequestPostMediaTrack> = async (
+  data
+) => {
   const {
     roomId,
     user,

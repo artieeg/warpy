@@ -5,18 +5,18 @@ import { MessagePattern } from '@nestjs/microservices';
 import { ExceptionFilter } from '@warpy-be/rpc-exception.filter';
 import { EVENT_USER_DISCONNECTED } from '@warpy-be/utils';
 import {
-  IUserUpdateRequest,
-  IUserUpdateResponse,
-  ICreateAnonUserResponse,
-  INewUser,
-  INewUserResponse,
-  IUserDelete,
-  IUserDeleteResponse,
-  IUserSearchRequest,
-  IUserSearchResponse,
+  RequestUpdateUser,
+  UserUpdateResponse,
+  CreateAnonUserResponse,
+  RequestCreateUser,
+  NewUserResponse,
+  RequestDeleteUser,
+  UserDeleteResponse,
+  RequestUserSearch,
+  UserSearchResponse,
   IUserDisconnected,
 } from '@warpy/lib';
-import { UserStore, UserService } from 'lib';
+import { UserStore, UserService } from '@warpy-be/app';
 import { AppInviteModule } from './app-invite';
 import { DeveloperAccountModule } from './developer-account';
 import { FollowModule } from './follow';
@@ -56,7 +56,7 @@ export class UserController {
   async onUserUpdate({
     user,
     data,
-  }: IUserUpdateRequest): Promise<IUserUpdateResponse> {
+  }: RequestUpdateUser): Promise<UserUpdateResponse> {
     try {
       await this.userService.update(user, data);
 
@@ -72,19 +72,19 @@ export class UserController {
   }
 
   @MessagePattern('user.create.anon')
-  async onAnonUserCreate(): Promise<ICreateAnonUserResponse> {
+  async onAnonUserCreate(): Promise<CreateAnonUserResponse> {
     return this.userService.createAnonUser();
   }
 
   @MessagePattern('user.create')
-  async onUserCreate(data: INewUser): Promise<INewUserResponse> {
+  async onUserCreate(data: RequestCreateUser): Promise<NewUserResponse> {
     if (!this.configService.get('isProduction') && data.kind === 'dev') {
       return this.userService.createUser(data);
     }
   }
 
   @MessagePattern('user.delete')
-  async onUserDelete({ user }: IUserDelete): Promise<IUserDeleteResponse> {
+  async onUserDelete({ user }: RequestDeleteUser): Promise<UserDeleteResponse> {
     await this.userService.del(user);
 
     return {
@@ -96,7 +96,7 @@ export class UserController {
   async onUserSearch({
     textToSearch,
     user,
-  }: IUserSearchRequest): Promise<IUserSearchResponse> {
+  }: RequestUserSearch): Promise<UserSearchResponse> {
     const users = await this.userService.search(textToSearch, user);
 
     return { users };

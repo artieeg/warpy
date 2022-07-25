@@ -1,4 +1,4 @@
-import { INewMediaTrack, ITransportOptions } from "./requests";
+import { RequestPostMediaTrack, TransportOptions } from "./requests";
 
 export const createRtpCapabilitiesFixture = (params: any): any => {
   return {
@@ -9,8 +9,8 @@ export const createRtpCapabilitiesFixture = (params: any): any => {
 };
 
 export const createTransportFixture = (
-  params: Partial<ITransportOptions>
-): ITransportOptions => {
+  params: Partial<TransportOptions>
+): TransportOptions => {
   return {
     id: "test",
     iceParameters: { usernameFragment: "test", password: "test" },
@@ -29,8 +29,8 @@ export const createNewMediaRoomDataFixture = () => {
 };
 
 export const createNewTrackFixture = (
-  params?: Partial<INewMediaTrack>
-): INewMediaTrack => {
+  params?: Partial<RequestPostMediaTrack>
+): RequestPostMediaTrack => {
   return {
     user: "test user id",
     direction: "send",

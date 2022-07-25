@@ -1,5 +1,5 @@
 import { Injectable, Module } from '@nestjs/common';
-import { MediaBalancerService } from 'lib';
+import { MediaBalancerService } from '@warpy-be/app';
 import { NjsNodeInfoStore, NodeInfoModule } from './node-info';
 import { NjsNodeRegistryStore, NodeRegistryModule } from './node-registry';
 import {

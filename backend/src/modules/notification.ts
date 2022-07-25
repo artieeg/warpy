@@ -3,14 +3,14 @@ import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import { EVENT_INVITE_AVAILABLE } from '@warpy-be/utils';
-import { NotificationService, NotificationStore } from 'lib';
+import { NotificationService, NotificationStore } from '@warpy-be/app';
 import { PrismaModule } from './prisma';
 import {
-  IInvite,
-  IReadNotifications,
-  IGetReadNotifications,
-  INotificationsPage,
-  IGetUnreadNotifications,
+  Invite,
+  RequestReadNotifications,
+  RequestFetchReadNotifications,
+  NotificationsPage,
+  RequestFetchUnreadNotifications,
 } from '@warpy/lib';
 import { NjsMessageService } from './message';
 
@@ -43,12 +43,12 @@ export class NotificationController {
   constructor(private notificationService: NjsNotificationService) {}
 
   @OnEvent(EVENT_INVITE_AVAILABLE)
-  async onNewInvite(invite: IInvite) {
+  async onNewInvite(invite: Invite) {
     await this.notificationService.createInviteNotification(invite);
   }
 
   @MessagePattern('notifications.read')
-  async onNotificationsRead({ user }: IReadNotifications) {
+  async onNotificationsRead({ user }: RequestReadNotifications) {
     await this.notificationService.readAllNotifications(user);
   }
 
@@ -56,7 +56,7 @@ export class NotificationController {
   async onGetReadNotifications({
     user,
     page,
-  }: IGetReadNotifications): Promise<INotificationsPage> {
+  }: RequestFetchReadNotifications): Promise<NotificationsPage> {
     const notifications = await this.notificationService.getReadNotifications(
       user,
       page,
@@ -70,7 +70,7 @@ export class NotificationController {
   @MessagePattern('notifications.get-unread')
   async onGetUnreadNotifications({
     user,
-  }: IGetUnreadNotifications): Promise<INotificationsPage> {
+  }: RequestFetchUnreadNotifications): Promise<NotificationsPage> {
     const notifications = await this.notificationService.getUnreadNotifications(
       user,
     );

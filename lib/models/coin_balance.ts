@@ -1,3 +1,3 @@
-export interface ICoinBalance {
+export interface CoinBalance {
   balance: number;
 }

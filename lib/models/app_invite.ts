@@ -1,7 +1,7 @@
-import { IBaseUser } from "./user";
+import { UserBase } from "./user";
 
-export interface IAppInvite {
+export interface AppInvite {
   id: string;
-  user: IBaseUser;
+  user: UserBase;
   code: string;
 }

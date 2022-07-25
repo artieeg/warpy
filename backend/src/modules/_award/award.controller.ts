@@ -1,10 +1,10 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
-  IFetchReceivedAwardsRequest,
-  IReceivedAwardsResponse,
-  ISendAwardRequest,
-  ISendAwardResponse,
+  RequestFetchReceivedAwards,
+  ReceivedAwardsResponse,
+  RequestSendAward,
+  SendAwardResponse,
 } from '@warpy/lib';
 import { AwardService } from './award.service';
 
@@ -15,7 +15,7 @@ export class AwardController {
   @MessagePattern('awards.get-received')
   async getReceivedAwards({
     target,
-  }: IFetchReceivedAwardsRequest): Promise<IReceivedAwardsResponse> {
+  }: RequestFetchReceivedAwards): Promise<ReceivedAwardsResponse> {
     const awards = await this.awardService.getReceivedAwards(target);
 
     return { awards };
@@ -27,7 +27,7 @@ export class AwardController {
     recipent,
     visual,
     message,
-  }: ISendAwardRequest): Promise<ISendAwardResponse> {
+  }: RequestSendAward): Promise<SendAwardResponse> {
     await this.awardService.sendAward(user, recipent, visual, message);
 
     return {

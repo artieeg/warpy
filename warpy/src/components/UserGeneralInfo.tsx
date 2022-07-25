@@ -1,11 +1,11 @@
 import React from 'react';
 import {View, StyleSheet, ViewProps} from 'react-native';
-import {IBaseUser} from '@warpy/lib';
+import {UserBase} from '@warpy/lib';
 import {Avatar, IAvatarProps} from './Avatar';
 import {Text} from './Text';
 
 interface UserGeneralInfoProps extends ViewProps, IAvatarProps {
-  user: IBaseUser;
+  user: UserBase;
 }
 
 export const UserGeneralInfo = (props: UserGeneralInfoProps) => {

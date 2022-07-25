@@ -1,18 +1,18 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
-import {IUser, UserList} from '@warpy/lib';
+import {User, UserList} from '@warpy/lib';
 import {UserGeneralInfo} from './UserGeneralInfo';
 import {SmallTextButton} from './SmallTextButton';
 import {useStore} from '@app/store';
 import {useNavigation} from '@react-navigation/native';
 
 interface BaseUserListItemProps {
-  user: IUser;
+  user: User;
   list: UserList;
 }
 
 interface ActionProps {
-  user: IUser;
+  user: User;
 }
 
 const FollowingItemAction = ({user}: ActionProps) => {

@@ -1,4 +1,4 @@
-export interface IMediaPermissions {
+export interface MediaPermissions {
   user: string;
   room: string;
   video: boolean;

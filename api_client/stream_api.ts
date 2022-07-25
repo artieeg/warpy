@@ -1,29 +1,29 @@
 import { APIModule, EventHandler } from "./types";
 import {
-  IActiveSpeakerEvent,
-  IReactionsUpdate,
+  EventActiveSpeaker,
+  EventNewReactions,
   IJoinStreamResponse,
   INewStreamResponse,
   IRequestViewersResponse,
-  IRoleUpdateEvent,
-  IChatMessagesEvent,
+  EventRoleUpdate,
+  EventChatMessages,
   ISendMessageResponse,
-  IUserKickedEvent,
+  EventKickedUser,
   IInviteSuggestionsResponse,
   IInviteResponse,
   ICancelInviteResponse,
   Roles,
-  IParticipantRoleChangeEvent,
-  IMediaToggleEvent,
-  INewParticipantEvent,
-  IStreamIdAvailable,
-  IInviteStateUpdate,
+  EventParticipantRoleChange,
+  EventMediaToggle,
+  EventNewParticipant,
+  EventStreamIdAvailable,
+  EventInviteStateUpdate,
   ILeaveStreamResponse,
   IStreamSearchResponse,
-  IPreviousStream,
-  IReassignedStreamHost,
-  IStreamEndEvent,
-  IReceivedInviteEvent,
+  EventPreviousStream,
+  EventReassignedStreamHost,
+  EventStreamEnd,
+  EventReceivedInvite,
 } from "@warpy/lib";
 
 export interface IStreamAPI {
@@ -51,22 +51,22 @@ export interface IStreamAPI {
   getInviteSuggestions: (stream: string) => Promise<IInviteSuggestionsResponse>;
   setRole: (userToUpdate: string, role: Roles) => void;
   leave: (stream: string) => Promise<ILeaveStreamResponse>;
-  onPreviousStream: EventHandler<IPreviousStream>;
-  onReactionsUpdate: EventHandler<IReactionsUpdate>;
-  onNewParticipant: EventHandler<INewParticipantEvent>;
+  onPreviousStream: EventHandler<EventPreviousStream>;
+  onReactionsUpdate: EventHandler<EventNewReactions>;
+  onNewParticipant: EventHandler<EventNewParticipant>;
   onRaiseHandUpdate: EventHandler;
   onUserLeft: EventHandler;
-  onParticipantRoleChange: EventHandler<IParticipantRoleChangeEvent>;
-  onRoleUpdate: EventHandler<IRoleUpdateEvent>;
-  onInviteStateUpdate: EventHandler<IInviteStateUpdate>;
-  onActiveSpeaker: EventHandler<IActiveSpeakerEvent>;
-  onChatMessages: EventHandler<IChatMessagesEvent>;
-  onUserKick: EventHandler<IUserKickedEvent>;
-  onMediaToggle: EventHandler<IMediaToggleEvent>;
-  onStreamIdAvailable: EventHandler<IStreamIdAvailable>;
-  onHostReassign: EventHandler<IReassignedStreamHost>;
-  onStreamEnd: EventHandler<IStreamEndEvent>;
-  onNewInvite: EventHandler<IReceivedInviteEvent>;
+  onParticipantRoleChange: EventHandler<EventParticipantRoleChange>;
+  onRoleUpdate: EventHandler<EventRoleUpdate>;
+  onInviteStateUpdate: EventHandler<EventInviteStateUpdate>;
+  onActiveSpeaker: EventHandler<EventActiveSpeaker>;
+  onChatMessages: EventHandler<EventChatMessages>;
+  onUserKick: EventHandler<EventKickedUser>;
+  onMediaToggle: EventHandler<EventMediaToggle>;
+  onStreamIdAvailable: EventHandler<EventStreamIdAvailable>;
+  onHostReassign: EventHandler<EventReassignedStreamHost>;
+  onStreamEnd: EventHandler<EventStreamEnd>;
+  onNewInvite: EventHandler<EventReceivedInvite>;
 }
 
 export const StreamAPI: APIModule<IStreamAPI> = (socket) => ({

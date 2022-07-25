@@ -12,7 +12,7 @@ import {
   EVENT_USER_DISCONNECTED,
   EVENT_USER_CONNECTED,
 } from '@warpy-be/utils';
-import { PreviousStreamStore, PreviousStreamService } from 'lib';
+import { PreviousStreamStore, PreviousStreamService } from '@warpy-be/app';
 import { NjsMessageService } from './message';
 import { NjsStreamStore, StreamModule } from './stream';
 

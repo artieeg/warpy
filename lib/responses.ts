@@ -1,141 +1,156 @@
 import {
-  IParticipant,
-  ICandidate,
-  IBaseUser,
-  IChatMessage,
-  IInvite,
-  IUser,
-  INotification,
-  IAwardModel,
-  IAward,
-  IAppInvite,
-  IStream,
-  IStreamCategory,
-  IFriendFeedItem,
+  Participant,
+  Candidate,
+  UserBase,
+  ChatMessage,
+  Invite,
+  User,
+  Notification,
+  AwardModel,
+  Award,
+  AppInvite,
+  Stream,
+  StreamCategory,
+  FriendFeedItem,
 } from "./models";
+import { TransportOptions } from "./requests";
 import { Roles, UserList } from "./types";
 
-export interface INewStreamResponse {
+export interface IRecvTracksResponse {
+  consumerParams: any[];
+}
+
+export interface ResponseNewTransport {
+  sendTransportOptions: TransportOptions;
+  routerRtpCapabilities: any;
+}
+
+export interface ResponseCreateMediaRoom {
+  routerRtpCapabilities: any;
+  sendTransportOptions: TransportOptions;
+}
+
+export interface NewStreamResponse {
   stream: string;
   media: any;
   count: number;
   mediaPermissionsToken: string;
-  recvMediaParams: IConnectRecvTransportParams;
+  recvMediaParams: ConnectRecvTransportParams;
 }
 
-export interface IJoinStreamResponse {
-  streamers: IParticipant[];
-  raisedHands: IParticipant[];
+export interface JoinStreamResponse {
+  streamers: Participant[];
+  raisedHands: Participant[];
   count: number;
   mediaPermissionsToken: string;
-  recvMediaParams: IConnectRecvTransportParams;
+  recvMediaParams: ConnectRecvTransportParams;
   sendMediaParams?: any;
   host: string;
   role: Roles;
 }
 
-export interface IRequestViewersResponse {
-  viewers: IParticipant[];
+export interface RequestViewersResponse {
+  viewers: Participant[];
 }
 
-export interface IFeedResponse {
-  feed: ICandidate[];
+export interface FeedResponse {
+  feed: Candidate[];
 }
 
-export interface IWhoAmIResponse {
-  user: IBaseUser | null;
-  following: IUser[];
+export interface WhoAmIResponse {
+  user: UserBase | null;
+  following: User[];
   hasActivatedAppInvite: boolean;
-  friendFeed: IFriendFeedItem[];
-  categories: IStreamCategory[];
+  friendFeed: FriendFeedItem[];
+  categories: StreamCategory[];
 }
 
-export interface INewUserResponse {
+export interface NewUserResponse {
   id: string;
   access: string;
   refresh: string;
 }
 
-export interface IUserDeleteResponse {
+export interface UserDeleteResponse {
   status: "ok" | "error";
 }
 
-export interface IConnectRecvTransportParams {
+export interface ConnectRecvTransportParams {
   roomId: string;
   user: string;
   routerRtpCapabilities: any;
   recvTransportOptions: any;
 }
 
-export interface IFollowResponse {
+export interface FollowResponse {
   followedUser: any;
 }
 
-export interface IUnfollowResponse {
+export interface UnfollowResponse {
   unfollowedUser: any;
 }
 
-export interface ISendMessageResponse {
-  message: IChatMessage;
+export interface SendMessageResponse {
+  message: ChatMessage;
 }
 
-export interface IKickedFromMediaRoom {
+export interface KickedFromMediaRoom {
   user: string;
   status: "ok" | "error";
 }
 
-export interface IUserReportResponse {
+export interface UserReportResponse {
   reportedUser: string;
 }
 
-export interface IUserBlockResponse {
+export interface UserBlockResponse {
   blockId: string;
 }
 
-export interface IInviteResponse {
-  /** Returns null if bot's invited, returns IInvite object if user's invited*/
-  invite?: IInvite;
+export interface InviteResponse {
+  /** Returns null if bot's invited, returns Invite object if user's invited*/
+  invite?: Invite;
 }
 
-export interface IInviteSuggestionsResponse {
-  suggestions: IUser[];
+export interface InviteSuggestionsResponse {
+  suggestions: User[];
 }
 
-export interface IUserSearchResponse {
-  users: IUser[];
+export interface UserSearchResponse {
+  users: User[];
 }
 
-export interface ICancelInviteResponse {
+export interface CancelInviteResponse {
   status: string;
 }
 
-export interface INotificationsPage {
-  notifications: INotification[];
+export interface NotificationsPage {
+  notifications: Notification[];
 }
 
-export interface IGifsResponse {
+export interface GifsResponse {
   next: string;
   gifs: string[];
 }
 
-export interface IBotAuthResponse {
+export interface BotAuthResponse {
   status: "ok" | "error";
   bot: string; //Bot id
 }
 
-export interface IBotJoinResponse {
-  sendMedia: any;
-  recvMedia: any;
+export interface BotJoinResponse {
+  sendMediaParams: any;
+  recvMediaParams: any;
   mediaPermissionToken: string;
 }
 
-export interface IUserUpdateResponse {
+export interface UserUpdateResponse {
   status: "ok" | "error";
   message?: string;
 }
 
-export interface IUserInfoResponse {
-  user: IUser;
+export interface UserInfoResponse {
+  user: User;
   stream?: {
     id: string;
     title: string;
@@ -145,65 +160,65 @@ export interface IUserInfoResponse {
   isFollowed: boolean;
 }
 
-export interface IUserListResponse {
+export interface UserListResponse {
   list: UserList;
-  users: IUser[];
+  users: User[];
 }
 
-export interface IUserUnblockResponse {
+export interface UserUnblockResponse {
   status: string;
 }
 
-export interface ICoinBalanceResponse {
+export interface CoinBalanceResponse {
   balance: number;
 }
 
-export interface IGetAvailableAwardsResponse {
-  awards: IAwardModel[];
+export interface GetAvailableAwardsResponse {
+  awards: AwardModel[];
 }
 
-export interface ISendAwardResponse {
+export interface SendAwardResponse {
   status: "ok" | "error";
 }
 
-export interface IReceivedAwardsResponse {
-  awards: IAward[];
+export interface ReceivedAwardsResponse {
+  awards: Award[];
 }
 
-export interface IAppInviteResponse {
-  invite: IAppInvite;
+export interface AppInviteResponse {
+  invite: AppInvite;
 }
 
-export interface ICreateAnonUserResponse {
+export interface CreateAnonUserResponse {
   id: string;
   access: string;
 }
 
-export interface IStreamGetResponse {
-  stream: IStream;
+export interface StreamGetResponse {
+  stream: Stream;
 }
 
-export interface IGetCategoriesResponse {
-  categories: IStreamCategory[];
+export interface GetCategoriesResponse {
+  categories: StreamCategory[];
 }
 
-export interface ILeaveStreamResponse {
+export interface LeaveStreamResponse {
   status: "ok" | "error";
 }
 
-export interface IUserOnlineStatusResponse {
+export interface UserOnlineStatusResponse {
   user: string;
   online: boolean;
 }
 
-export interface IFriendFeedResponse {
-  feed: IFriendFeedItem[];
+export interface FriendFeedResponse {
+  feed: FriendFeedItem[];
 }
 
-export interface IStreamSearchResponse {
-  streams: ICandidate[];
+export interface StreamSearchResponse {
+  streams: Candidate[];
 }
 
-export interface IHostReassignResponse {
+export interface HostReassignResponse {
   host: string;
 }

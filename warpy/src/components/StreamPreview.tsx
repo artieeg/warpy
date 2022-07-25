@@ -6,11 +6,11 @@ import {useNavigation} from '@react-navigation/native';
 import Video from 'react-native-video';
 import {colors} from '../../colors';
 import tinycolor from 'tinycolor2';
-import {ICandidate} from '@warpy/lib';
+import {Candidate} from '@warpy/lib';
 import {Text} from './Text';
 
 interface IStreamPreviewProps {
-  stream: ICandidate;
+  stream: Candidate;
   style: any;
 }
 
@@ -52,7 +52,7 @@ export const StreamPreview = React.memo((props: IStreamPreviewProps) => {
             {stream.title}
           </Text>
           <View style={styles.participants}>
-            {stream.speakers.slice(0, 3).map((participant, index) => {
+            {stream.streamers.slice(0, 3).map((participant, index) => {
               const userAvatarStyle = {
                 transform: [{translateX: -index * 3}],
               };

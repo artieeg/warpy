@@ -1,54 +1,52 @@
-import { IFollow } from '@warpy-be/follow/follow.entity';
-import { IParticipant } from '@warpy-be/user/participant';
+import { IFollow } from '@warpy-be/app';
 import {
-  IAward,
-  IAwardModel,
+  Award,
+  AwardModel,
   IInvite,
   INotification,
-  IStream,
+  Participant,
+  Stream,
 } from '@warpy/lib';
-import { IConnectRecvTransportParams, IUser } from '@warpy/lib';
+import { ConnectRecvTransportParams, User } from '@warpy/lib';
 
-export const createStreamFixture = (data: Partial<IStream>): IStream => {
-  return {
-    id: 'test-id',
-    owner: 'test owner',
-    category: 'hub',
-    preview: 'test-preview',
-    title: 'test',
-    ...data,
+function getFixtureCreator<T>(defaults: T) {
+  return (data?: Partial<T>): T => {
+    return {
+      ...defaults,
+      ...(data || {}),
+    };
   };
-};
+}
 
-export const createUserFixture = (data: Partial<IUser>): IUser => {
-  return {
-    id: 'test-id',
-    last_name: 'test',
-    first_name: 'test',
-    avatar: 'avatar.com/test',
-    email: null,
-    sub: null,
-    username: 'test_username',
-    isAnon: false,
-    ...data,
-  };
-};
+export const createStreamFixture = getFixtureCreator<Stream>({
+  id: 'test-id',
+  owner: 'test owner',
+  category: 'hub',
+  preview: 'test-preview',
+  title: 'test',
+});
 
-export const createParticipantFixture = (
-  data: Partial<IParticipant>,
-): IParticipant => ({
-  ...createUserFixture(data),
+export const createUserFixture = getFixtureCreator<User>({
+  id: 'test-id',
+  last_name: 'test',
+  first_name: 'test',
+  avatar: 'avatar.com/test',
+  email: null,
+  sub: null,
+  username: 'test_username',
+  isAnon: false,
+});
+
+export const createParticipantFixture = getFixtureCreator<Participant>({
+  ...createUserFixture(),
   isBot: false,
   stream: 'test-stream-id',
   role: 'viewer',
   isRaisingHand: false,
-  recvNodeId: 'test-node-id',
-  sendNodeId: 'test-node-id',
   isBanned: false,
-  ...data,
 });
 
-export const createSendMediaParamsFixture = (data: Partial<any>): any => ({
+export const createSendMediaParamsFixture = getFixtureCreator({
   roomId: 'test-room-id',
   user: 'test-user-id',
   routerRtpCapabilities: {
@@ -57,10 +55,9 @@ export const createSendMediaParamsFixture = (data: Partial<any>): any => ({
   sendTransportOptions: {
     test: true,
   },
-  ...data,
 });
 
-export const createRecvMediaParamsFixture = (data: Partial<any>): any => ({
+export const createRecvMediaParamsFixture = getFixtureCreator({
   roomId: 'test-room-id',
   user: 'test-user-id',
   routerRtpCapabilities: {
@@ -69,64 +66,51 @@ export const createRecvMediaParamsFixture = (data: Partial<any>): any => ({
   recvTransportOptions: {
     test: true,
   },
-  ...data,
 });
 
-export const createRecvTransportParamsFixture = (
-  data: Partial<IConnectRecvTransportParams>,
-): IConnectRecvTransportParams => ({
-  roomId: 'test-room-id',
-  user: 'test-user-id',
-  routerRtpCapabilities: {
-    test: true,
-  },
-  recvTransportOptions: {
-    test: true,
-  },
-  ...data,
-});
+export const createRecvTransportParamsFixture =
+  getFixtureCreator<ConnectRecvTransportParams>({
+    roomId: 'test-room-id',
+    user: 'test-user-id',
+    routerRtpCapabilities: {
+      test: true,
+    },
+    recvTransportOptions: {
+      test: true,
+    },
+  });
 
-export const createFollowRecord = (data: Partial<IFollow>): IFollow => ({
+export const createFollowRecord = getFixtureCreator<IFollow>({
   followed_id: 'followed',
   follower_id: 'follower',
   follower: createUserFixture({ id: 'follower' }),
   followed: createUserFixture({ id: 'followed' }),
-  ...data,
 });
 
-export const createInviteFixture = (data: Partial<IInvite>): IInvite => ({
+export const createInviteFixture = getFixtureCreator<IInvite>({
   invitee_id: '1',
   inviter_id: '2',
   invitee: createUserFixture({ id: '1' }),
   inviter: createUserFixture({ id: '2' }),
   id: 'test',
   stream: createStreamFixture({}),
-  //accepted: false,
-  //declined: false,
-  ...data,
 });
 
-export const createNotificationFixture = (
-  data: Partial<INotification>,
-): INotification => ({
+export const createNotificationFixture = getFixtureCreator<INotification>({
   id: 'test',
   hasBeenSeen: false,
   created_at: 1000,
   user_id: 'test2',
-  ...data,
 });
 
-export const createAwardModelFixture = (
-  data: Partial<IAwardModel>,
-): IAwardModel => ({
+export const createAwardModelFixture = getFixtureCreator<AwardModel>({
   id: 'test',
   title: 'test award',
   media: 'example.com/media',
   price: 100,
-  ...data,
 });
 
-export const createAwardFixture = (data: Partial<IAward>): IAward => ({
+export const createAwardFixture = getFixtureCreator<Award>({
   id: 'test',
   sender: createUserFixture({ id: 'sender' }),
   recipent: createUserFixture({ id: 'recipent' }),
@@ -134,5 +118,4 @@ export const createAwardFixture = (data: Partial<IAward>): IAward => ({
   //award: createAwardModelFixture({ id: 'award' }),
   created_at: new Date().toISOString(),
   message: 'test',
-  ...data,
 });

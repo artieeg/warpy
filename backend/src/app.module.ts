@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { configuration } from './config/configuration';
+import { configuration } from './modules/config/configuration';
 import { TimerModule } from './shared/modules/timer/timer.module';
 import * as modules from './modules';
 

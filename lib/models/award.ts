@@ -1,9 +1,9 @@
-import { IUser } from "./user";
+import { User } from "./user";
 
-export interface IAward {
+export interface Award {
   id: string;
-  sender: IUser;
-  recipent: IUser;
+  sender: User;
+  recipent: User;
   visual: string;
   message: string;
   created_at: string;
