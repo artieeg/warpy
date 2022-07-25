@@ -36,7 +36,7 @@ export class ParticipantService {
     return data;
   }
 
-  async rejoinOldParticipant(data: Participant) {
+  async rejoinExistingParticipant(data: Participant) {
     await this.participantStore.setDeactivated(data.id, data.stream, false);
 
     this.events.emit(EVENT_PARTICIPANT_REJOIN, {

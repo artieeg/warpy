@@ -40,7 +40,7 @@ export class StreamJoinerController {
     stream,
     user,
   }: RequestJoinStream): Promise<JoinStreamResponse> {
-    return this.joiner.join(user, stream);
+    return this.joiner.joinUser(user, stream);
   }
 }
 

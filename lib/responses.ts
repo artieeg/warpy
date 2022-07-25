@@ -139,8 +139,8 @@ export interface BotAuthResponse {
 }
 
 export interface BotJoinResponse {
-  sendMedia: any;
-  recvMedia: any;
+  sendMediaParams: any;
+  recvMediaParams: any;
   mediaPermissionToken: string;
 }
 

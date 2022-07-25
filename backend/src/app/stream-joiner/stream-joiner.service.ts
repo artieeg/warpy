@@ -45,7 +45,7 @@ export class StreamJoinerService {
     };
   }
 
-  async join(user: string, stream: string) {
+  async joinUser(user: string, stream: string) {
     //check whether the user has been banned on stream
     if (await this.participant.isUserBanned(user, stream)) {
       throw new BannedFromStreamError();
@@ -53,13 +53,13 @@ export class StreamJoinerService {
 
     let response: JoinStreamResponse;
 
-    const [oldParticipantData, streamData, host] = await Promise.all([
+    const [previousParticipantData, streamData, host] = await Promise.all([
       this.participant.get(user),
       this.participant.getParticipantDataOnStream(stream),
       this.host.getStreamHostId(stream),
     ]);
 
-    const prevStreamId = oldParticipantData.stream;
+    const prevStreamId = previousParticipantData.stream;
 
     response = {
       ...response,
@@ -69,7 +69,7 @@ export class StreamJoinerService {
     };
 
     //if joining the stream
-    if (!oldParticipantData || prevStreamId !== stream) {
+    if (!previousParticipantData || prevStreamId !== stream) {
       const [{ recvMediaParams, token: mediaPermissionsToken }] =
         await Promise.all([
           this.media.getViewerParams(user, stream),
@@ -86,9 +86,9 @@ export class StreamJoinerService {
 
     //If rejoining...
 
-    await this.participant.rejoinOldParticipant(oldParticipantData);
+    await this.participant.rejoinExistingParticipant(previousParticipantData);
 
-    const { role } = oldParticipantData;
+    const { role } = previousParticipantData;
 
     //Based on the previous role, get viewer or streamer params
     const reconnectMediaParams = await this.getMediaParamsForRole({
@@ -109,7 +109,7 @@ export class StreamJoinerService {
       streamers:
         role === 'viewer'
           ? response.streamers
-          : [...response.streamers, oldParticipantData],
+          : [...response.streamers, previousParticipantData],
     };
 
     return response;
