@@ -1,6 +1,6 @@
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
-import { UserBase, Bot, IInvite } from "@warpy/lib";
+import { UserBase, Bot, Invite } from "@warpy/lib";
 import { Service } from "../Service";
 
 export type OpenModalParams = {
@@ -8,7 +8,7 @@ export type OpenModalParams = {
   userToAward?: UserBase;
   botConfirmId?: string;
   botConfirmData?: Bot;
-  invite?: IInvite;
+  invite?: Invite;
   closeAfterReassign?: boolean;
 };
 
@@ -22,7 +22,7 @@ export type Modal =
   | "participants"
   | "reactions"
   | "reports"
-  | "invite"
+  | "send-invite"
   | "stream-invite"
   | "bot-confirm"
   | "chat";

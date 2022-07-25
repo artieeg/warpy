@@ -73,7 +73,7 @@ export class UserBlockService {
     return blocked.map((record) => record.blocked);
   }
 
-  async isBannedBySpeaker(user: string, stream: string) {
+  async isBlockedByStreamer(user: string, stream: string) {
     const streamerIds = await this.streamerIdStore.get(stream);
     const blockedByIds = await this.blockEntity.getBlockedByIds(user);
     const blockedIds = await this.blockEntity.getBlockedUserIds(user);

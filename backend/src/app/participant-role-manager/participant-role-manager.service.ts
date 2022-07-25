@@ -47,19 +47,14 @@ export class ParticipantRoleManagerService {
     }
 
     if (role !== 'viewer') {
-      await this.blockService.isBannedBySpeaker(userToUpdate, stream);
+      await this.blockService.isBlockedByStreamer(userToUpdate, stream);
     }
 
     const oldUserData = await this.participant.get(userToUpdate);
 
-    //receive new media token,
-    //send transport data (if upgrading from viewer)
+    //receive new media token
+    //and send media params (if upgrading from viewer)
     const media = await this.media.updateMediaRole(oldUserData, role);
-
-    let response = {
-      role,
-      ...media,
-    };
 
     //Update participant record with a new role
     //and a new send node id (if changed)
@@ -69,21 +64,14 @@ export class ParticipantRoleManagerService {
       //new streamers start with their audio and video disabled
       videoEnabled: role === 'streamer' ? false : oldUserData.videoEnabled,
       audioEnabled: role === 'speaker' ? false : oldUserData.audioEnabled,
-
-      /*
-      //mark video as disabled if role set to speaker or viewer
-      videoEnabled: !(role === 'speaker' || role === 'viewer')
-        ? false
-        : undefined,
-
-      //mark audio as disabled if role set to viewer
-      audioEnabled: !(role === 'viewer'),
-      */
     });
 
     this.messageService.sendMessage(userToUpdate, {
       event: 'role-change',
-      data: response,
+      data: {
+        role,
+        ...media,
+      },
     });
 
     const dataToEmit = { participant: updatedUser };

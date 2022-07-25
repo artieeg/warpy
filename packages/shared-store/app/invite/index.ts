@@ -8,26 +8,40 @@ import {
   ReceivedInviteManager,
   ReceivedInviteManagerImpl,
 } from "./ReceivedInviteManager";
-import { SentInviteStateUpdater } from "./SentInviteStateUpdater";
+import {
+  SentInviteStateUpdater,
+  SentInviteStateUpdaterImpl,
+} from "./SentInviteStateUpdater";
 
-export class InviteService
-  extends Service
-  implements
-    InviteCleaner,
-    InviteSender,
-    ReceivedInviteManager,
-    SentInviteStateUpdater
-{
+export class InviteService extends Service {
   private cleaner: InviteCleaner;
   private sender: InviteSender;
   private manager: ReceivedInviteManager;
+  private sentInviteStateUpdater: SentInviteStateUpdater;
+  private state: AppState;
 
   constructor(state: IStore | AppState) {
     super(state);
 
+    if (state instanceof AppState) {
+      this.state = state;
+    } else {
+      this.state = new AppState(state);
+    }
+
     this.cleaner = new InviteCleanerImpl(this.state);
     this.sender = new InviteSenderImpl(this.state);
     this.manager = new ReceivedInviteManagerImpl(this.state);
+    this.sentInviteStateUpdater = new SentInviteStateUpdaterImpl(this.state);
+  }
+
+  async fetchInviteSuggestions(stream: string) {
+    const { api } = this.state.get();
+    const suggestions = await api.stream.getInviteSuggestions(stream);
+
+    return this.state.update({
+      inviteSuggestions: suggestions,
+    });
   }
 
   reset() {
@@ -55,6 +69,6 @@ export class InviteService
   }
 
   updateStateOfSentInvite(invite: string, state: InviteStates) {
-    return this.updateStateOfSentInvite(invite, state);
+    return this.sentInviteStateUpdater.updateStateOfSentInvite(invite, state);
   }
 }

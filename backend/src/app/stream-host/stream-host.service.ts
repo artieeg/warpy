@@ -11,6 +11,9 @@ import { UserStore } from '@warpy-be/app/user';
 import { TimerService } from '../timer';
 import { HostStore } from './stream-host.store';
 
+//Hosts will have 20 seconds to rejoin and preserve their host role;
+const HOST_REJOIN_PERIOD = 20000;
+
 export class HostService {
   constructor(
     private timerService: TimerService,
@@ -28,17 +31,14 @@ export class HostService {
     return this.hostStore.getHostId(stream);
   }
 
-  async handlePossibleHost(participant: Participant) {
-    const { role, id, stream } = participant;
-
-    //If user has been downgraded to viewer, remove him from the list
-    if (role === 'viewer') {
-      return this.hostStore.delPossibleHost(id, stream);
-    }
-
-    return this.hostStore.addPossibleHost(participant);
-  }
-
+  /**
+   * When hosts leave w/o assigning a new host,
+   * they have {HOST_REJOIN_PERIOD} seconds to rejoin the stream
+   * and preserve the host position
+   *
+   * This method marks the user to prevent the
+   * loss of the host role
+   * */
   async handleRejoinedUser(user: string) {
     const host = await this.hostStore.getHostInfo(user);
 
@@ -46,6 +46,7 @@ export class HostService {
       return;
     }
 
+    //Mark the user as joined to prevent the loss of the host role
     return this.hostStore.setHostJoinedStatus(user, true);
   }
 
@@ -54,6 +55,7 @@ export class HostService {
    * */
   private async setStreamHost(stream: string, host: Participant) {
     await this.hostStore.setStreamHost(host);
+
     this.events.emit(EVENT_HOST_REASSIGN, {
       stream,
       host,
@@ -88,8 +90,8 @@ export class HostService {
   }
 
   /**
-   * checks if user is a host and is disconnected
-   * waits for 15 seconds, if user failed to reconnect, reassings host
+   * checks if a user is a host and is disconnected
+   * reassigns the host after a few seconds, if the user hasn't rejoined
    * */
   async tryReassignHostAfterTime(user: string) {
     const stream = await this.hostStore.getHostedStreamId(user);
@@ -102,7 +104,7 @@ export class HostService {
     //make user offline
     await this.hostStore.setHostJoinedStatus(user, false);
 
-    //wait 20 seconds and check if the host has reconnected
+    //wait a few seconds and check if the host has reconnected
     this.timerService.setTimer(async () => {
       const hostHasRejoined = await this.hostStore.isHostJoined(user);
 
@@ -124,7 +126,7 @@ export class HostService {
       } else {
         await this.setStreamHost(stream, newHost);
       }
-    }, 20000);
+    }, HOST_REJOIN_PERIOD);
   }
 
   /**

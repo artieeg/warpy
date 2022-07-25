@@ -110,21 +110,16 @@ export class InviteService {
     invitee_id: string,
     stream_id?: string,
   ) {
-    console.log('1');
-
     const [inviter, invitee, stream] = await Promise.all([
       this.userEntity.find(inviter_id),
       this.userEntity.find(invitee_id),
       stream_id && this.streamEntity.findById(stream_id),
     ]);
-    console.log('2');
 
     //If the receiver is online, mark the invitation as received
     //else, invitation will be marked as not received and
     //will be sent out once the user has opened the app
     const isInviteeOnline = await this.inviteStore.isUserOnline(invitee.id);
-
-    console.log('3');
 
     const invite = await this.inviteStore.create({
       invitee,
@@ -132,8 +127,6 @@ export class InviteService {
       stream,
       received: isInviteeOnline,
     });
-
-    console.log('4');
 
     this.eventEmitter.emit(EVENT_INVITE_AVAILABLE, invite);
     this.messageService.sendMessage(invitee.id, {

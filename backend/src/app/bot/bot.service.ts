@@ -11,8 +11,8 @@ export type BotConfirmResponseDTO = {
 
 export class BotsService {
   constructor(
-    private botEntity: BotStore,
-    private developerAccountEntity: DeveloperAccountStore,
+    private botStore: BotStore,
+    private developerAccountStore: DeveloperAccountStore,
     private messageService: MessageService,
     private tokenService: TokenService,
   ) {}
@@ -23,10 +23,16 @@ export class BotsService {
     creatorUserId: string,
     avatar: string,
   ) {
-    const devAccountId = await this.developerAccountEntity.getDeveloperAccount(
+    //Checks if the user has a developer account
+    const devAccountId = await this.developerAccountStore.getDeveloperAccount(
       creatorUserId,
     );
 
+    if (!devAccountId) {
+      return;
+    }
+
+    //Request detail confirmation from the front end
     const confirmation =
       await this.messageService.request<BotConfirmResponseDTO>(creatorUserId, {
         request: 'create-bot-confirmation',
@@ -39,7 +45,9 @@ export class BotsService {
         },
       });
 
-    const id = await this.botEntity.create(name, botname, avatar, devAccountId);
+    const id = await this.botStore.create(name, botname, avatar, devAccountId);
+
+    //Identification token for bot dev
     const token = this.tokenService.createAuthToken(id, true);
 
     return { id, confimed: confirmation.confirmed, token };

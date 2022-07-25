@@ -1,4 +1,4 @@
-import { ISentInvite } from "@warpy/lib";
+import { InviteSent } from "@warpy/lib";
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
 import { ModalService } from "../modal";
@@ -46,7 +46,7 @@ export class InviteSenderImpl implements InviteSender {
         }
 
         return result;
-      }, {} as Record<string, ISentInvite>),
+      }, {} as Record<string, InviteSent>),
     });
   }
 
