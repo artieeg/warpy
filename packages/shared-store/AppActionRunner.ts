@@ -13,7 +13,7 @@ import {
   UserService,
   AwardService,
 } from "./app";
-import { IStore } from "./app/Store";
+import { Store } from "./app/Store";
 
 /**
  * Connects app layer with zustand store
@@ -32,7 +32,7 @@ export class AppActionRunner {
     | ReturnType<typeof AppActionRunner.prototype._initServices>
     | undefined;
 
-  constructor(private set: SetState<IStore>, private get: GetState<IStore>) {}
+  constructor(private set: SetState<Store>, private get: GetState<Store>) {}
 
   private _initServices() {
     return {
@@ -58,10 +58,10 @@ export class AppActionRunner {
     return this.services!;
   }
 
-  initServices(): IStore {
+  initServices(): Store {
     this.services = this._initServices();
 
-    let initialAppState: IStore = {} as any;
+    let initialAppState: Store = {} as any;
 
     Object.values(this.services).map((service) => {
       initialAppState = {
@@ -73,20 +73,20 @@ export class AppActionRunner {
     return initialAppState;
   }
 
-  private syncState(state: IStore) {
+  private syncState(state: Store) {
     for (const key in this.services) {
       (this.services as any)[key].setState(state);
     }
   }
 
-  connectServicesToStore(state: UseStore<IStore>) {
+  connectServicesToStore(state: UseStore<Store>) {
     this.syncState(state.getState());
   }
 
   private async merge(stateUpdate: StateUpdate | Promise<StateUpdate>) {
     const update = await stateUpdate;
 
-    return update as PartialState<IStore>;
+    return update as PartialState<Store>;
   }
 
   /**

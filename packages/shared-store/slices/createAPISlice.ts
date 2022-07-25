@@ -1,7 +1,7 @@
 import { GetState, SetState } from "zustand";
 import { APIClient, WebSocketConn } from "@warpy/api";
 import produce from "immer";
-import { IStore } from "../app/Store";
+import { Store } from "../app/Store";
 
 type APISubscriptionParams = {
   onStreamIdAvailable: (id: string) => void;
@@ -18,8 +18,8 @@ export interface IAPISlice {
 let reconnecting_interval: any;
 
 export const createAPISlice = (
-  set: SetState<IStore>,
-  get: GetState<IStore>
+  set: SetState<Store>,
+  get: GetState<Store>
 ): IAPISlice => ({
   api: APIClient(new WebSocketConn()),
   isConnected: false,
@@ -97,7 +97,7 @@ export const createAPISlice = (
       setTimeout(() => {
         if (get().modalCurrent === "stream-invite") {
           set(
-            produce<IStore>((state) => {
+            produce<Store>((state) => {
               if (state.modalInvite?.stream) {
                 state.modalInvite.stream.id = id;
               } else if (state.modalInvite) {

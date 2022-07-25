@@ -1,4 +1,4 @@
-import { IStore } from "../Store";
+import { Store } from "../Store";
 import { AppState } from "../AppState";
 import { Service } from "../Service";
 
@@ -10,7 +10,7 @@ export interface ToastData {
 }
 
 export class ToastService extends Service<ToastData> {
-  constructor(state: IStore | AppState) {
+  constructor(state: Store | AppState) {
     super(state);
   }
 

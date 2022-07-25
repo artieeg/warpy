@@ -7,7 +7,7 @@ import { Service } from "../Service";
 import { StateUpdate, MediaStreamMap } from "../types";
 import { Device, detectDevice } from "mediasoup-client";
 import { AppState } from "../AppState";
-import { IStore } from "../Store";
+import { Store } from "../Store";
 
 export interface MediaData {
   recvDevice: Device;
@@ -37,7 +37,7 @@ export interface MediaData {
 }
 
 export class MediaService extends Service<MediaData> {
-  constructor(state: IStore | AppState) {
+  constructor(state: Store | AppState) {
     super(state);
   }
 

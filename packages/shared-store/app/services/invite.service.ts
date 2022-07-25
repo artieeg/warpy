@@ -1,6 +1,6 @@
 import { InviteStates, InviteSent, User } from "@warpy/lib";
 import { container } from "../../container";
-import { IStore } from "../Store";
+import { Store } from "../Store";
 import { AppState } from "../AppState";
 import { ModalService } from "./modal.service";
 import { Service } from "../Service";
@@ -14,7 +14,7 @@ export interface InviteData {
 export class InviteService extends Service<InviteData> {
   private modal: ModalService;
 
-  constructor(state: IStore | AppState) {
+  constructor(state: Store | AppState) {
     super(state);
 
     this.modal = new ModalService(state);

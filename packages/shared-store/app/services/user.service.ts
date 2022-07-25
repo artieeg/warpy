@@ -3,7 +3,7 @@ import { AppState } from "../AppState";
 import { MediaService } from "./media.service";
 import { Service } from "../Service";
 import { ToastService } from "./toast.service";
-import { IStore } from "@app/store";
+import { Store } from "@app/store";
 
 type UserList = {
   page: number;
@@ -33,7 +33,7 @@ export class UserService extends Service<UserData> {
   private toast: ToastService;
   private media: MediaService;
 
-  constructor(state: IStore | AppState) {
+  constructor(state: Store | AppState) {
     super(state);
 
     this.toast = new ToastService(this.state);

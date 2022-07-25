@@ -3,13 +3,13 @@ import { View, StyleSheet } from "react-native";
 import { NextPageContext } from "next";
 import Head from "next/head";
 import { runNATSRequest } from "../../modules/comms";
-import { IStore } from "@warpy/store";
+import { Store } from "@warpy/store";
 import { StreamContent } from "../../modules/stream/content";
 
 type StreamProps = {
   rid: string;
   id: string;
-  initialStore: IStore;
+  initialStore: Store;
 };
 
 export default function Stream({ initialStore, id, rid }: StreamProps) {
@@ -34,7 +34,7 @@ export async function getServerSideProps(context: NextPageContext) {
     stream: streamId,
   });
 
-  const store: Partial<IStore> = {
+  const store: Partial<Store> = {
     stream: stream.id,
     title: stream.title,
   };

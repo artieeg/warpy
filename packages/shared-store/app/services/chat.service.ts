@@ -1,5 +1,5 @@
 import { ChatMessage } from "@warpy/lib";
-import { IStore } from "../Store";
+import { Store } from "../Store";
 import { AppState } from "../AppState";
 import { Service } from "../Service";
 
@@ -9,7 +9,7 @@ export interface ChatData {
 }
 
 export class ChatService extends Service<ChatData> {
-  constructor(state: IStore | AppState) {
+  constructor(state: Store | AppState) {
     super(state);
   }
 

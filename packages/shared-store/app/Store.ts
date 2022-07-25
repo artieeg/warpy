@@ -15,7 +15,7 @@ import {
   AwardData,
 } from "./services";
 
-export interface IStore
+export interface Store
   extends AppInviteData,
     ChatData,
     FeedData,
@@ -29,6 +29,6 @@ export interface IStore
     UserData,
     IAPISlice,
     AppActionDispatcher {
-  set: SetState<IStore>;
-  get: GetState<IStore>;
+  set: SetState<Store>;
+  get: GetState<Store>;
 }

@@ -1,5 +1,5 @@
 import produce from "immer";
-import { IStore } from "./Store";
+import { Store } from "./Store";
 import { StateUpdate } from "./types";
 
 /**
@@ -10,9 +10,9 @@ import { StateUpdate } from "./types";
  * */
 export class AppState {
   private diff: StateUpdate;
-  private state: IStore;
+  private state: Store;
 
-  constructor(state: IStore) {
+  constructor(state: Store) {
     this.state = { ...state };
     this.diff = {};
   }
@@ -21,12 +21,12 @@ export class AppState {
     return this.state;
   }
 
-  set(state: IStore) {
+  set(state: Store) {
     this.state = { ...state };
     this.diff = {};
   }
 
-  update(update: Partial<IStore> | ((draft: IStore) => void)) {
+  update(update: Partial<Store> | ((draft: Store) => void)) {
     if (typeof update === "object") {
       this.state = { ...this.state, ...update };
       this.diff = { ...this.diff, ...update };

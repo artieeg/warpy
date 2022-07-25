@@ -2,7 +2,7 @@ import create, { UseStore } from "zustand";
 import { container } from "./container";
 import { AppActionRunner } from "./AppActionRunner";
 import { createDispatcher } from "./dispatch";
-import { IStore } from "./app/Store";
+import { Store } from "./app/Store";
 import { createAPISlice } from "./slices/createAPISlice";
 
 interface Selectors<StoreType> {
@@ -12,12 +12,12 @@ interface Selectors<StoreType> {
 }
 
 type StoreConfig = {
-  data?: Partial<IStore>;
+  data?: Partial<Store>;
   dependencies?: typeof container;
 };
 
 export let runner: AppActionRunner;
-let state: UseStore<IStore>;
+let state: UseStore<Store>;
 
 export const createNewStore = (config: StoreConfig) => {
   if (config.dependencies) {
@@ -28,7 +28,7 @@ export const createNewStore = (config: StoreConfig) => {
     container.saveReaction = saveReaction;
   }
 
-  state = create<IStore>((set, get): IStore => {
+  state = create<Store>((set, get): Store => {
     runner = new AppActionRunner(set, get);
 
     const initialState = runner.initServices();

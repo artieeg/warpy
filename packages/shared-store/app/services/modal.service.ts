@@ -1,7 +1,7 @@
 import { AppState } from "../AppState";
 import { UserBase, Bot, Invite } from "@warpy/lib";
 import { Service } from "../Service";
-import { IStore } from "../Store";
+import { Store } from "../Store";
 
 export type OpenModalParams = {
   selectedUser?: UserBase;
@@ -38,7 +38,7 @@ export interface ModalData {
 }
 
 export class ModalService extends Service<ModalData> {
-  constructor(state: AppState | IStore) {
+  constructor(state: AppState | Store) {
     super(state);
   }
 

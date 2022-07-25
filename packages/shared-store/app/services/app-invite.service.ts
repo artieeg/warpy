@@ -1,5 +1,5 @@
 import { AppInvite } from "@warpy/lib";
-import { IStore } from "../Store";
+import { Store } from "../Store";
 import { AppState } from "../AppState";
 import { Service } from "../Service";
 
@@ -8,7 +8,7 @@ export interface AppInviteData {
 }
 
 export class AppInviteService extends Service<AppInviteData> {
-  constructor(state: IStore | AppState) {
+  constructor(state: Store | AppState) {
     super(state);
   }
 

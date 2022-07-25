@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {createNewStore, IStore} from '@warpy/store';
+import {createNewStore, Store} from '@warpy/store';
 import {useCallback} from 'react';
 import {mediaDevices} from 'react-native-webrtc';
 import {StateSelector} from 'zustand';
@@ -22,7 +22,7 @@ export const useStore = createNewStore({
   },
 });
 
-export function useStoreShallow<U>(selector: StateSelector<IStore, U>) {
+export function useStoreShallow<U>(selector: StateSelector<Store, U>) {
   return useStore(useCallback(selector, []), shallow);
 }
 

@@ -1,4 +1,4 @@
-import { IStore } from "../Store";
+import { Store } from "../Store";
 import { AppState } from "../AppState";
 import { Service } from "../Service";
 import { ModalService } from "./modal.service";
@@ -44,7 +44,7 @@ export class StreamService extends Service<StreamData> {
   private media: MediaService;
   private invite: InviteService;
 
-  constructor(state: IStore | AppState) {
+  constructor(state: Store | AppState) {
     super(state);
 
     this.modal = new ModalService(this.state);

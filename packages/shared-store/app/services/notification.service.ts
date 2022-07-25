@@ -1,6 +1,6 @@
 import { Notification } from "@warpy/lib";
 import { AppState } from "../AppState";
-import { IStore } from "../Store";
+import { Store } from "../Store";
 import { Service } from "../Service";
 
 export interface NotificationData {
@@ -10,7 +10,7 @@ export interface NotificationData {
 }
 
 export class NotificationService extends Service<NotificationData> {
-  constructor(state: AppState | IStore) {
+  constructor(state: AppState | Store) {
     super(state);
   }
 
