@@ -1,9 +1,9 @@
 import { Roles, UserList } from "@warpy/lib";
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
-import { MediaService } from "../media";
+import { MediaService } from "./media.service";
 import { Service } from "../Service";
-import { ToastService } from "../toast";
+import { ToastService } from "./toast.service";
 
 export class UserService extends Service {
   private toast: ToastService;

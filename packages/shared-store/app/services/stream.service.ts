@@ -1,11 +1,11 @@
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
 import { Service } from "../Service";
-import { ModalService } from "../modal";
-import { MediaService } from "../media";
+import { ModalService } from "./modal.service";
+import { MediaService } from "./media.service";
 import { Participant } from "@warpy/lib";
 import { arrayToMap } from "../utils";
-import { InviteService } from "../invite";
+import { InviteService } from "./invite.service";
 
 export class StreamService extends Service {
   private modal: ModalService;

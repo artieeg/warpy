@@ -2,7 +2,7 @@ import { InviteStates, InviteSent } from "@warpy/lib";
 import { container } from "../../container";
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
-import { ModalService } from "../modal";
+import { ModalService } from "./modal.service";
 import { Service } from "../Service";
 
 export class InviteService extends Service {

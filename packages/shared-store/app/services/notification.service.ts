@@ -1,4 +1,4 @@
-import { INotification } from "@warpy/lib";
+import { Notification } from "@warpy/lib";
 import { AppState } from "../AppState";
 import { IStore } from "../../useStore";
 import { Service } from "../Service";
@@ -8,7 +8,7 @@ export class NotificationService extends Service {
     super(state);
   }
 
-  addNewNotification(notification: INotification) {
+  addNewNotification(notification: Notification) {
     return this.state.update((state) => {
       state.notifications = [notification, ...state.notifications];
     });
