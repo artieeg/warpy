@@ -56,22 +56,6 @@ export const NewStream = () => {
 };
 
 const styles = StyleSheet.create({
-  localStream: {
-    backgroundColor: '#303030',
-  },
-  allowSpeaking: {
-    position: 'absolute',
-    bottom: 90,
-    left: 0,
-    right: 0,
-  },
-  startStreamButton: {
-    position: 'absolute',
-    bottom: 20,
-    left: 20,
-    right: 20,
-    height: 70,
-  },
   wrapper: {
     flex: 1,
     backgroundColor: '#303030',

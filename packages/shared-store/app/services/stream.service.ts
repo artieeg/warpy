@@ -236,10 +236,12 @@ export class StreamService extends Service {
     return this.state.getStateDiff();
   }
 
-  async create() {
+  async *create() {
     const { newStreamCategory, api, title, user } = this.state.get();
 
-    console.log({ newStreamCategory });
+    yield this.state.update({
+      isStartingNewStream: true,
+    });
 
     if (!title || !newStreamCategory) {
       throw new Error("title or category");
@@ -291,7 +293,9 @@ export class StreamService extends Service {
       sendMediaParams,
     });
 
-    return this.state.getStateDiff();
+    yield this.state.update({
+      isStartingNewStream: false,
+    });
   }
 
   async reassign(newHostId: string) {

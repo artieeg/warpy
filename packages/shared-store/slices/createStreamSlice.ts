@@ -7,6 +7,7 @@ export interface IStreamSlice {
   currentStreamHost: string;
   newStreamCategory: StreamCategory | null;
   selectedFeedCategory: StreamCategory | null;
+  isStartingNewStream: boolean;
 }
 
 export const createStreamSlice: StoreSlice<IStreamSlice> = () => ({
@@ -14,5 +15,6 @@ export const createStreamSlice: StoreSlice<IStreamSlice> = () => ({
   currentStreamHost: "",
   title: "",
   newStreamCategory: null,
+  isStartingNewStream: false,
   selectedFeedCategory: null,
 });

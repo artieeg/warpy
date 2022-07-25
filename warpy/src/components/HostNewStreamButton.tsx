@@ -1,20 +1,30 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import {ActivityIndicator, StyleSheet, View} from 'react-native';
 import {IconButton} from './IconButton';
-import {useDispatcher} from '@app/store';
+import {useDispatcher, useStore} from '@app/store';
 import {colors} from '../../colors';
 
 export const HostNewStreamButton = () => {
+  const isStarting = useStore(state => state.isStartingNewStream);
+
   const dispatch = useDispatcher();
 
-  return (
-    <IconButton
-      name="plus"
-      size={24}
-      style={styles.button}
-      onPress={() => dispatch(({stream}) => stream.create())}
-    />
-  );
+  if (isStarting) {
+    return (
+      <View style={styles.button}>
+        <ActivityIndicator size="small" color={colors.black} />
+      </View>
+    );
+  } else {
+    return (
+      <IconButton
+        name="plus"
+        size={24}
+        style={styles.button}
+        onPress={() => dispatch(({stream}) => stream.create())}
+      />
+    );
+  }
 };
 
 const styles = StyleSheet.create({
@@ -23,5 +33,7 @@ const styles = StyleSheet.create({
     width: 50,
     borderRadius: 25,
     backgroundColor: colors.green,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
