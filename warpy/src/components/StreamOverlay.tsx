@@ -33,6 +33,10 @@ export const StreamOverlay = () => {
   const opacity = useRef(new Animated.Value(1));
 
   useEffect(() => {
+    console.log({role});
+  }, [role]);
+
+  useEffect(() => {
     Animated.timing(opacity.current, {
       toValue: isVisible ? 1 : 0,
       duration: 200,

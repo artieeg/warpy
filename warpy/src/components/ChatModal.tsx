@@ -8,7 +8,7 @@ import {ChatMessageInput} from './ChatMessageInput';
 interface IChatModalOptions extends IBaseModalProps {}
 
 export const ChatModal = (props: IChatModalOptions) => {
-  const messages = useStore.use.messages();
+  const messages = useStore(state => state.messages);
 
   const flatListRef = useRef<any>();
   const scrollPositionRef = useRef(0);

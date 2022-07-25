@@ -1,5 +1,5 @@
 import produce from "immer";
-import { IStore } from "../useStore";
+import { IStore } from "./Store";
 import { StateUpdate } from "./types";
 
 /**

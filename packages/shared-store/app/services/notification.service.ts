@@ -3,9 +3,23 @@ import { AppState } from "../AppState";
 import { IStore } from "../../useStore";
 import { Service } from "../Service";
 
-export class NotificationService extends Service {
+export interface NotificationData {
+  notifications: Notification[];
+  hasUnseenNotifications: boolean;
+  notificationPage: number;
+}
+
+export class NotificationService extends Service<NotificationData> {
   constructor(state: AppState | IStore) {
     super(state);
+  }
+
+  getInitialState() {
+    return {
+      notifications: [],
+      notificationPage: 0,
+      hasUnseenNotifications: false,
+    };
   }
 
   addNewNotification(notification: Notification) {

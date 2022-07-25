@@ -27,9 +27,31 @@ export type Modal =
   | "bot-confirm"
   | "chat";
 
-export class ModalService extends Service {
+export interface ModalData {
+  modalCurrent: Modal | null;
+  modalSelectedUser: UserBase | null;
+  modalInvite: Invite | null;
+  modalBotConfirmData: Bot | null;
+  modalCloseAfterHostReassign: boolean;
+  modalBotConfirmId: string | null;
+  modalUserToAward: UserBase | null;
+}
+
+export class ModalService extends Service<ModalData> {
   constructor(state: AppState | IStore) {
     super(state);
+  }
+
+  getInitialState() {
+    return {
+      modalCurrent: null,
+      modalSelectedUser: null,
+      modalInvite: null,
+      modalBotConfirmData: null,
+      modalBotConfirmId: null,
+      modalUserToAward: null,
+      modalCloseAfterHostReassign: false,
+    };
   }
 
   open(modal: Modal, params?: OpenModalParams) {

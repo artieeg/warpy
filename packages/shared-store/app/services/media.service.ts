@@ -1,17 +1,70 @@
 import { Participant } from "@warpy/lib";
+import { Transport, Producer } from "mediasoup-client/lib/types";
 import { Roles, MediaKind } from "@warpy/lib";
 import { MediaClient } from "@warpy/media";
 import { container } from "../../container";
-import { IStore } from "../../useStore";
-import { AppState } from "../AppState";
 import { Service } from "../Service";
 import { StateUpdate, MediaStreamMap } from "../types";
+import { Device, detectDevice } from "mediasoup-client";
+import { AppState } from "../AppState";
+import { IStore } from "../Store";
 
-type Transport = any;
+export interface MediaData {
+  recvDevice: Device;
+  sendDevice: Device;
+  mediaClient?: MediaClient;
+  video?: {
+    stream: any;
+    track: any;
+    producer?: Producer;
+  };
+  audio?: {
+    stream: any;
+    track: any;
+    producer?: Producer;
+  };
+  audioEnabled: boolean;
+  videoEnabled: boolean;
 
-export class MediaService extends Service {
+  sendTransport: Transport | null;
+  recvTransport: Transport | null;
+
+  videoStreams: MediaStreamMap;
+  audioStreams: MediaStreamMap;
+
+  /**
+   * Mediasoup recv params
+   */
+  recvMediaParams?: any;
+
+  /**
+   * Mediasoup send params
+   */
+  sendMediaParams?: any;
+
+  /**
+   * Stores audio/video streaming permissions
+   * */
+  mediaPermissionsToken: string | null;
+}
+
+export class MediaService extends Service<MediaData> {
   constructor(state: IStore | AppState) {
     super(state);
+  }
+
+  getInitialState() {
+    return {
+      recvDevice: new Device({ handlerName: detectDevice() }),
+      sendDevice: new Device({ handlerName: detectDevice() }),
+      audioStreams: {},
+      videoStreams: {},
+      sendTransport: null,
+      mediaPermissionsToken: null,
+      audioEnabled: false,
+      videoEnabled: false,
+      recvTransport: null,
+    };
   }
 
   async initSendMedia({
@@ -124,11 +177,15 @@ export class MediaService extends Service {
     let media = this.state.get()[kind];
 
     if (!media) {
+      console.log("requesting media", kind);
+
       await this.requestMediaStream(kind, {
         enabled: !!streamMediaImmediately,
       });
 
       media = this.state.get()[kind];
+
+      console.log("media reuslt", media);
     }
 
     const producer = await mediaClient.sendMediaStream(
@@ -390,21 +447,21 @@ export class MediaService extends Service {
     }
 
     if (kind === "video") {
-      return {
+      return this.state.update({
         videoEnabled: !!params?.enabled,
         video: {
           stream: mediaStream,
           track: mediaStream.getVideoTracks()[0],
         },
-      };
+      });
     } else {
-      return {
+      return this.state.update({
         audioEnabled: !!params?.enabled,
         audio: {
           stream: mediaStream,
           track: mediaStream.getAudioTracks()[0],
         },
-      };
+      });
     }
   }
 

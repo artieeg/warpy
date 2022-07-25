@@ -3,7 +3,7 @@ import {StyleSheet, TouchableOpacity} from 'react-native';
 import {User, UserList} from '@warpy/lib';
 import {UserGeneralInfo} from './UserGeneralInfo';
 import {SmallTextButton} from './SmallTextButton';
-import {useStore} from '@app/store';
+import {useDispatcher, useStore} from '@app/store';
 import {useNavigation} from '@react-navigation/native';
 
 interface BaseUserListItemProps {
@@ -15,23 +15,19 @@ interface ActionProps {
   user: User;
 }
 
-const FollowingItemAction = ({user}: ActionProps) => {
-  const [isFollowing, dispatchFollowingAdd, dispatchFollowingRemove] = useStore(
-    state => [
-      state.following.includes(user.id),
-      state.dispatchFollowingAdd,
-      state.dispatchFollowingRemove,
-    ],
-  );
+const FollowingItemAction = ({user: {id}}: ActionProps) => {
+  const dispatch = useDispatcher();
+
+  const [isFollowing] = useStore(state => [state.following.includes(id)]);
 
   return (
     <SmallTextButton
       title={isFollowing ? 'unfollow' : 'follow'}
       onPress={() => {
         if (!isFollowing) {
-          dispatchFollowingAdd(user.id);
+          dispatch(({user}) => user.follow(id));
         } else {
-          dispatchFollowingRemove(user.id);
+          dispatch(({user}) => user.unfollow(id));
         }
       }}
     />
@@ -40,7 +36,7 @@ const FollowingItemAction = ({user}: ActionProps) => {
 
 const BlockItemAction = ({user}: ActionProps) => {
   const [isBlocked, setBlocked] = useState(true);
-  const api = useStore.use.api();
+  const api = useStore(state => state.api);
 
   const mounted = useRef(false);
 

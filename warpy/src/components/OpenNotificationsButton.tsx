@@ -13,7 +13,9 @@ import {IRoundButtonProps, RoundButton} from './RoundButton';
 export const OpenNotificationsButton = (props: IRoundButtonProps) => {
   const {style} = props;
 
-  const hasUnseenNotifications = useStore.use.hasUnseenNotifications();
+  const hasUnseenNotifications = useStore(
+    state => state.hasUnseenNotifications,
+  );
 
   const rotation = useSharedValue(0);
 

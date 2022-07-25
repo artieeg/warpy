@@ -1,7 +1,7 @@
 import { GetState, SetState } from "zustand";
 import { APIClient, WebSocketConn } from "@warpy/api";
-import { IStore } from "../useStore";
 import produce from "immer";
+import { IStore } from "../app/Store";
 
 type APISubscriptionParams = {
   onStreamIdAvailable: (id: string) => void;
@@ -55,10 +55,6 @@ export const createAPISlice = (
   },
   createAPISubscriptions: ({ onStreamIdAvailable, onStreamEnd }) => {
     const { api, dispatch } = get();
-
-    api.awards.onNewAward(({ award }) => {
-      get().dispatchAwardDisplayQueueAppend(award);
-    });
 
     api.stream.onInviteStateUpdate((data) => {
       dispatch(({ invite }) =>

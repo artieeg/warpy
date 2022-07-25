@@ -3,9 +3,21 @@ import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
 import { Service } from "../Service";
 
-export class ChatService extends Service {
+export interface ChatData {
+  messageInputValue: string;
+  messages: ChatMessage[];
+}
+
+export class ChatService extends Service<ChatData> {
   constructor(state: IStore | AppState) {
     super(state);
+  }
+
+  getInitialState() {
+    return {
+      messageInputValue: "",
+      messages: [],
+    };
   }
 
   setMessageInput(messageInputValue: string) {

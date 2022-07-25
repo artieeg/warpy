@@ -3,11 +3,43 @@ import { AppState } from "../AppState";
 import { Service } from "../Service";
 import { ModalService } from "./modal.service";
 import { MediaService } from "./media.service";
-import { Participant } from "@warpy/lib";
+import { Participant, reactionCodes, StreamCategory } from "@warpy/lib";
 import { arrayToMap } from "../utils";
 import { InviteService } from "./invite.service";
 
-export class StreamService extends Service {
+export interface StreamData {
+  stream: string | null;
+  title: string | null;
+  currentStreamHost: string;
+  newStreamCategory: StreamCategory | null;
+  selectedFeedCategory: StreamCategory | null;
+  userAudioLevels: Record<string, number>;
+  isStartingNewStream: boolean;
+  reaction: string;
+
+  /** Stores latest fetched viewers page*/
+  latestViewersPage: number;
+
+  /**
+   * Initialized after joining.
+   * Updates once a new user joins or leaves the stream
+   * */
+  totalParticipantCount: number;
+
+  isFetchingViewers: boolean;
+
+  unseenRaisedHands: number;
+
+  /** Stream viewers */
+  viewers: Record<string, Participant>;
+
+  /** Users sending audio/video streams */
+  streamers: Record<string, Participant>;
+
+  viewersWithRaisedHands: Record<string, Participant>;
+}
+
+export class StreamService extends Service<StreamData> {
   private modal: ModalService;
   private media: MediaService;
   private invite: InviteService;
@@ -18,6 +50,26 @@ export class StreamService extends Service {
     this.modal = new ModalService(this.state);
     this.media = new MediaService(this.state);
     this.invite = new InviteService(this.state);
+  }
+
+  getInitialState() {
+    return {
+      stream: null,
+      userAudioLevels: {},
+      currentStreamHost: "",
+      title: "",
+      newStreamCategory: null,
+      isStartingNewStream: false,
+      selectedFeedCategory: null,
+      reaction: reactionCodes[0],
+      latestViewersPage: -1,
+      unseenRaisedHands: 0,
+      isFetchingViewers: false,
+      totalParticipantCount: 0,
+      viewersWithRaisedHands: {},
+      streamers: {},
+      viewers: {},
+    };
   }
 
   changeReaction(reaction: string) {

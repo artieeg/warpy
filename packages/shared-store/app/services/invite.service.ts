@@ -1,17 +1,31 @@
-import { InviteStates, InviteSent } from "@warpy/lib";
+import { InviteStates, InviteSent, User } from "@warpy/lib";
 import { container } from "../../container";
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
 import { ModalService } from "./modal.service";
 import { Service } from "../Service";
 
-export class InviteService extends Service {
+export interface InviteData {
+  pendingInviteUserIds: string[];
+  inviteSuggestions: User[];
+  sentInvites: Record<string, InviteSent>;
+}
+
+export class InviteService extends Service<InviteData> {
   private modal: ModalService;
 
   constructor(state: IStore | AppState) {
     super(state);
 
     this.modal = new ModalService(state);
+  }
+
+  getInitialState() {
+    return {
+      pendingInviteUserIds: [],
+      inviteSuggestions: [],
+      sentInvites: {},
+    };
   }
 
   async updateStateOfSentInvite(invite: string, state: InviteStates) {

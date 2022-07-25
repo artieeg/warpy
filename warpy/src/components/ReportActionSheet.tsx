@@ -7,7 +7,7 @@ interface IReportActionSheetProps extends Omit<IActionSheetProps, 'actions'> {}
 
 export const ReportActionSheet = (props: IReportActionSheetProps) => {
   const user = useStore(state => state.modalSelectedUser);
-  const api = useStore.use.api();
+  const api = useStore(state => state.api);
 
   return (
     <ActionSheet

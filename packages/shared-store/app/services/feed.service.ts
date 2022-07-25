@@ -1,11 +1,25 @@
-import { StreamCategory } from "@warpy/lib";
-import { IStore } from "../../useStore";
-import { AppState } from "../AppState";
+import { Candidate, Stream, StreamCategory } from "@warpy/lib";
 import { Service } from "../Service";
 
-export class FeedService extends Service {
-  constructor(state: IStore | AppState) {
-    super(state);
+export interface FeedData {
+  selectedCategoryIds: string[];
+  latestFeedPage: number;
+  feed: Candidate[];
+  previousStreamData: Stream | null;
+  isFeedLoading: boolean;
+  categories: StreamCategory[];
+}
+
+export class FeedService extends Service<FeedData> {
+  getInitialState() {
+    return {
+      latestFeedPage: 0,
+      isFeedLoading: false,
+      previousStreamData: null,
+      feed: [],
+      selectedCategoryIds: [],
+      categories: [],
+    };
   }
 
   async *fetchFeedPage(params?: { refresh?: boolean }) {

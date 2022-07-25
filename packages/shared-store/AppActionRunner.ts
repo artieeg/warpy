@@ -1,6 +1,5 @@
 import { GetState, PartialState, SetState, UseStore } from "zustand";
 import { StateUpdate, StreamedStateUpdate } from "./app/types";
-import { IStore } from "./useStore";
 import {
   ChatService,
   StreamService,
@@ -12,7 +11,9 @@ import {
   NotificationService,
   ToastService,
   UserService,
+  AwardService,
 } from "./app";
+import { IStore } from "./app/Store";
 
 /**
  * Connects app layer with zustand store
@@ -45,6 +46,7 @@ export class AppActionRunner {
       notification: new NotificationService(this.get()),
       toast: new ToastService(this.get()),
       user: new UserService(this.get()),
+      awards: new AwardService(this.get()),
     };
   }
 
@@ -56,8 +58,19 @@ export class AppActionRunner {
     return this.services!;
   }
 
-  initServices() {
+  initServices(): IStore {
     this.services = this._initServices();
+
+    let initialAppState: IStore = {} as any;
+
+    Object.values(this.services).map((service) => {
+      initialAppState = {
+        ...initialAppState,
+        ...service.getInitialState(),
+      };
+    });
+
+    return initialAppState;
   }
 
   private syncState(state: IStore) {

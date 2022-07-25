@@ -1,11 +1,35 @@
-import { Roles, UserList } from "@warpy/lib";
-import { IStore } from "../../useStore";
+import { FriendFeedItem, Roles, User, UserBase } from "@warpy/lib";
 import { AppState } from "../AppState";
 import { MediaService } from "./media.service";
 import { Service } from "../Service";
 import { ToastService } from "./toast.service";
+import { IStore } from "@app/store";
 
-export class UserService extends Service {
+type UserList = {
+  page: number;
+  list: User[];
+};
+
+export interface UserData {
+  user: UserBase | null;
+  role: Roles | null;
+  isLoadingUser: boolean;
+  exists: boolean;
+  following: string[];
+  isRaisingHand: boolean;
+  hasActivatedAppInvite: boolean;
+  userSearchResult: User[];
+  isSearchingUsers: boolean;
+  list_blocked: UserList;
+  list_following: UserList;
+  list_followers: UserList;
+  signUpName: string;
+  signUpUsername: string;
+  signUpAvatar: string;
+  friendFeed: FriendFeedItem[];
+}
+
+export class UserService extends Service<UserData> {
   private toast: ToastService;
   private media: MediaService;
 
@@ -14,6 +38,36 @@ export class UserService extends Service {
 
     this.toast = new ToastService(this.state);
     this.media = new MediaService(this.state);
+  }
+
+  getInitialState() {
+    return {
+      isRaisingHand: false,
+      user: null,
+      role: null,
+      isLoadingUser: true,
+      exists: false,
+      friendFeed: [],
+      following: [],
+      signUpName: "",
+      signUpUsername: "",
+      signUpAvatar: "",
+      hasActivatedAppInvite: false,
+      userSearchResult: [],
+      isSearchingUsers: false,
+      list_blocked: {
+        page: 0,
+        list: [],
+      },
+      list_followers: {
+        page: 0,
+        list: [],
+      },
+      list_following: {
+        page: 0,
+        list: [],
+      },
+    };
   }
 
   async *searchUsers(query: string) {

@@ -1,12 +1,6 @@
 import {Input, ScreenHeader, StreamFeedView} from '@app/components';
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  ActivityIndicator,
-  SectionList,
-  FlatList,
-} from 'react-native';
+import {View, StyleSheet, ActivityIndicator, FlatList} from 'react-native';
 import {useDebounce} from 'use-debounce/lib';
 import {APIClient} from '@warpy/api';
 import {Text} from '@app/components';
@@ -31,7 +25,7 @@ export const useSearchController = () => {
   const [query, setQuery] = useState('');
   const [debounced] = useDebounce(query, 300);
   const [hasResults, setHasResults] = useState<boolean>();
-  const api = useStore.use.api();
+  const api = useStore(state => state.api);
 
   const runSearchRequests = React.useCallback(
     () => search(api, debounced),

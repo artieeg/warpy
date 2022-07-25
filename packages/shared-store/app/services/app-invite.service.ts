@@ -1,10 +1,21 @@
+import { AppInvite } from "@warpy/lib";
 import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
 import { Service } from "../Service";
 
-export class AppInviteService extends Service {
+export interface AppInviteData {
+  appInvite: AppInvite | null;
+}
+
+export class AppInviteService extends Service<AppInviteData> {
   constructor(state: IStore | AppState) {
     super(state);
+  }
+
+  getInitialState() {
+    return {
+      appInvite: null,
+    };
   }
 
   async get() {
