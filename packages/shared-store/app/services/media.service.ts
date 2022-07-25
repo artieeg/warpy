@@ -31,20 +31,8 @@ export interface MediaData {
 
   videoStreams: MediaStreamMap;
   audioStreams: MediaStreamMap;
-
-  /**
-   * Mediasoup recv params
-   */
   recvMediaParams?: any;
-
-  /**
-   * Mediasoup send params
-   */
   sendMediaParams?: any;
-
-  /**
-   * Stores audio/video streaming permissions
-   * */
   mediaPermissionsToken: string | null;
 }
 

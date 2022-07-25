@@ -1,7 +1,7 @@
-import { IStore } from "../../useStore";
 import { AppState } from "../AppState";
 import { UserBase, Bot, Invite } from "@warpy/lib";
 import { Service } from "../Service";
+import { IStore } from "../Store";
 
 export type OpenModalParams = {
   selectedUser?: UserBase;

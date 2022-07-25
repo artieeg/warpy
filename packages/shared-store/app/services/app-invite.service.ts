@@ -1,5 +1,5 @@
 import { AppInvite } from "@warpy/lib";
-import { IStore } from "../../useStore";
+import { IStore } from "../Store";
 import { AppState } from "../AppState";
 import { Service } from "../Service";
 

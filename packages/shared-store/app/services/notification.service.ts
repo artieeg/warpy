@@ -1,6 +1,6 @@
 import { Notification } from "@warpy/lib";
 import { AppState } from "../AppState";
-import { IStore } from "../../useStore";
+import { IStore } from "../Store";
 import { Service } from "../Service";
 
 export interface NotificationData {
