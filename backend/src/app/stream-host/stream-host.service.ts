@@ -15,7 +15,7 @@ export class HostService {
   constructor(
     private timerService: TimerService,
     private hostStore: HostStore,
-    private eventEmitter: EventEmitter2,
+    private events: EventEmitter2,
     private user: UserStore,
     private participantStore: ParticipantStore,
   ) {}
@@ -54,7 +54,7 @@ export class HostService {
    * */
   private async setStreamHost(stream: string, host: Participant) {
     await this.hostStore.setStreamHost(host);
-    this.eventEmitter.emit(EVENT_HOST_REASSIGN, {
+    this.events.emit(EVENT_HOST_REASSIGN, {
       stream,
       host,
     });
@@ -118,7 +118,7 @@ export class HostService {
       ]);
 
       if (!newHost) {
-        this.eventEmitter.emit(EVENT_HOST_REASSIGN_FAILED, {
+        this.events.emit(EVENT_HOST_REASSIGN_FAILED, {
           stream: stream,
         });
       } else {
@@ -148,6 +148,6 @@ export class HostService {
       this.hostStore.setStreamHost(host),
     ]);
 
-    this.eventEmitter.emit(EVENT_NEW_PARTICIPANT, { participant: host });
+    this.events.emit(EVENT_NEW_PARTICIPANT, { participant: host });
   }
 }

@@ -1,7 +1,6 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { BotInstanceStore, ParticipantStore } from '@warpy-be/app';
 import { UserService } from '../user';
-import { MediaService } from '../media';
 import { Participant } from '@warpy/lib';
 import {
   MaxVideoStreamers,
@@ -12,6 +11,7 @@ import {
   EVENT_NEW_PARTICIPANT,
   EVENT_PARTICIPANT_KICKED,
   EVENT_PARTICIPANT_LEAVE,
+  EVENT_PARTICIPANT_REJOIN,
   EVENT_RAISE_HAND,
   EVENT_STREAMER_MEDIA_TOGGLE,
 } from '@warpy-be/utils';
@@ -23,16 +23,56 @@ export class ParticipantService {
     private botInstanceStore: BotInstanceStore,
     private events: EventEmitter2,
     private user: UserService,
-    private media: MediaService,
     private streamBanStore: StreamBanStore,
   ) {}
 
-  async createNewParticipant(stream: string, userId: string) {
-    const { recvMediaParams, token } = await this.media.getViewerParams(
-      userId,
-      stream,
-    );
+  async get(id: string) {
+    const data = await this.participantStore.get(id);
 
+    if (!data) {
+      throw new UserNotFound();
+    }
+
+    return data;
+  }
+
+  async rejoinOldParticipant(data: Participant) {
+    await this.participantStore.setDeactivated(data.id, data.stream, false);
+
+    this.events.emit(EVENT_PARTICIPANT_REJOIN, {
+      participant: data,
+    });
+  }
+
+  async createBotParticipant(
+    bot: string,
+    stream: string,
+  ): Promise<Participant> {
+    const botInstance = await this.botInstanceStore.create(bot, stream);
+
+    const botParticipant: Participant = {
+      ...botInstance,
+      stream,
+      audioEnabled: false,
+      videoEnabled: false,
+      role: 'streamer',
+      isBanned: false,
+      isBot: true,
+    };
+
+    await this.participantStore.add(botParticipant);
+
+    this.events.emit(EVENT_NEW_PARTICIPANT, {
+      participant: botParticipant,
+    });
+
+    return botParticipant;
+  }
+
+  async createNewParticipant(
+    stream: string,
+    userId: string,
+  ): Promise<Participant> {
     const user = await this.user.findById(userId);
     const viewer: Participant = {
       ...user,
@@ -46,7 +86,7 @@ export class ParticipantService {
 
     this.events.emit(EVENT_NEW_PARTICIPANT, { participant: viewer });
 
-    return { mediaPermissionsToken: token, recvMediaParams };
+    return viewer;
   }
 
   async getViewers(stream: string, page: number) {

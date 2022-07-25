@@ -33,7 +33,6 @@ export * from './sync';
 export * from './notification';
 export * from './active-speaker';
 export * from './online-status';
-export * from './bot-instance';
 export * from './participant';
 export * from './stream-host';
 export * from './participant-role';

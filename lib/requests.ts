@@ -243,7 +243,7 @@ export interface RequestMediaToggle {
   audioEnabled?: boolean;
 }
 
-export interface RequesJoinBot {
+export interface RequestJoinBot {
   user: string;
   inviteDetailsToken: string;
 }

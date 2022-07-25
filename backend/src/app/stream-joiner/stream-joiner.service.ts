@@ -1,12 +1,5 @@
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { BannedFromStreamError } from '@warpy-be/errors';
-import {
-  EVENT_NEW_PARTICIPANT,
-  EVENT_PARTICIPANT_REJOIN,
-} from '@warpy-be/utils';
-import { JoinStreamResponse, Participant, Roles } from '@warpy/lib';
-import { ParticipantStore } from '@warpy-be/app';
-import { BotInstanceService } from '../bot-instance';
+import { JoinStreamResponse, Roles } from '@warpy/lib';
 import { MediaService } from '../media';
 import { ParticipantService } from '../participant';
 import { HostService } from '../stream-host';
@@ -19,9 +12,6 @@ import { TokenService } from '../token';
 export class StreamJoinerService {
   constructor(
     private participant: ParticipantService,
-    private participantStore: ParticipantStore,
-    private botInstanceService: BotInstanceService,
-    private events: EventEmitter2,
     private media: MediaService,
     private host: HostService,
     private tokenService: TokenService,
@@ -29,43 +19,29 @@ export class StreamJoinerService {
 
   async joinBot(bot: string, inviteToken: string) {
     const { stream } = this.tokenService.decodeToken(inviteToken);
-    const botInstance = await this.botInstanceService.createBotInstance(
+
+    const botParticipant = await this.participant.createBotParticipant(
       bot,
-      inviteToken,
+      stream,
     );
 
-    const { token: mediaPermissionToken } = await this.media.getBotToken(
-      stream,
-      botInstance.id,
-    );
+    const { id } = botParticipant;
 
-    const botParticipant: Participant = {
-      ...botInstance,
-      stream,
-      audioEnabled: false,
-      videoEnabled: false,
-      role: 'streamer',
-      isBanned: false,
-      isBot: true,
-    };
-
-    const [sendMedia, recvMedia] = await Promise.all([
-      this.media.createSendTransport({
-        speaker: botInstance.id,
-        roomId: stream,
-      }),
-      this.media.getBotParams(bot, stream),
-      this.participantStore.add(botParticipant),
-    ]);
-
-    this.events.emit(EVENT_NEW_PARTICIPANT, {
-      participant: botParticipant,
+    const {
+      token: mediaPermissionToken,
+      sendMediaParams,
+      recvMediaParams,
+    } = await this.media.getStreamerParams({
+      user: id,
+      roomId: stream,
+      audio: true,
+      video: true,
     });
 
     return {
       mediaPermissionToken,
-      sendMedia,
-      recvMedia,
+      sendMediaParams,
+      recvMediaParams,
     };
   }
 
@@ -78,12 +54,12 @@ export class StreamJoinerService {
     let response: JoinStreamResponse;
 
     const [oldParticipantData, streamData, host] = await Promise.all([
-      this.participantStore.get(user),
+      this.participant.get(user),
       this.participant.getParticipantDataOnStream(stream),
       this.host.getStreamHostId(stream),
     ]);
 
-    const prevStreamId = oldParticipantData?.stream;
+    const prevStreamId = oldParticipantData.stream;
 
     response = {
       ...response,
@@ -94,8 +70,11 @@ export class StreamJoinerService {
 
     //if joining the stream
     if (!oldParticipantData || prevStreamId !== stream) {
-      const { mediaPermissionsToken, recvMediaParams } =
-        await this.participant.createNewParticipant(stream, user);
+      const [{ recvMediaParams, token: mediaPermissionsToken }] =
+        await Promise.all([
+          this.media.getViewerParams(user, stream),
+          this.participant.createNewParticipant(stream, user),
+        ]);
 
       return {
         ...response,
@@ -107,8 +86,7 @@ export class StreamJoinerService {
 
     //If rejoining...
 
-    //Reactivate user, the user will be considered a stream participant again
-    await this.participantStore.setDeactivated(user, prevStreamId, false);
+    await this.participant.rejoinOldParticipant(oldParticipantData);
 
     const { role } = oldParticipantData;
 
@@ -133,10 +111,6 @@ export class StreamJoinerService {
           ? response.streamers
           : [...response.streamers, oldParticipantData],
     };
-
-    this.events.emit(EVENT_PARTICIPANT_REJOIN, {
-      participant: oldParticipantData,
-    });
 
     return response;
   }

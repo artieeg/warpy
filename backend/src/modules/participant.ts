@@ -14,7 +14,11 @@ import {
   EVENT_STREAM_ENDED,
   EVENT_USER_DISCONNECTED,
 } from '@warpy-be/utils';
-import { ParticipantService, ParticipantStore } from '@warpy-be/app';
+import {
+  BotInstanceStore,
+  ParticipantService,
+  ParticipantStore,
+} from '@warpy-be/app';
 import {
   RequestViewers,
   RequestViewersResponse,
@@ -22,11 +26,16 @@ import {
   RequestMediaToggle,
   RequestKickUser,
 } from '@warpy/lib';
-import { MediaModule, NjsMediaService } from './media';
-import { BotInstanceModule, NjsBotInstanceStore } from './bot-instance';
 import { NjsUserService, UserModule } from './user';
 import { StreamBanStore } from '@warpy-be/app/participant/stream-bans.store';
 import { PrismaModule, PrismaService } from './prisma';
+
+@Injectable()
+export class NjsBotInstanceStore extends BotInstanceStore {
+  constructor(prisma: PrismaService) {
+    super(prisma);
+  }
+}
 
 @Injectable()
 export class NjsStreamBanStore extends StreamBanStore {
@@ -56,7 +65,6 @@ export class NjsParticipantService extends ParticipantService {
     botInstanceStore: NjsBotInstanceStore,
     events: EventEmitter2,
     userService: NjsUserService,
-    mediaService: NjsMediaService,
     streamBanStore: NjsStreamBanStore,
   ) {
     super(
@@ -64,7 +72,6 @@ export class NjsParticipantService extends ParticipantService {
       botInstanceStore,
       events,
       userService,
-      mediaService,
       streamBanStore,
     );
   }
@@ -138,8 +145,13 @@ export class ParticipantController implements OnStreamEnd, OnRoleChange {
 }
 
 @Module({
-  imports: [MediaModule, UserModule, BotInstanceModule, PrismaModule],
-  providers: [NjsParticipantStore, NjsParticipantService, NjsStreamBanStore],
+  imports: [UserModule, PrismaModule],
+  providers: [
+    NjsParticipantStore,
+    NjsBotInstanceStore,
+    NjsParticipantService,
+    NjsStreamBanStore,
+  ],
   controllers: [ParticipantController],
   exports: [NjsParticipantStore, NjsParticipantService],
 })
