@@ -19,7 +19,7 @@ import {
   EVENT_PARTICIPANT_LEAVE,
 } from '@warpy-be/utils';
 import { HostService, HostStore } from '@warpy-be/app';
-import { IHostReassignRequest } from '@warpy/lib';
+import { RequestHostReassign } from '@warpy/lib';
 import { NjsTimerService } from '@warpy-be/shared';
 import { NjsUserStore, UserModule } from './user';
 import { NjsParticipantStore } from './participant';
@@ -64,7 +64,7 @@ export class HostController
   ) {}
 
   @MessagePattern('host.reassign')
-  async onHostReassign({ host, user }: IHostReassignRequest) {
+  async onHostReassign({ host, user }: RequestHostReassign) {
     await this.hostService.reassignHost(user, host);
 
     return {

@@ -1,6 +1,6 @@
 import { Controller, Injectable, Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { IFriendFeedRequest } from '@warpy/lib';
+import { RequestFetchFriendFeed } from '@warpy/lib';
 import { FriendFeedService } from '@warpy-be/app';
 import { FollowModule, NjsFollowStore } from './follow';
 import { NjsParticipantStore } from './participant';
@@ -23,7 +23,7 @@ export class FriendFeedController {
   constructor(private friendFeedService: NjsFriendFeedService) {}
 
   @MessagePattern('friend-feed.get')
-  async onGetFriendFeed({ user }: IFriendFeedRequest) {
+  async onGetFriendFeed({ user }: RequestFetchFriendFeed) {
     const feed = await this.friendFeedService.getFriendFeed(user);
 
     return { feed };

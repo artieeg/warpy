@@ -3,11 +3,15 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import { OnNewUser } from '@warpy-be/interfaces';
 import { EVENT_USER_CREATED } from '@warpy-be/utils';
-import { AppliedAppInviteStore, AppInviteService, AppInviteStore } from '@warpy-be/app';
 import {
-  IInviteApplyRequest,
-  IAppInviteResponse,
-  IAppInviteRequest,
+  AppliedAppInviteStore,
+  AppInviteService,
+  AppInviteStore,
+} from '@warpy-be/app';
+import {
+  RequestApplyInvite,
+  AppInviteResponse,
+  RequestAppInvite,
 } from '@warpy/lib';
 import { PrismaService, PrismaModule } from './prisma';
 
@@ -43,12 +47,12 @@ export class AppInviteController implements OnNewUser {
   async applyAppInvite({
     user,
     code,
-  }: IInviteApplyRequest): Promise<{ status: string }> {
+  }: RequestApplyInvite): Promise<{ status: string }> {
     return await this.appInviteService.accept(user, code);
   }
 
   @MessagePattern('app-invite.get.by-id')
-  async getAppInviteById({ id }: { id: string }): Promise<IAppInviteResponse> {
+  async getAppInviteById({ id }: { id: string }): Promise<AppInviteResponse> {
     const invite = await this.appInviteService.getById(id);
 
     return {
@@ -59,7 +63,7 @@ export class AppInviteController implements OnNewUser {
   @MessagePattern('app-invite.get')
   async getAppInvite({
     user_id,
-  }: IAppInviteRequest): Promise<IAppInviteResponse> {
+  }: RequestAppInvite): Promise<AppInviteResponse> {
     const invite = await this.appInviteService.get(user_id);
     console.log({ invite });
 

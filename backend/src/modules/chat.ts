@@ -3,7 +3,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import { NjsUserStore, UserModule } from './user';
 import { ChatService } from '@warpy-be/app';
-import { INewChatMessage, ISendMessageResponse } from '@warpy/lib';
+import { RequestSendChatMessage, SendMessageResponse } from '@warpy/lib';
 import { NjsParticipantStore } from './participant';
 import { NjsUserBlockService, UserBlockModule } from './user-block';
 
@@ -27,7 +27,7 @@ export class ChatController {
   async onNewChatMessage({
     user,
     message,
-  }: INewChatMessage): Promise<ISendMessageResponse> {
+  }: RequestSendChatMessage): Promise<SendMessageResponse> {
     try {
       const newChatMessage = await this.chatService.sendNewMessage(
         user,

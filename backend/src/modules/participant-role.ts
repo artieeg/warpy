@@ -4,7 +4,7 @@ import { MessagePattern } from '@nestjs/microservices';
 import { OnHostReassign } from '@warpy-be/interfaces';
 import { EVENT_HOST_REASSIGN } from '@warpy-be/utils';
 import { ParticipantRoleManagerService } from '@warpy-be/app';
-import { ISetRoleRequest } from '@warpy/lib';
+import { RequestSetRole } from '@warpy/lib';
 import { NjsParticipantStore } from './participant';
 import { NjsUserBlockService, UserBlockModule } from './user-block';
 import { NjsMessageService } from './message';
@@ -46,7 +46,7 @@ export class ParticipantRoleController implements OnHostReassign {
   }
 
   @MessagePattern('participant.set-role')
-  async onSetRole({ user, userToUpdate, role }: ISetRoleRequest) {
+  async onSetRole({ user, userToUpdate, role }: RequestSetRole) {
     await this.role.setRole({
       userToUpdate,
       role,

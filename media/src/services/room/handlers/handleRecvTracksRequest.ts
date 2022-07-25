@@ -1,13 +1,13 @@
 import { MessageService, SFUService } from "@media/services";
 import {
   MessageHandler,
-  IRecvTracksRequest,
+  RequestRecvTracks,
   IRecvTracksResponse,
 } from "@warpy/lib";
 import { rooms } from "../rooms";
 
 export const handleRecvTracksRequest: MessageHandler<
-  IRecvTracksRequest,
+  RequestRecvTracks,
   IRecvTracksResponse
 > = async (data, respond) => {
   const { stream, user, rtpCapabilities } = data;

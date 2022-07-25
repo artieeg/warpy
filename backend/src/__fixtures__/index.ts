@@ -7,7 +7,7 @@ import {
   Participant,
   Stream,
 } from '@warpy/lib';
-import { IConnectRecvTransportParams, User } from '@warpy/lib';
+import { ConnectRecvTransportParams, User } from '@warpy/lib';
 
 function getFixtureCreator<T>(defaults: T) {
   return (data?: Partial<T>): T => {
@@ -69,7 +69,7 @@ export const createRecvMediaParamsFixture = getFixtureCreator({
 });
 
 export const createRecvTransportParamsFixture =
-  getFixtureCreator<IConnectRecvTransportParams>({
+  getFixtureCreator<ConnectRecvTransportParams>({
     roomId: 'test-room-id',
     user: 'test-user-id',
     routerRtpCapabilities: {

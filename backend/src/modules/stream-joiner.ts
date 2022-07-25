@@ -3,7 +3,11 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { StreamJoinerService } from '@warpy-be/app';
-import { IBotJoin, IJoinStream, IJoinStreamResponse } from '@warpy/lib';
+import {
+  RequesJoinBot,
+  RequestJoinStream,
+  JoinStreamResponse,
+} from '@warpy/lib';
 import {
   NjsParticipantService,
   NjsParticipantStore,
@@ -42,7 +46,7 @@ export class StreamJoinerController {
   constructor(private joiner: NjsStreamJoiner) {}
 
   @MessagePattern('bot.join')
-  async onBotJoin({ user, inviteDetailsToken }: IBotJoin) {
+  async onBotJoin({ user, inviteDetailsToken }: RequesJoinBot) {
     const response = await this.joiner.joinBot(user, inviteDetailsToken);
 
     return response;
@@ -52,7 +56,7 @@ export class StreamJoinerController {
   async onNewViewer({
     stream,
     user,
-  }: IJoinStream): Promise<IJoinStreamResponse> {
+  }: RequestJoinStream): Promise<JoinStreamResponse> {
     return this.joiner.join(user, stream);
   }
 }

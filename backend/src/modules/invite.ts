@@ -16,13 +16,13 @@ import {
 } from '@warpy-be/utils';
 import { InviteStore, InviteService } from '@warpy-be/app';
 import {
-  IInviteRequest,
-  IInviteResponse,
-  IInviteSuggestionsRequest,
-  IInviteSuggestionsResponse,
-  IInviteActionRequest,
-  ICancelInviteRequest,
-  ICancelInviteResponse,
+  RequestCreateInvite,
+  InviteResponse,
+  RequestInviteSuggestions,
+  InviteSuggestionsResponse,
+  RequestInviteAction,
+  RequestCancelInvite,
+  CancelInviteResponse,
 } from '@warpy/lib';
 import { FollowModule, NjsFollowStore } from './follow';
 import { NjsUserStore, UserModule } from './user';
@@ -107,7 +107,7 @@ export class InviteController
     user,
     stream,
     invitee,
-  }: IInviteRequest): Promise<IInviteResponse> {
+  }: RequestCreateInvite): Promise<InviteResponse> {
     const invite = await this.inviteService.createStreamInvite({
       inviter: user,
       invitee,
@@ -123,7 +123,7 @@ export class InviteController
   async onInviteSuggestions({
     stream,
     user,
-  }: IInviteSuggestionsRequest): Promise<IInviteSuggestionsResponse> {
+  }: RequestInviteSuggestions): Promise<InviteSuggestionsResponse> {
     const suggestions = await this.inviteService.getInviteSuggestions(
       user,
       stream,
@@ -135,7 +135,7 @@ export class InviteController
   }
 
   @MessagePattern('invite.action')
-  async onInviteAccept({ invite, action }: IInviteActionRequest) {
+  async onInviteAccept({ invite, action }: RequestInviteAction) {
     if (action === 'accept') {
       await this.inviteService.acceptInvite(invite);
     } else {
@@ -145,8 +145,8 @@ export class InviteController
 
   @MessagePattern('user.cancel-invite')
   async onInviteCancel(
-    data: ICancelInviteRequest,
-  ): Promise<ICancelInviteResponse> {
+    data: RequestCancelInvite,
+  ): Promise<CancelInviteResponse> {
     await this.inviteService.deleteInvite(data.invite_id);
 
     return {

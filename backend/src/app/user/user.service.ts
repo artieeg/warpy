@@ -1,6 +1,6 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EVENT_USER_CREATED } from '@warpy-be/utils';
-import { INewUser, User } from '@warpy/lib';
+import { RequestCreateUser, User } from '@warpy/lib';
 import { RefreshTokenStore, TokenService } from '@warpy-be/app/token';
 import { UserStore } from './user.store';
 
@@ -23,7 +23,7 @@ export class UserService {
     };
   }
 
-  async createUser(data: INewUser) {
+  async createUser(data: RequestCreateUser) {
     const { username, avatar, last_name, first_name, email } = data;
 
     const user = await this.store.createUser({

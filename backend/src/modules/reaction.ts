@@ -1,7 +1,7 @@
 import { Controller, Injectable, Module, UseFilters } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { ReactionService } from '@warpy-be/app';
-import { IClap } from '@warpy/lib';
+import { RequestPostReaction } from '@warpy/lib';
 import { ExceptionFilter } from '../rpc-exception.filter';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
@@ -26,7 +26,7 @@ export class ReactionController {
 
   @UseFilters(ExceptionFilter)
   @MessagePattern('stream.reaction')
-  async onUserGet({ user, emoji, stream }: IClap) {
+  async onUserGet({ user, emoji, stream }: RequestPostReaction) {
     await this.reactionService.countNewReaction(user, emoji, stream);
   }
 }

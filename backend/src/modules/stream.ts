@@ -3,11 +3,11 @@ import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import { StreamService, StreamStore } from '@warpy-be/app';
 import {
-  INewStream,
-  INewStreamResponse,
-  IStopStream,
-  INewPreviewEvent,
-  IStreamGetRequest,
+  RequestCreateStream,
+  NewStreamResponse,
+  RequestStopStream,
+  EventNewPreview,
+  RequestFetchStream,
 } from '@warpy/lib';
 import { OnHostReassignFailed, OnHostReassign } from '../interfaces';
 import { MediaModule, NjsMediaService } from './media';
@@ -41,7 +41,7 @@ export class StreamController implements OnHostReassignFailed, OnHostReassign {
     title,
     category,
     user,
-  }: INewStream): Promise<INewStreamResponse> {
+  }: RequestCreateStream): Promise<NewStreamResponse> {
     return this.streamService.createNewStream(user, title, category);
   }
 
@@ -56,17 +56,17 @@ export class StreamController implements OnHostReassignFailed, OnHostReassign {
   }
 
   @MessagePattern('stream.stop')
-  async stopStream({ user }: IStopStream) {
+  async stopStream({ user }: RequestStopStream) {
     await this.streamService.stopStream(user);
   }
 
   @MessagePattern('stream.new-preview')
-  async onNewStreamPreview({ stream, preview }: INewPreviewEvent) {
+  async onNewStreamPreview({ stream, preview }: EventNewPreview) {
     await this.streamService.setStreamPreview(stream, preview);
   }
 
   @MessagePattern('stream.get')
-  async onStreamGet({ stream }: IStreamGetRequest) {
+  async onStreamGet({ stream }: RequestFetchStream) {
     return {
       stream: await this.streamService.get(stream),
     };

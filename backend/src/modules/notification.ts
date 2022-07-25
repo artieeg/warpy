@@ -7,10 +7,10 @@ import { NotificationService, NotificationStore } from '@warpy-be/app';
 import { PrismaModule } from './prisma';
 import {
   Invite,
-  IReadNotifications,
-  IGetReadNotifications,
-  INotificationsPage,
-  IGetUnreadNotifications,
+  RequestReadNotifications,
+  RequestFetchReadNotifications,
+  NotificationsPage,
+  RequestFetchUnreadNotifications,
 } from '@warpy/lib';
 import { NjsMessageService } from './message';
 
@@ -48,7 +48,7 @@ export class NotificationController {
   }
 
   @MessagePattern('notifications.read')
-  async onNotificationsRead({ user }: IReadNotifications) {
+  async onNotificationsRead({ user }: RequestReadNotifications) {
     await this.notificationService.readAllNotifications(user);
   }
 
@@ -56,7 +56,7 @@ export class NotificationController {
   async onGetReadNotifications({
     user,
     page,
-  }: IGetReadNotifications): Promise<INotificationsPage> {
+  }: RequestFetchReadNotifications): Promise<NotificationsPage> {
     const notifications = await this.notificationService.getReadNotifications(
       user,
       page,
@@ -70,7 +70,7 @@ export class NotificationController {
   @MessagePattern('notifications.get-unread')
   async onGetUnreadNotifications({
     user,
-  }: IGetUnreadNotifications): Promise<INotificationsPage> {
+  }: RequestFetchUnreadNotifications): Promise<NotificationsPage> {
     const notifications = await this.notificationService.getUnreadNotifications(
       user,
     );

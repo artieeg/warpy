@@ -1,5 +1,5 @@
 import { ParticipantStore, StreamStore } from '@warpy-be/app';
-import { IUserInfoResponse } from '@warpy/lib';
+import { UserInfoResponse } from '@warpy/lib';
 import { UserStore } from '@warpy-be/app/user';
 import { FollowStore } from '@warpy-be/app/follow';
 
@@ -19,7 +19,7 @@ export class UserDataFetcherService {
       this.followStore.isFollowing(id, requester),
     ]);
 
-    const response: IUserInfoResponse = {
+    const response: UserInfoResponse = {
       user,
       isFollowed,
       isFollower,

@@ -1,6 +1,6 @@
 import { NoPermissionError } from '@warpy-be/errors';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Invite, InviteStates, IReceivedInviteEvent, User } from '@warpy/lib';
+import { Invite, InviteStates, EventReceivedInvite, User } from '@warpy/lib';
 import { EVENT_INVITE_AVAILABLE } from '@warpy-be/utils';
 import {
   UserStore,
@@ -140,7 +140,7 @@ export class InviteService {
       event: 'new-invite',
       data: {
         invite,
-      } as IReceivedInviteEvent,
+      } as EventReceivedInvite,
     });
     console.log('5');
 

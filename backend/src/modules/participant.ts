@@ -16,11 +16,11 @@ import {
 } from '@warpy-be/utils';
 import { ParticipantService, ParticipantStore } from '@warpy-be/app';
 import {
-  IRequestViewers,
-  IRequestViewersResponse,
-  IRaiseHand,
-  IMediaToggleRequest,
-  IKickUserRequest,
+  RequestViewers,
+  RequestViewersResponse,
+  RequestRaiseHand,
+  RequestMediaToggle,
+  RequestKickUser,
 } from '@warpy/lib';
 import { MediaModule, NjsMediaService } from './media';
 import { BotInstanceModule, NjsBotInstanceStore } from './bot-instance';
@@ -81,14 +81,14 @@ export class ParticipantController implements OnStreamEnd, OnRoleChange {
   async onViewersRequest({
     stream,
     page,
-  }: IRequestViewers): Promise<IRequestViewersResponse> {
+  }: RequestViewers): Promise<RequestViewersResponse> {
     const viewers = await this.participant.getViewers(stream, page);
 
     return { viewers };
   }
 
   @MessagePattern('user.raise-hand')
-  async onRaiseHand({ user, flag }: IRaiseHand) {
+  async onRaiseHand({ user, flag }: RequestRaiseHand) {
     await this.participant.setRaiseHand(user, flag);
   }
 
@@ -97,7 +97,7 @@ export class ParticipantController implements OnStreamEnd, OnRoleChange {
     user,
     audioEnabled,
     videoEnabled,
-  }: IMediaToggleRequest) {
+  }: RequestMediaToggle) {
     await this.participant.setMediaEnabled(user, {
       audioEnabled,
       videoEnabled,
@@ -120,7 +120,7 @@ export class ParticipantController implements OnStreamEnd, OnRoleChange {
   }
 
   @MessagePattern('stream.kick-user')
-  async onKickUser({ userToKick, user }: IKickUserRequest) {
+  async onKickUser({ userToKick, user }: RequestKickUser) {
     await this.participant.kickStreamParticipant(userToKick, user);
   }
 

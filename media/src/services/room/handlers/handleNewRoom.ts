@@ -1,13 +1,7 @@
-import { config } from "@media/config";
 import { createNewPeer, IRoom } from "@media/models";
 import { role } from "@media/role";
 import { SFUService } from "@media/services";
-import { getOptionsFromTransport } from "@media/utils";
-import {
-  MessageHandler,
-  ICreateMediaRoom,
-  INewMediaRoomData,
-} from "@warpy/lib";
+import { MessageHandler, RequestCreateMediaRoom } from "@warpy/lib";
 import { rooms } from "../rooms";
 
 const createNewRoom = (): IRoom => {
@@ -22,7 +16,7 @@ const createNewRoom = (): IRoom => {
   };
 };
 
-export const handleNewRoom: MessageHandler<ICreateMediaRoom, {}> = async (
+export const handleNewRoom: MessageHandler<RequestCreateMediaRoom, {}> = async (
   data,
   respond
 ) => {

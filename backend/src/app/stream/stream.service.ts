@@ -1,7 +1,7 @@
 import { StreamNotFound } from '@warpy-be/errors';
 import { EVENT_STREAM_CREATED, EVENT_STREAM_ENDED } from '@warpy-be/utils';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { INewStreamResponse } from '@warpy/lib';
+import { NewStreamResponse } from '@warpy/lib';
 import cuid from 'cuid';
 import { MediaService } from '@warpy-be/app/media';
 import { StreamStore } from './stream.store';
@@ -23,7 +23,7 @@ export class StreamService {
     owner: string,
     title: string,
     category: string,
-  ): Promise<INewStreamResponse> {
+  ): Promise<NewStreamResponse> {
     const stream_id = cuid();
     const stream = await this.streamStore.create({
       id: stream_id,

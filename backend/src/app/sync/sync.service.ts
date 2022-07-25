@@ -1,5 +1,5 @@
 import { UserNotFound } from '@warpy-be/errors';
-import { IWhoAmIResponse } from '@warpy/lib';
+import { WhoAmIResponse } from '@warpy/lib';
 import { CategoryStore } from '@warpy-be/app/category';
 import { AppliedAppInviteStore } from '@warpy-be/app/app-invite';
 import { UserService } from '@warpy-be/app/user';
@@ -15,7 +15,7 @@ export class SyncService {
     private userListService: IUserListFetcherService,
   ) {}
 
-  async sync(user: string): Promise<IWhoAmIResponse> {
+  async sync(user: string): Promise<WhoAmIResponse> {
     const [data, hasActivatedAppInvite, categories, friendFeed, following] =
       await Promise.all([
         this.userService.findById(user, true),

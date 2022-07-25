@@ -3,15 +3,15 @@ import { SFUService } from "@media/services";
 import { getOptionsFromTransport } from "@media/utils";
 import {
   MessageHandler,
-  ICreateTransport,
-  INewTransportResponse,
+  RequestCreateTransport,
+  ResponseNewTransport,
 } from "@warpy/lib";
 import { WebRtcTransport } from "mediasoup/node/lib/types";
 import { rooms } from "../rooms";
 
 export const handleNewTransport: MessageHandler<
-  ICreateTransport,
-  INewTransportResponse
+  RequestCreateTransport,
+  ResponseNewTransport
 > = async (data, respond) => {
   const { roomId, speaker } = data;
 

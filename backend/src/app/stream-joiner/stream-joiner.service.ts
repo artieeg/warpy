@@ -4,7 +4,7 @@ import {
   EVENT_NEW_PARTICIPANT,
   EVENT_PARTICIPANT_REJOIN,
 } from '@warpy-be/utils';
-import { IJoinStreamResponse, Participant, Roles } from '@warpy/lib';
+import { JoinStreamResponse, Participant, Roles } from '@warpy/lib';
 import { ParticipantStore } from '@warpy-be/app';
 import { BotInstanceService } from '../bot-instance';
 import { MediaService } from '../media';
@@ -75,7 +75,7 @@ export class StreamJoinerService {
       throw new BannedFromStreamError();
     }
 
-    let response: IJoinStreamResponse;
+    let response: JoinStreamResponse;
 
     const [oldParticipantData, streamData, host] = await Promise.all([
       this.participantStore.get(user),

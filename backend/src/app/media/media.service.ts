@@ -1,11 +1,11 @@
 import {
-  IConnectRecvTransportParams,
-  ICreateMediaRoom,
-  ICreateTransport,
-  IKickedFromMediaRoom,
+  ConnectRecvTransportParams,
+  RequestCreateMediaRoom,
+  RequestCreateTransport,
+  KickedFromMediaRoom,
   MediaPermissions,
-  INewMediaRoomData,
-  INewTransportResponse,
+  ResponseCreateMediaRoom,
+  ResponseNewTransport,
   Participant,
   Roles,
 } from '@warpy/lib';
@@ -29,10 +29,12 @@ export class MediaService {
     private nc: NatsService,
   ) {}
 
-  async createNewRoom(payload: ICreateMediaRoom): Promise<INewMediaRoomData> {
+  async createNewRoom(
+    payload: RequestCreateMediaRoom,
+  ): Promise<ResponseCreateMediaRoom> {
     const response = await this.nc.request('media.room.create', payload);
 
-    return response as INewMediaRoomData;
+    return response as ResponseCreateMediaRoom;
   }
 
   createPermissionToken(permissions: MediaPermissions): string {
@@ -70,7 +72,7 @@ export class MediaService {
     user: string,
     roomId: string,
   ) {
-    const recvMediaParams: IConnectRecvTransportParams = await this.nc.request(
+    const recvMediaParams: ConnectRecvTransportParams = await this.nc.request(
       `media.peer.join.${recvNodeId}`,
       {
         user,
@@ -176,8 +178,8 @@ export class MediaService {
   }
 
   async createSendTransport(
-    params: ICreateTransport,
-  ): Promise<INewTransportResponse> {
+    params: RequestCreateTransport,
+  ): Promise<ResponseNewTransport> {
     const response = await this.nc.request(
       `media.transport.send-transport`,
       params,
@@ -186,7 +188,7 @@ export class MediaService {
       },
     );
 
-    return response as INewTransportResponse;
+    return response as ResponseNewTransport;
   }
 
   async updateMediaRole(participant: Participant, role: Roles) {
@@ -195,7 +197,7 @@ export class MediaService {
     const { recv: recvNodeId, send: prevSendNodeId } =
       await this.nodeAssigner.get(id);
 
-    let sendMediaParams: INewTransportResponse;
+    let sendMediaParams: ResponseNewTransport;
     let sendNodeId = prevSendNodeId; //TODO: make use of prevSendNodeId?
 
     //If participant becomes audio/video streamer, assign them a send node
@@ -238,7 +240,7 @@ export class MediaService {
       { timeout: 5000 },
     );
 
-    return response as IKickedFromMediaRoom;
+    return response as KickedFromMediaRoom;
   }
 
   async removeFromNodes({ id, stream }: { id: string; stream: string }) {

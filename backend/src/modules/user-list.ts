@@ -1,7 +1,7 @@
 import { Injectable, Controller, Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { UserListFetcherService } from '@warpy-be/app';
-import { IUserListRequest, IUserListResponse, User } from '@warpy/lib';
+import { RequestUserList, UserListResponse, User } from '@warpy/lib';
 import { FollowModule, NjsFollowStore } from './follow';
 import { NjsUserBlockService, UserBlockModule } from './user-block';
 
@@ -21,7 +21,7 @@ export class UserListController {
     user,
     page,
     list,
-  }: IUserListRequest): Promise<IUserListResponse> {
+  }: RequestUserList): Promise<UserListResponse> {
     let users: User[];
 
     if (list === 'followers') {

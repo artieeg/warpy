@@ -21,9 +21,9 @@ import {
   StreamerIdStore,
 } from '@warpy-be/app';
 import {
-  IUserBlockRequest,
-  IUserUnblockResponse,
-  IUserBlockResponse,
+  RequestBlockUser,
+  UserUnblockResponse,
+  UserBlockResponse,
 } from '@warpy/lib';
 
 @Injectable()
@@ -102,7 +102,7 @@ export class UserBlockController
   async onUserUnblock({
     user,
     userToBlock,
-  }: IUserBlockRequest): Promise<IUserUnblockResponse> {
+  }: RequestBlockUser): Promise<UserUnblockResponse> {
     await this.blockService.unblockUser(user, userToBlock);
 
     return {
@@ -114,7 +114,7 @@ export class UserBlockController
   async onUserBlock({
     user,
     userToBlock,
-  }: IUserBlockRequest): Promise<IUserBlockResponse> {
+  }: RequestBlockUser): Promise<UserBlockResponse> {
     const blockId = await this.blockService.blockUser(user, userToBlock);
 
     return {
