@@ -2,6 +2,7 @@ import { BotStore } from './bot.store';
 import { DeveloperAccountStore } from './developer-account.store';
 import { TokenService } from '@warpy-be/app/token';
 import { MessageService } from '@warpy-be/app/message';
+import { NoDeveloperAccount } from '@warpy-be/errors';
 
 export type BotConfirmResponseDTO = {
   user: string;
@@ -29,7 +30,7 @@ export class BotsService {
     );
 
     if (!devAccountId) {
-      return;
+      throw new NoDeveloperAccount();
     }
 
     //Request detail confirmation from the front end

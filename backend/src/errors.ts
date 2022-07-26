@@ -154,3 +154,11 @@ export class HostReassignError extends BaseError {
     this.name = 'HostReassignError';
   }
 }
+
+export class NoDeveloperAccount extends BaseError {
+  constructor() {
+    super('you dont have a developer account');
+
+    this.name = 'NoDeveloperAccount';
+  }
+}
