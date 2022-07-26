@@ -1,6 +1,7 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
   EVENT_NEW_PARTICIPANT,
+  EVENT_PARTICIPANT_LEAVE,
   EVENT_PARTICIPANT_REJOIN,
   EVENT_RAISE_HAND,
   getMockedInstance,
@@ -17,7 +18,7 @@ import { BotInstanceStore } from './bot-instance.store';
 import { ParticipantService } from './participant.service';
 import { ParticipantStore } from './participant.store';
 import { StreamBanStore } from './stream-bans.store';
-import { UserNotFound } from '@warpy-be/errors';
+import { ParticipantAlreadyLeft, UserNotFound } from '@warpy-be/errors';
 
 describe('ParticipantService', () => {
   const participantStore =
@@ -36,8 +37,88 @@ describe('ParticipantService', () => {
     streamBanStore as any,
   );
 
-  beforeEach(() => {
+  beforeAll(() => {
     jest.clearAllMocks();
+  });
+
+  describe('leaving streams', () => {
+    const id = 'leaving_user0';
+    const nonExistingId = 'leaving_user1';
+    const alreadyDeactivatedUserId = 'leaving_user2';
+
+    const botId = 'bot_bot0';
+    const botInstanceId = 'bot_instance_1';
+
+    const stream = 'stream0';
+
+    const participant = createParticipantFixture({ id, stream });
+
+    const botInstance = createBotInstanceFixture({ id: botInstanceId });
+
+    const botParticipant = createParticipantFixture({
+      ...botInstance,
+      id: botId,
+      stream,
+    });
+
+    when(participantStore.isDeactivated)
+      .calledWith(alreadyDeactivatedUserId, stream)
+      .mockResolvedValue(true);
+
+    when(participantStore.isDeactivated)
+      .calledWith(id, stream)
+      .mockResolvedValue(false);
+
+    when(participantStore.get)
+      .calledWith(nonExistingId)
+      .mockResolvedValue(null);
+
+    when(participantStore.get)
+      .calledWith(alreadyDeactivatedUserId)
+      .mockResolvedValue(participant);
+
+    when(participantStore.get)
+      .calledWith(botId)
+      .mockResolvedValue(botParticipant);
+
+    when(botInstanceStore.getBotInstance)
+      .calledWith(botId, stream)
+      .mockResolvedValue(botInstance);
+
+    when(participantStore.get).calledWith(id).mockResolvedValue(participant);
+
+    it('throws when user not found', () => {
+      expect(
+        service.handleLeavingParticipant(nonExistingId),
+      ).rejects.toThrowError(UserNotFound);
+    });
+
+    it('throws when user has already left', () => {
+      expect(
+        service.handleLeavingParticipant(alreadyDeactivatedUserId),
+      ).rejects.toThrowError(ParticipantAlreadyLeft);
+    });
+
+    it('emits event', async () => {
+      await service.handleLeavingParticipant(id);
+
+      expect(events.emit).toBeCalledWith(EVENT_PARTICIPANT_LEAVE, {
+        user: id,
+        stream,
+      });
+    });
+
+    it('if user, deactivates participant', async () => {
+      await service.handleLeavingParticipant(id);
+
+      expect(participantStore.setDeactivated).toBeCalledWith(id, stream, true);
+    });
+
+    it("if bot, completely removes participant's data", async () => {
+      await service.handleLeavingParticipant(botId);
+
+      expect(participantStore.del).toBeCalledWith(botInstanceId);
+    });
   });
 
   describe('request streaming permissions (raise hand)', () => {

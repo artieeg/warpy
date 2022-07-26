@@ -139,6 +139,14 @@ export class WaitlistRecordExists extends BaseError {
   }
 }
 
+export class ParticipantAlreadyLeft extends BaseError {
+  constructor() {
+    super('particpant already left');
+
+    this.name = 'ParticipantAlreadyLeft';
+  }
+}
+
 export class HostReassignError extends BaseError {
   constructor() {
     super('host reassign failed');

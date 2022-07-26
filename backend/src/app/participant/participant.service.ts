@@ -5,6 +5,7 @@ import { Participant } from '@warpy/lib';
 import {
   MaxVideoStreamers,
   NoPermissionError,
+  ParticipantAlreadyLeft,
   UserNotFound,
 } from '@warpy-be/errors';
 import {
@@ -131,26 +132,26 @@ export class ParticipantService {
     const data = await this.participantStore.get(user);
 
     if (!data) {
-      return;
+      throw new UserNotFound();
     }
 
     //Do nothing if the user is already deactivated
     if (await this.participantStore.isDeactivated(user, data.stream)) {
-      return;
+      throw new ParticipantAlreadyLeft();
     }
-
-    //remove bots from the stream completely
-    //bc they can't rejoin
-    if (user.slice(0, 3) === 'bot') {
-      return this.removeUserFromStream(user, data.stream);
-    }
-
-    await this.participantStore.setDeactivated(user, data.stream, true);
 
     this.events.emit(EVENT_PARTICIPANT_LEAVE, {
       user,
       stream: data.stream,
     });
+
+    //remove bots from the stream completely
+    //bc they can't rejoin
+    if (user.slice(0, 3) === 'bot') {
+      await this.removeUserFromStream(user, data.stream);
+    } else {
+      await this.participantStore.setDeactivated(user, data.stream, true);
+    }
   }
 
   async isUserBanned(user: string, stream: string) {
