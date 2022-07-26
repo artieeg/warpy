@@ -110,13 +110,6 @@ export class ParticipantController implements OnStreamEnd, OnRoleChange {
     await this.participant.handleLeavingParticipant(user);
   }
 
-  /*
-  @OnEvent(EVENT_PARTICIPANT_LEAVE)
-  async onParticipantLeave({ user, stream }) {
-    await this.participant.removeUserFromStream(user, stream);
-  }
-    */
-
   @OnEvent(EVENT_STREAM_ENDED)
   async onStreamEnd({ stream }) {
     await this.participant.removeAllParticipantsFrom(stream);

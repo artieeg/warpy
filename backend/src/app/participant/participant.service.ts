@@ -144,7 +144,7 @@ export class ParticipantService {
     }
   }
 
-  async removeUserFromStream(user: string, stream?: string) {
+  async removeUserFromStream(user: string, stream: string) {
     const isBot = user.slice(0, 3) === 'bot';
 
     let id = user;

@@ -36,6 +36,31 @@ describe('ParticipantService', () => {
     jest.clearAllMocks();
   });
 
+  describe('removing user from stream', () => {
+    const user = 'user_to_remove0';
+    const stream = 'stream0';
+
+    const botId = 'bot_bot_to_remove';
+    const botInstanceId = 'bot_instance_to_remove';
+    const botInstance = createBotInstanceFixture({ id: botInstanceId });
+
+    when(botInstanceStore.getBotInstance)
+      .calledWith(botId, stream)
+      .mockResolvedValue(botInstance);
+
+    it('removes users', async () => {
+      await service.removeUserFromStream(user, stream);
+
+      expect(participantStore.del).toBeCalledWith(user);
+    });
+
+    it('removes bots', async () => {
+      await service.removeUserFromStream(botId, stream);
+
+      expect(participantStore.del).toBeCalledWith(botInstance.id);
+    });
+  });
+
   describe('leaving streams', () => {
     const id = 'leaving_user0';
     const nonExistingId = 'leaving_user1';
