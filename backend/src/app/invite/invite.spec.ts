@@ -1,6 +1,10 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EVENT_INVITE_AVAILABLE, getMockedInstance } from '@warpy-be/utils';
-import { createInviteFixture } from '@warpy-be/__fixtures__';
+import {
+  createInviteFixture,
+  createStreamFixture,
+  createUserFixture,
+} from '@warpy-be/__fixtures__';
 import { when } from 'jest-when';
 import { BotStore } from '../bot';
 import { FollowStore } from '../follow';
@@ -34,6 +38,78 @@ describe('InviteService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  describe('inviting users', () => {
+    const inviter = createUserFixture({ id: 'inviter' });
+    const invitee = createUserFixture({ id: 'invitee' });
+    const stream = createStreamFixture({});
+    const invite = createInviteFixture();
+
+    const isInviteeOnline = true;
+
+    inviteStore.create.mockResolvedValue(invite);
+    when(userStore.find).calledWith(inviter.id).mockResolvedValue(inviter);
+    when(userStore.find).calledWith(invitee.id).mockResolvedValue(invitee);
+    when(streamStore.findById).calledWith(stream.id).mockResolvedValue(stream);
+    when(inviteStore.isUserOnline)
+      .calledWith(invitee.id)
+      .mockResolvedValue(isInviteeOnline);
+
+    it('sends new invite to user', async () => {
+      await service.createStreamInvite({
+        inviter: inviter.id,
+        invitee: invitee.id,
+        stream: stream.id,
+      });
+
+      expect(messageService.sendMessage).toBeCalledWith(
+        invitee.id,
+        expect.anything(),
+      );
+    });
+
+    it('emits invite event', async () => {
+      await service.createStreamInvite({
+        inviter: inviter.id,
+        invitee: invitee.id,
+        stream: stream.id,
+      });
+
+      expect(events.emit).toBeCalledWith(
+        EVENT_INVITE_AVAILABLE,
+        expect.anything(),
+      );
+    });
+
+    it('saves invite record', async () => {
+      await service.createStreamInvite({
+        inviter: inviter.id,
+        invitee: invitee.id,
+        stream: stream.id,
+      });
+
+      expect(inviteStore.create).toBeCalledWith({
+        invitee,
+        inviter,
+        stream,
+        received: isInviteeOnline,
+      });
+    });
+    it('saves invite record', async () => {
+      await service.createStreamInvite({
+        inviter: inviter.id,
+        invitee: invitee.id,
+        stream: stream.id,
+      });
+
+      expect(inviteStore.create).toBeCalledWith({
+        invitee,
+        inviter,
+        stream,
+        received: isInviteeOnline,
+      });
+    });
   });
 
   describe('deleting invites', () => {
