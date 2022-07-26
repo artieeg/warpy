@@ -110,13 +110,15 @@ export class ParticipantService {
   }
 
   async setRaiseHand(user: string, flag: boolean) {
-    const participant = await this.participantStore.setRaiseHand(user, flag);
+    const participant = await this.participantStore.update(user, {
+      isRaisingHand: flag,
+    });
     this.events.emit(EVENT_RAISE_HAND, participant);
   }
 
   /**
    * Marks users as deactivated (so they can rejoin with their
-   * previous role)
+   * previous role later)
    *
    * Deactivated users aren't considered stream
    * participants, but their data is preserved

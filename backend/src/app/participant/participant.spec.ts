@@ -1,5 +1,10 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { EVENT_NEW_PARTICIPANT, getMockedInstance } from '@warpy-be/utils';
+import {
+  EVENT_NEW_PARTICIPANT,
+  EVENT_PARTICIPANT_REJOIN,
+  EVENT_RAISE_HAND,
+  getMockedInstance,
+} from '@warpy-be/utils';
 import {
   createBotInstanceFixture,
   createParticipantFixture,
@@ -33,6 +38,94 @@ describe('ParticipantService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  describe('request streaming permissions (raise hand)', () => {
+    const id = 'user0';
+
+    const participantWithRaisedHand = createParticipantFixture({
+      id,
+      isRaisingHand: true,
+    });
+
+    when(participantStore.update)
+      .calledWith(id, { isRaisingHand: true })
+      .mockResolvedValue(participantWithRaisedHand);
+
+    it('sets isRaisingHand flag', async () => {
+      await service.setRaiseHand(id, true);
+
+      expect(participantStore.update).toBeCalledWith(id, {
+        isRaisingHand: true,
+      });
+    });
+
+    it('emits raise hand event', async () => {
+      await service.setRaiseHand(id, true);
+
+      expect(events.emit).toBeCalledWith(
+        EVENT_RAISE_HAND,
+        participantWithRaisedHand,
+      );
+    });
+  });
+
+  describe('fetching participant data on stream', () => {
+    const streamers = [
+      createParticipantFixture({ role: 'streamer' }),
+      createParticipantFixture({ role: 'streamer' }),
+    ];
+
+    const raisedHands = [createParticipantFixture({ isRaisingHand: true })];
+
+    const count = 10;
+
+    participantStore.getStreamers.mockResolvedValue(streamers);
+    participantStore.getRaisedHands.mockResolvedValue(raisedHands);
+    participantStore.count.mockResolvedValue(count);
+
+    it('returns participant data on the stream', () => {
+      expect(
+        service.getParticipantDataOnStream('stream0'),
+      ).resolves.toStrictEqual({
+        streamers,
+        raisedHands,
+        count,
+      });
+    });
+  });
+
+  describe('fetching stream viewers', () => {
+    const viewers = [
+      createParticipantFixture(),
+      createParticipantFixture(),
+      createParticipantFixture(),
+    ];
+    participantStore.getViewersPage.mockResolvedValue(viewers);
+
+    it('fetches viewers', async () => {
+      expect(service.getViewers('stream0', 0)).resolves.toStrictEqual(viewers);
+    });
+  });
+
+  describe('rejoining participant', () => {
+    const rejoiningParticipant = createParticipantFixture();
+
+    it('emits rejoin event', async () => {
+      await service.rejoinExistingParticipant(rejoiningParticipant);
+
+      expect(events.emit).toBeCalledWith(EVENT_PARTICIPANT_REJOIN, {
+        participant: rejoiningParticipant,
+      });
+    });
+
+    it('reactivates a rejoining participant', async () => {
+      await service.rejoinExistingParticipant(rejoiningParticipant);
+
+      const { id, stream } = rejoiningParticipant;
+
+      expect(participantStore.setDeactivated).toBeCalledWith(id, stream, false);
+    });
   });
 
   describe('fetching participant data', () => {

@@ -2,7 +2,6 @@ import { Participant } from '@warpy/lib';
 import { ConfigService } from '@nestjs/config';
 import IORedis, { Pipeline } from 'ioredis';
 import { flatten } from '@warpy-be/utils/redis';
-import { OnInstanceInit } from '@warpy-be/app/OnInstanceInit.interface';
 
 const PREFIX_VIEWERS = 'viewer_';
 const PREFIX_STREAMERS = 'streamers_';
@@ -267,12 +266,6 @@ export class ParticipantStore implements ParticipantStore {
     const [, [, updated]] = await pipe.exec();
 
     return toParticipantDTO(updated);
-  }
-
-  async setRaiseHand(user: string, flag: boolean) {
-    return this.update(user, {
-      isRaisingHand: flag,
-    });
   }
 
   async getViewersPage(stream: string, page: number) {
