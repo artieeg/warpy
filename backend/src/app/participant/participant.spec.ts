@@ -2,6 +2,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
   EVENT_PARTICIPANT_LEAVE,
   EVENT_RAISE_HAND,
+  EVENT_STREAMER_MEDIA_TOGGLE,
   getMockedInstance,
 } from '@warpy-be/utils';
 import {
@@ -15,7 +16,11 @@ import { UserService } from '../user';
 import { BotInstanceStore } from './bot-instance.store';
 import { ParticipantService } from './participant.service';
 import { ParticipantStore } from './participant.store';
-import { ParticipantAlreadyLeft, UserNotFound } from '@warpy-be/errors';
+import {
+  MaxVideoStreamers,
+  ParticipantAlreadyLeft,
+  UserNotFound,
+} from '@warpy-be/errors';
 
 describe('ParticipantService', () => {
   const participantStore =
@@ -36,6 +41,52 @@ describe('ParticipantService', () => {
     jest.clearAllMocks();
   });
 
+  describe('toggling audio/video', () => {
+    const user = 'toggle_user0';
+    const participant = createParticipantFixture({ id: user });
+
+    when(participantStore.getStreamId)
+      .calledWith(user)
+      .mockResolvedValue(participant.stream);
+
+    participantStore.countVideoStreamers.mockResolvedValue(1);
+
+    it('toggles audio/video', async () => {
+      await service.setMediaEnabled(user, {
+        audioEnabled: true,
+        videoEnabled: true,
+      });
+
+      expect(participantStore.update).toBeCalledWith(
+        user,
+        expect.objectContaining({
+          audioEnabled: true,
+          videoEnabled: true,
+        }),
+      );
+    });
+
+    it('throws when there are more than 4 video streamers', async () => {
+      participantStore.countVideoStreamers.mockResolvedValueOnce(4);
+
+      expect(
+        service.setMediaEnabled(user, {
+          videoEnabled: true,
+        }),
+      ).rejects.toThrowError(MaxVideoStreamers);
+    });
+
+    it('emits media toggle event', async () => {
+      await service.setMediaEnabled(user, { videoEnabled: true });
+
+      expect(events.emit).toBeCalledWith(EVENT_STREAMER_MEDIA_TOGGLE, {
+        user,
+        stream: participant.stream,
+        videoEnabled: true,
+      });
+    });
+  });
+
   describe('removing user from stream', () => {
     const user = 'user_to_remove0';
     const stream = 'stream0';
@@ -47,6 +98,16 @@ describe('ParticipantService', () => {
     when(botInstanceStore.getBotInstance)
       .calledWith(botId, stream)
       .mockResolvedValue(botInstance);
+
+    it('removes all data from stream', async () => {
+      const stream = 'stream0';
+
+      await service.removeAllParticipantsFrom(stream);
+
+      expect(participantStore.removeParticipantDataFromStream).toBeCalledWith(
+        stream,
+      );
+    });
 
     it('removes users', async () => {
       await service.removeUserFromStream(user, stream);
