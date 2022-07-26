@@ -4,19 +4,16 @@ import { UserService } from '../user';
 import { Participant } from '@warpy/lib';
 import {
   MaxVideoStreamers,
-  NoPermissionError,
   ParticipantAlreadyLeft,
   UserNotFound,
 } from '@warpy-be/errors';
 import {
   EVENT_NEW_PARTICIPANT,
-  EVENT_PARTICIPANT_KICKED,
   EVENT_PARTICIPANT_LEAVE,
   EVENT_PARTICIPANT_REJOIN,
   EVENT_RAISE_HAND,
   EVENT_STREAMER_MEDIA_TOGGLE,
 } from '@warpy-be/utils';
-import { StreamBanStore } from './stream-bans.store';
 
 export class ParticipantService {
   constructor(
@@ -24,7 +21,6 @@ export class ParticipantService {
     private botInstanceStore: BotInstanceStore,
     private events: EventEmitter2,
     private user: UserService,
-    private streamBanStore: StreamBanStore,
   ) {}
 
   async get(id: string) {
@@ -154,45 +150,7 @@ export class ParticipantService {
     }
   }
 
-  async isUserBanned(user: string, stream: string) {
-    const ban = await this.streamBanStore.find(user, stream);
-
-    return !!ban;
-  }
-
-  async kickStreamParticipant(userToKick: string, moderatorId: string) {
-    const moderator = await this.participantStore.get(moderatorId);
-
-    if (!moderator) {
-      throw new UserNotFound();
-    }
-
-    if (moderator.role !== 'streamer') {
-      throw new NoPermissionError();
-    }
-
-    const userToKickData = await this.participantStore.get(userToKick);
-
-    if (!userToKickData) {
-      throw new UserNotFound();
-    }
-
-    const stream = moderator.stream;
-
-    if (userToKickData.stream !== stream) {
-      throw new NoPermissionError();
-    }
-
-    try {
-      await this.streamBanStore.create(stream, userToKick);
-    } catch (e) {}
-
-    await this.removeUserFromStream(userToKick, stream);
-
-    this.events.emit(EVENT_PARTICIPANT_KICKED, userToKickData);
-  }
-
-  private async removeUserFromStream(user: string, stream?: string) {
+  async removeUserFromStream(user: string, stream?: string) {
     const isBot = user.slice(0, 3) === 'bot';
 
     let id = user;
@@ -203,15 +161,7 @@ export class ParticipantService {
       id = instance.id;
     }
 
-    await this.deleteUserParticipant(id);
-  }
-
-  private async deleteUserParticipant(user: string) {
-    try {
-      await this.participantStore.del(user);
-    } catch (e) {
-      console.error(e);
-    }
+    await this.participantStore.del(id);
   }
 
   async removeAllParticipantsFrom(stream: string) {

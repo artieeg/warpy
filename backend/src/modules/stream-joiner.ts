@@ -11,6 +11,10 @@ import { NjsParticipantService, ParticipantModule } from './participant';
 import { MediaModule, NjsMediaService } from './media';
 import { HostModule, NjsHostService } from './stream-host';
 import { NJTokenService, TokenModule } from './token';
+import {
+  NjsParticipantKickerService,
+  ParticipantKickerModule,
+} from './participant-kicker';
 
 @Injectable()
 export class NjsStreamJoiner extends StreamJoinerService {
@@ -19,8 +23,15 @@ export class NjsStreamJoiner extends StreamJoinerService {
     mediaService: NjsMediaService,
     hostService: NjsHostService,
     tokenService: NJTokenService,
+    participantKicker: NjsParticipantKickerService,
   ) {
-    super(participantService, mediaService, hostService, tokenService);
+    super(
+      participantService,
+      mediaService,
+      hostService,
+      tokenService,
+      participantKicker,
+    );
   }
 }
 
@@ -45,7 +56,13 @@ export class StreamJoinerController {
 }
 
 @Module({
-  imports: [ParticipantModule, HostModule, MediaModule, TokenModule],
+  imports: [
+    ParticipantModule,
+    HostModule,
+    MediaModule,
+    TokenModule,
+    ParticipantKickerModule,
+  ],
   providers: [NjsStreamJoiner],
   controllers: [StreamJoinerController],
   exports: [],

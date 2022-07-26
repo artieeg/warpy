@@ -36,4 +36,5 @@ export * from './online-status';
 export * from './participant';
 export * from './stream-host';
 export * from './participant-role';
+export * from './participant-kicker';
 export * from './stream-joiner';

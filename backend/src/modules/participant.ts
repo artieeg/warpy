@@ -24,21 +24,12 @@ import {
   RequestViewersResponse,
   RequestRaiseHand,
   RequestMediaToggle,
-  RequestKickUser,
 } from '@warpy/lib';
 import { NjsUserService, UserModule } from './user';
-import { StreamBanStore } from '@warpy-be/app/participant/stream-bans.store';
 import { PrismaModule, PrismaService } from './prisma';
 
 @Injectable()
 export class NjsBotInstanceStore extends BotInstanceStore {
-  constructor(prisma: PrismaService) {
-    super(prisma);
-  }
-}
-
-@Injectable()
-export class NjsStreamBanStore extends StreamBanStore {
   constructor(prisma: PrismaService) {
     super(prisma);
   }
@@ -65,15 +56,8 @@ export class NjsParticipantService extends ParticipantService {
     botInstanceStore: NjsBotInstanceStore,
     events: EventEmitter2,
     userService: NjsUserService,
-    streamBanStore: NjsStreamBanStore,
   ) {
-    super(
-      participantStore,
-      botInstanceStore,
-      events,
-      userService,
-      streamBanStore,
-    );
+    super(participantStore, botInstanceStore, events, userService);
   }
 }
 
@@ -126,11 +110,6 @@ export class ParticipantController implements OnStreamEnd, OnRoleChange {
     await this.participant.handleLeavingParticipant(user);
   }
 
-  @MessagePattern('stream.kick-user')
-  async onKickUser({ userToKick, user }: RequestKickUser) {
-    await this.participant.kickStreamParticipant(userToKick, user);
-  }
-
   /*
   @OnEvent(EVENT_PARTICIPANT_LEAVE)
   async onParticipantLeave({ user, stream }) {
@@ -146,12 +125,7 @@ export class ParticipantController implements OnStreamEnd, OnRoleChange {
 
 @Module({
   imports: [UserModule, PrismaModule],
-  providers: [
-    NjsParticipantStore,
-    NjsBotInstanceStore,
-    NjsParticipantService,
-    NjsStreamBanStore,
-  ],
+  providers: [NjsParticipantStore, NjsBotInstanceStore, NjsParticipantService],
   controllers: [ParticipantController],
   exports: [NjsParticipantStore, NjsParticipantService],
 })

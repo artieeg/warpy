@@ -2,6 +2,7 @@ import { BannedFromStreamError } from '@warpy-be/errors';
 import { JoinStreamResponse, Roles } from '@warpy/lib';
 import { MediaService } from '../media';
 import { ParticipantService } from '../participant';
+import { ParticipantKickerService } from '../participant-kicker';
 import { HostService } from '../stream-host';
 import { TokenService } from '../token';
 
@@ -15,6 +16,7 @@ export class StreamJoinerService {
     private media: MediaService,
     private host: HostService,
     private tokenService: TokenService,
+    private participantKicker: ParticipantKickerService,
   ) {}
 
   async joinBot(bot: string, inviteToken: string) {
@@ -47,7 +49,7 @@ export class StreamJoinerService {
 
   async joinUser(user: string, stream: string) {
     //check whether the user has been banned on stream
-    if (await this.participant.isUserBanned(user, stream)) {
+    if (await this.participantKicker.isUserKicked(user, stream)) {
       throw new BannedFromStreamError();
     }
 
