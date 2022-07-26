@@ -17,7 +17,6 @@ import { UserService } from '../user';
 import { BotInstanceStore } from './bot-instance.store';
 import { ParticipantService } from './participant.service';
 import { ParticipantStore } from './participant.store';
-import { StreamBanStore } from './stream-bans.store';
 import { ParticipantAlreadyLeft, UserNotFound } from '@warpy-be/errors';
 
 describe('ParticipantService', () => {
@@ -27,14 +26,12 @@ describe('ParticipantService', () => {
     getMockedInstance<BotInstanceStore>(BotInstanceStore);
   const events = getMockedInstance<EventEmitter2>(EventEmitter2);
   const userService = getMockedInstance<UserService>(UserService);
-  const streamBanStore = getMockedInstance<StreamBanStore>(StreamBanStore);
 
   const service = new ParticipantService(
     participantStore as any,
     botInstanceStore as any,
     events as any,
     userService as any,
-    streamBanStore as any,
   );
 
   beforeAll(() => {
