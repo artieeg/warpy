@@ -8,8 +8,13 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
-import { OnStreamEnd, OnRoleChange } from '@warpy-be/interfaces';
 import {
+  OnStreamEnd,
+  OnRoleChange,
+  OnParticipantKicked,
+} from '@warpy-be/interfaces';
+import {
+  EVENT_PARTICIPANT_KICKED,
   EVENT_ROLE_CHANGE,
   EVENT_STREAM_ENDED,
   EVENT_USER_DISCONNECTED,
@@ -24,6 +29,7 @@ import {
   RequestViewersResponse,
   RequestRaiseHand,
   RequestMediaToggle,
+  Participant,
 } from '@warpy/lib';
 import { NjsUserService, UserModule } from './user';
 import { PrismaModule, PrismaService } from './prisma';
@@ -62,7 +68,9 @@ export class NjsParticipantService extends ParticipantService {
 }
 
 @Controller()
-export class ParticipantController implements OnStreamEnd, OnRoleChange {
+export class ParticipantController
+  implements OnStreamEnd, OnRoleChange, OnParticipantKicked
+{
   constructor(
     private store: NjsParticipantStore,
     private participant: NjsParticipantService,
@@ -76,6 +84,11 @@ export class ParticipantController implements OnStreamEnd, OnRoleChange {
     const viewers = await this.participant.getViewers(stream, page);
 
     return { viewers };
+  }
+
+  @OnEvent(EVENT_PARTICIPANT_KICKED)
+  async onParticipantKicked({ id: user, stream }: Participant) {
+    await this.participant.removeUserFromStream(user, stream);
   }
 
   @MessagePattern('user.raise-hand')

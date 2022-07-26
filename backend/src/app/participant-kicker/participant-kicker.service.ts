@@ -34,8 +34,6 @@ export class ParticipantKickerService {
 
     await this.streamBanStore.create(stream, userToKick);
 
-    await this.participantService.removeUserFromStream(userToKick, stream);
-
     this.events.emit(EVENT_PARTICIPANT_KICKED, userToKickData);
   }
 }
