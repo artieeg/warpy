@@ -1,13 +1,13 @@
 import { IFollow, FollowStore } from './follow.store';
 
 export class FollowService {
-  constructor(private followEntity: FollowStore) {}
+  constructor(private followStore: FollowStore) {}
 
   async createNewFollow(
     follower: string,
     userToFollow: string,
   ): Promise<IFollow> {
-    const follow = await this.followEntity.createNewFollow(
+    const follow = await this.followStore.createNewFollow(
       follower,
       userToFollow,
     );
@@ -16,6 +16,6 @@ export class FollowService {
   }
 
   async deleteFollow(follower: string, userToUnfollow: string): Promise<void> {
-    await this.followEntity.deleteFollow(follower, userToUnfollow);
+    await this.followStore.deleteFollow(follower, userToUnfollow);
   }
 }
