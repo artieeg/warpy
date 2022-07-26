@@ -3,6 +3,7 @@ import { EVENT_USER_CREATED } from '@warpy-be/utils';
 import { RequestCreateUser, User } from '@warpy/lib';
 import { RefreshTokenStore, TokenService } from '@warpy-be/app/token';
 import { UserStore } from './user.store';
+import { UserNotFound } from '@warpy-be/errors';
 
 export class UserService {
   constructor(
@@ -57,7 +58,13 @@ export class UserService {
   }
 
   async findById(user: string, details?: boolean) {
-    return this.store.find(user, details);
+    const data = await this.store.find(user, details);
+
+    if (!data) {
+      throw new UserNotFound();
+    }
+
+    return data;
   }
 
   async search(text: string, requester_id: string) {

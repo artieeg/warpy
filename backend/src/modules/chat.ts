@@ -1,21 +1,21 @@
 import { Injectable, Controller, Module } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
-import { NjsUserStore, UserModule } from './user';
-import { ChatService } from '@warpy-be/app';
+import { UserModule } from './user';
+import { ChatService, ParticipantService } from '@warpy-be/app';
 import { RequestSendChatMessage, SendMessageResponse } from '@warpy/lib';
-import { NjsParticipantStore } from './participant';
+import { NjsParticipantService, NjsParticipantStore } from './participant';
 import { NjsUserBlockService, UserBlockModule } from './user-block';
 
 @Injectable()
 export class NjsChatService extends ChatService {
   constructor(
     events: EventEmitter2,
-    userStore: NjsUserStore,
+    participantService: NjsParticipantService,
     participantStore: NjsParticipantStore,
     userBlockService: NjsUserBlockService,
   ) {
-    super(events, userStore, participantStore, userBlockService);
+    super(events, participantService, participantStore, userBlockService);
   }
 }
 
@@ -42,7 +42,7 @@ export class ChatController {
 }
 
 @Module({
-  imports: [EventEmitter2, UserBlockModule, UserModule],
+  imports: [EventEmitter2, UserBlockModule, ParticipantService, UserModule],
   providers: [NjsChatService],
   controllers: [ChatController],
   exports: [],
