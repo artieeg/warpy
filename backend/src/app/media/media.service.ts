@@ -37,34 +37,10 @@ export class MediaService {
     return response as ResponseCreateMediaRoom;
   }
 
-  createPermissionToken(permissions: MediaPermissions): string {
+  private createPermissionToken(permissions: MediaPermissions): string {
     return jwt.sign(permissions, secret, {
       expiresIn: 60,
     });
-  }
-
-  async getBotParams(user: string, roomId: string) {
-    const { recv } = await this.nodeAssigner.get(user);
-
-    return this.getRecvParams(recv, user, roomId);
-  }
-
-  async getBotToken(bot: string, room: string) {
-    const [sendNodeId, recvNodeId] = await Promise.all([
-      this.balancer.getSendNodeId(room),
-      this.balancer.getRecvNodeId(room),
-    ]);
-
-    const token = this.createPermissionToken({
-      user: bot,
-      room,
-      audio: true,
-      video: true,
-      sendNodeId,
-      recvNodeId,
-    });
-
-    return { token, sendNodeId, recvNodeId };
   }
 
   private async getRecvParams(
