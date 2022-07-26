@@ -33,12 +33,8 @@ export class ParticipantService {
     return data;
   }
 
-  async rejoinExistingParticipant(data: Participant) {
+  async reactivateOldParticipant(data: Participant) {
     await this.participantStore.setDeactivated(data.id, data.stream, false);
-
-    this.events.emit(EVENT_PARTICIPANT_REJOIN, {
-      participant: data,
-    });
   }
 
   async createBotParticipant(
@@ -81,8 +77,6 @@ export class ParticipantService {
     };
 
     await this.participantStore.add(viewer);
-
-    this.events.emit(EVENT_NEW_PARTICIPANT, { participant: viewer });
 
     return viewer;
   }

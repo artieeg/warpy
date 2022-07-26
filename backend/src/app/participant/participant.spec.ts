@@ -1,8 +1,6 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
-  EVENT_NEW_PARTICIPANT,
   EVENT_PARTICIPANT_LEAVE,
-  EVENT_PARTICIPANT_REJOIN,
   EVENT_RAISE_HAND,
   getMockedInstance,
 } from '@warpy-be/utils';
@@ -186,21 +184,13 @@ describe('ParticipantService', () => {
     });
   });
 
-  describe('rejoining participant', () => {
-    const rejoiningParticipant = createParticipantFixture();
-
-    it('emits rejoin event', async () => {
-      await service.rejoinExistingParticipant(rejoiningParticipant);
-
-      expect(events.emit).toBeCalledWith(EVENT_PARTICIPANT_REJOIN, {
-        participant: rejoiningParticipant,
-      });
-    });
+  describe('reactivating participant', () => {
+    const participant = createParticipantFixture();
 
     it('reactivates a rejoining participant', async () => {
-      await service.rejoinExistingParticipant(rejoiningParticipant);
+      await service.reactivateOldParticipant(participant);
 
-      const { id, stream } = rejoiningParticipant;
+      const { id, stream } = participant;
 
       expect(participantStore.setDeactivated).toBeCalledWith(id, stream, false);
     });
@@ -248,14 +238,6 @@ describe('ParticipantService', () => {
       .calledWith(botid, stream)
       .mockResolvedValue(botInstance);
 
-    it('emits event', async () => {
-      await service.createBotParticipant(botid, stream);
-
-      expect(events.emit).toBeCalledWith(EVENT_NEW_PARTICIPANT, {
-        participant: expectedParticipantData,
-      });
-    });
-
     it('saves a new bot participant', async () => {
       await service.createBotParticipant(botid, stream);
 
@@ -290,14 +272,6 @@ describe('ParticipantService', () => {
       await service.createNewParticipant(stream, userid);
 
       expect(participantStore.add).toBeCalledWith(expectedParticipantData);
-    });
-
-    it('emits event', async () => {
-      await service.createNewParticipant(stream, userid);
-
-      expect(events.emit).toBeCalledWith(EVENT_NEW_PARTICIPANT, {
-        participant: expectedParticipantData,
-      });
     });
   });
 });

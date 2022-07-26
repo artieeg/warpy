@@ -1,4 +1,9 @@
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { BannedFromStreamError } from '@warpy-be/errors';
+import {
+  EVENT_NEW_PARTICIPANT,
+  EVENT_PARTICIPANT_REJOIN,
+} from '@warpy-be/utils';
 import { JoinStreamResponse, Roles } from '@warpy/lib';
 import { MediaService } from '../media';
 import { ParticipantService } from '../participant';
@@ -17,6 +22,7 @@ export class StreamJoinerService {
     private host: HostService,
     private tokenService: TokenService,
     private participantKicker: ParticipantKickerService,
+    private events: EventEmitter2,
   ) {}
 
   async joinBot(bot: string, inviteToken: string) {
@@ -72,11 +78,13 @@ export class StreamJoinerService {
 
     //if joining the stream
     if (!previousParticipantData || prevStreamId !== stream) {
-      const [{ recvMediaParams, token: mediaPermissionsToken }] =
+      const [{ recvMediaParams, token: mediaPermissionsToken }, participant] =
         await Promise.all([
           this.media.getViewerParams(user, stream),
           this.participant.createNewParticipant(stream, user),
         ]);
+
+      this.events.emit(EVENT_NEW_PARTICIPANT, { participant });
 
       return {
         ...response,
@@ -88,7 +96,11 @@ export class StreamJoinerService {
 
     //If rejoining...
 
-    await this.participant.rejoinExistingParticipant(previousParticipantData);
+    await this.participant.reactivateOldParticipant(previousParticipantData);
+
+    this.events.emit(EVENT_PARTICIPANT_REJOIN, {
+      participant: previousParticipantData,
+    });
 
     const { role } = previousParticipantData;
 
