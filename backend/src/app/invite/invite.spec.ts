@@ -32,6 +32,29 @@ describe('InviteService', () => {
     botStore as any,
   );
 
+  describe('declining invites', () => {
+    const declinedInvite = createInviteFixture({});
+
+    when(inviteStore.del)
+      .calledWith(declinedInvite.id)
+      .mockResolvedValue(declinedInvite);
+
+    it('sends invite state update', async () => {
+      await service.declineInvite(declinedInvite.id);
+
+      expect(messageService.sendMessage).toBeCalledWith(
+        declinedInvite.inviter_id,
+        expect.anything(),
+      );
+    });
+
+    it('deletes invite data', async () => {
+      await service.declineInvite(declinedInvite.id);
+
+      expect(inviteStore.del).toBeCalledWith(declinedInvite.id);
+    });
+  });
+
   describe('accepting invites', () => {
     const inviteToStartedStream = createInviteFixture({
       id: 'invite0',
