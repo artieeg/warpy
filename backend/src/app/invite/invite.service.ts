@@ -15,13 +15,13 @@ import { InviteStore } from './invite.store';
 export class InviteService {
   constructor(
     private inviteStore: InviteStore,
-    private userEntity: UserStore,
-    private followEntity: FollowStore,
-    private eventEmitter: EventEmitter2,
-    private streamEntity: StreamStore,
+    private userStore: UserStore,
+    private followStore: FollowStore,
+    private events: EventEmitter2,
+    private streamStore: StreamStore,
     private messageService: MessageService,
     private tokenService: TokenService,
-    private botEntity: BotStore,
+    private botStore: BotStore,
   ) {}
 
   /**
@@ -57,9 +57,7 @@ export class InviteService {
     //Emit notifications about each new invite to streams that have already started
     invites
       .filter((invite) => invite.stream_id)
-      .forEach((invite) =>
-        this.eventEmitter.emit(EVENT_INVITE_AVAILABLE, invite),
-      );
+      .forEach((invite) => this.events.emit(EVENT_INVITE_AVAILABLE, invite));
 
     const latestInvite = invites[invites.length - 1];
 
@@ -93,7 +91,7 @@ export class InviteService {
   async acceptInvite(invite_id: string) {
     const { id, inviter_id, stream_id } = await this.inviteStore.get(invite_id);
 
-    //if stream has already started, delete the notification
+    //if stream has already started, delete the invite from store
     if (stream_id) {
       await this.inviteStore.del(invite_id);
     }
@@ -111,9 +109,9 @@ export class InviteService {
     stream_id?: string,
   ) {
     const [inviter, invitee, stream] = await Promise.all([
-      this.userEntity.find(inviter_id),
-      this.userEntity.find(invitee_id),
-      stream_id && this.streamEntity.findById(stream_id),
+      this.userStore.find(inviter_id),
+      this.userStore.find(invitee_id),
+      stream_id && this.streamStore.findById(stream_id),
     ]);
 
     //If the receiver is online, mark the invitation as received
@@ -128,7 +126,7 @@ export class InviteService {
       received: isInviteeOnline,
     });
 
-    this.eventEmitter.emit(EVENT_INVITE_AVAILABLE, invite);
+    this.events.emit(EVENT_INVITE_AVAILABLE, invite);
     this.messageService.sendMessage(invitee.id, {
       event: 'new-invite',
       data: {
@@ -145,7 +143,7 @@ export class InviteService {
    * Creates permission token to join the stream and sends it to a bot
    * */
   private async inviteBotUser(inviter: string, bot: string, streamId: string) {
-    const stream = await this.streamEntity.findById(streamId);
+    const stream = await this.streamStore.findById(streamId);
 
     if (stream.owner !== inviter) {
       throw new NoPermissionError();
@@ -196,7 +194,7 @@ export class InviteService {
    * */
   async notifyAboutStreamId(id: string, owner: string) {
     const [stream, ownedInviteIds] = await Promise.all([
-      this.streamEntity.findById(id),
+      this.streamStore.findById(id),
       this.inviteStore.getUserInviteIds(owner),
     ]);
 
@@ -224,9 +222,9 @@ export class InviteService {
    * */
   async getInviteSuggestions(user: string, _stream: string): Promise<User[]> {
     const [followed, following, bots] = await Promise.all([
-      this.followEntity.getFollowed(user),
-      this.followEntity.getFollowers(user),
-      this.botEntity.getMany(),
+      this.followStore.getFollowed(user),
+      this.followStore.getFollowers(user),
+      this.botStore.getMany(),
     ]);
 
     const suggestions: User[] = [

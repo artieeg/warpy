@@ -98,7 +98,8 @@ export const createInviteFixture = getFixtureCreator<Invite>({
   invitee: createUserFixture({ id: '1' }),
   inviter: createUserFixture({ id: '2' }),
   id: 'test',
-  stream: createStreamFixture({}),
+  stream: createStreamFixture({ id: 'stream0' }),
+  stream_id: 'stream0',
 });
 
 export const createNotificationFixture = getFixtureCreator<Notification>({
