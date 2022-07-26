@@ -50,18 +50,12 @@ export class InviteService {
   async checkNewInvitesFor(user: string) {
     const invites = await this.inviteStore.getPendingInvitesFor(user);
 
-    if (invites.length === 0) {
-      return;
-    }
-
     //Emit notifications about each new invite to streams that have already started
     invites
       .filter((invite) => invite.stream_id)
       .forEach((invite) => this.events.emit(EVENT_INVITE_AVAILABLE, invite));
 
     const latestInvite = invites[invites.length - 1];
-
-    console.log({ latestInvite });
 
     //send the latest invite
     if (latestInvite) {
@@ -133,7 +127,6 @@ export class InviteService {
         invite,
       } as EventReceivedInvite,
     });
-    console.log('5');
 
     return invite;
   }

@@ -1,5 +1,5 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { getMockedInstance } from '@warpy-be/utils';
+import { EVENT_INVITE_AVAILABLE, getMockedInstance } from '@warpy-be/utils';
 import { createInviteFixture } from '@warpy-be/__fixtures__';
 import { when } from 'jest-when';
 import { BotStore } from '../bot';
@@ -31,6 +31,68 @@ describe('InviteService', () => {
     tokenService as any,
     botStore as any,
   );
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('deleting invites', () => {
+    const idsToDelete = ['invite0', 'invite1'];
+
+    const user = 'user0';
+
+    when(inviteStore.getUserInviteIds)
+      .calledWith(user)
+      .mockResolvedValue(idsToDelete);
+
+    it("deletes user's invites", async () => {
+      await service.deleteUserInvites(user);
+
+      idsToDelete.forEach((id) => expect(inviteStore.del).toBeCalledWith(id));
+    });
+  });
+
+  describe('checking for new invites', () => {
+    const invites = [
+      createInviteFixture({ stream_id: '1' }),
+      createInviteFixture({ stream_id: '2' }),
+      createInviteFixture({ stream_id: undefined, stream: undefined }),
+    ];
+
+    inviteStore.getPendingInvitesFor.mockResolvedValue(invites as any);
+
+    it('emits new invites as notifications', async () => {
+      await service.checkNewInvitesFor('user');
+
+      expect(events.emit).toBeCalledTimes(2);
+      expect(events.emit).toBeCalledWith(EVENT_INVITE_AVAILABLE, invites[0]);
+      expect(events.emit).toBeCalledWith(EVENT_INVITE_AVAILABLE, invites[1]);
+    });
+
+    it('sends latest invite info', async () => {
+      await service.checkNewInvitesFor('user');
+
+      expect(
+        messageService.sendMessage(
+          'user',
+          expect.objectContaining({
+            data: {
+              invite: invites[invites.length - 1],
+            },
+          }),
+        ),
+      );
+    });
+
+    it('marks invites as received', async () => {
+      await service.checkNewInvitesFor('user');
+
+      expect(inviteStore.updateMany).toBeCalledWith(
+        invites.map((i) => i.id),
+        { received: true },
+      );
+    });
+  });
 
   describe('declining invites', () => {
     const declinedInvite = createInviteFixture({});
