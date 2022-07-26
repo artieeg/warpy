@@ -2,8 +2,8 @@ import { IFollow } from '@warpy-be/app';
 import {
   Award,
   AwardModel,
-  IInvite,
-  INotification,
+  Invite,
+  Notification,
   Participant,
   Stream,
 } from '@warpy/lib';
@@ -35,6 +35,10 @@ export const createUserFixture = getFixtureCreator<User>({
   sub: null,
   username: 'test_username',
   isAnon: false,
+});
+
+export const createBotInstanceFixture = getFixtureCreator<User>({
+  ...createUserFixture(),
 });
 
 export const createParticipantFixture = getFixtureCreator<Participant>({
@@ -87,7 +91,7 @@ export const createFollowRecord = getFixtureCreator<IFollow>({
   followed: createUserFixture({ id: 'followed' }),
 });
 
-export const createInviteFixture = getFixtureCreator<IInvite>({
+export const createInviteFixture = getFixtureCreator<Invite>({
   invitee_id: '1',
   inviter_id: '2',
   invitee: createUserFixture({ id: '1' }),
@@ -96,7 +100,7 @@ export const createInviteFixture = getFixtureCreator<IInvite>({
   stream: createStreamFixture({}),
 });
 
-export const createNotificationFixture = getFixtureCreator<INotification>({
+export const createNotificationFixture = getFixtureCreator<Notification>({
   id: 'test',
   hasBeenSeen: false,
   created_at: 1000,

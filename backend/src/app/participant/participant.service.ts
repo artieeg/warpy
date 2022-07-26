@@ -54,6 +54,7 @@ export class ParticipantService {
       ...botInstance,
       stream,
       audioEnabled: false,
+      isRaisingHand: false,
       videoEnabled: false,
       role: 'streamer',
       isBanned: false,
