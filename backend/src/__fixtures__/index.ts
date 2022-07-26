@@ -1,5 +1,6 @@
 import { IFollow } from '@warpy-be/app';
 import {
+  AppInvite,
   Award,
   AwardModel,
   Invite,
@@ -122,4 +123,10 @@ export const createAwardFixture = getFixtureCreator<Award>({
   //award: createAwardModelFixture({ id: 'award' }),
   created_at: new Date().toISOString(),
   message: 'test',
+});
+
+export const createAppInviteFixture = getFixtureCreator<AppInvite>({
+  id: 'invite0',
+  user: createUserFixture(),
+  code: 'invite',
 });
