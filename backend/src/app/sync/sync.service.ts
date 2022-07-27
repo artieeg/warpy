@@ -1,4 +1,3 @@
-import { UserNotFound } from '@warpy-be/errors';
 import { WhoAmIResponse } from '@warpy/lib';
 import { CategoryStore } from '@warpy-be/app/category';
 import { AppliedAppInviteStore } from '@warpy-be/app/app-invite';
@@ -24,10 +23,6 @@ export class SyncService {
         this.friendFeed.getFriendFeed(user),
         this.userListService.getFollowing(user, 0),
       ]);
-
-    if (!data) {
-      throw new UserNotFound();
-    }
 
     return {
       user: data,

@@ -6,7 +6,7 @@ import {
 } from '@warpy-be/utils';
 import { JoinStreamResponse, Roles } from '@warpy/lib';
 import { MediaService } from '../media';
-import { ParticipantService } from '../participant';
+import { ParticipantService, ParticipantStore } from '../participant';
 import { ParticipantKickerService } from '../participant-kicker';
 import { HostService } from '../stream-host';
 import { TokenService } from '../token';
@@ -17,7 +17,8 @@ import { TokenService } from '../token';
  * */
 export class StreamJoinerService {
   constructor(
-    private participant: ParticipantService,
+    private participantService: ParticipantService,
+    private participantStore: ParticipantStore,
     private media: MediaService,
     private host: HostService,
     private tokenService: TokenService,
@@ -28,7 +29,7 @@ export class StreamJoinerService {
   async joinBot(bot: string, inviteToken: string) {
     const { stream } = this.tokenService.decodeToken(inviteToken);
 
-    const botParticipant = await this.participant.createBotParticipant(
+    const botParticipant = await this.participantService.createBotParticipant(
       bot,
       stream,
     );
@@ -62,12 +63,12 @@ export class StreamJoinerService {
     let response: JoinStreamResponse;
 
     const [previousParticipantData, streamData, host] = await Promise.all([
-      this.participant.get(user),
-      this.participant.getParticipantDataOnStream(stream),
+      this.participantStore.get(user),
+      this.participantService.getParticipantDataOnStream(stream),
       this.host.getStreamHostId(stream),
     ]);
 
-    const prevStreamId = previousParticipantData.stream;
+    const prevStreamId = previousParticipantData?.stream;
 
     response = {
       ...response,
@@ -81,7 +82,7 @@ export class StreamJoinerService {
       const [{ recvMediaParams, token: mediaPermissionsToken }, participant] =
         await Promise.all([
           this.media.getViewerParams(user, stream),
-          this.participant.createNewParticipant(stream, user),
+          this.participantService.createNewParticipant(stream, user),
         ]);
 
       this.events.emit(EVENT_NEW_PARTICIPANT, { participant });
@@ -96,7 +97,9 @@ export class StreamJoinerService {
 
     //If rejoining...
 
-    await this.participant.reactivateOldParticipant(previousParticipantData);
+    await this.participantService.reactivateOldParticipant(
+      previousParticipantData,
+    );
 
     this.events.emit(EVENT_PARTICIPANT_REJOIN, {
       participant: previousParticipantData,

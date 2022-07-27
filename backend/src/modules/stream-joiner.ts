@@ -7,7 +7,11 @@ import {
   RequestJoinStream,
   JoinStreamResponse,
 } from '@warpy/lib';
-import { NjsParticipantService, ParticipantModule } from './participant';
+import {
+  NjsParticipantService,
+  NjsParticipantStore,
+  ParticipantModule,
+} from './participant';
 import { MediaModule, NjsMediaService } from './media';
 import { HostModule, NjsHostService } from './stream-host';
 import { NJTokenService, TokenModule } from './token';
@@ -21,6 +25,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 export class NjsStreamJoiner extends StreamJoinerService {
   constructor(
     participantService: NjsParticipantService,
+    participantStore: NjsParticipantStore,
     mediaService: NjsMediaService,
     hostService: NjsHostService,
     tokenService: NJTokenService,
@@ -29,6 +34,7 @@ export class NjsStreamJoiner extends StreamJoinerService {
   ) {
     super(
       participantService,
+      participantStore,
       mediaService,
       hostService,
       tokenService,
