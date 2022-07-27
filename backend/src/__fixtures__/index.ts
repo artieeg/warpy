@@ -131,3 +131,9 @@ export const createAppInviteFixture = getFixtureCreator<AppInvite>({
   user: createUserFixture(),
   code: 'invite',
 });
+
+export const createStreamerParamsFixture = getFixtureCreator({
+  token: 'token',
+  recvMediaParams: {},
+  sendMediaParams: {},
+});

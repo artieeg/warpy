@@ -61,10 +61,6 @@ export class StreamService {
     };
   }
 
-  async setStreamHost(stream: string, host: string) {
-    return this.streamStore.setHost(stream, host);
-  }
-
   async deleteStream(stream: string) {
     await this.streamStore.del(stream);
     this.eventEmitter.emit(EVENT_STREAM_ENDED, {
