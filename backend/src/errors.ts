@@ -162,3 +162,11 @@ export class NoDeveloperAccount extends BaseError {
     this.name = 'NoDeveloperAccount';
   }
 }
+
+export class InvalidReaction extends BaseError {
+  constructor() {
+    super('this reaction is invalid');
+
+    this.name = 'InvalidReaction';
+  }
+}

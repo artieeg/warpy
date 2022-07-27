@@ -1,10 +1,11 @@
 import { EVENT_REACTIONS } from '@warpy-be/utils';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ALLOWED_EMOJI, Reaction } from '@warpy/lib';
+import { InvalidReaction } from '@warpy-be/errors';
 
 export class ReactionService {
   private syncInterval: ReturnType<typeof setInterval>;
-  private batchedReactionUpdates: Record<string, Reaction[]> = {};
+  batchedReactionUpdates: Record<string, Reaction[]> = {};
 
   constructor(private eventEmitter: EventEmitter2) {}
 
@@ -29,7 +30,7 @@ export class ReactionService {
     stream: string,
   ): Promise<void> {
     if (!ALLOWED_EMOJI.includes(emoji)) {
-      throw new Error();
+      throw new InvalidReaction();
     }
 
     if (!this.batchedReactionUpdates[stream]) {
