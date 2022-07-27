@@ -4,24 +4,24 @@ import { PreviousStreamStore } from './previous-stream.store';
 
 export class PreviousStreamService {
   constructor(
-    private previousStreamCache: PreviousStreamStore,
+    private previousStreamStore: PreviousStreamStore,
     private messageService: MessageService,
-    private streamEntity: StreamStore,
+    private streamStore: StreamStore,
   ) {}
 
   async clearStream(stream: string) {
-    await this.previousStreamCache.delStream(stream);
+    await this.previousStreamStore.delStream(stream);
   }
 
   async set(user: string, stream: string) {
-    return this.previousStreamCache.set(user, stream);
+    return this.previousStreamStore.set(user, stream);
   }
 
   async sendPreviousStream(user: string) {
-    const stream_id = await this.previousStreamCache.get(user);
+    const stream_id = await this.previousStreamStore.get(user);
 
     if (stream_id) {
-      const stream = await this.streamEntity.findById(stream_id);
+      const stream = await this.streamStore.findById(stream_id);
 
       if (stream) {
         this.messageService.sendMessage(user, {
@@ -35,6 +35,6 @@ export class PreviousStreamService {
   }
 
   async expire(user: string) {
-    await this.previousStreamCache.expire(user);
+    await this.previousStreamStore.expire(user);
   }
 }
