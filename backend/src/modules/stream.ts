@@ -9,10 +9,10 @@ import {
   EventNewPreview,
   RequestFetchStream,
 } from '@warpy/lib';
-import { OnHostReassignFailed } from '../interfaces';
+import { OnHostReassignFailed, OnHostReassign } from '../interfaces';
 import { MediaModule, NjsMediaService } from './media';
 import { PrismaModule, PrismaService } from './prisma';
-import { EVENT_HOST_REASSIGN_FAILED } from '../utils';
+import { EVENT_HOST_REASSIGN, EVENT_HOST_REASSIGN_FAILED } from '../utils';
 
 @Injectable()
 export class NjsStreamStore extends StreamStore {
@@ -33,7 +33,7 @@ export class NjsStreamService extends StreamService {
 }
 
 @Controller()
-export class StreamController implements OnHostReassignFailed {
+export class StreamController implements OnHostReassignFailed, OnHostReassign {
   constructor(private streamService: NjsStreamService) {}
 
   @MessagePattern('stream.create')
@@ -43,6 +43,11 @@ export class StreamController implements OnHostReassignFailed {
     user,
   }: RequestCreateStream): Promise<NewStreamResponse> {
     return this.streamService.createNewStream(user, title, category);
+  }
+
+  @OnEvent(EVENT_HOST_REASSIGN)
+  async onHostReassign({ stream, host }) {
+    await this.streamService.setStreamHost(stream, host.id);
   }
 
   @OnEvent(EVENT_HOST_REASSIGN_FAILED)
