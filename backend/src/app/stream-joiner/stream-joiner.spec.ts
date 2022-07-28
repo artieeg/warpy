@@ -136,6 +136,16 @@ describe('StreamJoinerService', () => {
         .calledWith(oldStreamerData.id)
         .mockResolvedValue(oldStreamerData);
 
+      it('includes the rejoined streamer in the streamers array', () => {
+        expect(
+          service.joinUser(oldStreamerData.id, oldStreamerData.stream),
+        ).resolves.toStrictEqual(
+          expect.objectContaining({
+            streamers: expect.arrayContaining([oldStreamerData]),
+          }),
+        );
+      });
+
       it('returns send/recv media params', () => {
         expect(
           service.joinUser(oldStreamerData.id, oldStreamerData.stream),
@@ -144,7 +154,7 @@ describe('StreamJoinerService', () => {
             sendMediaParams: streamerParams.sendMediaParams,
             recvMediaParams: streamerParams.recvMediaParams,
             role: 'streamer',
-            //streamers: expect.arrayContaining([oldStreamerData]),
+            streamers: expect.arrayContaining([oldStreamerData]),
           }),
         );
       });
