@@ -47,7 +47,7 @@ export class ParticipantRoleManagerService {
     }
 
     if (role !== 'viewer') {
-      await this.blockService.isBlockedByStreamer(userToUpdate, stream);
+      await this.blockService.checkUser(userToUpdate, stream);
     }
 
     const oldUserData = await this.participant.get(userToUpdate);

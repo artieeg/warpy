@@ -64,7 +64,7 @@ describe('ParticipantRoleManagerService', () => {
   const updatedUser = createParticipantFixture();
   participantStore.update.mockResolvedValue(updatedUser);
 
-  when(userBlockService.isBlockedByStreamer)
+  when(userBlockService.checkUser)
     .calledWith(
       userBlockedByOtherStreamers.id,
       userBlockedByOtherStreamers.stream,

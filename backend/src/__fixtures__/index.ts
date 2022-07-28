@@ -9,6 +9,7 @@ import {
   Participant,
   Stream,
   StreamCategory,
+  UserBlock,
 } from '@warpy/lib';
 import { ConnectRecvTransportParams, User } from '@warpy/lib';
 
@@ -148,4 +149,12 @@ export const createStreamerParamsFixture = getFixtureCreator({
 export const createFriendFeedItemFixture = getFixtureCreator<FriendFeedItem>({
   user: createUserFixture(),
   stream: createStreamFixture(),
+});
+
+export const createUserBlockFixture = getFixtureCreator<UserBlock>({
+  id: 'block0',
+  blocker: 'blocker0',
+  blocked: createUserFixture({
+    id: 'blocked0',
+  }),
 });
