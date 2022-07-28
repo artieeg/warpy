@@ -1,4 +1,5 @@
 import { Injectable, Controller, Module } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { MessagePattern } from '@nestjs/microservices';
 import { UserReportService, UserReportStore } from '@warpy-be/app';
 import { RequestReportUser, UserReportResponse } from '@warpy/lib';
@@ -12,8 +13,8 @@ export class NjsUserReportStore extends UserReportStore {
 
 @Injectable()
 export class NjsUserReportService extends UserReportService {
-  constructor(userReportStore: NjsUserReportStore) {
-    super(userReportStore);
+  constructor(userReportStore: NjsUserReportStore, events: EventEmitter2) {
+    super(userReportStore, events);
   }
 }
 

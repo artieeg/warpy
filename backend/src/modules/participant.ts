@@ -33,6 +33,7 @@ import {
 } from '@warpy/lib';
 import { NjsUserService, UserModule } from './user';
 import { PrismaModule, PrismaService } from './prisma';
+import { ParticipantAlreadyLeft } from '@warpy-be/errors';
 
 @Injectable()
 export class NjsBotInstanceStore extends BotInstanceStore {
@@ -120,7 +121,14 @@ export class ParticipantController
 
   @MessagePattern('participant.leave')
   async leave({ user }) {
-    await this.participant.handleLeavingParticipant(user);
+    try {
+      await this.participant.handleLeavingParticipant(user);
+    } catch (e) {
+      if (e instanceof ParticipantAlreadyLeft) {
+      } else {
+        throw e;
+      }
+    }
   }
 
   @OnEvent(EVENT_STREAM_ENDED)
