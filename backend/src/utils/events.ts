@@ -31,3 +31,5 @@ export const EVENT_INVITE_AVAILABLE = 'invite.new';
 
 export const EVENT_STREAMER_MEDIA_TOGGLE = 'participant.media-toggle';
 export const EVENT_REACTION_NEW = 'reaction.new';
+
+export const EVENT_USER_REPORT_CREATED = 'report.created';
