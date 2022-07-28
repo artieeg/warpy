@@ -3,10 +3,12 @@ import {
   AppInvite,
   Award,
   AwardModel,
+  FriendFeedItem,
   Invite,
   Notification,
   Participant,
   Stream,
+  StreamCategory,
 } from '@warpy/lib';
 import { ConnectRecvTransportParams, User } from '@warpy/lib';
 
@@ -18,6 +20,11 @@ function getFixtureCreator<T>(defaults: T) {
     };
   };
 }
+
+export const createCategoryFixture = getFixtureCreator<StreamCategory>({
+  id: 'cat0',
+  title: 'Category Fixture',
+});
 
 export const createStreamFixture = getFixtureCreator<Stream>({
   id: 'test-id',
@@ -136,4 +143,9 @@ export const createStreamerParamsFixture = getFixtureCreator({
   token: 'token',
   recvMediaParams: {},
   sendMediaParams: {},
+});
+
+export const createFriendFeedItemFixture = getFixtureCreator<FriendFeedItem>({
+  user: createUserFixture(),
+  stream: createStreamFixture(),
 });

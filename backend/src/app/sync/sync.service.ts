@@ -8,9 +8,9 @@ import { FriendFeedService } from '@warpy-be/app/friend-feed';
 export class SyncService {
   constructor(
     private userService: UserService,
-    private appliedAppInviteEntity: AppliedAppInviteStore,
-    private categoriesEntity: CategoryStore,
-    private friendFeed: FriendFeedService,
+    private appliedAppInviteStore: AppliedAppInviteStore,
+    private categoryStore: CategoryStore,
+    private friendFeedService: FriendFeedService,
     private userListService: IUserListFetcherService,
   ) {}
 
@@ -18,9 +18,9 @@ export class SyncService {
     const [data, hasActivatedAppInvite, categories, friendFeed, following] =
       await Promise.all([
         this.userService.findById(user, true),
-        this.appliedAppInviteEntity.find(user),
-        this.categoriesEntity.getAll(),
-        this.friendFeed.getFriendFeed(user),
+        this.appliedAppInviteStore.find(user),
+        this.categoryStore.getAll(),
+        this.friendFeedService.getFriendFeed(user),
         this.userListService.getFollowing(user, 0),
       ]);
 
