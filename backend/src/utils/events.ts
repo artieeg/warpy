@@ -4,6 +4,7 @@ export const EVENT_STREAM_ENDED = 'stream.ended';
 export const EVENT_USER_CREATED = 'user.created';
 export const EVENT_USER_DISCONNECTED = 'user.disconnected';
 export const EVENT_USER_CONNECTED = 'user.connected';
+export const EVENT_USER_DELETED = 'user.deleted';
 
 export const EVENT_NEW_PARTICIPANT = 'participant.new';
 export const EVENT_PARTICIPANT_LEAVE = 'participant.leave';
