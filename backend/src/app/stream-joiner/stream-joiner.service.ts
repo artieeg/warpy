@@ -4,7 +4,7 @@ import {
   EVENT_NEW_PARTICIPANT,
   EVENT_PARTICIPANT_REJOIN,
 } from '@warpy-be/utils';
-import { JoinStreamResponse, Roles } from '@warpy/lib';
+import { JoinStreamResponse, Participant, Roles } from '@warpy/lib';
 import { MediaService } from '../media';
 import { ParticipantService, ParticipantStore } from '../participant';
 import { ParticipantKickerService } from '../participant-kicker';
@@ -54,49 +54,59 @@ export class StreamJoinerService {
     };
   }
 
-  async joinUser(user: string, stream: string) {
+  async joinUser(user: string, stream: string): Promise<JoinStreamResponse> {
     //check whether the user has been banned on stream
     if (await this.participantKicker.isUserKicked(user, stream)) {
       throw new BannedFromStreamError();
     }
 
-    let response: JoinStreamResponse;
-
-    const [previousParticipantData, streamData, host] = await Promise.all([
+    const [participantData, streamParticipantsInfo, host] = await Promise.all([
       this.participantStore.get(user),
       this.participantService.getParticipantDataOnStream(stream),
       this.host.getStreamHostId(stream),
     ]);
 
-    const prevStreamId = previousParticipantData?.stream;
-
-    response = {
-      ...response,
-      ...streamData,
-      count: streamData.count + 1,
-      host,
+    let roleAndMediaParams: {
+      mediaPermissionsToken: string;
+      sendMediaParams?: any;
+      recvMediaParams: any;
+      role: Roles;
     };
-
-    //if joining the stream
-    if (!previousParticipantData || prevStreamId !== stream) {
-      const [{ recvMediaParams, token: mediaPermissionsToken }, participant] =
-        await Promise.all([
-          this.media.getViewerParams(user, stream),
-          this.participantService.createNewParticipant(stream, user),
-        ]);
-
-      this.events.emit(EVENT_NEW_PARTICIPANT, { participant });
-
-      return {
-        ...response,
-        mediaPermissionsToken,
-        recvMediaParams,
-        role: 'viewer' as Roles,
-      };
+    if (!participantData || participantData.stream !== stream) {
+      roleAndMediaParams = await this._join(user, stream);
+    } else {
+      roleAndMediaParams = await this._rejoin(participantData);
     }
 
-    //If rejoining...
+    return {
+      ...streamParticipantsInfo,
+      count: streamParticipantsInfo.count + 1,
+      host,
+      streamers:
+        roleAndMediaParams.role === 'streamer'
+          ? [...streamParticipantsInfo.streamers, participantData]
+          : streamParticipantsInfo.streamers,
+      ...roleAndMediaParams,
+    };
+  }
 
+  private async _join(user: string, stream: string) {
+    const [{ recvMediaParams, token: mediaPermissionsToken }, participant] =
+      await Promise.all([
+        this.media.getViewerParams(user, stream),
+        this.participantService.createNewParticipant(stream, user),
+      ]);
+
+    this.events.emit(EVENT_NEW_PARTICIPANT, { participant });
+
+    return {
+      mediaPermissionsToken,
+      recvMediaParams,
+      role: 'viewer' as Roles,
+    };
+  }
+
+  private async _rejoin(previousParticipantData: Participant) {
     await this.participantService.reactivateOldParticipant(
       previousParticipantData,
     );
@@ -109,8 +119,8 @@ export class StreamJoinerService {
 
     //Based on the previous role, get viewer or streamer params
     const reconnectMediaParams = await this.getMediaParamsForRole({
-      user,
-      stream,
+      user: previousParticipantData.id,
+      stream: previousParticipantData.stream,
       role,
     });
 
@@ -119,17 +129,10 @@ export class StreamJoinerService {
      * if we are streaming audio/video, then
      * include us in the streamers array
      * */
-    response = {
-      ...response,
+    return {
       ...reconnectMediaParams,
       role,
-      streamers:
-        role === 'viewer'
-          ? response.streamers
-          : [...response.streamers, previousParticipantData],
     };
-
-    return response;
   }
 
   /**
@@ -152,15 +155,18 @@ export class StreamJoinerService {
 
       return { mediaPermissionsToken, recvMediaParams };
     } else {
-      const { token: mediaPermissionsToken, recvMediaParams } =
-        await this.media.getStreamerParams({
-          user,
-          roomId: stream,
-          audio: true,
-          video: role === 'streamer',
-        });
+      const {
+        token: mediaPermissionsToken,
+        recvMediaParams,
+        sendMediaParams,
+      } = await this.media.getStreamerParams({
+        user,
+        roomId: stream,
+        audio: true,
+        video: role === 'streamer',
+      });
 
-      return { mediaPermissionsToken, recvMediaParams };
+      return { mediaPermissionsToken, recvMediaParams, sendMediaParams };
     }
   }
 }

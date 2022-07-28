@@ -18,7 +18,6 @@ import { HostService } from '../stream-host';
 import { TokenService } from '../token';
 
 describe('StreamJoinerService', () => {
-  /*
   const participantService =
     getMockedInstance<ParticipantService>(ParticipantService);
 
@@ -31,6 +30,17 @@ describe('StreamJoinerService', () => {
     ParticipantKickerService,
   );
   const events = getMockedInstance<EventEmitter2>(EventEmitter2);
+
+  const streamerParams = createStreamerParamsFixture();
+  mediaService.getStreamerParams.mockResolvedValue(streamerParams as any);
+
+  const peopleOnStream = 10;
+
+  participantService.getParticipantDataOnStream.mockResolvedValue({
+    streamers: [createParticipantFixture({ role: 'streamer' })],
+    raisedHands: [],
+    count: peopleOnStream,
+  });
 
   const service = new StreamJoinerService(
     participantService as any,
@@ -55,6 +65,13 @@ describe('StreamJoinerService', () => {
 
     const previouslyKickedParticipantId = 'joining-kicked-user0';
 
+    const viewerParams = {
+      recvMediaParams: {},
+      token: 'media token',
+    };
+
+    mediaService.getViewerParams.mockResolvedValue(viewerParams as any);
+
     when(participantStore.get)
       .calledWith(newParticipant.id)
       .mockResolvedValue(null);
@@ -66,6 +83,10 @@ describe('StreamJoinerService', () => {
     when(participantKickerService.isUserKicked)
       .calledWith(previouslyKickedParticipantId, stream)
       .mockResolvedValue(true);
+
+    when(participantService.createNewParticipant)
+      .calledWith(stream, newParticipant.id)
+      .mockResolvedValue(newParticipant);
 
     it('throws is the user has been previously kicked', async () => {
       expect(
@@ -89,6 +110,8 @@ describe('StreamJoinerService', () => {
         ).resolves.toStrictEqual(
           expect.objectContaining({
             role: 'viewer',
+            mediaPermissionsToken: viewerParams.token,
+            recvMediaParams: viewerParams.recvMediaParams,
           }),
         );
       });
@@ -102,7 +125,32 @@ describe('StreamJoinerService', () => {
       });
     });
 
-    describe('rejoining old participant', () => {
+    describe('rejoining old streamer(streamer)', () => {
+      const oldStreamerData = createParticipantFixture({
+        stream,
+        role: 'streamer',
+        id: 'rejoining-streamer0',
+      });
+
+      when(participantStore.get)
+        .calledWith(oldStreamerData.id)
+        .mockResolvedValue(oldStreamerData);
+
+      it('returns send/recv media params', () => {
+        expect(
+          service.joinUser(oldStreamerData.id, oldStreamerData.stream),
+        ).resolves.toStrictEqual(
+          expect.objectContaining({
+            sendMediaParams: streamerParams.sendMediaParams,
+            recvMediaParams: streamerParams.recvMediaParams,
+            role: 'streamer',
+            //streamers: expect.arrayContaining([oldStreamerData]),
+          }),
+        );
+      });
+    });
+
+    describe('rejoining old participant (viewer)', () => {
       const oldParticipantData = createParticipantFixture({
         id: 'rejoining-user0',
         stream,
@@ -135,10 +183,8 @@ describe('StreamJoinerService', () => {
     const token = 'token';
     const bot = 'bot0';
 
-    const streamerParams = createStreamerParamsFixture();
     const botParticipant = createParticipantFixture();
 
-    mediaService.getStreamerParams.mockResolvedValue(streamerParams as any);
     tokenService.decodeToken.mockReturnValue({ stream });
     participantService.createBotParticipant.mockResolvedValue(botParticipant);
 
@@ -170,7 +216,4 @@ describe('StreamJoinerService', () => {
       });
     });
   });
-  */
-
-  it.todo('joining tests');
 });
