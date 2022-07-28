@@ -2,7 +2,7 @@ import { Controller, Injectable, Module } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { UserDataFetcherService } from '@warpy-be/app';
 import { RequestUser, UserInfoResponse } from '@warpy/lib';
-import { NjsUserStore, UserModule } from './user';
+import { NjsUserService, UserModule } from './user';
 import { FollowModule, NjsFollowStore } from './follow';
 import { NjsParticipantStore } from './participant';
 import { NjsStreamStore, StreamModule } from './stream';
@@ -10,12 +10,12 @@ import { NjsStreamStore, StreamModule } from './stream';
 @Injectable()
 export class NjsUserDataFetcherService extends UserDataFetcherService {
   constructor(
-    userStore: NjsUserStore,
+    userService: NjsUserService,
     followStore: NjsFollowStore,
     participantStore: NjsParticipantStore,
     streamStore: NjsStreamStore,
   ) {
-    super(userStore, followStore, participantStore, streamStore);
+    super(userService, followStore, participantStore, streamStore);
   }
 }
 
