@@ -54,7 +54,7 @@ export class InviteService extends Service<InviteData> {
     return this.applyInviteAction("accept");
   }
 
-  private async applyInviteAction(action: "accept" | "decline") {
+  private applyInviteAction(action: "accept" | "decline") {
     const { api, modalInvite } = this.state.get();
 
     if (!modalInvite) return;
@@ -68,7 +68,7 @@ export class InviteService extends Service<InviteData> {
       container.openStream?.(modalInvite.stream);
     }
 
-    this.modal.close();
+    return this.modal.close();
   }
 
   async sendPendingInvites() {

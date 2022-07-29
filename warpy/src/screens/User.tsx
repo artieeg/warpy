@@ -100,6 +100,17 @@ export const User = () => {
           </>
         )*/}
 
+        {user.bio && (
+          <>
+            <Text size="xsmall" color="boulder">
+              bio
+            </Text>
+            <Text size="small" color="white">
+              {user.bio}
+            </Text>
+          </>
+        )}
+
         {stream && (
           <>
             <Text size="small" color="boulder">

@@ -101,7 +101,8 @@ export class UserService extends Service<UserData> {
     return this.state.update({
       [key]: {
         page: listData.page + 1,
-        list: [...listData.list, ...users],
+        //list: [...listData.list, ...users],
+        list: [...users],
       },
     });
   }
