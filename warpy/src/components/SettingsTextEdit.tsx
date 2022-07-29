@@ -85,7 +85,7 @@ export const SettingsTextEdit = (props: SettingsTextEditProps) => {
             styles.input,
             textStyles.bold,
             textStyles.small,
-            {color: response?.status === 'error' ? colors.red : colors.green},
+            {color: colors.white},
             {fontWeight: '300'},
           ]}
           defaultValue={value as string}
@@ -125,6 +125,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    backgroundColor: colors.mine_shaft,
+    padding: 10,
+    borderRadius: 12,
+    marginTop: 5,
   },
   input: {
     padding: 0,
@@ -133,6 +137,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   wrapper: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
 });
