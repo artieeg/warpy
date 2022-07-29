@@ -39,6 +39,7 @@ export const createUserFixture = getFixtureCreator<User>({
   id: 'test-id',
   last_name: 'test',
   first_name: 'test',
+  bio: 'test bio',
   avatar: 'avatar.com/test',
   email: null,
   sub: null,

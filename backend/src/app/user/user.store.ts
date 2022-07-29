@@ -10,6 +10,7 @@ export function toUserDTO(data: PrismaUser, includeDetails?: boolean) {
     last_name: data.last_name,
     first_name: data.first_name,
     username: data.username,
+    bio: data.bio,
     avatar: data.avatar,
     sub: includeDetails ? data.sub : null,
     email: includeDetails ? data.email : null,

@@ -31,6 +31,7 @@ export class UserService {
       username,
       last_name,
       first_name,
+      bio: '',
       email,
       avatar,
       sub: 'DEV_ACCOUNT',
