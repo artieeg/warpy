@@ -1,12 +1,12 @@
 import React, {useCallback} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import {IFriendFeedItem} from '@warpy/lib';
+import {FriendFeedItem} from '@warpy/lib';
 import {Avatar} from './Avatar';
 import {Text} from './Text';
 import {useDispatcher} from '@app/store';
 
 interface FriendFeedItemProps {
-  item: IFriendFeedItem;
+  item: FriendFeedItem;
 }
 
 export const UserHorizontalListItem = ({item: {user}}: FriendFeedItemProps) => {

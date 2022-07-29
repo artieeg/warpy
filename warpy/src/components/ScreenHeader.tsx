@@ -42,21 +42,21 @@ export const ScreenHeader: React.FC<{
 
   const title = useMemo(() => {
     const userListScreenTitles = {
-      following: '/following',
-      followers: '/followers',
-      blocked: '/blocked',
+      following: 'following',
+      followers: 'followers',
+      blocked: 'blocked',
     };
 
     const titles = {
-      MyAwardsDisplay: '/awards',
-      Search: '/search',
-      Feed: '/feed',
-      Notifications: '/news',
-      MainSettingsScreen: '/you',
-      User: '/user',
+      MyAwardsDisplay: 'awards',
+      Search: 'search',
+      Feed: 'feed',
+      Notifications: 'news',
+      MainSettingsScreen: 'you',
+      User: 'user',
       UserListScreen: userListScreenTitles[userListScreenMode],
-      SendInvite: '/invite people',
-      InviteCodeInput: '/invite',
+      SendInvite: 'invite people',
+      InviteCodeInput: 'invite',
     };
 
     return titles[route.name as keyof typeof titles];

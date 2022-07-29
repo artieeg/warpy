@@ -92,14 +92,14 @@ export const User = () => {
           </View>
         </View>
 
-        {user?.id && (
+        {/*user?.id && (
           <>
             <Text size="small" color="boulder">
               recent awards
             </Text>
             <UserAwardsPreview user={user.id} />
           </>
-        )}
+        )*/}
 
         {stream && (
           <>

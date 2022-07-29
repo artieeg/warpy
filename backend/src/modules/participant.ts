@@ -111,7 +111,13 @@ export class ParticipantController
 
   @OnEvent(EVENT_USER_DISCONNECTED)
   async onUserDisconnect({ user }) {
-    await this.participant.handleLeavingParticipant(user);
+    try {
+      await this.participant.handleLeavingParticipant(user);
+    } catch(e) {
+      if (e instanceof ParticipantAlreadyLeft) { } else {
+        throw e
+      }
+    }
   }
 
   @OnEvent(EVENT_ROLE_CHANGE)

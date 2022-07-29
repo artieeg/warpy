@@ -1,7 +1,7 @@
 import {useStoreShallow} from '@app/store';
 import React, {useMemo} from 'react';
-import {View, StyleSheet, FlatList, ViewProps} from 'react-native';
-import {IFriendFeedItem} from '@warpy/lib';
+import {StyleSheet, FlatList, ViewProps} from 'react-native';
+import {FriendFeedItem} from '@warpy/lib';
 import {UserHorizontalListItem} from './UserHorizontalListItem';
 import Animated, {
   Easing,
@@ -26,7 +26,7 @@ export const FriendFeed: React.FC<FriendFeedProps> = ({
     //state.list_following.list,
   ]);
 
-  const feed: IFriendFeedItem[] = useMemo(
+  const feed: FriendFeedItem[] = useMemo(
     () => [
       ...friendFeed,
       ...following

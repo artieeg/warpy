@@ -105,7 +105,9 @@ export const UserInfoModal = () => {
             user={participant}
           />
 
+          {/**
           <UserAwardsPreview user={participant.id} />
+          */}
 
           {stream && (
             <TouchableOpacity style={styles.inTheRoomWrapper}>

@@ -6,6 +6,7 @@ import {Text} from './Text';
 
 interface UserGeneralInfoProps extends ViewProps, IAvatarProps {
   user: UserBase;
+  style?: any;
 }
 
 export const UserGeneralInfo = (props: UserGeneralInfoProps) => {

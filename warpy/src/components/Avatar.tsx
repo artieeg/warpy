@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Image, View, ViewProps} from 'react-native';
+import {StyleSheet, Image, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {UserBase} from '@warpy/lib';
 
@@ -9,10 +9,11 @@ export interface IndicatorProps {
   borderColor?: string;
 }
 
-export interface IAvatarProps extends ViewProps {
+export interface IAvatarProps {
   user: UserBase;
   size?: keyof typeof sizeStyles;
   useRNImage?: boolean;
+  style?: any;
   indicatorProps?: IndicatorProps;
 }
 
@@ -50,7 +51,7 @@ export const Avatar = (props: IAvatarProps) => {
   return (
     <View>
       <FastImage
-        style={[styles.avatar, sizeStyles[size || 'medium'], style]}
+        style={[styles.avatar, sizeStyles[size || 'medium'], style as any]}
         source={{uri: avatar}}
       />
       {indicator}
