@@ -3,7 +3,6 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {BaseSlideModal} from './BaseSlideModal';
 import {SmallTextButton} from './SmallTextButton';
 import {UserGeneralInfo} from './UserGeneralInfo';
-import {UserAwardsPreview} from './UserAwardsPreview';
 import {Text} from './Text';
 import {useDispatcher, useStoreShallow} from '@app/store';
 import {useModalNavigation, useUserData} from '@app/hooks';

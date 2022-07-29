@@ -1,7 +1,6 @@
 import {ScreenHeader, Text} from '@app/components';
 import {IconButton} from '@app/components/IconButton';
 import {SmallTextButton} from '@app/components/SmallTextButton';
-import {UserAwardsPreview} from '@app/components/UserAwardsPreview';
 import {UserGeneralInfo} from '@app/components/UserGeneralInfo';
 import {useRouteParamsUnsafe, useUserData} from '@app/hooks';
 import {useDispatcher, useStoreShallow} from '@app/store';

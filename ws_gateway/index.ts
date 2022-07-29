@@ -330,6 +330,7 @@ const handlers: Record<string, HandlerConfig> = {
       data: {
         username: joi.string().max(16).optional(),
         first_name: joi.string().max(32).optional(),
+        bio: joi.string().max(256).optional(),
       },
     }),
     kind: "request",

@@ -18,7 +18,9 @@ interface ActionProps {
 const FollowingItemAction = ({user: {id}}: ActionProps) => {
   const dispatch = useDispatcher();
 
-  const [isFollowing] = useStore(state => [state.following.includes(id)]);
+  const [isFollowing] = useStore(state => [
+    !!state.list_following.list.find(u => u.id === id),
+  ]);
 
   return (
     <SmallTextButton
@@ -70,7 +72,7 @@ export const UserListItem = ({user, list}: BaseUserListItemProps) => {
 
   return (
     <TouchableOpacity onPress={onOpenUser} style={styles.wrapper}>
-      <UserGeneralInfo user={user} avatar={{size: 'large'}} />
+      <UserGeneralInfo user={user} size="large" />
       {(list === 'followers' || list === 'following') && (
         <FollowingItemAction user={user} />
       )}

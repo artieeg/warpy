@@ -5,13 +5,11 @@ export interface UserBase extends Item {
   first_name: string;
   username: string;
   avatar: string;
+
+  bio?: string;
+
   isAnon: boolean;
 
-  /**
-   * true = online
-   * false = offline
-   * undefined = should be omitted in UI :)
-   * */
   online?: boolean;
 }
 

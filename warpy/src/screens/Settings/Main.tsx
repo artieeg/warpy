@@ -40,6 +40,7 @@ export const MainSettingsScreen = () => {
         <View style={styles.padding}>
           <SettingsTextEdit placeholder="name" field="first_name" />
           <SettingsTextEdit placeholder="username" field="username" />
+          <SettingsTextEdit placeholder="bio" field="bio" multiline />
         </View>
         <View style={styles.padding}>
           {Object.entries(settings).map(([key, item]) =>
