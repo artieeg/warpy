@@ -74,7 +74,7 @@ export const SettingsTextEdit = (props: SettingsTextEditProps) => {
 
   return (
     <View style={styles.wrapper}>
-      <Text color="boulder" size="small">
+      <Text color="boulder" size="xsmall">
         {props.placeholder}
       </Text>
       <View style={styles.row}>
@@ -126,8 +126,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.mine_shaft,
-    padding: 10,
-    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+    borderRadius: 5,
     marginTop: 5,
   },
   input: {
@@ -137,6 +138,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   wrapper: {
-    marginBottom: 10,
+    marginBottom: 15,
   },
 });

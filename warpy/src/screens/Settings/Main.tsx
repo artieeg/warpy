@@ -31,7 +31,7 @@ export const MainSettingsScreen = () => {
           <Avatar user={user} size="xxlarge" />
           <Text
             weight="bold"
-            size="small"
+            size="xxsmall"
             color="boulder"
             style={styles.avatarChangeHint}>
             tap to change{'\n'}your pfp
