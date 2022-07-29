@@ -1,8 +1,7 @@
 import React from 'react';
 import {Speaker} from './Speaker';
 import {StyleSheet, View} from 'react-native';
-import {useStore} from '@app/store';
-import shallow from 'zustand/shallow';
+import {useDispatcher, useStoreShallow} from '@app/store';
 
 interface ISpeakersProps {
   style?: any;
@@ -10,16 +9,17 @@ interface ISpeakersProps {
 
 export const Speakers = (props: ISpeakersProps) => {
   const {style} = props;
-  const [activeSpeakers, dispatchAudioLevelDelete] = useStore(
-    state => [state.userAudioLevels, state.dispatchAudioLevelDelete],
-    shallow,
-  );
+  const dispatch = useDispatcher();
+
+  const [activeSpeakers] = useStoreShallow(state => [state.userAudioLevels]);
 
   return (
     <View style={[styles.container, style]}>
       {Object.entries(activeSpeakers).map(([speaker, volume]) => (
         <Speaker
-          onDoneSpeaking={() => dispatchAudioLevelDelete(speaker)}
+          onDoneSpeaking={() =>
+            dispatch(({stream}) => stream.delAudioLevel(speaker))
+          }
           volume={volume}
           key={speaker}
           id={speaker}

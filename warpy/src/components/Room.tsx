@@ -3,8 +3,7 @@ import {FlatList} from 'react-native-gesture-handler';
 import {useVideoStreams} from '@app/hooks/useVideoStreams';
 import React, {useMemo} from 'react';
 import {RTCView} from 'react-native-webrtc';
-import {useStore} from '@app/store';
-import shallow from 'zustand/shallow';
+import {useStoreShallow} from '@app/store';
 import {ParticipantView} from './ParticipantView';
 
 export const Room = () => {
@@ -25,10 +24,10 @@ export const Room = () => {
     [mediaStyle, mediaStyle, fullWidthMediaStyle],
   ];
 
-  const [streamers, viewers] = useStore(
-    state => [state.streamers, state.viewers],
-    shallow,
-  );
+  const [streamers, viewers] = useStoreShallow(state => [
+    state.streamers,
+    state.viewers,
+  ]);
 
   const participants = useMemo(
     () => Object.values(streamers),

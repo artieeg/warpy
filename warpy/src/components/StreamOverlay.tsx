@@ -21,6 +21,7 @@ import {StopStream} from './StopStream';
 import {SwitchCameraButton} from './SwitchCameraButton';
 import {ToggleCameraButton} from './ToggleCameraButton';
 import {ToggleMicButton} from './ToggleMicButton';
+import {Speakers} from './Speakers';
 
 const EmptyItem = () => <View style={{width: 50, height: 50}} />;
 
@@ -171,6 +172,7 @@ export const StreamOverlay = () => {
           size={30}
         />
       </View>
+      <Speakers style={{flex: 1}} />
     </View>
   );
 };
