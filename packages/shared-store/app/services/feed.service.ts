@@ -45,7 +45,8 @@ export class FeedService extends Service<FeedData> {
     });
 
     yield this.state.update({
-      feed: [...this.state.get().feed, ...feed],
+      //feed: [...this.state.get().feed, ...feed],
+      feed,
       isFeedLoading: false,
     });
   }
