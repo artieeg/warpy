@@ -67,7 +67,7 @@ export const InviteModal = (props: IBaseModalProps) => {
     <BaseSlideModal
       {...props}
       visible={visible}
-      disableHideHandler
+      //disableHideHandler
       style={modalStyle}>
       <View style={styles.header}>
         <UserSearchInput
