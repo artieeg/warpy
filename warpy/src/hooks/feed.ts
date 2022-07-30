@@ -14,6 +14,8 @@ export const useFeed = () => {
   ]);
 
   useEffect(() => {
+    setInitialFeedFetchDone(false);
+
     //Check if category is selected, then fetch
     if (category) {
       dispatch(({feed}) => feed.fetchFeedPage()).then(() => {
