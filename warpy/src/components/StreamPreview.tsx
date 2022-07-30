@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Avatar} from './Avatar';
 import {ViewersCountPreview} from './ViewersCountPreview';
@@ -19,9 +19,13 @@ export const StreamPreview = React.memo((props: IStreamPreviewProps) => {
   const {preview} = stream;
   const navigation = useNavigation();
 
-  const color = tinycolor(colors.green)
-    .spin(Math.random() * 360)
-    .toHexString();
+  const color = useMemo(
+    () =>
+      tinycolor(colors.green)
+        .spin(Math.random() * 360)
+        .toHexString(),
+    [],
+  );
 
   const onPress = useCallback(() => {
     navigation.navigate('Stream', {stream});
