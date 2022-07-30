@@ -32,7 +32,7 @@ export const StreamPreview = React.memo((props: IStreamPreviewProps) => {
   }, [navigation]);
 
   return (
-    <TouchableOpacity activeOpacity={1.0} onPress={onPress}>
+    <TouchableOpacity activeOpacity={1} onPress={onPress}>
       <View style={[styles.wrapper, {backgroundColor: color}, style]}>
         {preview && (
           <>

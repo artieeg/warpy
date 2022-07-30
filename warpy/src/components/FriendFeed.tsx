@@ -56,7 +56,7 @@ export const FriendFeed: React.FC<FriendFeedProps> = ({
             interpolate(
               minimizationProgress.value,
               [0, 1],
-              [1, 0.9],
+              [1, 0.95],
               Extrapolate.CLAMP,
             ),
             {duration: 300, easing: Easing.ease},

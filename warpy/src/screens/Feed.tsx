@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {FriendFeed, StreamFeedView} from '@app/components';
 import {ScreenHeader} from '@app/components/ScreenHeader';
 import {StreamCategoryList} from '@app/components/StreamCategoryList';
@@ -15,8 +15,33 @@ import Animated, {
 } from 'react-native-reanimated';
 
 export const Feed = () => {
-  const {feed, initialFeedFetchDone, isFeedLoading, refreshFeed} = useFeed();
+  const {
+    feed: _feed,
+    initialFeedFetchDone,
+    isFeedLoading,
+    refreshFeed,
+  } = useFeed();
   const navigation = useNavigation();
+
+  const feed = useMemo(
+    () => [
+      ..._feed,
+      ..._feed,
+      ..._feed,
+      ..._feed,
+      ..._feed,
+      ..._feed,
+      ..._feed,
+      ..._feed,
+      ..._feed,
+      ..._feed,
+      ..._feed,
+      ..._feed,
+      ..._feed,
+      ..._feed,
+    ],
+    [_feed],
+  );
 
   const onStartStream = React.useCallback(() => {
     navigation.navigate('NewStream');
@@ -27,8 +52,11 @@ export const Feed = () => {
   const categoryListHeight = useSharedValue(0);
   const friendFeedHeight = useSharedValue(0);
 
+  const streamFeedHeight = useSharedValue(0);
+
   const feedWrapperStyle = useAnimatedStyle(
     () => ({
+      /*
       marginTop: withTiming(
         -1 *
           scrollY.value *
@@ -37,9 +65,29 @@ export const Feed = () => {
           duration: 300,
         },
       ),
+       */
+
+      marginBottom: -(categoryListHeight.value + 10 + friendFeedHeight.value),
+
+      transform: [
+        {
+          translateY: withTiming(
+            scrollY.value > 0.5
+              ? -1 * (categoryListHeight.value + 10 + friendFeedHeight.value)
+              : 0,
+            {duration: 300},
+          ),
+          /*
+            -1 *
+            scrollY.value *
+            (categoryListHeight.value + 10 + friendFeedHeight.value),
+           */
+        },
+      ],
+
       flex: 1,
     }),
-    [categoryListHeight, scrollY],
+    [categoryListHeight, scrollY, friendFeedHeight],
   );
 
   const {height} = useWindowDimensions();
@@ -90,6 +138,13 @@ export const Feed = () => {
             onRefresh={refreshFeed}
             refreshing={isFeedLoading && initialFeedFetchDone}
             onScroll={handler}
+            onLayout={({
+              nativeEvent: {
+                layout: {height},
+              },
+            }) => {
+              streamFeedHeight.value = height;
+            }}
             data={feed}
           />
         </Animated.View>
