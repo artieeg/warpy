@@ -17,7 +17,7 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
   const {id} = props.stream;
 
   const _isJoined = useStore(state => state.stream !== null);
-  const [isJoined] = useDebounce(_isJoined, 1000);
+  const [isJoined] = useDebounce(_isJoined, 1400);
 
   const dispatch = useDispatcher();
 
@@ -34,7 +34,11 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
       <Room />
       <AwardDisplay />
       <StreamOverlay />
-      <LoadingOverlay enabled={!isJoined} mode="stream-join" />
+      <LoadingOverlay
+        enabled={!isJoined}
+        stream={props.stream}
+        mode="stream-join"
+      />
     </View>
   );
 };
