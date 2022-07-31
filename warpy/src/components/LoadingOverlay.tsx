@@ -1,4 +1,10 @@
-import React, {useMemo, useState, useRef, useEffect} from 'react';
+import React, {
+  useMemo,
+  useState,
+  useRef,
+  useEffect,
+  useLayoutEffect,
+} from 'react';
 import {useWindowDimensions, View} from 'react-native';
 import Animated, {
   useSharedValue,
@@ -7,6 +13,7 @@ import Animated, {
   useAnimatedStyle,
   interpolate,
   useDerivedValue,
+  Easing,
 } from 'react-native-reanimated';
 import {Text} from '@app/components';
 import tinycolor from 'tinycolor2';
@@ -28,7 +35,7 @@ const IndicatorItem = () => {
   const {width, height} = useWindowDimensions();
 
   const {x, y, delay, side, dx, dy} = useMemo(() => {
-    const delay = Math.random() * DURATION * 2;
+    const delay = Math.random() * DURATION * 1.2;
     const angle = Math.random() * Math.PI * 2;
     const side = 50 + Math.random() * 80;
 
@@ -47,7 +54,10 @@ const IndicatorItem = () => {
   const t = useRef<any>();
 
   useEffect(() => {
-    progress.value = withDelay(delay, withTiming(1, {duration: DURATION}));
+    setTimeout(() => {
+      //withDelay seems to crash dev bundles
+      progress.value = withTiming(1, {duration: DURATION, easing: Easing.ease});
+    }, delay);
 
     clearTimeout(t.current);
     t.current = setTimeout(() => {
@@ -73,14 +83,14 @@ const IndicatorItem = () => {
       transform: [
         {scale: interpolate(progress.value, [0, 0.1, 1], [0, 0.25, 1])},
         {
-          translateY: progress.value * y + dy,
+          translateY: progress.value * y,
         },
         {
-          translateX: progress.value * x + dx,
+          translateX: progress.value * x,
         },
       ],
     }),
-    [progress, x, y, side, dx, dy],
+    [x, y, side, dx, dy],
   );
 
   return <Animated.View style={style} />;
@@ -101,6 +111,14 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
 
   const style = useAnimatedStyle(() => {
     return {
+      position: 'absolute',
+      left: 0,
+      bottom: 0,
+      right: 0,
+      top: 0,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: '#000000',
       transform: [{scale: interpolate(hideProgress.value, [0, 1], [1, 1.3])}],
       opacity: 1 - hideProgress.value,
     };
@@ -108,40 +126,42 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
 
   return (
     <Animated.View style={style}>
-      <View
-        style={{alignItems: 'center', justifyContent: 'center', zIndex: 10}}>
-        {mode === 'splash' && (
-          <Text color="white" weight="extraBold" size="large">
-            warpy
-          </Text>
-        )}
-
-        {mode === 'stream-join' && (
-          <>
-            <Text color="white" weight="bold" size="small">
-              joining
+      <View>
+        <View
+          style={{alignItems: 'center', justifyContent: 'center', zIndex: 10}}>
+          {mode === 'splash' && (
+            <Text color="white" weight="extraBold" size="large">
+              warpy
             </Text>
+          )}
 
-            <Text color="green" weight="extraBold">
-              stream name
-            </Text>
-          </>
-        )}
+          {mode === 'stream-join' && (
+            <>
+              <Text color="white" weight="bold" size="small">
+                joining
+              </Text>
+
+              <Text color="green" weight="extraBold">
+                stream name
+              </Text>
+            </>
+          )}
+        </View>
+        <IndicatorItem />
+        <IndicatorItem />
+        <IndicatorItem />
+        <IndicatorItem />
+        <IndicatorItem />
+        <IndicatorItem />
+        <IndicatorItem />
+        <IndicatorItem />
+        <IndicatorItem />
+        <IndicatorItem />
+        <IndicatorItem />
+        <IndicatorItem />
+        <IndicatorItem />
+        <IndicatorItem />
       </View>
-      <IndicatorItem />
-      <IndicatorItem />
-      <IndicatorItem />
-      <IndicatorItem />
-      <IndicatorItem />
-      <IndicatorItem />
-      <IndicatorItem />
-      <IndicatorItem />
-      <IndicatorItem />
-      <IndicatorItem />
-      <IndicatorItem />
-      <IndicatorItem />
-      <IndicatorItem />
-      <IndicatorItem />
     </Animated.View>
   );
 };
