@@ -6,6 +6,7 @@ import Animated, {
   withTiming,
   useAnimatedStyle,
   interpolate,
+  useDerivedValue,
 } from 'react-native-reanimated';
 import {Text} from '@app/components';
 import tinycolor from 'tinycolor2';
@@ -87,11 +88,26 @@ const IndicatorItem = () => {
 
 interface LoadingOverlayProps {
   mode: 'stream-join' | 'splash';
+  enabled: boolean;
 }
 
-export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({mode}) => {
+export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
+  mode,
+  enabled,
+}) => {
+  const hideProgress = useDerivedValue(() => {
+    return withTiming(enabled ? 0 : 1, {duration: 300});
+  }, [enabled]);
+
+  const style = useAnimatedStyle(() => {
+    return {
+      transform: [{scale: interpolate(hideProgress.value, [0, 1], [1, 1.3])}],
+      opacity: 1 - hideProgress.value,
+    };
+  }, [hideProgress]);
+
   return (
-    <View>
+    <Animated.View style={style}>
       <View
         style={{alignItems: 'center', justifyContent: 'center', zIndex: 10}}>
         {mode === 'splash' && (
@@ -126,6 +142,6 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({mode}) => {
       <IndicatorItem />
       <IndicatorItem />
       <IndicatorItem />
-    </View>
+    </Animated.View>
   );
 };

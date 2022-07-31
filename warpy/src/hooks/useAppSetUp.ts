@@ -1,6 +1,6 @@
 import {useDispatcher, useStore, useStoreShallow} from '@app/store';
 import {useNavigation} from '@react-navigation/native';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {navigation} from '@app/navigation';
 import config from '@app/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -52,9 +52,12 @@ export const useAppSetUp = () => {
     });
   }, []);
 
+  const [action, setAction] = useState<'nav-feed' | 'nav-signup'>();
+
   useEffect(() => {
     if (user) {
-      n.navigate('Feed');
+      //n.navigate('Feed');
+      setAction('nav-feed');
 
       dispatch(({notification}) => notification.fetchUnread());
       dispatch(({app_invite}) => app_invite.get());
@@ -63,7 +66,8 @@ export const useAppSetUp = () => {
 
   useEffect(() => {
     if (userExists === false && isLoadingUser === false) {
-      n.navigate('SignUpName');
+      //n.navigate('SignUpName');
+      setAction('nav-signup');
     }
   }, [userExists, isLoadingUser]);
 
@@ -75,9 +79,12 @@ export const useAppSetUp = () => {
         if (token) {
           dispatch(({user}) => user.loadUserData(token));
         } else {
-          n.navigate('SignUpName');
+          setAction('nav-signup');
+          //n.navigate('SignUpName');
         }
       }
     })();
   }, [isConnected]);
+
+  return action;
 };
