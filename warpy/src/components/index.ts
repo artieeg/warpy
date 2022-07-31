@@ -34,3 +34,4 @@ export * from './FriendFeed';
 export * from './SmallIconButton';
 export * from './StreamFeedView';
 export * from './StagedFadeInAppearance';
+export * from './LoadingOverlay';

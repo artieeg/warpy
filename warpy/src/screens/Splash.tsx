@@ -1,18 +1,14 @@
+import {LoadingOverlay} from '@app/components';
 import {useAppSetUp} from '@app/hooks';
 import React from 'react';
-import {View, StyleSheet, Image} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 
 export const Splash = () => {
-  useAppSetUp();
+  //useAppSetUp();
 
   return (
     <View style={styles.screen}>
-      {/* 
-      <Image
-        source={require('../assets/logo.png')}
-        style={{width: 200, height: 200}}
-      />
-        */}
+      <LoadingOverlay mode="splash" />
     </View>
   );
 };
