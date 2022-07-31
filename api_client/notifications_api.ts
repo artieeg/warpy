@@ -1,17 +1,17 @@
 import {
-  INotificationDeleteEvent,
-  INotificationEvent,
-  INotificationsPage,
+  EventNewNotification,
+  EventNotificationDeleted,
+  NotificationsPage,
 } from "@warpy/lib";
 import { APIModule, EventHandler } from "./types";
 
 export interface INotificationAPI {
-  onNewNotification: EventHandler<INotificationEvent>;
-  onNotificationDelete: EventHandler<INotificationDeleteEvent>;
+  onNewNotification: EventHandler<EventNewNotification>;
+  onNotificationDelete: EventHandler<EventNotificationDeleted>;
   readAll: () => void;
 
-  getUnread: () => Promise<INotificationsPage>;
-  getRead: (page: number) => Promise<INotificationsPage>;
+  getUnread: () => Promise<NotificationsPage>;
+  getRead: (page: number) => Promise<NotificationsPage>;
 }
 
 export const NotificationAPI: APIModule<INotificationAPI> = (socket) => ({

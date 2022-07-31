@@ -15,7 +15,7 @@ export class FriendFeedService {
     const stream = await this.stream.findById(participant.stream);
 
     this.broadcast.broadcast(followerIds, {
-      event: '@friend-feed/item-add',
+      event: '@friend-feed/user-join',
       data: {
         user: participant,
         stream,
@@ -27,7 +27,7 @@ export class FriendFeedService {
     const followerIds = await this.follow.getFollowerIds(user);
 
     this.broadcast.broadcast(followerIds, {
-      event: '@friend-feed/item-delete',
+      event: '@friend-feed/user-leave',
       data: {
         user,
       },

@@ -2,24 +2,24 @@ import { APIModule, EventHandler } from "./types";
 import {
   EventActiveSpeaker,
   EventNewReactions,
-  IJoinStreamResponse,
-  INewStreamResponse,
-  IRequestViewersResponse,
+  JoinStreamResponse,
+  NewStreamResponse,
+  RequestViewersResponse,
   EventRoleUpdate,
   EventChatMessages,
-  ISendMessageResponse,
+  SendMessageResponse,
   EventKickedUser,
-  IInviteSuggestionsResponse,
-  IInviteResponse,
-  ICancelInviteResponse,
+  InviteSuggestionsResponse,
+  InviteResponse,
+  CancelInviteResponse,
   Roles,
   EventParticipantRoleChange,
   EventMediaToggle,
   EventNewParticipant,
   EventStreamIdAvailable,
   EventInviteStateUpdate,
-  ILeaveStreamResponse,
-  IStreamSearchResponse,
+  LeaveStreamResponse,
+  StreamSearchResponse,
   EventPreviousStream,
   EventReassignedStreamHost,
   EventStreamEnd,
@@ -27,12 +27,12 @@ import {
 } from "@warpy/lib";
 
 export interface IStreamAPI {
-  create: (title: string, hub: string) => Promise<INewStreamResponse>;
-  join: (stream: string) => Promise<IJoinStreamResponse>;
-  search: (text: string) => Promise<IStreamSearchResponse>;
+  create: (title: string, hub: string) => Promise<NewStreamResponse>;
+  join: (stream: string) => Promise<JoinStreamResponse>;
+  search: (text: string) => Promise<StreamSearchResponse>;
   react: (stream: string, emoji: string) => void;
   stop: (stream: string) => any;
-  sendChatMessage: (message: string) => Promise<ISendMessageResponse>;
+  sendChatMessage: (message: string) => Promise<SendMessageResponse>;
   sendInviteAction: (invite: string, action: "accept" | "decline") => void;
   kickUser: (userToKick: string) => void;
   reassignHost: (host: string) => Promise<void>;
@@ -40,17 +40,14 @@ export interface IStreamAPI {
     audioEnabled?: boolean;
     videoEnabled?: boolean;
   }) => Promise<void>;
-  getViewers: (
-    stream: string,
-    page: number
-  ) => Promise<IRequestViewersResponse>;
+  getViewers: (stream: string, page: number) => Promise<RequestViewersResponse>;
   raiseHand: () => any;
   lowerHand: () => any;
-  invite: (invitee: string, stream: string | null) => Promise<IInviteResponse>;
-  cancelInvite: (invite_id: string) => Promise<ICancelInviteResponse>;
-  getInviteSuggestions: (stream: string) => Promise<IInviteSuggestionsResponse>;
+  invite: (invitee: string, stream: string | null) => Promise<InviteResponse>;
+  cancelInvite: (invite_id: string) => Promise<CancelInviteResponse>;
+  getInviteSuggestions: (stream: string) => Promise<InviteSuggestionsResponse>;
   setRole: (userToUpdate: string, role: Roles) => void;
-  leave: (stream: string) => Promise<ILeaveStreamResponse>;
+  leave: (stream: string) => Promise<LeaveStreamResponse>;
   onPreviousStream: EventHandler<EventPreviousStream>;
   onReactionsUpdate: EventHandler<EventNewReactions>;
   onNewParticipant: EventHandler<EventNewParticipant>;

@@ -1,9 +1,9 @@
 import { APIModule } from "./types";
-import { IGifsResponse } from "@warpy/lib";
+import { GifsResponse } from "@warpy/lib";
 
 export interface IGifsAPI {
-  search: (search: string, next?: string) => Promise<IGifsResponse>;
-  getTrending: (next?: string) => Promise<IGifsResponse>;
+  search: (search: string, next?: string) => Promise<GifsResponse>;
+  getTrending: (next?: string) => Promise<GifsResponse>;
 }
 
 export const GifsAPI: APIModule = (socket): IGifsAPI => ({

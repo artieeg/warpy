@@ -1,4 +1,4 @@
-import { IFeedResponse } from "@warpy/lib";
+import { FeedResponse } from "@warpy/lib";
 import { APIModule } from "./types";
 
 type FeedFetchRequest = {
@@ -7,7 +7,7 @@ type FeedFetchRequest = {
 };
 
 export interface IFeedAPI {
-  get: (params: FeedFetchRequest) => Promise<IFeedResponse>;
+  get: (params: FeedFetchRequest) => Promise<FeedResponse>;
 }
 
 export const FeedAPI: APIModule = (socket): IFeedAPI => ({

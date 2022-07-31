@@ -1,9 +1,9 @@
-import { IBotDevConfirmation } from "../lib";
+import { EventBotDevConfirmation } from "../lib";
 import { WebSocketConn } from "./connection";
 import { EventHandler } from "./types";
 
 export interface IBotDevAPI {
-  onCreateBotConfirmRequest: EventHandler<IBotDevConfirmation>;
+  onCreateBotConfirmRequest: EventHandler<EventBotDevConfirmation>;
   confirm: (confirmation_id: string) => void;
   cancel: (confirmation_id: string) => void;
 }

@@ -57,7 +57,7 @@ describe('FriendFeed', () => {
       await service.notifyUserLeave(leavingUserId);
 
       expect(broadcastService.broadcast).toBeCalledWith(followerIds, {
-        event: '@friend-feed/item-delete',
+        event: '@friend-feed/user-leave',
         data: {
           user: leavingUserId,
         },
@@ -68,7 +68,7 @@ describe('FriendFeed', () => {
       await service.notifyUserJoin(joiningUser);
 
       expect(broadcastService.broadcast).toBeCalledWith(followerIds, {
-        event: '@friend-feed/item-add',
+        event: '@friend-feed/user-join',
         data: {
           user: joiningUser,
           stream,

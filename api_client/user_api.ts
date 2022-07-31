@@ -1,38 +1,38 @@
 import {
-  IFollowResponse,
-  INewUserResponse,
-  IUnfollowResponse,
+  FollowResponse,
+  NewUserResponse,
+  UnfollowResponse,
   User,
-  IUserBlockResponse,
-  IUserDeleteResponse,
-  IUserInfoResponse,
-  IUserListResponse,
-  IUserSearchResponse,
-  IUserUpdateResponse,
-  IWhoAmIResponse,
-  IUserUnblockResponse,
+  UserBlockResponse,
+  UserDeleteResponse,
+  UserInfoResponse,
+  UserListResponse,
+  UserSearchResponse,
+  UserUpdateResponse,
+  WhoAmIResponse,
+  UserUnblockResponse,
   UserList,
-  ICreateAnonUserResponse,
+  CreateAnonUserResponse,
 } from "@warpy/lib";
 import { WebSocketConn } from "./connection";
 
 export interface IUserAPI {
-  create: (data: INewUser) => Promise<INewUserResponse>;
-  createAnonUser: () => Promise<ICreateAnonUserResponse>;
-  auth: (token: string) => Promise<IWhoAmIResponse>;
-  delete: () => Promise<IUserDeleteResponse>;
-  follow: (userToFollow: string) => Promise<IFollowResponse>;
-  unfollow: (userToUnfollow: string) => Promise<IUnfollowResponse>;
-  search: (textToSearch: string) => Promise<IUserSearchResponse>;
-  update: (field: keyof User, value: string) => Promise<IUserUpdateResponse>;
+  create: (data: INewUser) => Promise<NewUserResponse>;
+  createAnonUser: () => Promise<CreateAnonUserResponse>;
+  auth: (token: string) => Promise<WhoAmIResponse>;
+  delete: () => Promise<UserDeleteResponse>;
+  follow: (userToFollow: string) => Promise<FollowResponse>;
+  unfollow: (userToUnfollow: string) => Promise<UnfollowResponse>;
+  search: (textToSearch: string) => Promise<UserSearchResponse>;
+  update: (field: keyof User, value: string) => Promise<UserUpdateResponse>;
   report: (
     userToReport: string,
     reportReasonId: string
-  ) => Promise<INewUserResponse>;
-  block: (userToBlock: string) => Promise<IUserBlockResponse>;
-  unblock: (userToUnblock: string) => Promise<IUserUnblockResponse>;
-  get: (id: string) => Promise<IUserInfoResponse>;
-  fetchUserList: (list: UserList, page?: number) => Promise<IUserListResponse>;
+  ) => Promise<NewUserResponse>;
+  block: (userToBlock: string) => Promise<UserBlockResponse>;
+  unblock: (userToUnblock: string) => Promise<UserUnblockResponse>;
+  get: (id: string) => Promise<UserInfoResponse>;
+  fetchUserList: (list: UserList, page?: number) => Promise<UserListResponse>;
 }
 
 export interface INewUser {

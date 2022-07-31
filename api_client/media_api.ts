@@ -1,5 +1,5 @@
 import { APIModule, EventHandler } from "./types";
-import { IRecvTracksRequest, IRecvTracksResponse } from "@warpy/lib";
+import { RequestRecvTracks, IRecvTracksResponse } from "@warpy/lib";
 
 export interface IMediaAPI {
   newTrack: (data: any) => any;
@@ -14,7 +14,7 @@ export const MediaAPI: APIModule = (socket): IMediaAPI => ({
   newTrack: (data: any) => socket.publish("new-track", data),
   connectTransport: (data: any, isProducer: boolean = false) =>
     socket.publish("connect-transport", { ...data, isProducer }),
-  getRecvTracks: (data: IRecvTracksRequest) =>
+  getRecvTracks: (data: RequestRecvTracks) =>
     socket.request("recv-tracks-request", data),
   onNewTrack: (handler) => socket.on("@media/new-track", handler),
   onceRecvTransportConnected: (handler) =>

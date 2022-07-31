@@ -107,3 +107,12 @@ export interface EventStreamEnd {
 export interface EventReceivedInvite {
   invite: Invite;
 }
+
+export interface EventFriendFeedUserJoin {
+  user: Participant;
+  stream: Stream;
+}
+
+export interface EventFriendFeedUserLeave {
+  user: string;
+}

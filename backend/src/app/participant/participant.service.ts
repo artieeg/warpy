@@ -143,6 +143,7 @@ export class ParticipantService {
     }
   }
 
+  //TODO: emit participant leave event
   async removeUserFromStream(user: string, stream: string) {
     const isBot = user.slice(0, 3) === 'bot';
 
