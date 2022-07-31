@@ -6,6 +6,7 @@ import { FollowModule, NjsFollowStore } from './follow';
 import { NjsParticipantStore } from './participant';
 import { NjsStreamStore, StreamModule } from './stream';
 import { UserModule } from './user';
+import { BroadcastModule, NjsBroadcastService } from './broadcast';
 
 @Injectable()
 export class NjsFriendFeedService extends FriendFeedService {
@@ -13,8 +14,9 @@ export class NjsFriendFeedService extends FriendFeedService {
     participantStore: NjsParticipantStore,
     followStore: NjsFollowStore,
     streamStore: NjsStreamStore,
+    broadcastService: NjsBroadcastService,
   ) {
-    super(participantStore, followStore, streamStore);
+    super(participantStore, followStore, streamStore, broadcastService);
   }
 }
 
@@ -31,7 +33,7 @@ export class FriendFeedController {
 }
 
 @Module({
-  imports: [UserModule, FollowModule, StreamModule],
+  imports: [UserModule, FollowModule, StreamModule, BroadcastModule],
   providers: [NjsFriendFeedService],
   controllers: [FriendFeedController],
   exports: [NjsFriendFeedService],

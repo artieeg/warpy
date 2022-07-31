@@ -60,6 +60,19 @@ export class FollowStore {
     return followers.map(toFollowDTO);
   }
 
+  async getFollowerIds(user: string): Promise<string[]> {
+    const r = await this.prisma.followRecord.findMany({
+      where: {
+        followed_id: user,
+      },
+      select: {
+        follower_id: true,
+      },
+    });
+
+    return r.map(({ follower_id }) => follower_id);
+  }
+
   async getFollowers(user: string): Promise<IFollow[]> {
     const followers = await this.prisma.followRecord.findMany({
       where: {

@@ -37,6 +37,11 @@ export type AwardSentEvent = {
   award: Award;
 };
 
+type BroadcastData<T = any> = {
+  event: string;
+  data: T;
+};
+
 export class BroadcastService {
   constructor(
     private participant: ParticipantStore,
@@ -44,8 +49,14 @@ export class BroadcastService {
     private broadcastUserListStore: BroadcastUserListStore,
   ) {}
 
-  private broadcast(ids: string[], message: Uint8Array) {
+  private _broadcast(ids: string[], message: Uint8Array) {
     ids.forEach((id) => this.messageService.send(id, message));
+  }
+
+  broadcast(ids: string[], payload: BroadcastData) {
+    const enc = this.messageService.encodeMessage(payload);
+
+    this._broadcast(ids, enc);
   }
 
   async broadcastStreamEnd(stream: string) {
@@ -58,7 +69,7 @@ export class BroadcastService {
       },
     });
 
-    this.broadcast(ids, payload);
+    this._broadcast(ids, payload);
   }
 
   async broadcastNewHost({ host }: NewHostEvent) {
@@ -71,7 +82,7 @@ export class BroadcastService {
       },
     });
 
-    this.broadcast(ids, payload);
+    this._broadcast(ids, payload);
   }
 
   async broadcastMediaToggle({
@@ -92,7 +103,7 @@ export class BroadcastService {
       },
     });
 
-    this.broadcast(ids, payload);
+    this._broadcast(ids, payload);
   }
 
   async broadcastKickedParticipant(participant: Participant) {
@@ -108,7 +119,7 @@ export class BroadcastService {
       },
     });
 
-    this.broadcast(ids, payload);
+    this._broadcast(ids, payload);
   }
 
   async broadcastChatMessage({ idsToBroadcast, message }: ChatMessageEvent) {
@@ -119,7 +130,7 @@ export class BroadcastService {
       },
     });
 
-    this.broadcast(idsToBroadcast, payload);
+    this._broadcast(idsToBroadcast, payload);
   }
 
   async broadcastReactions({ stream, reactions }: ReactionsEvent) {
@@ -133,7 +144,7 @@ export class BroadcastService {
       },
     });
 
-    this.broadcast(ids, message);
+    this._broadcast(ids, message);
   }
 
   async broadcastActiveSpeakers({
@@ -150,7 +161,7 @@ export class BroadcastService {
       },
     });
 
-    this.broadcast(ids, message);
+    this._broadcast(ids, message);
   }
 
   async broadcastRoleChange(user: Participant) {
@@ -163,7 +174,7 @@ export class BroadcastService {
       },
     });
 
-    this.broadcast(ids, message);
+    this._broadcast(ids, message);
   }
 
   async broadcastHandRaise(viewer: Participant) {
@@ -179,7 +190,7 @@ export class BroadcastService {
       },
     });
 
-    this.broadcast(ids, message);
+    this._broadcast(ids, message);
   }
 
   async broadcastParticipantLeft({ user, stream }: ParticipantLeaveEvent) {
@@ -193,7 +204,7 @@ export class BroadcastService {
       },
     });
 
-    this.broadcast(ids, message);
+    this._broadcast(ids, message);
   }
 
   async broadcastNewParticipant(participant: Participant) {
@@ -207,7 +218,7 @@ export class BroadcastService {
       },
     });
 
-    this.broadcast(ids, message);
+    this._broadcast(ids, message);
   }
 
   //TODO: figure out a way to pass stream id along with the award data
@@ -222,6 +233,6 @@ export class BroadcastService {
       },
     });
 
-    this.broadcast(ids, message);
+    this._broadcast(ids, message);
   }
 }

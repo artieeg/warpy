@@ -1,12 +1,38 @@
-import { FriendFeedItem } from '@warpy/lib';
+import { FriendFeedItem, Participant } from '@warpy/lib';
 import { ParticipantStore, FollowStore, StreamStore } from '@warpy-be/app';
+import { BroadcastService } from '../broadcast';
 
 export class FriendFeedService {
   constructor(
     private participant: ParticipantStore,
     private follow: FollowStore,
     private stream: StreamStore,
+    private broadcast: BroadcastService,
   ) {}
+
+  async notifyUserJoin(participant: Participant): Promise<void> {
+    const followerIds = await this.follow.getFollowerIds(participant.id);
+    const stream = await this.stream.findById(participant.stream);
+
+    this.broadcast.broadcast(followerIds, {
+      event: '@friend-feed/item-add',
+      data: {
+        user: participant,
+        stream,
+      },
+    });
+  }
+
+  async notifyUserLeave(user: string): Promise<void> {
+    const followerIds = await this.follow.getFollowerIds(user);
+
+    this.broadcast.broadcast(followerIds, {
+      event: '@friend-feed/item-delete',
+      data: {
+        user,
+      },
+    });
+  }
 
   async getFriendFeed(user: string): Promise<FriendFeedItem[]> {
     //Get a list of users we're following
