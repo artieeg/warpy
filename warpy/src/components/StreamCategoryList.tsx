@@ -198,7 +198,22 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
   //hide scroll view during minimization
   const scrollViewStyle = useAnimatedStyle(
     () => ({
-      opacity: 1 - (minimizationProgress?.value ?? 1),
+      opacity: withTiming(1 - (minimizationProgress?.value ?? 1), {
+        duration: 300,
+      }),
+      transform: [
+        {
+          translateY: withTiming(
+            interpolate(
+              minimizationProgress?.value ?? 1,
+              [0, 1],
+              [0, -20],
+              Extrapolate.CLAMP,
+            ),
+            {duration: 300, easing: Easing.ease},
+          ),
+        },
+      ],
     }),
     [minimizationProgress?.value],
   );

@@ -39,10 +39,6 @@ export const FriendFeed: React.FC<FriendFeedProps> = ({
     [friendFeed, following],
   );
 
-  React.useEffect(() => {
-    console.log({feed});
-  }, [feed]);
-
   if (feed.length === 0) {
     return null;
   }
@@ -50,12 +46,23 @@ export const FriendFeed: React.FC<FriendFeedProps> = ({
   const wrapperStyle = useAnimatedStyle(() => {
     return {
       opacity: withTiming(1 - minimizationProgress.value, {
-        duration: 300,
+        duration: 300, //300,
         easing: Easing.ease,
       }),
 
       transform: [
         {
+          translateY: withTiming(
+            interpolate(
+              minimizationProgress.value,
+              [0, 1],
+              [0, -20],
+              Extrapolate.CLAMP,
+            ),
+            {duration: 300, easing: Easing.ease},
+          ),
+
+          /*
           scale: withTiming(
             interpolate(
               minimizationProgress.value,
@@ -65,6 +72,7 @@ export const FriendFeed: React.FC<FriendFeedProps> = ({
             ),
             {duration: 300, easing: Easing.ease},
           ),
+           */
         },
       ],
     };

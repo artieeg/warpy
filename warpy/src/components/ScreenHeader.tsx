@@ -1,10 +1,5 @@
 import React, {useCallback, useMemo} from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  useWindowDimensions,
-} from 'react-native';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {OpenNotificationsButton} from './OpenNotificationsButton';
 import {SearchButton} from './SearchButton';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -30,8 +25,6 @@ const AnimatedTouchableOpacity =
 export const ScreenHeader: React.FC<{
   minimizationProgress?: SharedValue<number>;
 }> = ({minimizationProgress}) => {
-  const {width} = useWindowDimensions();
-
   //TODO: too ugly, change someday
   const [user, signUpAvatar] = useStore(state => [
     state.user,
