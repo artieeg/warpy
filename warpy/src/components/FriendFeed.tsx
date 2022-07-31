@@ -39,6 +39,10 @@ export const FriendFeed: React.FC<FriendFeedProps> = ({
     [friendFeed, following],
   );
 
+  React.useEffect(() => {
+    console.log({feed});
+  }, [feed]);
+
   if (feed.length === 0) {
     return null;
   }

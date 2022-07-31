@@ -62,6 +62,14 @@ export const createAPISlice = (
       );
     });
 
+    api.friend_feed.onUserLeave(({ user: u }) => {
+      dispatch(({ user }) => user.delFriendFeedUser(u));
+    });
+
+    api.friend_feed.onUserJoin(({ user: u, stream }) => {
+      dispatch(({ user }) => user.addFriendFeedUser(u, stream));
+    });
+
     api.stream.onHostReassign(({ host }) => {
       if (get().user?.id === host.id) {
         dispatch(({ toast }) =>

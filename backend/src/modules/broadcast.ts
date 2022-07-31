@@ -167,6 +167,7 @@ export class BroadcastController
   imports: [],
   controllers: [BroadcastController],
   providers: [NjsBroadcastService, NjsBroadcastUserListStore],
+  exports: [NjsBroadcastService],
 })
 @Global()
 export class BroadcastModule {}

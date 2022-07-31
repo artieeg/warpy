@@ -1,9 +1,16 @@
-import { FriendFeedItem, Roles, User, UserBase } from "@warpy/lib";
+import {
+  FriendFeedItem,
+  Participant,
+  Roles,
+  Stream,
+  User,
+  UserBase,
+} from "@warpy/lib";
 import { AppState } from "../AppState";
 import { MediaService } from "./media.service";
 import { Service } from "../Service";
 import { ToastService } from "./toast.service";
-import { Store } from "@app/store";
+import { Store } from "../Store";
 
 type UserList = {
   page: number;
@@ -125,6 +132,21 @@ export class UserService extends Service<UserData> {
       following: this.state
         .get()
         .following.filter((id) => id !== userToUnfollow),
+    });
+  }
+
+  addFriendFeedUser(p: Participant, stream: Stream) {
+    return this.state.update((state) => {
+      state.friendFeed = [
+        ...state.friendFeed,
+        { user: { ...p, online: true }, stream: stream },
+      ];
+    });
+  }
+
+  delFriendFeedUser(user: string) {
+    return this.state.update((state) => {
+      state.friendFeed = state.friendFeed.filter((i) => i.user.id !== user);
     });
   }
 

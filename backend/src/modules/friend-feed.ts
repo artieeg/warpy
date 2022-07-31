@@ -33,8 +33,8 @@ export class FriendFeedController
   constructor(private friendFeedService: NjsFriendFeedService) {}
 
   @OnEvent(EVENT_NEW_PARTICIPANT)
-  async onNewParticipant({ participant: { id } }) {
-    await this.friendFeedService.notifyUserJoin(id);
+  async onNewParticipant({ participant }) {
+    await this.friendFeedService.notifyUserJoin(participant);
   }
 
   @OnEvent(EVENT_PARTICIPANT_LEAVE)
