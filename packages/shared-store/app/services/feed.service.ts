@@ -2,12 +2,12 @@ import { Candidate, Stream, StreamCategory } from "@warpy/lib";
 import { Service } from "../Service";
 
 export interface FeedData {
-  selectedCategoryIds: string[];
   latestFeedPage: number;
   feed: Candidate[];
   previousStreamData: Stream | null;
   isFeedLoading: boolean;
   categories: StreamCategory[];
+  initialFeedFetchDone: boolean;
 }
 
 export class FeedService extends Service<FeedData> {
@@ -17,12 +17,12 @@ export class FeedService extends Service<FeedData> {
       isFeedLoading: false,
       previousStreamData: null,
       feed: [],
-      selectedCategoryIds: [],
       categories: [],
+      initialFeedFetchDone: false,
     };
   }
 
-  async *fetchFeedPage(params?: { refresh?: boolean }) {
+  async *fetchFeedPage(params?: { initial?: boolean; refresh?: boolean }) {
     if (params?.refresh) {
       this.state.update({
         latestFeedPage: 0,
@@ -48,6 +48,7 @@ export class FeedService extends Service<FeedData> {
       //feed: [...this.state.get().feed, ...feed],
       feed,
       isFeedLoading: false,
+      initialFeedFetchDone: params?.initial === true,
     });
   }
 

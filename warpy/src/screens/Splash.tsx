@@ -17,9 +17,11 @@ export const Splash = () => {
         setEnabled(false);
 
         setTimeout(() => {
-          navigator.navigate(action === 'nav-feed' ? 'Feed' : 'SignUpName');
-        }, 300);
-      }, 300);
+          (navigator as any).replace(
+            action === 'nav-feed' ? 'Feed' : 'SignUpName',
+          );
+        }, 100);
+      }, 1000);
     }
   }, [action]);
 

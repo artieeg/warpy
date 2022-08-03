@@ -155,9 +155,6 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
           //style={{opacity: isSelected ? 0 : 1}} //Hide selected category since we draw a fake component over it
           color={colors[index].toHexString()}
           category={category}
-          //Selecting the first category,
-          //hacky solution, but this way we get category's position for animations
-          onWindowPositionAvailable={index === 0 ? onCategorySelect : undefined}
           onPress={onCategorySelect}
         />
       );

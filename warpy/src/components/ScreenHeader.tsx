@@ -134,30 +134,6 @@ export const ScreenHeader: React.FC<{
         easing: Easing.ease,
       },
     ),
-    /*
-    transform: [
-      {
-        translateX: withTiming(
-          interpolate(
-            minimizationProgress?.value ?? 0,
-            [0, 1],
-            [0, 50 + 50 + 10 * 2],
-            Extrapolate.CLAMP,
-          ),
-          {duration: 300, easing: Easing.ease},
-        ),
-        scale: withTiming(
-          interpolate(
-            minimizationProgress?.value ?? 0,
-            [0, 1],
-            [1, 0.9],
-            Extrapolate.CLAMP,
-          ),
-          {duration: 300, easing: Easing.ease},
-        ),
-      },
-    ],
-         */
   }));
 
   const headerStyle = useAnimatedStyle(() => ({
@@ -166,15 +142,6 @@ export const ScreenHeader: React.FC<{
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 20,
-    /*
-    paddingVertical: withTiming(
-      minimizationProgress ? 10 + (1 - minimizationProgress.value) * 10 : 20,
-      {
-        duration: 300,
-        easing: Easing.ease,
-      },
-    ),
-     */
   }));
 
   const titleStyle = useAnimatedStyle(() => ({

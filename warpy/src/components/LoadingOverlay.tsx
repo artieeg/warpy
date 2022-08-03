@@ -1,14 +1,7 @@
-import React, {
-  useMemo,
-  useState,
-  useRef,
-  useEffect,
-  useLayoutEffect,
-} from 'react';
+import React, {useMemo, useState, useRef, useEffect} from 'react';
 import {useWindowDimensions, View} from 'react-native';
 import Animated, {
   useSharedValue,
-  withDelay,
   withTiming,
   useAnimatedStyle,
   interpolate,
@@ -18,6 +11,7 @@ import Animated, {
 import {Text} from '@app/components';
 import tinycolor from 'tinycolor2';
 import {colors} from '../../colors';
+import {Stream} from '@warpy/lib';
 
 const DURATION = 1000;
 
@@ -98,12 +92,14 @@ const IndicatorItem = () => {
 
 interface LoadingOverlayProps {
   mode: 'stream-join' | 'splash';
+  stream?: Stream;
   enabled: boolean;
 }
 
 export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
   mode,
   enabled,
+  stream,
 }) => {
   const hideProgress = useDerivedValue(() => {
     return withTiming(enabled ? 0 : 1, {duration: 300});
@@ -125,7 +121,7 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
   }, [hideProgress]);
 
   return (
-    <Animated.View style={style}>
+    <Animated.View pointerEvents="box-none" style={style}>
       <View>
         <View
           style={{alignItems: 'center', justifyContent: 'center', zIndex: 10}}>
@@ -135,14 +131,14 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
             </Text>
           )}
 
-          {mode === 'stream-join' && (
+          {mode === 'stream-join' && stream && (
             <>
               <Text color="white" weight="bold" size="small">
                 joining
               </Text>
 
               <Text color="green" weight="extraBold">
-                stream name
+                {stream.title}
               </Text>
             </>
           )}

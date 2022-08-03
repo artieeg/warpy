@@ -1,26 +1,32 @@
 import {useDispatcher, useStoreShallow} from '@app/store';
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useRef} from 'react';
 
 export const useFeed = () => {
   const dispatch = useDispatcher();
 
-  //Used to prevent displaying the refresh indicator during the first fetch
-  const [initialFeedFetchDone, setInitialFeedFetchDone] = useState(false);
+  const [feed, initialFeedFetchDone, category, isFeedLoading] = useStoreShallow(
+    state => [
+      state.feed,
+      state.initialFeedFetchDone,
+      state.selectedFeedCategory,
+      state.isFeedLoading,
+    ],
+  );
 
-  const [feed, category, isFeedLoading] = useStoreShallow(state => [
-    state.feed,
-    state.selectedFeedCategory,
-    state.isFeedLoading,
-  ]);
+  const mounted = useRef(false);
 
   useEffect(() => {
-    setInitialFeedFetchDone(false);
+    //Don't fetch feed initially because
+    //we've already fetched it on the splash screen in the useAppSetUp hook
+    if (!mounted.current) {
+      mounted.current = true;
+
+      return;
+    }
 
     //Check if category is selected, then fetch
     if (category) {
-      dispatch(({feed}) => feed.fetchFeedPage()).then(() => {
-        setInitialFeedFetchDone(true);
-      });
+      dispatch(({feed}) => feed.fetchFeedPage({initial: true}));
     }
   }, [category]);
 

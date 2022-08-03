@@ -108,6 +108,30 @@ export const UserInfoModal = () => {
           <UserAwardsPreview user={participant.id} />
           */}
 
+          <View style={styles.bioTextHolder}>
+            <Text size="xsmall" color="boulder">
+              bio
+            </Text>
+
+            <Text
+              size="small"
+              numberOfLines={4}
+              color={!!participant.bio ? 'white' : 'boulder'}
+              ellipsizeMode="tail">
+              {!!participant.bio && participant.bio}
+              {!participant.bio && `${participant.username} has no bio yet`}
+            </Text>
+            {/*
+            <Text
+              size="small"
+              numberOfLines={4}
+              color="white"
+              ellipsizeMode="tail">
+              {participant.bio}
+            </Text>
+      */}
+          </View>
+
           {stream && (
             <TouchableOpacity style={styles.inTheRoomWrapper}>
               <View style={styles.roomTextInfo}>
@@ -200,6 +224,12 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+
+  bioTextHolder: {
+    paddingRight: 30,
+    flex: 1,
+    marginBottom: 30,
   },
   roomTextInfo: {
     paddingRight: 30,

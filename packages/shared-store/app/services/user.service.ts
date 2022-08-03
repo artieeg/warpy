@@ -150,23 +150,18 @@ export class UserService extends Service<UserData> {
     });
   }
 
-  async *loadUserData(access_token: string) {
+  async loadUserData(access_token: string) {
     const { api } = this.state.get();
-
-    yield this.state.update({
-      isLoadingUser: true,
-    });
 
     const { user, friendFeed, following, hasActivatedAppInvite, categories } =
       await api.user.auth(access_token);
 
     if (!user) {
-      yield this.state.update({
-        isLoadingUser: false,
+      return this.state.update({
         exists: false,
       });
     } else {
-      yield this.state.update({
+      return this.state.update({
         friendFeed,
         user,
         categories,
@@ -177,8 +172,8 @@ export class UserService extends Service<UserData> {
           page: 0,
         },
         isLoadingUser: false,
-        //selectedFeedCategory: categories[0],
         newStreamCategory: categories[1],
+        selectedFeedCategory: categories.find((c) => c.id === "foru"),
       });
     }
   }

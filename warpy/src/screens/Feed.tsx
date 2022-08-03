@@ -14,7 +14,7 @@ import Animated, {
   Layout,
 } from 'react-native-reanimated';
 
-export const Feed = () => {
+export const Feed: React.FC = () => {
   const {
     feed: _feed,
     initialFeedFetchDone,
@@ -52,21 +52,8 @@ export const Feed = () => {
   const categoryListHeight = useSharedValue(0);
   const friendFeedHeight = useSharedValue(0);
 
-  const streamFeedHeight = useSharedValue(0);
-
-  const feedWrapperStyle = useAnimatedStyle(
+  const streamFeedViewWrapperStyle = useAnimatedStyle(
     () => ({
-      /*
-      marginTop: withTiming(
-        -1 *
-          scrollY.value *
-          (categoryListHeight.value + 10 + friendFeedHeight.value),
-        {
-          duration: 300,
-        },
-      ),
-       */
-
       marginBottom: -(categoryListHeight.value + 10 + friendFeedHeight.value),
 
       transform: [
@@ -77,11 +64,6 @@ export const Feed = () => {
               : 0,
             {duration: 300},
           ),
-          /*
-            -1 *
-            scrollY.value *
-            (categoryListHeight.value + 10 + friendFeedHeight.value),
-           */
         },
       ],
 
@@ -100,7 +82,8 @@ export const Feed = () => {
           return;
         }
 
-        scrollY.value += dy / categoryListHeight.value;
+        scrollY.value +=
+          dy / (categoryListHeight.value + friendFeedHeight.value);
 
         if (dy > 0 && scrollY.value > 0.3) {
           scrollY.value = 1;
@@ -111,7 +94,7 @@ export const Feed = () => {
         }
       },
     },
-    [categoryListHeight, height, categoryListHeight],
+    [height, categoryListHeight, friendFeedHeight],
   );
 
   return (
@@ -132,19 +115,12 @@ export const Feed = () => {
           mode="browse-feed"
         />
 
-        <Animated.View style={feedWrapperStyle}>
+        <Animated.View style={streamFeedViewWrapperStyle}>
           <StreamFeedView
             scrollEventThrottle={16}
             onRefresh={refreshFeed}
             refreshing={isFeedLoading && initialFeedFetchDone}
             onScroll={handler}
-            onLayout={({
-              nativeEvent: {
-                layout: {height},
-              },
-            }) => {
-              streamFeedHeight.value = height;
-            }}
             data={feed}
           />
         </Animated.View>
@@ -169,7 +145,8 @@ const styles = StyleSheet.create({
   startStreamButtonWrapper: {
     position: 'absolute',
     bottom: 20,
-    left: 20,
-    right: 20,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
   },
 });

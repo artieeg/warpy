@@ -10,15 +10,23 @@ export const useAppSetUp = () => {
   navigation.current = n;
 
   const dispatch = useDispatcher();
-  const [userExists, isLoadingUser, api, user, isConnected] = useStoreShallow(
-    state => [
-      state.exists,
-      state.isLoadingUser,
-      state.api,
-      state.user,
-      state.isConnected,
-    ],
-  );
+  const [
+    userExists,
+    initialFeedFetchDone,
+    isLoadingUser,
+    api,
+    user,
+    isConnected,
+    selectedFeedCategory,
+  ] = useStoreShallow(state => [
+    state.exists,
+    state.initialFeedFetchDone,
+    state.isLoadingUser,
+    state.api,
+    state.user,
+    state.isConnected,
+    state.selectedFeedCategory,
+  ]);
 
   useEffect(() => {
     useStore.getState().connect(config.WS);
@@ -55,14 +63,22 @@ export const useAppSetUp = () => {
   const [action, setAction] = useState<'nav-feed' | 'nav-signup'>();
 
   useEffect(() => {
-    if (user) {
+    if (user && selectedFeedCategory) {
       //n.navigate('Feed');
+
       setAction('nav-feed');
 
       dispatch(({notification}) => notification.fetchUnread());
       dispatch(({app_invite}) => app_invite.get());
+      dispatch(({feed}) => feed.fetchFeedPage({initial: true}));
     }
-  }, [user, n]);
+  }, [user, n, selectedFeedCategory]);
+
+  useEffect(() => {
+    if (user && initialFeedFetchDone) {
+      setAction('nav-feed');
+    }
+  }, [user, initialFeedFetchDone]);
 
   useEffect(() => {
     if (userExists === false && isLoadingUser === false) {
