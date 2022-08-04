@@ -11,6 +11,7 @@ export const Splash = () => {
 
   const navigator = useNavigation();
 
+  /*
   useEffect(() => {
     if (!!action) {
       setTimeout(() => {
@@ -24,10 +25,11 @@ export const Splash = () => {
       }, 1000);
     }
   }, [action]);
+   */
 
   return (
     <View style={styles.screen}>
-      <LoadingOverlay enabled={enabled} mode="splash" />
+      <LoadingOverlay enabled={enabled} mode="signup" />
     </View>
   );
 };

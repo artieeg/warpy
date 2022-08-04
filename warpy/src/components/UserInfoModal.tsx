@@ -116,7 +116,7 @@ export const UserInfoModal = () => {
             <Text
               size="small"
               numberOfLines={4}
-              color={!!participant.bio ? 'white' : 'boulder'}
+              color={!!participant.bio ? 'gray' : 'boulder'}
               ellipsizeMode="tail">
               {!!participant.bio && participant.bio}
               {!participant.bio && `${participant.username} has no bio yet`}

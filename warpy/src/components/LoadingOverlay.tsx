@@ -12,6 +12,7 @@ import {Text} from '@app/components';
 import tinycolor from 'tinycolor2';
 import {colors} from '../../colors';
 import {Stream} from '@warpy/lib';
+import {OnboardOverlay} from './OnboardOverlay';
 
 const DURATION = 1000;
 
@@ -31,7 +32,8 @@ const IndicatorItem = () => {
   const {x, y, delay, side, dx, dy} = useMemo(() => {
     const delay = Math.random() * DURATION * 1.2;
     const angle = Math.random() * Math.PI * 2;
-    const side = 50 + Math.random() * 80;
+    //const side = 50 + Math.random() * 80;
+    const side = 30 + Math.random() * 100;
 
     return {
       x: ((width - 50) * Math.cos(angle)) / 2,
@@ -91,7 +93,15 @@ const IndicatorItem = () => {
 };
 
 interface LoadingOverlayProps {
-  mode: 'stream-join' | 'splash';
+  mode:
+    | 'stream-join'
+    | 'splash'
+    | 'signup'
+    | 'signup-provider'
+    | 'signup-username'
+    | 'signup-name'
+    | 'signup-etiquette'
+    | 'signup-avatar';
   stream?: Stream;
   enabled: boolean;
 }
@@ -125,7 +135,7 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
       <View>
         <View
           style={{alignItems: 'center', justifyContent: 'center', zIndex: 10}}>
-          {mode === 'splash' && (
+          {(mode === 'splash' || mode === 'signup') && (
             <Text color="white" weight="extraBold" size="large">
               warpy
             </Text>
@@ -158,6 +168,8 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
         <IndicatorItem />
         <IndicatorItem />
       </View>
+
+      {mode === 'signup' && <OnboardOverlay visible={mode === 'signup'} />}
     </Animated.View>
   );
 };

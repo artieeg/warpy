@@ -51,7 +51,7 @@ describe('ParticipantService', () => {
 
     participantStore.countVideoStreamers.mockResolvedValue(1);
 
-    it('toggles audio/video', async () => {
+    it('stores updated flags', async () => {
       await service.setMediaEnabled(user, {
         audioEnabled: true,
         videoEnabled: true,
@@ -87,7 +87,7 @@ describe('ParticipantService', () => {
     });
   });
 
-  describe('removing user from stream', () => {
+  describe('removing user/s from stream', () => {
     const user = 'user_to_remove0';
     const stream = 'stream0';
 
@@ -109,7 +109,7 @@ describe('ParticipantService', () => {
       );
     });
 
-    it('removes users', async () => {
+    it('removes a user', async () => {
       await service.removeUserFromStream(user, stream);
 
       expect(participantStore.del).toBeCalledWith(user);
@@ -133,9 +133,11 @@ describe('ParticipantService', () => {
     const stream = 'stream0';
 
     const participant = createParticipantFixture({ id, stream });
-
+    const alreadyDeactivatedParticipant = createParticipantFixture({
+      id: alreadyDeactivatedUserId,
+      stream,
+    });
     const botInstance = createBotInstanceFixture({ id: botInstanceId });
-
     const botParticipant = createParticipantFixture({
       ...botInstance,
       id: botId,
@@ -156,7 +158,7 @@ describe('ParticipantService', () => {
 
     when(participantStore.get)
       .calledWith(alreadyDeactivatedUserId)
-      .mockResolvedValue(participant);
+      .mockResolvedValue(alreadyDeactivatedParticipant);
 
     when(participantStore.get)
       .calledWith(botId)
