@@ -104,15 +104,25 @@ interface LoadingOverlayProps {
     | 'signup-avatar';
   stream?: Stream;
   enabled: boolean;
+  onHide?: () => void;
 }
 
 export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
   mode,
   enabled,
   stream,
+  onHide,
 }) => {
   const hideProgress = useDerivedValue(() => {
     return withTiming(enabled ? 0 : 1, {duration: 300});
+  }, [enabled]);
+
+  useEffect(() => {
+    if (!enabled) {
+      setTimeout(() => {
+        onHide?.();
+      }, 300);
+    }
   }, [enabled]);
 
   const style = useAnimatedStyle(() => {
@@ -124,7 +134,7 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
       top: 0,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: '#000000',
+      backgroundColor: colors.black,
       transform: [{scale: interpolate(hideProgress.value, [0, 1], [1, 1.3])}],
       opacity: 1 - hideProgress.value,
     };

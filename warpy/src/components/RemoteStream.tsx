@@ -29,16 +29,21 @@ export const RemoteStream = (props: IRemoteStreamProps) => {
 
   useKickHandler();
 
+  const [mountLoadingOverlay, setMountLoadingOverlay] = React.useState(true);
+
   return (
     <View style={styles.wrapper}>
       <Room />
       <AwardDisplay />
       <StreamOverlay />
-      <LoadingOverlay
-        enabled={!isJoined}
-        stream={props.stream}
-        mode="stream-join"
-      />
+      {mountLoadingOverlay && (
+        <LoadingOverlay
+          enabled={!isJoined}
+          stream={props.stream}
+          mode="stream-join"
+          onHide={() => setMountLoadingOverlay(false)}
+        />
+      )}
     </View>
   );
 };

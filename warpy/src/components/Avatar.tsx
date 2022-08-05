@@ -61,6 +61,10 @@ export const Avatar = (props: IAvatarProps) => {
 };
 
 const sizeStyles = StyleSheet.create({
+  xsmall: {
+    width: 30,
+    height: 30,
+  },
   small: {
     width: 40,
     height: 40,

@@ -55,7 +55,15 @@ export const StreamPreview = React.memo((props: IStreamPreviewProps) => {
             style={styles.title}>
             {stream.title}
           </Text>
+
+          <Text size="xxsmall" color="cod_gray">
+            {stream.total_participants}{' '}
+            {stream.total_participants > 1 ? 'people' : 'person'}
+          </Text>
+          {/*
           <View style={styles.participants}>
+
+            <>
             {stream.streamers.slice(0, 3).map((participant, index) => {
               const userAvatarStyle = {
                 transform: [{translateX: -index * 3}],
@@ -63,7 +71,7 @@ export const StreamPreview = React.memo((props: IStreamPreviewProps) => {
 
               return (
                 <Avatar
-                  size="small"
+                  size="xsmall"
                   style={userAvatarStyle}
                   user={participant}
                 />
@@ -73,7 +81,9 @@ export const StreamPreview = React.memo((props: IStreamPreviewProps) => {
               count={stream.total_participants}
               style={styles.viewersCount}
             />
+        </>
           </View>
+    */}
         </View>
       </View>
     </TouchableOpacity>
@@ -94,9 +104,10 @@ const styles = StyleSheet.create({
   },
   participants: {
     flexDirection: 'row',
+    marginTop: 5,
   },
   title: {
-    marginBottom: 15,
+    //marginBottom: 5,
   },
   info: {
     position: 'absolute',
@@ -108,6 +119,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     top: 0,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   viewersCount: {
     transform: [{translateX: -8}],

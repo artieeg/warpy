@@ -92,7 +92,8 @@ const styles = StyleSheet.create({
     paddingTop: 30,
   },
   wrapper: {
-    backgroundColor: colors.cod_gray,
+    //backgroundColor: colors.cod_gray,
+    backgroundColor: colors.black,
     position: 'absolute',
     bottom: 0,
     left: 0,

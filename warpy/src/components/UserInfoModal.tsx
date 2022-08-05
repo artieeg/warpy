@@ -144,7 +144,7 @@ export const UserInfoModal = () => {
               </View>
               <SmallIconButton
                 name="chevron-right"
-                size={30}
+                size={20}
                 background="mine_shaft"
                 color="white"
               />
@@ -170,7 +170,7 @@ export const UserInfoModal = () => {
               <SmallIconButton
                 style={styles.rowButtonFinal}
                 name="flag-1"
-                size={20}
+                size={15}
                 background="red"
               />
             </View>

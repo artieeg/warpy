@@ -13,6 +13,7 @@ import Animated, {
   useSharedValue,
   Layout,
 } from 'react-native-reanimated';
+import {colors} from '../../colors';
 
 export const Feed: React.FC = () => {
   const {
@@ -139,7 +140,7 @@ export const Feed: React.FC = () => {
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: '#000',
+    backgroundColor: colors.black,
     flex: 1,
   },
   startStreamButtonWrapper: {

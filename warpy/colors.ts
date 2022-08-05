@@ -1,5 +1,8 @@
 export const colors = {
-  black: '#000000',
+  //black: '#000000',
+  //black: '#101010',
+  //black: '#050510',
+  black: '#050505',
   mine_shaft: '#303030',
   cod_gray: '#101010',
   //white: '#fefefe',

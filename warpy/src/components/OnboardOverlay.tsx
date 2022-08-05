@@ -56,11 +56,13 @@ export const OnboardOverlay: React.FC<{visible: boolean}> = ({visible}) => {
             alignItems: 'center',
           }}>
           <TextButton style={{width: '100%'}} title="join warpy" />
+          {/*
           <View style={{paddingTop: 15}}>
             <Text size="xxsmall" color="white">
               skip
             </Text>
           </View>
+            */}
         </View>
       </View>
     </Animated.View>
