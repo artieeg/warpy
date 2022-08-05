@@ -69,7 +69,7 @@ export const StreamFeedView: React.FC<StreamFeedViewProps> = ({
     flex: 1,
     opacity: opacity.value,
     backgroundColor: colors.black,
-    marginLeft: 10,
+    //marginLeft: 10,
   }));
 
   return (
