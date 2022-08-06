@@ -5,12 +5,16 @@ import { NewStreamResponse } from '@warpy/lib';
 import cuid from 'cuid';
 import { MediaService } from '@warpy-be/app/media';
 import { StreamStore } from './stream.store';
+import { BroadcastService } from '../broadcast';
+import { ParticipantStore } from '../participant';
 
 export class StreamService {
   constructor(
     private streamStore: StreamStore,
     private mediaService: MediaService,
-    private eventEmitter: EventEmitter2,
+    private events: EventEmitter2,
+    private broadcastService: BroadcastService,
+    private participantStore: ParticipantStore,
   ) {}
 
   async get(id: string) {
@@ -48,7 +52,7 @@ export class StreamService {
         video: true,
       });
 
-    this.eventEmitter.emit(EVENT_STREAM_CREATED, {
+    this.events.emit(EVENT_STREAM_CREATED, {
       stream,
     });
 
@@ -67,7 +71,7 @@ export class StreamService {
 
   async deleteStream(stream: string) {
     await this.streamStore.del(stream);
-    this.eventEmitter.emit(EVENT_STREAM_ENDED, {
+    this.events.emit(EVENT_STREAM_ENDED, {
       stream,
     });
   }
@@ -79,7 +83,16 @@ export class StreamService {
       throw new StreamNotFound();
     }
 
-    this.eventEmitter.emit(EVENT_STREAM_ENDED, {
+    const ids = await this.participantStore.getParticipantIds(stream);
+
+    this.broadcastService.broadcast(ids, {
+      event: 'stream-end',
+      data: {
+        stream,
+      },
+    });
+
+    this.events.emit(EVENT_STREAM_ENDED, {
       stream: stream,
     });
   }

@@ -21,7 +21,6 @@ import { AppInviteModule } from './app-invite';
 import { DeveloperAccountModule } from './developer-account';
 import { FollowModule } from './follow';
 import { PrismaModule, PrismaService } from './prisma';
-import { StreamModule } from './stream';
 import { NjsRefreshTokenStore, NJTokenService, TokenModule } from './token';
 
 @Injectable()
@@ -118,7 +117,6 @@ export class UserController {
   imports: [
     PrismaModule,
     FollowModule,
-    StreamModule,
     TokenModule,
     AppInviteModule,
     DeveloperAccountModule,

@@ -13,6 +13,8 @@ import { OnHostReassignFailed, OnHostReassign } from '../interfaces';
 import { MediaModule, NjsMediaService } from './media';
 import { PrismaModule, PrismaService } from './prisma';
 import { EVENT_HOST_REASSIGN, EVENT_HOST_REASSIGN_FAILED } from '../utils';
+import { NjsParticipantStore, ParticipantModule } from './participant';
+import { NjsBroadcastService } from './broadcast';
 
 @Injectable()
 export class NjsStreamStore extends StreamStore {
@@ -27,8 +29,16 @@ export class NjsStreamService extends StreamService {
     streamStore: NjsStreamStore,
     mediaService: NjsMediaService,
     events: EventEmitter2,
+    broadcastService: NjsBroadcastService,
+    participantStore: NjsParticipantStore,
   ) {
-    super(streamStore, mediaService, events);
+    super(
+      streamStore,
+      mediaService,
+      events,
+      broadcastService,
+      participantStore,
+    );
   }
 }
 
@@ -74,7 +84,7 @@ export class StreamController implements OnHostReassignFailed, OnHostReassign {
 }
 
 @Module({
-  imports: [PrismaModule, MediaModule],
+  imports: [PrismaModule, MediaModule, ParticipantModule],
   controllers: [StreamController],
   providers: [NjsStreamService, NjsStreamStore],
   exports: [NjsStreamService, NjsStreamStore],

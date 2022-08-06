@@ -10,7 +10,9 @@ import {
   createStreamFixture,
 } from '@warpy-be/__fixtures__';
 import { when } from 'jest-when';
+import { BroadcastService } from '../broadcast';
 import { MediaService } from '../media';
+import { ParticipantStore } from '../participant';
 import { StreamService } from './stream.service';
 import { StreamStore } from './stream.store';
 
@@ -18,11 +20,17 @@ describe('StreamService', () => {
   const streamStore = getMockedInstance<StreamStore>(StreamStore);
   const mediaService = getMockedInstance<MediaService>(MediaService);
   const events = getMockedInstance<EventEmitter2>(EventEmitter2);
+  const broadcastService =
+    getMockedInstance<BroadcastService>(BroadcastService);
+  const participantStore =
+    getMockedInstance<ParticipantStore>(ParticipantStore);
 
   const service = new StreamService(
     streamStore as any,
     mediaService as any,
     events as any,
+    broadcastService as any,
+    participantStore as any,
   );
 
   describe('creating new room', () => {
@@ -108,11 +116,27 @@ describe('StreamService', () => {
 
     const deletedStream = createStreamFixture({ owner: validHost });
 
+    const idsOnStream = ['user0', 'user1', 'user2'];
+    when(participantStore.getParticipantIds)
+      .calledWith(deletedStream.id)
+      .mockResolvedValue(idsOnStream);
+
     when(streamStore.delByHost)
       .calledWith(validHost)
       .mockResolvedValue(deletedStream.id);
 
     when(streamStore.delByHost).calledWith(invalidHost).mockResolvedValue(null);
+
+    it('broadcasts stream end event', async () => {
+      await service.stopStream(validHost);
+
+      expect(broadcastService.broadcast).toBeCalledWith(idsOnStream, {
+        event: 'stream-end',
+        data: {
+          stream: deletedStream.id,
+        },
+      });
+    });
 
     it('throws when host is invalid', async () => {
       expect(service.stopStream(invalidHost)).rejects.toThrowError(
