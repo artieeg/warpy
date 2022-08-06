@@ -21,6 +21,7 @@ import {
   ParticipantAlreadyLeft,
   UserNotFound,
 } from '@warpy-be/errors';
+import { BroadcastService } from '../broadcast';
 
 describe('ParticipantService', () => {
   const participantStore =
@@ -29,12 +30,15 @@ describe('ParticipantService', () => {
     getMockedInstance<BotInstanceStore>(BotInstanceStore);
   const events = getMockedInstance<EventEmitter2>(EventEmitter2);
   const userService = getMockedInstance<UserService>(UserService);
+  const broadcastService =
+    getMockedInstance<BroadcastService>(BroadcastService);
 
   const service = new ParticipantService(
     participantStore as any,
     botInstanceStore as any,
     events as any,
     userService as any,
+    broadcastService as any,
   );
 
   beforeAll(() => {
@@ -132,6 +136,8 @@ describe('ParticipantService', () => {
 
     const stream = 'stream0';
 
+    const idsOnStream = ['user0', 'user1', 'user2'];
+
     const participant = createParticipantFixture({ id, stream });
     const alreadyDeactivatedParticipant = createParticipantFixture({
       id: alreadyDeactivatedUserId,
@@ -143,6 +149,10 @@ describe('ParticipantService', () => {
       id: botId,
       stream,
     });
+
+    when(participantStore.getParticipantIds)
+      .calledWith(stream)
+      .mockResolvedValue(idsOnStream);
 
     when(participantStore.isDeactivated)
       .calledWith(alreadyDeactivatedUserId, stream)
@@ -180,6 +190,18 @@ describe('ParticipantService', () => {
       expect(
         service.handleLeavingParticipant(alreadyDeactivatedUserId),
       ).rejects.toThrowError(ParticipantAlreadyLeft);
+    });
+
+    it('broadcasts the leaving user to other users on stream', async () => {
+      await service.handleLeavingParticipant(id);
+
+      expect(broadcastService.broadcast).toBeCalledWith(idsOnStream, {
+        event: 'user-left',
+        data: {
+          user: id,
+          stream,
+        },
+      });
     });
 
     it('emits event', async () => {

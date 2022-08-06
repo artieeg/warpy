@@ -18,20 +18,17 @@ import {
   EVENT_ROLE_CHANGE,
   EVENT_RAISE_HAND,
   EVENT_PARTICIPANT_LEAVE,
-  EVENT_AWARD_SENT,
 } from '@warpy-be/utils';
 import {
   BroadcastUserListStore,
   BroadcastService,
   ActiveSpeakersEvent,
-  AwardSentEvent,
   ChatMessageEvent,
   MediaToggleEvent,
   ParticipantLeaveEvent,
   ReactionsEvent,
 } from '@warpy-be/app';
 import { Participant } from '@warpy/lib';
-import { NjsParticipantStore } from './participant';
 import { NjsMessageService } from './message';
 
 @Injectable()
@@ -51,11 +48,10 @@ export class NjsBroadcastUserListStore
 @Injectable()
 export class NjsBroadcastService extends BroadcastService {
   constructor(
-    participantStore: NjsParticipantStore,
     messageService: NjsMessageService,
     broadcastUserListStore: NjsBroadcastUserListStore,
   ) {
-    super(participantStore, messageService, broadcastUserListStore);
+    super(messageService, broadcastUserListStore);
   }
 }
 
@@ -117,11 +113,6 @@ export class BroadcastController implements OnStreamEnd, OnRoleChange {
       this.broadcast.broadcastParticipantLeft(data),
       this.store.removeUserFromList(data.stream, data.user),
     ]);
-  }
-
-  @OnEvent(EVENT_AWARD_SENT, { async: true })
-  async onAward(data: AwardSentEvent) {
-    return this.broadcast.broadcastNewAward(data);
   }
 }
 

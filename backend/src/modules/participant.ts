@@ -34,6 +34,7 @@ import {
 import { NjsUserService, UserModule } from './user';
 import { PrismaModule, PrismaService } from './prisma';
 import { ParticipantAlreadyLeft } from '@warpy-be/errors';
+import { NjsBroadcastService } from './broadcast';
 
 @Injectable()
 export class NjsBotInstanceStore extends BotInstanceStore {
@@ -63,8 +64,15 @@ export class NjsParticipantService extends ParticipantService {
     botInstanceStore: NjsBotInstanceStore,
     events: EventEmitter2,
     userService: NjsUserService,
+    broadcastService: NjsBroadcastService,
   ) {
-    super(participantStore, botInstanceStore, events, userService);
+    super(
+      participantStore,
+      botInstanceStore,
+      events,
+      userService,
+      broadcastService,
+    );
   }
 }
 
@@ -113,9 +121,10 @@ export class ParticipantController
   async onUserDisconnect({ user }) {
     try {
       await this.participant.handleLeavingParticipant(user);
-    } catch(e) {
-      if (e instanceof ParticipantAlreadyLeft) { } else {
-        throw e
+    } catch (e) {
+      if (e instanceof ParticipantAlreadyLeft) {
+      } else {
+        throw e;
       }
     }
   }

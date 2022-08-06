@@ -23,6 +23,7 @@ import { RequestHostReassign } from '@warpy/lib';
 import { NjsTimerService } from '@warpy-be/shared';
 import { NjsUserStore, UserModule } from './user';
 import { NjsParticipantStore } from './participant';
+import { NjsBroadcastService } from './broadcast';
 
 @Injectable()
 export class NjsHostStore extends HostStore {
@@ -43,8 +44,16 @@ export class NjsHostService extends HostService {
     events: EventEmitter2,
     userStore: NjsUserStore,
     participantStore: NjsParticipantStore,
+    broadcastService: NjsBroadcastService,
   ) {
-    super(timerService, hostStore, events, userStore, participantStore);
+    super(
+      timerService,
+      hostStore,
+      events,
+      userStore,
+      participantStore,
+      broadcastService,
+    );
   }
 }
 

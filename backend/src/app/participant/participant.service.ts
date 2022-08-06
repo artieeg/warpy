@@ -13,6 +13,7 @@ import {
   EVENT_RAISE_HAND,
   EVENT_STREAMER_MEDIA_TOGGLE,
 } from '@warpy-be/utils';
+import { BroadcastService } from '../broadcast';
 
 export class ParticipantService {
   constructor(
@@ -20,6 +21,7 @@ export class ParticipantService {
     private botInstanceStore: BotInstanceStore,
     private events: EventEmitter2,
     private user: UserService,
+    private broadcastService: BroadcastService,
   ) {}
 
   async get(id: string) {
@@ -132,6 +134,18 @@ export class ParticipantService {
     this.events.emit(EVENT_PARTICIPANT_LEAVE, {
       user,
       stream: data.stream,
+    });
+
+    const idsOnStream = await this.participantStore.getParticipantIds(
+      data.stream,
+    );
+
+    this.broadcastService.broadcast(idsOnStream, {
+      event: 'user-left',
+      data: {
+        user,
+        stream: data.stream,
+      },
     });
 
     //remove bots from the stream completely

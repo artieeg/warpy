@@ -1,4 +1,4 @@
-import { ParticipantStore, BroadcastUserListStore } from '@warpy-be/app';
+import { BroadcastUserListStore } from '@warpy-be/app';
 import { MessageService } from '../message';
 import { Award, Participant } from '@warpy/lib';
 
@@ -40,7 +40,6 @@ type BroadcastData<T = any> = {
 
 export class BroadcastService {
   constructor(
-    private participant: ParticipantStore,
     private messageService: MessageService,
     private broadcastUserListStore: BroadcastUserListStore,
   ) {}
@@ -184,21 +183,6 @@ export class BroadcastService {
       data: {
         user,
         stream,
-      },
-    });
-
-    this._broadcast(ids, message);
-  }
-
-  //TODO: figure out a way to pass stream id along with the award data
-  async broadcastNewAward({ award }: AwardSentEvent) {
-    const currentStream = await this.participant.getStreamId(award.recipent.id);
-    const ids = await this.participant.getParticipantIds(currentStream);
-
-    const message = this.messageService.encodeMessage({
-      event: 'new-award',
-      data: {
-        award,
       },
     });
 
