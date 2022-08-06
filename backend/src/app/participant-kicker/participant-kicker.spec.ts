@@ -5,19 +5,25 @@ import { createParticipantFixture } from '@warpy-be/__fixtures__';
 import { when } from 'jest-when';
 import { ParticipantKickerService, StreamBanStore } from '.';
 import { ParticipantService } from '..';
+import { BroadcastService } from '../broadcast';
+import { ParticipantStore } from '../participant/participant.store';
 
 describe('ParticipantKicker', () => {
   const participantService =
     getMockedInstance<ParticipantService>(ParticipantService);
-
   const events = getMockedInstance<EventEmitter2>(EventEmitter2);
-
   const streamBanStore = getMockedInstance<StreamBanStore>(StreamBanStore);
+  const broadcastService =
+    getMockedInstance<BroadcastService>(BroadcastService);
+  const participantStore =
+    getMockedInstance<ParticipantStore>(ParticipantStore);
 
   const service = new ParticipantKickerService(
     participantService as any,
+    participantStore as any,
     streamBanStore as any,
     events as any,
+    broadcastService as any,
   );
 
   const kickedUser = 'user0';
@@ -26,6 +32,11 @@ describe('ParticipantKicker', () => {
   when(streamBanStore.find)
     .calledWith(kickedUser, stream)
     .mockResolvedValue('test' as any);
+
+  const idsOnStream = ['user0', 'user1', 'user2'];
+  when(participantStore.getParticipantIds)
+    .calledWith(stream)
+    .mockResolvedValue(idsOnStream);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -36,8 +47,12 @@ describe('ParticipantKicker', () => {
   });
 
   describe('kicking stream participants', () => {
-    const mod = createParticipantFixture({ id: 'kick-mod0', role: 'streamer' });
-    const userToKick = createParticipantFixture({ id: 'kick-user0' });
+    const mod = createParticipantFixture({
+      id: 'kick-mod0',
+      role: 'streamer',
+      stream,
+    });
+    const userToKick = createParticipantFixture({ id: 'kick-user0', stream });
 
     when(participantService.get).calledWith(mod.id).mockResolvedValue(mod);
     when(participantService.get)
@@ -48,6 +63,18 @@ describe('ParticipantKicker', () => {
       await service.kickStreamParticipant(userToKick.id, mod.id);
 
       expect(events.emit).toBeCalledWith(EVENT_PARTICIPANT_KICKED, userToKick);
+    });
+
+    it('broadcasts kick user event to other users on stream', async () => {
+      await service.kickStreamParticipant(userToKick.id, mod.id);
+
+      expect(broadcastService.broadcast).toBeCalledWith(idsOnStream, {
+        event: 'user-kicked',
+        data: {
+          user: userToKick.id,
+          stream: userToKick.stream,
+        },
+      });
     });
 
     it('creates stream ban record', async () => {

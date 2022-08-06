@@ -8,8 +8,6 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
 import {
-  EVENT_STREAMER_MEDIA_TOGGLE,
-  EVENT_PARTICIPANT_KICKED,
   EVENT_CHAT_MESSAGE,
   EVENT_REACTIONS,
   EVENT_ACTIVE_SPEAKERS,
@@ -21,7 +19,6 @@ import {
   BroadcastService,
   ActiveSpeakersEvent,
   ChatMessageEvent,
-  MediaToggleEvent,
   ReactionsEvent,
 } from '@warpy-be/app';
 import { Participant } from '@warpy/lib';
@@ -53,18 +50,7 @@ export class NjsBroadcastService extends BroadcastService {
 
 @Controller()
 export class BroadcastController {
-  constructor(
-    private broadcast: NjsBroadcastService,
-    private store: NjsBroadcastUserListStore,
-  ) {}
-
-  @OnEvent(EVENT_PARTICIPANT_KICKED)
-  async onParticipantKicked(data: Participant) {
-    return Promise.all([
-      this.broadcast.broadcastKickedParticipant(data),
-      this.store.removeUserFromList(data.stream, data.id),
-    ]);
-  }
+  constructor(private broadcast: NjsBroadcastService) {}
 
   @OnEvent(EVENT_CHAT_MESSAGE)
   async onChatMessage(data: ChatMessageEvent) {

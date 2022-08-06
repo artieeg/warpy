@@ -6,7 +6,12 @@ import {
   StreamBanStore,
 } from '@warpy-be/app/participant-kicker';
 import { RequestKickUser } from '@warpy/lib';
-import { NjsParticipantService, ParticipantModule } from './participant';
+import { NjsBroadcastService } from './broadcast';
+import {
+  NjsParticipantService,
+  NjsParticipantStore,
+  ParticipantModule,
+} from './participant';
 import { PrismaModule, PrismaService } from './prisma';
 
 @Injectable()
@@ -20,10 +25,18 @@ export class NjsStreamBanStore extends StreamBanStore {
 export class NjsParticipantKickerService extends ParticipantKickerService {
   constructor(
     participantService: NjsParticipantService,
+    participantStore: NjsParticipantStore,
     streamBanStore: NjsStreamBanStore,
     events: EventEmitter2,
+    broadcastService: NjsBroadcastService,
   ) {
-    super(participantService, streamBanStore, events);
+    super(
+      participantService,
+      participantStore,
+      streamBanStore,
+      events,
+      broadcastService,
+    );
   }
 }
 

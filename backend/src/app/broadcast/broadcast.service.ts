@@ -54,22 +54,6 @@ export class BroadcastService {
     this._broadcast(ids, enc);
   }
 
-  async broadcastKickedParticipant(participant: Participant) {
-    const { stream, id } = participant;
-
-    const ids = await this.broadcastUserListStore.get(stream);
-
-    const payload = this.messageService.encodeMessage({
-      event: 'user-kicked',
-      data: {
-        user: id,
-        stream,
-      },
-    });
-
-    this._broadcast(ids, payload);
-  }
-
   async broadcastChatMessage({ idsToBroadcast, message }: ChatMessageEvent) {
     const payload = this.messageService.encodeMessage({
       event: 'chat-message',
