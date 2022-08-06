@@ -174,18 +174,4 @@ export class BroadcastService {
 
     this._broadcast(ids, message);
   }
-
-  async broadcastParticipantLeft({ user, stream }: ParticipantLeaveEvent) {
-    const ids = await this.broadcastUserListStore.get(stream);
-
-    const message = this.messageService.encodeMessage({
-      event: 'user-left',
-      data: {
-        user,
-        stream,
-      },
-    });
-
-    this._broadcast(ids, message);
-  }
 }

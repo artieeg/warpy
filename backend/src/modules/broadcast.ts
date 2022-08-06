@@ -17,7 +17,6 @@ import {
   EVENT_ACTIVE_SPEAKERS,
   EVENT_ROLE_CHANGE,
   EVENT_RAISE_HAND,
-  EVENT_PARTICIPANT_LEAVE,
 } from '@warpy-be/utils';
 import {
   BroadcastUserListStore,
@@ -25,7 +24,6 @@ import {
   ActiveSpeakersEvent,
   ChatMessageEvent,
   MediaToggleEvent,
-  ParticipantLeaveEvent,
   ReactionsEvent,
 } from '@warpy-be/app';
 import { Participant } from '@warpy/lib';
@@ -105,14 +103,6 @@ export class BroadcastController implements OnStreamEnd, OnRoleChange {
   async onRaiseHand(data: Participant) {
     console.log(data);
     return this.broadcast.broadcastHandRaise(data);
-  }
-
-  @OnEvent(EVENT_PARTICIPANT_LEAVE)
-  async onParticipantLeave(data: ParticipantLeaveEvent) {
-    return Promise.all([
-      this.broadcast.broadcastParticipantLeft(data),
-      this.store.removeUserFromList(data.stream, data.user),
-    ]);
   }
 }
 
