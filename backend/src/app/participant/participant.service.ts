@@ -204,6 +204,17 @@ export class ParticipantService {
     }
 
     await this.participantStore.update(user, update);
+    const idsOnStream = await this.participantStore.getParticipantIds(stream);
+
+    this.broadcastService.broadcast(idsOnStream, {
+      event: 'user-toggled-media',
+      data: {
+        user,
+        stream: stream,
+        videoEnabled: true,
+        audioEnabled: true,
+      },
+    });
 
     this.events.emit(EVENT_STREAMER_MEDIA_TOGGLE, {
       user,

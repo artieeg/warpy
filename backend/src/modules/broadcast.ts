@@ -7,9 +7,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
-import { OnStreamEnd, OnRoleChange } from '@warpy-be/interfaces';
 import {
-  EVENT_STREAM_ENDED,
   EVENT_STREAMER_MEDIA_TOGGLE,
   EVENT_PARTICIPANT_KICKED,
   EVENT_CHAT_MESSAGE,
@@ -54,22 +52,11 @@ export class NjsBroadcastService extends BroadcastService {
 }
 
 @Controller()
-export class BroadcastController implements OnStreamEnd, OnRoleChange {
+export class BroadcastController {
   constructor(
     private broadcast: NjsBroadcastService,
     private store: NjsBroadcastUserListStore,
   ) {}
-
-  @OnEvent(EVENT_STREAM_ENDED)
-  async onStreamEnd({ stream }) {
-    await this.broadcast.broadcastStreamEnd(stream);
-    await this.store.deleteList(stream);
-  }
-
-  @OnEvent(EVENT_STREAMER_MEDIA_TOGGLE)
-  async onMediaToggle(data: MediaToggleEvent) {
-    return this.broadcast.broadcastMediaToggle(data);
-  }
 
   @OnEvent(EVENT_PARTICIPANT_KICKED)
   async onParticipantKicked(data: Participant) {

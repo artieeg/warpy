@@ -54,40 +54,6 @@ export class BroadcastService {
     this._broadcast(ids, enc);
   }
 
-  async broadcastStreamEnd(stream: string) {
-    const ids = await this.broadcastUserListStore.get(stream);
-
-    const payload = this.messageService.encodeMessage({
-      event: 'stream-end',
-      data: {
-        stream,
-      },
-    });
-
-    this._broadcast(ids, payload);
-  }
-
-  async broadcastMediaToggle({
-    user,
-    stream,
-    videoEnabled,
-    audioEnabled,
-  }: MediaToggleEvent) {
-    const ids = await this.broadcastUserListStore.get(stream);
-
-    const payload = this.messageService.encodeMessage({
-      event: 'user-toggled-media',
-      data: {
-        user,
-        stream,
-        videoEnabled,
-        audioEnabled,
-      },
-    });
-
-    this._broadcast(ids, payload);
-  }
-
   async broadcastKickedParticipant(participant: Participant) {
     const { stream, id } = participant;
 

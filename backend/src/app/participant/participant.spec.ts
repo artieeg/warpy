@@ -49,11 +49,33 @@ describe('ParticipantService', () => {
     const user = 'toggle_user0';
     const participant = createParticipantFixture({ id: user });
 
+    const idsOnStream = ['user0', 'user1', 'user2'];
+    when(participantStore.getParticipantIds)
+      .calledWith(participant.stream)
+      .mockResolvedValue(idsOnStream);
+
     when(participantStore.getStreamId)
       .calledWith(user)
       .mockResolvedValue(participant.stream);
 
     participantStore.countVideoStreamers.mockResolvedValue(1);
+
+    it('broadcasts media toggle to other users on stream', async () => {
+      await service.setMediaEnabled(user, {
+        audioEnabled: true,
+        videoEnabled: true,
+      });
+
+      expect(broadcastService.broadcast).toBeCalledWith(idsOnStream, {
+        event: 'user-toggled-media',
+        data: {
+          user,
+          stream: participant.stream,
+          videoEnabled: true,
+          audioEnabled: true,
+        },
+      });
+    });
 
     it('stores updated flags', async () => {
       await service.setMediaEnabled(user, {
@@ -136,8 +158,6 @@ describe('ParticipantService', () => {
 
     const stream = 'stream0';
 
-    const idsOnStream = ['user0', 'user1', 'user2'];
-
     const participant = createParticipantFixture({ id, stream });
     const alreadyDeactivatedParticipant = createParticipantFixture({
       id: alreadyDeactivatedUserId,
@@ -150,6 +170,7 @@ describe('ParticipantService', () => {
       stream,
     });
 
+    const idsOnStream = ['user0', 'user1', 'user2'];
     when(participantStore.getParticipantIds)
       .calledWith(stream)
       .mockResolvedValue(idsOnStream);
