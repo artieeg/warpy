@@ -10,6 +10,7 @@ import { ParticipantStore } from '@warpy-be/app/participant';
 import { UserStore } from '@warpy-be/app/user';
 import { TimerService } from '../timer';
 import { HostStore } from './stream-host.store';
+import { BroadcastService } from '../broadcast';
 
 //Hosts will have 20 seconds to rejoin and preserve their host role;
 const HOST_REJOIN_PERIOD = 20000;
@@ -21,6 +22,7 @@ export class HostService {
     private events: EventEmitter2,
     private user: UserStore,
     private participantStore: ParticipantStore,
+    private broadcast: BroadcastService,
   ) {}
 
   async getHostInfo(user: string) {
@@ -55,6 +57,15 @@ export class HostService {
    * */
   private async setStreamHost(stream: string, host: Participant) {
     await this.hostStore.setStreamHost(host);
+
+    const ids = await this.participantStore.getParticipantIds(stream);
+
+    this.broadcast.broadcast(ids, {
+      event: 'stream-host-reassigned',
+      data: {
+        host,
+      },
+    });
 
     this.events.emit(EVENT_HOST_REASSIGN, {
       stream,

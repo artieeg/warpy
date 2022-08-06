@@ -11,6 +11,7 @@ import {
 } from '@warpy-be/__fixtures__';
 import { when } from 'jest-when';
 import { StreamJoinerService } from '.';
+import { BroadcastService } from '../broadcast';
 import { MediaService } from '../media';
 import { ParticipantService, ParticipantStore } from '../participant';
 import { ParticipantKickerService } from '../participant-kicker';
@@ -21,6 +22,8 @@ describe('StreamJoinerService', () => {
   const participantService =
     getMockedInstance<ParticipantService>(ParticipantService);
 
+  const broadcastService =
+    getMockedInstance<BroadcastService>(BroadcastService);
   const participantStore =
     getMockedInstance<ParticipantStore>(ParticipantStore);
   const mediaService = getMockedInstance<MediaService>(MediaService);
@@ -50,6 +53,7 @@ describe('StreamJoinerService', () => {
     tokenService as any,
     participantKickerService as any,
     events as any,
+    broadcastService as any,
   );
 
   beforeEach(() => {
@@ -64,6 +68,11 @@ describe('StreamJoinerService', () => {
     });
 
     const previouslyKickedParticipantId = 'joining-kicked-user0';
+
+    const idsOnStream = ['user0', 'user1', 'user2'];
+    when(participantStore.getParticipantIds)
+      .calledWith(stream)
+      .mockResolvedValue(idsOnStream);
 
     const viewerParams = {
       recvMediaParams: {},
@@ -95,6 +104,18 @@ describe('StreamJoinerService', () => {
     });
 
     describe('joining completely new participant', () => {
+      it('broadcasts new participant to other users on stream', async () => {
+        await service.joinUser(newParticipant.id, stream);
+
+        expect(broadcastService.broadcast).toBeCalledWith(idsOnStream, {
+          event: 'new-participant',
+          data: {
+            stream: newParticipant.stream,
+            participant: newParticipant,
+          },
+        });
+      });
+
       it('creates a participant', async () => {
         await service.joinUser(newParticipant.id, stream);
 
@@ -136,7 +157,19 @@ describe('StreamJoinerService', () => {
         .calledWith(oldStreamerData.id)
         .mockResolvedValue(oldStreamerData);
 
-      it('includes the rejoined streamer in the streamers array', () => {
+      it('broadcasts rejoined participant to other users on stream', async () => {
+        await service.joinUser(oldStreamerData.id, stream);
+
+        expect(broadcastService.broadcast).toBeCalledWith(idsOnStream, {
+          event: 'new-participant',
+          data: {
+            stream: oldStreamerData.stream,
+            participant: oldStreamerData,
+          },
+        });
+      });
+
+      it('includes the rejoined streamer in the streamers array when producing a response', () => {
         expect(
           service.joinUser(oldStreamerData.id, oldStreamerData.stream),
         ).resolves.toStrictEqual(

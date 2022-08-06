@@ -5,6 +5,7 @@ import {
   EVENT_PARTICIPANT_REJOIN,
 } from '@warpy-be/utils';
 import { JoinStreamResponse, Participant, Roles } from '@warpy/lib';
+import { BroadcastService } from '../broadcast';
 import { MediaService } from '../media';
 import { ParticipantService, ParticipantStore } from '../participant';
 import { ParticipantKickerService } from '../participant-kicker';
@@ -24,6 +25,7 @@ export class StreamJoinerService {
     private tokenService: TokenService,
     private participantKicker: ParticipantKickerService,
     private events: EventEmitter2,
+    private broadcast: BroadcastService,
   ) {}
 
   async joinBot(bot: string, inviteToken: string) {
@@ -60,33 +62,49 @@ export class StreamJoinerService {
       throw new BannedFromStreamError();
     }
 
-    const [participantData, streamParticipantsInfo, host] = await Promise.all([
+    const [
+      participantData,
+      streamParticipantsInfo,
+      host,
+      participantIdsOnStream,
+    ] = await Promise.all([
       this.participantStore.get(user),
       this.participantService.getParticipantDataOnStream(stream),
       this.host.getStreamHostId(stream),
+      this.participantStore.getParticipantIds(stream),
     ]);
 
-    let roleAndMediaParams: {
+    let result: {
       mediaPermissionsToken: string;
       sendMediaParams?: any;
       recvMediaParams: any;
       role: Roles;
+      participant: Participant;
     };
+
     if (!participantData || participantData.stream !== stream) {
-      roleAndMediaParams = await this._join(user, stream);
+      result = await this._join(user, stream);
     } else {
-      roleAndMediaParams = await this._rejoin(participantData);
+      result = await this._rejoin(participantData);
     }
+
+    this.broadcast.broadcast(participantIdsOnStream, {
+      event: 'new-participant',
+      data: {
+        stream: result.participant.stream,
+        participant: result.participant,
+      },
+    });
 
     return {
       ...streamParticipantsInfo,
       count: streamParticipantsInfo.count + 1,
       host,
       streamers:
-        roleAndMediaParams.role === 'streamer'
+        result.role === 'streamer'
           ? [...streamParticipantsInfo.streamers, participantData]
           : streamParticipantsInfo.streamers,
-      ...roleAndMediaParams,
+      ...result,
     };
   }
 
@@ -103,6 +121,7 @@ export class StreamJoinerService {
       mediaPermissionsToken,
       recvMediaParams,
       role: 'viewer' as Roles,
+      participant,
     };
   }
 
@@ -132,6 +151,7 @@ export class StreamJoinerService {
     return {
       ...reconnectMediaParams,
       role,
+      participant: previousParticipantData,
     };
   }
 

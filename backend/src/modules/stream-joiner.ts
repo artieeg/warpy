@@ -20,6 +20,7 @@ import {
   ParticipantKickerModule,
 } from './participant-kicker';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { NjsBroadcastService } from './broadcast';
 
 @Injectable()
 export class NjsStreamJoiner extends StreamJoinerService {
@@ -31,6 +32,7 @@ export class NjsStreamJoiner extends StreamJoinerService {
     tokenService: NJTokenService,
     participantKicker: NjsParticipantKickerService,
     events: EventEmitter2,
+    broadcastService: NjsBroadcastService,
   ) {
     super(
       participantService,
@@ -40,6 +42,7 @@ export class NjsStreamJoiner extends StreamJoinerService {
       tokenService,
       participantKicker,
       events,
+      broadcastService,
     );
   }
 }

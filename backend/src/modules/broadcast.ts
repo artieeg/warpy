@@ -7,15 +7,8 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
+import { OnStreamEnd, OnRoleChange } from '@warpy-be/interfaces';
 import {
-  OnStreamEnd,
-  OnParticipantRejoin,
-  OnNewParticipant,
-  OnRoleChange,
-  OnHostReassign,
-} from '@warpy-be/interfaces';
-import {
-  EVENT_HOST_REASSIGN,
   EVENT_STREAM_ENDED,
   EVENT_STREAMER_MEDIA_TOGGLE,
   EVENT_PARTICIPANT_KICKED,
@@ -25,8 +18,6 @@ import {
   EVENT_ROLE_CHANGE,
   EVENT_RAISE_HAND,
   EVENT_PARTICIPANT_LEAVE,
-  EVENT_PARTICIPANT_REJOIN,
-  EVENT_NEW_PARTICIPANT,
   EVENT_AWARD_SENT,
 } from '@warpy-be/utils';
 import {
@@ -69,23 +60,11 @@ export class NjsBroadcastService extends BroadcastService {
 }
 
 @Controller()
-export class BroadcastController
-  implements
-    OnStreamEnd,
-    OnParticipantRejoin,
-    OnNewParticipant,
-    OnRoleChange,
-    OnHostReassign
-{
+export class BroadcastController implements OnStreamEnd, OnRoleChange {
   constructor(
     private broadcast: NjsBroadcastService,
     private store: NjsBroadcastUserListStore,
   ) {}
-
-  @OnEvent(EVENT_HOST_REASSIGN)
-  async onHostReassign({ host }) {
-    return this.broadcast.broadcastNewHost({ host });
-  }
 
   @OnEvent(EVENT_STREAM_ENDED)
   async onStreamEnd({ stream }) {
@@ -138,23 +117,6 @@ export class BroadcastController
       this.broadcast.broadcastParticipantLeft(data),
       this.store.removeUserFromList(data.stream, data.user),
     ]);
-  }
-
-  private async onParticipantJoin(participant: Participant) {
-    return Promise.all([
-      this.broadcast.broadcastNewParticipant(participant),
-      this.store.addUserToList(participant.stream, participant.id),
-    ]);
-  }
-
-  @OnEvent(EVENT_PARTICIPANT_REJOIN, { async: true })
-  async onParticipantRejoin({ participant }) {
-    return this.onParticipantJoin(participant);
-  }
-
-  @OnEvent(EVENT_NEW_PARTICIPANT, { async: true })
-  async onNewParticipant({ participant }) {
-    return this.onParticipantJoin(participant);
   }
 
   @OnEvent(EVENT_AWARD_SENT, { async: true })

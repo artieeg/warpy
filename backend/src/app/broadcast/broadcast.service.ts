@@ -14,10 +14,6 @@ export type ChatMessageEvent = {
   message: string;
 };
 
-export type NewHostEvent = {
-  host: Participant;
-};
-
 export type ReactionsEvent = {
   stream: string;
   reactions: any;
@@ -66,19 +62,6 @@ export class BroadcastService {
       event: 'stream-end',
       data: {
         stream,
-      },
-    });
-
-    this._broadcast(ids, payload);
-  }
-
-  async broadcastNewHost({ host }: NewHostEvent) {
-    const ids = await this.broadcastUserListStore.get(host.stream);
-
-    const payload = this.messageService.encodeMessage({
-      event: 'stream-host-reassigned',
-      data: {
-        host,
       },
     });
 
@@ -201,20 +184,6 @@ export class BroadcastService {
       data: {
         user,
         stream,
-      },
-    });
-
-    this._broadcast(ids, message);
-  }
-
-  async broadcastNewParticipant(participant: Participant) {
-    const ids = await this.broadcastUserListStore.get(participant.stream);
-
-    const message = this.messageService.encodeMessage({
-      event: 'new-participant',
-      data: {
-        stream: participant.stream,
-        participant: participant,
       },
     });
 
