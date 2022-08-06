@@ -39,14 +39,9 @@ export const useAppSetUp = () => {
       },
     });
 
-    //api.onError(error => useStore.getState().dispatchToastMessage(error.error));
     api.onError(error =>
       dispatch(({toast}) => toast.showToastMessage(error.error)),
     );
-
-    return () => {
-      api.observer.removeAllListeners();
-    };
   }, []);
 
   //Load previous reaction if exists

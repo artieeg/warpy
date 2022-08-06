@@ -1,7 +1,7 @@
 import { GetState, SetState } from "zustand";
 import { APIClient, WebSocketConn } from "@warpy/api";
 import produce from "immer";
-import { Store } from "../app/Store";
+import { Store } from "./app/Store";
 
 type APISubscriptionParams = {
   onStreamIdAvailable: (id: string) => void;
