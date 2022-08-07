@@ -8,7 +8,6 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
 import {
-  EVENT_CHAT_MESSAGE,
   EVENT_REACTIONS,
   EVENT_ACTIVE_SPEAKERS,
   EVENT_ROLE_CHANGE,
@@ -18,7 +17,6 @@ import {
   BroadcastUserListStore,
   BroadcastService,
   ActiveSpeakersEvent,
-  ChatMessageEvent,
   ReactionsEvent,
 } from '@warpy-be/app';
 import { Participant } from '@warpy/lib';
@@ -51,26 +49,6 @@ export class NjsBroadcastService extends BroadcastService {
 @Controller()
 export class BroadcastController {
   constructor(private broadcast: NjsBroadcastService) {}
-
-  @OnEvent(EVENT_CHAT_MESSAGE)
-  async onChatMessage(data: ChatMessageEvent) {
-    return this.broadcast.broadcastChatMessage(data);
-  }
-
-  @OnEvent(EVENT_REACTIONS)
-  async onReactions(data: ReactionsEvent) {
-    return this.broadcast.broadcastReactions(data);
-  }
-
-  @OnEvent(EVENT_ACTIVE_SPEAKERS)
-  async onActiveSpeakers(data: ActiveSpeakersEvent) {
-    return this.broadcast.broadcastActiveSpeakers(data);
-  }
-
-  @OnEvent(EVENT_ROLE_CHANGE)
-  async onRoleChange({ participant }) {
-    return this.broadcast.broadcastRoleChange(participant);
-  }
 
   @OnEvent(EVENT_RAISE_HAND)
   async onRaiseHand(data: Participant) {

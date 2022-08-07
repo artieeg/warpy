@@ -1,13 +1,16 @@
-import { EVENT_REACTIONS } from '@warpy-be/utils';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ALLOWED_EMOJI, Reaction } from '@warpy/lib';
 import { InvalidReaction } from '@warpy-be/errors';
+import { BroadcastService } from '../broadcast';
+import { ParticipantStore } from '../participant';
 
 export class ReactionService {
   private syncInterval: ReturnType<typeof setInterval>;
   batchedReactionUpdates: Record<string, Reaction[]> = {};
 
-  constructor(private eventEmitter: EventEmitter2) {}
+  constructor(
+    private broadcastService: BroadcastService,
+    private participantStore: ParticipantStore,
+  ) {}
 
   onInstanceInit() {
     this.syncInterval = setInterval(() => this.syncReactions(), 1000);
@@ -48,7 +51,15 @@ export class ReactionService {
             return;
           }
 
-          this.eventEmitter.emit(EVENT_REACTIONS, { stream, reactions });
+          const ids = await this.participantStore.getParticipantIds(stream);
+
+          this.broadcastService.broadcast(ids, {
+            event: 'reactions-update',
+            data: {
+              stream,
+              reactions,
+            },
+          });
         } catch (e) {}
       },
     );

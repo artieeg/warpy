@@ -1,16 +1,24 @@
-import { EVENT_ACTIVE_SPEAKERS } from '@warpy-be/utils';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { BroadcastService } from '../broadcast';
+import { ParticipantStore } from '../participant';
 
 export class ActiveSpeakerService {
-  constructor(private events: EventEmitter2) {}
+  constructor(
+    private broadcastService: BroadcastService,
+    private participantStore: ParticipantStore,
+  ) {}
 
   async broadcastActiveSpeakers(
     speakers: Record<string, { user: string; volume: number }[]>,
   ) {
     for (const stream in speakers) {
-      this.events.emit(EVENT_ACTIVE_SPEAKERS, {
-        stream,
-        activeSpeakers: speakers[stream],
+      const ids = await this.participantStore.getParticipantIds(stream);
+
+      this.broadcastService.broadcast(ids, {
+        event: 'active-speaker',
+        data: {
+          stream,
+          speakers: speakers[stream],
+        },
       });
     }
   }

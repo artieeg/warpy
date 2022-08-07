@@ -16,6 +16,7 @@ import {
   ParticipantStore,
   UserBlockService,
 } from '..';
+import { BroadcastService } from '../broadcast';
 
 describe('ParticipantRoleManagerService', () => {
   const participantStore =
@@ -26,6 +27,8 @@ describe('ParticipantRoleManagerService', () => {
   const mediaService = getMockedInstance<MediaService>(MediaService);
   const events = getMockedInstance<EventEmitter2>(EventEmitter2);
   const hostService = getMockedInstance<HostService>(HostService);
+  const broadcastService =
+    getMockedInstance<BroadcastService>(BroadcastService);
 
   const service = new ParticipantRoleManagerService(
     participantStore as any,
@@ -34,7 +37,11 @@ describe('ParticipantRoleManagerService', () => {
     mediaService as any,
     events as any,
     hostService as any,
+    broadcastService as any,
   );
+
+  const idsOnStream = ['user0', 'user1'];
+  participantStore.getParticipantIds.mockResolvedValue(idsOnStream);
 
   const existingHostId = 'role-hostid0';
   const nonExistingHostId = 'role-hostid1';
@@ -131,6 +138,21 @@ describe('ParticipantRoleManagerService', () => {
       data: expect.objectContaining({
         role: 'streamer',
       }),
+    });
+  });
+
+  it('broadcasts updated user to other people on stream', async () => {
+    await service.setRole({
+      userToUpdate: userToUpdate.id,
+      role: 'streamer',
+      mod: existingHostId,
+    });
+
+    expect(broadcastService.broadcast).toBeCalledWith(idsOnStream, {
+      event: 'participant-role-change',
+      data: {
+        user: updatedUser,
+      },
     });
   });
 

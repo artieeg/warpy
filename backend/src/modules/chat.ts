@@ -6,6 +6,7 @@ import { ChatService, ParticipantService } from '@warpy-be/app';
 import { RequestSendChatMessage, SendMessageResponse } from '@warpy/lib';
 import { NjsParticipantService, NjsParticipantStore } from './participant';
 import { NjsUserBlockService, UserBlockModule } from './user-block';
+import { NjsBroadcastService } from './broadcast';
 
 @Injectable()
 export class NjsChatService extends ChatService {
@@ -14,8 +15,15 @@ export class NjsChatService extends ChatService {
     participantService: NjsParticipantService,
     participantStore: NjsParticipantStore,
     userBlockService: NjsUserBlockService,
+    broadcastService: NjsBroadcastService,
   ) {
-    super(events, participantService, participantStore, userBlockService);
+    super(
+      events,
+      participantService,
+      participantStore,
+      userBlockService,
+      broadcastService,
+    );
   }
 }
 

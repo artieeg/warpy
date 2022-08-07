@@ -3,12 +3,16 @@ import { MessagePattern } from '@nestjs/microservices';
 import { ReactionService } from '@warpy-be/app';
 import { RequestPostReaction } from '@warpy/lib';
 import { ExceptionFilter } from '../rpc-exception.filter';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { NjsBroadcastService } from './broadcast';
+import { NjsParticipantStore, ParticipantModule } from './participant';
 
 @Injectable()
 export class NjsReactionService extends ReactionService {
-  constructor(events: EventEmitter2) {
-    super(events);
+  constructor(
+    broadcastService: NjsBroadcastService,
+    participantService: NjsParticipantStore,
+  ) {
+    super(broadcastService, participantService);
   }
 
   onModuleInit() {
@@ -32,7 +36,7 @@ export class ReactionController {
 }
 
 @Module({
-  imports: [],
+  imports: [ParticipantModule],
   providers: [NjsReactionService],
   controllers: [ReactionController],
 })

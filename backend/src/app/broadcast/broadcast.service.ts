@@ -54,61 +54,6 @@ export class BroadcastService {
     this._broadcast(ids, enc);
   }
 
-  async broadcastChatMessage({ idsToBroadcast, message }: ChatMessageEvent) {
-    const payload = this.messageService.encodeMessage({
-      event: 'chat-message',
-      data: {
-        message,
-      },
-    });
-
-    this._broadcast(idsToBroadcast, payload);
-  }
-
-  async broadcastReactions({ stream, reactions }: ReactionsEvent) {
-    const ids = await this.broadcastUserListStore.get(stream);
-
-    const message = this.messageService.encodeMessage({
-      event: 'reactions-update',
-      data: {
-        stream,
-        reactions,
-      },
-    });
-
-    this._broadcast(ids, message);
-  }
-
-  async broadcastActiveSpeakers({
-    stream,
-    activeSpeakers,
-  }: ActiveSpeakersEvent) {
-    const ids = await this.broadcastUserListStore.get(stream);
-
-    const message = this.messageService.encodeMessage({
-      event: 'active-speaker',
-      data: {
-        stream: stream,
-        speakers: activeSpeakers,
-      },
-    });
-
-    this._broadcast(ids, message);
-  }
-
-  async broadcastRoleChange(user: Participant) {
-    const ids = await this.broadcastUserListStore.get(user.stream);
-
-    const message = this.messageService.encodeMessage({
-      event: 'participant-role-change',
-      data: {
-        user,
-      },
-    });
-
-    this._broadcast(ids, message);
-  }
-
   async broadcastHandRaise(viewer: Participant) {
     const { stream } = viewer;
 

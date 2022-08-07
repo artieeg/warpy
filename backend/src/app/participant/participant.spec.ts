@@ -250,10 +250,18 @@ describe('ParticipantService', () => {
   describe('request streaming permissions (raise hand)', () => {
     const id = 'user0';
 
+    const stream = 'stream-stream-request';
+
     const participantWithRaisedHand = createParticipantFixture({
       id,
       isRaisingHand: true,
+      stream,
     });
+
+    const idsOnStream = ['user1', 'user2'];
+    when(participantStore.getParticipantIds)
+      .calledWith(stream)
+      .mockResolvedValue(idsOnStream);
 
     when(participantStore.update)
       .calledWith(id, { isRaisingHand: true })
@@ -264,6 +272,18 @@ describe('ParticipantService', () => {
 
       expect(participantStore.update).toBeCalledWith(id, {
         isRaisingHand: true,
+      });
+    });
+
+    it('broadcasts raised hand to other users on the stream', async () => {
+      await service.setRaiseHand(id, true);
+
+      expect(broadcastService.broadcast).toBeCalledWith(idsOnStream, {
+        event: 'raise-hand',
+        data: {
+          viewer: participantWithRaisedHand,
+          stream: participantWithRaisedHand.stream,
+        },
       });
     });
 

@@ -105,6 +105,19 @@ export class ParticipantService {
     const participant = await this.participantStore.update(user, {
       isRaisingHand: flag,
     });
+
+    const ids = await this.participantStore.getParticipantIds(
+      participant.stream,
+    );
+
+    this.broadcastService.broadcast(ids, {
+      event: 'raise-hand',
+      data: {
+        viewer: participant,
+        stream: participant.stream,
+      },
+    });
+
     this.events.emit(EVENT_RAISE_HAND, participant);
   }
 

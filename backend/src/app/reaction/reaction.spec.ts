@@ -1,12 +1,20 @@
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InvalidReaction } from '@warpy-be/errors';
-import { EVENT_REACTIONS, getMockedInstance } from '@warpy-be/utils';
+import { getMockedInstance } from '@warpy-be/utils';
 import { ALLOWED_EMOJI } from '@warpy/lib';
+import { BroadcastService } from '../broadcast';
+import { ParticipantStore } from '../participant';
 import { ReactionService } from './reaction.service';
 
 describe('ReactionService', () => {
-  const events = getMockedInstance<EventEmitter2>(EventEmitter2);
-  const service = new ReactionService(events as any);
+  const broadcastService =
+    getMockedInstance<BroadcastService>(BroadcastService);
+  const participantStore =
+    getMockedInstance<ParticipantStore>(ParticipantStore);
+
+  const service = new ReactionService(
+    broadcastService as any,
+    participantStore as any,
+  );
 
   const reaction = ALLOWED_EMOJI[0];
 
@@ -35,14 +43,14 @@ describe('ReactionService', () => {
       service.batchedReactionUpdates = {};
       await service.syncReactions();
 
-      expect(events.emit).toBeCalledTimes(0);
+      expect(broadcastService.broadcast).toBeCalledTimes(0);
     });
 
     it('emits reactions event', async () => {
       await service.countNewReaction('user', reaction, 'stream');
       await service.syncReactions();
 
-      expect(events.emit).toBeCalledWith(EVENT_REACTIONS, expect.anything());
+      expect(broadcastService.broadcast).toBeCalled();
     });
   });
 });

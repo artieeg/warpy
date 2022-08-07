@@ -5,6 +5,7 @@ import cuid from 'cuid';
 import Filter from 'bad-words';
 import { ParticipantService, ParticipantStore } from '../participant';
 import { UserBlockService } from '../user-block';
+import { BroadcastService } from '../broadcast';
 
 export class ChatService {
   profanityFilter = new Filter();
@@ -14,6 +15,7 @@ export class ChatService {
     private participantService: ParticipantService,
     private participantStore: ParticipantStore,
     private blockService: UserBlockService,
+    private broadcastService: BroadcastService,
   ) {}
 
   getFilteredMessage(message: string): string {
@@ -32,7 +34,8 @@ export class ChatService {
     ]);
 
     const ids = participants.filter(
-      (id) => !blockedByIds.includes(id) && !blockedIds.includes(id),
+      (id) =>
+        !blockedByIds.includes(id) && !blockedIds.includes(id) && id !== userId,
     );
 
     const message: ChatMessage = {
@@ -42,8 +45,12 @@ export class ChatService {
       timestamp: Date.now(),
     };
 
+    this.broadcastService.broadcast(ids, {
+      event: 'chat-message',
+      data: { message },
+    });
+
     this.events.emit(EVENT_CHAT_MESSAGE, {
-      idsToBroadcast: ids,
       message,
     });
 

@@ -1,10 +1,20 @@
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { EVENT_ACTIVE_SPEAKERS, getMockedInstance } from '@warpy-be/utils';
+import { getMockedInstance } from '@warpy-be/utils';
+import { BroadcastService } from '../broadcast';
+import { ParticipantStore } from '../participant';
 import { ActiveSpeakerService } from './active-speaker.service';
 
 describe('ActiveSpeakerService', () => {
-  const events = getMockedInstance<EventEmitter2>(EventEmitter2);
-  const service = new ActiveSpeakerService(events as any);
+  const participantStore =
+    getMockedInstance<ParticipantStore>(ParticipantStore);
+  const broadcastService =
+    getMockedInstance<BroadcastService>(BroadcastService);
+  const service = new ActiveSpeakerService(
+    broadcastService as any,
+    participantStore as any,
+  );
+
+  const ids = ['user0', 'user1'];
+  participantStore.getParticipantIds.mockResolvedValue(ids);
 
   it('emits active speakers', async () => {
     const data = {
@@ -15,9 +25,12 @@ describe('ActiveSpeakerService', () => {
     await service.broadcastActiveSpeakers(data);
 
     for (const sid in data) {
-      expect(events.emit).toBeCalledWith(EVENT_ACTIVE_SPEAKERS, {
-        stream: sid,
-        activeSpeakers: data[sid],
+      expect(broadcastService.broadcast).toBeCalledWith(ids, {
+        event: 'active-speaker',
+        data: {
+          stream: sid,
+          speakers: data[sid],
+        },
       });
     }
   });

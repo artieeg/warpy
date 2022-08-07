@@ -11,6 +11,7 @@ import { MediaService } from '@warpy-be/app/media';
 import { HostService } from '@warpy-be/app/stream-host';
 import { UserBlockService } from '@warpy-be/app/user-block';
 import { MessageService } from '@warpy-be/app';
+import { BroadcastService } from '../broadcast';
 
 export class ParticipantRoleManagerService {
   constructor(
@@ -20,6 +21,7 @@ export class ParticipantRoleManagerService {
     private media: MediaService,
     private events: EventEmitter2,
     private hostService: HostService,
+    private broadcastService: BroadcastService,
   ) {}
 
   async setRole({
@@ -81,6 +83,15 @@ export class ParticipantRoleManagerService {
     } else if (oldUserData.role === 'viewer') {
       this.events.emit(EVENT_VIEWER_UPGRADED, dataToEmit);
     }
+
+    const ids = await this.participant.getParticipantIds(stream);
+
+    this.broadcastService.broadcast(ids, {
+      event: 'participant-role-change',
+      data: {
+        user: updatedUser,
+      },
+    });
 
     this.events.emit(EVENT_ROLE_CHANGE, dataToEmit);
   }
