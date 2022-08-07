@@ -10,6 +10,7 @@ import { NjsUserBlockService, UserBlockModule } from './user-block';
 import { NjsMessageService } from './message';
 import { MediaModule, NjsMediaService } from './media';
 import { HostModule, NjsHostService } from './stream-host';
+import { NjsBroadcastService } from './broadcast';
 
 @Injectable()
 export class NjsParticipantRoleService extends ParticipantRoleManagerService {
@@ -20,6 +21,7 @@ export class NjsParticipantRoleService extends ParticipantRoleManagerService {
     mediaService: NjsMediaService,
     events: EventEmitter2,
     hostService: NjsHostService,
+    broadcastService: NjsBroadcastService,
   ) {
     super(
       participantStore,
@@ -28,6 +30,7 @@ export class NjsParticipantRoleService extends ParticipantRoleManagerService {
       mediaService,
       events,
       hostService,
+      broadcastService,
     );
   }
 }
