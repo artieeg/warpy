@@ -1,7 +1,7 @@
-import create, { UseStore } from "zustand";
+import create, { GetState, SetState, UseStore } from "zustand";
 import { container } from "./container";
 import { AppActionRunner } from "./AppActionRunner";
-import { createDispatcher } from "./dispatch";
+import { AppActionDispatcher, createDispatcher } from "./dispatch";
 import { Store } from "./app/Store";
 import { createAPISlice } from "./APISlice";
 
@@ -10,8 +10,13 @@ type StoreConfig = {
   dependencies?: typeof container;
 };
 
+interface ZustandStore extends Store, AppActionDispatcher {
+  set: SetState<Store>;
+  get: GetState<Store>;
+}
+
 export let runner: AppActionRunner;
-let state: UseStore<Store>;
+let state: UseStore<ZustandStore>;
 
 export const createNewStore = (config: StoreConfig) => {
   if (config.dependencies) {
@@ -22,7 +27,7 @@ export const createNewStore = (config: StoreConfig) => {
     container.saveReaction = saveReaction;
   }
 
-  state = create<Store>((set, get): Store => {
+  state = create<ZustandStore>((set, get): ZustandStore => {
     runner = new AppActionRunner(set, get);
 
     const initialState = runner.initServices();

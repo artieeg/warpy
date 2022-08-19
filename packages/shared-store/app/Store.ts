@@ -1,5 +1,3 @@
-import { GetState, SetState } from "zustand";
-import { AppActionDispatcher } from "../dispatch";
 import { IAPISlice } from "../APISlice";
 import {
   AppInviteData,
@@ -27,8 +25,4 @@ export interface Store
     StreamData,
     ToastData,
     UserData,
-    IAPISlice,
-    AppActionDispatcher {
-  set: SetState<Store>;
-  get: GetState<Store>;
-}
+    IAPISlice {}

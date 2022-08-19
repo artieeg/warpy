@@ -1,10 +1,10 @@
-import { IStore } from "../useStore";
+import { Store } from "./Store";
 import { AppState } from "./AppState";
 
 export abstract class Service<T> {
   protected state: AppState;
 
-  constructor(state: IStore | AppState) {
+  constructor(state: Store | AppState) {
     if (state instanceof AppState) {
       this.state = state;
     } else {
@@ -14,7 +14,7 @@ export abstract class Service<T> {
 
   abstract getInitialState(): Partial<T>;
 
-  setState(state: IStore) {
+  setState(state: Store) {
     this.state.set(state);
   }
 }
