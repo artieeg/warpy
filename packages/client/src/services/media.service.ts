@@ -2,7 +2,7 @@ import { Participant } from "@warpy/lib";
 import { Transport, Producer } from "mediasoup-client/lib/types";
 import { Roles, MediaKind } from "@warpy/lib";
 import { MediaClient } from "@warpy/media";
-import { container } from "../../container";
+import { container } from "../container";
 import { Service } from "../Service";
 import { StateUpdate, MediaStreamMap } from "../types";
 import { Device, detectDevice } from "mediasoup-client";

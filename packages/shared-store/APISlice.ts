@@ -1,6 +1,6 @@
 import { GetState, SetState } from "zustand";
 import produce from "immer";
-import { Store } from "./app/Store";
+import { Store } from "@warpy/client";
 import { ZustandStore } from "./ZustandStore";
 
 type APISubscriptionParams = {

@@ -1,6 +1,7 @@
 import { GetState, PartialState, SetState, UseStore } from "zustand";
-import { StateUpdate, StreamedStateUpdate } from "./app/types";
 import {
+  StateUpdate,
+  StreamedStateUpdate,
   ChatService,
   StreamService,
   MediaService,
@@ -13,8 +14,8 @@ import {
   UserService,
   AwardService,
   ApiService,
-} from "./app";
-import { Store } from "./app/Store";
+  Store,
+} from "@warpy/client";
 
 /**
  * Connects app layer with zustand store

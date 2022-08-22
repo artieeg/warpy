@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {createNewStore, Store} from '@warpy/store';
+import {createNewStore} from '@warpy/store';
+import {Store} from '@warpy/client';
 import {useCallback} from 'react';
 import {mediaDevices} from 'react-native-webrtc';
 import {StateSelector} from 'zustand';

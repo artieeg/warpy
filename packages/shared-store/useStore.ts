@@ -1,8 +1,7 @@
 import create, { UseStore } from "zustand";
-import { container } from "./container";
 import { AppActionRunner } from "./AppActionRunner";
 import { createDispatcher } from "./dispatch";
-import { Store } from "./app/Store";
+import { Store, container } from "@warpy/client";
 import { createAPISlice } from "./APISlice";
 import { ZustandStore } from "./ZustandStore";
 

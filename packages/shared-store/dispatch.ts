@@ -1,4 +1,4 @@
-import { StateUpdate, StreamedStateUpdate } from "./app/types";
+import { StateUpdate, StreamedStateUpdate } from "@warpy/client";
 import { AppServices, StoreDispatcherSlice } from "./types";
 
 export interface AppActionDispatcher {

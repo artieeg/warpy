@@ -1,9 +1,9 @@
 import { InviteStates, InviteSent, User } from "@warpy/lib";
-import { container } from "../../container";
 import { Store } from "../Store";
 import { AppState } from "../AppState";
 import { ModalService } from "./modal.service";
 import { Service } from "../Service";
+import { container } from "../container";
 
 export interface InviteData {
   pendingInviteUserIds: string[];
@@ -132,7 +132,7 @@ export class InviteService extends Service<InviteData> {
 
   async fetchInviteSuggestions(stream: string) {
     const { api } = this.state.get();
-    const suggestions = await api.stream.getInviteSuggestions(stream);
+    const { suggestions } = await api.stream.getInviteSuggestions(stream);
 
     return this.state.update({
       inviteSuggestions: suggestions,

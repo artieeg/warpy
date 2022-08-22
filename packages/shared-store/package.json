@@ -8,6 +8,7 @@
     "immer": "^9.0.5",
     "@types/node": "^16.3.3",
     "@warpy/lib": "1.0.0",
+    "@warpy/client": "1.0.0",
     "cross-env": "^7.0.3"
   },
   "devDependencies": {
