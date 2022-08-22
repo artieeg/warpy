@@ -9,3 +9,4 @@ export * from "./stream.service";
 export * from "./toast.service";
 export * from "./modal.service";
 export * from "./award.service";
+export * from "./api.service";

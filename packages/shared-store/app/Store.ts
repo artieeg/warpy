@@ -1,4 +1,3 @@
-import { IAPISlice } from "../APISlice";
 import {
   AppInviteData,
   ChatData,
@@ -11,10 +10,12 @@ import {
   ToastData,
   UserData,
   AwardData,
+  ApiData,
 } from "./services";
 
 export interface Store
   extends AppInviteData,
+    ApiData,
     ChatData,
     FeedData,
     InviteData,
@@ -24,5 +25,4 @@ export interface Store
     NotificationData,
     StreamData,
     ToastData,
-    UserData,
-    IAPISlice {}
+    UserData {}

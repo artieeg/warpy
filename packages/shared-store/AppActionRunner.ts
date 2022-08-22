@@ -12,6 +12,7 @@ import {
   ToastService,
   UserService,
   AwardService,
+  ApiService,
 } from "./app";
 import { Store } from "./app/Store";
 
@@ -36,6 +37,7 @@ export class AppActionRunner {
 
   private _initServices() {
     return {
+      api: new ApiService(this.get()),
       chat: new ChatService(this.get()),
       stream: new StreamService(this.get()),
       media: new MediaService(this.get()),

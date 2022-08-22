@@ -1,5 +1,8 @@
 import { Store } from "./Store";
 import { AppState } from "./AppState";
+import { StateUpdate } from "./types";
+
+type ManualStateUpdateCb = (update: StateUpdate) => void;
 
 export abstract class Service<T> {
   protected state: AppState;
@@ -17,4 +20,8 @@ export abstract class Service<T> {
   setState(state: Store) {
     this.state.set(state);
   }
+}
+
+export abstract class ServiceWithInit<T> extends Service<T> {
+  abstract init(manualStateUpdate: ManualStateUpdateCb): void;
 }

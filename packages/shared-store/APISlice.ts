@@ -1,7 +1,7 @@
 import { GetState, SetState } from "zustand";
-import { APIClient, WebSocketConn } from "@warpy/api";
 import produce from "immer";
 import { Store } from "./app/Store";
+import { ZustandStore } from "./ZustandStore";
 
 type APISubscriptionParams = {
   onStreamIdAvailable: (id: string) => void;
@@ -9,8 +9,6 @@ type APISubscriptionParams = {
 };
 
 export interface IAPISlice {
-  api: APIClient;
-  isConnected: boolean;
   connect: (addr: string) => void;
   createAPISubscriptions: (params: APISubscriptionParams) => void;
 }
@@ -18,11 +16,9 @@ export interface IAPISlice {
 let reconnecting_interval: any;
 
 export const createAPISlice = (
-  set: SetState<Store>,
-  get: GetState<Store>
+  set: SetState<ZustandStore>,
+  get: GetState<ZustandStore>
 ): IAPISlice => ({
-  api: APIClient(new WebSocketConn()),
-  isConnected: false,
   connect: async (addr) => {
     return new Promise((resolve) => {
       const socket = new WebSocket(addr);
