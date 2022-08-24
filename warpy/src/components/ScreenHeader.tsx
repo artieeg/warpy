@@ -19,6 +19,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import {InfoHeader} from './InfoHeader';
 
+const AnimatedTouchableOpacity =
+  Animated.createAnimatedComponent(TouchableOpacity);
+
 export const ScreenHeader: React.FC<{
   minimizationProgress?: SharedValue<number>;
 }> = ({minimizationProgress}) => {
@@ -42,21 +45,21 @@ export const ScreenHeader: React.FC<{
 
   const title = useMemo(() => {
     const userListScreenTitles = {
-      following: '/following',
-      followers: '/followers',
-      blocked: '/blocked',
+      following: 'following',
+      followers: 'followers',
+      blocked: 'blocked',
     };
 
     const titles = {
-      MyAwardsDisplay: '/awards',
-      Search: '/search',
-      Feed: '/feed',
-      Notifications: '/news',
-      MainSettingsScreen: '/you',
-      User: '/user',
+      MyAwardsDisplay: 'awards',
+      Search: 'search',
+      Feed: 'feed',
+      Notifications: 'news',
+      MainSettingsScreen: 'you',
+      User: 'user',
       UserListScreen: userListScreenTitles[userListScreenMode],
-      SendInvite: '/invite people',
-      InviteCodeInput: '/invite',
+      SendInvite: 'invite people',
+      InviteCodeInput: 'invite',
     };
 
     return titles[route.name as keyof typeof titles];
@@ -103,13 +106,27 @@ export const ScreenHeader: React.FC<{
     [route.name],
   );
 
-  /*
-  const controlsOpacity = useDerivedValue(() => {
-    return minimized ? 0 : 1;
-  }, [minimized]);
-   */
+  const avatarStyle = useAnimatedStyle(
+    () => ({
+      transform: [
+        {
+          scale: withTiming(
+            interpolate(
+              minimizationProgress?.value ?? 0,
+              [0, 1],
+              [1, 0.7],
+              Extrapolate.CLAMP,
+            ),
+            {duration: 300, easing: Easing.ease},
+          ),
+        },
+      ],
+    }),
+    [minimizationProgress?.value],
+  );
 
   const controlsStyle = useAnimatedStyle(() => ({
+    flexDirection: 'row',
     opacity: withTiming(
       minimizationProgress ? 1 - minimizationProgress.value : 1,
       {
@@ -117,19 +134,6 @@ export const ScreenHeader: React.FC<{
         easing: Easing.ease,
       },
     ),
-    transform: [
-      {
-        scale: withTiming(
-          interpolate(
-            minimizationProgress?.value ?? 0,
-            [0, 1],
-            [1, 0.3],
-            Extrapolate.CLAMP,
-          ),
-          {duration: 300, easing: Easing.ease},
-        ),
-      },
-    ],
   }));
 
   const headerStyle = useAnimatedStyle(() => ({
@@ -137,13 +141,7 @@ export const ScreenHeader: React.FC<{
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: withTiming(
-      minimizationProgress ? 10 + (1 - minimizationProgress.value) * 10 : 30,
-      {
-        duration: 300,
-        easing: Easing.ease,
-      },
-    ),
+    paddingVertical: 20,
   }));
 
   const titleStyle = useAnimatedStyle(() => ({
@@ -180,23 +178,26 @@ export const ScreenHeader: React.FC<{
         <Animated.View style={titleStyle}>
           <ScreenTitle>{title}</ScreenTitle>
         </Animated.View>
-        <Animated.View style={controlsStyle}>
-          {displayControls && (
-            <View style={styles.row}>
-              {firstButton}
+        <View style={styles.controlsWrapper}>
+          <Animated.View style={controlsStyle}>
+            {displayControls && (
+              <View style={styles.row}>
+                {firstButton}
 
-              {secondButton}
-              {user && (
-                <TouchableOpacity onPress={onOpenSettings}>
-                  {/* uh oh 🤡 */}
-                  <Avatar
-                    user={user ? user : ({avatar: signUpAvatar} as any)}
-                  />
-                </TouchableOpacity>
-              )}
-            </View>
+                {secondButton}
+              </View>
+            )}
+          </Animated.View>
+
+          {displayControls && user && (
+            <AnimatedTouchableOpacity
+              style={avatarStyle}
+              onPress={onOpenSettings}>
+              {/* uh oh 🤡 */}
+              <Avatar user={user ? user : ({avatar: signUpAvatar} as any)} />
+            </AnimatedTouchableOpacity>
           )}
-        </Animated.View>
+        </View>
       </Animated.View>
     </Animated.View>
   );
@@ -207,6 +208,10 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  controlsWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
   headerButton: {
     marginRight: 10,

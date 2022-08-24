@@ -3,44 +3,24 @@ import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AwardModule } from './award/award.module';
-import { BotsModule } from './bots/bots.module';
-import { BroadcastModule } from './broadcast/broadcast.module';
-import { configuration } from './config/configuration';
-import { GifModule } from './gif/gif.module';
-import { MediaModule } from './media/media.module';
-import { NatsModule } from './nats/nats.module';
-import { NotificationModule } from './notification/notification.module';
-import { StreamModule } from './stream/stream.module';
-import { TokenModule } from './token/token.module';
-import { UserModule } from './user/user.module';
-import { WaitlistModule } from './waitlist/waitlist.module';
-import { MailModule } from './mail/mail.module';
-import { ChatModule } from './stream/chat/chat.module';
-import { MessageModule } from './message/message.module';
+import { configuration } from './modules/config/configuration';
+import { TimerModule } from './shared/modules/timer/timer.module';
+import * as modules from './modules';
+
+export const appModuleImports = [
+  ConfigModule.forRoot({
+    load: [configuration],
+    isGlobal: true,
+  }),
+  TimerModule,
+
+  ...Object.values(modules).filter((m) => m.name.includes('Module')),
+
+  EventEmitterModule.forRoot(),
+];
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      load: [configuration],
-      isGlobal: true,
-    }),
-    AwardModule,
-    BroadcastModule,
-    MediaModule,
-    GifModule,
-    UserModule,
-    TokenModule,
-    StreamModule,
-    MailModule,
-    NatsModule,
-    BotsModule,
-    ChatModule,
-    MessageModule,
-    NotificationModule,
-    WaitlistModule,
-    EventEmitterModule.forRoot(),
-  ],
+  imports: appModuleImports,
   controllers: [AppController],
   providers: [AppService],
 })

@@ -1,0 +1,10 @@
+{
+  "name": "@warpy/client",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "license": "MIT",
+  "dependencies": {
+    "immer": "^9.0.15"
+  },
+  "devDependencies": {}
+}

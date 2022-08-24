@@ -3,14 +3,14 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {BaseSlideModal} from './BaseSlideModal';
 import {SmallTextButton} from './SmallTextButton';
 import {UserGeneralInfo} from './UserGeneralInfo';
-import {UserAwardsPreview} from './UserAwardsPreview';
 import {Text} from './Text';
-import {useStore, useStoreShallow} from '@app/store';
+import {useDispatcher, useStoreShallow} from '@app/store';
 import {useModalNavigation, useUserData} from '@app/hooks';
 import {colors} from '../../colors';
 import {SmallIconButton} from './SmallIconButton';
 
 export const useParticipantModalController = () => {
+  const dispatch = useDispatcher();
   const [visible, modalSelectedUser, following] = useStoreShallow(state => [
     state.modalCurrent === 'participant-info',
     state.modalSelectedUser,
@@ -26,19 +26,19 @@ export const useParticipantModalController = () => {
     if (!userId) return;
 
     const startRoomTogetherTimeout = setTimeout(() => {
-      useStore.getState().dispatchPendingInvite(userId);
-      useStore.getState().dispatchSendPendingInvites();
+      dispatch(({invite}) => invite.addPendingInvite(userId));
+      dispatch(({invite}) => invite.sendPendingInvites());
     }, 400);
 
     navigation.navigate('NewStream', {startRoomTogetherTimeout});
 
-    useStore.getState().dispatchModalClose();
+    dispatch(({modal}) => modal.close());
   }, [navigation, userId]);
 
   const onOpenProfile = useCallback(() => {
     if (!userId) return;
 
-    useStore.getState().dispatchModalClose();
+    dispatch(({modal}) => modal.close());
     navigation.navigate('User', {id: userId});
   }, [userId]);
 
@@ -51,14 +51,14 @@ export const useParticipantModalController = () => {
     if (!userId) return;
 
     if (isFollowing) {
-      useStore.getState().dispatchFollowingRemove(userId);
+      dispatch(({user}) => user.unfollow(userId));
     } else {
-      useStore.getState().dispatchFollowingAdd(userId);
+      dispatch(({user}) => user.follow(userId));
     }
   }, [userId, isFollowing]);
 
   const onReport = useCallback(() => {
-    useStore.getState().dispatchModalOpen('reports');
+    dispatch(({modal}) => modal.open('reports'));
   }, []);
 
   const onBlock = useCallback(() => {
@@ -104,7 +104,33 @@ export const UserInfoModal = () => {
             user={participant}
           />
 
+          {/**
           <UserAwardsPreview user={participant.id} />
+          */}
+
+          <View style={styles.bioTextHolder}>
+            <Text size="xsmall" color="boulder">
+              bio
+            </Text>
+
+            <Text
+              size="small"
+              numberOfLines={4}
+              color={!!participant.bio ? 'gray' : 'boulder'}
+              ellipsizeMode="tail">
+              {!!participant.bio && participant.bio}
+              {!participant.bio && `${participant.username} has no bio yet`}
+            </Text>
+            {/*
+            <Text
+              size="small"
+              numberOfLines={4}
+              color="white"
+              ellipsizeMode="tail">
+              {participant.bio}
+            </Text>
+      */}
+          </View>
 
           {stream && (
             <TouchableOpacity style={styles.inTheRoomWrapper}>
@@ -118,7 +144,7 @@ export const UserInfoModal = () => {
               </View>
               <SmallIconButton
                 name="chevron-right"
-                size={30}
+                size={20}
                 background="mine_shaft"
                 color="white"
               />
@@ -144,7 +170,7 @@ export const UserInfoModal = () => {
               <SmallIconButton
                 style={styles.rowButtonFinal}
                 name="flag-1"
-                size={20}
+                size={15}
                 background="red"
               />
             </View>
@@ -198,6 +224,12 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+
+  bioTextHolder: {
+    paddingRight: 30,
+    flex: 1,
+    marginBottom: 30,
   },
   roomTextInfo: {
     paddingRight: 30,

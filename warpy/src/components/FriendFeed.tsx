@@ -1,16 +1,32 @@
 import {useStoreShallow} from '@app/store';
 import React, {useMemo} from 'react';
-import {View, StyleSheet, FlatList} from 'react-native';
-import {IFriendFeedItem} from '@warpy/lib';
+import {StyleSheet, FlatList, ViewProps} from 'react-native';
+import {FriendFeedItem} from '@warpy/lib';
 import {UserHorizontalListItem} from './UserHorizontalListItem';
+import Animated, {
+  Easing,
+  Extrapolate,
+  interpolate,
+  SharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from 'react-native-reanimated';
 
-export const FriendFeed = () => {
+interface FriendFeedProps extends ViewProps {
+  minimizationProgress: SharedValue<number>;
+}
+
+export const FriendFeed: React.FC<FriendFeedProps> = ({
+  minimizationProgress,
+  ...props
+}) => {
   const [friendFeed, following] = useStoreShallow(state => [
     state.friendFeed,
     state.list_following.list,
+    //state.list_following.list,
   ]);
 
-  const feed: IFriendFeedItem[] = useMemo(
+  const feed: FriendFeedItem[] = useMemo(
     () => [
       ...friendFeed,
       ...following
@@ -27,15 +43,52 @@ export const FriendFeed = () => {
     return null;
   }
 
+  const wrapperStyle = useAnimatedStyle(() => {
+    return {
+      opacity: withTiming(1 - minimizationProgress.value, {
+        duration: 300, //300,
+        easing: Easing.ease,
+      }),
+
+      transform: [
+        {
+          translateY: withTiming(
+            interpolate(
+              minimizationProgress.value,
+              [0, 1],
+              [0, -20],
+              Extrapolate.CLAMP,
+            ),
+            {duration: 300, easing: Easing.ease},
+          ),
+
+          /*
+          scale: withTiming(
+            interpolate(
+              minimizationProgress.value,
+              [0, 1],
+              [1, 0.95],
+              Extrapolate.CLAMP,
+            ),
+            {duration: 300, easing: Easing.ease},
+          ),
+           */
+        },
+      ],
+    };
+  }, [minimizationProgress]);
+
   return (
-    <View>
+    <Animated.View {...props} style={wrapperStyle}>
       <FlatList
         horizontal
         data={feed}
         contentContainerStyle={styles.list}
-        renderItem={({item}) => <UserHorizontalListItem item={item} />}
+        renderItem={({item}) => (
+          <UserHorizontalListItem key={item.user.id} item={item} />
+        )}
       />
-    </View>
+    </Animated.View>
   );
 };
 

@@ -1,4 +1,4 @@
-import { AudioLevelObserver, Router, Worker } from "mediasoup/lib/types";
+import { AudioLevelObserver, Router, Worker } from "mediasoup/node/lib/types";
 
 export interface IWorker {
   worker: Worker;

@@ -1,11 +1,11 @@
 import { NodeInfo } from "@media/nodeinfo";
 import { SFUService } from "@media/services";
-import { MessageHandler, IConnectMediaServer } from "@warpy/lib";
+import { MessageHandler, RequestConnectMediaServer } from "@warpy/lib";
 import util from "util";
 
 export const handleNewEgress: MessageHandler<
-  IConnectMediaServer,
-  IConnectMediaServer
+  RequestConnectMediaServer,
+  RequestConnectMediaServer
 > = async (data, respond) => {
   const { ip, port, srtp, node } = data;
 

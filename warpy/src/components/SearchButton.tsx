@@ -27,6 +27,7 @@ export const SearchButton = (props: IStartNewSteramButtonProps) => {
   return (
     <RoundButton
       onPressIn={() => {
+        /*
         x.value = withRepeat(
           withSequence(
             withTiming(5, {duration: 100}),
@@ -35,6 +36,7 @@ export const SearchButton = (props: IStartNewSteramButtonProps) => {
           ),
           1,
         );
+         */
       }}
       style={[style, styles.button]}
       onPress={onPress}>

@@ -1,20 +1,15 @@
-import {useStore} from '@app/store';
+import {useDispatcher, useStore} from '@app/store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect} from 'react';
 import {View, StyleSheet, ActivityIndicator} from 'react-native';
 
 export const Loading = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatcher();
 
   useEffect(() => {
-    const {
-      api,
-      dispatchToastMessage,
-      setToken,
-      signUpAvatar,
-      signUpUsername,
-      signUpName,
-    } = useStore.getState();
+    const {api, signUpAvatar, signUpUsername, signUpName} = useStore.getState();
 
     api.user
       .create({
@@ -26,10 +21,12 @@ export const Loading = () => {
         kind: 'dev',
       })
       .then(async ({refresh, access}) => {
-        await setToken(access, 'access');
-        await setToken(refresh, 'refresh');
+        await Promise.all([
+          AsyncStorage.setItem('access', access),
+          AsyncStorage.setItem('refresh', refresh),
+        ]);
 
-        dispatchToastMessage('welcome to warpy!');
+        dispatch(({toast}) => toast.showToastMessage('welcome to warpy!'));
 
         navigation.reset({
           index: 0,

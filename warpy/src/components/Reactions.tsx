@@ -1,9 +1,9 @@
 import React from 'react';
 import {BaseSlideModal} from './BaseSlideModal';
 import {FlatList, StyleSheet, useWindowDimensions, View} from 'react-native';
-import {ReactionButton} from './ReactionButton';
+import {ReactionOptionButton} from './ReactionOptionButton';
 import {reactionCodes} from './Reaction';
-import {useStore} from '@app/store';
+import {useDispatcher, useStore} from '@app/store';
 
 const ReactionContainer = (props: any) => {
   const {width} = useWindowDimensions();
@@ -26,14 +26,10 @@ interface IReactionsProps {
 
 export const Reactions = (props: IReactionsProps) => {
   const {visible} = props;
-  const dispatchReactionChange = useStore.use.dispatchReactionChange();
-  const dispatchModalClose = useStore.use.dispatchModalClose();
+  const dispatch = useDispatcher();
 
   return (
-    <BaseSlideModal
-      onClose={() => dispatchModalClose()}
-      visible={visible}
-      title="pick your reaction">
+    <BaseSlideModal visible={visible} title="pick your reaction">
       <FlatList
         style={styles.list}
         numColumns={5}
@@ -41,10 +37,10 @@ export const Reactions = (props: IReactionsProps) => {
         keyExtractor={item => item}
         renderItem={({item}) => (
           <ReactionContainer>
-            <ReactionButton
+            <ReactionOptionButton
               onPress={() => {
-                dispatchReactionChange(item);
-                dispatchModalClose();
+                dispatch(({stream}) => stream.changeReaction(item));
+                dispatch(({modal}) => modal.close());
               }}
               code={item}
             />

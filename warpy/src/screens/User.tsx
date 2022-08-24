@@ -1,21 +1,17 @@
 import {ScreenHeader, Text} from '@app/components';
 import {IconButton} from '@app/components/IconButton';
 import {SmallTextButton} from '@app/components/SmallTextButton';
-import {UserAwardsPreview} from '@app/components/UserAwardsPreview';
 import {UserGeneralInfo} from '@app/components/UserGeneralInfo';
 import {useRouteParamsUnsafe, useUserData} from '@app/hooks';
-import {useStore} from '@app/store';
+import {useDispatcher, useStoreShallow} from '@app/store';
 import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useMemo} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
 import FadeInOut from 'react-native-fade-in-out';
-import shallow from 'zustand/shallow';
 
 export const useUserScreenController = () => {
-  const [api, following] = useStore(
-    store => [store.api, store.following],
-    shallow,
-  );
+  const dispatch = useDispatcher();
+  const [following] = useStoreShallow(store => [store.following]);
 
   const {id} = useRouteParamsUnsafe();
   const data = useUserData(id);
@@ -30,16 +26,16 @@ export const useUserScreenController = () => {
     }
 
     if (isFollowing) {
-      useStore.getState().dispatchFollowingRemove(id);
+      dispatch(({user}) => user.unfollow(id));
     } else {
-      useStore.getState().dispatchFollowingAdd(id);
+      dispatch(({user}) => user.follow(id));
     }
   }, [id, isFollowing]);
 
   const onStartRoomTogether = useCallback(async () => {
-    const startRoomTogetherTimeout = setTimeout(() => {
-      useStore.getState().dispatchPendingInvite(id);
-      useStore.getState().dispatchSendPendingInvites();
+    const startRoomTogetherTimeout = setTimeout(async () => {
+      await dispatch(({invite}) => invite.addPendingInvite(id));
+      await dispatch(({invite}) => invite.sendPendingInvites());
     }, 400);
 
     navigation.navigate('NewStream', {startRoomTogetherTimeout});
@@ -76,7 +72,7 @@ export const User = () => {
             />
             <SmallTextButton
               style={[styles.actionMargin, {flex: 1}]}
-              color="important"
+              color="red"
               title="report"
             />
             <IconButton
@@ -95,12 +91,23 @@ export const User = () => {
           </View>
         </View>
 
-        {user?.id && (
+        {/*user?.id && (
           <>
             <Text size="small" color="boulder">
               recent awards
             </Text>
             <UserAwardsPreview user={user.id} />
+          </>
+        )*/}
+
+        {user.bio && (
+          <>
+            <Text size="xsmall" color="boulder">
+              bio
+            </Text>
+            <Text size="small" color="white">
+              {user.bio}
+            </Text>
           </>
         )}
 

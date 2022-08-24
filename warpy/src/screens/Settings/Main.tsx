@@ -3,13 +3,13 @@ import {ScreenHeader} from '@app/components/ScreenHeader';
 import {useStoreShallow} from '@app/store';
 import React, {useMemo} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
-import {IUser} from '@warpy/lib';
+import {User} from '@warpy/lib';
 import {SettingItemButton} from '@app/components/SettingItemButton';
 import {navigation} from '@app/navigation';
 
 export const MainSettingsScreen = () => {
   const [user, hasActivatedAppInvite] = useStoreShallow(store => [
-    store.user as IUser,
+    store.user as User,
     store.hasActivatedAppInvite,
   ]);
 
@@ -31,7 +31,7 @@ export const MainSettingsScreen = () => {
           <Avatar user={user} size="xxlarge" />
           <Text
             weight="bold"
-            size="small"
+            size="xxsmall"
             color="boulder"
             style={styles.avatarChangeHint}>
             tap to change{'\n'}your pfp
@@ -40,6 +40,7 @@ export const MainSettingsScreen = () => {
         <View style={styles.padding}>
           <SettingsTextEdit placeholder="name" field="first_name" />
           <SettingsTextEdit placeholder="username" field="username" />
+          <SettingsTextEdit placeholder="bio" field="bio" multiline />
         </View>
         <View style={styles.padding}>
           {Object.entries(settings).map(([key, item]) =>
@@ -133,6 +134,7 @@ const getItems = ({
 const styles = StyleSheet.create({
   padding: {
     paddingHorizontal: 20,
+    paddingBottom: 20,
   },
   avatarContainer: {
     alignItems: 'center',

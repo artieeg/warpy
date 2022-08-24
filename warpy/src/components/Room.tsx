@@ -1,10 +1,9 @@
 import {StyleSheet, useWindowDimensions, View} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
 import {useVideoStreams} from '@app/hooks/useVideoStreams';
-import React, {useMemo, useRef} from 'react';
+import React, {useMemo} from 'react';
 import {RTCView} from 'react-native-webrtc';
-import {useStore} from '@app/store';
-import shallow from 'zustand/shallow';
+import {useStoreShallow} from '@app/store';
 import {ParticipantView} from './ParticipantView';
 
 export const Room = () => {
@@ -25,23 +24,22 @@ export const Room = () => {
     [mediaStyle, mediaStyle, fullWidthMediaStyle],
   ];
 
-  const [streamers, viewers] = useStore(
-    state => [state.streamers, state.viewers],
-    shallow,
-  );
+  const [streamers, viewers] = useStoreShallow(state => [
+    state.streamers,
+    state.viewers,
+  ]);
 
   const participants = useMemo(
     () => Object.values(streamers),
     [streamers, viewers],
   );
 
-  console.log({streams});
-
   if (streams.length > 0) {
     return (
       <View style={styles.videoWrapper}>
         {streams.map((stream, i) => (
           <RTCView
+            key={stream.id}
             style={mediaStyles[streams.length - 1][i]}
             objectFit="cover"
             streamURL={stream.toURL()}

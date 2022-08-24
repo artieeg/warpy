@@ -3,7 +3,7 @@ import React, {useCallback, useState} from 'react';
 import {View, StyleSheet, TextInput} from 'react-native';
 import {Text} from '@app/components';
 import {TextButton} from '@warpy/components';
-import {useStore, useStoreShallow} from '@app/store';
+import {useDispatcher, useStore, useStoreShallow} from '@app/store';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {colors} from '../../colors';
 
@@ -13,13 +13,10 @@ export const useInviteCodeInputController = () => {
   const navigation = useNavigation();
 
   const [code, setCode] = useState('');
-  const [api, dispatchToastMessage] = useStoreShallow(state => [
-    state.api,
-    state.dispatchToastMessage,
-  ]);
+  const [api] = useStoreShallow(state => [state.api]);
   const mode = screenMode === 'signup' && code.length === 0 ? 'skip' : 'apply';
 
-  const set = useStore.use.set();
+  const dispatch = useDispatcher();
 
   const onSubmit = useCallback(async () => {
     if (code.length === 0 && mode === 'skip') {
@@ -31,28 +28,32 @@ export const useInviteCodeInputController = () => {
     const {status} = await api.app_invite.apply(code);
 
     if (status !== 'ok') {
-      dispatchToastMessage(
-        'please check if this invite code is correct',
-        'LONG',
+      dispatch(({toast}) =>
+        toast.showToastMessage(
+          'please check if this invite code is correct',
+          'LONG',
+        ),
       );
 
       return;
     }
 
     if (screenMode === 'settings') {
-      dispatchToastMessage(
-        "you've applied the invite and received 3000 coins! yay",
-        'LONG',
+      dispatch(({toast}) =>
+        toast.showToastMessage(
+          "you've applied the invite and received 3000 coins! yay",
+          'LONG',
+        ),
       );
 
       navigation.goBack();
     } else {
-      dispatchToastMessage('invite activated');
+      dispatch(({toast}) => toast.showToastMessage('invite activated'));
 
       navigation.navigate('Loading');
     }
 
-    set({
+    useStore.setState({
       hasActivatedAppInvite: true,
     });
   }, [code, api, navigation]);

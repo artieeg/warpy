@@ -1,12 +1,12 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import {IAward} from '@warpy/lib';
+import {Award} from '@warpy/lib';
 import {Text} from './Text';
 import FastImage from 'react-native-fast-image';
 import moment from 'moment';
 
 interface AwardFeedItemProps {
-  award: IAward;
+  award: Award;
 }
 
 export const AwardFeedItem = ({award}: AwardFeedItemProps) => {

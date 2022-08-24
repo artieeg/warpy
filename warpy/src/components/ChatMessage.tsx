@@ -1,11 +1,11 @@
 import React from 'react';
 import {View, StyleSheet, TouchableWithoutFeedback} from 'react-native';
-import {IChatMessage} from '@warpy/lib';
+import {ChatMessage as TChatMessage} from '@warpy/lib';
 import {Avatar} from './Avatar';
 import {Text} from './Text';
 
 interface IChatMessageProps {
-  message: IChatMessage;
+  message: TChatMessage;
 }
 
 export const ChatMessage = React.memo((props: IChatMessageProps) => {
@@ -20,7 +20,7 @@ export const ChatMessage = React.memo((props: IChatMessageProps) => {
             {sender.username}
           </Text>
 
-          <Text size="xsmall" weight="bold">
+          <Text size="xsmall" weight="bold" color="white">
             {message}
           </Text>
         </View>

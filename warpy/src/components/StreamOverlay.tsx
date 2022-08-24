@@ -1,20 +1,27 @@
-import {useStore} from '@app/store';
+import {useStoreShallow} from '@app/store';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {View, StyleSheet, useWindowDimensions, Animated} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  useWindowDimensions,
+  Animated,
+  Alert,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {AwardButton} from './AwardButton';
 import {ChatButton} from './ChatButton';
-import {ClapButton} from './ClapsButton';
+import {ReactionSelectButton} from './ReactionSelectButton';
 import {IconButton} from './IconButton';
 import {InviteButton} from './InviteButton';
 import {RaiseHandButton} from './RaiseHandButton';
 import {ReactionCanvas} from './ReactionCanvas';
 import {ReactionEmitter} from './ReactionEmitter';
+import {ShareButton} from './ShareButton';
 import {ShowParticipantsButton} from './ShowParticipantsButton';
 import {StopStream} from './StopStream';
 import {SwitchCameraButton} from './SwitchCameraButton';
 import {ToggleCameraButton} from './ToggleCameraButton';
 import {ToggleMicButton} from './ToggleMicButton';
+import {Speakers} from './Speakers';
 
 const EmptyItem = () => <View style={{width: 50, height: 50}} />;
 
@@ -23,9 +30,12 @@ export const StreamOverlay = () => {
   const [debouncedVisible, setDebouncedVisible] = useState(true);
 
   const gradientHeightStyle = {height: useWindowDimensions().height / 3.4};
-  const role = useStore.use.role();
-
+  const [role] = useStoreShallow(store => [store.role]);
   const opacity = useRef(new Animated.Value(1));
+
+  useEffect(() => {
+    console.log({role});
+  }, [role]);
 
   useEffect(() => {
     Animated.timing(opacity.current, {
@@ -51,10 +61,13 @@ export const StreamOverlay = () => {
     if (role === 'streamer') {
       return {
         top: [
-          <ClapButton />,
+          <ReactionSelectButton />,
           <InviteButton />,
           <SwitchCameraButton />,
+          /*
           <AwardButton />,
+             */
+          <ShareButton />,
           <StopStream />,
         ],
         bottom: [
@@ -71,13 +84,16 @@ export const StreamOverlay = () => {
         top: [
           <EmptyItem />,
           <InviteButton />,
+          /*
           <AwardButton />,
+            */
+          <ShareButton />,
           <StopStream />,
           <EmptyItem />,
         ],
         bottom: [
           <ReactionEmitter disabled={!isVisible} />,
-          <ClapButton />,
+          <ReactionSelectButton />,
           <ToggleMicButton />,
           <ChatButton />,
           <ShowParticipantsButton style={styles.transparent} />,
@@ -89,13 +105,16 @@ export const StreamOverlay = () => {
         top: [
           <EmptyItem />,
           <InviteButton />,
+          /*
           <AwardButton />,
+            */
+          <ShareButton />,
           <StopStream />,
           <EmptyItem />,
         ],
         bottom: [
           <ReactionEmitter disabled={!isVisible} />,
-          <ClapButton />,
+          <ReactionSelectButton />,
           <RaiseHandButton />,
           <ChatButton />,
           <ShowParticipantsButton style={styles.transparent} />,
@@ -145,13 +164,15 @@ export const StreamOverlay = () => {
           })}
         </View>
       </Animated.View>
-      <IconButton
-        style={styles.visibility}
-        onPress={() => setVisible(prev => !prev)}
-        color="#ffffff"
-        name={isVisible ? 'eye' : 'eye'}
-        size={30}
-      />
+      <View style={styles.visibility}>
+        <IconButton
+          onPress={() => setVisible(prev => !prev)}
+          color="#ffffff"
+          name={isVisible ? 'eye' : 'eye-off'}
+          size={30}
+        />
+      </View>
+      <Speakers style={{flex: 1}} />
     </View>
   );
 };

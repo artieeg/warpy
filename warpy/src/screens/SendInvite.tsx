@@ -1,12 +1,13 @@
-import {ScreenHeader, textStyles} from '@app/components';
+import {ScreenHeader} from '@app/components';
 import React, {useCallback} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Text} from '@app/components';
 import {TextButton} from '@warpy/components';
 import {IconButton} from '@app/components/IconButton';
-import {useStore, useStoreShallow} from '@app/store';
+import {useDispatcher, useStoreShallow} from '@app/store';
 import config from '@app/config';
 import Share from 'react-native-share';
+import {colors} from '../../colors';
 
 export const SendInvite = () => {
   const [api, user, appInvite] = useStoreShallow(state => [
@@ -15,8 +16,10 @@ export const SendInvite = () => {
     state.appInvite,
   ]);
 
+  const dispatch = useDispatcher();
+
   const onRefresh = useCallback(async () => {
-    useStore.getState().dispatchAppInviteUpdate();
+    dispatch(({app_invite}) => app_invite.update());
   }, [api, user]);
 
   const onShare = useCallback(() => {
@@ -41,7 +44,7 @@ export const SendInvite = () => {
           <IconButton
             onPress={onRefresh}
             style={styles.update}
-            color={textStyles.yellow.color}
+            color={colors.yellow}
             size={40}
             name="refresh"
           />

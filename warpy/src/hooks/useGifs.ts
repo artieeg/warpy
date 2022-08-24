@@ -8,7 +8,7 @@ export const useGifs = (search: string) => {
   const [isSearch, setSearch] = useState(false);
   const [next, setNext] = useState<string>();
   const [gifs, setGifs] = useState<string[]>([]);
-  const api = useStore.use.api();
+  const api = useStore(state => state.api);
 
   useEffect(() => {
     if (isSearch) {

@@ -1,4 +1,4 @@
-import {useStore} from '@app/store';
+import {useDispatcher, useStore} from '@app/store';
 import React, {useRef} from 'react';
 import {Animated, StyleSheet, View, ViewProps} from 'react-native';
 import Modal from 'react-native-modal';
@@ -24,6 +24,7 @@ export const BaseSlideModal = (props: IBaseModalProps) => {
     title,
     style,
   } = props;
+  const dispatch = useDispatcher();
 
   const translate = useRef(new Animated.Value(0));
 
@@ -41,7 +42,7 @@ export const BaseSlideModal = (props: IBaseModalProps) => {
       useNativeDriverForBackdrop
       propagateSwipe={true}
       onSwipeComplete={() => {
-        useStore.getState().dispatchModalClose();
+        dispatch(({modal}) => modal.close());
         onClose && onClose();
       }}
       swipeDirection={['down']}
@@ -91,7 +92,8 @@ const styles = StyleSheet.create({
     paddingTop: 30,
   },
   wrapper: {
-    backgroundColor: colors.cod_gray,
+    //backgroundColor: colors.cod_gray,
+    backgroundColor: colors.black,
     position: 'absolute',
     bottom: 0,
     left: 0,

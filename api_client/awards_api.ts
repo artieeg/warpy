@@ -1,21 +1,20 @@
 import {
-  IGetAvailableAwardsResponse,
-  INewAward,
-  IReceivedAwardsResponse,
-  ISendAwardResponse,
+  GetAvailableAwardsResponse,
+  ReceivedAwardsResponse,
+  SendAwardResponse,
 } from "@warpy/lib";
 import { WebSocketConn } from "./connection";
 import { EventHandler } from "./types";
 
 export interface IAwardsAPI {
-  getAvailable: () => Promise<IGetAvailableAwardsResponse>;
-  getReceived: (user: string) => Promise<IReceivedAwardsResponse>;
+  getAvailable: () => Promise<GetAvailableAwardsResponse>;
+  getReceived: (user: string) => Promise<ReceivedAwardsResponse>;
   send: (
     visual: string,
     recipent: string,
     message: string
-  ) => Promise<ISendAwardResponse>;
-  onNewAward: EventHandler<INewAward>;
+  ) => Promise<SendAwardResponse>;
+  onNewAward: EventHandler<any>;
 }
 
 export const AwardsAPI = (socket: WebSocketConn): IAwardsAPI => ({

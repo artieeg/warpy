@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { NatsServer } from './nats.transporter';
 import { AppModule } from './app.module';
-import { REQUIRED_ENV_KEYS } from './config/configuration';
+import { REQUIRED_ENV_KEYS } from './modules/config/configuration';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

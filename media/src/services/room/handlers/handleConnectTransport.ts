@@ -24,10 +24,7 @@ export const handleConnectTransport = async (data: IConnectTransport) => {
     */
   }
 
-  console.log(data);
-
   const room = rooms[roomId];
-  console.log({ room });
 
   if (!room) {
     return; //TODO;;; send error
@@ -48,7 +45,6 @@ export const handleConnectTransport = async (data: IConnectTransport) => {
     return;
   }
 
-  console.log("connected transport for", user);
   MessageService.sendMessageToUser(user, {
     event: `@media/${direction}-transport-connected`,
     data: {

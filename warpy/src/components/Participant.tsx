@@ -2,14 +2,17 @@ import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Text} from './Text';
 import {Avatar} from './Avatar';
-import {IParticipant} from '@warpy/lib';
+import {Participant} from '@warpy/lib';
+import {useStoreShallow} from '@app/store';
 
 interface IParticipantProps {
-  data: IParticipant;
+  data: Participant;
 }
 
 export const ParticipantDisplay = (props: IParticipantProps) => {
   const {data} = props;
+
+  const [isAppUser] = useStoreShallow(store => [store.user?.id === data.id]);
 
   const name = `${data.first_name}`;
 
@@ -17,7 +20,7 @@ export const ParticipantDisplay = (props: IParticipantProps) => {
     <View style={styles.wrapper}>
       <Avatar user={data} style={styles.avatar} />
       <Text numberOfLines={1} style={styles.name} size="xsmall" weight="bold">
-        {name}
+        {isAppUser ? 'you' : name}
       </Text>
     </View>
   );

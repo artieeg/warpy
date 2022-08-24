@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Avatar} from './Avatar';
 import {ViewersCountPreview} from './ViewersCountPreview';
@@ -6,11 +6,11 @@ import {useNavigation} from '@react-navigation/native';
 import Video from 'react-native-video';
 import {colors} from '../../colors';
 import tinycolor from 'tinycolor2';
-import {ICandidate} from '@warpy/lib';
+import {Candidate} from '@warpy/lib';
 import {Text} from './Text';
 
 interface IStreamPreviewProps {
-  stream: ICandidate;
+  stream: Candidate;
   style: any;
 }
 
@@ -19,16 +19,20 @@ export const StreamPreview = React.memo((props: IStreamPreviewProps) => {
   const {preview} = stream;
   const navigation = useNavigation();
 
-  const color = tinycolor(colors.green)
-    .spin(Math.random() * 360)
-    .toHexString();
+  const color = useMemo(
+    () =>
+      tinycolor(colors.green)
+        .spin(Math.random() * 360)
+        .toHexString(),
+    [],
+  );
 
   const onPress = useCallback(() => {
     navigation.navigate('Stream', {stream});
   }, [navigation]);
 
   return (
-    <TouchableOpacity activeOpacity={1.0} onPress={onPress}>
+    <TouchableOpacity activeOpacity={1} onPress={onPress}>
       <View style={[styles.wrapper, {backgroundColor: color}, style]}>
         {preview && (
           <>
@@ -51,15 +55,23 @@ export const StreamPreview = React.memo((props: IStreamPreviewProps) => {
             style={styles.title}>
             {stream.title}
           </Text>
+
+          <Text size="xxsmall" color="cod_gray">
+            {stream.total_participants}{' '}
+            {stream.total_participants > 1 ? 'people' : 'person'}
+          </Text>
+          {/*
           <View style={styles.participants}>
-            {stream.speakers.slice(0, 3).map((participant, index) => {
+
+            <>
+            {stream.streamers.slice(0, 3).map((participant, index) => {
               const userAvatarStyle = {
                 transform: [{translateX: -index * 3}],
               };
 
               return (
                 <Avatar
-                  size="small"
+                  size="xsmall"
                   style={userAvatarStyle}
                   user={participant}
                 />
@@ -69,7 +81,9 @@ export const StreamPreview = React.memo((props: IStreamPreviewProps) => {
               count={stream.total_participants}
               style={styles.viewersCount}
             />
+        </>
           </View>
+    */}
         </View>
       </View>
     </TouchableOpacity>
@@ -90,9 +104,10 @@ const styles = StyleSheet.create({
   },
   participants: {
     flexDirection: 'row',
+    marginTop: 5,
   },
   title: {
-    marginBottom: 15,
+    //marginBottom: 5,
   },
   info: {
     position: 'absolute',
@@ -104,6 +119,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     top: 0,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   viewersCount: {
     transform: [{translateX: -8}],

@@ -1,37 +1,35 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
-import {IUser, UserList} from '@warpy/lib';
+import {User, UserList} from '@warpy/lib';
 import {UserGeneralInfo} from './UserGeneralInfo';
 import {SmallTextButton} from './SmallTextButton';
-import {useStore} from '@app/store';
+import {useDispatcher, useStore} from '@app/store';
 import {useNavigation} from '@react-navigation/native';
 
 interface BaseUserListItemProps {
-  user: IUser;
+  user: User;
   list: UserList;
 }
 
 interface ActionProps {
-  user: IUser;
+  user: User;
 }
 
-const FollowingItemAction = ({user}: ActionProps) => {
-  const [isFollowing, dispatchFollowingAdd, dispatchFollowingRemove] = useStore(
-    state => [
-      state.following.includes(user.id),
-      state.dispatchFollowingAdd,
-      state.dispatchFollowingRemove,
-    ],
-  );
+const FollowingItemAction = ({user: {id}}: ActionProps) => {
+  const dispatch = useDispatcher();
+
+  const [isFollowing] = useStore(state => [
+    !!state.list_following.list.find(u => u.id === id),
+  ]);
 
   return (
     <SmallTextButton
       title={isFollowing ? 'unfollow' : 'follow'}
       onPress={() => {
         if (!isFollowing) {
-          dispatchFollowingAdd(user.id);
+          dispatch(({user}) => user.follow(id));
         } else {
-          dispatchFollowingRemove(user.id);
+          dispatch(({user}) => user.unfollow(id));
         }
       }}
     />
@@ -40,7 +38,7 @@ const FollowingItemAction = ({user}: ActionProps) => {
 
 const BlockItemAction = ({user}: ActionProps) => {
   const [isBlocked, setBlocked] = useState(true);
-  const api = useStore.use.api();
+  const api = useStore(state => state.api);
 
   const mounted = useRef(false);
 
@@ -74,7 +72,7 @@ export const UserListItem = ({user, list}: BaseUserListItemProps) => {
 
   return (
     <TouchableOpacity onPress={onOpenUser} style={styles.wrapper}>
-      <UserGeneralInfo user={user} avatar={{size: 'large'}} />
+      <UserGeneralInfo user={user} size="large" />
       {(list === 'followers' || list === 'following') && (
         <FollowingItemAction user={user} />
       )}

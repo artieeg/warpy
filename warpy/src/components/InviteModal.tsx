@@ -6,24 +6,30 @@ import {TextButton} from '@warpy/components';
 import {UserInviteOption} from './UserInviteOption';
 import {UserSearchInput} from './UserSearchInput';
 import {ShareStreamLinkButton} from './ShareStreamLinkButton';
-import {useUserSearch, useInviteSuggestions} from '@app/hooks';
-import {useStoreShallow} from '@app/store';
+import {useUserSearch} from '@app/hooks';
+import {useDispatcher, useStoreShallow} from '@app/store';
 import {colors} from '../../colors';
 
 export const useInviteModalController = () => {
-  const {users: searchedUsers, isLoading, setSearch} = useUserSearch();
-  const inviteSuggestions = useInviteSuggestions();
   const [
+    inviteSuggestions,
     pendingInviteCount,
     visible,
-    sendPendingInvites,
     shouldDisplayInviteButton,
   ] = useStoreShallow(state => [
+    state.inviteSuggestions,
     state.pendingInviteUserIds.length,
-    state.modalCurrent === 'invite',
-    state.dispatchSendPendingInvites,
+    state.modalCurrent === 'send-invite',
     !!state.stream,
   ]);
+
+  const dispatch = useDispatcher();
+
+  const {users: searchedUsers, isLoading, setSearch} = useUserSearch();
+
+  React.useEffect(() => {
+    dispatch(({invite}) => invite.fetchInviteSuggestions('test'));
+  }, []);
 
   const modalHeight = useWindowDimensions().height * 0.9;
 
@@ -35,7 +41,8 @@ export const useInviteModalController = () => {
     isLoading,
     searchedUsers,
     inviteSuggestions,
-    sendPendingInvites,
+    sendPendingInvites: () =>
+      dispatch(({invite}) => invite.sendPendingInvites()),
     shouldDisplayInviteButton,
   };
 };
@@ -50,7 +57,6 @@ export const InviteModal = (props: IBaseModalProps) => {
     setSearchQuery,
     pendingInviteCount,
     sendPendingInvites,
-    shouldDisplayInviteButton,
   } = useInviteModalController();
 
   const modalStyle = {
@@ -61,7 +67,7 @@ export const InviteModal = (props: IBaseModalProps) => {
     <BaseSlideModal
       {...props}
       visible={visible}
-      disableHideHandler
+      //disableHideHandler
       style={modalStyle}>
       <View style={styles.header}>
         <UserSearchInput
@@ -80,18 +86,8 @@ export const InviteModal = (props: IBaseModalProps) => {
 
       {searchedUsers.length === 0 && !isLoading && (
         <FlatList
-          renderItem={({item, index}) => {
-            if (index === 0 && shouldDisplayInviteButton) {
-              return (
-                <>
-                  <ShareStreamLinkButton />
-                  <UserInviteOption user={item} />
-                </>
-              );
-            } else {
-              return <UserInviteOption user={item} />;
-            }
-          }}
+          ListHeaderComponent={() => <ShareStreamLinkButton />}
+          renderItem={({item}) => <UserInviteOption user={item} />}
           data={inviteSuggestions}
         />
       )}

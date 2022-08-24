@@ -1,23 +1,17 @@
-import { GetState, SetState } from "zustand";
-import { IStore } from "./useStore";
+import { AppActionRunner } from "./AppActionRunner";
 
 export type MediaDirection = "send" | "recv";
 export type ParticipantRole = "streamer" | "speaker" | "viewer";
 
-export type Modal =
-  | "award"
-  | "award-message"
-  | "award-visual"
-  | "award-recipent"
-  | "participant-info"
-  | "participants"
-  | "reactions"
-  | "reports"
-  | "invite"
-  | "stream-invite"
-  | "bot-confirm"
-  | "chat";
-
 export type DURATION = "LONG" | "SHORT";
 
-export type StoreSlice<T> = (set: SetState<IStore>, get: GetState<IStore>) => T;
+export type AppServices = ReturnType<
+  typeof AppActionRunner.prototype.getServices
+>;
+
+export type StoreSlice<T> = () => T;
+
+export type StoreDispatcherSlice<T> = (
+  runner: AppActionRunner,
+  services: AppServices
+) => T;

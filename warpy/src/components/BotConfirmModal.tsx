@@ -34,11 +34,7 @@ export const BotConfirmModal = () => {
             style={styles.confirmButton}
             title={'confirm'}
           />
-          <SmallTextButton
-            onPress={onDecline}
-            color="important"
-            title="cancel"
-          />
+          <SmallTextButton onPress={onDecline} color="red" title="cancel" />
         </View>
       </View>
     </BaseSlideModal>

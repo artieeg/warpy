@@ -1,10 +1,8 @@
-import {useStore} from '@app/store';
-import {FetchNextFn} from '@app/store/dispatchers/user_list';
+import {useDispatcher, useStoreShallow} from '@app/store';
 import {useRoute} from '@react-navigation/native';
-import React, {useRef} from 'react';
+import React, {useEffect} from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
 import {UserList} from '@warpy/lib';
-import useAsyncEffect from 'use-async-effect';
 import {ScreenHeader} from '@app/components';
 import {UserListItem} from '@app/components/UserListItem';
 
@@ -12,16 +10,15 @@ export const UserListScreen = () => {
   const route: any = useRoute();
   const mode: UserList = route.params.mode;
 
-  const [list, dispatchFetchUserList] = useStore(state => [
+  const dispatch = useDispatcher();
+
+  const [list] = useStoreShallow(state => [
     (state as any)['list_' + mode].list,
-    state.dispatchFetchUserList,
   ]);
 
-  const fetchNextPage = useRef<FetchNextFn>();
-
-  useAsyncEffect(async () => {
-    fetchNextPage.current = await dispatchFetchUserList(mode);
-  }, []);
+  useEffect(() => {
+    dispatch(({user}) => user.fetchUserList(mode as any));
+  }, [mode]);
 
   return (
     <View style={styles.wrapper}>

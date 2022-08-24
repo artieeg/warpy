@@ -1,11 +1,27 @@
-import { IStream } from "./candidate";
-import { IUser } from "./user";
+import { Stream } from "./candidate";
+import { User } from "./user";
 
-export interface IInvite {
+type SentInviteState = "accepted" | "declined" | "unknown";
+
+export interface InviteBase {
   id: string;
-  stream: IStream | null;
-  invitee: IUser;
-  inviter: IUser;
-  accepted: boolean;
-  declined: boolean;
+  invitee_id: string;
+  inviter_id: string;
+  stream_id?: string;
+
+  received?: boolean;
+}
+
+export interface Invite extends InviteBase {
+  invitee: User;
+  inviter: User;
+  stream?: Stream;
+}
+
+export interface InviteNotification extends Invite {
+  notification: string;
+}
+
+export interface InviteSent extends Invite {
+  state: SentInviteState;
 }

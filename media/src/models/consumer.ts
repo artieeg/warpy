@@ -1,4 +1,4 @@
-import { ConsumerType, RtpParameters } from "mediasoup/lib/types";
+import { ConsumerType, RtpParameters } from "mediasoup/node/lib/types";
 
 export interface Consumer {
   user: string;

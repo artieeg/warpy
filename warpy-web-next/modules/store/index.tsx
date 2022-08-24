@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from "react";
 import { StateSelector } from "zustand";
-import { createNewStore, IStore } from "@warpy/store";
+import { createNewStore, Store } from "@warpy/store";
 import shallow from "zustand/shallow";
 
 import createContext from "zustand/context";
-const Context = createContext<IStore>();
+const Context = createContext<Store>();
 
 export const useStore = Context.useStore;
 export const useStoreApi = Context.useStoreApi;
@@ -17,13 +17,13 @@ export const StoreProvider = ({ children, data }: any) => {
   );
 };
 
-export function useStoreShallow<U>(selector: StateSelector<IStore, U>) {
+export function useStoreShallow<U>(selector: StateSelector<Store, U>) {
   return useStore(useCallback(selector, []), shallow);
 }
 
 let store: any;
 
-export const createHydratedStore = (values: Partial<IStore>) => {
+export const createHydratedStore = (values: Partial<Store>) => {
   if (store) {
     return store;
   }

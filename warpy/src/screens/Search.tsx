@@ -1,12 +1,6 @@
 import {Input, ScreenHeader, StreamFeedView} from '@app/components';
-import React, {useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  ActivityIndicator,
-  SectionList,
-  FlatList,
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, ActivityIndicator, FlatList} from 'react-native';
 import {useDebounce} from 'use-debounce/lib';
 import {APIClient} from '@warpy/api';
 import {Text} from '@app/components';
@@ -30,28 +24,48 @@ const search = async (api: APIClient, query: string) => {
 export const useSearchController = () => {
   const [query, setQuery] = useState('');
   const [debounced] = useDebounce(query, 300);
-  const api = useStore.use.api();
+  const [hasResults, setHasResults] = useState<boolean>();
+  const api = useStore(state => state.api);
 
   const runSearchRequests = React.useCallback(
     () => search(api, debounced),
     [api, debounced],
   );
 
-  const {data: result, isLoading} = useQuery(
-    ['search', debounced],
-    runSearchRequests,
-    {enabled: debounced.length >= 3},
-  );
+  const {
+    data: result,
+    isLoading,
+    isFetched,
+  } = useQuery(['search', debounced], runSearchRequests, {
+    enabled: debounced.length >= 3,
+  });
 
   const {users, streams} = result ?? {};
 
-  return {setQuery, isLoading, users, streams};
+  useEffect(() => {
+    if (query.length < 3) {
+      return setHasResults(undefined);
+    }
+
+    if (!result || !isFetched) {
+      if (typeof hasResults === 'undefined') {
+        return;
+      }
+
+      return setHasResults(false);
+    }
+
+    const {users, streams} = result;
+
+    setHasResults(users.length > 0 || streams.length > 0);
+  }, [result?.users, query, result?.streams]);
+
+  return {setQuery, isLoading, users, streams, hasResults};
 };
 
 export const Search = () => {
-  const {setQuery, isLoading, users, streams} = useSearchController();
-
-  console.log({users});
+  const {setQuery, isLoading, users, streams, hasResults} =
+    useSearchController();
 
   return (
     <View style={styles.wrapper}>
@@ -62,23 +76,35 @@ export const Search = () => {
         style={styles.input}
       />
       {isLoading && (
-        <View style={styles.loading}>
+        <View style={styles.centered}>
           <ActivityIndicator size="small" color={colors.green} />
         </View>
       )}
 
-      <View>
-        <FlatList
-          data={users}
-          renderItem={({item}) => (
-            <UserHorizontalListItem item={{user: item}} />
-          )}
-          horizontal
-          contentContainerStyle={styles.users}
-        />
-      </View>
+      {hasResults === false && (
+        <View style={styles.centered}>
+          <Text size="xsmall" color="boulder">
+            nothing has been found :(
+          </Text>
+        </View>
+      )}
 
-      <StreamFeedView feed={streams as any} />
+      {hasResults && (
+        <>
+          <View>
+            <FlatList
+              data={users}
+              renderItem={({item}) => (
+                <UserHorizontalListItem item={{user: item}} />
+              )}
+              horizontal
+              contentContainerStyle={styles.users}
+            />
+          </View>
+
+          <StreamFeedView data={streams as any} />
+        </>
+      )}
     </View>
   );
 };
@@ -92,7 +118,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginBottom: 10,
   },
-  loading: {
+  centered: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',

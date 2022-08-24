@@ -20,8 +20,8 @@ export const ViewersCountPreview = (props: IViewersCountProps) => {
 
 const styles = StyleSheet.create({
   wrapper: {
-    width: 40,
-    height: 40,
+    width: 30,
+    height: 30,
     borderRadius: 20,
     backgroundColor: colors.mine_shaft,
     alignItems: 'center',

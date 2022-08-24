@@ -1,13 +1,13 @@
-import {useStore} from '@app/store';
+import {useDispatcher} from '@app/store';
 import React from 'react';
 import {IconButton} from './IconButton';
 
 export const ChatButton = () => {
-  const dispatchModalOpen = useStore.use.dispatchModalOpen();
+  const dispatch = useDispatcher();
 
   return (
     <IconButton
-      onPress={() => dispatchModalOpen('chat')}
+      onPress={() => dispatch(({modal}) => modal.open('chat'))}
       color="#ffffff"
       name="chat"
       size={30}

@@ -40,6 +40,13 @@ const handlers: Record<string, HandlerConfig> = {
     subject: "candidate.search",
   },
 
+  "host-reassign": {
+    subject: "host.reassign",
+    kind: "request",
+    auth: true,
+    schema: joi.object({ host: joi.string().max(64).required() }),
+  },
+
   "friend-feed-get": {
     subject: "friend-feed.get",
     kind: "request",
@@ -323,6 +330,7 @@ const handlers: Record<string, HandlerConfig> = {
       data: {
         username: joi.string().max(16).optional(),
         first_name: joi.string().max(32).optional(),
+        bio: joi.string().max(256).optional(),
       },
     }),
     kind: "request",
@@ -459,6 +467,7 @@ const main = async () => {
   console.log("Started ws gateway service");
 
   const onUserDisconnect = (user: string) => {
+    PingPongService.removeUser(user);
     MessageService.sendBackendMessage("user.disconnected", { user });
   };
 

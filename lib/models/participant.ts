@@ -1,16 +1,17 @@
 import { Roles } from "../types";
-import { IEntity } from "./entity";
-import { IBaseUser } from "./user";
+import { Item } from "./entity";
+import { UserBase } from "./user";
 
-export interface IBaseParticipant extends IEntity {
+export interface ParticipantBase extends Item {
   stream: string | null;
   role: Roles;
   isRaisingHand?: boolean;
   audioEnabled?: boolean;
   videoEnabled?: boolean;
   isBot: boolean;
+  isBanned: boolean;
 }
 
-export interface IParticipant extends IBaseUser, IBaseParticipant {
+export interface Participant extends UserBase, ParticipantBase {
   media?: any;
 }

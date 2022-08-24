@@ -7,14 +7,19 @@ import Animated, {
   useDerivedValue,
   withTiming,
 } from 'react-native-reanimated';
-import {IStreamCategory} from '@warpy/lib';
+import {StreamCategory} from '@warpy/lib';
 import {Text} from './Text';
 
 interface StreamCategoryOptionProps extends ViewProps {
-  category: IStreamCategory;
+  category: StreamCategory;
   color: string;
   selected: boolean;
   onPress: (position: {x: number; y: number; w: number}) => any;
+  onWindowPositionAvailable?: (position: {
+    x: number;
+    y: number;
+    w: number;
+  }) => any;
 }
 
 export const StreamCategoryOption = React.memo(
@@ -24,6 +29,7 @@ export const StreamCategoryOption = React.memo(
     color,
     selected,
     onPress,
+    onWindowPositionAvailable,
     ...rest
   }: StreamCategoryOptionProps) => {
     const colorTransition = useDerivedValue(() => {
@@ -35,12 +41,12 @@ export const StreamCategoryOption = React.memo(
 
     useEffect(() => {
       setTimeout(() => {
-        if (category.id === 'foru') {
+        if (onWindowPositionAvailable) {
           ref.current?.measureInWindow((x: number, y: number, w: number) =>
-            onPress({x, y, w}),
+            onWindowPositionAvailable({x, y, w}),
           );
         }
-      }, 50);
+      }, 1000);
     }, []);
 
     const position = useRef<{x: number; y: number}>();
@@ -74,6 +80,8 @@ export const StreamCategoryOption = React.memo(
             x: e.nativeEvent.layout.x,
             y: e.nativeEvent.layout.y,
           };
+
+          rest.onLayout?.(e);
         }}
         style={[styles.wrapper, animatedStyle, style]}>
         <TouchableOpacity

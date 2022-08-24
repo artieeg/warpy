@@ -1,12 +1,19 @@
 import { createNewPeer } from "@media/models";
 import { SFUService, MessageService } from "@media/services";
 import { mediaNodeTransferWorker } from "@media/services/sfu";
-import { MessageHandler, INewProducer } from "@warpy/lib";
-import { Producer } from "mediasoup/lib/Producer";
+import { MessageHandler, RequestCreateProducer } from "@warpy/lib";
+import { Producer } from "mediasoup/node/lib/Producer";
 import { rooms } from "../rooms";
 
-export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
-  const { userId, roomId, rtpCapabilities, kind } = data;
+export const handleNewProducer: MessageHandler<
+  RequestCreateProducer,
+  { status: string }
+> = async (data, respond) => {
+  const { userId, sendTrackToUser, roomId, rtpCapabilities, kind } = data;
+
+  console.log(
+    `received a new producer of ${kind} from user ${userId} in room ${roomId}`
+  );
 
   const pipeProducer = await SFUService.pipeToIngress.produce({
     id: data.id,
@@ -48,14 +55,17 @@ export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
   const { peers } = room;
 
   if (!peers[userId]) {
+    const router = SFUService.getWorker().router;
+
     const recvTransport = await SFUService.createTransport(
       "recv",
-      SFUService.getWorker().router,
+      router,
       userId
     );
 
     peers[userId] = createNewPeer({
       recvTransport,
+      router,
       producer: {
         audio: kind === "audio" ? producers : {},
         video: kind === "video" ? producers : {},
@@ -73,6 +83,10 @@ export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
     const { recvTransport: peerRecvTransport, router } = peers[peerId];
 
     if (!peerRecvTransport || !router) {
+      console.warn(
+        `Peer ${peerId} doesn't have recv transport or router assigned`,
+        { peerRecvTransport, router }
+      );
       continue;
     }
 
@@ -87,16 +101,22 @@ export const handleNewProducer: MessageHandler<INewProducer> = async (data) => {
         peerId
       );
 
-      MessageService.sendMessageToUser(peerId, {
-        event: "@media/new-track",
-        data: {
-          user: userId,
-          consumerParameters,
-          roomId,
-        },
-      });
+      if (sendTrackToUser) {
+        setTimeout(() => {
+          MessageService.sendMessageToUser(peerId, {
+            event: "@media/new-track",
+            data: {
+              user: userId,
+              consumerParameters,
+              roomId,
+            },
+          });
+        }, 1000);
+      }
     } catch (e) {
       console.error(e);
     }
   }
+
+  respond({ status: "ok" });
 };

@@ -5,7 +5,7 @@ import Animated from 'react-native-reanimated';
 import {Colors, colors} from '../../colors';
 
 type TextWeight = 'regular' | 'bold' | 'light' | 'extraBold';
-type TextSize = 'small' | 'normal' | 'medium' | 'large' | 'xsmall' | 'xxsmall';
+type TextSize = 'small' | 'medium' | 'large' | 'xsmall' | 'xxsmall';
 
 interface ITextProps extends TextProps {
   weight?: TextWeight;

@@ -1,10 +1,10 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import {IUser} from '@warpy/lib';
+import {User} from '@warpy/lib';
 import {Avatar} from './Avatar';
 
 interface IInvitedUserProps {
-  user: IUser;
+  user: User;
   state: 'accepted' | 'declined' | 'unknown';
 }
 

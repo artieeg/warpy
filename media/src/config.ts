@@ -2,7 +2,7 @@ import {
   RtpCodecCapability,
   TransportListenIp,
   WorkerLogTag,
-} from "mediasoup/lib/types";
+} from "mediasoup/node/lib/types";
 
 export const config = {
   httpIp: "0.0.0.0",

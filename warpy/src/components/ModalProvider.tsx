@@ -1,5 +1,5 @@
 import React from 'react';
-import {useStore} from '@app/store';
+import {useDispatcher, useStoreShallow} from '@app/store';
 import {ParticipantsModal} from './ParticipantsModal';
 import {UserInfoModal} from './UserInfoModal';
 import {ReportActionSheet} from './ReportActionSheet';
@@ -12,9 +12,19 @@ import {AwardPickerModal} from './AwardPickerModal';
 import {AwardRecipentPicker} from './AwardRecipentPicker';
 import {AwardVisualPickerModal} from './AwardVisualPickerModal';
 import {AwardMessageInputModal} from './AwardMessageInputModal';
+import {HostReassignModal} from './HostReassignModal';
 
 export const ModalProvider = () => {
-  const modal = useStore.use.modalCurrent();
+  const [modal, isApiConnected] = useStoreShallow(state => [
+    state.modalCurrent,
+    state.isConnected,
+  ]);
+
+  const dispatch = useDispatcher();
+
+  if (!isApiConnected) {
+    return null;
+  }
 
   return (
     <>
@@ -25,14 +35,16 @@ export const ModalProvider = () => {
       <AwardRecipentPicker />
       <AwardVisualPickerModal />
       <AwardMessageInputModal />
+      <HostReassignModal />
+      <InviteModal />
 
       <ParticipantsModal
-        onHide={() => useStore.getState().dispatchModalClose()}
+        onHide={() => dispatch(({modal}) => modal.close())}
         visible={modal === 'participants'}
         onSelectParticipant={user => {
-          useStore
-            .getState()
-            .dispatchModalOpen('participant-info', {selectedUser: user});
+          dispatch(({modal}) =>
+            modal.open('participant-info', {selectedUser: user}),
+          );
         }}
       />
 
@@ -42,10 +54,8 @@ export const ModalProvider = () => {
 
       <ReportActionSheet
         visible={modal === 'reports'}
-        onHide={() => useStore.getState().dispatchModalClose()}
+        onHide={() => dispatch(({modal}) => modal.close())}
       />
-
-      <InviteModal />
     </>
   );
 };

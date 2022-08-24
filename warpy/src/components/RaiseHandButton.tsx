@@ -1,14 +1,11 @@
-import {useStore} from '@app/store';
+import {useDispatcher, useStore} from '@app/store';
 import React, {useEffect, useRef} from 'react';
 import {Animated, StyleSheet} from 'react-native';
-import shallow from 'zustand/shallow';
 import {IconButtonToggle} from './IconButtonToggle';
 
 export const RaiseHandButton = () => {
-  const [isRaisingHand, dispatchUserHandRaiseToggle] = useStore(
-    state => [state.isRaisingHand, state.dispatchUserHandRaiseToggle],
-    shallow,
-  );
+  const dispatch = useDispatcher();
+  const isRaisingHand = useStore(state => state.isRaisingHand);
 
   const rotation = useRef(new Animated.Value(0));
 
@@ -23,7 +20,7 @@ export const RaiseHandButton = () => {
   return (
     <IconButtonToggle
       enabled={isRaisingHand}
-      onToggle={dispatchUserHandRaiseToggle}
+      onToggle={() => dispatch(({user}) => user.requestStreamPermission())}
       icon="hand"
       style={{
         ...styles.hand,

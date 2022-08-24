@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import {StyleSheet} from 'react-native';
 import {Avatar} from './Avatar';
 import {useStore} from '@app/store';
@@ -12,7 +12,7 @@ interface ISpeakerProps {
 
 export const Speaker = (props: ISpeakerProps) => {
   const {id, volume, onDoneSpeaking} = props;
-  const user = useMemo(() => useStore.getState().streamers[id], [id]);
+  const user = useStore(state => state.streamers[id]);
 
   if (!user) {
     return null;

@@ -1,4 +1,4 @@
-import { IUser } from "./models";
+import { User } from "./models";
 import {
   MediaDirection,
   MediaKind,
@@ -7,28 +7,19 @@ import {
   UserList,
 } from "./types";
 
-export interface ITransportOptions {
+export interface TransportOptions {
   id: string;
   iceParameters: any;
   iceCandidates: any[];
   dtlsParameters: any;
 }
 
-export interface IClap {
-  stream: string;
-}
-
-export interface ICreateMediaRoom {
+export interface RequestCreateMediaRoom {
   host: string;
   roomId: string;
 }
 
-export interface INewMediaRoomData {
-  routerRtpCapabilities: any;
-  sendTransportOptions: ITransportOptions;
-}
-
-export interface INewMediaTrack {
+export interface RequestPostMediaTrack {
   roomId: string;
   user: string;
   direction: MediaDirection;
@@ -40,22 +31,17 @@ export interface INewMediaTrack {
   mediaPermissionsToken: any;
 }
 
-export interface IJoinMediaRoom {
+export interface RequestJoinMediaRoom {
   roomId: string;
   user: string;
 }
 
-export interface ICreateTransport {
+export interface RequestCreateTransport {
   roomId: string;
   speaker: string;
 }
 
-export interface INewTransportResponse {
-  sendTransportOptions: ITransportOptions;
-  routerRtpCapabilities: any;
-}
-
-export interface IConnectMediaTransport {
+export interface RequestConnectMediaTransport {
   transportId: string;
   dtlsParameters: any;
   direction: MediaDirection;
@@ -64,38 +50,21 @@ export interface IConnectMediaTransport {
   user: string;
 }
 
-/*
-export interface INewMediaTrack {
-  transportId: string;
-  kind: MediaKind;
-  rtpParameters: any;
-  rtpCapabilities: any;
-  paused: boolean;
-  roomId: string;
-  direction: MediaDirection;
-  appData: any;
-}
-*/
-
-export interface IRecvTracksRequest {
+export interface RequestRecvTracks {
   stream: string;
   user: string;
   rtpCapabilities: any;
   mediaPermissionsToken: string;
 }
 
-export interface IRecvTracksResponse {
-  consumerParams: any[];
-}
-
-export interface IConnectMediaServer {
+export interface RequestConnectMediaServer {
   node: string;
   ip: string;
   port: number;
   srtp?: any;
 }
 
-export interface INewProducer {
+export interface RequestCreateProducer {
   id: string;
   kind: MediaKind;
   rtpParameters: any;
@@ -103,35 +72,36 @@ export interface INewProducer {
   appData: any;
   roomId: string;
   userId: string;
+  sendTrackToUser?: boolean;
 }
 
-export interface INewMediaNode {
+export interface RequestMediaNodeRegister {
   id: string;
   role: MediaServiceRole;
 }
 
-export interface IRequestViewers {
+export interface RequestViewers {
   user: string;
   stream: string;
   page: number;
 }
 
-export interface IWhoAmIRequest {
+export interface RequestWhoAmI {
   user: string;
 }
 
-export interface INewStream {
+export interface RequestCreateStream {
   user: string;
   title: string;
   category: string;
 }
 
-export interface IJoinStream {
+export interface RequestJoinStream {
   stream: string;
   user: string;
 }
 
-export interface IStopStream {
+export interface RequestStopStream {
   stream: string;
   user: string;
 }
@@ -140,17 +110,17 @@ export interface IUserDisconnected {
   user: string;
 }
 
-export interface IRaiseHand {
+export interface RequestRaiseHand {
   user: string;
   flag: boolean;
 }
 
-export interface IRequestFeed {
+export interface RequestFeed {
   user: string;
   category?: string;
 }
 
-export interface INewUser {
+export interface RequestCreateUser {
   username: string;
   last_name: string;
   first_name: string;
@@ -159,15 +129,15 @@ export interface INewUser {
   kind: "dev" | "apple" | "google" | "twitter" | "facebook";
 }
 
-export interface IActiveSpeakersPayload {
+export interface RequestActiveSpeakers {
   speakers: Record<string, { user: string; volume: number }[]>;
 }
 
-export interface IUserDelete {
+export interface RequestDeleteUser {
   user: string;
 }
 
-export interface IRecordRequest {
+export interface RequestRecord {
   remoteRtpPort: number;
   localRtcpPort?: number;
   rtpCapabilities: any;
@@ -176,88 +146,89 @@ export interface IRecordRequest {
   user: string;
 }
 
-export interface IClap {
+export interface RequestPostReaction {
   user: string;
   emoji: string;
   stream: string;
 }
 
-export interface IFollowRequest {
+export interface RequestCreateFollow {
   user: string;
   userToFollow: string;
 }
 
-export interface IUnfollowRequest {
+export interface RequestDeleteFollow {
   user: string;
   userToUnfollow: string;
 }
 
-export interface INewChatMessage {
+export interface RequestSendChatMessage {
   user: string;
   message: string;
 }
 
-export interface IKickUserRequest {
+export interface RequestKickUser {
   user: string;
   userToKick: string;
 }
 
-export interface IUserReportRequest {
+export interface RequestReportUser {
   reportedUserId: string;
   reportReasonId: string;
   user: string;
 }
 
-export interface IUserBlockRequest {
+export interface RequestBlockUser {
   userToBlock: string;
   user: string;
 }
 
-export interface IInviteRequest {
+export interface RequestCreateInvite {
   invitee: string;
   stream?: string;
   user: string;
 }
 
-export interface IInviteSuggestionsRequest {
+export interface RequestInviteSuggestions {
   user: string;
   stream: string;
 }
 
-export interface IUserSearchRequest {
+export interface RequestUserSearch {
   textToSearch: string;
+  user: string;
 }
 
-export interface ICancelInviteRequest {
+export interface RequestCancelInvite {
   user: string;
   invite_id: string;
 }
 
-export interface IReadNotifications {
+export interface RequestReadNotifications {
   user: string;
 }
 
-export interface IGetUnreadNotifications {
+export interface RequestFetchUnreadNotifications {
   user: string;
 }
 
-export interface IGetReadNotifications {
+export interface RequestFetchReadNotifications {
   user: string;
   page: number;
 }
 
-export interface IGifsRequest {
+export interface RequestGifs {
   search?: string;
   next?: string;
 }
 
-export interface ISetRoleRequest {
+export interface RequestSetRole {
   user: string;
   userToUpdate: string;
   role: Roles;
 }
 
-export interface IRemoveUserProducersRequest {
+export interface RequestRemoveUserProducers {
   user: string;
   stream: string;
   producers: {
@@ -266,86 +237,91 @@ export interface IRemoveUserProducersRequest {
   };
 }
 
-export interface IMediaToggleRequest {
+export interface RequestMediaToggle {
   user: string;
   videoEnabled?: boolean;
   audioEnabled?: boolean;
 }
 
-export interface IBotJoin {
+export interface RequestJoinBot {
   user: string;
   inviteDetailsToken: string;
 }
 
-export interface IUserUpdateRequest {
+export interface RequestUpdateUser {
   user: string;
-  data: Partial<IUser>;
+  data: Partial<User>;
 }
 
-export interface IUserRequest {
+export interface RequestUser {
   user: string;
   id: string;
 }
 
-export interface IInviteActionRequest {
+export interface RequestInviteAction {
   user: string;
   invite: string;
   action: "accept" | "decline";
 }
 
-export interface IUserListRequest {
+export interface RequestUserList {
   user: string;
   list: UserList;
   page: number;
 }
 
-export interface IGetCoinBalanceRequest {
+export interface RequestFetchCoinBalance {
   user: string;
 }
 
-export interface ISendAwardRequest {
+export interface RequestSendAward {
   user: string;
   message: string;
   visual: string;
   recipent: string;
 }
 
-export interface IFetchReceivedAwardsRequest {
+export interface RequestFetchReceivedAwards {
   target: string;
 }
 
-export interface IAppInviteRequest {
+export interface RequestAppInvite {
   user_id: string;
 }
 
-export interface IInviteApplyRequest {
+export interface RequestApplyInvite {
   user: string;
   code: string;
 }
 
-export interface IStreamGetRequest {
+export interface RequestFetchStream {
   stream: string;
 }
 
-export interface ILeaveStreamRequest {
+export interface RequestLeaveStream {
   user: string;
   stream: string;
 }
 
-export interface IUserStatusRequest {
+export interface RequestUserStatus {
   user: string;
 }
 
-export interface IFriendFeedRequest {
+export interface RequestFetchFriendFeed {
   user: string;
 }
 
-export interface IStreamSearchRequest {
+export interface RequestStreamSearch {
   textToSearch: string;
 }
 
-export interface IMediaNodeInfoRequest {
+export interface RequestMediaNodeInfo {
   node: string;
   load: number;
   role: string;
+}
+
+export interface RequestHostReassign {
+  host: string;
+  user: string;
 }

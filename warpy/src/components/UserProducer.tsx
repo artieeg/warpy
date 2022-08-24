@@ -2,12 +2,12 @@ import React from 'react';
 import {Avatar} from './Avatar';
 import {StyleSheet, View} from 'react-native';
 import {Text} from './Text';
-import {useStore} from '@app/store';
-import {IParticipant} from '@warpy/lib';
+import {useStoreShallow} from '@app/store';
+import {Participant} from '@warpy/lib';
 import {IconButton} from './IconButton';
 
 interface IRaisedHandInfo {
-  data: IParticipant;
+  data: Participant;
 }
 
 export const UserProducer = (props: IRaisedHandInfo) => {
@@ -15,7 +15,11 @@ export const UserProducer = (props: IRaisedHandInfo) => {
   const {id, role} = data;
   const name = `${data.first_name}`;
 
-  const api = useStore.use.api();
+  const [api, isStreamOwner, isAppUser] = useStoreShallow(store => [
+    store.api,
+    store.currentStreamHost === store.user?.id,
+    store.user?.id === id,
+  ]);
 
   return (
     <View style={styles.wrapper}>
@@ -24,35 +28,46 @@ export const UserProducer = (props: IRaisedHandInfo) => {
         <Text weight="bold" style={styles.name} size="small">
           {name}
         </Text>
-        <View style={styles.producerActionWrapper}>
-          <IconButton
-            onPress={async () => {
-              api.stream.setRole(id, role === 'viewer' ? 'speaker' : 'viewer');
-            }}
-            size={20}
-            name={role !== 'viewer' ? 'mic-on' : 'mic-off'}
-            color={role !== 'viewer' ? '#000' : '#fff'}
-            style={[
-              styles.producerAction,
-              role !== 'viewer' && styles.producerActionEnabled,
-            ]}
-          />
-          <IconButton
-            onPress={async () => {
-              api.stream.setRole(
-                id,
-                role === 'streamer' ? 'speaker' : 'streamer',
-              );
-            }}
-            size={20}
-            name={role !== 'streamer' ? 'video' : 'video-off'}
-            color={role !== 'streamer' ? '#fff' : '#000'}
-            style={[
-              styles.producerAction,
-              role === 'streamer' && styles.producerActionEnabled,
-            ]}
-          />
-        </View>
+        {isAppUser && (
+          <Text weight="bold" color="boulder" size="xsmall">
+            you
+          </Text>
+        )}
+
+        {isStreamOwner && !isAppUser && (
+          <View style={styles.producerActionWrapper}>
+            <IconButton
+              onPress={async () => {
+                api.stream.setRole(
+                  id,
+                  role === 'viewer' ? 'speaker' : 'viewer',
+                );
+              }}
+              size={20}
+              name={role !== 'viewer' ? 'mic-on' : 'mic-off'}
+              color={role !== 'viewer' ? '#000' : '#fff'}
+              style={[
+                styles.producerAction,
+                role !== 'viewer' && styles.producerActionEnabled,
+              ]}
+            />
+            <IconButton
+              onPress={async () => {
+                api.stream.setRole(
+                  id,
+                  role === 'streamer' ? 'speaker' : 'streamer',
+                );
+              }}
+              size={20}
+              name={role !== 'streamer' ? 'camera' : 'camera'}
+              color={role !== 'streamer' ? '#fff' : '#000'}
+              style={[
+                styles.producerAction,
+                role === 'streamer' && styles.producerActionEnabled,
+              ]}
+            />
+          </View>
+        )}
       </View>
     </View>
   );
@@ -64,9 +79,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
-  name: {
-    marginBottom: 10,
-  },
+  name: {},
   text: {
     marginLeft: 10,
   },
@@ -81,6 +94,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F9F871',
   },
   producerActionWrapper: {
+    marginTop: 10,
     flexDirection: 'row',
   },
 });

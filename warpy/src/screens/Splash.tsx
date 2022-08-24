@@ -1,27 +1,40 @@
+import {LoadingOverlay} from '@app/components';
 import {useAppSetUp} from '@app/hooks';
-import React from 'react';
-import {View, StyleSheet, Image} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet} from 'react-native';
 
 export const Splash = () => {
-  useAppSetUp();
+  const action = useAppSetUp();
+
+  const [enabled, setEnabled] = useState(true);
+
+  const navigator = useNavigation();
+
+  useEffect(() => {
+    if (!!action) {
+      setTimeout(() => {
+        setEnabled(false);
+
+        setTimeout(() => {
+          (navigator as any).replace(
+            action === 'nav-feed' ? 'Feed' : 'SignUpName',
+          );
+        }, 100);
+      }, 1000);
+    }
+  }, [action]);
 
   return (
     <View style={styles.screen}>
-      {/* 
-      <Image
-        source={require('../assets/logo.png')}
-        style={{width: 200, height: 200}}
-      />
-        */}
+      <LoadingOverlay enabled={enabled} mode="splash" />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   screen: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1,
     backgroundColor: '#000',
+    flex: 1,
   },
 });

@@ -1,21 +1,18 @@
-import {useStore} from '@app/store';
+import {useDispatcher, useStoreShallow} from '@app/store';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import shallow from 'zustand/shallow';
 import {BaseSlideModal} from './BaseSlideModal';
 import {SmallTextButton} from './SmallTextButton';
 import {Text} from './Text';
 import {UserGeneralInfo} from './UserGeneralInfo';
 
 export const InvitedToStreamModal = () => {
-  const [visible, modalInviter, stream] = useStore(
-    state => [
-      state.modalCurrent === 'stream-invite',
-      state.modalInvite?.inviter,
-      state.modalInvite?.stream,
-    ],
-    shallow,
-  );
+  const [visible, modalInviter, stream] = useStoreShallow(state => [
+    state.modalCurrent === 'stream-invite',
+    state.modalInvite?.inviter,
+    state.modalInvite?.stream,
+  ]);
+  const dispatch = useDispatcher();
 
   return (
     <BaseSlideModal visible={visible} style={styles.wrapper}>
@@ -42,14 +39,14 @@ export const InvitedToStreamModal = () => {
 
       <View style={styles.actions}>
         <SmallTextButton
-          onPress={() => useStore.getState().dispatchInviteAction('accept')}
+          onPress={() => dispatch(({invite}) => invite.accept())}
           style={styles.actionButtonSpace}
           title="accept"
         />
         <SmallTextButton
-          onPress={() => useStore.getState().dispatchInviteAction('decline')}
+          onPress={() => dispatch(({invite}) => invite.decline())}
           title="decline"
-          color="important"
+          color="red"
         />
       </View>
     </BaseSlideModal>

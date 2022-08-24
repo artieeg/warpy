@@ -56,6 +56,7 @@ export class MediaClient {
     });
 
     if (direction === "send") {
+      console.log("attached produce event listener");
       transport.on("produce", (produceParams, callback, errback) => {
         console.log("producing new track");
         console.log(produceParams.kind);
@@ -87,6 +88,7 @@ export class MediaClient {
     }
 
     transport.on("connectionstatechange", (_state) => {
+      console.log("connectionstatechange", _state);
       //TODO
     });
 
@@ -103,7 +105,7 @@ export class MediaClient {
       appData: {
         user,
         producerId: options.producerId,
-        mediaTag: "remote-media",
+        mediaTag: "media-" + Math.random(),
       },
     });
 
@@ -115,22 +117,12 @@ export class MediaClient {
     kind: MediaKind,
     sendTransport: Transport
   ): Promise<Producer> {
-    console.log("sending media stream", kind, track);
+    const producer = await sendTransport.produce({
+      track: track as any,
+      appData: { kind },
+    });
 
-    try {
-      const producer = await sendTransport.produce({
-        track: track as any,
-        appData: { kind },
-      });
-
-      console.log("new producer", producer);
-
-      return producer;
-    } catch (e) {
-      console.error(e);
-
-      throw e;
-    }
+    return producer;
   }
 
   async consumeRemoteStreams(stream: string, transport: Transport) {
@@ -139,6 +131,8 @@ export class MediaClient {
       stream,
       mediaPermissionsToken: this.permissionsToken,
     });
+
+    console.log("fetched consumer params from the api", consumerParams);
 
     const consumersPromises: Promise<Consumer>[] = consumerParams.map(
       (params: any) =>

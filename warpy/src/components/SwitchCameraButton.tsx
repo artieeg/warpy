@@ -1,13 +1,13 @@
-import {useStore} from '@app/store';
+import {useDispatcher} from '@app/store';
 import React from 'react';
 import {IconButton} from './IconButton';
 
 export const SwitchCameraButton = () => {
-  const dispatchCameraSwitch = useStore.use.dispatchCameraSwitch();
+  const dispatch = useDispatcher();
 
   return (
     <IconButton
-      onPress={dispatchCameraSwitch}
+      onPress={() => dispatch(({media}) => media.switchCamera())}
       color="#ffffff"
       name="refresh-1"
       size={24}

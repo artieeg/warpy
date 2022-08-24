@@ -1,8 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Text, textStyles} from './Text';
 import {View, StyleSheet, TextInput} from 'react-native';
-import {IUser, IUserUpdateResponse} from '@warpy/lib';
-import {useStore} from '@app/store';
+import {User, UserUpdateResponse} from '@warpy/lib';
+import {useDispatcher, useStore} from '@app/store';
 import shallow from 'zustand/shallow';
 import {useDebounce} from 'use-debounce/lib';
 import FadeInOut from 'react-native-fade-in-out';
@@ -12,18 +12,21 @@ import {colors} from '../../colors';
 
 interface SettingsTextEditProps {
   placeholder: string;
-  field: keyof IUser;
+  multiline?: boolean;
+  field: keyof User;
 }
 
 export const SettingsTextEdit = (props: SettingsTextEditProps) => {
-  const [user, api, dispatchToastMessage] = useStore(
-    store => [store.user as IUser, store.api, store.dispatchToastMessage],
+  const dispatch = useDispatcher();
+
+  const [user, api] = useStore(
+    store => [store.user as User, store.api],
     shallow,
   );
 
   const [value, setValue] = useState(user[props.field] || '');
   const [debouncedValue] = useDebounce(value, 2000);
-  const [response, setResponse] = useState<IUserUpdateResponse>();
+  const [response, setResponse] = useState<UserUpdateResponse>();
 
   const timeout = useRef<ReturnType<typeof setTimeout>>();
   const mounted = useRef(false);
@@ -48,9 +51,16 @@ export const SettingsTextEdit = (props: SettingsTextEditProps) => {
     setResponse(response);
 
     if (response.status === 'ok') {
-      dispatchToastMessage('field updated successfully', 'LONG');
+      dispatch(({toast}) =>
+        toast.showToastMessage('field updated successfully', 'LONG'),
+      );
     } else {
-      dispatchToastMessage('error while updating: ' + response.message, 'LONG');
+      dispatch(({toast}) =>
+        toast.showToastMessage(
+          'error while updating: ' + response.message,
+          'LONG',
+        ),
+      );
     }
   }, [debouncedValue, api]);
 
@@ -63,20 +73,24 @@ export const SettingsTextEdit = (props: SettingsTextEditProps) => {
   }, [response]);
 
   return (
-    <View>
-      <Text color="boulder" size="small">
+    <View style={styles.wrapper}>
+      <Text color="boulder" size="xsmall">
         {props.placeholder}
       </Text>
       <View style={styles.row}>
         <TextInput
+          multiline={props.multiline}
           onChangeText={v => setValue(v)}
           style={[
+            styles.input,
             textStyles.bold,
-            textStyles.medium,
-            {color: response?.status === 'error' ? colors.red : colors.green},
+            textStyles.small,
+            {color: colors.white},
+            {fontWeight: '300'},
           ]}
           defaultValue={value as string}
           placeholder={`enter ${props.field}`}
+          placeholderTextColor={colors.boulder}
         />
 
         <FadeInOut duration={400} visible={!!response}>
@@ -111,5 +125,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    backgroundColor: colors.mine_shaft,
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+    borderRadius: 5,
+    marginTop: 5,
+  },
+  input: {
+    padding: 0,
+    flex: 1,
+    //fontWeight: 'bold',
+    justifyContent: 'flex-start',
+  },
+  wrapper: {
+    marginBottom: 15,
   },
 });

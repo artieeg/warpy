@@ -8,6 +8,8 @@ export const handleEgressMediaRequest: MessageHandler<any, any> = async (
 ) => {
   const { stream, node } = data;
 
+  console.log("requested forwarding of", stream, "to", node);
+
   const { peers, forwardingToNodeIds } = rooms[stream];
 
   //Check if we forward all room's media to this node already
@@ -18,34 +20,41 @@ export const handleEgressMediaRequest: MessageHandler<any, any> = async (
 
   const pipeRouterId = SFUService.getPipeRouter().id;
 
-  Object.entries(peers).forEach(([userId, peer]) => {
-    const producers = [
-      peer.producer.audio[pipeRouterId],
-      peer.producer.video[pipeRouterId],
-    ].filter((p) => !!p);
+  const promises = Object.entries(peers)
+    .map(([userId, peer]) => {
+      const producers = [
+        peer.producer.audio[pipeRouterId],
+        peer.producer.video[pipeRouterId],
+      ].filter((p) => !!p);
 
-    producers.forEach(async (producer) => {
-      const pipeConsumer = await SFUService.createPipeConsumer(
-        producer.id,
-        node
-      );
+      return producers.map(async (producer) => {
+        const pipeConsumer = await SFUService.createPipeConsumer(
+          producer.id,
+          node
+        );
 
-      producer.appData.forwadingToNodes = [
-        ...(producer.appData.forwadingToNodes ?? []),
-        node,
-      ];
+        producer.appData.forwadingToNodes = [
+          ...(producer.appData.forwadingToNodes ?? []),
+          node,
+        ];
 
-      MessageService.sendNewProducer(node, {
-        userId,
-        roomId: stream,
-        id: pipeConsumer.id,
-        kind: pipeConsumer.kind,
-        rtpParameters: pipeConsumer.rtpParameters,
-        rtpCapabilities: peer.rtpCapabilities,
-        appData: pipeConsumer.appData,
+        return MessageService.sendNewProducer(node, {
+          userId,
+          roomId: stream,
+          id: pipeConsumer.id,
+          kind: pipeConsumer.kind,
+          rtpParameters: pipeConsumer.rtpParameters,
+          rtpCapabilities: peer.rtpCapabilities,
+          appData: pipeConsumer.appData,
+          sendTrackToUser: false,
+        });
       });
-    });
-  });
+    })
+    .reduce((p, c) => [...p, ...c]);
+
+  console.log(promises);
+
+  await Promise.all(promises);
 
   forwardingToNodeIds.push(node);
 

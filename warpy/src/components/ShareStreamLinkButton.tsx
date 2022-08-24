@@ -1,6 +1,5 @@
 import config from '@app/config';
-import {useAppInviteCode} from '@app/hooks';
-import {useStore, useStoreShallow} from '@app/store';
+import {useStoreShallow} from '@app/store';
 import React, {useCallback} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import Share from 'react-native-share';

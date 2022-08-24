@@ -9,8 +9,8 @@ services:
   redis:
     image:
       redis:6.2.4-alpine
-    ports:
-      - 6379:6379
+    deploy:
+      replicas: 2
       
   web_next:
     image: node:16.0.0-alpine
@@ -56,24 +56,3 @@ services:
       - ./:/warpy
     working_dir: /warpy/ws_gateway
     command: yarn start:dev
-
-  media_producer:
-    image: media:latest
-    env_file: dev_env/media.env
-    depends_on:
-      - "backend"
-    build:
-      context: .
-      dockerfile: ./Dockerfile.media
-    command: sh -c "sleep 20s && yarn start:dev:p"
-
-  media_consumer:
-    image: media:latest
-    env_file: dev_env/media.env
-    depends_on:
-      - "backend"
-      - "media_producer"
-    build:
-      context: .
-      dockerfile: ./Dockerfile.media
-    command: sh -c "sleep 20s && yarn start:dev:c"

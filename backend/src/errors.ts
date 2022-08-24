@@ -36,13 +36,7 @@ export class InternalError extends BaseError {
 }
 
 export class StreamHasBlockedSpeakerError extends BaseError {
-  constructor({
-    last_name,
-    first_name,
-  }: {
-    last_name: string;
-    first_name: string;
-  }) {
+  constructor() {
     super('This user has another speaker banned');
 
     this.name = 'StreamHasBlockedSpeakerError';
@@ -50,13 +44,7 @@ export class StreamHasBlockedSpeakerError extends BaseError {
 }
 
 export class BlockedByAnotherSpeaker extends BaseError {
-  constructor({
-    last_name,
-    first_name,
-  }: {
-    last_name: string;
-    first_name: string;
-  }) {
+  constructor() {
     super('This user has been banned by another speaker');
 
     this.name = 'BlockedByAnotherSpeaker';
@@ -148,5 +136,37 @@ export class WaitlistRecordExists extends BaseError {
     super('waitlist record exists');
 
     this.name = 'WaitlistRecordExists';
+  }
+}
+
+export class ParticipantAlreadyLeft extends BaseError {
+  constructor() {
+    super('particpant already left');
+
+    this.name = 'ParticipantAlreadyLeft';
+  }
+}
+
+export class HostReassignError extends BaseError {
+  constructor() {
+    super('host reassign failed');
+
+    this.name = 'HostReassignError';
+  }
+}
+
+export class NoDeveloperAccount extends BaseError {
+  constructor() {
+    super('you dont have a developer account');
+
+    this.name = 'NoDeveloperAccount';
+  }
+}
+
+export class InvalidReaction extends BaseError {
+  constructor() {
+    super('this reaction is invalid');
+
+    this.name = 'InvalidReaction';
   }
 }

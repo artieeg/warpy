@@ -1,19 +1,19 @@
 import React, {useCallback} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import {IFriendFeedItem} from '@warpy/lib';
+import {FriendFeedItem} from '@warpy/lib';
 import {Avatar} from './Avatar';
 import {Text} from './Text';
-import {useStore} from '@app/store';
+import {useDispatcher} from '@app/store';
 
 interface FriendFeedItemProps {
-  item: IFriendFeedItem;
+  item: FriendFeedItem;
 }
 
-export const UserHorizontalListItem = ({item}: FriendFeedItemProps) => {
+export const UserHorizontalListItem = ({item: {user}}: FriendFeedItemProps) => {
+  const dispatch = useDispatcher();
+
   const onPress = useCallback(() => {
-    useStore.getState().dispatchModalOpen('participant-info', {
-      selectedUser: item.user,
-    });
+    dispatch(({modal}) => modal.open('participant-info', {selectedUser: user}));
   }, []);
 
   return (
@@ -22,11 +22,11 @@ export const UserHorizontalListItem = ({item}: FriendFeedItemProps) => {
       activeOpacity={0.8}
       style={styles.container}>
       <View>
-        <Avatar user={item.user} size="large" />
+        <Avatar user={user} size="large" />
       </View>
 
       <Text color="boulder" size="xxsmall">
-        {item.user.username}
+        {user.username}
       </Text>
     </TouchableOpacity>
   );

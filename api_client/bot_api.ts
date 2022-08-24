@@ -1,15 +1,11 @@
 import { EventHandler } from "./types";
-import {
-  IBotAuthResponse,
-  IBotInviteEvent,
-  IBotJoinResponse,
-} from "@warpy/lib";
+import { BotAuthResponse, EventBotInvite, BotJoinResponse } from "@warpy/lib";
 import { WebSocketConn } from "./connection";
 
 export interface IBotAPI {
-  auth: (token: string) => Promise<IBotAuthResponse>;
-  onInvite: EventHandler<IBotInviteEvent>;
-  join: (inviteDetailsToken: string) => Promise<IBotJoinResponse>;
+  auth: (token: string) => Promise<BotAuthResponse>;
+  onInvite: EventHandler<EventBotInvite>;
+  join: (inviteDetailsToken: string) => Promise<BotJoinResponse>;
 }
 
 export const BotAPI = (socket: WebSocketConn): IBotAPI => ({

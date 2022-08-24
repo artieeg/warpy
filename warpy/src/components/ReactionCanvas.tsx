@@ -1,13 +1,15 @@
-import {useStore} from '@app/store';
+import {useStore, useStoreShallow} from '@app/store';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {GivenReaction, CGivenReaction} from './GivenReaction';
 import {List} from 'linked-list';
 
 export const ReactionCanvas = () => {
-  const reaction = useStore.use.reaction();
-  const stream = useStore.use.stream();
-  const api = useStore.use.api();
+  const [reaction, stream, api] = useStoreShallow(state => [
+    state.reaction,
+    state.stream,
+    state.api,
+  ]);
 
   const reactions = useRef(new List());
   const [rerender, setRerender] = useState(true);

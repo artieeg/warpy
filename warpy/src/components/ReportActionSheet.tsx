@@ -1,13 +1,15 @@
 import React from 'react';
 import {REPORT_REASONS} from '@warpy/lib';
 import {ActionSheet, IActionSheetProps} from './ActionSheet';
-import {useStore} from '@app/store';
+import {useStoreShallow} from '@app/store';
 
 interface IReportActionSheetProps extends Omit<IActionSheetProps, 'actions'> {}
 
 export const ReportActionSheet = (props: IReportActionSheetProps) => {
-  const user = useStore(state => state.modalSelectedUser);
-  const api = useStore.use.api();
+  const [user, api] = useStoreShallow(state => [
+    state.modalSelectedUser,
+    state.api,
+  ]);
 
   return (
     <ActionSheet

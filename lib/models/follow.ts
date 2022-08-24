@@ -1,6 +1,6 @@
-import { IUser } from "./user";
+import { User } from "./user";
 
-export interface IFollow {
-  follower: IUser;
-  followed: IUser;
+export interface Follow {
+  follower: User;
+  followed: User;
 }

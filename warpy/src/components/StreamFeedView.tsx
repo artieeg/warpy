@@ -1,6 +1,6 @@
 import React from 'react';
-import {FlatList, FlatListProps} from 'react-native';
-import {ICandidate} from '@warpy/lib';
+import {FlatList, FlatListProps, RefreshControl} from 'react-native';
+import {Candidate} from '@warpy/lib';
 import {usePreviewDimensions} from '@app/hooks';
 import {StreamPreview} from './StreamPreview';
 import Animated, {
@@ -12,7 +12,9 @@ import Animated, {
 import {colors} from '../../colors';
 
 interface StreamFeedViewProps
-  extends Omit<FlatListProps<ICandidate>, 'renderItem'> {}
+  extends Omit<FlatListProps<Candidate>, 'renderItem'> {
+  isLoading?: boolean;
+}
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -23,7 +25,7 @@ export const StreamFeedView: React.FC<StreamFeedViewProps> = ({
   const {previewHeight, previewWidth} = usePreviewDimensions();
 
   const renderItem = React.useCallback(
-    ({item, index}: {item: ICandidate; index: number}) => {
+    ({item, index}: {item: Candidate; index: number}) => {
       let style: any = {
         maxWidth: previewWidth,
         width: previewWidth,
@@ -67,38 +69,24 @@ export const StreamFeedView: React.FC<StreamFeedViewProps> = ({
     flex: 1,
     opacity: opacity.value,
     backgroundColor: colors.black,
-    marginLeft: 10,
+    //marginLeft: 10,
   }));
 
   return (
-    <AnimatedFlatList
-      {...(rest as any)}
-      style={[wrapperStyle, rest.style]}
-      data={
-        data && [
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-          ...data,
-        ]
-      }
-      numColumns={2}
-      renderItem={renderItem as any}
-    />
+    <RefreshControl
+      style={{flex: 1}}
+      refreshing={!!rest.refreshing}
+      onRefresh={rest.onRefresh as any}>
+      <AnimatedFlatList
+        {...(rest as any)}
+        refreshing={undefined}
+        onRefresh={undefined}
+        style={[wrapperStyle, rest.style]}
+        data={data}
+        numColumns={2}
+        renderItem={renderItem as any}
+      />
+    </RefreshControl>
   );
 };
 //(props0, props1) => props0.data === props1.data && props1,

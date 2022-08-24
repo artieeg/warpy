@@ -18,24 +18,25 @@ import {
   useStreamViewers,
 } from '@app/hooks';
 import {useStore} from '@app/store';
-import {IBaseUser, IParticipant} from '@warpy/lib';
+import {UserBase, Participant} from '@warpy/lib';
 import {UserProducer} from './UserProducer';
 
 interface IParticipanModalProps {
   visible: boolean;
   onHide: () => void;
-  onSelectParticipant: (user: IBaseUser) => any;
+  onSelectParticipant: (user: UserBase) => any;
 }
 
 export const ParticipantsModal = (props: IParticipanModalProps) => {
   const {onSelectParticipant} = props;
   const usersRaisingHand = useSpeakingRequests();
+  const currentHostId = useStore(state => state.currentStreamHost);
   const producers = useStreamProducers();
   const [viewers, onFetchMore] = useStreamViewers();
 
-  const streamer = useMemo(
-    () => producers.find(speaker => speaker.role === 'streamer'),
-    [producers],
+  const host = useMemo(
+    () => producers.find(streamer => streamer.id === currentHostId),
+    [producers, currentHostId],
   );
 
   const data = useMemo(
@@ -44,9 +45,9 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
         viewers,
         speakers: producers,
         usersRaisingHand,
-        streamer: streamer!,
+        host: host!,
       }),
-    [viewers, producers, usersRaisingHand, streamer],
+    [viewers, producers, usersRaisingHand, host],
   );
 
   const columnWidth = (useWindowDimensions().width - 40) / 4;
@@ -59,7 +60,18 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
     const {kind} = item;
 
     if (kind === 'streamer') {
-      return <StreamerInfo data={item.list[0]} />;
+      if (!item.list[0]) {
+        return (
+          <Text
+            size="xsmall"
+            style={styles.hostReassignMessage}
+            color="boulder">
+            Host has left the stream.{'\n'}New host will be assigned soon
+          </Text>
+        );
+      } else {
+        return <StreamerInfo data={item.list[0]} />;
+      }
     }
 
     if (kind === 'raised_hands') {
@@ -151,21 +163,21 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
 };
 
 const getListData = ({
-  streamer,
+  host,
   speakers,
   usersRaisingHand,
   viewers,
 }: {
-  streamer: IParticipant;
-  speakers: IParticipant[];
-  usersRaisingHand: IParticipant[];
-  viewers: IParticipant[];
+  host: Participant;
+  speakers: Participant[];
+  usersRaisingHand: Participant[];
+  viewers: Participant[];
 }) => [
   {
     title: 'Host',
     data: [
       {
-        list: [streamer!],
+        list: [host!],
         kind: 'streamer',
       },
     ],
@@ -220,5 +232,8 @@ const styles = StyleSheet.create({
     top: 10,
     borderRadius: 12,
     backgroundColor: '#e0e0e0',
+  },
+  hostReassignMessage: {
+    textAlign: 'center',
   },
 });

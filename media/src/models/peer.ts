@@ -1,20 +1,20 @@
 import { SFUService } from "@media/services";
 import {
   PlainTransport,
-  Transport,
   Producer,
   Consumer,
   Router,
   RtpCapabilities,
-} from "mediasoup/lib/types";
+  WebRtcTransport,
+} from "mediasoup/node/lib/types";
 
 //TODO: consider using undefined instead of null
 
 export interface IPeer {
   rtpCapabilities: RtpCapabilities | null;
   router: Router | null;
-  sendTransport: Transport | null;
-  recvTransport: Transport | null;
+  sendTransport: WebRtcTransport | null;
+  recvTransport: WebRtcTransport | null;
   plainTransport: PlainTransport | null;
   producer: {
     audio: Record<string, Producer>;

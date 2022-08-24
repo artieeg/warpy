@@ -1,11 +1,11 @@
 import React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import {IAwardModel} from '@warpy/lib';
+import {AwardModel} from '@warpy/lib';
 import {Text} from './Text';
 import FastImage from 'react-native-fast-image';
 
 interface AwardOptionProps {
-  award: IAwardModel;
+  award: AwardModel;
   picked: boolean;
   onPick: () => void;
 }

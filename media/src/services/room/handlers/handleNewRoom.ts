@@ -1,13 +1,7 @@
-import { config } from "@media/config";
 import { createNewPeer, IRoom } from "@media/models";
 import { role } from "@media/role";
 import { SFUService } from "@media/services";
-import { getOptionsFromTransport } from "@media/utils";
-import {
-  MessageHandler,
-  ICreateMediaRoom,
-  INewMediaRoomData,
-} from "@warpy/lib";
+import { MessageHandler, RequestCreateMediaRoom } from "@warpy/lib";
 import { rooms } from "../rooms";
 
 const createNewRoom = (): IRoom => {
@@ -22,10 +16,10 @@ const createNewRoom = (): IRoom => {
   };
 };
 
-export const handleNewRoom: MessageHandler<
-  ICreateMediaRoom,
-  INewMediaRoomData
-> = async (data, respond) => {
+export const handleNewRoom: MessageHandler<RequestCreateMediaRoom, {}> = async (
+  data,
+  respond
+) => {
   const { roomId, host } = data;
 
   if (rooms[roomId]) {
@@ -51,24 +45,19 @@ export const handleNewRoom: MessageHandler<
     return;
   }
 
+  /*
   const sendTransport = await SFUService.createTransport("send", router, host);
 
   room.peers[host] = createNewPeer({
     sendTransport,
+    //router
   });
-
-  /*
-  const remoteRtpPort = SFUService.getPortForRemoteRTP();
-  await plainTransport.connect({
-    ip: config.mediasoup.plainRtpTransport.listenIp.ip,
-    port: remoteRtpPort,
-  });
-
-  plainTransport.appData.remoteRtpPort = remoteRtpPort;
-  */
 
   respond!({
     routerRtpCapabilities: rooms[roomId].router.rtpCapabilities,
     sendTransportOptions: getOptionsFromTransport(sendTransport),
   });
+  */
+
+  respond!({});
 };

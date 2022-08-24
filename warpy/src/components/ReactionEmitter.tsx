@@ -99,7 +99,7 @@ interface IReactionEmitterProps {
 export const ReactionEmitter = (props: IReactionEmitterProps) => {
   const {disabled} = props;
 
-  const api = useStore.use.api();
+  const api = useStore(state => state.api);
 
   const [rerender, setRerender] = useState(false);
 

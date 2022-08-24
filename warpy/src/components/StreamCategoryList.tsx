@@ -1,13 +1,14 @@
-import {useStore} from '@app/store';
+import {useDispatcher, useStore, useStoreShallow} from '@app/store';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {View, StyleSheet, ViewProps, useWindowDimensions} from 'react-native';
 import {StreamCategoryOption} from './StreamCategoryOption';
 import tinycolor from 'tinycolor2';
-import {IStreamCategory} from '@warpy/lib';
+import {StreamCategory} from '@warpy/lib';
 import Animated, {
   Easing,
   Extrapolate,
   interpolate,
+  Layout,
   SharedValue,
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -15,6 +16,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+import {INFO_HEADER_HEIGHT} from './InfoHeader';
 
 const BASE_COLOR = tinycolor('F9AA71');
 
@@ -26,8 +28,11 @@ interface StreamCategoryListProps extends ViewProps {
 export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
   const {onLayout, mode, minimizationProgress} = props;
   const [listWidth, setListWidth] = useState(0);
+  const dispatch = useDispatcher();
 
-  const streamCategory = useStore(state => state.selectedFeedCategory);
+  const [streamCategory] = useStoreShallow(state => [
+    state.selectedFeedCategory,
+  ]);
 
   //used to adjust absolutely positioned current category according to scroll
   const scrollOffsetX = useSharedValue(0);
@@ -41,12 +46,22 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
   const selectedIndex = useRef<number>(0);
 
   //position of current category relative to screen
-  const [currentCategoryPosition, setCurrentCategoryPosition] =
-    useState<{x: number; y: number; w: number}>();
+  const [currentCategoryPosition, setCurrentCategoryPosition] = useState<{
+    x: number;
+    y: number;
+    w: number;
+  }>();
 
+  console.log({currentCategoryPosition});
+
+  /*
   //animation settings
   const coordsEasing = Easing.inOut(Easing.quad);
   const coordsDuration = 400;
+
+  const [isInfoHeaderVisible] = useStoreShallow(store => [
+    !!store.previousStreamData,
+  ]);
 
   //animate current category's y to 35 when minimizing
   const selectedCategoryY = useDerivedValue(() => {
@@ -58,7 +73,12 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
       interpolate(
         minimizationProgress?.value ?? 0,
         [0, 0.1],
-        [0, 35 - currentCategoryPosition.y],
+        [
+          0,
+          35 +
+            (isInfoHeaderVisible ? INFO_HEADER_HEIGHT : 0) -
+            currentCategoryPosition.y,
+        ],
         Extrapolate.CLAMP,
       ),
       {
@@ -92,6 +112,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
       },
     );
   }, [currentCategoryPosition]);
+   */
 
   const categories = useMemo(() => {
     if (mode === 'create-stream') {
@@ -99,7 +120,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
     }
 
     return useStore.getState().categories;
-  }, []);
+  }, [mode]);
 
   const colors = useMemo(() => {
     const colors = [BASE_COLOR];
@@ -113,32 +134,35 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
     }
 
     return colors;
-  }, [categories]);
+  }, [categories, mode]);
 
   const renderItem = useCallback(
-    (category: IStreamCategory, index: number) => {
+    (category: StreamCategory, index: number) => {
       const isSelected =
         useStore.getState().selectedFeedCategory?.id === category.id;
+
+      const onCategorySelect = (p: {x: number; y: number; w: number}) => {
+        setCurrentCategoryPosition(p);
+        selectedIndex.current = index;
+        dispatch(({feed}) => feed.changeFeedCategory(category));
+      };
 
       return (
         <StreamCategoryOption
           key={category.id}
-          selected={false}
-          style={{opacity: isSelected ? 0 : 1}} //Hide selected category since we draw a fake component over it
+          selected={isSelected}
+          //selected={false}
+          //style={{opacity: isSelected ? 0 : 1}} //Hide selected category since we draw a fake component over it
           color={colors[index].toHexString()}
           category={category}
-          onPress={p => {
-            console.log(p);
-            setCurrentCategoryPosition(p);
-            selectedIndex.current = index;
-            useStore.getState().dispatchFeedCategoryChange(category);
-          }}
+          onPress={onCategorySelect}
         />
       );
     },
     [categories, mode, streamCategory],
   );
 
+  /*
   //position fake category, adjust according to scroll offset
   const fakeCategoryStyle = useAnimatedStyle(() => ({
     position: 'absolute',
@@ -148,26 +172,48 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
   }));
 
   //counteract the scroll offset
-  const fakeCategoryWrapper = useAnimatedStyle(() => ({
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    right: 0,
-    bottom: 0,
-    transform: [
-      {
-        translateX: withTiming(
-          scrollOffsetX.value * (minimizationProgress?.value ?? 1),
-          {duration: coordsDuration, easing: coordsEasing},
-        ),
-      },
-    ],
-  }));
+  const fakeCategoryWrapper = useAnimatedStyle(
+    () => ({
+      position: 'absolute',
+      left: streamCategory?.id === 'foru' ? 10 : 0,
+      top: 0,
+      right: 0,
+      bottom: 0,
+      transform: [
+        {
+          translateX: withTiming(
+            scrollOffsetX.value * (minimizationProgress?.value ?? 1),
+            {duration: coordsDuration, easing: coordsEasing},
+          ),
+        },
+      ],
+    }),
+    [streamCategory],
+  );
+   */
 
   //hide scroll view during minimization
-  const scrollViewStyle = useAnimatedStyle(() => ({
-    opacity: 1 - (minimizationProgress?.value ?? 1),
-  }));
+  const scrollViewStyle = useAnimatedStyle(
+    () => ({
+      opacity: withTiming(1 - (minimizationProgress?.value ?? 1), {
+        duration: 300,
+      }),
+      transform: [
+        {
+          translateY: withTiming(
+            interpolate(
+              minimizationProgress?.value ?? 1,
+              [0, 1],
+              [0, -20],
+              Extrapolate.CLAMP,
+            ),
+            {duration: 300, easing: Easing.ease},
+          ),
+        },
+      ],
+    }),
+    [minimizationProgress?.value],
+  );
 
   const handler = useAnimatedScrollHandler(
     {
@@ -185,7 +231,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
   );
 
   return (
-    <View
+    <Animated.View
       {...props}
       onLayout={e => {
         setListWidth(e.nativeEvent.layout.width);
@@ -203,7 +249,7 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
         {categories.map(renderItem)}
       </Animated.ScrollView>
 
-      {streamCategory && (
+      {/*streamCategory && (
         <Animated.View
           key="current_category"
           pointerEvents="none"
@@ -214,7 +260,6 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
               color={colors[selectedIndex.current].toHexString()}
               category={streamCategory}
               onPress={() => {
-                console.log('e');
                 if (minimizationProgress) {
                   minimizationProgress.value = withTiming(0, {
                     duration: 400,
@@ -225,8 +270,8 @@ export const StreamCategoryList: React.FC<StreamCategoryListProps> = props => {
             />
           </Animated.View>
         </Animated.View>
-      )}
-    </View>
+      ) */}
+    </Animated.View>
   );
 };
 

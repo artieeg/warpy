@@ -1,10 +1,10 @@
-import { IAppInviteResponse } from "@warpy/lib";
+import { AppInviteResponse } from "@warpy/lib";
 import { WebSocketConn } from "./connection";
 
 export interface IAppInviteAPI {
   apply: (code: string) => Promise<{ status: string }>;
-  refresh: () => Promise<IAppInviteResponse>;
-  get: (user: string) => Promise<IAppInviteResponse>;
+  refresh: () => Promise<AppInviteResponse>;
+  get: (user: string) => Promise<AppInviteResponse>;
 }
 
 export const AppInviteAPI = (socket: WebSocketConn): IAppInviteAPI => ({

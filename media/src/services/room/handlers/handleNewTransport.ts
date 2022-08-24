@@ -1,16 +1,17 @@
-import { closePeerProducers, createNewPeer } from "@media/models";
+import { createNewPeer } from "@media/models";
 import { SFUService } from "@media/services";
 import { getOptionsFromTransport } from "@media/utils";
 import {
   MessageHandler,
-  ICreateTransport,
-  INewTransportResponse,
+  RequestCreateTransport,
+  ResponseNewTransport,
 } from "@warpy/lib";
+import { WebRtcTransport } from "mediasoup/node/lib/types";
 import { rooms } from "../rooms";
 
 export const handleNewTransport: MessageHandler<
-  ICreateTransport,
-  INewTransportResponse
+  RequestCreateTransport,
+  ResponseNewTransport
 > = async (data, respond) => {
   const { roomId, speaker } = data;
 
@@ -20,21 +21,25 @@ export const handleNewTransport: MessageHandler<
     return;
   }
 
-  const sendTransport = await SFUService.createTransport(
-    "send",
-    room.router,
-    speaker
-  );
+  let sendTransport: WebRtcTransport;
+  let peer = room.peers[speaker];
 
-  const peer = createNewPeer({
-    sendTransport,
-    router: room.router,
-  });
+  if (!peer) {
+    sendTransport = await SFUService.createTransport(
+      "send",
+      room.router,
+      speaker
+    );
 
-  //Close video producer if it exists
-  closePeerProducers(peer, { video: true });
-
-  room.peers[speaker] = peer;
+    peer = room.peers[speaker] = createNewPeer({
+      sendTransport,
+      router: room.router,
+    });
+  } else if (peer.sendTransport) {
+    sendTransport = peer.sendTransport;
+  } else {
+    throw new Error(`peer ${speaker} exists but doesnt have a send transport`);
+  }
 
   respond!({
     routerRtpCapabilities: room.router.rtpCapabilities,
