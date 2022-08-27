@@ -1,8 +1,8 @@
 import {Avatar, SettingsTextEdit, Text} from '@app/components';
 import {ScreenHeader} from '@app/components/ScreenHeader';
-import {useStoreShallow} from '@app/store';
+import {useDispatcher, useStoreShallow} from '@app/store';
 import React, {useMemo} from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
+import {View, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import {User} from '@warpy/lib';
 import {SettingItemButton} from '@app/components/SettingItemButton';
 import {navigation} from '@app/navigation';
@@ -12,6 +12,8 @@ export const MainSettingsScreen = () => {
     store.user as User,
     store.hasActivatedAppInvite,
   ]);
+
+  const dispatch = useDispatcher();
 
   const settings = useMemo(
     () =>
@@ -28,7 +30,10 @@ export const MainSettingsScreen = () => {
       <ScreenHeader />
       <ScrollView>
         <View style={styles.avatarContainer}>
-          <Avatar user={user} size="xxlarge" />
+          <TouchableOpacity
+            onPress={() => dispatch(({modal}) => modal.open('avatar-picker'))}>
+            <Avatar user={user} size="xxlarge" />
+          </TouchableOpacity>
           <Text
             weight="bold"
             size="xxsmall"

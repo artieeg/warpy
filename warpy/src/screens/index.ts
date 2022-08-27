@@ -14,3 +14,4 @@ export * from './MyAwardsDisplay';
 export * from './SendInvite';
 export * from './InviteCodeInput';
 export * from './Search';
+export * from './AvatarPickerScreen';

@@ -48,7 +48,7 @@ export const SignUpAvatar = () => {
         placeholder="search gifs via Tenor"
       />
       <FlatList
-        data={[...gifs, ...gifs, ...gifs, ...gifs]}
+        data={gifs}
         numColumns={2}
         contentContainerStyle={styles.listContent}
         style={styles.list}

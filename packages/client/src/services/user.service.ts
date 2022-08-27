@@ -77,6 +77,16 @@ export class UserService extends Service<UserData> {
     };
   }
 
+  async setAvatar(url: string) {
+    return this.state.update((state) => {
+      if (!state.user) {
+        return;
+      }
+
+      state.user.avatar = url;
+    });
+  }
+
   async *searchUsers(query: string) {
     const { api } = this.state.get();
 
