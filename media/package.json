@@ -28,7 +28,7 @@
     "@warpy/lib": "1.0.0",
     "dotenv": "^10.0.0",
     "jsonwebtoken": "^8.5.1",
-    "mediasoup": "3.9.9",
+    "mediasoup": "3.10.6-rc.1",
     "module-alias": "^2.2.2",
     "nanoid": "^3.1.23",
     "nats": "^2.6.1",
