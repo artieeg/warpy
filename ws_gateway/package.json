@@ -14,14 +14,14 @@
   },
   "dependencies": {
     "@warpy/lib": "1.0.0",
-    "bufferutil": "^4.0.3",
+    "bufferutil": "^4.0.6",
     "cuid": "^2.1.8",
-    "joi": "^17.4.2",
+    "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
     "module-alias": "^2.2.2",
-    "nats": "^2.1.0",
-    "utf-8-validate": "^5.0.5",
-    "ws": "^7.5.2"
+    "nats": "^2.7.1",
+    "utf-8-validate": "^5.0.9",
+    "ws": "^8.8.1"
   },
   "devDependencies": {
     "@types/jest": "^26.0.24",

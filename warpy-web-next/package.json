@@ -9,25 +9,25 @@
     "svgr": "svgr ./assets/svg -d ./icons --typescript --ignore-existing --svgo-config .svgorc.json"
   },
   "dependencies": {
-    "@sendgrid/mail": "^7.6.0",
-    "@typescript-eslint/eslint-plugin": "^5.11.0",
+    "@sendgrid/mail": "^7.7.0",
+    "@typescript-eslint/eslint-plugin": "^5.35.1",
     "@warpy/api": "1.0.0",
     "@warpy/components": "1.0.0",
     "@warpy/lib": "1.0.0",
     "@warpy/store": "1.0.0",
-    "axios": "^0.25.0",
+    "axios": "^0.27.2",
     "email-validator": "^2.0.4",
-    "nats": "^2.4.0",
-    "next": "latest",
+    "nats": "^2.7.1",
+    "next": "12.2.5",
     "next-compose-plugins": "^2.2.1",
     "next-fonts": "^1.5.1",
     "next-transpile-modules": "^9.0.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",
-    "react-native-web": "0.13.14",
+    "react-native-web": "0.18.8",
     "react-share": "^4.4.0",
     "tinycolor2": "^1.4.2",
-    "zustand": "^3.5.7"
+    "zustand": "^4.1.1"
   },
   "devDependencies": {
     "@svgr/cli": "^6.2.0",

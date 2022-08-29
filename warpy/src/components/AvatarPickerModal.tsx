@@ -2,7 +2,7 @@ import React from 'react';
 import {useGifs} from '@app/hooks/useGifs';
 import {useStoreShallow} from '@app/store';
 import {FlatList, StyleSheet} from 'react-native';
-import {useDebounce} from 'use-debounce/lib';
+import {useDebounce} from 'use-debounce';
 import {BaseSlideModal, IBaseModalProps} from './BaseSlideModal';
 import {Input} from './Input';
 import {AvatarOption} from './AvatarOption';
@@ -32,7 +32,8 @@ export const AvatarPickerModal: React.FC<IBaseModalProps> = props => {
       style={styles.modal}
       visible={visible}
       title="pick new avatar"
-      {...props}>
+      {...props}
+    >
       <Input
         onChangeText={text => setSearchQuery(text)}
         style={styles.input}

@@ -9,10 +9,8 @@
     "media-client",
     "backend",
     "clipper",
-    "loadtest",
     "warpy",
     "warpy-web-next",
-    "example_bot",
     "media",
     "ws_gateway"
   ],

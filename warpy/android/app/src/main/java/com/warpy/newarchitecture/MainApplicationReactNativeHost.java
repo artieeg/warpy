@@ -1,4 +1,4 @@
-package com.warpy;
+package com.warpy.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;

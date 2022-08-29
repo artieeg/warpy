@@ -1,7 +1,7 @@
 import {Input, ScreenHeader, StreamFeedView} from '@app/components';
 import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, ActivityIndicator, FlatList} from 'react-native';
-import {useDebounce} from 'use-debounce/lib';
+import {useDebounce} from 'use-debounce';
 import {APIClient} from '@warpy/api';
 import {Text} from '@app/components';
 import {colors} from '../../colors';

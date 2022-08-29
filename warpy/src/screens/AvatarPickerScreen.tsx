@@ -3,7 +3,7 @@ import {AvatarOption} from '@app/components/AvatarOption';
 import {useGifs} from '@app/hooks/useGifs';
 import React, {useState} from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
-import {useDebounce} from 'use-debounce/lib';
+import {useDebounce} from 'use-debounce';
 import {colors} from '../../colors';
 
 export const useAvatarPickerScreenController = () => {
