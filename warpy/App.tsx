@@ -59,12 +59,13 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
-        <Stack.Navigator headerMode="none">
+        <Stack.Navigator>
           {Object.keys(screens).map(name => (
             <Stack.Screen
               key={name}
               options={{
                 cardStyleInterpolator: CardStyleInterpolators.forNoAnimation,
+                headerShown: false,
               }}
               name={name}
               component={(screens as any)[name]}
