@@ -1,4 +1,4 @@
-import {useDispatcher, useStore} from '@app/store';
+import {useDispatcher} from '@app/store';
 import React, {useRef} from 'react';
 import {Animated, StyleSheet, View, ViewProps} from 'react-native';
 import Modal from 'react-native-modal';
@@ -52,14 +52,16 @@ export const BaseSlideModal = (props: IBaseModalProps) => {
       hasBackdrop
       statusBarTranslucent
       style={styles.modalStyle}
-      isVisible={visible}>
+      isVisible={visible}
+    >
       <Animated.View
         style={[
           {transform: [{translateY: translate.current}]},
           styles.wrapper,
           styles.handlerPadding,
           style,
-        ]}>
+        ]}
+      >
         {!disableHideHandler && <View style={styles.handler} />}
         {title && (
           <Text weight="bold" style={[styles.title, styles.horizontalPadding]}>
@@ -72,7 +74,8 @@ export const BaseSlideModal = (props: IBaseModalProps) => {
             weight="bold"
             size="small"
             color="boulder"
-            style={[styles.subtitle, styles.horizontalPadding]}>
+            style={[styles.subtitle, styles.horizontalPadding]}
+          >
             {subtitle}
           </Text>
         )}

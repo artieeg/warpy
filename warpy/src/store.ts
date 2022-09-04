@@ -1,5 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {createNewStore} from '@warpy/store';
+import {
+  createNewStore,
+  useDispatcher as useStoreDispatcher,
+} from '@warpy/store';
 import {Store} from '@warpy/client';
 import {useCallback} from 'react';
 import {mediaDevices} from 'react-native-webrtc';
@@ -28,5 +31,6 @@ export function useStoreShallow<U>(selector: StateSelector<Store, U>) {
 }
 
 export function useDispatcher() {
-  return useStore(state => state.dispatch);
+  return useStoreDispatcher();
+  //return useStore(state => state.dispatch);
 }
