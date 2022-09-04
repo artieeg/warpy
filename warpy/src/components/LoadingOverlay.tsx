@@ -144,7 +144,8 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
     <Animated.View pointerEvents="box-none" style={style}>
       <View>
         <View
-          style={{alignItems: 'center', justifyContent: 'center', zIndex: 10}}>
+          style={{alignItems: 'center', justifyContent: 'center', zIndex: 10}}
+        >
           {(mode === 'splash' || mode === 'signup') && (
             <Text color="white" weight="extraBold" size="large">
               warpy

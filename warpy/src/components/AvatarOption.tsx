@@ -13,7 +13,6 @@ export const AvatarOption = ({
   const gifHeight = (useWindowDimensions().width - 80) / 1.2;
   const gifWidth = (useWindowDimensions().width - 50) / 2;
 
-  //this render has a cursed fix for the border radius on android
   //https://github.com/DylanVann/react-native-fast-image/issues/548
   return (
     <TouchableOpacity

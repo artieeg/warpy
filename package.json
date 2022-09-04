@@ -9,10 +9,8 @@
     "media-client",
     "backend",
     "clipper",
-    "loadtest",
     "warpy",
     "warpy-web-next",
-    "example_bot",
     "media",
     "ws_gateway"
   ],
@@ -33,16 +31,7 @@
     "@warpy/store": "./packages/shared-store"
   },
   "dependencies": {
-    "cross-env": "^7.0.3",
-    "express": "^4.17.1",
-    "module-alias": "^2.2.2",
-    "nats": "^2.0.8",
-    "typescript": "^4.3.5",
-    "yup": "^0.32.9"
+    "cross-env": "^7.0.3"
   },
-  "devDependencies": {
-    "@types/express": "^4.17.12",
-    "nodemon": "^2.0.9",
-    "ts-node": "^10.0.0"
-  }
+  "devDependencies": { }
 }

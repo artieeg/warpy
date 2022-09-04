@@ -4,12 +4,12 @@
   "main": "index.ts",
   "license": "MIT",
   "dependencies": {
-    "@types/node": "^16.3.3",
+    "@types/node": "^18.7.13",
     "cross-env": "^7.0.3",
-    "react": "17.0.1",
-    "react-dom": "17.0.1",
-    "react-native": "0.64.2",
-    "react-native-web": "0.13.14",
+    "react": "18.0.0",
+    "react-dom": "18.0.0",
+    "react-native": "0.69.5",
+    "react-native-web": "0.18.8",
     "tinycolor2": "^1.4.2"
   }
 }

@@ -4,7 +4,7 @@ import {View, StyleSheet, TextInput} from 'react-native';
 import {User, UserUpdateResponse} from '@warpy/lib';
 import {useDispatcher, useStore} from '@app/store';
 import shallow from 'zustand/shallow';
-import {useDebounce} from 'use-debounce/lib';
+import {useDebounce} from 'use-debounce';
 import FadeInOut from 'react-native-fade-in-out';
 import useAsyncEffect from 'use-async-effect';
 import {Icon} from './Icon';

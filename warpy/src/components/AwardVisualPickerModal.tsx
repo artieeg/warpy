@@ -13,7 +13,7 @@ import {useQuery} from 'react-query';
 import {TextButton} from '@warpy/components';
 import {BaseSlideModal} from './BaseSlideModal';
 import {Input} from './Input';
-import {useDebounce} from 'use-debounce/lib';
+import {useDebounce} from 'use-debounce';
 import {colors} from '../../colors';
 import {UserBase} from '@warpy/lib';
 
@@ -75,7 +75,8 @@ export const AwardVisualPickerModal = () => {
       return (
         <TouchableOpacity
           onPress={() => onSelectVisual(item)}
-          style={styles.awardWrapper}>
+          style={styles.awardWrapper}
+        >
           <FastImage
             source={{uri: item}}
             style={[awardVisualStyle, picked === item && styles.picked]}
@@ -107,7 +108,8 @@ export const AwardVisualPickerModal = () => {
       onClose={onClose}
       visible={visible}
       title="award visual"
-      subtitle={`for ${user?.username}`}>
+      subtitle={`for ${user?.username}`}
+    >
       <Input
         onChangeText={setSearch}
         placeholder="search gifs via tenor"

@@ -6,7 +6,7 @@ import {useKickHandler} from '@app/hooks';
 import {AwardDisplay} from './AwardDisplay';
 import {Stream} from '@warpy/lib';
 import {useDispatcher, useStore} from '@app/store';
-import {useDebounce} from 'use-debounce/lib';
+import {useDebounce} from 'use-debounce';
 import {LoadingOverlay} from './LoadingOverlay';
 
 interface IRemoteStreamProps {

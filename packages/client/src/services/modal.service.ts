@@ -14,6 +14,7 @@ export type OpenModalParams = {
 
 export type Modal =
   | "award"
+  | "avatar-picker"
   | "host-reassign"
   | "award-message"
   | "award-visual"

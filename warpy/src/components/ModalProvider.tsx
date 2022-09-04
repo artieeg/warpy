@@ -13,6 +13,7 @@ import {AwardRecipentPicker} from './AwardRecipentPicker';
 import {AwardVisualPickerModal} from './AwardVisualPickerModal';
 import {AwardMessageInputModal} from './AwardMessageInputModal';
 import {HostReassignModal} from './HostReassignModal';
+import {AvatarPickerModal} from './AvatarPickerModal';
 
 export const ModalProvider = () => {
   const [modal, isApiConnected] = useStoreShallow(state => [
@@ -37,6 +38,7 @@ export const ModalProvider = () => {
       <AwardMessageInputModal />
       <HostReassignModal />
       <InviteModal />
+      <AvatarPickerModal />
 
       <ParticipantsModal
         onHide={() => dispatch(({modal}) => modal.close())}

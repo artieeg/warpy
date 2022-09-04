@@ -60,6 +60,7 @@ export const ScreenHeader: React.FC<{
       UserListScreen: userListScreenTitles[userListScreenMode],
       SendInvite: 'invite people',
       InviteCodeInput: 'invite',
+      AvatarPickerScreen: 'pick avatar',
     };
 
     return titles[route.name as keyof typeof titles];

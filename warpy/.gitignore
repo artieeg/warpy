@@ -21,6 +21,8 @@ DerivedData
 *.ipa
 *.xcuserstate
 
+ios/.xcode.env.local
+
 # Android/IntelliJ
 #
 build/
@@ -28,6 +30,7 @@ build/
 .gradle
 local.properties
 *.iml
+*.hprof
 
 # node.js
 #
@@ -51,6 +54,7 @@ buck-out/
 */fastlane/report.xml
 */fastlane/Preview.html
 */fastlane/screenshots
+*/fastlane/test_output
 
 # Bundle artifact
 *.jsbundle
