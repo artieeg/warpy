@@ -1,9 +1,9 @@
 import create, { UseStore } from "zustand";
 import { AppActionRunner } from "./AppActionRunner";
-import { createDispatcher } from "./dispatch";
 import { Store, container } from "@warpy/client";
 import { createAPISlice } from "./APISlice";
 import { ZustandStore } from "./ZustandStore";
+import { AppServices } from "./types";
 
 type StoreConfig = {
   data?: Partial<Store>;
@@ -31,13 +31,16 @@ export const createNewStore = (config: StoreConfig) => {
       ...config.data,
       ...initialState,
       ...createAPISlice(set, get),
-      ...createDispatcher(runner, runner.getServices()),
       set,
       get,
     };
   });
 
-  runner.connectServicesToStore(state as any);
-
   return state;
 };
+
+export function useDispatcher() {
+  return async (action: (services: AppServices) => any) => {
+    await action(runner.getServices());
+  };
+}

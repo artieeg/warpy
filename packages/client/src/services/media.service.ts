@@ -4,10 +4,8 @@ import { Roles, MediaKind } from "@warpy/lib";
 import { MediaClient } from "@warpy/media";
 import { container } from "../container";
 import { Service } from "../Service";
-import { StateUpdate, MediaStreamMap } from "../types";
+import { MediaStreamMap } from "../types";
 import { Device, detectDevice } from "mediasoup-client";
-import { AppState } from "../AppState";
-import { Store } from "../Store";
 
 export interface MediaData {
   recvDevice: Device;
@@ -37,10 +35,6 @@ export interface MediaData {
 }
 
 export class MediaService extends Service<MediaData> {
-  constructor(state: Store | AppState) {
-    super(state);
-  }
-
   getInitialState() {
     return {
       recvDevice: new Device({ handlerName: detectDevice() }),
@@ -105,7 +99,7 @@ export class MediaService extends Service<MediaData> {
         (ext: { uri: string }) => ext.uri !== "urn:3gpp:video-orientation"
       );
 
-    await this.state.get().sendDevice.load({ routerRtpCapabilities });
+    await this.get().sendDevice.load({ routerRtpCapabilities });
   }
 
   /**
@@ -113,9 +107,9 @@ export class MediaService extends Service<MediaData> {
    * If it doesn't exist, creates a new one
    * */
   private async getSendTransport(sendTransportOptions: any) {
-    const { mediaClient, stream, sendDevice } = this.state.get();
+    const { mediaClient, stream, sendDevice } = this.get();
 
-    let sendTransport = this.state.get().sendTransport;
+    let sendTransport = this.get().sendTransport;
 
     if (!sendTransport) {
       sendTransport = await mediaClient!.createTransport({
@@ -128,7 +122,7 @@ export class MediaService extends Service<MediaData> {
         isProducer: true,
       });
 
-      this.state.update({ sendTransport });
+      this.set({ sendTransport });
     }
 
     return sendTransport;
@@ -145,7 +139,7 @@ export class MediaService extends Service<MediaData> {
     streamMediaImmediately: boolean;
     sendMediaParams: any;
   }) {
-    const { mediaClient, sendDevice } = this.state.get();
+    const { mediaClient, sendDevice } = this.get();
 
     if (!mediaClient) {
       throw new Error("media client is null");
@@ -162,14 +156,14 @@ export class MediaService extends Service<MediaData> {
 
     const sendTransport = await this.getSendTransport(sendTransportOptions);
 
-    let media = this.state.get()[kind];
+    let media = this.get()[kind];
 
     if (!media) {
       await this.requestMediaStream(kind, {
         enabled: !!streamMediaImmediately,
       });
 
-      media = this.state.get()[kind];
+      media = this.get()[kind];
     }
 
     const producer = await mediaClient.sendMediaStream(
@@ -178,20 +172,20 @@ export class MediaService extends Service<MediaData> {
       sendTransport as Transport
     );
 
-    return this.state.update({
+    return this.set({
       [kind]: {
-        ...this.state.get()[kind],
+        ...this.get()[kind],
         producer,
       },
     });
   }
 
   switchCamera() {
-    (this.state.get().video?.track as any)._switchCamera();
+    (this.get().video?.track as any)._switchCamera();
   }
 
   async toggleVideo() {
-    const { api, stream, video, videoEnabled } = this.state.get();
+    const { api, stream, video, videoEnabled } = this.get();
 
     if (stream) {
       await api.stream.toggleMedia({ videoEnabled: !videoEnabled });
@@ -201,13 +195,13 @@ export class MediaService extends Service<MediaData> {
       .getVideoTracks()
       .forEach((video: any) => (video.enabled = !videoEnabled));
 
-    return this.state.update({
+    return this.set({
       videoEnabled: !videoEnabled,
     });
   }
 
   async toggleAudio() {
-    const { api, stream, audio, audioEnabled } = this.state.get();
+    const { api, stream, audio, audioEnabled } = this.get();
 
     if (stream) {
       await api.stream.toggleMedia({ audioEnabled });
@@ -217,7 +211,7 @@ export class MediaService extends Service<MediaData> {
       .getAudioTracks()
       .forEach((audio: any) => (audio.enabled = !audioEnabled));
 
-    return this.state.update({
+    return this.set({
       audioEnabled: !audioEnabled,
     });
   }
@@ -226,7 +220,7 @@ export class MediaService extends Service<MediaData> {
     user: string,
     { video, audio }: { video?: boolean; audio?: boolean }
   ) {
-    return this.state.update((state) => {
+    return this.set((state) => {
       if (video !== undefined && state.videoStreams[user]) {
         state.videoStreams[user] = {
           ...state.videoStreams[user],
@@ -252,7 +246,7 @@ export class MediaService extends Service<MediaData> {
     consumerParameters: any;
     startConsumingImmediately: boolean;
   }) {
-    const { mediaClient, recvTransport } = this.state.get();
+    const { mediaClient, recvTransport } = this.get();
 
     if (!mediaClient || !recvTransport) {
       throw new Error("Not ready to receive media");
@@ -268,9 +262,9 @@ export class MediaService extends Service<MediaData> {
 
     const key = consumer.kind === "audio" ? "audioStreams" : "videoStreams";
 
-    return this.state.update({
+    return this.set({
       [key]: {
-        ...this.state.get()[key],
+        ...this.get()[key],
         [user]: {
           consumer,
           stream,
@@ -290,7 +284,7 @@ export class MediaService extends Service<MediaData> {
     stream: string;
     recvMediaParams: any;
   }) {
-    const { api, recvDevice, sendDevice } = this.state.get();
+    const { api, recvDevice, sendDevice } = this.get();
 
     if (!recvDevice.loaded) {
       await recvDevice.load({
@@ -315,7 +309,7 @@ export class MediaService extends Service<MediaData> {
       isProducer: false,
     });
 
-    return this.state.update({
+    return this.set({
       mediaClient,
       recvDevice,
       recvMediaParams,
@@ -333,14 +327,14 @@ export class MediaService extends Service<MediaData> {
     mediaPermissionsToken: string;
     recvMediaParams: any;
     streamers: Participant[];
-  }): Promise<StateUpdate> {
+  }) {
     await this.initMediaConsumer({
       mediaPermissionsToken,
       stream,
       recvMediaParams,
     });
 
-    const { mediaClient, recvTransport } = this.state.get();
+    const { mediaClient, recvTransport } = this.get();
 
     if (!mediaClient || !recvTransport) {
       throw new Error("MediaClient or RecvTransport not initialized");
@@ -388,18 +382,13 @@ export class MediaService extends Service<MediaData> {
 
     console.log("video streqms", videoStreams);
 
-    this.state.update({
-      audioStreams: { ...this.state.get().audioStreams, ...audioStreams },
-      videoStreams: { ...this.state.get().videoStreams, ...videoStreams },
+    this.set({
+      audioStreams: { ...this.get().audioStreams, ...audioStreams },
+      videoStreams: { ...this.get().videoStreams, ...videoStreams },
     });
-
-    return this.state.getStateDiff();
   }
 
-  async requestMediaStream(
-    kind: MediaKind,
-    params?: { enabled?: boolean }
-  ): Promise<StateUpdate> {
+  async requestMediaStream(kind: MediaKind, params?: { enabled?: boolean }) {
     const videoContstraints: any = {
       facingMode: "user",
       mandatory: {
@@ -431,7 +420,7 @@ export class MediaService extends Service<MediaData> {
     }
 
     if (kind === "video") {
-      return this.state.update({
+      return this.set({
         videoEnabled: !!params?.enabled,
         video: {
           stream: mediaStream,
@@ -439,7 +428,7 @@ export class MediaService extends Service<MediaData> {
         },
       });
     } else {
-      return this.state.update({
+      return this.set({
         audioEnabled: !!params?.enabled,
         audio: {
           stream: mediaStream,
@@ -450,31 +439,27 @@ export class MediaService extends Service<MediaData> {
   }
 
   async close() {
-    const { audio, video } = this.state.get();
+    const { audio, video } = this.get();
 
     //TODO: track.stop / track.release?
     audio?.stream.release();
     video?.stream.release();
 
-    this.state.update({
+    this.set({
       audio: undefined,
       video: undefined,
       audioEnabled: false,
       videoEnabled: false,
     });
-
-    return this.state.getStateDiff();
   }
 
   closeProducer(...args: MediaKind[]) {
     for (const kind in args) {
-      (this.state.get() as any)[kind]?.producer?.close();
+      (this.get() as any)[kind]?.producer?.close();
 
-      this.state.update({
+      this.set({
         [kind]: undefined,
       });
     }
-
-    return this.state.getStateDiff();
   }
 }

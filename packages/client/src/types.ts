@@ -1,8 +1,6 @@
-import { IStore } from "../useStore";
 import { Consumer } from "mediasoup-client/lib/types";
+import { Store } from "./Store";
 
-export type StateUpdate = Partial<IStore>;
-export type StreamedStateUpdate = AsyncGenerator<StateUpdate>;
 export type MediaStreamMap = Record<
   string,
   {
@@ -11,3 +9,9 @@ export type MediaStreamMap = Record<
     enabled: boolean;
   }
 >;
+
+export type StateSetter = (
+  state: Partial<Store> | ((draft: Store) => void)
+) => any;
+
+export type StateGetter = () => Store;

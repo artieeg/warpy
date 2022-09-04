@@ -24,18 +24,18 @@ export class FeedService extends Service<FeedData> {
 
   async *fetchFeedPage(params?: { initial?: boolean; refresh?: boolean }) {
     if (params?.refresh) {
-      this.state.update({
+      this.set({
         latestFeedPage: 0,
       });
     }
 
-    const { latestFeedPage, api, selectedFeedCategory } = this.state.get();
+    const { latestFeedPage, api, selectedFeedCategory } = this.get();
 
     if (!selectedFeedCategory) {
       throw new Error("Feed category is not selected");
     }
 
-    yield this.state.update({
+    yield this.set({
       isFeedLoading: true,
     });
 
@@ -44,8 +44,7 @@ export class FeedService extends Service<FeedData> {
       category: selectedFeedCategory.id,
     });
 
-    yield this.state.update({
-      //feed: [...this.state.get().feed, ...feed],
+    yield this.set({
       feed,
       isFeedLoading: false,
       initialFeedFetchDone: params?.initial === true,
@@ -55,11 +54,11 @@ export class FeedService extends Service<FeedData> {
   async changeFeedCategory(category: StreamCategory) {
     // select "for u" category when deselecting current category
     const selectedFeedCategory =
-      this.state.get().selectedFeedCategory?.id === category.id
-        ? this.state.get().categories[0]
+      this.get().selectedFeedCategory?.id === category.id
+        ? this.get().categories[0]
         : category;
 
-    return this.state.update({
+    return this.set({
       selectedFeedCategory,
       feed: [],
       latestFeedPage: 0,

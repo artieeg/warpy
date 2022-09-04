@@ -1,7 +1,5 @@
-import { GetState, PartialState, SetState, UseStore } from "zustand";
+import { GetState, SetState } from "zustand";
 import {
-  StateUpdate,
-  StreamedStateUpdate,
   ChatService,
   StreamService,
   MediaService,
@@ -15,6 +13,8 @@ import {
   AwardService,
   ApiService,
   Store,
+  StateSetter,
+  StateGetter,
 } from "@warpy/client";
 
 /**
@@ -37,19 +37,22 @@ export class AppActionRunner {
   constructor(private set: SetState<Store>, private get: GetState<Store>) {}
 
   private _initServices() {
+    const setter: StateSetter = (state) => this.set(state as any);
+    const getter: StateGetter = () => this.get();
+
     return {
-      api: new ApiService(this.get()),
-      chat: new ChatService(this.get()),
-      stream: new StreamService(this.get()),
-      media: new MediaService(this.get()),
-      feed: new FeedService(this.get()),
-      app_invite: new AppInviteService(this.get()),
-      invite: new InviteService(this.get()),
-      modal: new ModalService(this.get()),
-      notification: new NotificationService(this.get()),
-      toast: new ToastService(this.get()),
-      user: new UserService(this.get()),
-      awards: new AwardService(this.get()),
+      api: new ApiService(setter, getter),
+      chat: new ChatService(setter, getter),
+      stream: new StreamService(setter, getter),
+      media: new MediaService(setter, getter),
+      feed: new FeedService(setter, getter),
+      app_invite: new AppInviteService(setter, getter),
+      invite: new InviteService(setter, getter),
+      modal: new ModalService(setter, getter),
+      notification: new NotificationService(setter, getter),
+      toast: new ToastService(setter, getter),
+      user: new UserService(setter, getter),
+      awards: new AwardService(setter, getter),
     };
   }
 
@@ -74,51 +77,5 @@ export class AppActionRunner {
     });
 
     return initialAppState;
-  }
-
-  private syncState(state: Store) {
-    for (const key in this.services) {
-      (this.services as any)[key].setState(state);
-    }
-  }
-
-  connectServicesToStore(state: UseStore<Store>) {
-    this.syncState(state.getState());
-  }
-
-  private async merge(stateUpdate: StateUpdate | Promise<StateUpdate>) {
-    const update = await stateUpdate;
-
-    return update as PartialState<Store>;
-  }
-
-  /**
-   * Apply a singular state update,
-   * sync the update with other services
-   * */
-  async mergeStateUpdate(update: StateUpdate | Promise<StateUpdate>) {
-    const r = await this.merge(update);
-
-    this.set(r);
-    this.syncState(this.get());
-  }
-
-  /**
-   * Apply multiple state updates received from AsyncGenerator,
-   * sync the final state with other services
-   * */
-  async mergeStreamedUpdates(update: StreamedStateUpdate) {
-    let { done, value } = await update.next();
-
-    while (!done) {
-      this.set(await this.merge(value));
-
-      const result = await update.next();
-      done = result.done;
-      value = result.value;
-    }
-
-    this.set(await this.merge(value));
-    this.syncState(this.get());
   }
 }

@@ -6,11 +6,10 @@ import {
   User,
   UserBase,
 } from "@warpy/lib";
-import { AppState } from "../AppState";
 import { MediaService } from "./media.service";
 import { Service } from "../Service";
 import { ToastService } from "./toast.service";
-import { Store } from "../Store";
+import { StateSetter, StateGetter } from "../types";
 
 type UserList = {
   page: number;
@@ -40,11 +39,10 @@ export class UserService extends Service<UserData> {
   private toast: ToastService;
   private media: MediaService;
 
-  constructor(state: Store | AppState) {
-    super(state);
-
-    this.toast = new ToastService(this.state);
-    this.media = new MediaService(this.state);
+  constructor(set: StateSetter, get: StateGetter) {
+    super(set, get);
+    this.toast = new ToastService(set, get);
+    this.media = new MediaService(set, get);
   }
 
   getInitialState() {
@@ -78,7 +76,7 @@ export class UserService extends Service<UserData> {
   }
 
   async setAvatar(url: string) {
-    return this.state.update((state) => {
+    return this.set((state) => {
       if (!state.user) {
         return;
       }
@@ -88,22 +86,22 @@ export class UserService extends Service<UserData> {
   }
 
   async *searchUsers(query: string) {
-    const { api } = this.state.get();
+    const { api } = this.get();
 
-    yield this.state.update({
+    yield this.set({
       isSearchingUsers: true,
     });
 
     const { users } = await api.user.search(query);
 
-    yield this.state.update((state) => {
+    yield this.set((state) => {
       state.userSearchResult = [...state.userSearchResult, ...users];
       state.isSearchingUsers = false;
     });
   }
 
   resetUserSearch() {
-    return this.state.update({
+    return this.set({
       isSearchingUsers: false,
       userSearchResult: [],
     });
@@ -112,10 +110,10 @@ export class UserService extends Service<UserData> {
   async fetchUserList(list: UserList) {
     const key: string = ("list_" + list) as any;
 
-    const { api, [key]: listData } = this.state.get() as any;
+    const { api, [key]: listData } = this.get() as any;
     const { users } = await api.user.fetchUserList(list, listData.page);
 
-    return this.state.update({
+    return this.set({
       [key]: {
         page: listData.page + 1,
         //list: [...listData.list, ...users],
@@ -125,28 +123,26 @@ export class UserService extends Service<UserData> {
   }
 
   async follow(newFollowedUser: string) {
-    const { api } = this.state.get();
+    const { api } = this.get();
 
     const { followedUser } = await api.user.follow(newFollowedUser);
 
-    return this.state.update({
-      following: [...this.state.get().following, followedUser],
+    return this.set({
+      following: [...this.get().following, followedUser],
     });
   }
 
   async unfollow(userToUnfollow: string) {
-    const { api } = this.state.get();
+    const { api } = this.get();
     await api.user.unfollow(userToUnfollow);
 
-    return this.state.update({
-      following: this.state
-        .get()
-        .following.filter((id) => id !== userToUnfollow),
+    return this.set({
+      following: this.get().following.filter((id) => id !== userToUnfollow),
     });
   }
 
   addFriendFeedUser(p: Participant, stream: Stream) {
-    return this.state.update((state) => {
+    return this.set((state) => {
       state.friendFeed = [
         ...state.friendFeed,
         { user: { ...p, online: true }, stream: stream },
@@ -155,23 +151,23 @@ export class UserService extends Service<UserData> {
   }
 
   delFriendFeedUser(user: string) {
-    return this.state.update((state) => {
+    return this.set((state) => {
       state.friendFeed = state.friendFeed.filter((i) => i.user.id !== user);
     });
   }
 
   async loadUserData(access_token: string) {
-    const { api } = this.state.get();
+    const { api } = this.get();
 
     const { user, friendFeed, following, hasActivatedAppInvite, categories } =
       await api.user.auth(access_token);
 
     if (!user) {
-      return this.state.update({
+      return this.set({
         exists: false,
       });
     } else {
-      return this.state.update({
+      return this.set({
         friendFeed,
         user,
         categories,
@@ -189,7 +185,7 @@ export class UserService extends Service<UserData> {
   }
 
   requestStreamPermission() {
-    const { api, isRaisingHand } = this.state.get();
+    const { api, isRaisingHand } = this.get();
 
     if (isRaisingHand) {
       api.stream.lowerHand();
@@ -197,7 +193,7 @@ export class UserService extends Service<UserData> {
       api.stream.raiseHand();
     }
 
-    return this.state.update({
+    return this.set({
       isRaisingHand: !isRaisingHand,
     });
   }
@@ -211,9 +207,9 @@ export class UserService extends Service<UserData> {
     mediaPermissionToken: string;
     sendMediaParams: any;
   }) {
-    const { role: oldRole } = this.state.get();
+    const { role: oldRole } = this.get();
 
-    this.state.update({
+    this.set({
       role,
       isRaisingHand: false,
       sendMediaParams,
@@ -228,7 +224,7 @@ export class UserService extends Service<UserData> {
     }
 
     if (oldRole === "streamer" && role === "speaker") {
-      this.state.update({ videoEnabled: false });
+      this.set({ videoEnabled: false });
     } else if (role !== "viewer") {
       const kind = role === "speaker" ? "audio" : "video";
       await this.media.stream({
@@ -238,13 +234,13 @@ export class UserService extends Service<UserData> {
         kind,
       });
     } else {
-      this.state.update({
+      this.set({
         videoEnabled: false,
         audioEnabled: false,
       });
     }
 
-    return this.state.update({
+    return this.set({
       role,
       isRaisingHand: false,
       sendMediaParams,

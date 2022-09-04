@@ -1,6 +1,4 @@
 import { ChatMessage } from "@warpy/lib";
-import { Store } from "../Store";
-import { AppState } from "../AppState";
 import { Service } from "../Service";
 
 export interface ChatData {
@@ -9,10 +7,6 @@ export interface ChatData {
 }
 
 export class ChatService extends Service<ChatData> {
-  constructor(state: Store | AppState) {
-    super(state);
-  }
-
   getInitialState() {
     return {
       messageInputValue: "",
@@ -21,33 +15,33 @@ export class ChatService extends Service<ChatData> {
   }
 
   setMessageInput(messageInputValue: string) {
-    return this.state.update({
+    return this.set({
       messageInputValue,
     });
   }
 
   async send() {
-    const { api, messageInputValue, messages } = this.state.get();
+    const { api, messageInputValue, messages } = this.get();
 
     const { message: newChatMessage } = await api.stream.sendChatMessage(
       messageInputValue
     );
 
-    return this.state.update({
+    return this.set({
       messages: [newChatMessage, ...messages],
       messageInputValue: "",
     });
   }
 
   async clear() {
-    return this.state.update({
+    return this.set({
       messages: [],
     });
   }
 
   async prependNewMessages(messages: ChatMessage[]) {
-    return this.state.update({
-      messages: [...messages, ...this.state.get().messages],
+    return this.set((state) => {
+      state.messages = [...messages, ...state.messages];
     });
   }
 }
