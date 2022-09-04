@@ -50,8 +50,7 @@
     "use-async-effect": "^2.2.6",
     "use-async-memo": "^1.2.4",
     "use-debounce": "^8.0.4",
-    "zustand": "^4.1.1",
-    "zustand-persist": "^0.4.0"
+    "zustand": "3.5.7"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

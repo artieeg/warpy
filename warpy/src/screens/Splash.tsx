@@ -5,8 +5,7 @@ import React, {useEffect, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 
 export const Splash = () => {
-  //const action = useAppSetUp();
-  const action = undefined;
+  const action = useAppSetUp();
 
   const [enabled, setEnabled] = useState(true);
 

@@ -35,7 +35,7 @@
     "bad-words": "^3.0.4",
     "cuid": "^2.1.8",
     "email-validator": "^2.0.4",
-    "ioredis": "^5.2.3",
+    "ioredis": "4.28.5",
     "jsonwebtoken": "^8.5.1",
     "nats": "^2.7.1",
     "nestjs-real-ip": "^2.2.0",
