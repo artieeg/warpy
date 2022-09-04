@@ -1,7 +1,5 @@
-import { AppState } from "../AppState";
 import { UserBase, Bot, Invite } from "@warpy/lib";
 import { Service } from "../Service";
-import { Store } from "../Store";
 
 export type OpenModalParams = {
   selectedUser?: UserBase;
@@ -39,10 +37,6 @@ export interface ModalData {
 }
 
 export class ModalService extends Service<ModalData> {
-  constructor(state: AppState | Store) {
-    super(state);
-  }
-
   getInitialState() {
     return {
       modalCurrent: null,
@@ -56,10 +50,10 @@ export class ModalService extends Service<ModalData> {
   }
 
   open(modal: Modal, params?: OpenModalParams) {
-    return this.state.update({
+    return this.set({
       unseenRaisedHands:
-        modal === "participants" ? 0 : this.state.get().unseenRaisedHands,
-      modalCurrent: modal === this.state.get().modalCurrent ? null : modal,
+        modal === "participants" ? 0 : this.get().unseenRaisedHands,
+      modalCurrent: modal === this.get().modalCurrent ? null : modal,
       modalSelectedUser: params?.selectedUser || null,
       modalBotConfirmData: params?.botConfirmData || null,
       modalBotConfirmId: params?.botConfirmId || null,
@@ -70,7 +64,7 @@ export class ModalService extends Service<ModalData> {
   }
 
   close() {
-    return this.state.update({
+    return this.set({
       modalCurrent: null,
       modalSelectedUser: null,
       modalBotConfirmId: null,

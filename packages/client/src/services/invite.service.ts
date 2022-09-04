@@ -1,9 +1,8 @@
 import { InviteStates, InviteSent, User } from "@warpy/lib";
-import { Store } from "../Store";
-import { AppState } from "../AppState";
 import { ModalService } from "./modal.service";
 import { Service } from "../Service";
 import { container } from "../container";
+import { StateSetter, StateGetter } from "../types";
 
 export interface InviteData {
   pendingInviteUserIds: string[];
@@ -14,10 +13,10 @@ export interface InviteData {
 export class InviteService extends Service<InviteData> {
   private modal: ModalService;
 
-  constructor(state: Store | AppState) {
-    super(state);
+  constructor(set: StateSetter, get: StateGetter) {
+    super(set, get);
 
-    this.modal = new ModalService(state);
+    this.modal = new ModalService(set, get);
   }
 
   getInitialState() {
@@ -29,15 +28,15 @@ export class InviteService extends Service<InviteData> {
   }
 
   async updateStateOfSentInvite(invite: string, state: InviteStates) {
-    const sentInviteData = this.state.get().sentInvites[invite];
+    const sentInviteData = this.get().sentInvites[invite];
 
     if (!sentInviteData) {
       throw new Error("Invite does not exist");
     }
 
-    return this.state.update({
+    return this.set({
       sentInvites: {
-        ...this.state.get().sentInvites,
+        ...this.get().sentInvites,
         [invite]: {
           ...sentInviteData,
           state,
@@ -55,7 +54,7 @@ export class InviteService extends Service<InviteData> {
   }
 
   private applyInviteAction(action: "accept" | "decline") {
-    const { api, modalInvite } = this.state.get();
+    const { api, modalInvite } = this.get();
 
     if (!modalInvite) return;
 
@@ -72,7 +71,7 @@ export class InviteService extends Service<InviteData> {
   }
 
   async sendPendingInvites() {
-    const { pendingInviteUserIds, api, stream } = this.state.get();
+    const { pendingInviteUserIds, api, stream } = this.get();
 
     const promises = pendingInviteUserIds.map((userToInvite: any) =>
       api.stream.invite(userToInvite, stream)
@@ -82,7 +81,7 @@ export class InviteService extends Service<InviteData> {
 
     this.modal.close();
 
-    return this.state.update({
+    return this.set({
       pendingInviteUserIds: [],
       sentInvites: responses.reduce((result, response) => {
         if (response.invite) {
@@ -98,7 +97,7 @@ export class InviteService extends Service<InviteData> {
   }
 
   async cancelInvite(user: string) {
-    const { api, sentInvites } = this.state.get();
+    const { api, sentInvites } = this.get();
 
     const sentInviteId = sentInvites[user]?.id;
 
@@ -106,7 +105,7 @@ export class InviteService extends Service<InviteData> {
       await api.stream.cancelInvite(sentInviteId);
     }
 
-    return this.state.update((state) => {
+    return this.set((state) => {
       state.pendingInviteUserIds = state.pendingInviteUserIds.filter(
         (id) => id !== user
       );
@@ -116,25 +115,23 @@ export class InviteService extends Service<InviteData> {
   }
 
   async addPendingInvite(user: string) {
-    return this.state.update({
-      pendingInviteUserIds: [...this.state.get().pendingInviteUserIds, user],
+    return this.set({
+      pendingInviteUserIds: [...this.get().pendingInviteUserIds, user],
     });
   }
 
   async reset() {
-    this.state.update({
+    this.set({
       pendingInviteUserIds: [],
       sentInvites: {},
     });
-
-    return this.state.getStateDiff();
   }
 
   async fetchInviteSuggestions(stream: string) {
-    const { api } = this.state.get();
+    const { api } = this.get();
     const { suggestions } = await api.stream.getInviteSuggestions(stream);
 
-    return this.state.update({
+    return this.set({
       inviteSuggestions: suggestions,
     });
   }

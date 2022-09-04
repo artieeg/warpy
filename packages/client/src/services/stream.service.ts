@@ -1,11 +1,10 @@
-import { Store } from "../Store";
-import { AppState } from "../AppState";
 import { Service } from "../Service";
 import { ModalService } from "./modal.service";
 import { MediaService } from "./media.service";
 import { Participant, reactionCodes, StreamCategory } from "@warpy/lib";
 import { arrayToMap } from "../utils";
 import { InviteService } from "./invite.service";
+import { StateSetter, StateGetter } from "../types";
 
 export interface StreamData {
   stream: string | null;
@@ -44,12 +43,12 @@ export class StreamService extends Service<StreamData> {
   private media: MediaService;
   private invite: InviteService;
 
-  constructor(state: Store | AppState) {
-    super(state);
+  constructor(set: StateSetter, get: StateGetter) {
+    super(set, get);
 
-    this.modal = new ModalService(this.state);
-    this.media = new MediaService(this.state);
-    this.invite = new InviteService(this.state);
+    this.modal = new ModalService(set, get);
+    this.media = new MediaService(set, get);
+    this.invite = new InviteService(set, get);
   }
 
   getInitialState() {
@@ -73,17 +72,17 @@ export class StreamService extends Service<StreamData> {
   }
 
   changeReaction(reaction: string) {
-    return this.state.update({
+    return this.set({
       reaction,
     });
   }
 
   async *fetchStreamViewers() {
-    yield this.state.update({
+    yield this.set({
       isFetchingViewers: true,
     });
 
-    const { api, latestViewersPage: page, stream } = this.state.get();
+    const { api, latestViewersPage: page, stream } = this.get();
 
     if (!stream) {
       return;
@@ -91,7 +90,7 @@ export class StreamService extends Service<StreamData> {
 
     const { viewers } = await api.stream.getViewers(stream, page + 1);
 
-    yield this.state.update((state) => {
+    yield this.set((state) => {
       state.isFetchingViewers = false;
       for (const viewer of viewers) {
         state.viewers[viewer.id] = viewer;
@@ -100,7 +99,7 @@ export class StreamService extends Service<StreamData> {
   }
 
   private clearMediaFrom(user: string) {
-    const { videoStreams, audioStreams } = this.state.get();
+    const { videoStreams, audioStreams } = this.get();
 
     const video = videoStreams[user];
     const audio = audioStreams[user];
@@ -113,7 +112,7 @@ export class StreamService extends Service<StreamData> {
       audio.consumer.close();
     }
 
-    return this.state.update((state) => {
+    return this.set((state) => {
       delete state.videoStreams[user];
       delete state.audioStreams[user];
     });
@@ -122,7 +121,7 @@ export class StreamService extends Service<StreamData> {
   async removeStreamParticipant(user: string) {
     this.clearMediaFrom(user);
 
-    return this.state.update((state) => {
+    return this.set((state) => {
       delete state.viewers[user];
       delete state.streamers[user];
       delete state.viewersWithRaisedHands[user];
@@ -131,7 +130,7 @@ export class StreamService extends Service<StreamData> {
   }
 
   addStreamParticipant(participant: Participant) {
-    return this.state.update((state) => {
+    return this.set((state) => {
       if (
         !state.viewers[participant.id] &&
         !state.streamers[participant.id] &&
@@ -153,7 +152,7 @@ export class StreamService extends Service<StreamData> {
   }
 
   private hasStreamingRequestStatusChanged(user: Participant) {
-    const { viewersWithRaisedHands } = this.state.get();
+    const { viewersWithRaisedHands } = this.get();
 
     return (
       (user.isRaisingHand && !viewersWithRaisedHands[user.id]) ||
@@ -163,12 +162,12 @@ export class StreamService extends Service<StreamData> {
 
   private setStreamingRequestFor(user: Participant) {
     const { viewers, modalCurrent, unseenRaisedHands, viewersWithRaisedHands } =
-      this.state.get();
+      this.get();
 
     let updatedViewers = { ...viewers };
     delete updatedViewers[user.id];
 
-    return this.state.update({
+    return this.set({
       viewers: updatedViewers,
       viewersWithRaisedHands: {
         ...viewersWithRaisedHands,
@@ -183,12 +182,12 @@ export class StreamService extends Service<StreamData> {
 
   private cancelStreamingRequestFor(user: Participant) {
     const { viewers, modalCurrent, unseenRaisedHands, viewersWithRaisedHands } =
-      this.state.get();
+      this.get();
 
     let updatedViewersWithRaisedHand = { ...viewersWithRaisedHands };
     delete updatedViewersWithRaisedHand[user.id];
 
-    return this.state.update({
+    return this.set({
       viewers: {
         ...viewers,
         [user.id]: user,
@@ -209,8 +208,6 @@ export class StreamService extends Service<StreamData> {
         this.cancelStreamingRequestFor(user);
       }
     }
-
-    return this.state.getStateDiff();
   }
 
   async leave({
@@ -220,7 +217,7 @@ export class StreamService extends Service<StreamData> {
     shouldStopStream: boolean;
     stream: string;
   }) {
-    const { api } = this.state.get();
+    const { api } = this.get();
 
     if (stream) {
       if (shouldStopStream) {
@@ -232,18 +229,16 @@ export class StreamService extends Service<StreamData> {
 
     await this.media.close();
     await this.invite.reset();
-
-    return this.state.getStateDiff();
   }
 
   setNewStreamTitle(title: string) {
-    return this.state.update({
+    return this.set({
       title,
     });
   }
 
   async join({ stream }: { stream: string }) {
-    const { api } = this.state.get();
+    const { api } = this.get();
 
     const {
       mediaPermissionsToken,
@@ -258,7 +253,7 @@ export class StreamService extends Service<StreamData> {
 
     console.log("received streamers from api", streamers);
 
-    this.state.update({
+    this.set({
       stream,
       currentStreamHost: host,
       totalParticipantCount: count,
@@ -284,14 +279,12 @@ export class StreamService extends Service<StreamData> {
         sendMediaParams,
       });
     }
-
-    return this.state.getStateDiff();
   }
 
   async *create() {
-    const { newStreamCategory, api, title, user } = this.state.get();
+    const { newStreamCategory, api, title, user } = this.get();
 
-    yield this.state.update({
+    yield this.set({
       isStartingNewStream: true,
     });
 
@@ -307,7 +300,7 @@ export class StreamService extends Service<StreamData> {
       recvMediaParams,
     } = await api.stream.create(title, newStreamCategory.id);
 
-    this.state.update({
+    this.set({
       stream,
       title,
       sendMediaParams,
@@ -345,25 +338,23 @@ export class StreamService extends Service<StreamData> {
       sendMediaParams,
     });
 
-    yield this.state.update({
+    yield this.set({
       isStartingNewStream: false,
     });
   }
 
   async reassign(newHostId: string) {
-    const { api, modalCloseAfterHostReassign } = this.state.get();
+    const { api, modalCloseAfterHostReassign } = this.get();
 
     await api.stream.reassignHost(newHostId);
 
     if (modalCloseAfterHostReassign) {
       this.modal.close();
     }
-
-    return this.state.getStateDiff();
   }
 
   updateAudioLevels(levels: any[]) {
-    return this.state.update((state) => {
+    return this.set((state) => {
       levels.forEach(({ user, volume }) => {
         state.userAudioLevels[user] = volume;
       });
@@ -371,7 +362,7 @@ export class StreamService extends Service<StreamData> {
   }
 
   delAudioLevel(user: string) {
-    return this.state.update((state) => {
+    return this.set((state) => {
       delete state.userAudioLevels[user];
     });
   }

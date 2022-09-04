@@ -37,7 +37,5 @@ export const createNewStore = (config: StoreConfig) => {
     };
   });
 
-  runner.connectServicesToStore(state as any);
-
   return state;
 };

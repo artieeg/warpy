@@ -1,5 +1,3 @@
-import { Store } from "../Store";
-import { AppState } from "../AppState";
 import { Service } from "../Service";
 
 export type TOAST_DURATION = "LONG" | "SHORT";
@@ -10,10 +8,6 @@ export interface ToastData {
 }
 
 export class ToastService extends Service<ToastData> {
-  constructor(state: Store | AppState) {
-    super(state);
-  }
-
   getInitialState() {
     return {
       message: null,
@@ -22,7 +16,7 @@ export class ToastService extends Service<ToastData> {
   }
 
   async showToastMessage(message: string, duration: TOAST_DURATION = "SHORT") {
-    return this.state.update({
+    return this.set({
       message,
       duration,
     });
