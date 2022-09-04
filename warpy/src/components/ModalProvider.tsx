@@ -29,8 +29,9 @@ export const ModalProvider = () => {
 
   return (
     <>
-      <BotConfirmModal />
       <UserInfoModal />
+      {/*
+      <BotConfirmModal />
       <InvitedToStreamModal />
       <AwardPickerModal />
       <AwardRecipentPicker />
@@ -58,6 +59,7 @@ export const ModalProvider = () => {
         visible={modal === 'reports'}
         onHide={() => dispatch(({modal}) => modal.close())}
       />
+        */}
     </>
   );
 };

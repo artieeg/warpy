@@ -1,18 +1,27 @@
-import React, {useCallback, useMemo} from 'react';
+import React, {useCallback, useMemo, useRef} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import {BaseSlideModal} from './BaseSlideModal';
+import {BaseSlideModal, BaseSlideModalRefProps} from './BaseSlideModal';
 import {SmallTextButton} from './SmallTextButton';
 import {UserGeneralInfo} from './UserGeneralInfo';
 import {Text} from './Text';
-import {useDispatcher, useStoreShallow} from '@app/store';
+import {useDispatcher, useStore, useStoreShallow} from '@app/store';
 import {useModalNavigation, useUserData} from '@app/hooks';
 import {colors} from '../../colors';
 import {SmallIconButton} from './SmallIconButton';
+import {createUserFixture} from '@app/__fixtures__/user';
 
 export const useParticipantModalController = () => {
   const dispatch = useDispatcher();
-  const [visible, modalSelectedUser, following] = useStoreShallow(state => [
-    state.modalCurrent === 'participant-info',
+
+  const ref = useRef<BaseSlideModalRefProps>(null);
+
+  useStore.subscribe(({modalCurrent}) => {
+    if (modalCurrent === 'participant-info') {
+      ref.current?.open();
+    }
+  });
+
+  const [modalSelectedUser, following] = useStoreShallow(state => [
     state.modalSelectedUser,
     state.following,
   ]);
@@ -76,7 +85,8 @@ export const useParticipantModalController = () => {
     onReport,
     onBlock,
     onChat,
-    visible,
+    ref,
+    visible: false,
     stream: data?.stream,
     participant: modalSelectedUser,
     onStartRoomTogether,
@@ -89,13 +99,14 @@ export const UserInfoModal = () => {
     onToggleFollow,
     isFollowing,
     visible,
+    ref,
     onStartRoomTogether,
     stream,
     onOpenProfile,
   } = useParticipantModalController();
 
   return (
-    <BaseSlideModal style={styles.modal} visible={visible}>
+    <BaseSlideModal style={styles.modal} ref={ref}>
       {participant && (
         <View style={styles.wrapper}>
           <UserGeneralInfo
@@ -117,7 +128,8 @@ export const UserInfoModal = () => {
               size="small"
               numberOfLines={4}
               color={!!participant.bio ? 'gray' : 'boulder'}
-              ellipsizeMode="tail">
+              ellipsizeMode="tail"
+            >
               {!!participant.bio && participant.bio}
               {!participant.bio && `${participant.username} has no bio yet`}
             </Text>
