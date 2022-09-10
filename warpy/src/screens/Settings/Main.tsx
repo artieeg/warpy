@@ -1,8 +1,8 @@
-import {Avatar, SettingsTextEdit, Text} from '@app/components';
+import {Avatar, SettingsTextEdit} from '@app/components';
 import {ScreenHeader} from '@app/components/ScreenHeader';
-import {useDispatcher, useStoreShallow} from '@app/store';
+import {useStoreShallow} from '@app/store';
 import React, {useMemo} from 'react';
-import {View, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, ScrollView} from 'react-native';
 import {User} from '@warpy/lib';
 import {SettingItemButton} from '@app/components/SettingItemButton';
 import {navigation} from '@app/navigation';
@@ -12,8 +12,6 @@ export const MainSettingsScreen = () => {
     store.user as User,
     store.hasActivatedAppInvite,
   ]);
-
-  const dispatch = useDispatcher();
 
   const settings = useMemo(
     () =>
@@ -30,17 +28,17 @@ export const MainSettingsScreen = () => {
       <ScreenHeader />
       <ScrollView>
         <View style={styles.avatarContainer}>
-          <TouchableOpacity
-            onPress={() => dispatch(({modal}) => modal.open('avatar-picker'))}>
-            <Avatar user={user} size="xxlarge" />
-          </TouchableOpacity>
+          <Avatar user={user} size="xxlarge" />
+          {/*
           <Text
             weight="bold"
             size="xxsmall"
             color="boulder"
-            style={styles.avatarChangeHint}>
+            style={styles.avatarChangeHint}
+          >
             tap to change{'\n'}your pfp
           </Text>
+      */}
         </View>
         <View style={styles.padding}>
           <SettingsTextEdit placeholder="name" field="first_name" />

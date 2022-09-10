@@ -21,7 +21,6 @@ import {
   InviteCodeInput,
   MyAwardsDisplay,
   Search,
-  AvatarPickerScreen,
 } from './src/screens';
 import {StatusBar} from 'react-native';
 import {QueryClient, QueryClientProvider} from 'react-query';
@@ -54,7 +53,6 @@ const App = () => {
     MainSettingsScreen,
     User,
     UserListScreen,
-    AvatarPickerScreen,
   };
 
   return (

@@ -16,21 +16,9 @@ import {HostReassignModal} from './HostReassignModal';
 import {AvatarPickerModal} from './AvatarPickerModal';
 
 export const ModalProvider = () => {
-  const [modal, isApiConnected] = useStoreShallow(state => [
-    state.modalCurrent,
-    state.isConnected,
-  ]);
-
-  const dispatch = useDispatcher();
-
-  if (!isApiConnected) {
-    return null;
-  }
-
   return (
     <>
       <UserInfoModal />
-      {/*
       <BotConfirmModal />
       <InvitedToStreamModal />
       <AwardPickerModal />
@@ -41,6 +29,7 @@ export const ModalProvider = () => {
       <InviteModal />
       <AvatarPickerModal />
 
+      {/*
       <ParticipantsModal
         onHide={() => dispatch(({modal}) => modal.close())}
         visible={modal === 'participants'}

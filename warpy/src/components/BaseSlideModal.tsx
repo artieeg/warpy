@@ -7,6 +7,7 @@ import {
 } from 'react-native-gesture-handler';
 import Animated, {
   interpolateColor,
+  runOnJS,
   useAnimatedGestureHandler,
   useAnimatedStyle,
   useSharedValue,
@@ -106,6 +107,8 @@ export const BaseSlideModal = React.forwardRef<
       onEnd() {
         if (ty.value > window.height / 10) {
           ty.value = withSpring(max_ty.value, upSpringConfig);
+          onClose?.();
+          //runOnJS(dispatch)(({modal}) => modal.close());
           //close();
         } else {
           ty.value = withSpring(0, upSpringConfig);
