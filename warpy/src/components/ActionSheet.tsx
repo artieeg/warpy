@@ -11,7 +11,7 @@ import {useDispatcher} from '@app/store';
 
 export interface IActionSheetProps {
   actions: (IActionButtonProps | null)[];
-  ref: React.RefObject<BaseSlideModalRefProps>;
+  onHide?: () => any;
 }
 
 export interface IActionButtonProps extends TouchableOpacityProps {
@@ -38,7 +38,7 @@ export const ActionSheet = React.forwardRef<
   BaseSlideModalRefProps,
   IActionSheetProps
 >((props, ref) => {
-  const {actions} = props;
+  const {actions, onHide} = props;
 
   const filteredActions = actions.filter(
     action => action !== null,
@@ -66,7 +66,7 @@ export const ActionSheet = React.forwardRef<
         </View>
         <TouchableOpacity
           onPress={() => {
-            dispatch(({modal}) => modal.close());
+            onHide?.();
           }}
           style={[styles.background, styles.cancel, styles.button]}
         >

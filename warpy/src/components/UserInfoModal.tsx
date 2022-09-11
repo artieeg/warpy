@@ -70,7 +70,10 @@ export const useParticipantModalController = () => {
   }, [userId, isFollowing]);
 
   const onReport = useCallback(() => {
-    dispatch(({modal}) => modal.open('reports'));
+    dispatch(({modal}) => {
+      ref.current?.close();
+      modal.open('reports');
+    });
   }, []);
 
   const onBlock = useCallback(() => {
@@ -101,6 +104,7 @@ export const UserInfoModal = () => {
     onToggleFollow,
     isFollowing,
     ref,
+    onReport,
     onStartRoomTogether,
     stream,
     onOpenProfile,
@@ -185,6 +189,7 @@ export const UserInfoModal = () => {
               />
               <SmallIconButton
                 style={styles.rowButtonFinal}
+                onPress={onReport}
                 name="flag-1"
                 size={15}
                 background="red"
