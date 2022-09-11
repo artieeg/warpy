@@ -18,6 +18,9 @@ import {colors} from '../../colors';
 import {UserBase} from '@warpy/lib';
 
 export const AwardVisualPickerModal = () => {
+  return null;
+
+  /*
   const dispatch = useDispatcher();
 
   const [visible, picked, user] = useStoreShallow(state => [
@@ -127,6 +130,7 @@ export const AwardVisualPickerModal = () => {
       </View>
     </BaseSlideModal>
   );
+   * */
 };
 
 const SUGGESTED_VISUALS = [

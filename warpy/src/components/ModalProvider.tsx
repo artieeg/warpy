@@ -21,33 +21,23 @@ export const ModalProvider = () => {
       <UserInfoModal />
       <BotConfirmModal />
       <InvitedToStreamModal />
+      {/*
       <AwardPickerModal />
       <AwardRecipentPicker />
       <AwardVisualPickerModal />
       <AwardMessageInputModal />
+        */}
       <HostReassignModal />
       <InviteModal />
       <AvatarPickerModal />
+      <ParticipantsModal />
 
-      {/*
-      <ParticipantsModal
-        onHide={() => dispatch(({modal}) => modal.close())}
-        visible={modal === 'participants'}
-        onSelectParticipant={user => {
-          dispatch(({modal}) =>
-            modal.open('participant-info', {selectedUser: user}),
-          );
-        }}
-      />
+      <Reactions />
 
-      <Reactions visible={modal === 'reactions'} />
+      <ChatModal />
 
-      <ChatModal visible={modal === 'chat'} />
-
-      <ReportActionSheet
-        visible={modal === 'reports'}
-        onHide={() => dispatch(({modal}) => modal.close())}
-      />
+      {/* TODO
+      <ReportActionSheet />
         */}
     </>
   );

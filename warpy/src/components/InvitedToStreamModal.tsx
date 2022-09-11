@@ -1,3 +1,4 @@
+import {useModalRef} from '@app/hooks/useModalRef';
 import {useDispatcher, useStoreShallow} from '@app/store';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
@@ -7,15 +8,17 @@ import {Text} from './Text';
 import {UserGeneralInfo} from './UserGeneralInfo';
 
 export const InvitedToStreamModal = () => {
-  const [visible, modalInviter, stream] = useStoreShallow(state => [
-    state.modalCurrent === 'stream-invite',
+  const ref = useModalRef('stream-invite');
+
+  const [modalInviter, stream] = useStoreShallow(state => [
     state.modalInvite?.inviter,
     state.modalInvite?.stream,
   ]);
+
   const dispatch = useDispatcher();
 
   return (
-    <BaseSlideModal visible={visible} style={styles.wrapper}>
+    <BaseSlideModal ref={ref} style={styles.wrapper}>
       <Text style={styles.title}>woah, new invite! 👋</Text>
 
       {modalInviter && (

@@ -5,7 +5,7 @@ import {useStoreShallow} from '@app/store';
 
 interface IReportActionSheetProps extends Omit<IActionSheetProps, 'actions'> {}
 
-export const ReportActionSheet = (props: IReportActionSheetProps) => {
+export const ReportActionSheet = () => {
   const [user, api] = useStoreShallow(state => [
     state.modalSelectedUser,
     state.api,
@@ -13,7 +13,6 @@ export const ReportActionSheet = (props: IReportActionSheetProps) => {
 
   return (
     <ActionSheet
-      {...props}
       actions={REPORT_REASONS.map(({title, id}) => ({
         title,
         onPress: async () => {

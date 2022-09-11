@@ -1,15 +1,15 @@
+import {useModalRef} from '@app/hooks/useModalRef';
 import {useStore} from '@app/store';
 import React, {useCallback, useRef} from 'react';
 import {FlatList, StyleSheet} from 'react-native';
-import {BaseSlideModal, IBaseModalProps} from './BaseSlideModal';
+import {BaseSlideModal} from './BaseSlideModal';
 import {ChatMessage} from './ChatMessage';
 import {ChatMessageInput} from './ChatMessageInput';
 
-interface IChatModalOptions extends IBaseModalProps {}
-
-export const ChatModal = (props: IChatModalOptions) => {
+export const ChatModal = () => {
   const messages = useStore(state => state.messages);
 
+  const ref = useModalRef('chat');
   const flatListRef = useRef<any>();
   const scrollPositionRef = useRef(0);
 
@@ -21,7 +21,7 @@ export const ChatModal = (props: IChatModalOptions) => {
   }, []);
 
   return (
-    <BaseSlideModal {...props}>
+    <BaseSlideModal ref={ref}>
       <FlatList
         ref={flatListRef}
         style={styles.list}

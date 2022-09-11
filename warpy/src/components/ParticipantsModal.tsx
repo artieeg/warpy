@@ -18,17 +18,15 @@ import {
   useStreamViewers,
 } from '@app/hooks';
 import {useStore} from '@app/store';
-import {UserBase, Participant} from '@warpy/lib';
+import {Participant} from '@warpy/lib';
 import {UserProducer} from './UserProducer';
+import {useModalRef} from '@app/hooks/useModalRef';
+import {useDispatcher} from '@warpy/store';
 
-interface IParticipanModalProps {
-  visible: boolean;
-  onHide: () => void;
-  onSelectParticipant: (user: UserBase) => any;
-}
+export const ParticipantsModal = () => {
+  const ref = useModalRef('participants');
 
-export const ParticipantsModal = (props: IParticipanModalProps) => {
-  const {onSelectParticipant} = props;
+  const dispatch = useDispatcher();
   const usersRaisingHand = useSpeakingRequests();
   const currentHostId = useStore(state => state.currentStreamHost);
   const producers = useStreamProducers();
@@ -65,7 +63,8 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
           <Text
             size="xsmall"
             style={styles.hostReassignMessage}
-            color="boulder">
+            color="boulder"
+          >
             Host has left the stream.{'\n'}New host will be assigned soon
           </Text>
         );
@@ -83,8 +82,13 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
             renderItem={({item: flatListItem}) => (
               <TouchableOpacity
                 onPress={() => {
-                  onSelectParticipant(flatListItem.id);
-                }}>
+                  dispatch(({modal}) =>
+                    modal.open('participant-info', {
+                      selectedUser: flatListItem.id,
+                    }),
+                  );
+                }}
+              >
                 <UserWithRaisedHand data={flatListItem} />
               </TouchableOpacity>
             )}
@@ -101,8 +105,13 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
             renderItem={({item: flatListItem}) => (
               <TouchableOpacity
                 onPress={() => {
-                  onSelectParticipant(flatListItem.id);
-                }}>
+                  dispatch(({modal}) =>
+                    modal.open('participant-info', {
+                      selectedUser: flatListItem.id,
+                    }),
+                  );
+                }}
+              >
                 <UserProducer data={flatListItem} />
               </TouchableOpacity>
             )}
@@ -121,8 +130,13 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
               <TouchableOpacity
                 style={columnWidthStyle}
                 onPress={() => {
-                  onSelectParticipant(flatListItem);
-                }}>
+                  dispatch(({modal}) =>
+                    modal.open('participant-info', {
+                      selectedUser: flatListItem,
+                    }),
+                  );
+                }}
+              >
                 <ParticipantDisplay data={flatListItem} />
               </TouchableOpacity>
             )}
@@ -133,7 +147,7 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
   };
 
   return (
-    <BaseSlideModal {...props} style={styles.modal}>
+    <BaseSlideModal ref={ref} style={styles.modal}>
       <SectionList
         style={styles.horizontalPadding}
         sections={data}
@@ -151,7 +165,8 @@ export const ParticipantsModal = (props: IParticipanModalProps) => {
                 size="small"
                 color="boulder"
                 weight="bold"
-                style={styles.sectionHeader}>
+                style={styles.sectionHeader}
+              >
                 {section.title}
               </Text>
             </TouchableWithoutFeedback>

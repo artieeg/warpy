@@ -6,17 +6,20 @@ import {useDispatcher, useStoreShallow} from '@app/store';
 import {HostCandidate} from './HostCandidate';
 import {TextButton} from '@warpy/components';
 import {navigation} from '@app/navigation';
+import {useModalRef} from '@app/hooks/useModalRef';
 
 export const HostReassignModal: React.FC<IBaseModalProps> = props => {
-  const [api, stream, modalCurrent, user, streamers, closeAfterReassign] =
-    useStoreShallow(state => [
+  const ref = useModalRef('host-reassign');
+
+  const [api, stream, user, streamers, closeAfterReassign] = useStoreShallow(
+    state => [
       state.api,
       state.stream,
-      state.modalCurrent,
       state.user,
       state.streamers,
       state.modalCloseAfterHostReassign,
-    ]);
+    ],
+  );
 
   const dispatch = useDispatcher();
 
@@ -70,9 +73,10 @@ export const HostReassignModal: React.FC<IBaseModalProps> = props => {
   return (
     <BaseSlideModal
       {...props}
-      visible={modalCurrent === 'host-reassign'}
+      ref={ref}
       style={styles.modal}
-      title="reassign host">
+      title="reassign host"
+    >
       <FlatList
         data={hostCandidates}
         renderItem={renderHostCandidate}
