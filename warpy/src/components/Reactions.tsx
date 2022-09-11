@@ -38,6 +38,7 @@ export const Reactions = () => {
               onPress={() => {
                 dispatch(({stream}) => stream.changeReaction(item));
                 dispatch(({modal}) => modal.close());
+                ref.current?.close();
               }}
               code={item}
             />

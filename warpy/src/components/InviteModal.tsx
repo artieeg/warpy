@@ -31,6 +31,14 @@ export const useInviteModalController = () => {
 
   const modalHeight = useWindowDimensions().height * 0.9;
 
+  const sendPendingInvites = React.useCallback(() => {
+    ref.current?.close();
+
+    dispatch(({invite}) => {
+      invite.sendPendingInvites();
+    });
+  }, [dispatch]);
+
   return {
     modalHeight,
     pendingInviteCount,
@@ -39,8 +47,7 @@ export const useInviteModalController = () => {
     isLoading,
     searchedUsers,
     inviteSuggestions,
-    sendPendingInvites: () =>
-      dispatch(({invite}) => invite.sendPendingInvites()),
+    sendPendingInvites,
     shouldDisplayInviteButton,
   };
 };

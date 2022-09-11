@@ -25,6 +25,7 @@ const useBotConfirmModalController = () => {
     if (confirmationId) {
       api.botDev.cancel(confirmationId);
       dispatch(({modal}) => modal.close());
+      ref.current?.close();
     }
   }, [confirmationId]);
 
@@ -32,6 +33,7 @@ const useBotConfirmModalController = () => {
     if (confirmationId) {
       api.botDev.confirm(confirmationId);
       dispatch(({modal}) => modal.close());
+      ref.current?.close();
     }
   }, [confirmationId]);
 
