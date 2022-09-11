@@ -1,28 +1,29 @@
-import React, {useCallback, useMemo, useRef} from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import {BaseSlideModal, BaseSlideModalRefProps} from './BaseSlideModal';
+import React, {useCallback, useMemo} from 'react';
+import {
+  ActivityIndicator,
+  Dimensions,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {BaseSlideModal} from './BaseSlideModal';
 import {SmallTextButton} from './SmallTextButton';
 import {UserGeneralInfo} from './UserGeneralInfo';
 import {Text} from './Text';
-import {useDispatcher, useStore, useStoreShallow} from '@app/store';
+import {useDispatcher, useStoreShallow} from '@app/store';
 import {useModalNavigation, useUserData} from '@app/hooks';
 import {colors} from '../../colors';
 import {SmallIconButton} from './SmallIconButton';
-import {createUserFixture} from '@app/__fixtures__/user';
+import {useModalRef} from '@app/hooks/useModalRef';
 
 export const useParticipantModalController = () => {
   const dispatch = useDispatcher();
 
-  const ref = useRef<BaseSlideModalRefProps>(null);
-
-  useStore.subscribe(({modalCurrent}) => {
-    if (modalCurrent === 'participant-info') {
-      ref.current?.open();
-    }
-  });
+  const ref = useModalRef('participant-info');
 
   const [modalSelectedUser, following] = useStoreShallow(state => [
     state.modalSelectedUser,
+    state.modalCurrent,
     state.following,
   ]);
 
@@ -35,8 +36,10 @@ export const useParticipantModalController = () => {
     if (!userId) return;
 
     const startRoomTogetherTimeout = setTimeout(() => {
-      dispatch(({invite}) => invite.addPendingInvite(userId));
-      dispatch(({invite}) => invite.sendPendingInvites());
+      dispatch(({invite}) => {
+        invite.addPendingInvite(userId);
+        invite.sendPendingInvites();
+      });
     }, 400);
 
     navigation.navigate('NewStream', {startRoomTogetherTimeout});
@@ -52,7 +55,7 @@ export const useParticipantModalController = () => {
   }, [userId]);
 
   const isFollowing = useMemo(
-    () => (userId ? following.includes(userId) : false),
+    () => (userId ? following?.includes(userId) : false),
     [following, userId],
   );
 
@@ -86,7 +89,6 @@ export const useParticipantModalController = () => {
     onBlock,
     onChat,
     ref,
-    visible: false,
     stream: data?.stream,
     participant: modalSelectedUser,
     onStartRoomTogether,
@@ -98,15 +100,26 @@ export const UserInfoModal = () => {
     participant,
     onToggleFollow,
     isFollowing,
-    visible,
     ref,
     onStartRoomTogether,
     stream,
     onOpenProfile,
   } = useParticipantModalController();
 
+  const dispatch = useDispatcher();
+
   return (
-    <BaseSlideModal style={styles.modal} ref={ref}>
+    <BaseSlideModal
+      onClose={() => dispatch(({modal}) => modal.close())}
+      style={styles.modal}
+      ref={ref}
+    >
+      {!participant && (
+        <View style={styles.loadingIndicatorContainer}>
+          <ActivityIndicator size="small" color={colors.green} />
+        </View>
+      )}
+
       {participant && (
         <View style={styles.wrapper}>
           <UserGeneralInfo
@@ -133,15 +146,6 @@ export const UserInfoModal = () => {
               {!!participant.bio && participant.bio}
               {!participant.bio && `${participant.username} has no bio yet`}
             </Text>
-            {/*
-            <Text
-              size="small"
-              numberOfLines={4}
-              color="white"
-              ellipsizeMode="tail">
-              {participant.bio}
-            </Text>
-      */}
           </View>
 
           {stream && (
@@ -246,5 +250,10 @@ const styles = StyleSheet.create({
   roomTextInfo: {
     paddingRight: 30,
     flex: 1,
+  },
+  loadingIndicatorContainer: {
+    height: Dimensions.get('window').height * 0.3,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

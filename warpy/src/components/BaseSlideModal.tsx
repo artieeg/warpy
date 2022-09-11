@@ -7,14 +7,13 @@ import {
 } from 'react-native-gesture-handler';
 import Animated, {
   interpolateColor,
+  Layout,
   runOnJS,
   useAnimatedGestureHandler,
   useAnimatedStyle,
   useSharedValue,
-  withDecay,
   withSpring,
   WithSpringConfig,
-  withTiming,
 } from 'react-native-reanimated';
 import {Text} from './Text';
 import {colors} from '../../colors';
@@ -22,7 +21,6 @@ import {colors} from '../../colors';
 export interface IBaseModalProps extends ViewProps {
   title?: string;
   subtitle?: string;
-  visible?: boolean;
   disableHideHandler?: boolean;
   children?: React.ReactNode;
   onClose?: () => any;
@@ -32,6 +30,7 @@ const upSpringConfig: WithSpringConfig = {
   damping: 20,
   mass: 0.3,
   stiffness: 100,
+  velocity: 10,
 };
 
 export type BaseSlideModalRefProps = {
@@ -43,15 +42,7 @@ export const BaseSlideModal = React.forwardRef<
   BaseSlideModalRefProps,
   IBaseModalProps
 >((props, ref) => {
-  const {
-    visible,
-    subtitle,
-    onClose,
-    disableHideHandler,
-    children,
-    title,
-    style,
-  } = props;
+  const {subtitle, onClose, disableHideHandler, children, title, style} = props;
   const dispatch = useDispatcher();
 
   const window = useWindowDimensions();
@@ -95,7 +86,6 @@ export const BaseSlideModal = React.forwardRef<
     {
       onStart(_, ctx) {
         ctx.startY = ty.value;
-        console.log('scroll started');
       },
       onActive(ev, ctx) {
         if (ev.translationY + ctx.startY < 0) {
@@ -106,12 +96,9 @@ export const BaseSlideModal = React.forwardRef<
       },
       onEnd() {
         if (ty.value > window.height / 10) {
-          ty.value = withSpring(max_ty.value, upSpringConfig);
-          onClose?.();
-          //runOnJS(dispatch)(({modal}) => modal.close());
-          //close();
+          runOnJS(close)();
         } else {
-          ty.value = withSpring(0, upSpringConfig);
+          ty.value = withSpring(0, upSpringConfig, () => {});
         }
       },
     },
@@ -140,6 +127,7 @@ export const BaseSlideModal = React.forwardRef<
       <Animated.View pointerEvents="none" style={rBackdropStyle} />
       <PanGestureHandler onGestureEvent={panGestureHandler}>
         <Animated.View
+          layout={Layout.duration(300)}
           onLayout={e => {
             max_ty.value = e.nativeEvent.layout.height;
           }}
