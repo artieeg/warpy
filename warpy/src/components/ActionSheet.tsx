@@ -1,24 +1,22 @@
-import React, {useEffect, useRef} from 'react';
+import React from 'react';
 import {
-  Animated,
-  Easing,
   StyleSheet,
   TouchableOpacity,
   TouchableOpacityProps,
   View,
 } from 'react-native';
 import {Text} from './Text';
-import Modal from 'react-native-modal';
+import {BaseSlideModal, BaseSlideModalRefProps} from './BaseSlideModal';
+import {useDispatcher} from '@app/store';
 
 export interface IActionSheetProps {
-  visible: boolean;
-  onHide: () => void;
   actions: (IActionButtonProps | null)[];
+  ref: React.RefObject<BaseSlideModalRefProps>;
 }
 
 export interface IActionButtonProps extends TouchableOpacityProps {
   title: string;
-  color?: 'alert' | 'bright';
+  color?: 'red' | 'green';
 }
 
 export const ActionSheetButton = (props: IActionButtonProps) => {
@@ -27,54 +25,37 @@ export const ActionSheetButton = (props: IActionButtonProps) => {
   return (
     <TouchableOpacity
       {...props}
-      style={[styles.button, styles.bottomBorder, props.style]}>
-      <Text size="small" color={color || 'bright'} weight="bold">
+      style={[styles.button, styles.bottomBorder, props.style]}
+    >
+      <Text size="small" color={color || 'red'} weight="bold">
         {title}
       </Text>
     </TouchableOpacity>
   );
 };
 
-export const ActionSheet = (props: IActionSheetProps) => {
-  const {visible, onHide, actions} = props;
-
-  const opacity = useRef(new Animated.Value(0));
-
-  useEffect(() => {
-    Animated.sequence([
-      Animated.delay(300),
-      Animated.timing(opacity.current, {
-        toValue: visible ? 1 : 0,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, [visible]);
+export const ActionSheet = React.forwardRef<
+  BaseSlideModalRefProps,
+  IActionSheetProps
+>((props, ref) => {
+  const {actions} = props;
 
   const filteredActions = actions.filter(
     action => action !== null,
   ) as IActionButtonProps[];
 
-  const animatedStyle = {
-    opacity: opacity.current,
-  };
+  const dispatch = useDispatcher();
 
   return (
-    <Modal
-      isVisible={visible}
-      onModalHide={onHide}
-      animationInTiming={400}
-      animationOutTiming={400}
-      style={styles.modal}
-      statusBarTranslucent>
-      <Animated.View style={animatedStyle}>
+    <BaseSlideModal ref={ref}>
+      <View>
         <View style={[styles.background, styles.actions]}>
           {filteredActions.map(({title, color, onPress}) => (
             <ActionSheetButton
               title={title}
               color={color}
               onPress={e => {
-                onHide();
+                dispatch(({modal}) => modal.close());
                 if (onPress) {
                   onPress(e);
                 }
@@ -84,16 +65,19 @@ export const ActionSheet = (props: IActionSheetProps) => {
           ))}
         </View>
         <TouchableOpacity
-          onPress={onHide}
-          style={[styles.background, styles.cancel, styles.button]}>
+          onPress={() => {
+            dispatch(({modal}) => modal.close());
+          }}
+          style={[styles.background, styles.cancel, styles.button]}
+        >
           <Text size="small" weight="bold">
             cancel
           </Text>
         </TouchableOpacity>
-      </Animated.View>
-    </Modal>
+      </View>
+    </BaseSlideModal>
   );
-};
+});
 
 const styles = StyleSheet.create({
   background: {

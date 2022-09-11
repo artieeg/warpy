@@ -36,9 +36,7 @@ export const ModalProvider = () => {
 
       <ChatModal />
 
-      {/* TODO
       <ReportActionSheet />
-        */}
     </>
   );
 };
