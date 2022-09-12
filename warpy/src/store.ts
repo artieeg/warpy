@@ -32,5 +32,4 @@ export function useStoreShallow<U>(selector: StateSelector<Store, U>) {
 
 export function useDispatcher() {
   return useStoreDispatcher();
-  //return useStore(state => state.dispatch);
 }

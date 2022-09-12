@@ -7,19 +7,6 @@ export interface ChatData {
 }
 
 export class ChatService extends Service<ChatData> {
-  getInitialState() {
-    return {
-      messageInputValue: "",
-      messages: [],
-    };
-  }
-
-  setMessageInput(messageInputValue: string) {
-    return this.set({
-      messageInputValue,
-    });
-  }
-
   async send() {
     const { api, messageInputValue, messages } = this.get();
 
@@ -30,6 +17,19 @@ export class ChatService extends Service<ChatData> {
     return this.set({
       messages: [newChatMessage, ...messages],
       messageInputValue: "",
+    });
+  }
+
+  getInitialState() {
+    return {
+      messageInputValue: "",
+      messages: [],
+    };
+  }
+
+  setMessageInput(messageInputValue: string) {
+    return this.set({
+      messageInputValue,
     });
   }
 

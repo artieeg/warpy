@@ -9,19 +9,17 @@ import {ShareStreamLinkButton} from './ShareStreamLinkButton';
 import {useUserSearch} from '@app/hooks';
 import {useDispatcher, useStoreShallow} from '@app/store';
 import {colors} from '../../colors';
+import {useModalRef} from '@app/hooks/useModalRef';
 
 export const useInviteModalController = () => {
-  const [
-    inviteSuggestions,
-    pendingInviteCount,
-    visible,
-    shouldDisplayInviteButton,
-  ] = useStoreShallow(state => [
-    state.inviteSuggestions,
-    state.pendingInviteUserIds.length,
-    state.modalCurrent === 'send-invite',
-    !!state.stream,
-  ]);
+  const ref = useModalRef('send-invite');
+
+  const [inviteSuggestions, pendingInviteCount, shouldDisplayInviteButton] =
+    useStoreShallow(state => [
+      state.inviteSuggestions,
+      state.pendingInviteUserIds.length,
+      !!state.stream,
+    ]);
 
   const dispatch = useDispatcher();
 
@@ -33,16 +31,23 @@ export const useInviteModalController = () => {
 
   const modalHeight = useWindowDimensions().height * 0.9;
 
+  const sendPendingInvites = React.useCallback(() => {
+    ref.current?.close();
+
+    dispatch(({invite}) => {
+      invite.sendPendingInvites();
+    });
+  }, [dispatch]);
+
   return {
     modalHeight,
     pendingInviteCount,
-    visible,
+    ref,
     setSearchQuery: setSearch,
     isLoading,
     searchedUsers,
     inviteSuggestions,
-    sendPendingInvites: () =>
-      dispatch(({invite}) => invite.sendPendingInvites()),
+    sendPendingInvites,
     shouldDisplayInviteButton,
   };
 };
@@ -53,7 +58,7 @@ export const InviteModal = (props: IBaseModalProps) => {
     searchedUsers,
     inviteSuggestions,
     isLoading,
-    visible,
+    ref,
     setSearchQuery,
     pendingInviteCount,
     sendPendingInvites,
@@ -66,9 +71,10 @@ export const InviteModal = (props: IBaseModalProps) => {
   return (
     <BaseSlideModal
       {...props}
-      visible={visible}
+      ref={ref}
       //disableHideHandler
-      style={modalStyle}>
+      style={modalStyle}
+    >
       <View style={styles.header}>
         <UserSearchInput
           style={styles.input}

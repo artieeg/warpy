@@ -5,6 +5,9 @@ import {BaseSlideModal} from './BaseSlideModal';
 import {ParticipantView} from './ParticipantView';
 
 export const AwardRecipentPicker = () => {
+  return null;
+
+  /*
   const dispatch = useDispatcher();
   const [visible, streamers, us] = useStoreShallow(state => [
     state.modalCurrent === 'award-recipent',
@@ -46,6 +49,7 @@ export const AwardRecipentPicker = () => {
       />
     </BaseSlideModal>
   );
+   */
 };
 
 const styles = StyleSheet.create({

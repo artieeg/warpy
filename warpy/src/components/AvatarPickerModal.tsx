@@ -1,16 +1,14 @@
 import React from 'react';
 import {useGifs} from '@app/hooks/useGifs';
-import {useStoreShallow} from '@app/store';
 import {FlatList, StyleSheet} from 'react-native';
 import {useDebounce} from 'use-debounce';
 import {BaseSlideModal, IBaseModalProps} from './BaseSlideModal';
 import {Input} from './Input';
 import {AvatarOption} from './AvatarOption';
+import {useModalRef} from '@app/hooks/useModalRef';
 
 export const useAvatarPickerModalController = () => {
-  const [visible] = useStoreShallow(state => [
-    state.modalCurrent === 'avatar-picker',
-  ]);
+  const ref = useModalRef('avatar-picker');
 
   const [searchQuery, setSearchQuery] = React.useState<string>('');
   const [debouncedSearchQuery] = useDebounce(searchQuery, 300);
@@ -18,21 +16,21 @@ export const useAvatarPickerModalController = () => {
   const gifs = useGifs(debouncedSearchQuery);
 
   return {
-    visible,
+    ref,
     setSearchQuery,
     gifs,
   };
 };
 
 export const AvatarPickerModal: React.FC<IBaseModalProps> = props => {
-  const {visible, gifs, setSearchQuery} = useAvatarPickerModalController();
+  const {ref, gifs, setSearchQuery} = useAvatarPickerModalController();
 
   return (
     <BaseSlideModal
       style={styles.modal}
-      visible={visible}
       title="pick new avatar"
       {...props}
+      ref={ref}
     >
       <Input
         onChangeText={text => setSearchQuery(text)}

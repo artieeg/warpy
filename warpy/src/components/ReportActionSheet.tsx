@@ -1,19 +1,23 @@
 import React from 'react';
 import {REPORT_REASONS} from '@warpy/lib';
-import {ActionSheet, IActionSheetProps} from './ActionSheet';
+import {ActionSheet} from './ActionSheet';
 import {useStoreShallow} from '@app/store';
+import {useModalRef} from '@app/hooks/useModalRef';
 
-interface IReportActionSheetProps extends Omit<IActionSheetProps, 'actions'> {}
-
-export const ReportActionSheet = (props: IReportActionSheetProps) => {
+export const ReportActionSheet = () => {
   const [user, api] = useStoreShallow(state => [
     state.modalSelectedUser,
     state.api,
   ]);
 
+  const ref = useModalRef('reports');
+
   return (
     <ActionSheet
-      {...props}
+      ref={ref}
+      onHide={() => {
+        ref.current?.close();
+      }}
       actions={REPORT_REASONS.map(({title, id}) => ({
         title,
         onPress: async () => {

@@ -8,6 +8,8 @@ import {BaseSlideModal} from './BaseSlideModal';
 import {textStyles} from './Text';
 
 export const AwardMessageInputModal = () => {
+  return null;
+  /*
   const [visible, recipent, visual, message] = useStoreShallow(state => [
     state.modalCurrent === 'award-message',
     state.modalUserToAward,
@@ -50,6 +52,7 @@ export const AwardMessageInputModal = () => {
       </View>
     </BaseSlideModal>
   );
+   * */
 };
 
 const styles = StyleSheet.create({

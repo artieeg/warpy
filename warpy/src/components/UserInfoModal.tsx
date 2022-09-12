@@ -1,5 +1,11 @@
 import React, {useCallback, useMemo} from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Dimensions,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {BaseSlideModal} from './BaseSlideModal';
 import {SmallTextButton} from './SmallTextButton';
 import {UserGeneralInfo} from './UserGeneralInfo';
@@ -8,12 +14,16 @@ import {useDispatcher, useStoreShallow} from '@app/store';
 import {useModalNavigation, useUserData} from '@app/hooks';
 import {colors} from '../../colors';
 import {SmallIconButton} from './SmallIconButton';
+import {useModalRef} from '@app/hooks/useModalRef';
 
 export const useParticipantModalController = () => {
   const dispatch = useDispatcher();
-  const [visible, modalSelectedUser, following] = useStoreShallow(state => [
-    state.modalCurrent === 'participant-info',
+
+  const ref = useModalRef('participant-info');
+
+  const [modalSelectedUser, following] = useStoreShallow(state => [
     state.modalSelectedUser,
+    state.modalCurrent,
     state.following,
   ]);
 
@@ -26,8 +36,10 @@ export const useParticipantModalController = () => {
     if (!userId) return;
 
     const startRoomTogetherTimeout = setTimeout(() => {
-      dispatch(({invite}) => invite.addPendingInvite(userId));
-      dispatch(({invite}) => invite.sendPendingInvites());
+      dispatch(({invite}) => {
+        invite.addPendingInvite(userId);
+        invite.sendPendingInvites();
+      });
     }, 400);
 
     navigation.navigate('NewStream', {startRoomTogetherTimeout});
@@ -43,7 +55,7 @@ export const useParticipantModalController = () => {
   }, [userId]);
 
   const isFollowing = useMemo(
-    () => (userId ? following.includes(userId) : false),
+    () => (userId ? following?.includes(userId) : false),
     [following, userId],
   );
 
@@ -58,7 +70,10 @@ export const useParticipantModalController = () => {
   }, [userId, isFollowing]);
 
   const onReport = useCallback(() => {
-    dispatch(({modal}) => modal.open('reports'));
+    dispatch(({modal}) => {
+      ref.current?.close();
+      modal.open('reports');
+    });
   }, []);
 
   const onBlock = useCallback(() => {
@@ -76,7 +91,7 @@ export const useParticipantModalController = () => {
     onReport,
     onBlock,
     onChat,
-    visible,
+    ref,
     stream: data?.stream,
     participant: modalSelectedUser,
     onStartRoomTogether,
@@ -88,14 +103,27 @@ export const UserInfoModal = () => {
     participant,
     onToggleFollow,
     isFollowing,
-    visible,
+    ref,
+    onReport,
     onStartRoomTogether,
     stream,
     onOpenProfile,
   } = useParticipantModalController();
 
+  const dispatch = useDispatcher();
+
   return (
-    <BaseSlideModal style={styles.modal} visible={visible}>
+    <BaseSlideModal
+      onClose={() => dispatch(({modal}) => modal.close())}
+      style={styles.modal}
+      ref={ref}
+    >
+      {!participant && (
+        <View style={styles.loadingIndicatorContainer}>
+          <ActivityIndicator size="small" color={colors.green} />
+        </View>
+      )}
+
       {participant && (
         <View style={styles.wrapper}>
           <UserGeneralInfo
@@ -117,19 +145,11 @@ export const UserInfoModal = () => {
               size="small"
               numberOfLines={4}
               color={!!participant.bio ? 'gray' : 'boulder'}
-              ellipsizeMode="tail">
+              ellipsizeMode="tail"
+            >
               {!!participant.bio && participant.bio}
               {!participant.bio && `${participant.username} has no bio yet`}
             </Text>
-            {/*
-            <Text
-              size="small"
-              numberOfLines={4}
-              color="white"
-              ellipsizeMode="tail">
-              {participant.bio}
-            </Text>
-      */}
           </View>
 
           {stream && (
@@ -169,6 +189,7 @@ export const UserInfoModal = () => {
               />
               <SmallIconButton
                 style={styles.rowButtonFinal}
+                onPress={onReport}
                 name="flag-1"
                 size={15}
                 background="red"
@@ -234,5 +255,10 @@ const styles = StyleSheet.create({
   roomTextInfo: {
     paddingRight: 30,
     flex: 1,
+  },
+  loadingIndicatorContainer: {
+    height: Dimensions.get('window').height * 0.3,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

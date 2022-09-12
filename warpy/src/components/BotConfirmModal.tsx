@@ -1,42 +1,80 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text} from './Text';
 import {Avatar} from './Avatar';
 import {BaseSlideModal} from './BaseSlideModal';
 import {SmallTextButton} from './SmallTextButton';
-import {useBotConfirmModalController} from '@app/hooks/useBotConfirmModalController';
+import {useDispatcher, useStoreShallow} from '@app/store';
+import {useModalRef} from '@app/hooks/useModalRef';
+
+const useBotConfirmModalController = () => {
+  const dispatch = useDispatcher();
+
+  const ref = useModalRef('bot-confirm');
+
+  const [api, currentModal, confirmationId, bot] = useStoreShallow(state => [
+    state.api,
+    state.modalCurrent,
+    state.modalBotConfirmId,
+    state.modalBotConfirmData,
+  ]);
+
+  const visible = currentModal === 'bot-confirm';
+
+  const onDecline = useCallback(() => {
+    if (confirmationId) {
+      api.botDev.cancel(confirmationId);
+      dispatch(({modal}) => modal.close());
+      ref.current?.close();
+    }
+  }, [confirmationId]);
+
+  const onConfirm = useCallback(() => {
+    if (confirmationId) {
+      api.botDev.confirm(confirmationId);
+      dispatch(({modal}) => modal.close());
+      ref.current?.close();
+    }
+  }, [confirmationId]);
+
+  return {
+    visible,
+    onConfirm,
+    onDecline,
+    bot,
+    ref,
+  };
+};
 
 export const BotConfirmModal = () => {
-  const {visible, onConfirm, onDecline, bot} = useBotConfirmModalController();
-
-  if (!bot) {
-    return null;
-  }
+  const {onConfirm, onDecline, bot, ref} = useBotConfirmModalController();
 
   return (
-    <BaseSlideModal style={styles.modal} visible={visible}>
-      <View style={styles.wrapper}>
-        <Text style={styles.title} weight="bold">
-          confirm new bot
-        </Text>
-        <View style={styles.avatarAndUserInfo}>
-          <Avatar size="large" user={{avatar: bot!.avatar} as any} />
-          <View style={styles.userInfo}>
-            <Text weight="bold">{bot!.name}</Text>
-            <Text weight="bold" size="small">
-              {bot?.botname}
-            </Text>
+    <BaseSlideModal style={styles.modal} ref={ref}>
+      {bot && (
+        <View style={styles.wrapper}>
+          <Text style={styles.title} weight="bold">
+            confirm new bot
+          </Text>
+          <View style={styles.avatarAndUserInfo}>
+            <Avatar size="large" user={{avatar: bot.avatar} as any} />
+            <View style={styles.userInfo}>
+              <Text weight="bold">{bot.name}</Text>
+              <Text weight="bold" size="small">
+                {bot.botname}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.actions}>
+            <SmallTextButton
+              onPress={onConfirm}
+              style={styles.confirmButton}
+              title={'confirm'}
+            />
+            <SmallTextButton onPress={onDecline} color="red" title="cancel" />
           </View>
         </View>
-        <View style={styles.actions}>
-          <SmallTextButton
-            onPress={onConfirm}
-            style={styles.confirmButton}
-            title={'confirm'}
-          />
-          <SmallTextButton onPress={onDecline} color="red" title="cancel" />
-        </View>
-      </View>
+      )}
     </BaseSlideModal>
   );
 };

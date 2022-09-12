@@ -12,6 +12,9 @@ import {TextButton} from '@warpy/components';
 import {Input} from './Input';
 
 export const AwardPickerModal = (props: IBaseModalProps) => {
+  return null;
+
+  /*
   const [pickedAwardId, setPickedAwardId] = useState<string>();
   const [awardMessage, setAwardMessage] = useState('');
 
@@ -97,6 +100,7 @@ export const AwardPickerModal = (props: IBaseModalProps) => {
       </View>
     </BaseSlideModal>
   );
+          */
 };
 
 const styles = StyleSheet.create({
