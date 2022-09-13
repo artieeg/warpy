@@ -1,11 +1,13 @@
 import React from 'react';
 import {useGifs} from '@app/hooks/useGifs';
-import {FlatList, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {useDebounce} from 'use-debounce';
 import {BaseSlideModal, IBaseModalProps} from './BaseSlideModal';
 import {Input} from './Input';
-import {AvatarOption} from './AvatarOption';
 import {useModalRef} from '@app/hooks/useModalRef';
+import Image from 'react-native-fast-image';
+import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
+import {useDispatcher} from '@app/store';
 
 export const useAvatarPickerModalController = () => {
   const ref = useModalRef('avatar-picker');
@@ -25,6 +27,8 @@ export const useAvatarPickerModalController = () => {
 export const AvatarPickerModal: React.FC<IBaseModalProps> = props => {
   const {ref, gifs, setSearchQuery} = useAvatarPickerModalController();
 
+  const dispatch = useDispatcher();
+
   return (
     <BaseSlideModal
       style={styles.modal}
@@ -40,10 +44,22 @@ export const AvatarPickerModal: React.FC<IBaseModalProps> = props => {
       <FlatList
         contentContainerStyle={styles.container}
         data={gifs}
-        numColumns={2}
+        numColumns={4}
         columnWrapperStyle={{justifyContent: 'space-between'}}
-        renderItem={({item, index}) => {
-          return <AvatarOption avatar={item} index={index} />;
+        renderItem={({item}) => {
+          return (
+            <TouchableOpacity
+              onPress={() => {
+                dispatch(({user, modal}) => {
+                  user.setAvatar(item);
+                  modal.close();
+                  ref.current?.close();
+                });
+              }}
+            >
+              <Image style={styles.avatar} source={{uri: item}} />
+            </TouchableOpacity>
+          );
         }}
       />
     </BaseSlideModal>
@@ -62,5 +78,13 @@ const styles = StyleSheet.create({
   input: {
     marginHorizontal: 30,
     marginTop: 30,
+  },
+  avatar: {
+    marginRight: 10,
+    marginBottom: 10,
+    width: 60,
+    height: 60,
+    borderRadius: 40,
+    overflow: 'hidden',
   },
 });

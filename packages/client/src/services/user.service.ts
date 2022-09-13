@@ -76,12 +76,17 @@ export class UserService extends Service<UserData> {
   }
 
   async setAvatar(url: string) {
+    await this.get().api.user.update("avatar", url);
+
     return this.set((state) => {
       if (!state.user) {
         return;
       }
 
-      state.user.avatar = url;
+      state.user = {
+        ...state.user,
+        avatar: url,
+      };
     });
   }
 
