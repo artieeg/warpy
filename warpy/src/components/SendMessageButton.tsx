@@ -1,5 +1,5 @@
 import React from 'react';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 import {Icon} from './Icon';
 import {IRoundButtonProps, RoundButton} from './RoundButton';
 

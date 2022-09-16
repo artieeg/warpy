@@ -3,7 +3,7 @@ import React, {useCallback} from 'react';
 import {View, StyleSheet, TextInput} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {TextButton} from '@warpy/components';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 import {BaseSlideModal} from './BaseSlideModal';
 import {textStyles} from './Text';
 

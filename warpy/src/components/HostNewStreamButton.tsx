@@ -2,7 +2,7 @@ import React from 'react';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
 import {IconButton} from './IconButton';
 import {useDispatcher, useStore} from '@app/store';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 
 export const HostNewStreamButton = () => {
   const isStarting = useStore(state => state.isStartingNewStream);

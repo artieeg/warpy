@@ -1,6 +1,6 @@
 import React from 'react';
 import TextTicker from 'react-native-text-ticker';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 import {textStyles} from './Text';
 
 interface IPreviewTitleProps {

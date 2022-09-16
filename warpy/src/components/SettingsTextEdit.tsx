@@ -8,7 +8,7 @@ import {useDebounce} from 'use-debounce';
 import FadeInOut from 'react-native-fade-in-out';
 import useAsyncEffect from 'use-async-effect';
 import {Icon} from './Icon';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 
 interface SettingsTextEditProps {
   placeholder: string;

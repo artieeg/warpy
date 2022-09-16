@@ -4,7 +4,7 @@ import {Avatar} from './Avatar';
 import {ViewersCountPreview} from './ViewersCountPreview';
 import {useNavigation} from '@react-navigation/native';
 import Video from 'react-native-video';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 import tinycolor from 'tinycolor2';
 import {Candidate} from '@warpy/lib';
 import {Text} from './Text';

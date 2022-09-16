@@ -7,7 +7,7 @@ import {IconButton} from '@app/components/IconButton';
 import {useDispatcher, useStoreShallow} from '@app/store';
 import config from '@app/config';
 import Share from 'react-native-share';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 
 export const SendInvite = () => {
   const [api, user, appInvite] = useStoreShallow(state => [

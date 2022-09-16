@@ -16,7 +16,7 @@ import Animated, {
   WithSpringConfig,
 } from 'react-native-reanimated';
 import {Text} from './Text';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 
 export interface IBaseModalProps extends ViewProps {
   title?: string;

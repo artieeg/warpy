@@ -12,7 +12,7 @@ import {UserGeneralInfo} from './UserGeneralInfo';
 import {Text} from './Text';
 import {useDispatcher, useStoreShallow} from '@app/store';
 import {useModalNavigation, useUserData} from '@app/hooks';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 import {SmallIconButton} from './SmallIconButton';
 import {useModalRef} from '@app/hooks/useModalRef';
 

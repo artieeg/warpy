@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 import {Text} from './Text';
 
 interface IViewersCountProps {

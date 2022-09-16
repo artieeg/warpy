@@ -10,7 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import {Text} from '@app/components';
 import tinycolor from 'tinycolor2';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 import {Stream} from '@warpy/lib';
 import {OnboardOverlay} from './OnboardOverlay';
 

@@ -5,7 +5,7 @@ import {
   View,
   ViewProps,
 } from 'react-native';
-import {colors, Colors} from '../../colors';
+import {colors, Colors} from '@app/theme';
 import {Text} from './Text';
 
 type ButtonColorStyles = keyof typeof colorStyles;
