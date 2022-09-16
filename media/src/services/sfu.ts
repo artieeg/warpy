@@ -1,7 +1,7 @@
 import os from "os";
 import { createWorker } from "mediasoup";
 import { Consumer, IPeer, IWorker } from "@media/models";
-import { EgressTransports, MediaDirection, PipeConsumers } from "@media/types";
+import { EgressTransports, MediaDirection } from "@media/types";
 import {
   AudioLevelObserverVolume,
   PipeTransport,
@@ -137,7 +137,7 @@ export const createConsumer = async (
   peerConsuming.consumers.push(consumer);
 
   return {
-    user: producer.appData.user,
+    user: producer.appData.user as any,
     consumerParameters: {
       producerId: producer.id,
       id: consumer.id,
@@ -252,7 +252,7 @@ export const onActiveSpeakers = (cb: any) => {
       > = {};
 
       volumes.forEach((data) => {
-        const { user, stream } = data.producer.appData;
+        const { user, stream } = data.producer.appData as any;
         const volume = data.volume;
 
         const speakerVolumeData = { user, volume };

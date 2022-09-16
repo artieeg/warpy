@@ -30,7 +30,13 @@ export const createNewStore = (config: StoreConfig) => {
     return {
       ...config.data,
       ...initialState,
-      ...createAPISlice(set, get),
+      ...createAPISlice(
+        set,
+        get,
+        async (action: (services: AppServices) => any) => {
+          await action(runner.getServices());
+        }
+      ),
       set,
       get,
     };

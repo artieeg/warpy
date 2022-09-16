@@ -2,6 +2,7 @@ const withTM = require("next-transpile-modules")([
   "@warpy/components",
   "@warpy/lib",
   "@warpy/store",
+  "@warpy/client",
   "@warpy/media",
   "@warpy/api",
   "react-native-webrtc",
