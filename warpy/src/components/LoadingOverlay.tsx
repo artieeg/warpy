@@ -92,16 +92,18 @@ const IndicatorItem = () => {
   return <Animated.View style={style} />;
 };
 
+export type LoadingOverlayMode =
+  | 'stream-join'
+  | 'splash'
+  | 'signup'
+  | 'signup-provider'
+  | 'signup-username'
+  | 'signup-name'
+  | 'signup-etiquette'
+  | 'signup-avatar';
+
 interface LoadingOverlayProps {
-  mode:
-    | 'stream-join'
-    | 'splash'
-    | 'signup'
-    | 'signup-provider'
-    | 'signup-username'
-    | 'signup-name'
-    | 'signup-etiquette'
-    | 'signup-avatar';
+  mode: LoadingOverlayMode;
   stream?: Stream;
   enabled: boolean;
   onHide?: () => void;

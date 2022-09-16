@@ -8,8 +8,11 @@ import Animated, {
 } from 'react-native-reanimated';
 import {Text} from '@app/components';
 import {TextButton} from '@warpy/components';
+import {useNavigation} from '@react-navigation/native';
 
 export const OnboardOverlay: React.FC<{visible: boolean}> = ({visible}) => {
+  const navigation = useNavigation();
+
   const onboardOverlayProgress = useDerivedValue(
     () =>
       withTiming(visible ? 1 : 0, {
@@ -42,7 +45,8 @@ export const OnboardOverlay: React.FC<{visible: boolean}> = ({visible}) => {
             justifyContent: 'center',
             translateY: 40,
           },
-        ]}>
+        ]}
+      >
         <Text color="gray" style={{textAlign: 'center'}} size="xxsmall">
           welcome on board,{'\n'}epic human
         </Text>
@@ -54,8 +58,13 @@ export const OnboardOverlay: React.FC<{visible: boolean}> = ({visible}) => {
             width: '100%',
             paddingHorizontal: 30,
             alignItems: 'center',
-          }}>
-          <TextButton style={{width: '100%'}} title="join warpy" />
+          }}
+        >
+          <TextButton
+            onPress={() => (navigation as any).navigate('SignUpUsername')}
+            style={{width: '100%'}}
+            title="join warpy"
+          />
           {/*
           <View style={{paddingTop: 15}}>
             <Text size="xxsmall" color="white">
