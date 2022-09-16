@@ -34,7 +34,7 @@ export const handleEgressMediaRequest: MessageHandler<any, any> = async (
         );
 
         producer.appData.forwadingToNodes = [
-          ...(producer.appData.forwadingToNodes ?? []),
+          ...((producer.appData.forwadingToNodes as any) ?? []),
           node,
         ];
 
