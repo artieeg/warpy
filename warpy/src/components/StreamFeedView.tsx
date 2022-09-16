@@ -9,7 +9,7 @@ import Animated, {
   useDerivedValue,
   withTiming,
 } from 'react-native-reanimated';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 
 interface StreamFeedViewProps
   extends Omit<FlatListProps<Candidate>, 'renderItem'> {

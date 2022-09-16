@@ -4,7 +4,7 @@ import {View, StyleSheet, ActivityIndicator, FlatList} from 'react-native';
 import {useDebounce} from 'use-debounce';
 import {APIClient} from '@warpy/api';
 import {Text} from '@app/components';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 import {useQuery} from 'react-query';
 import {useStore} from '@app/store';
 import {UserHorizontalListItem} from '@app/components/UserHorizontalListItem';

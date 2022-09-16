@@ -2,7 +2,7 @@ import {useDispatcher} from '@app/store';
 import React from 'react';
 import {View, StyleSheet, useWindowDimensions, TextInput} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 import {HostNewStreamButton} from './HostNewStreamButton';
 import {InviteButton} from './InviteButton';
 import {PendingInvites} from './PendingInvites';

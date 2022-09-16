@@ -13,7 +13,7 @@ import Animated, {
   useSharedValue,
   Layout,
 } from 'react-native-reanimated';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 
 export const Feed: React.FC = () => {
   const {

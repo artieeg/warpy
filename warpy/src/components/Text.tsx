@@ -2,7 +2,7 @@ import React from 'react';
 import {TextProps} from 'react-native';
 import {StyleSheet, Text as BaseText} from 'react-native';
 import Animated from 'react-native-reanimated';
-import {Colors, colors} from '../../colors';
+import {Colors, colors} from '@app/theme';
 
 type TextWeight = 'regular' | 'bold' | 'light' | 'extraBold';
 type TextSize = 'small' | 'medium' | 'large' | 'xsmall' | 'xxsmall';

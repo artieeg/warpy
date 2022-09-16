@@ -5,7 +5,7 @@ import {Text} from '@app/components';
 import {TextButton} from '@warpy/components';
 import {useDispatcher, useStore, useStoreShallow} from '@app/store';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 
 export const useInviteCodeInputController = () => {
   const screenMode = (useRoute().params as any)?.mode;

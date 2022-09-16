@@ -1,7 +1,7 @@
 import React from 'react';
 import {ButtonProps, StyleSheet, TouchableOpacity} from 'react-native';
 import {IconProps} from 'react-native-vector-icons/Icon';
-import {Colors, colors} from '../../colors';
+import {Colors, colors} from '@app/theme';
 import {Icon} from './Icon';
 
 interface SmallIconButtonProps extends IconProps {

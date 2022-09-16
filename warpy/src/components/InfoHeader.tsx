@@ -8,7 +8,7 @@ import Animated, {
   useDerivedValue,
   withTiming,
 } from 'react-native-reanimated';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 
 const useInfoHeaderController = () => {
   const [previousStreamData] = useStoreShallow(store => [

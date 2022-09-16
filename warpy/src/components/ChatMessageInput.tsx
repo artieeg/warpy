@@ -3,7 +3,7 @@ import {View, TextInput, StyleSheet} from 'react-native';
 import {textStyles} from './Text';
 import {SendMessageButton} from './SendMessageButton';
 import {useDispatcher, useStoreShallow} from '@app/store';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 
 export const ChatMessageInput = () => {
   const dispatch = useDispatcher();

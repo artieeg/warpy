@@ -3,7 +3,7 @@ import {useStoreShallow} from '@app/store';
 import React, {useCallback} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import Share from 'react-native-share';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 import {Icon} from './Icon';
 import {Text} from './Text';
 

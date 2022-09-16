@@ -8,7 +8,7 @@ import {UserSearchInput} from './UserSearchInput';
 import {ShareStreamLinkButton} from './ShareStreamLinkButton';
 import {useUserSearch} from '@app/hooks';
 import {useDispatcher, useStoreShallow} from '@app/store';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 import {useModalRef} from '@app/hooks/useModalRef';
 
 export const useInviteModalController = () => {

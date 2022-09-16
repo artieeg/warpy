@@ -14,7 +14,7 @@ import {TextButton} from '@warpy/components';
 import {BaseSlideModal} from './BaseSlideModal';
 import {Input} from './Input';
 import {useDebounce} from 'use-debounce';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 import {UserBase} from '@warpy/lib';
 
 export const AwardVisualPickerModal = () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import {TextInput, StyleSheet, TextInputProps} from 'react-native';
-import {colors} from '../../colors';
+import {colors} from '@app/theme';
 import {textStyles} from './Text';
 
 export const SignUpInput = (props: TextInputProps) => {
