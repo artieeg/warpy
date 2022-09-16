@@ -1,10 +1,11 @@
 import { useCallback, useMemo } from "react";
-import { StateSelector } from "zustand";
-import { createNewStore, Store } from "@warpy/store";
+import { StateSelector, StoreApi } from "zustand";
+import { createNewStore } from "@warpy/store";
+import { Store } from "@warpy/client";
 import shallow from "zustand/shallow";
 
 import createContext from "zustand/context";
-const Context = createContext<Store>();
+const Context = createContext<StoreApi<Store>>();
 
 export const useStore = Context.useStore;
 export const useStoreApi = Context.useStoreApi;
@@ -31,6 +32,8 @@ export const createHydratedStore = (values: Partial<Store>) => {
   store = createNewStore({
     dependencies: {
       mediaDevices: navigator.mediaDevices,
+      saveReaction: undefined as any,
+      openStream: undefined as any,
     },
     data: values,
   });

@@ -1,16 +1,10 @@
-import React, {
-  createRef,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { createRef, useCallback, useEffect, useMemo } from "react";
 import { View, StyleSheet, useWindowDimensions } from "react-native";
-import { useStore, useStoreApi, useStoreShallow } from "../store";
-import { Text, TextButton } from "@warpy/components";
-import Link from "next/link";
+import { useStore } from "../store";
+import { TextButton } from "@warpy/components";
 import Router from "next/dist/client/router";
+import { useDispatcher } from "@warpy/store";
+import shallow from "zustand/shallow";
 
 type ContentProps = {
   id: string;
@@ -18,32 +12,19 @@ type ContentProps = {
 };
 
 export const StreamContent = ({ rid, id }: ContentProps) => {
-  const [streamers, dispatchStreamJoin, mediaClient] = useStore((state) => [
-    state.streamers,
-    state.dispatchStreamJoin,
-    state.mediaClient,
-  ]);
-
-  console.log({ mediaClient });
+  //const streamers = [];
+  const videoStreams = useStore((state) => state.videoStreams, shallow);
+  const dispatch = useDispatcher();
 
   useEffect(() => {
     setTimeout(() => {
-      dispatchStreamJoin(id);
+      dispatch(({ stream }) => stream.join({ stream: id }));
     }, 1000);
   }, [id]);
 
   const streams = useMemo(
-    () =>
-      Object.values(streamers)
-        .map((p) => {
-          if (p.media?.video?.active) {
-            return p.media?.video?.track;
-          } else {
-            return undefined;
-          }
-        })
-        .filter((s) => !!s) as any,
-    [streamers]
+    () => Object.values(videoStreams).map((v) => v.stream),
+    [videoStreams]
   );
 
   const videoViewRefs = useMemo(

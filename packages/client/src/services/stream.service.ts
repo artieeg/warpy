@@ -281,10 +281,10 @@ export class StreamService extends Service<StreamData> {
     }
   }
 
-  async *create() {
+  async create() {
     const { newStreamCategory, api, title, user } = this.get();
 
-    yield this.set({
+    this.set({
       isStartingNewStream: true,
     });
 
@@ -338,7 +338,7 @@ export class StreamService extends Service<StreamData> {
       sendMediaParams,
     });
 
-    yield this.set({
+    this.set({
       isStartingNewStream: false,
     });
   }

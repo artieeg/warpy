@@ -3,7 +3,7 @@ import { View, StyleSheet } from "react-native";
 import { NextPageContext } from "next";
 import Head from "next/head";
 import { runNATSRequest } from "../../modules/comms";
-import { Store } from "@warpy/store";
+import { Store } from "@warpy/client";
 import { StreamContent } from "../../modules/stream/content";
 
 type StreamProps = {
@@ -45,7 +45,7 @@ export async function getServerSideProps(context: NextPageContext) {
       title: stream.title,
       description: "join this stream",
       initialStore: store,
-      rid,
+      rid: rid ?? "",
     } as StreamProps,
   };
 }

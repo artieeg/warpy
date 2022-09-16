@@ -2,6 +2,7 @@ import { GetState, SetState } from "zustand";
 import produce from "immer";
 import { Store } from "@warpy/client";
 import { ZustandStore } from "./ZustandStore";
+import { Dispatch } from "./dispatch";
 
 type APISubscriptionParams = {
   onStreamIdAvailable: (id: string) => void;
@@ -17,7 +18,8 @@ let reconnecting_interval: any;
 
 export const createAPISlice = (
   set: SetState<ZustandStore>,
-  get: GetState<ZustandStore>
+  get: GetState<ZustandStore>,
+  dispatch: Dispatch
 ): IAPISlice => ({
   connect: async (addr) => {
     return new Promise((resolve) => {
@@ -50,7 +52,7 @@ export const createAPISlice = (
     });
   },
   createAPISubscriptions: ({ onStreamIdAvailable, onStreamEnd }) => {
-    const { api, dispatch } = get();
+    const { api } = get();
 
     api.stream.onInviteStateUpdate((data) => {
       dispatch(({ invite }) =>
