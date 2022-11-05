@@ -2,11 +2,6 @@
 
 a social live streaming platform **✨**
 
-## Notes ⚠️
-
-the project is archived until better times 🥲
-
-Source code is published for scavenging purposes (there might be good ideas, but I'm not sure 🤣). 
 
 ## Features
 
