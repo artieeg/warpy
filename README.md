@@ -10,11 +10,7 @@ a social live streaming platform **✨**
 - bots api (music bots, restream, etc)
 - (somewhat) scalable media architecture
 - WebSocket API
-- UX with Reanimated 2
 
-## Gifs & Screenshots
-
-TODO
 
 ## Structure
 
